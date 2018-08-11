@@ -19,9 +19,10 @@
 
 
         <LinearLayout
+            android:orientation="horizontal"
             android:id="@+id/il_livevideo_vote_ps_choice"
-            android:orientation="vertical"
             android:layout_centerInParent="true"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </LinearLayout>

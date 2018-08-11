@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,11 +21,14 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.VoteAdapter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.VoteWaitDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.PsState;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.MyGradView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
@@ -33,6 +37,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,8 +55,12 @@ public class LiveVoteBll implements LiveVoteAction {
     VoteWaitDialog voteWaitDialog;
     HashMap<LiveTopic.VoteEntity, Integer> idAndAnswer = new HashMap<>();
     int answer;
+    public List<PsState> resource;
     // 选项资源的图片
     public int[] pschoices = {R.drawable.livevideo_votechoice_psa, R.drawable.livevideo_votechoice_psb, R.drawable.livevideo_votechoice_psc,R.drawable.livevideo_votechoice_psd,R.drawable.livevideo_votechoice_pse,R.drawable.livevideo_votechoice_psf};
+    public int[] pschoiceone = {R.drawable.livevideo_votechoice_psa, R.drawable.livevideo_votechoice_psb, R.drawable.livevideo_votechoice_psc,R.drawable.livevideo_votechoice_psd,R.drawable.livevideo_votechoice_pse};
+    public int[] pschoicetwo = {R.drawable.livevideo_votechoice_psa, R.drawable.livevideo_votechoice_psb, R.drawable.livevideo_votechoice_psc,R.drawable.livevideo_votechoice_psd,R.drawable.livevideo_votechoice_pse,R.drawable.livevideo_votechoice_psf};
+    public int[] pschoicess = {R.drawable.livevideo_votechoice_psyes, R.drawable.livevideo_votechoice_psno};
     private Button mBtn_livevideo_vote_item;
     private LinearLayout mIl_livevideo_vote_ps_choice;
 
@@ -172,7 +181,8 @@ public class LiveVoteBll implements LiveVoteAction {
         if (0 == answer && !LiveVideoConfig.isPrimary) {
             showChoice(voteEntity);
         }else if(0 == answer && LiveVideoConfig.isPrimary){
-            showPSChoice(voteEntity);
+//            showPSChoice(voteEntity);
+            showSPChoice(voteEntity);
         }
     }
 
@@ -186,11 +196,214 @@ public class LiveVoteBll implements LiveVoteAction {
         logHashMap.addSno("3").addNonce("" + voteEntity.getNonce()).addStable("2");
         umsAgentDebug(eventId, logHashMap.getData());
         if(LiveVideoConfig.isPrimary){
-            showPSChoice(voteEntity);
+//            showPSChoice(voteEntity);
+            showSPChoice(voteEntity);
         } else {
             showChoice(voteEntity);
         }
 
+    }
+
+    private void showSPChoice(final LiveTopic.VoteEntity voteEntity) {
+        bottomContent.post(new Runnable() {
+            @Override
+            public void run() {
+                if (contentView != null) {
+                    bottomContent.removeView(contentView);
+                }
+                final View view = LayoutInflater.from(context).inflate(R.layout.page_livevideo_ps_vote_select, bottomContent, false);
+                view.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return true;
+                    }
+                });
+                contentView = new RelativeLayout(context);
+                contentView.addView(view);
+                bottomContent.addView(contentView);
+                mIl_livevideo_vote_ps_choice = (LinearLayout) view.findViewById(R.id.il_livevideo_vote_ps_choice);
+                final LinearLayout ll_statistics = (LinearLayout) view.findViewById(R.id.ll_statistics);
+                final ImageView progress = (ImageView) view.findViewById(R.id.iv_psprogress);
+                ImageView bg = (ImageView) view.findViewById(R.id.iv_livevideo_psvote_simplebg);
+                bg.setImageResource(R.drawable.livevideo_ps_vote_complex);
+                ll_statistics.setVisibility(View.GONE);
+                final int choiceNum = voteEntity.getChoiceNum();
+                if(choiceNum > 4){
+                    resource = new ArrayList<>();
+                    if(resource.size() > 0){
+                        resource.clear();
+                    }
+                    for(int i = 0 ; i < choiceNum ; i++){
+                        resource.add(new PsState(pschoices[i],true));
+                    }
+                    MyGradView gv1 = new MyGradView(context);
+                    gv1.setNumColumns(3);
+                    final VoteAdapter adapter = new VoteAdapter(context,resource);
+                    gv1.setAdapter(adapter);
+                    LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(800, 150);
+                    lp1.setMargins(134, 113, 103, 125);
+                    gv1.setLayoutParams(lp1);
+                    gv1.setHorizontalSpacing(50);
+                    gv1.setVerticalSpacing(-40);
+                    gv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> view, View view1, int position, long l) {
+                            ll_statistics.setVisibility(View.VISIBLE);
+                            Animation circle_anim = AnimationUtils.loadAnimation(context, R.anim.anim_livevideo_psvote_progress);
+                            LinearInterpolator interpolator = new LinearInterpolator();  //设置匀速旋转，在xml文件中设置会出现卡顿
+                            circle_anim.setInterpolator(interpolator);
+                            if (circle_anim != null) {
+                                progress.startAnimation(circle_anim);  //开始动画
+                            }
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ll_statistics.setVisibility(View.GONE);
+                                    bottomContent.removeView(contentView);
+                                    contentView = null;
+                                }
+                            }, 20000);
+                            // 未被选中的item变颜色
+                            for (int i = 0 ; i < choiceNum ; i++){
+                                if(i == position){
+                                    adapter.getSystem().get(position).setState(true);
+                                }else{
+                                    adapter.getSystem().get(i).setState(false);
+                                }
+                            }
+                            adapter.notifyDataSetChanged();
+                            LiveVoteBll.this.answer = position + 1;
+                            idAndAnswer.put(voteEntity, answer);
+                            String nonce = "" + StableLogHashMap.creatNonce();
+                            liveBll.sendVote(answer, nonce);
+                            StableLogHashMap logHashMap = new StableLogHashMap("submitVote");
+                            logHashMap.put("voteid", "" + voteEntity.getChoiceId());
+                            logHashMap.put("stuvote", "" + answer);
+                            logHashMap.addSno("5").addNonce(nonce).addStable("2");
+                            umsAgentDebug2(eventId, logHashMap.getData());
+                        }
+                    });
+                    mIl_livevideo_vote_ps_choice.addView(gv1);
+                } else {
+                    for (int i = 0; i < choiceNum; i++) {
+                        final int answer = i + 1;
+                        final int j = i + 1;
+                        View convertView = LayoutInflater.from(context).inflate(R.layout.item_livevideo_vote_ps_select, mIl_livevideo_vote_ps_choice, false);
+                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        if (i != choiceNum - 1) {
+                            lp.rightMargin = (int) (25 * ScreenUtils.getScreenDensity());
+                        }
+                        mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.HORIZONTAL);
+                        mIl_livevideo_vote_ps_choice.addView(convertView, lp);
+                        mBtn_livevideo_vote_item = (Button) convertView.findViewById(R.id.btn_livevideo_vote_ps_item);
+                        if (voteEntity.getChoiceType() == 1) {
+                            mBtn_livevideo_vote_item.setBackgroundResource(pschoices[i]);
+                        } else {
+                            if (i == 0) {
+                                mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psyes);
+                            } else {
+                                mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psno);
+                            }
+                        }
+                        mBtn_livevideo_vote_item.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                ll_statistics.setVisibility(View.VISIBLE);
+                                Animation circle_anim = AnimationUtils.loadAnimation(context, R.anim.anim_livevideo_psvote_progress);
+                                LinearInterpolator interpolator = new LinearInterpolator();  //设置匀速旋转，在xml文件中设置会出现卡顿
+                                circle_anim.setInterpolator(interpolator);
+                                if (circle_anim != null) {
+                                    progress.startAnimation(circle_anim);  //开始动画
+                                }
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ll_statistics.setVisibility(View.GONE);
+                                        bottomContent.removeView(contentView);
+                                        contentView = null;
+                                    }
+                                }, 20000);
+                                LiveVoteBll.this.answer = answer;
+                                // 未被选中的选项背景色改变
+                                mIl_livevideo_vote_ps_choice.removeAllViews();
+                                for(int i = 0 ; i < choiceNum ; i++){
+                                    View convertView = LayoutInflater.from(context).inflate(R.layout.item_livevideo_vote_ps_select, mIl_livevideo_vote_ps_choice, false);
+                                    if(choiceNum > 5){
+                                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                        if (i != choiceNum - 1) {
+                                            lp.rightMargin = (int) (8 * ScreenUtils.getScreenDensity());
+                                        }
+                                        mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.HORIZONTAL);
+                                        mIl_livevideo_vote_ps_choice.addView(convertView, lp);
+                                    } else {
+                                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                        if (i != choiceNum - 1) {
+                                            lp.rightMargin = (int) (25 * ScreenUtils.getScreenDensity());
+                                        }
+                                        mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.HORIZONTAL);
+                                        mIl_livevideo_vote_ps_choice.addView(convertView, lp);
+                                    }
+
+                                    mBtn_livevideo_vote_item = (Button) convertView.findViewById(R.id.btn_livevideo_vote_ps_item);
+                                    if (voteEntity.getChoiceType() == 1) {
+                                        if(i+1 == j){
+                                            mBtn_livevideo_vote_item.setBackgroundResource(pschoices[i]);
+                                        }else{
+                                            mBtn_livevideo_vote_item.setBackgroundResource(pschoices[i]);
+                                            mBtn_livevideo_vote_item.setAlpha(0.2f);
+                                        }
+
+                                    } else {
+                                        if (i == 0) {
+                                            if(i+1 == j){
+                                                mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psyes);
+                                            }else{
+                                                mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psyes);
+                                                mBtn_livevideo_vote_item.setAlpha(0.2f);
+                                            }
+
+                                        } else {
+                                            if(i+1 == j){
+                                                mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psno);
+                                            }else{
+                                                mBtn_livevideo_vote_item.setBackgroundResource(R.drawable.livevideo_votechoice_psno);
+                                                mBtn_livevideo_vote_item.setAlpha(0.2f);
+                                            }
+
+                                        }
+                                    }
+                                    //
+                                }
+                                idAndAnswer.put(voteEntity, answer);
+                                String nonce = "" + StableLogHashMap.creatNonce();
+                                liveBll.sendVote(answer, nonce);
+                                StableLogHashMap logHashMap = new StableLogHashMap("submitVote");
+                                logHashMap.put("voteid", "" + voteEntity.getChoiceId());
+                                logHashMap.put("stuvote", "" + answer);
+                                logHashMap.addSno("5").addNonce(nonce).addStable("2");
+                                umsAgentDebug2(eventId, logHashMap.getData());
+                            }
+                        });
+
+                    }
+                }
+                view.findViewById(R.id.iv_livevideo_votepschoice_close).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomContent.removeView(contentView);
+                        contentView = null;
+                    }
+                });
+                StableLogHashMap logHashMap = new StableLogHashMap("showVote");
+                logHashMap.put("voteid", "" + voteEntity.getChoiceId());
+                logHashMap.addSno("4").addExY().addNonce("" + voteEntity.getNonce()).addStable("1");
+                umsAgentDebug3(eventId, logHashMap.getData());
+
+            }
+
+        });
     }
 
     private void showPSChoice(final LiveTopic.VoteEntity voteEntity) {
@@ -220,12 +433,15 @@ public class LiveVoteBll implements LiveVoteAction {
                     final int j = i + 1;
                     View convertView = LayoutInflater.from(context).inflate(R.layout.item_livevideo_vote_ps_select, mIl_livevideo_vote_ps_choice, false);
                     if(choiceNum > 5){
-                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        if (i != choiceNum - 1) {
-                            lp.rightMargin = (int) (8 * ScreenUtils.getScreenDensity());
-                        }
-                        mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.HORIZONTAL);
-                        mIl_livevideo_vote_ps_choice.addView(convertView, lp);
+//                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//                        if (i != choiceNum - 1) {
+//                            lp.rightMargin = (int) (25 * ScreenUtils.getScreenDensity());
+//                            lp.topMargin = (int) (5 * ScreenUtils.getScreenDensity());
+//                        }
+//                        mIl_livevideo_vote_ps_choice.setOrientation(LinearLayout.VERTICAL);
+//                        mIl_livevideo_vote_ps_choice.addView(convertView, lp);
+                        // 08.10 投票按钮放在gridview中
+
                     } else {
                         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                         if (i != choiceNum - 1) {

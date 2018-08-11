@@ -611,7 +611,8 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
                                             }
                                         }
                                     }
-                                    liveBll.getLiveAutoNoticeBll().showGiftSuccessNotice(getTips(index), getHeard(index));
+//                                    liveBll.getLiveAutoNoticeBll().showGiftSuccessNotice(getTips(index), getHeard(index));
+                                    addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
                                     mView.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {

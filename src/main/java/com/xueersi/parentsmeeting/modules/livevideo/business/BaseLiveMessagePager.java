@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.base.BasePager;
 import com.xueersi.parentsmeeting.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveExPressionEditData;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
@@ -459,8 +460,12 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         danmaku.isLive = false;
         danmaku.time = dvMessageDanmaku.getCurrentTime() + 1200;
         danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
-        danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
 //        danmaku.underlineColor = Color.GREEN;
+        if(LiveVideoConfig.isPrimary){
+            danmaku.borderColor = R.color.COLOR_PSDANMAKU;
+        }else{
+            danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
+        }
         dvMessageDanmaku.addDanmaku(danmaku);
     }
 
