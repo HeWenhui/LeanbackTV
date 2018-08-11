@@ -762,4 +762,26 @@
     <item name="iv_livevideo_small_english_english_speek" type="id" />
     <item name="rl_livevideo_english_speek_remind_or_praise" type="id" />
     <item name="rl_livevideo_small_english_understand" type="id" />
+
+
+
+
+    <!--文科表扬榜-->
+    <item name="lt_livevideo_arts_praiselist" type="id"/>
+    <item name="lt_livevideo_arts_praise_loop" type="id"/>
+    <item name="rcl_livevideo_arts_praiselist" type="id"/>
+    <item name="tv_livevideo_arts_praiselist_name" type="id"/>
+    <item name="prsv_livevideo_arts_praise" type="id"/>
+    <item name="iv_livevideo_arts_praise_btn" type="id"/>
+    <item name="fl_livevideo_arts_praise_scalelayout" type="id"/>
+    <item name="iv_livevideo_arts_prasie_close" type="id"/>
+    <item name="rl_lievideo_arts_praise_msg" type="id"/>
+    <item name="iv_livevideo_arts_praise_teacherhead" type="id"/>
+    <item name="tv_livevideo_arts_praise_teachername" type="id"/>
+    <item name="ll_livevideo_arts_praise_teacherhead_container" type="id"/>
+    <item name="tv_livevideo_arts_praise_praisemsg"  type="id"/>
+    <item name="tv_livevideo_arts_prasise_praisenum" type="id"/>
+    <item name="iv_livevideo_arts_praise_praise_btn_bg" type="id"/>
+    <item name="fl_livevideo_arts_praise_scaleanimlayout" type="id"/>
+    <item name="fl_livevideo_arts_praise_layout" type="id"/>
 </resources>

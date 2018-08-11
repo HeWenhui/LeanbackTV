@@ -29,4 +29,18 @@
             <enum name="FILL" value="1"></enum>
         </attr>
     </declare-styleable>
+
+    <!--recycleView 快速滑动条 属性-->
+    <declare-styleable name="RclViewFastScroller">
+        <!--滑动头图片资源引用-->
+        <attr name="VerticalThumbDrawable" format="reference"></attr>
+        <!--底部线条资源引用-->
+        <attr name="VerticalTrackDrawable" format="reference"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="PraiseBtnAnimLayout">
+        <attr name="auto_star" format="boolean"></attr>
+    </declare-styleable>
+
+
 </resources>

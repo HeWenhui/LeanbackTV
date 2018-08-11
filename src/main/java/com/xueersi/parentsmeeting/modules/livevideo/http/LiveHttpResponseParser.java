@@ -82,7 +82,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
     }
 
-    /** 解析getInfo */
+    /**
+     * 解析getInfo
+     */
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
@@ -130,6 +132,15 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 followTypeEntity.setInt3(followType.getInt("3"));
                 followTypeEntity.setInt4(followType.getInt("4"));
             }
+
+            // 文科表扬榜
+            if (data.has("liveRank")) {
+                JSONObject jsonObject = data.optJSONObject("liveRank");
+                int showRank = jsonObject.optInt("showRankNum");
+                getInfo.setShowArtsPraise(showRank);
+            }
+
+
             getInfo.setTeacherId(data.getString("teacherId"));
             getInfo.setTeacherName(data.getString("teacherName"));
             getInfo.setTeacherIMG(data.optString("teacherImg"));
@@ -331,7 +342,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
-    /** 解析直播服务器 */
+    /**
+     * 解析直播服务器
+     */
     public PlayServerEntity parsePlayerServer(JSONObject object) {
         PlayServerEntity server = new PlayServerEntity();
         try {
@@ -373,7 +386,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
-    /** 解析直播topic数据 */
+    /**
+     * 解析直播topic数据
+     */
     public LiveTopic parseLiveTopic(LiveTopic oldLiveTopic, JSONObject liveTopicJson, int type) throws JSONException {
         LiveTopic liveTopic = new LiveTopic();
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -427,6 +442,19 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 coachStatusEntity.setOnmic("off");
                 coachStatusEntity.setOpenhands("off");
                 coachStatusEntity.getClassmateEntities().clear();
+            }
+            // 文科表扬榜 topic中相关信息
+            try {
+                if (status.has("openPraiseList")) {
+                    JSONObject jsonObject = status.getJSONObject("openPraiseList");
+                    LiveTopic.ArtsPraiseTopicEntity artsPraiseTopicEntity = new LiveTopic.ArtsPraiseTopicEntity();
+                    artsPraiseTopicEntity.setId(jsonObject.optString("id", ""));
+                    artsPraiseTopicEntity.setStastus(jsonObject.optBoolean("stastus", false));
+                    artsPraiseTopicEntity.setRankType(jsonObject.optInt("rankType"));
+                    liveTopic.setArtsPraiseTopicEntity(artsPraiseTopicEntity);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         if (liveTopicJson.has("room_1")) {
@@ -1297,10 +1325,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             studentChestEntity.setIsGet(isGet);
             studentChestEntity.setGold(gold);
 
-            if(data.has("chip")){
+            if (data.has("chip")) {
                 JSONObject chipObject = data.getJSONObject("chip");
                 studentChestEntity.setAiPatner(true);
-                studentChestEntity.setChipName(chipObject.optString("chipName",""));
+                studentChestEntity.setChipName(chipObject.optString("chipName", ""));
                 studentChestEntity.setChipNum(chipObject.optInt("chipNum"));
             }
         } catch (Exception e) {

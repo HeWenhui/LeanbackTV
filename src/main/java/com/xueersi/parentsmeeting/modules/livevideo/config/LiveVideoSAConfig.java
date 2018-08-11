@@ -153,6 +153,9 @@ public class LiveVideoSAConfig {
         /** 直播回放的用户在线心跳 */
         public String URL_LIVE_VISITTIME = HTTP_HOST + "/LiveCourse/visitTime";
 
+        /**文科表扬榜*/
+        public String URL_ARTS_PRAISE_LIST ="http://app.arts.xueersi.com/LiveRank/getRankData";
+
     }
 
 }

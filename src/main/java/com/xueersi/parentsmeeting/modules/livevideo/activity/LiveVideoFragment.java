@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnRe
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.ArtsPraiseListBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
@@ -154,6 +155,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new ArtsPraiseListBll(activity,mLiveBll));
         } else {
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);

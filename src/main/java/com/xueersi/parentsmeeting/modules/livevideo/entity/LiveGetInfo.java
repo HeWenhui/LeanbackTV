@@ -262,7 +262,14 @@ public class LiveGetInfo {
      * 是否是高三理科
      */
     private int isSeniorOfHighSchool;
-
+    /**是否显示文科表扬榜信息*/
+    private int showArtsPraise;
+    public int getShowArtsPraise() {
+        return showArtsPraise;
+    }
+    public void setShowArtsPraise(int showArtsPraise) {
+        this.showArtsPraise = showArtsPraise;
+    }
     public void setSmallEnglish(boolean smallEnglish) {
         this.smallEnglish = smallEnglish;
     }

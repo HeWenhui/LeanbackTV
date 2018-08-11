@@ -160,4 +160,12 @@ public interface XESCODE {
     /** 发送语音弹幕 TODO */
     int XCR_ROOM_DANMU_SEND = 261;
 
+    /**文科表扬榜  开始notice*/
+    int ARTS_PRAISE_START = 1000;
+    /**文科表扬榜 学生上报点赞数*/
+    int ARTS_SEND_PRAISE_NUM =1001;
+    /**文科表扬榜接受到点赞数*/
+    int ARTS_RECEIVE_PRAISE_NUM = 1002;
+
+
 }

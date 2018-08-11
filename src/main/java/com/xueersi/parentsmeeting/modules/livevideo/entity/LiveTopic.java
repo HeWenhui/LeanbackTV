@@ -47,12 +47,16 @@ public class LiveTopic {
     private TopicEntity topic;
     VideoQuestionLiveEntity videoQuestionLiveEntity;
 
-    private TeamPkEntity  teamPkEntity;
+    private TeamPkEntity teamPkEntity;
 
 
-    /** 当前禁言用户列表,存id */
+    /**
+     * 当前禁言用户列表,存id
+     */
     private List<String> disableSpeaking;
-    /** 是否被禁言 */
+    /**
+     * 是否被禁言
+     */
     private boolean isDisable;
 
     public void setTopic(TopicEntity topic) {
@@ -118,19 +122,33 @@ public class LiveTopic {
      */
     public static class RoomStatusEntity {
         private int id = 0;
-        /** 课程是否开始,默认为false */
+        /**
+         * 课程是否开始,默认为false
+         */
         private boolean classbegin;
-        /** 是否开启弹幕 ，默认为false */
+        /**
+         * 是否开启弹幕 ，默认为false
+         */
         private boolean openbarrage;
-        /** 是否开启聊天区 ，默认为true */
+        /**
+         * 是否开启聊天区 ，默认为true
+         */
         private boolean openchat;
-        /** 未知用途 */
+        /**
+         * 未知用途
+         */
         private boolean isCalling;
-        /** 当前的直播模式 */
+        /**
+         * 当前的直播模式
+         */
         private String mode = MODE_TRANING;
-        /** 当前的表扬榜模式 */
+        /**
+         * 当前的表扬榜模式
+         */
         private int listStatus;
-        /** 是否课间休息 */
+        /**
+         * 是否课间休息
+         */
         private boolean isOnbreak;
 
         private boolean haveExam = false;
@@ -144,11 +162,17 @@ public class LiveTopic {
         private boolean classmateChange = true;
         private boolean openDbEnergy;
         private LiveTopic.VoteEntity voteEntity;
-        /** 是否打开反馈 */
+        /**
+         * 是否打开反馈
+         */
         private boolean isOpenFeedback;
-        /** 是否打开语音反馈 */
+        /**
+         * 是否打开语音反馈
+         */
         private String agoraVoiceChatRoom = "";
-        /** 是否打开语音反馈 */
+        /**
+         * 是否打开语音反馈
+         */
         private String onVideoChat = "off";
 
         public RoomStatusEntity() {
@@ -358,29 +382,53 @@ public class LiveTopic {
      * @author linyuqiang 当前直播互动题状态
      */
     public static class TopicEntity {
-        /** 当前互动题的答案 */
+        /**
+         * 当前互动题的答案
+         */
         private String answer;
-        /** 当前互动题的内容 */
+        /**
+         * 当前互动题的内容
+         */
         private String content;
-        /** 当前互动题的金币数 */
+        /**
+         * 当前互动题的金币数
+         */
         private int gold_count;
-        /** 当前互动题的Id，invalid表示互动不可用 */
+        /**
+         * 当前互动题的Id，invalid表示互动不可用
+         */
         private String id;
-        /** 填空题的空数 */
+        /**
+         * 填空题的空数
+         */
         private int num;
-        /** 当前互动题发布时间 */
+        /**
+         * 当前互动题发布时间
+         */
         private long publish_time;
-        /** 备用字段 */
+        /**
+         * 备用字段
+         */
         private int status;
-        /** 做题时间，单位是分钟 */
+        /**
+         * 做题时间，单位是分钟
+         */
         private int time;
-        /** 互动题类型，1是选择，2是填空 */
+        /**
+         * 互动题类型，1是选择，2是填空
+         */
         private String type;
-        /** 当type=1时为选择题，choiceType 1：单选；2：多选，num为选择题数量 */
+        /**
+         * 当type=1时为选择题，choiceType 1：单选；2：多选，num为选择题数量
+         */
         public String choiceType;
-        /** 题目来源 */
+        /**
+         * 题目来源
+         */
         private String srcType = "";
-        /** 是否加载H5 */
+        /**
+         * 是否加载H5
+         */
         private boolean isTestUseH5;
         private String isAllow42;
         private String speechContent;
@@ -587,14 +635,20 @@ public class LiveTopic {
         this.teamPkEntity = teamPkEntity;
     }
 
-    /**战队pk topic中的信息*/
-    public static class TeamPkEntity{
-        /**主讲老师topic 信息*/
+    /**
+     * 战队pk topic中的信息
+     */
+    public static class TeamPkEntity {
+        /**
+         * 主讲老师topic 信息
+         */
         RoomInfo roomInfo1;
-        /**辅助讲老师 topic信息*/
+        /**
+         * 辅助讲老师 topic信息
+         */
         RoomInfo roomInfo2;
 
-        public TeamPkEntity(){
+        public TeamPkEntity() {
 
         }
 
@@ -617,7 +671,7 @@ public class LiveTopic {
             return roomInfo2;
         }
 
-        public static class RoomInfo{
+        public static class RoomInfo {
             private int alloteam;
             private int allotpkman;
             private int openbox;
@@ -647,6 +701,49 @@ public class LiveTopic {
             }
         }
 
+    }
+
+    private ArtsPraiseTopicEntity artsPraiseTopicEntity;
+
+    public ArtsPraiseTopicEntity getArtsPraiseTopicEntity() {
+        return artsPraiseTopicEntity;
+    }
+
+    public void setArtsPraiseTopicEntity(ArtsPraiseTopicEntity artsPraiseTopicEntity) {
+        this.artsPraiseTopicEntity = artsPraiseTopicEntity;
+    }
+
+    /**
+     * 文科表扬榜 Topic 数据模型
+     */
+    public static class ArtsPraiseTopicEntity {
+        boolean stastus;
+        String id;
+        int rankType;
+
+        public boolean isStastus() {
+            return stastus;
+        }
+
+        public void setStastus(boolean stastus) {
+            this.stastus = stastus;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public int getRankType() {
+            return rankType;
+        }
+
+        public void setRankType(int rankType) {
+            this.rankType = rankType;
+        }
     }
 
 

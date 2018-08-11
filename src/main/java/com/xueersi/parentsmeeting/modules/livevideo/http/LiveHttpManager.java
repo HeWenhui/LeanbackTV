@@ -1170,4 +1170,24 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_HANDADD, params, requestCallBack);
     }
+
+    /**
+     * 文科表扬榜
+     * @param rankId         榜单id
+     * @param liveId         直播id
+     * @param courseId       课程id
+     * @param counselorId    辅导老师id
+     */
+    public void getArtsRankData(String rankId,String liveId,String courseId,String counselorId,HttpCallBack requestCallBack){
+
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("rankId", rankId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        params.addBodyParam("counselorId", counselorId);
+        //setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_ARTS_PRAISE_LIST, params, requestCallBack);
+    }
+
+
 }
