@@ -3376,10 +3376,25 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         return openchat;
     }
 
+    private SendMsgListener mSendMsgListener;
+    public void setSendMsgListener(SendMsgListener listener) {
+        mSendMsgListener = listener;
+    }
+
+    /**发送消息回调*/
+    public interface SendMsgListener {
+        void onMessageSend(String msg, String targetName);
+    }
+
+
     /**
      * 发生聊天消息
      */
     public boolean sendMessage(String msg, String name) {
+        if(mSendMsgListener != null){
+            mSendMsgListener.onMessageSend(msg,name);
+        }
+
         if (mLiveTopic.isDisable()) {
             return false;
         } else {
@@ -4774,7 +4789,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 showToast("" + responseEntity.getErrorMsg());
                 mLogtf.d("getProgressList:onPmError=" + responseEntity.getErrorMsg());
             }
-
         });
     }
 
@@ -4917,4 +4931,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             }
         });
     }
+
+    public void setChatOpen(boolean open) {
+        if (LiveTopic.MODE_CLASS.equals(getMode())) {
+            mLiveTopic.getMainRoomstatus().setOpenchat(open);
+        } else {
+            mLiveTopic.getCoachRoomstatus().setOpenchat(open);
+        }
+    }
+
+
 }
