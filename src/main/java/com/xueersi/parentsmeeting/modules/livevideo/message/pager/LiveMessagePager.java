@@ -533,8 +533,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     } else {
                         //暂时去掉3秒发言，信息提示
 //                                addMessage("提示", LiveMessageEntity.MESSAGE_TIP, "3秒后才能再次发言，要认真听课哦!");
-                        XESToastUtils.showToast(mContext, ((SEND_MSG_INTERVAL - System.currentTimeMillis() +
-                                lastSendMsg) / 1000) + "秒后才能再次发言，要认真听课哦!");
+                        long timeDelay = (SEND_MSG_INTERVAL - System.currentTimeMillis() + lastSendMsg) / 1000;
+                        timeDelay = timeDelay <= 0 ? 1 : timeDelay;
+                        XESToastUtils.showToast(mContext, timeDelay + "秒后才能再次发言，要认真听课哦!");
                     }
                 } else {
                     XESToastUtils.showToast(mContext, "老师未开启聊天");

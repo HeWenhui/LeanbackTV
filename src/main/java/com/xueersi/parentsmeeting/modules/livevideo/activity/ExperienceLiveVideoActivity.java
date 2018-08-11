@@ -1522,8 +1522,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             public void run() {
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     mPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
-                    videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                    if(videoQuestionLiveEntity == null){
+                        videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                    }
                     videoQuestionLiveEntity.id = mQuestionEntity.getvQuestionID();
+
                     examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(ExperienceLiveVideoActivity.this,
                             mVideoEntity.getLiveId(), videoQuestionLiveEntity,
                             false, "", new BaseExamQuestionInter.ExamStop() {
