@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,6 +34,10 @@ public class SmallEnglishRedPackagePager extends BasePager {
     //是否需要再执行一次动画
     private boolean isRepeat = true;
 
+    //控制登录使用动画
+    //rl_livevideo_small_english_redpackage_open_animotion
+    private RelativeLayout openRedPackageAnimotion;
+
     public SmallEnglishRedPackagePager(Context context) {
         super(context);
         initListener();
@@ -56,17 +61,17 @@ public class SmallEnglishRedPackagePager extends BasePager {
     @Override
     public View initView() {
 
-        View view = View.inflate(mContext, R.layout.layout_livevideo_small_english_redpackage, null);
-        rlArtsUnopenRed = view.findViewById(R.id.rl_livevideo_small_english_redpackage_unopen);
+        mView = View.inflate(mContext, R.layout.layout_livevideo_small_english_redpackage, null);
+        rlArtsUnopenRed = mView.findViewById(R.id.rl_livevideo_small_english_redpackage_unopen);
 //        ivArtsBoard = view.findViewById(R.id.iv_livevideo_small_english_redpackage_board);
-        ivArtsOpen = view.findViewById(R.id.iv_livevideo_small_english_redpackage_open);
-        ivClose = view.findViewById(R.id.iv_livevideo_small_english_redpackage_close);
+        ivArtsOpen = mView.findViewById(R.id.iv_livevideo_small_english_redpackage_open);
+        ivClose = mView.findViewById(R.id.iv_livevideo_small_english_redpackage_close);
 
-        rlArtsOpenRed = view.findViewById(R.id.rl_livevideo_small_english_redpackage_open);
-        tvArtsOpenRedMoney = view.findViewById(R.id.tv_livevidoe_small_english_redpackage_money);
-        ivOpenClose = view.findViewById(R.id.iv_livevideo_small_english_open_redpackage_close);
-
-        return view;
+        rlArtsOpenRed = mView.findViewById(R.id.rl_livevideo_small_english_redpackage_open);
+        tvArtsOpenRedMoney = mView.findViewById(R.id.tv_livevidoe_small_english_redpackage_money);
+        ivOpenClose = mView.findViewById(R.id.iv_livevideo_small_english_open_redpackage_close);
+        openRedPackageAnimotion = mView.findViewById(R.id.rl_livevideo_small_english_redpackage_open_animotion);
+        return mView;
     }
 
     @Override
@@ -120,19 +125,18 @@ public class SmallEnglishRedPackagePager extends BasePager {
         if (mView != null) {
             mView.getHandler().removeCallbacks(closeRunnable);
             mView.getHandler().postDelayed(closeRunnable, 3000);
-
         }
-//        rlArtsOpenRed.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                //执行一次后就不再执行
-//                if (isRepeat) {
-//                    startAnimotor(rlArtsOpenRed);
-//                    isRepeat = false;
-//                }
-//
-//            }
-//        });
+        isRepeat = true;
+        rlArtsOpenRed.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                //执行一次后就不再执行
+                if (isRepeat) {
+                    startAnimotor(openRedPackageAnimotion);
+                    isRepeat = false;
+                }
+            }
+        });
 
     }
 
@@ -157,6 +161,7 @@ public class SmallEnglishRedPackagePager extends BasePager {
             Animator animatorY = ObjectAnimator.ofFloat(view, "scaleY", 1.0f, 1.2f, 1.0f);
             animatorSet.playTogether(animatorX, animatorY);
             animatorSet.setDuration(500);
+            animatorSet.start();
         }
     }
 

@@ -770,8 +770,8 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         }
                         bottomContent.removeCallbacks(removeViewRunnable);
                         view = englishSpeekPager.getRootView();
-                        lp = englishSpeekPager.getLayoutParams();
                         englishSpeekPager.updateStatus(EnglishSpeekPager.PRAISE);
+                        lp = englishSpeekPager.getLayoutParams();
                         bottomContent.addView(view, lp);
                         bottomContent.postDelayed(removeViewRunnable, 1000);
 //                        rlRemindOrPraise.setVisibility(View.GONE);

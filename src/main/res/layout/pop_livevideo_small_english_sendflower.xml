@@ -13,7 +13,7 @@
         android:src="@drawable/shellwindow_sendflower_board" />
 
     <ImageView
-        android:id="@+id/iv_livevideo_small_english_sendflower_cancel"
+        android:id="@id/iv_livevideo_small_english_sendflower_cancel"
         android:layout_width="70px"
         android:layout_height="70px"
         android:layout_marginLeft="790px"
@@ -30,7 +30,7 @@
         android:textSize="11sp" />
 
     <TextView
-        android:id="@+id/tv_livevideo_small_english_sendflower_balance"
+        android:id="@id/tv_livevideo_small_english_sendflower_balance"
         android:layout_width="2000px"
         android:layout_height="50px"
         android:layout_marginLeft="530px"
@@ -41,7 +41,7 @@
         android:textSize="11sp" />
 
     <com.xueersi.ui.widget.ZoomerLayout
-        android:id="@+id/zl_livevideo_small_english_oneflower"
+        android:id="@id/zl_livevideo_small_english_oneflower"
         android:layout_width="150px"
         android:layout_height="200px"
         android:layout_marginLeft="260px"
@@ -51,7 +51,7 @@
 
 
         <ImageView
-            android:id="@+id/iv_livevideo_small_english_sendflower_oneflower_square"
+            android:id="@id/iv_livevideo_small_english_sendflower_oneflower_square"
             android:layout_width="150px"
             android:layout_height="150px"
             android:clickable="false"
@@ -65,7 +65,7 @@
             android:src="@drawable/bg_livevideo_small_english_sendflower_oneflower_img" />
 
         <ImageView
-            android:id="@+id/iv_livevideo_small_english_sendflower_oneflower_tick"
+            android:id="@id/iv_livevideo_small_english_sendflower_oneflower_tick"
             android:layout_width="100px"
             android:layout_height="100px"
             android:clickable="false"
@@ -77,14 +77,13 @@
             android:layout_marginTop="148px"
             android:background="@drawable/bg_livevideo_small_english_sendflower_idol_img"
             android:clickable="false"
-
             android:text="&#160;&#160;&#160;&#160;10金币"
             android:textColor="@color/COLOR_ECF4FF"
             android:textSize="8sp" />
     </com.xueersi.ui.widget.ZoomerLayout>
 
     <com.xueersi.ui.widget.ZoomerLayout
-        android:id="@+id/zl_livevideo_small_english_threeflower"
+        android:id="@id/zl_livevideo_small_english_threeflower"
         android:layout_width="150px"
         android:layout_height="200px"
         android:layout_marginLeft="430px"
@@ -93,7 +92,7 @@
         app:designWidth="150px">
 
         <ImageView
-            android:id="@+id/iv_livevideo_small_english_sendflower_threeflower_square"
+            android:id="@id/iv_livevideo_small_english_sendflower_threeflower_square"
             android:layout_width="150px"
             android:layout_height="150px"
             android:clickable="false"
@@ -108,7 +107,7 @@
             android:src="@drawable/bg_livevideo_small_english_sendflower_threeflowers_img" />
 
         <ImageView
-            android:id="@+id/iv_livevideo_small_english_sendflower_threeflower_tick"
+            android:id="@id/iv_livevideo_small_english_sendflower_threeflower_tick"
             android:layout_width="100px"
             android:layout_height="100px"
             android:clickable="false"
@@ -129,7 +128,7 @@
 
 
     <com.xueersi.ui.widget.ZoomerLayout
-        android:id="@+id/zl_livevideo_small_english_fiveflower"
+        android:id="@id/zl_livevideo_small_english_fiveflower"
         android:layout_width="150px"
         android:layout_height="200px"
         android:layout_marginLeft="600px"
@@ -138,7 +137,7 @@
         app:designWidth="150px">
 
         <ImageView
-            android:id="@+id/iv_livevideo_small_english_sendflower_fiveflower_square"
+            android:id="@id/iv_livevideo_small_english_sendflower_fiveflower_square"
             android:layout_width="150px"
             android:layout_height="150px"
             android:clickable="false"
@@ -153,7 +152,7 @@
             android:src="@drawable/bg_livevideo_small_english_sendflower_fiveflowers_img" />
 
         <ImageView
-            android:id="@+id/iv_livevideo_small_english_sendflower_fiveflower_tick"
+            android:id="@id/iv_livevideo_small_english_sendflower_fiveflower_tick"
             android:layout_width="100px"
             android:layout_height="100px"
             android:clickable="false"
@@ -174,7 +173,7 @@
     </com.xueersi.ui.widget.ZoomerLayout>
 
     <ImageView
-        android:id="@+id/iv_livevideo_small_english_sendflower_send"
+        android:id="@id/iv_livevideo_small_english_sendflower_send"
         android:layout_width="220px"
         android:layout_height="60px"
         android:layout_marginLeft="390px"
