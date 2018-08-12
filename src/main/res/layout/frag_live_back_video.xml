@@ -263,7 +263,7 @@
         android:id="@id/rl_course_video_question_bottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible" />
+        android:visibility="gone" />
     <!-- MediaController2的界面位置 -->
     <RelativeLayout
         android:id="@id/rl_course_video_live_controller_content"
@@ -279,10 +279,10 @@
     <!-- 直播讲座 竖屏时显示更多课程的位置 -->
     <RelativeLayout
         android:id="@+id/rl_livevideo_playback"
-        android:visibility="gone"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
 
     </RelativeLayout>
 
@@ -291,8 +291,7 @@
         android:id="@id/rl_course_video_live_question_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-         />
+        android:layout_alignParentBottom="true" />
 
     <RelativeLayout
         android:id="@id/live_play_back_bottom"
