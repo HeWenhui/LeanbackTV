@@ -41,7 +41,7 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
     /** 当前是否正在显示懂了吗 */
     private boolean mIsShowUnderstand = false;
     //是否是小英
-    private boolean isSmallEnglish = true;
+    private boolean isSmallEnglish = false;
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     //显示懂了吗的布局
     View understandView = null;

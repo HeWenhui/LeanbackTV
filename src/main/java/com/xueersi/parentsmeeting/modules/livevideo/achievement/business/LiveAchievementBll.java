@@ -154,7 +154,7 @@ public class LiveAchievementBll implements StarInteractAction {
     private float starRotateLine2a, starRotateLine2b;
     private LiveGetInfo getInfo;
     //是否使用小英萌萌哒皮肤
-    private boolean isSmallEnglish;
+    private boolean isSmallEnglish = false;
 
     public LiveAchievementBll(Activity activity, int liveType, LiveGetInfo mLiveGetInfo, boolean mIsLand) {
         this.activity = activity;
@@ -163,11 +163,7 @@ public class LiveAchievementBll implements StarInteractAction {
         this.starCount = getInfo.getStarCount();
         this.goldCount = getInfo.getGoldCount();
         this.mIsLand = mIsLand;
-
-        if (mLiveGetInfo != null) {
-            isSmallEnglish = mLiveGetInfo.getSmallEnglish();
-        }
-
+        isSmallEnglish = mLiveGetInfo.getSmallEnglish();
         eventId = LiveVideoConfig.LIVE_STAR_INTERACT;
         //第一条线
         LineMath line1 = getAandB(starScaleStep1, 1.0f, starScaleStep2, starScaleMax);
