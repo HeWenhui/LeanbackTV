@@ -25,15 +25,18 @@
         style="@style/text_font11_ffffff_style"
         android:layout_width="30dp"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/tv_livevideo_rank_item_right"
         android:layout_toRightOf="@id/rl_livevideo_rank_item_left"
         android:ellipsize="end"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:text="zyafja" />
 
     <TextView
+
         android:id="@id/tv_livevideo_rank_item_right"
         style="@style/text_font11_ffffff_style"
         android:layout_width="40dp"
@@ -42,5 +45,6 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
         android:gravity="center"
-        android:includeFontPadding="false" />
+        android:includeFontPadding="false"
+        android:text="100%" />
 </RelativeLayout>
