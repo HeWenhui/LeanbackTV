@@ -316,6 +316,8 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
 
     @Override
     public void chatHandAdd(HttpCallBack call) {
-        getHttpManager().chatHandAdd(call);
+        if (mGetInfo.getIsArts() == 0) {
+            getHttpManager().chatHandAdd(call);
+        }
     }
 }
