@@ -961,7 +961,10 @@ public class VideoChatBll implements VideoChatAction {
             public void run() {
                 isFail = false;
                 onmicStatus = status;
-                containMe = contain;
+                //是小英不弹提示，其他的放在onJoin里处理
+                if (isSmallEnglish) {
+                    containMe = contain;
+                }
                 if ("on".equals(status)) {
                     VideoChatLog.sno7(liveAndBackDebug, from, contain ? "1" : "0", nonce);
                     if (contain) {
