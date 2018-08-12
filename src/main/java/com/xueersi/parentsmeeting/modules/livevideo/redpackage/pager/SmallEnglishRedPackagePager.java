@@ -4,9 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -89,6 +87,7 @@ public class SmallEnglishRedPackagePager extends BasePager {
         }
     };
     private View.OnClickListener closeTouchListener = new View.OnClickListener() {
+        @Override
         public void onClick(View v) {
             if (cancelRedPackageTouchListener != null) {
                 cancelRedPackageTouchListener.cancelRedPackage();

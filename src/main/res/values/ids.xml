@@ -784,4 +784,5 @@
     <item name="iv_livevideo_arts_praise_praise_btn_bg" type="id"/>
     <item name="fl_livevideo_arts_praise_scaleanimlayout" type="id"/>
     <item name="fl_livevideo_arts_praise_layout" type="id"/>
+    <item name="iv_livevideo_small_english_open_redpackage_board" type="id" />
 </resources>

@@ -41,18 +41,21 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="167dp"
-            android:layout_height="185dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+
             android:layout_below="@id/rl_livevideo_message_top"
             android:background="@drawable/livevideo_small_english_play_achievement_board">
 
             <TextView
+             
                 android:id="@id/tv_livevideo_small_english_online_people_num"
                 style="@style/text_font10_ffffff_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:layout_marginLeft="72dp"
                 android:layout_marginTop="5dp" />
 

@@ -21,6 +21,7 @@
     </RelativeLayout>
 
     <TextView
+        android:text="zyafja"
         android:id="@id/tv_livevideo_rank_item_mid"
         style="@style/text_font11_ffffff_style"
         android:layout_width="30dp"
@@ -35,9 +36,10 @@
         android:singleLine="true" />
 
     <TextView
+        android:text="100%"
         android:id="@id/tv_livevideo_rank_item_right"
         style="@style/text_font11_ffffff_style"
-        android:layout_width="70dp"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"

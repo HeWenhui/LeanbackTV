@@ -29,8 +29,7 @@ public class LiveMessageBackBll extends LiveBackBaseBll {
                         .rl_course_video_live_controller_content);
                 LiveBackVideoMessagePager liveBackVideoMessagePager = new LiveBackVideoMessagePager((mContext));
                 rl_course_video_live_controller_content.addView(liveBackVideoMessagePager.getRootView(), 0,
-                        liveBackVideoMessagePager
-                        .getBoardParams());
+                        liveBackVideoMessagePager.getBoardParams());
             }
         }
     }

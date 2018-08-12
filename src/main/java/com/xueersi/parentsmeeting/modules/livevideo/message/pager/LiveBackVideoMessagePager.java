@@ -30,18 +30,20 @@ public class LiveBackVideoMessagePager extends BasePager {
 
     @Override
     public View initView() {
-        mView = new RelativeLayout(mContext);
-        mView.setBackgroundColor(Color.parseColor("#5AC8FF"));
-        mView.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable
-                .bg_livevideo_small_english_playback_misslive_board));
+//        mView = new RelativeLayout(mContext);
+//        mView.setBackgroundColor(Color.parseColor("#5AC8FF"));
+//        mView.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable
+//                .bg_livevideo_small_english_playback_misslive_board));
+//
+//        //设置聊天区域中间图片
+//        ImageView img = new ImageView(mContext);
+//        img.setImageResource(R.drawable.bg_livevideo_small_english_playback_misslive_font);
+//        imgParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+//                .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//        imgParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+//        ((ViewGroup) mView).addView(img, imgParams);
 
-        //设置聊天区域中间图片
-        ImageView img = new ImageView(mContext);
-        img.setImageResource(R.drawable.bg_livevideo_small_english_playback_misslive_font);
-        imgParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
-                .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        imgParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        ((ViewGroup) mView).addView(img, imgParams);
+        mView = View.inflate(mContext, R.layout.layout_back_video_smll_english_message, null);
 
         return mView;
     }
@@ -60,8 +62,9 @@ public class LiveBackVideoMessagePager extends BasePager {
         int height = liveVideoPoint.screenHeight - liveVideoPoint.y3;
         boardParams.height = height;
         boardParams.width = width;
-        boardParams.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
         boardParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        boardParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        boardParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//        boardParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        //        boardParams.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
     }
 }

@@ -137,7 +137,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     //是否是小英
     private SmallEnglishSendFlowerPager smallEnglishSendFlowerPager;
     //测试使用的布尔值，用来控制无限发送弹幕
-    private boolean blTestSE = false;
+    private boolean blTestSE = true;
     //打开献花弹窗时，北京变为80%黑色透明，且不可点击.
     private FrameLayout frameLayout;
     //整个布局的根View,用来献花弹窗增加背景时使用
@@ -586,19 +586,21 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         {
-            int wradio = liveVideoPoint.getRightMargin();
+            int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-            if (wradio != params.width) {
+            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
                 //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;
+                params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
             if (cbMessageClock != null) {
+                int rightMargin = liveVideoPoint.getRightMargin();
                 params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-                if (params.rightMargin != wradio) {
-                    params.rightMargin = wradio;
+                if (params.rightMargin != rightMargin) {
+                    params.rightMargin = rightMargin;
 //                cbMessageClock.setLayoutParams(params);
                     LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
                 }
@@ -875,21 +877,22 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 }
             }
         });
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (blTestSE) {
-                    addDanmaKuFlowers(FLOWERS_SMALL, "zyy");
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+        //测试时候使用
+        if (blTestSE) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (blTestSE) {
+                        addDanmaKuFlowers(FLOWERS_SMALL, "zyy");
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
-        }).start();
-
+            }).start();
+        }
 
         PopupWindow flowerWindow = new PopupWindow(mContext);
         flowerWindow.setBackgroundDrawable(new BitmapDrawable());

@@ -1,14 +1,19 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ImageSpan;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
@@ -42,10 +47,10 @@ import master.flame.danmaku.danmaku.danmaku.parser.android.BiliDanmukuParser;
  */
 public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePager {
     private BaseDanmakuParser mParser;
-    private int DANMU_RADIUS;//圆角半径
-    public int DANMU_PADDING;
+    //    private int DANMU_RADIUS = 20;//圆角半径
+    public int DANMU_PADDING = 0;
 
-    private int DANMU_BACKGROUND_HEIGHT = 33;
+    private int DANMU_BACKGROUND_HEIGHT = 45;
     private int BITMAP_WIDTH_ME = 61;//头像的宽度
     private int BITMAP_HEIGHT_ME = 60;//头像的高度
 
@@ -54,8 +59,8 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
 
     public BaseSmallEnglishLiveMessagePager(Context context) {
         super(context);
-        DANMU_PADDING = SizeUtils.Dp2Px(context, 0);
-        DANMU_RADIUS = SizeUtils.Dp2Px(context, 20);
+        DANMU_PADDING = SizeUtils.Dp2Px(context, DANMU_PADDING);
+//        DANMU_RADIUS = SizeUtils.Dp2Px(context, 20);
 
         DANMU_BACKGROUND_HEIGHT = SizeUtils.Dp2Px(context, DANMU_BACKGROUND_HEIGHT);
         BITMAP_WIDTH_ME = SizeUtils.Dp2Px(context, BITMAP_WIDTH_ME);
@@ -137,53 +142,6 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
 
         @Override
         public void prepareDrawing(final BaseDanmaku danmaku, boolean fromWorkerThread) {
-//            if (danmaku.text instanceof Spanned) { // 根据你的条件检查是否需要需要更新弹幕
-//                // FIXME 这里只是简单启个线程来加载远程url图片，请使用你自己的异步线程池，最好加上你的缓存池
-//                liveThreadPoolExecutor.execute(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Drawable drawable;
-//                        if (danmaku.text instanceof TypeSpannableStringBuilder) {
-//                            TypeSpannableStringBuilder spannableStringBuilder = (TypeSpannableStringBuilder) danmaku
-//                                    .text;
-////                            Loger.i(TAG, "prepareDrawing:ftype=" + spannableStringBuilder.ftype);
-//                            switch (spannableStringBuilder.ftype) {
-//                                case FLOWERS_SMALL:
-//                                case FLOWERS_MIDDLE:
-//                                case FLOWERS_BIG:
-//                                    drawable = mContext.getResources().getDrawable
-//                                            (flowsDrawLittleTips[spannableStringBuilder.ftype - 2]);
-//                                    break;
-//                                default:
-//                                    drawable = mContext.getResources().getDrawable(R.drawable.ic_app_xueersi_desktop);
-//                                    break;
-//                            }
-//                        } else {
-//                            drawable = mContext.getResources().getDrawable(R.drawable.ic_app_xueersi_desktop);
-//                        }
-//                        if (drawable != null) {
-//                            drawable.setBounds(0, 0, SizeUtils.Dp2Px(mContext, 60), SizeUtils.Dp2Px(mContext, 60));
-//                            SpannableStringBuilder spannable;
-//                            if (danmaku.text instanceof TypeSpannableStringBuilder) {
-//                                TypeSpannableStringBuilder typeSpannableStringBuilder = (TypeSpannableStringBuilder)
-//                                        danmaku.text;
-//                                spannable = createSpannable(typeSpannableStringBuilder.ftype,
-//                                        typeSpannableStringBuilder.name, drawable);
-//                            } else {
-//                                String msg = danmaku.text.toString();
-//                                if (msg.length() > 0) {
-//                                    msg = msg.substring(0, msg.length() / 2);
-//                                }
-//                                spannable = createSpannable(1, msg, drawable);
-//                            }
-//                            danmaku.text = spannable;
-//                            if (dvMessageDanmaku != null) {
-//                                dvMessageDanmaku.invalidateDanmaku(danmaku, false);
-//                            }
-//                        }
-//                    }
-//                });
-//            }
         }
 
         @Override
@@ -277,11 +235,17 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
         SpannableStringBuilder spannable = new TypeSpannableStringBuilder(msg, name, ftype);
 //        int color = mContext.getResources().getColor(R.color.COLOR_FFFFFF);
 
-        spannable.append(msg);
+        spannable.append(msg).append("   ");
 //        spannable.setSpan(new BackgroundColorSpan(color), msg.length(), msg.length() + 1, Spannable
 //                .SPAN_EXCLUSIVE_EXCLUSIVE);
-        ImageSpan span = new VerticalImageSpan(drawable);
-        spannable.setSpan(span, 0, msg.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+//        BackgroundColorSpan backgroundColorSpan = new BackgroundColorSpan(R.drawable
+//                .bg_livevideo_send_flower_screen_bullet_background);
+//        spannable.setSpan(backgroundColorSpan, 0, spannable.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        ImageSpan imgSpan = new VerticalImageSpan(drawable);
+        spannable.setSpan(imgSpan, 0, msg.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+
+//
+
 
         return spannable;
     }
@@ -294,7 +258,7 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
     private class BackgroundCacheStuffer extends SpannedCacheStuffer {
 
         // 通过扩展SimpleTextCacheStuffer或SpannedCacheStuffer个性化你的弹幕样式
-        final Paint paint = new Paint();
+//        final Paint paint = new Paint();
 
         @Override
         public void measure(BaseDanmaku danmaku, TextPaint paint, boolean fromWorkerThread) {
@@ -304,11 +268,11 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
 
         @Override
         public void drawBackground(BaseDanmaku danmaku, Canvas canvas, float left, float top) {
-            paint.setAntiAlias(true);
-            paint.setColor(Color.BLACK);
-            paint.setAlpha((int) (255 * 0.6)); //  透明度0.6
-
-            int height = SizeUtils.Dp2Px(mContext, 40);
+//            paint.setAntiAlias(true);
+//            paint.setColor(Color.BLACK);
+//            paint.setAlpha((int) (255 * 0.6)); //  透明度0.6
+//
+//            int height = SizeUtils.Dp2Px(mContext, 40);
             //由于该库并没有提供margin的设置，所以我这边试出这种方法：将danmaku.padding也就是内间距设置大一点，并在这里的RectF中设置绘制弹幕背景的位置，就可以形成类似margin的效果
 //            canvas.drawRoundRect(new RectF(left + DANMU_PADDING, top + DANMU_PADDING
 //                            , left + danmaku.paintWidth - DANMU_PADDING,
@@ -325,18 +289,30 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
 //                    DANMU_RADIUS, DANMU_RADIUS, paint);
 //            } else {
             //绘制圆，宽高一样
-            int imgWidth = BITMAP_WIDTH_ME / 2;
-            int circleHeith = imgWidth;
-            canvas.drawCircle(left + danmaku.padding + imgWidth, left + danmaku.padding + imgWidth,
-                    CIRCEL_WIDTH/2, paint);
-            canvas.drawRoundRect(new RectF(left + danmaku.padding, top + danmaku.padding + (BITMAP_HEIGHT_ME -
-                            DANMU_BACKGROUND_HEIGHT) / 2 + 1
-                            , left + danmaku.paintWidth - danmaku.padding,
-                            top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
-                                    + danmaku.padding),
-                    DANMU_RADIUS, DANMU_RADIUS, paint);
+//            int imgWidth = BITMAP_WIDTH_ME / 2;
+//            int circleHeigh = imgWidth;
+//            canvas.drawCircle(left + danmaku.padding + imgWidth, left + danmaku.padding + imgWidth,
+//                    CIRCEL_WIDTH / 2, paint);
+//            canvas.drawRoundRect(new RectF(left + danmaku.padding, top + danmaku.padding + (BITMAP_HEIGHT_ME -
+//                            DANMU_BACKGROUND_HEIGHT) / 2 + 1
+//                            , left + danmaku.paintWidth - danmaku.padding,
+//                            top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+//                                    + danmaku.padding),
+//                    DANMU_RADIUS, DANMU_RADIUS, paint);
 //            }
-
+            Drawable drawable = mContext.getResources().getDrawable(R.drawable
+                    .bg_livevideo_send_flower_screen_bullet_background);
+            float height = 0.0f;
+            height = drawable.getIntrinsicHeight();
+            float offsetRight = 0.0f;
+            offsetRight = (BITMAP_HEIGHT_ME - CIRCEL_HEIGHT) / 2;
+            drawable.setBounds(
+                    (int) (left + danmaku.padding + offsetRight),
+                    (int) (top + danmaku.padding + (BITMAP_HEIGHT_ME - height) / 2),
+                    (int) (left + danmaku.paintWidth),
+                    (int) (top + height + (BITMAP_HEIGHT_ME - height) / 2
+                            + danmaku.padding));
+            drawable.draw(canvas);
         }
 
         @Override
