@@ -501,12 +501,12 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         if (mLiveBll != null) {
             mLiveBll.onDestory();
         }
-        ProxUtil.getProxUtil().clear();
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                ProxUtil.getProxUtil().clear(activity);
                 LiveThreadPoolExecutor.destory();
             }
         });

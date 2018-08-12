@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by lyqai on 2018/6/23.
+ * Created by linyuqiang on 2018/6/23.
+ * 直播基于Context单例类
  */
-
 public class ProxUtil {
     private String TAG = "ProxUtil";
     private static ProxUtil proxUtil;
@@ -60,6 +60,15 @@ public class ProxUtil {
         proxHashMap.clear();
     }
 
+    public void clear(Context context) {
+        int size = -1;
+        Prox prox = proxHashMap.remove(context);
+        if (prox != null) {
+            size = prox.clear();
+        }
+        Loger.d(TAG, "clear:proxHashMap=" + proxHashMap.size() + ",clear=" + size);
+    }
+
     private class Prox {
         private HashMap<Class, Object> objectHashMap = new HashMap<>();
 
@@ -76,8 +85,10 @@ public class ProxUtil {
             return (T) objectHashMap.remove(clazz);
         }
 
-        private void clear() {
+        private int clear() {
+            int size = objectHashMap.size();
             objectHashMap.clear();
+            return size;
         }
     }
 }

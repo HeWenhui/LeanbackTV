@@ -1489,7 +1489,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     mLiveBll.onDestroy();
                     LogToFile.auditClassLiveBll = null;
                 }
-                ProxUtil.getProxUtil().clear();
+                ProxUtil.getProxUtil().clear(AuditClassLiveActivity.this);
             }
         }.start();
         AppBll.getInstance().unRegisterAppEvent(this);

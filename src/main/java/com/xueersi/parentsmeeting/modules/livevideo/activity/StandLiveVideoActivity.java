@@ -1757,7 +1757,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
                     mLiveBll.onDestroy();
                     LogToFile.liveBll = null;
                 }
-                ProxUtil.getProxUtil().clear();
+                ProxUtil.getProxUtil().clear(StandLiveVideoActivity.this);
             }
         }.start();
         AppBll.getInstance().unRegisterAppEvent(this);

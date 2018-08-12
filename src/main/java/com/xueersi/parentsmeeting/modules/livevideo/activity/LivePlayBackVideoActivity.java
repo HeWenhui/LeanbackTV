@@ -746,7 +746,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
         liveBackBll.onDestory();
-        ProxUtil.getProxUtil().clear();
+        ProxUtil.getProxUtil().clear(this);
     }
 
     @Override

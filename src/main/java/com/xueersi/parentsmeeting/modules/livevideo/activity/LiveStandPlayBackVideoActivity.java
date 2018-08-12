@@ -2488,7 +2488,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         if (liveStandFrameAnim != null) {
             liveStandFrameAnim.onDestory();
         }
-        ProxUtil.getProxUtil().clear();
+        ProxUtil.getProxUtil().clear(this);
     }
 
     @Override

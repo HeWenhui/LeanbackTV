@@ -1497,7 +1497,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
                 if (mLiveBll != null) {
                     mLiveBll.onDestroy();
                 }
-                ProxUtil.getProxUtil().clear();
+                ProxUtil.getProxUtil().clear(LectureLiveVideoActivity.this);
             }
         }.start();
         AppBll.getInstance().unRegisterAppEvent(this);

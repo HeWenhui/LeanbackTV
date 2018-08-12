@@ -1627,7 +1627,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
                     mLiveBll.onDestroy();
                     LogToFile.liveBll = null;
                 }
-                ProxUtil.getProxUtil().clear();
+                ProxUtil.getProxUtil().clear(LiveVideoActivity.this);
             }
         }.start();
         AppBll.getInstance().unRegisterAppEvent(this);
