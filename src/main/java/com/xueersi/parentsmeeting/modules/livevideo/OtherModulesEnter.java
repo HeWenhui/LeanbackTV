@@ -19,7 +19,7 @@ public class OtherModulesEnter {
     }
 
     public static void intentToAuditClassActivity(AuditClassLiveActivity auditClassLiveActivity, String mVSectionID, String stuCouId, Bundle bundle) {
-        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.chat.ChatEnter",
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.pschat.ChatEnter",
                 "intentToAuditClassActivity", new Class[]{Activity.class, String.class, String.class, Bundle.class}, new Object[]{auditClassLiveActivity, mVSectionID, stuCouId, bundle});
     }
 
