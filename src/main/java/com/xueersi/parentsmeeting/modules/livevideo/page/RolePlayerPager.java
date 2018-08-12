@@ -31,6 +31,7 @@ import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerSelfItem;
@@ -271,8 +272,11 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        mWorkerThread = new WorkerThread(ContextManager.getApplication(), Integer.parseInt(UserBll.getInstance()
-                .getMyUserInfoEntity().getStuId()), false, true);
+        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        if (StringUtils.isEmpty(stuId)) {
+            stuId = liveGetInfo.getStuId();
+        }
+        mWorkerThread = new WorkerThread(ContextManager.getApplication(), Integer.parseInt(stuId), false, true);
 
         liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
 
