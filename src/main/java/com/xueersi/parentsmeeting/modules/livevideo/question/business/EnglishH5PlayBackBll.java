@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
@@ -22,7 +21,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by linyuqiang on 2018/7/17.
@@ -65,7 +63,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+    public void initView() {
         englishH5CoursewareBll.initView(mRootView);
     }
 

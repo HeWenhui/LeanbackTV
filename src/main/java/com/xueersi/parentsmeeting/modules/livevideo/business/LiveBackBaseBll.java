@@ -28,6 +28,7 @@ public class LiveBackBaseBll extends BaseBll {
     protected Logger logger = LoggerFactory.getLogger(TAG);
     protected LiveBackBll liveBackBll;
     protected Activity activity;
+    protected RelativeLayout mRootViewBottom;
     protected RelativeLayout mRootView;
     /** 视频节对象 */
     protected VideoLivePlayBackEntity mVideoEntity;
@@ -49,13 +50,14 @@ public class LiveBackBaseBll extends BaseBll {
         onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
     }
 
-    public final void initViewF(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+    public final void initViewF(RelativeLayout rlQuestionContentBottom, RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+        mRootViewBottom = rlQuestionContentBottom;
         mRootView = bottomContent;
         this.mIsLand = mIsLand;
-        initView(bottomContent, mIsLand);
+        initView();
     }
 
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+    public void initView() {
 
     }
 

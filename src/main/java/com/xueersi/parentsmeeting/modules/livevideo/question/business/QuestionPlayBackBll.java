@@ -89,11 +89,6 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        super.initView(bottomContent, mIsLand);
-    }
-
-    @Override
     public int[] getCategorys() {
         return new int[]{LocalCourseConfig.CATEGORY_QUESTION, LocalCourseConfig.CATEGORY_EXAM};
     }

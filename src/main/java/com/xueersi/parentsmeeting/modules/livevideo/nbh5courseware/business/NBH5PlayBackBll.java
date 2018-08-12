@@ -33,11 +33,6 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
     }
 
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        super.initView(bottomContent, mIsLand);
-    }
-
-    @Override
     public int[] getCategorys() {
         return new int[]{LocalCourseConfig.CATEGORY_H5COURSE_WARE};
     }

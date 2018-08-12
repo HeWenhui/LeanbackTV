@@ -82,6 +82,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     private RelativeLayout rl_course_video_live_controller_content;
     /** 互动题的布局 */
+    private RelativeLayout rlQuestionContentBottom;
+    /** 互动题的布局 */
     private RelativeLayout rlQuestionContent;
     /** 更多课程广告的布局 */
     private RelativeLayout rlAdvanceContent;
@@ -173,6 +175,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             Loger.d(TAG, "attachMediaController:resultFailed");
             return;
         }
+        rlQuestionContentBottom.setVisibility(View.VISIBLE);
+        rlQuestionContent.setVisibility(View.VISIBLE);
         if (mMediaController != null) {
 //            mMediaController.setWindowLayoutType();
             mMediaController.release();
@@ -275,7 +279,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             }
         }
         rlQuestionContent.setVisibility(View.GONE);
-        rl_course_video_live_controller_content.setVisibility(View.GONE);
+        rlQuestionContentBottom.setVisibility(View.GONE);
     }
 
     /** 加载旋转屏时相关布局 */
@@ -307,6 +311,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         rl_course_video_live_controller_content = mContentView.findViewById(R.id
                 .rl_course_video_live_controller_content);
         // 加载横屏时互动题的列表布局
+        rlQuestionContentBottom = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_question_bottom);
         rlQuestionContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         // 加载竖屏时显示更多课程广告的布局
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
@@ -402,7 +407,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         liveBackBll.onCreate();
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(rlQuestionContent, mIsLand);
+            businessBll.initViewF(rlQuestionContentBottom, rlQuestionContent, mIsLand);
         }
     }
 
@@ -712,8 +717,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (AppBll.getInstance(activity).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
             Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
-            rlQuestionContent.setVisibility(View.VISIBLE);
-            rl_course_video_live_controller_content.setVisibility(View.VISIBLE);
             playNewVideo();
         }
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
