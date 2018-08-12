@@ -486,32 +486,32 @@ public class VideoChatBll implements VideoChatAction {
     };
 
     @Override
-    public void onJoin(final String onmic, final String openhands, final String room, boolean classmateChange, final
+    public void onJoin(final String onmic, final String openhands, final String room, final boolean classmateChange, final
     ArrayList<ClassmateEntity> classmateEntities, final String from) {
         Log.e("VideoChatBill", onmic + " " + openhands + " " + room + " " + classmateChange + " " + from);
-        boolean contain = false;
-        onMic = onmic;
-        this.room = room;
-        this.from = from;
-        this.classmateChange = classmateChange;
-        this.classmateEntities = classmateEntities;
-        for (ClassmateEntity classmateEntity : classmateEntities) {
-            if (classmateEntity.getId().equals(getInfo.getStuId())) {
-                contain = true;
-                break;
-            }
-        }
-        mLogtf.d("onJoin:onmic=" + onmic + ",openhands=" + openhands + ",size=" + classmateEntities.size() + "," +
-                "classmateChange=" + classmateChange + ",contain=" + contain + ",isSuccess=" + isSuccess);
-        final boolean oldContainMe = containMe;
-        containMe = contain;
-        final boolean finalContain = contain;
-        if (finalContain) {
-            headsetPrompt = true;
-        }
         btRaiseHands.post(new Runnable() {
             @Override
             public void run() {
+                boolean contain = false;
+                onMic = onmic;
+                VideoChatBll.this.room = room;
+                VideoChatBll.this.from = from;
+                VideoChatBll.this.classmateChange = classmateChange;
+                VideoChatBll.this.classmateEntities = classmateEntities;
+                for (ClassmateEntity classmateEntity : classmateEntities) {
+                    if (classmateEntity.getId().equals(getInfo.getStuId())) {
+                        contain = true;
+                        break;
+                    }
+                }
+                mLogtf.d("onJoin:from=" + from + ",onmic=" + onmic + ",openhands=" + openhands + ",size=" + classmateEntities.size() + "," +
+                        "classmateChange=" + classmateChange + ",contain=" + contain + ",isSuccess=" + isSuccess);
+                final boolean oldContainMe = containMe;
+                containMe = contain;
+                final boolean finalContain = contain;
+                if (finalContain) {
+                    headsetPrompt = true;
+                }
                 //开麦
                 String oldonmicStatus = onmicStatus;
                 onmicStatus = onmic;
@@ -803,12 +803,12 @@ public class VideoChatBll implements VideoChatAction {
     @Override
     public void raisehand(final String status, final String from, final String nonce) {
         mLogtf.d("raisehand:status=" + status);
-        containMe = false;
-        isFail = false;
-        this.from = from;
         btRaiseHands.post(new Runnable() {
             @Override
             public void run() {
+                containMe = false;
+                isFail = false;
+                VideoChatBll.this.from = from;
                 openhandsStatus = status;
                 if ("on".equals(status)) {
                     VideoChatLog.sno2(liveAndBackDebug, from, nonce);
@@ -894,10 +894,6 @@ public class VideoChatBll implements VideoChatAction {
 
     @Override
     public void requestAccept(String from, String nonce) {
-        onMic = "on";
-        isFail = false;
-        containMe = true;
-        isSuccess = true;
         mLogtf.d("requestAccept");
         StableLogHashMap logHashMap = new StableLogHashMap("getSelection");
         logHashMap.put("teacher_type", from);
@@ -905,6 +901,10 @@ public class VideoChatBll implements VideoChatAction {
         btRaiseHands.post(new Runnable() {
             @Override
             public void run() {
+                onMic = "on";
+                isFail = false;
+                containMe = true;
+                isSuccess = true;
                 if (!isSmallEnglish) {
                     if (raiseHandDialog == null) {
                         mLogtf.d("requestAccept:raiseHandDialog=null");
@@ -955,12 +955,13 @@ public class VideoChatBll implements VideoChatAction {
     @Override
     public void startMicro(final String status, final String nonce, final boolean contain, final String room, final
     String from) {
-        isFail = false;
         mLogtf.d("startMicro:status=" + status + ",contain=" + contain);
         btRaiseHands.post(new Runnable() {
             @Override
             public void run() {
+                isFail = false;
                 onmicStatus = status;
+                containMe = contain;
                 if ("on".equals(status)) {
                     VideoChatLog.sno7(liveAndBackDebug, from, contain ? "1" : "0", nonce);
                     if (contain) {

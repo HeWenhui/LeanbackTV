@@ -264,6 +264,7 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
             default:
                 break;
         }
+        logger.d("onNotice:msg=" + msg);
     }
 
     @Override
