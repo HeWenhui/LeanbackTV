@@ -109,7 +109,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
     private LiveGetInfo mGetInfo;
     //小学英语
-    private boolean isSmallEnglish = true;
+    private boolean isSmallEnglish = false;
     //    小学英语签到
     private SmallEnglishClassSignPager smallEnglishClassSignPager;
 

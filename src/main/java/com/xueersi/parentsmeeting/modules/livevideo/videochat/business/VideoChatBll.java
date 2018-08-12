@@ -117,7 +117,7 @@ public class VideoChatBll implements VideoChatAction {
     private LiveRemarkBll mLiveRemarkBll;
     private ArrayList<VideoChatStartChange.ChatStartChange> chatStatusChanges = new ArrayList<>();
     //小英
-    private boolean isSmallEnglish = true;
+    private boolean isSmallEnglish = false;
     //    小英Dialog
     private SmallEnglishMicTipDialog smallEnglishDialog;
 

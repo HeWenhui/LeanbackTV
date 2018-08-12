@@ -69,7 +69,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     Handler mainHandler = new Handler(Looper.getMainLooper());
     ArrayList<KeyboardUtil.OnKeyboardShowingListener> keyboardShowingListeners = new ArrayList<>();
     //是否启用小英MMD皮肤
-    private boolean isSmallEnglish = true;
+    private boolean isSmallEnglish = false;
 
     public LiveMessageBll(Activity activity, int liveType) {
         this.activity = activity;
@@ -77,7 +77,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         ProxUtil.getProxUtil().put(activity, LiveMessageBll.class, this);
         ProxUtil.getProxUtil().put(activity, KeyBordAction.class, this);
         ProxUtil.getProxUtil().put(activity, KeyboardShowingReg.class, this);
-
     }
 
     public void setQuestionBll(QuestionBll questionBll) {
