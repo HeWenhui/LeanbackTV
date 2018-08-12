@@ -62,7 +62,8 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
         DANMU_PADDING = SizeUtils.Dp2Px(context, DANMU_PADDING);
 //        DANMU_RADIUS = SizeUtils.Dp2Px(context, 20);
 
-        DANMU_BACKGROUND_HEIGHT = SizeUtils.Dp2Px(context, DANMU_BACKGROUND_HEIGHT);
+        DANMU_BACKGROUND_HEIGHT = SizeUtils.
+                Dp2Px(context, DANMU_BACKGROUND_HEIGHT);
         BITMAP_WIDTH_ME = SizeUtils.Dp2Px(context, BITMAP_WIDTH_ME);
         BITMAP_HEIGHT_ME = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_ME);
         CIRCEL_HEIGHT = SizeUtils.Dp2Px(context, CIRCEL_HEIGHT);

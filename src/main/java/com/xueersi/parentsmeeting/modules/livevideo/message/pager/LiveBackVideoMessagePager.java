@@ -63,8 +63,7 @@ public class LiveBackVideoMessagePager extends BasePager {
         boardParams.height = height;
         boardParams.width = width;
         boardParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        boardParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-//        boardParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        //        boardParams.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+        boardParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        boardParams.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
     }
 }

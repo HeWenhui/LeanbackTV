@@ -378,6 +378,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //                            tvInfo.setText(sb);
                 }
 
+                //没有权限
                 @Override
                 public void onError(ResultEntity result) {
                     isAudioStart = false;
@@ -385,8 +386,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                             .getErrorNo());
                     isDestory = true;
                     isDestory2 = true;
-                    rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
-                    rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
+//                    rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
+//                    rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
+                    rl_livevideo_english_speak_content.setVisibility(View.GONE);
                     if (onAudioRequest != null) {
                         onAudioRequest.requestSuccess();
                         onAudioRequest = null;
@@ -671,12 +673,14 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             @Override
             public void run() {
                 if (LiveTopic.MODE_TRANING.equals(mode)) {
-                    tv_livevideo_english_prog.setVisibility(View.GONE);
-                    rl_livevideo_english_stat.setVisibility(View.GONE);
+                    rl_livevideo_english_speak_content.setVisibility(View.GONE);
+//                    tv_livevideo_english_prog.setVisibility(View.GONE);
+//                    rl_livevideo_english_stat.setVisibility(View.GONE);
                     stop(null);
                 } else {
-                    tv_livevideo_english_prog.setVisibility(View.VISIBLE);
-                    rl_livevideo_english_stat.setVisibility(View.VISIBLE);
+//                    tv_livevideo_english_prog.setVisibility(View.VISIBLE);
+//                    rl_livevideo_english_stat.setVisibility(View.VISIBLE);
+                    rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
                     if (!showTip) {
                         showTip = true;
 //                        int tips = mShareDataManager.getInt(ENGLISH_TIP, 0, ShareDataManager.SHAREDATA_NOT_CLEAR);
@@ -747,6 +751,13 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         imageView.setImageResource(R.drawable.bg_livevideo_english_speek_praise);
 
                         tv_livevideo_english_praise.setText("老师表扬了你！");
+                        bottomContent.addView(view, lp);
+                        bottomContent.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                bottomContent.removeView(view);
+                            }
+                        }, 1000);
 //                        }
                     } else {
 
@@ -758,11 +769,12 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                                 bottomContent.removeView(englishSpeekPager.getRootView());
                             }
                         }
-
+                        bottomContent.removeCallbacks(removeViewRunnable);
                         view = englishSpeekPager.getRootView();
                         lp = englishSpeekPager.getLayoutParams();
                         englishSpeekPager.updateStatus(EnglishSpeekPager.PRAISE);
-
+                        bottomContent.addView(view, lp);
+                        bottomContent.postDelayed(removeViewRunnable, 1000);
 //                        rlRemindOrPraise.setVisibility(View.GONE);
 //                        ivSmallEnglish.setVisibility(View.VISIBLE);
 //                        tv_livevideo_english_praise.setVisibility(View.GONE);
@@ -778,18 +790,21 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //                                drawable.getIntrinsicWidth());
 //                        lp.leftMargin = wight;
                     }
-                    bottomContent.addView(view, lp);
-                    bottomContent.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            bottomContent.removeView(view);
-                        }
-                    }, 1000);
+
 
                 }
             });
         }
     }
+
+    Runnable removeViewRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (englishSpeekPager != null && englishSpeekPager.getRootView().getParent() == bottomContent) {
+                bottomContent.removeView(englishSpeekPager.getRootView());
+            }
+        }
+    };
 
     @Override
     public void remind(int answer) {
@@ -842,8 +857,6 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                     //小英
 //                    if (isSmallEnglish) {
                     //让弹窗全屏居中显示
-
-
 //                        rlRemindOrPraise.setVisibility(View.GONE);
 //                        tv_livevideo_english_praise.setVisibility(View.GONE);
 ////                        ivSmallEnglish.setBackground(activity.getResources().getDrawable(R.color.COLOR_000000));

@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        >
+        android:visibility="gone">
 
         <ImageView
             android:id="@id/iv_livevideo_small_english_open_redpackage_board"
@@ -60,7 +60,7 @@
                 android:id="@+id/iv_livevideo_small_english_money_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="-20dp"
+                android:layout_marginLeft="-50dp"
                 android:layout_marginTop="100dp"
                 android:src="@drawable/bg_livevideo_small_english_redpackage" />
 

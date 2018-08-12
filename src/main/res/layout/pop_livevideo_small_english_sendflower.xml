@@ -36,7 +36,7 @@
         android:layout_marginLeft="530px"
         android:layout_marginTop="190px"
         android:gravity="left"
-        android:text="123"
+        android:text=""
         android:textColor="@color/COLOR_C03321"
         android:textSize="11sp" />
 

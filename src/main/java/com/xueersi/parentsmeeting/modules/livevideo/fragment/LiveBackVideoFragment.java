@@ -275,6 +275,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             }
         }
         rlQuestionContent.setVisibility(View.GONE);
+        rl_course_video_live_controller_content.setVisibility(View.GONE);
     }
 
     /** 加载旋转屏时相关布局 */
@@ -712,6 +713,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             videoBackgroundRefresh.setVisibility(View.GONE);
             Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
             rlQuestionContent.setVisibility(View.VISIBLE);
+            rl_course_video_live_controller_content.setVisibility(View.VISIBLE);
             playNewVideo();
         }
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
