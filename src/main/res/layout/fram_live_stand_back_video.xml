@@ -257,6 +257,12 @@
         </RelativeLayout>
 
     </RelativeLayout>
+    <!-- 互动题显示的界面位置,下层 -->
+    <RelativeLayout
+        android:id="@id/rl_course_video_question_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
     <!-- MediaController2的界面位置 -->
     <RelativeLayout
         android:id="@id/rl_course_video_live_controller_content"

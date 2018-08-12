@@ -23,6 +23,8 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreCache;
@@ -59,6 +61,7 @@ import ren.yale.android.cachewebviewlib.config.CacheExtensionConfig;
  */
 public class EnglishH5Cache implements EnglishH5CacheAction {
     String TAG = "EnglishH5Cache";
+    Logger logger = LoggerFactory.getLogger(TAG);
     String eventId = LiveVideoConfig.LIVE_H5_CACHE;
     Context context;
     LiveBll liveBll;
@@ -97,12 +100,12 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     private WebViewRequest webViewRequest = new WebViewRequest() {
         @Override
         public void requestWebView() {
-            start();
+            stop();
         }
 
         @Override
         public void releaseWebView() {
-            stop();
+            start();
         }
 
     };
@@ -253,14 +256,14 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     @Override
     public void start() {
         isStart = true;
-        Loger.d(TAG, "start");
+        logger.d("start");
         getCourseWareUrl();
     }
 
     @Override
     public void stop() {
         isStart = false;
-        Loger.d(TAG, "stop");
+        logger.d("stop");
         handler.removeMessages(1);
         if (cacheReceiver != null) {
             context.unregisterReceiver(cacheReceiver);

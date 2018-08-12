@@ -38,6 +38,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     private EnglishH5CoursewareBll englishH5CoursewareBll;
     private AnswerRankIRCBll mAnswerRankBll;
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
+    private EnglishH5Cache englishH5Cache;
 
     public EnglishH5CoursewareIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -85,7 +86,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         englishH5CoursewareBll.setGetInfo(getInfo);
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            EnglishH5Cache englishH5Cache = new EnglishH5Cache(activity, null, mLiveId);
+            englishH5Cache = new EnglishH5Cache(activity, null, mLiveId);
             englishH5Cache.setHttpManager(mLiveBll.getHttpManager());
             englishH5Cache.getCourseWareUrl();
         }
@@ -335,6 +336,14 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                     }
                                 }
                             });
+        }
+    }
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        if (englishH5Cache != null) {
+            englishH5Cache.stop();
         }
     }
 }
