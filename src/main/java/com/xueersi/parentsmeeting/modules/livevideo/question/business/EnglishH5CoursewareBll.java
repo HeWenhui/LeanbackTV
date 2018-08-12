@@ -587,7 +587,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
     @Override
     public void removeBaseVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager2) {
-        logToFile.d("removeBaseVoiceAnswerPager:pager=" + voiceAnswerPager2);
+        if (voiceAnswerPager2 == null) {
+            logToFile.d("removeBaseVoiceAnswerPager:pager=null");
+            return;
+        }
         if (voiceAnswerPager2 == voiceAnswerPager) {
             if (voiceAnswerPager.isEnd()) {
                 voiceAnswerPager2.onDestroy();
