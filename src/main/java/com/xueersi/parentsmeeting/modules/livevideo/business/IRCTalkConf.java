@@ -94,6 +94,7 @@ public class IRCTalkConf {
         if (baseHost == null) {
             baseHost = "chatgslb.xescdn.com";
         }
+        mLogtf.d("baseHost=" + baseHost);
     }
 
     public boolean getserver(final AbstractBusinessDataCallBack businessDataCallBack) {
@@ -112,7 +113,7 @@ public class IRCTalkConf {
         if (mIsDestory) {
             return;
         }
-        HttpRequestParams params = new HttpRequestParams();
+        final HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveid", liveId);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             params.addBodyParam("appid", "1");
@@ -122,7 +123,7 @@ public class IRCTalkConf {
         }
         params.addBodyParam("ip", getHostIP());
         params.setWriteAndreadTimeOut(GET_SERVER_TIMEOUT);
-        TalkConfHost talkConfHost = hosts.get(mSelectTalk++ % hosts.size());
+        final TalkConfHost talkConfHost = hosts.get(mSelectTalk++ % hosts.size());
         final String host = talkConfHost.getHost();
         String url = "http://" + host + "/getserver";
         if (talkConfHost.isIp()) {
@@ -138,8 +139,8 @@ public class IRCTalkConf {
                     return;
                 }
                 handler.removeMessages(GET_SERVER);
+                mLogtf.d("onPmSuccess:url=" + url + ",jsonObject=" + responseEntity.getJsonObject());
                 JSONArray jsonArray = (JSONArray) responseEntity.getJsonObject();
-                mLogtf.d("onPmSuccess:jsonObject=" + jsonArray);
                 List<LiveGetInfo.NewTalkConfEntity> mNewTalkConf = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
@@ -207,6 +208,7 @@ public class IRCTalkConf {
                 }
             }
         };
+        callBack.url = url;
         baseHttpBusiness.sendGet(url, params, callBack);
         handler.sendEmptyMessageDelayed(GET_SERVER, GET_SERVER_TIMEOUT);
     }
