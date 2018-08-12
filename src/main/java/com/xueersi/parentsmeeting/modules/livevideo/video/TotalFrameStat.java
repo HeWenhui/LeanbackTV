@@ -14,6 +14,7 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -360,6 +361,9 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             oldCipdispatch = cipdispatch;
         }
         try {
+            if (StringUtils.isEmpty(cipdispatch)) {
+                cipdispatch = IpAddressUtil.USER_IP;
+            }
             dataJson.put("cipdispatch", "" + cipdispatch);
         } catch (JSONException e) {
             e.printStackTrace();
