@@ -17,7 +17,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -321,8 +320,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         initCommonWord();
         Loger.i(TAG, "initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-
-
     }
 
     private void initCommonWord() {

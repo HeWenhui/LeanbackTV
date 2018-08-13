@@ -26,10 +26,11 @@ public class RankItem implements AdapterItemInterface<RankEntity> {
 
     @Override
     public int getLayoutResId() {
-        if (isSmallEnglish) {
-            return R.layout.item_livevodeo_rank_smalleng;
-        }
-        return R.layout.item_livevodeo_rank;
+//        if (isSmallEnglish) {
+//            return R.layout.item_livevodeo_rank_smalleng;
+//        }
+        return isSmallEnglish ? R.layout.item_livevodeo_rank_smalleng : R.layout.item_livevodeo_rank;
+//        return R.layout.item_livevodeo_rank;
     }
 
     @Override

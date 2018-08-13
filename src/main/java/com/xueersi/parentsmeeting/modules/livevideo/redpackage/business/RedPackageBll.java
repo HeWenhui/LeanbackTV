@@ -169,7 +169,6 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             params.addRule(RelativeLayout.CENTER_HORIZONTAL);
 //            }
 
-
         } else {
             view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_view, rlRedpacketContent, false);
             ImageView imageView = view.findViewById(R.id.iv_livevideo_redpackage_monkey);

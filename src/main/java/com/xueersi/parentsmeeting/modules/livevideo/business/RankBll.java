@@ -257,6 +257,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
             Button btnClass = relativeLayout.findViewById(R.id.btn_livevideo_small_english_rank_class);
             //展现排行榜的listview
             lv_livevideo_rank_list = relativeLayout.findViewById(R.id.lv_livevideo_rank_list);
+            //组内
             btnMyGroup.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -276,14 +277,14 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     }
                 }
             });
-
+//小组
             btnGroups.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ivMyGroup.setVisibility(View.GONE);
                     ivGroups.setVisibility(View.VISIBLE);
                     ivClass.setVisibility(View.GONE);
-                    ivRankId.setText("学员");
+                    ivRankId.setText("组别");
                     if (allRankEntity == null) {
                         return;
                     }
@@ -295,7 +296,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     }
                 }
             });
-
+//班级
             btnClass.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
