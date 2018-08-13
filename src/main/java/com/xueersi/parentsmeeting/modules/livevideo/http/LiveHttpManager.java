@@ -1046,22 +1046,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     }
 
-    public void getEnergyNumAndContributionStar(String liveId, String teamId,
-                                                String classId, String stuId,
-                                                String testId, String testPlan,
-                                                HttpCallBack requestCallBack) {
-
-
-        HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("classId", classId);
-        params.addBodyParam("teamId", teamId);
-        params.addBodyParam("stuId", stuId);
-        setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_TEMPK_GETSTUCHESTURL + "/" + liveId, params, requestCallBack);
-
-
-    }
-
     /**
      * 获取战队开宝箱结果
      *

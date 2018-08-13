@@ -10,6 +10,14 @@ public class StudentChestEntity {
     private  int chipNum;
     /**碎片名称*/
     private  String chipName;
+
+    /**碎片类型*/
+    private int chipType;
+
+    /**碎片 图片地址*/
+    private String chipUrl;
+
+
     private  String  isGet;
 
     private boolean isAiPatner;
@@ -43,6 +51,23 @@ public class StudentChestEntity {
 
     public void setChipName(String chipName) {
         this.chipName = chipName;
+    }
+
+    public void setChipType(int chipType) {
+        this.chipType = chipType;
+    }
+
+    public int getChipType() {
+        return chipType;
+    }
+
+
+    public void setChipUrl(String chipUrl) {
+        this.chipUrl = chipUrl;
+    }
+
+    public String getChipUrl() {
+        return chipUrl;
     }
 
     public void setGold(int gold) {

@@ -1330,6 +1330,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 studentChestEntity.setAiPatner(true);
                 studentChestEntity.setChipName(chipObject.optString("chipName", ""));
                 studentChestEntity.setChipNum(chipObject.optInt("chipNum"));
+                studentChestEntity.setChipType(chipObject.optInt("chipType"));
+                studentChestEntity.setChipUrl(chipObject.optString("chipUrl"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1369,6 +1371,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     String chipName = jsonObject.optString("chipName");
                     subChestEntity.setChipName(chipName);
                     subChestEntity.setChipNum(chipNum);
+                    subChestEntity.setChipType(jsonObject.optInt("chipType"));
+                    subChestEntity.setChipUrl(jsonObject.optString("chipUrl"));
                     list.add(subChestEntity);
                 }
                 classChestEntity.setSubChestEntityList(list);

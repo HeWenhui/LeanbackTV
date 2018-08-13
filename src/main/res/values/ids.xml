@@ -635,6 +635,9 @@
     <item name="tpb_teampk_pkstate_energy_bar" type="id" />
     <item name="v_teampk_pkstate_devide_line" type="id" />
     <item name="tv_teampk_pkstate_energy_mycontribution" type="id" />
+    <item name="fl_teampk_aipatner_chip_contanier" type="id"/>
+    <item name="iv_teampk_aipatner_chip" type="id"/>
+
     <!--实时答题-->
     <item name="rl_answer_question_award_root" type="id" />
     <item name="iv_answer_question_energy" type="id" />

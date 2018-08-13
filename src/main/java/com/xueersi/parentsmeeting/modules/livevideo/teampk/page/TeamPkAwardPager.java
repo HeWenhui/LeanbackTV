@@ -38,6 +38,7 @@ import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieImageAsset;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -652,6 +653,11 @@ public class TeamPkAwardPager extends BasePager {
             // 展示碎片信息
             TextView tvPatch = llAipatnerAwardRoot.findViewById(R.id.tv_teampk_aipartner_award_patch);
             TextView tvPatchName = llAipatnerAwardRoot.findViewById(R.id.tv_teampk_aipartner_award_patchname);
+
+            // 显示 碎片图片
+            ImageView ivPatch = llAipatnerAwardRoot.findViewById(R.id.iv_teampk_aipatner_chip);
+            ImageLoader.with(BaseApplication.getContext()).load(studentChestEntity.getChipUrl()).into(ivPatch);
+
             tvPatch.setVisibility(View.VISIBLE);
             TextView tvRemind = llAipatnerAwardRoot.findViewById(R.id.tv_teampk_aipartner_award_remind);
             tvRemind.setVisibility(View.VISIBLE);
@@ -713,6 +719,7 @@ public class TeamPkAwardPager extends BasePager {
         TextView tvName;
         TextView tvCoin;
         TextView tvPatch;
+        ImageView ivChip;
 
         public ItemHolder(View itemView) {
             super(itemView);
@@ -721,10 +728,11 @@ public class TeamPkAwardPager extends BasePager {
             tvName = itemView.findViewById(R.id.tv_teampk_open_box_winner_name);
             tvCoin = itemView.findViewById(R.id.tv_teampk_open_box_winner_coin);
             tvPatch = itemView.findViewById(R.id.tv_teampk_lucky_start_patch);
+            ivChip = itemView.findViewById(R.id.iv_teampk_aipatner_chip);
         }
 
         public void bindData(ClassChestEntity.SubChestEntity data, int postion) {
-            ImageLoader.with(ivHead.getContext()).load(data.getAvatarPath())
+            ImageLoader.with(BaseApplication.getContext()).load(data.getAvatarPath())
                     .placeHolder(R.drawable.livevideo_list_headportrait_ic_disable)
                     .asBitmap(new SingleConfig.BitmapListener() {
                         @Override
@@ -751,6 +759,9 @@ public class TeamPkAwardPager extends BasePager {
             tvCoin.setText("+" + data.getGold());
             if (tvPatch != null) {
                 tvPatch.setText("+" + data.getChipNum());
+            }
+            if(ivChip != null){
+                ImageLoader.with(BaseApplication.getContext()).load(data.getChipUrl()).into(ivChip);
             }
         }
     }

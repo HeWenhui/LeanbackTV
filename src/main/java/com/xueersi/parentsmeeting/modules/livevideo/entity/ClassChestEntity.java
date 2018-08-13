@@ -51,11 +51,32 @@ public class ClassChestEntity {
         /**ai 伴侣碎片名*/
         private String chipName;
 
+        /**碎片类型*/
+        private int chipType;
+        /**碎片图片地址*/
+        private String chipUrl;
+
         public SubChestEntity(long gold, String stuName, String avatarPath, String stuId) {
             this.gold = gold;
             this.stuName = stuName;
             this.avatarPath = avatarPath;
             this.stuId = stuId;
+        }
+
+        public void setChipType(int chipType) {
+            this.chipType = chipType;
+        }
+
+        public int getChipType() {
+            return chipType;
+        }
+
+        public void setChipUrl(String chipUrl) {
+            this.chipUrl = chipUrl;
+        }
+
+        public String getChipUrl() {
+            return chipUrl;
         }
 
         public long getChipNum() {
