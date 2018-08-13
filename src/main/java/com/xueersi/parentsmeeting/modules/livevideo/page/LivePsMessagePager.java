@@ -8,7 +8,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -19,7 +18,6 @@ import android.text.util.Linkify;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +26,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -44,8 +40,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
-import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
@@ -60,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
 import com.xueersi.xesalib.adapter.AdapterItemInterface;
 import com.xueersi.xesalib.adapter.CommonAdapter;
@@ -68,7 +63,6 @@ import com.xueersi.xesalib.utils.log.Loger;
 import com.xueersi.xesalib.utils.string.RegexUtils;
 import com.xueersi.xesalib.utils.string.StringUtils;
 import com.xueersi.xesalib.utils.uikit.ScreenUtils;
-import com.xueersi.xesalib.view.button.CompoundButtonGroup;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,7 +78,7 @@ import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
  * Created by David on 2018/8/1.
  */
 
-public class LivePsMessagePager extends BaseLiveMessagePager {
+public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     private static String TAG = "LivePsMessagePager";
     /** 聊天，默认开启 */
     private Button btMesOpen;
@@ -146,6 +140,7 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
         nameColors[0] = resources.getColor(R.color.COLOR_FFFFFF);
         nameColors[1] = resources.getColor(R.color.COLOR_E74C3C);
         nameColors[2] = resources.getColor(R.color.COLOR_20ABFF);
+
 
         btMesOpen = liveMediaControllerBottom.getBtMesOpen();
         btMsgCommon = liveMediaControllerBottom.getBtMsgCommon();
@@ -276,8 +271,8 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
                     commonAction.clickTran();
                     return;
                 }
-//                mFlowerWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
-                mFlowerWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+                mFlowerWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+//                mFlowerWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
                 isHaveFlowers = true;
             }
         });
@@ -1069,9 +1064,9 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
         });
     }
 
-    LivePsMessagePager.FlowerAction commonAction = new LivePsMessagePager.CommonDisable();
+    FlowerAction commonAction = new CommonDisable();
 
-    class CommonDisable implements LivePsMessagePager.FlowerAction {
+    class CommonDisable implements FlowerAction {
 
         @Override
         public void onOpenbarrage(boolean openbarrage) {
@@ -1155,12 +1150,11 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
                     break;
             }
             String msg = name + " " + tip;
-            TypeSpannableStringBuilder spannableStringBuilder = new TypeSpannableStringBuilder(msg, name, ftype);
-            spannableStringBuilder.append(msg);
-            ImageSpan span = new ImageSpan(drawable);//ImageSpan.ALIGN_BOTTOM);
-            spannableStringBuilder.setSpan(span, msg.length(), spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-//        spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0, spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            return spannableStringBuilder;
+            SpannableStringBuilder spannable = new TypeSpannableStringBuilder(msg, name, ftype);
+            spannable.append(msg).append("   ");
+            ImageSpan imgSpan = new VerticalImageSpan(drawable);
+            spannable.setSpan(imgSpan, 0, msg.length(), imgSpan.ALIGN_BASELINE);
+            return spannable;
         }
 
         @Override

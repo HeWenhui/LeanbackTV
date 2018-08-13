@@ -65,10 +65,6 @@ public class VoteAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public List<PsState> getSystem() {
-        return mSystem;
-    }
-
     private class ViewHolder{
         public ImageView item;
     }

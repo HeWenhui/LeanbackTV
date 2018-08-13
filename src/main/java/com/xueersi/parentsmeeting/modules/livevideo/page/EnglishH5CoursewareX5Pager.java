@@ -162,6 +162,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
         if(LiveVideoConfig.isNewEnglishH5){
             StableLogHashMap newlogHashMap = new StableLogHashMap("loadPlatformtest");
+            newlogHashMap.put("os","Android");
             newlogHashMap.put("sno", "3");
             newlogHashMap.put("testids", releasedPageInfos);
             newlogHashMap.put("stable", "1");
@@ -353,6 +354,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 mLoadUrls = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.educationstage + "&isPlayBack=0" + "&nonce=" + "" + UUID.randomUUID();
                 // 上传接收到教师端指令的日志
                 StableLogHashMap logHashMap = new StableLogHashMap("receivePlatformtest");
+                logHashMap.put("os", "Android");
                 logHashMap.put("sno", "2");
                 logHashMap.put("testids", releasedPageInfos);
                 logHashMap.put("stable", "1");

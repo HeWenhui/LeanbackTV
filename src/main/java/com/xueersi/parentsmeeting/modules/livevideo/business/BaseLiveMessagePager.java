@@ -459,13 +459,17 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         danmaku.priority = 1;  // 一定会显示, 一般用于本机发送的弹幕
         danmaku.isLive = false;
         danmaku.time = dvMessageDanmaku.getCurrentTime() + 1200;
-        danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
-//        danmaku.underlineColor = Color.GREEN;
         if(LiveVideoConfig.isPrimary){
-            danmaku.borderColor = R.color.COLOR_PSDANMAKU;
-        }else{
-            danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
+            danmaku.textSize = 20f * (mParser.getDisplayer().getDensity() - 0.6f);
+        } else {
+            danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
         }
+//        danmaku.underlineColor = Color.GREEN;
+//        if(LiveVideoConfig.isPrimary){
+//            danmaku.borderColor = R.color.COLOR_PSDANMAKU;
+//        }else{
+//            danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
+//        }
         dvMessageDanmaku.addDanmaku(danmaku);
     }
 
@@ -483,7 +487,11 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         TypeSpannableStringBuilder spannableStringBuilder = new TypeSpannableStringBuilder(msg, name, ftype);
         spannableStringBuilder.append(msg);
         ImageSpan span = new ImageSpan(drawable);//ImageSpan.ALIGN_BOTTOM);
-        spannableStringBuilder.setSpan(span, msg.length(), spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        if(LiveVideoConfig.isPrimary){
+            spannableStringBuilder.setSpan(span, 0, 2, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        } else {
+            spannableStringBuilder.setSpan(span, msg.length(), spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
 //        spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0, spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return spannableStringBuilder;
     }
