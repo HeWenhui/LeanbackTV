@@ -5,13 +5,14 @@
     android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/iv_livevideo_primarygiftbg"
-        android:layout_width="478dp"
-        android:layout_height="347dp"
-        android:layout_centerInParent="true"
-        android:background="@drawable/primarygiftbg"/>
-    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:scaleType="centerCrop"
+        android:background="@drawable/primarygiftbg"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignBottom="@id/iv_livevideo_primarygiftbg"
         android:layout_alignLeft="@id/iv_livevideo_primarygiftbg"
         android:layout_alignRight="@id/iv_livevideo_primarygiftbg"
@@ -53,14 +54,17 @@
         </LinearLayout>
         <LinearLayout
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="65dp"
+            android:layout_marginRight="65dp"
             android:layout_below="@+id/ll_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
-                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content">
                 <RelativeLayout
                     android:id="@+id/rl_heart"
@@ -88,7 +92,8 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
-                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content">
                 <RelativeLayout
                     android:id="@+id/rl_cup"
@@ -116,7 +121,8 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
-                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content">
                 <RelativeLayout
                     android:id="@+id/rl_ice"

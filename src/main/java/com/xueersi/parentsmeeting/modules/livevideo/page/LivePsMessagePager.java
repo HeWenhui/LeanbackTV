@@ -517,12 +517,11 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         flowerEntities.add(new FlowerEntity(FLOWERS_SMALL, flowsDrawTips[0], "小心心", 10));
         flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "暖心茉莉茶", 50));
         flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "冰淇淋", 100));
-
-        PopupWindow flowerWindow = new PopupWindow(mContext);
+        flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_primary_flower, null);
+        PopupWindow flowerWindow = new PopupWindow(flowerContentView,dp2px(liveVideoActivity, 478), dp2px(liveVideoActivity, 347), false);
         flowerWindow.setBackgroundDrawable(new BitmapDrawable());
         flowerWindow.setOutsideTouchable(true);
         flowerWindow.setFocusable(true);
-        flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_primary_flower, null);
         flowerWindow.setContentView(flowerContentView);
         flowerWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -606,7 +605,6 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                                             }
                                         }
                                     }
-//                                    liveBll.getLiveAutoNoticeBll().showGiftSuccessNotice(getTips(index), getHeard(index));
                                     addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
                                     mView.postDelayed(new Runnable() {
                                         @Override
@@ -642,6 +640,10 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 //        flowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         Loger.i(TAG, "initFlower:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
+    }
+
+    public static int dp2px(Context context, int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
     private void initCommonWord() {
