@@ -394,6 +394,7 @@ public class LiveRemarkBll {
                     @Override
                     public void onError(XesCloudResult result) {
                         Loger.i(TAG, result.getErrorMsg());
+                        markFail();
                     }
                 });
             } else {

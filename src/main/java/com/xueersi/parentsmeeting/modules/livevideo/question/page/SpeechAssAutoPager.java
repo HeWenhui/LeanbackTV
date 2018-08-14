@@ -185,6 +185,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         this.examSubmit = examSubmit;
         this.learning_stage = learning_stage;
         entranceTime = System.currentTimeMillis();
+        setLivePagerBack(livePagerBack);
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "receiveVoiceTest");
         mData.put("live", "" + isLive);

@@ -367,8 +367,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         liveBackBll = new LiveBackBll(activity, mVideoEntity);
         liveBackBll.setStuCourId(stuCourId);
         liveBackBll.setvPlayer(vPlayer);
-        //如果是小英使用MMD皮肤，聊天区需要覆盖
-
     }
 
     protected void initBll() {

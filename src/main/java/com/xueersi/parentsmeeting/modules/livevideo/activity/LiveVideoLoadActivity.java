@@ -3,18 +3,23 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -23,9 +28,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 /**
- * Created by lyqai on 2018/7/14.
+ * Created by linyuqiang on 2018/7/14.
+ * 直播中间的loading
  */
-
 public class LiveVideoLoadActivity extends BaseActivity {
     public static HashMap<String, LiveGetInfo> getInfos = new HashMap();
 
@@ -33,7 +38,27 @@ public class LiveVideoLoadActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        initData();
+        boolean have = XesPermission.checkPermission(this, new LiveActivityPermissionCallback() {
+
+                    @Override
+                    public void onFinish() {
+
+                    }
+
+                    @Override
+                    public void onDeny(String permission, int position) {
+
+                    }
+
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+                        initData();
+                    }
+                },
+                PermissionConfig.PERMISSION_CODE_STORAGE);
+        if (have) {
+            initData();
+        }
     }
 
     @Override
@@ -110,8 +135,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                } else {
 //                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
 //                }
-                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                    finish();
+                    if (1 == mGetInfo.getIsEnglish()) {
+                        gotoEnglish(bundle);
+                    } else {
+                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        finish();
+                    }
                 }
 
                 @Override
@@ -126,6 +155,38 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     finish();
                 }
             });
+        }
+    }
+
+    void gotoEnglish(final Bundle bundle) {
+        boolean have = XesPermission.checkPermission(this, new LiveActivityPermissionCallback() {
+
+                    @Override
+                    public void onFinish() {
+
+                    }
+
+                    @Override
+                    public void onDeny(String permission, int position) {
+
+                    }
+
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                finish();
+                            }
+                        });
+                    }
+                },
+                PermissionConfig.PERMISSION_CODE_AUDIO);
+        if (have) {
+            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+            finish();
         }
     }
 

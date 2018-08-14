@@ -11,6 +11,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -446,8 +447,8 @@ public class LiveBackVideoFragmentBase extends Fragment {
         } else {
             restoreFragment(fragment);
         }
-        fragment.setOnVideoCreate(videoCreate);
         liveBackPlayVideoFragment = fragment;
+        fragment.setOnVideoCreate(videoCreate);
         transaction.commit();
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // 使屏幕保持长亮
         loadLandOrPortView();
@@ -525,7 +526,13 @@ public class LiveBackVideoFragmentBase extends Fragment {
             video = "ijk";
             logger.d("onActivityCreated:frag=" + ((ViewGroup) mContentView.findViewById(R.id.rl_live_video_frag))
                     .getChildCount());
-            onSelect(savedInstanceState, video);
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    onSelect(savedInstanceState, video);
+                }
+            });
         }
     }
 
