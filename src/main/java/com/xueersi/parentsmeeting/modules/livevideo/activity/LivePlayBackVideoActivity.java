@@ -291,6 +291,7 @@ public class LivePlayBackVideoActivity extends VideoActivity implements LivePlay
             }
         };
         registerReceiver(receiver, intentFilter);
+        LiveVideoConfig.isMulLiveBack = false;
     }
 
     @Override

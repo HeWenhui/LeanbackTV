@@ -759,8 +759,8 @@ public class LiveVoteBll implements LiveVoteAction {
                         float oldProgress = (finalNewProgress) * fraction;
 //                        pb_livevideo_vote_result_item.setProgress((int) oldProgress);
                         ViewGroup.LayoutParams params = livevideo_psvote_result_item.getLayoutParams();
-                        params.height = dp2px(context,(int)(160 * (rado/100))-20);
-                        params.width = dp2px(context,15);
+                        params.height = dp2px(context,(int)(148 * (rado/100)));
+                        params.width = dp2px(context,13);
                         livevideo_psvote_result_item.setLayoutParams(params);
 //                        livevideo_psvote_result_item.setMaxHeight(248*(int)(finalNewProgress/voteEntity.getTotal()));
 
@@ -772,11 +772,11 @@ public class LiveVoteBll implements LiveVoteAction {
 //                pb_livevideo_vote_result_item.setProgress(newProgress);
                 ViewGroup.LayoutParams params = livevideo_psvote_result_item.getLayoutParams();
                 if(rado > 0){
-                    params.height = dp2px(context,(int)(160 * (rado/100))-20);
+                    params.height = dp2px(context,(int)(148 * (rado/100)));
                 }else{
-                    params.height = dp2px(context,(int)(160 * (rado/100)));
+                    params.height = dp2px(context,(int)(148 * (rado/100)));
                 }
-                params.width = dp2px(context,15);
+                params.width = dp2px(context,13);
                 livevideo_psvote_result_item.setLayoutParams(params);
 //                livevideo_psvote_result_item.setMaxHeight(248*(int)(newProgress/voteEntity.getTotal()));
             }

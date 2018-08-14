@@ -241,6 +241,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
         Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
 //        SpeechAssessmentWebPager pager=new SpeechAssessmentWebPager(mContext,"","","",true,"",null);
 //        ((RelativeLayout)findViewById(R.id.rl_speech_test)).addView(pager.getRootView());
+        LiveVideoConfig.isNewEnglishH5 = false;
         return true;
     }
 
