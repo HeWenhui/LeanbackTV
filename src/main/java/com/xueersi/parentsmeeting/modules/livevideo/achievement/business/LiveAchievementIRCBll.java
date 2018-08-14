@@ -118,13 +118,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
         @Override
         public void initAchievement(String mode) {
+            EnglishSpeekAction oldEnglishSpeekAction = LiveAchievementIRCBll.this.englishSpeekAction;
+            TalLanguage talLanguage = null;
+            if (oldEnglishSpeekAction != null) {
+                oldEnglishSpeekAction.stop(null);
+                talLanguage = oldEnglishSpeekAction.getTalLanguage();
+            }
             StarInteractAction starAction;
             EnglishSpeekAction englishSpeekAction = null;
-            TalLanguage talLanguage = null;
-            if (englishSpeekAction != null) {
-                englishSpeekAction.stop(null);
-                talLanguage = englishSpeekAction.getTalLanguage();
-            }
             if (LiveTopic.MODE_CLASS.equals(mode)) {
                 LiveStandAchievementBll starBll = new LiveStandAchievementBll(activity, mLiveType, mGetInfo
                         .getStarCount(), mGetInfo.getGoldCount(), true);
