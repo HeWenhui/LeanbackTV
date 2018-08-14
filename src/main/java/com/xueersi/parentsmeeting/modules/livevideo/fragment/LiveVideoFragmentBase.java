@@ -188,11 +188,8 @@ public class LiveVideoFragmentBase extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (!mCreated) {
-            return;
-        }
-        // 注销事件
-        EventBus.getDefault().unregister(this);
+        boolean isRegistered = EventBus.getDefault().isRegistered(this);
+        logger.d("onDestroy:isRegistered=" + isRegistered);
     }
 
     @Override

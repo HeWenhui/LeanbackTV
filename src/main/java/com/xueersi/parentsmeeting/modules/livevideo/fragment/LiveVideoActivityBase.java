@@ -71,7 +71,6 @@ public class LiveVideoActivityBase extends XesActivity {
         AudioPlayer.requestAudioFocus(this);
     }
 
-
     @Override
     public void onPause() {
         super.onPause();

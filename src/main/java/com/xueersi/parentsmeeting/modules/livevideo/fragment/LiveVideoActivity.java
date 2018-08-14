@@ -71,7 +71,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
         context.startActivity(intent);
     }
 
-
     private boolean isResume = true;
 
     @Override

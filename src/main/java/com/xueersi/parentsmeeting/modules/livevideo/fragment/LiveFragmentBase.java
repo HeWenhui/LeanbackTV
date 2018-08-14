@@ -492,6 +492,12 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         updateRefreshImage();
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onEvent(AppEvent event) {
+        Loger.i(TAG, "onEvent:netWorkType=" + event.netWorkType);
+        mLiveVideoBll.onNetWorkChange(event.netWorkType);
+    }
+
     @Override
     public void onDestroy() {
         isPlay = false;

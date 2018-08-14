@@ -791,6 +791,12 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }
     }
 
+    public void onNetWorkChange(int netWorkType) {
+        if (liveGetPlayServer != null) {
+            liveGetPlayServer.onNetWorkChange(netWorkType);
+        }
+    }
+
     public void onDestroy() {
         if (liveGetPlayServer != null) {
             liveGetPlayServer.onDestroy();
