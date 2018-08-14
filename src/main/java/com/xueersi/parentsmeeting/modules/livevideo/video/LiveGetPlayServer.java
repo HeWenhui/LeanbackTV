@@ -33,9 +33,8 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 /**
- * Created by lyqai on 2018/6/23.
+ * Created by linyuqiang on 2018/6/23.
  */
-
 public class LiveGetPlayServer {
     private String TAG = "LiveGetPlayServer";
     Logger logger = LoggerFactory.getLogger(TAG);

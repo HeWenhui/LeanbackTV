@@ -25,6 +25,8 @@ import com.xueersi.component.cloud.config.XesCloudConfig;
 import com.xueersi.component.cloud.entity.CloudUploadEntity;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoPointEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -79,6 +81,7 @@ public class LiveRemarkBll {
     private Context mContext;
     private PlayerService mPlayerService;
     private String TAG = "LiveRemarkBll";
+    Logger logger = LoggerFactory.getLogger(TAG);
     private Timer mTimer;
     private long offSet;
     private LiveMediaControllerBottom mLiveMediaControllerBottom;
@@ -268,6 +271,7 @@ public class LiveRemarkBll {
     }
 
     public void hideBtMark() {
+        logger.d("hideBtMark");
         if (mLiveMediaControllerBottom != null) {
             mLiveMediaControllerBottom.getBtMark().setVisibility(View.GONE);
         }
@@ -324,6 +328,7 @@ public class LiveRemarkBll {
     }
 
     public void showBtMark() {
+        logger.d("showBtMark:mLiveMediaControllerBottom=null?" + (mLiveMediaControllerBottom == null));
         if (mLiveMediaControllerBottom != null) {
             mLiveMediaControllerBottom.getBtMark().setVisibility(View.VISIBLE);
         }

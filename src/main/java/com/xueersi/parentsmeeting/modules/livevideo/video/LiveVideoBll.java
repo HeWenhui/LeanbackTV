@@ -42,7 +42,7 @@ import okhttp3.Call;
 import okhttp3.Response;
 
 /**
- * Created by lyqai on 2018/6/22.
+ * Created by linyuqiang on 2018/6/22.
  */
 
 public class LiveVideoBll implements VPlayerListenerReg {
@@ -488,7 +488,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onOpenFailed(arg1, arg2);
             }
-            mLogtf.d("onOpenFailed");
+            mLogtf.d("onOpenFailed:arg2=" + arg2);
             if (lastPlayserverEntity != null) {
                 liveVideoReportBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "fail reconnect");
                 reportPlayStarTime = System.currentTimeMillis();

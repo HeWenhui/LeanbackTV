@@ -15,9 +15,8 @@ import org.json.JSONObject;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * Created by linyuqiang on 2018/7/5.
  */
-
 public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
     AnswerRankBll mAnswerRankBll;
 
@@ -33,6 +32,8 @@ public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
                 && mGetInfo.getIs_show_ranks().equals("1")) {
             mAnswerRankBll = new AnswerRankBll(activity, mLiveBll);
             mAnswerRankBll.initView(mRootView);
+        } else {
+            mLiveBll.removeBusinessBll(this);
         }
     }
 

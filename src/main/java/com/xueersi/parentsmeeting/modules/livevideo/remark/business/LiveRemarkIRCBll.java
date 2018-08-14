@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.remark.business;
 
 import android.app.Activity;
+import android.view.View;
 import android.view.ViewStub;
 
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
@@ -26,7 +27,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 /**
- * Created by lyqai on 2018/7/11.
+ * Created by linyuqiang on 2018/7/11.
  */
 
 public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
@@ -53,6 +54,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         if ("1".equals(mGetInfo.getIsShowMarkPoint())) {
+            liveMediaControllerBottom.getBtMark().setVisibility(View.VISIBLE);
             VPlayerListenerReg vPlayerListenerReg = ProxUtil.getProxUtil().get(activity, VPlayerListenerReg.class);
             vPlayerListenerReg.addVPlayerListener(new SampleLiveVPlayerListener() {
                 @Override
@@ -120,17 +122,11 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                         liveTextureView.vPlayer = vPlayer;
                         liveTextureView.setLayoutParams(videoView.getLayoutParams());
                     }
-                    liveRemarkBll.showBtMark();
                     liveRemarkBll.setTextureView(liveTextureView);
                     liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
                     liveRemarkBll.setLiveAndBackDebug(mLiveBll);
                     liveRemarkBll.setHttpManager(getHttpManager());
-                    if (mGetInfo != null) {
-                        liveRemarkBll.setSysTimeOffset(mLiveBll.getSysTimeOffset());
-                    }
-                    if (mGetInfo != null && !"1".equals(mGetInfo.getIsShowMarkPoint())) {
-                        liveRemarkBll.hideBtMark();
-                    }
+                    liveRemarkBll.setSysTimeOffset(mLiveBll.getSysTimeOffset());
                     mLogtf.i("setlivebll____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()
                             + "   stat:" + mGetInfo.getStat() + "   mode:" + mLiveBll.getLiveTopic().getMode());
                     if (!mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak() && LiveTopic.MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode())) {
@@ -138,6 +134,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                     } else {
                         liveRemarkBll.setClassReady(false);
                     }
+                    liveRemarkBll.setVideoLayout(LiveVideoPoint.getInstance());
                 }
             } else {
                 liveRemarkBll.initData();
