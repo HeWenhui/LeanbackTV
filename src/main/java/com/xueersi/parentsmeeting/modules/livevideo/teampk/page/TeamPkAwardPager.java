@@ -558,6 +558,8 @@ public class TeamPkAwardPager extends BasePager {
                     nonce = StableLogHashMap.creatNonce();
                     TeamPkLog.clickTreasureBox(teamPKBll.getLiveBll(), mIsWin, nonce);
                 }
+                //防止快速 连续点击
+                lottieAnimationView.setClickable(false);
                 getStuChestInfo();
             }
         });
@@ -587,7 +589,7 @@ public class TeamPkAwardPager extends BasePager {
                 new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-
+                        lottieAnimationView.setClickable(true);
                         //播放动画
                         String lottieResPath = lottieResDir + "_open/images";
                         String lottieJsonPath = lottieResDir + "_open/data.json";
@@ -621,6 +623,7 @@ public class TeamPkAwardPager extends BasePager {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         super.onFailure(call, e);
+                        lottieAnimationView.setClickable(true);
                         if (teamPKBll != null) {
                             TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(), "", nonce, false);
                         }
@@ -636,6 +639,7 @@ public class TeamPkAwardPager extends BasePager {
                         String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "获取宝箱数据失败" :
                                 responseEntity.getErrorMsg();
                         showToast(errorMsg);
+                        lottieAnimationView.setClickable(true);
                     }
                 });
     }
