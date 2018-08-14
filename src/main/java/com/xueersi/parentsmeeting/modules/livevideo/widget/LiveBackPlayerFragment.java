@@ -29,8 +29,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
  * @author lyqai
  * @date 2018/6/22
  */
-public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoView.SurfaceCallback, MediaPlayerControl {
- 
+public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoView.SurfaceCallback,
+        MediaPlayerControl {
+
     /** 播放器的控制对象 */
     protected MediaController2 mMediaController;
     /** 是否完成了一系列的系统广播 */
@@ -140,8 +141,9 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
                     mHeadsetPlaying = isPlaying();
                     stopPlayer();
                 } else if (state == 1) {
-                    if (mHeadsetPlaying)
+                    if (mHeadsetPlaying) {
                         startPlayer();
+                    }
                 }
             }
         }
@@ -167,12 +169,15 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
             mReceiverRegistered = true;
         } else {
             try {
-                if (mScreenReceiver != null)
+                if (mScreenReceiver != null) {
                     activity.unregisterReceiver(mScreenReceiver);
-                if (mUserPresentReceiver != null)
+                }
+                if (mUserPresentReceiver != null) {
                     activity.unregisterReceiver(mUserPresentReceiver);
-                if (mHeadsetPlugReceiver != null)
+                }
+                if (mHeadsetPlugReceiver != null) {
                     activity.unregisterReceiver(mHeadsetPlugReceiver);
+                }
             } catch (IllegalArgumentException e) {
             }
             mReceiverRegistered = false;
@@ -217,17 +222,21 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     }
 
     /** 设置视频名称 */
+    @Override
     protected void setFileName() {
         if (mUri != null) {
             String name = null;
-            if (mUri.getScheme() == null || mUri.getScheme().equals("file"))
+            if (mUri.getScheme() == null || mUri.getScheme().equals("file")) {
                 name = FileUtils.getFileName(mUri);
-            else
+            } else {
                 name = mUri.getLastPathSegment();
-            if (name == null)
+            }
+            if (name == null) {
                 name = "null";
-            if (mDisplayName == null)
+            }
+            if (mDisplayName == null) {
                 mDisplayName = name;
+            }
             mMediaController.setFileName(mDisplayName);
         }
     }
@@ -266,6 +275,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     }
 
     /** 判断当前为竖屏并且处于播放状态时，显示控制栏 */
+    @Override
     public void showLongMediaController() {
         if (mMediaController == null) {
             logger.d("showLongMediaController:mMediaController==null");
@@ -278,14 +288,17 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
             // 横屏时短时间显示
             mMediaController.show();
         }
-    }   
+    }
+
     /** 加载视频异常时出现可重新刷新的背景界面 TODO */
+    @Override
     protected void showRefresyLayout(int arg1, int arg2) {
         super.showRefresyLayout(arg1, arg2);
         updateRefreshImage();
     }
 
     /** 当前视频播放完毕 */
+    @Override
     protected void playComplete() {
         if (mDuration == 0 || mCurrentPosition < (mDuration - 5000)) {
             // 异常中断退出
@@ -311,15 +324,19 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     @Override
     public void setSpeed(float speed) {
         if (isInitialized())
-            // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
+        // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
+        {
             vPlayer.setSpeed(speed);
+        }
     }
 
     @Override
     public float getSpeed() {
         if (isInitialized())
-            // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
+        // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
+        {
             vPlayer.getSpeed();
+        }
         return 1.0f;
     }
 
@@ -330,22 +347,19 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
 
     @Override
     public boolean isPlaying() {
-        if (isInitialized())
-            return vPlayer.isPlaying();
-        return false;
+        return isInitialized() && vPlayer.isPlaying();
     }
 
     @Override
     public boolean isPlayInitialized() {
         return isInitialized();
     }
- 
+
 
     @Override
     public void toggleVideoMode(int mode) {
 
     }
-
 
 
     @Override
@@ -354,12 +368,17 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     }
 
     protected void updateRefreshImage() {
-        FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
-        ImageView ivRefresh = (ImageView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id.iv_course_video_refresh_bg);
+        FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false,
+                ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        ImageView ivRefresh = (ImageView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id
+                .iv_course_video_refresh_bg);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
-                ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivRefresh);
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
+                ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(R.drawable
+                        .livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into
+                        (ivRefresh);
+            }
         }
     }
 

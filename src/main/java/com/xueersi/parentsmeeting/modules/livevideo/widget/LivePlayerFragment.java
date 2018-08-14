@@ -206,6 +206,7 @@ public class LivePlayerFragment extends BasePlayerFragment implements VideoView.
     }
 
     /** 设置视频名称 */
+    @Override
     protected void setFileName() {
         if (mUri != null) {
             String name = null;
@@ -255,6 +256,7 @@ public class LivePlayerFragment extends BasePlayerFragment implements VideoView.
     }
 
     /** 判断当前为竖屏并且处于播放状态时，显示控制栏 */
+    @Override
     public void showLongMediaController() {
         if (!mIsLand) {
             // 竖屏时长时间显示
@@ -266,12 +268,14 @@ public class LivePlayerFragment extends BasePlayerFragment implements VideoView.
     }
 
     /** 加载视频异常时出现可重新刷新的背景界面 TODO */
+    @Override
     protected void showRefresyLayout(int arg1, int arg2) {
         super.showRefresyLayout(arg1, arg2);
         updateRefreshImage();
     }
 
     /** 当前视频播放完毕 */
+    @Override
     protected void playComplete() {
         if (mDuration == 0 || mCurrentPosition < (mDuration - 5000)) {
             // 异常中断退出

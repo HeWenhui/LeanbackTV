@@ -236,8 +236,9 @@ public class LiveBackVideoFragmentBase extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (!mCreated)
+        if (!mCreated) {
             return;
+        }
     }
 
     @Override
@@ -249,8 +250,9 @@ public class LiveBackVideoFragmentBase extends Fragment {
 
         // 设置视频可播放
         liveBackPlayVideoFragment.setIsPlayerEnable(true);
-        if (!mCreated)
+        if (!mCreated) {
             return;
+        }
         if (isInitialized()) {
             KeyguardManager keyguardManager = (KeyguardManager) activity.getSystemService(Context.KEYGUARD_SERVICE);
             if (!keyguardManager.inKeyguardRestrictedInputMode()) {
@@ -274,8 +276,9 @@ public class LiveBackVideoFragmentBase extends Fragment {
         AudioPlayer.abandAudioFocus(activity);
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONPAUSE);
         liveBackPlayVideoFragment.setIsPlayerEnable(false);
-        if (!mCreated)
+        if (!mCreated) {
             return;
+        }
         if (isInitialized()) {
             // 存储当前视频播放的进度
             if (mIsEnd) {
@@ -296,8 +299,9 @@ public class LiveBackVideoFragmentBase extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (!mCreated)
+        if (!mCreated) {
             return;
+        }
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONSTOP);
         // 友盟统计
         umPlayVideoTime();
@@ -307,14 +311,15 @@ public class LiveBackVideoFragmentBase extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
-        if (!mCreated)
+        if (!mCreated) {
             return;
+        }
         // 统计退出
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONDESTROY);
 
-        if (mMediaController != null)
-            // 释放控制器
+        if (mMediaController != null) {// 释放控制器
             mMediaController.release();
+        }
         // 注销事件
         EventBus.getDefault().unregister(this);
     }
@@ -343,9 +348,9 @@ public class LiveBackVideoFragmentBase extends Fragment {
                 activity.getWindow().setFlags(0, WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 /*
                  * getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
-				 * ) ; getWindow().clearFlags(WindowManager.LayoutParams.
-				 * FLAG_LAYOUT_IN_SCREEN);
-				 */
+                 * ) ; getWindow().clearFlags(WindowManager.LayoutParams.
+                 * FLAG_LAYOUT_IN_SCREEN);
+                 */
             }
         }
 
@@ -413,20 +418,28 @@ public class LiveBackVideoFragmentBase extends Fragment {
         View view = inflater.inflate(id, mContentView, false);
         mContentView.removeAllViews();
         mContentView.addView(view);
-        viewRoot = view.findViewById(com.xueersi.parentsmeeting.module.player.R.id.cl_course_video_root);// 播放器所在的io.vov.vitamio.widget.CenterLayout
-        rlContent = (RelativeLayout) view.findViewById(com.xueersi.parentsmeeting.module.player.R.id.rl_course_video_content);
-        videoBackgroundRefresh = LayoutInflater.from(activity).inflate(mLayoutBackgroundRefresh, rlContent, false); // 失败时播放器显示的背景
+        viewRoot = view.findViewById(com.xueersi.parentsmeeting.module.player.R.id.cl_course_video_root);// 播放器所在的io
+        // .vov.vitamio.widget.CenterLayout
+        rlContent = (RelativeLayout) view.findViewById(com.xueersi.parentsmeeting.module.player.R.id
+                .rl_course_video_content);
+        videoBackgroundRefresh = LayoutInflater.from(activity).inflate(mLayoutBackgroundRefresh, rlContent, false);
+        // 失败时播放器显示的背景
         videoBackgroundRefresh.setVisibility(View.GONE);
         rlContent.addView(videoBackgroundRefresh);
-        tvVideoLoadingText = (TextView) view.findViewById(com.xueersi.parentsmeeting.module.player.R.id.tv_course_video_loading_tip); // 加载进度文字框
-        videoLoadingLayout = view.findViewById(com.xueersi.parentsmeeting.module.player.R.id.rl_course_video_loading); // 加载进度动画
-        btnVideoRefresh = (Button) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.module.player.R.id.btn_layout_video_resfresh); // 刷新按钮
+        tvVideoLoadingText = (TextView) view.findViewById(com.xueersi.parentsmeeting.module.player.R.id
+                .tv_course_video_loading_tip); // 加载进度文字框
+        videoLoadingLayout = view.findViewById(com.xueersi.parentsmeeting.module.player.R.id.rl_course_video_loading)
+        ; // 加载进度动画
+        btnVideoRefresh = (Button) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.module.player.R.id
+                .btn_layout_video_resfresh); // 刷新按钮
         btnVideoRefresh.setOnClickListener(btnRefreshListener); // 刷新事件
-        ivBack = (ImageView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.module.player.R.id.iv_layout_video_resfresh_back);
+        ivBack = (ImageView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.module.player.R.id
+                .iv_layout_video_resfresh_back);
         ivBack.setOnClickListener(ivRefreshBackListener); // 刷新页面的回退
 
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        LiveBackPlayerFragment fragment = (LiveBackPlayerFragment) getChildFragmentManager().findFragmentByTag("LivePlayerFragment");
+        LiveBackPlayerFragment fragment = (LiveBackPlayerFragment) getChildFragmentManager().findFragmentByTag
+                ("LivePlayerFragment");
         if (fragment == null) {
             fragment = getFragment();
             transaction.add(R.id.rl_live_video_frag, fragment, "LivePlayerFragment");
@@ -510,7 +523,8 @@ public class LiveBackVideoFragmentBase extends Fragment {
         @Override
         public void onVideoCreate() {
             video = "ijk";
-            logger.d("onActivityCreated:frag=" + ((ViewGroup) mContentView.findViewById(R.id.rl_live_video_frag)).getChildCount());
+            logger.d("onActivityCreated:frag=" + ((ViewGroup) mContentView.findViewById(R.id.rl_live_video_frag))
+                    .getChildCount());
             onSelect(savedInstanceState, video);
         }
     }
@@ -560,7 +574,8 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
         videoBackgroundRefresh.setVisibility(View.VISIBLE);
         updateRefreshImage();
-        TextView errorInfo = (TextView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.module.player.R.id.tv_course_video_errorinfo);
+        TextView errorInfo = (TextView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.module.player
+                .R.id.tv_course_video_errorinfo);
         AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
         if (error != null) {
             errorInfo.setVisibility(View.VISIBLE);
@@ -697,19 +712,22 @@ public class LiveBackVideoFragmentBase extends Fragment {
 
     protected void savePosition(long fromStart) {
         if (vPlayer != null && mUri != null) {
-            ShareDataManager.getInstance().put(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, fromStart, ShareDataManager
-                    .SHAREDATA_USER);
+            ShareDataManager.getInstance().put(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, fromStart,
+                    ShareDataManager
+                            .SHAREDATA_USER);
         }
     }
 
     /** 取出当前播放视频上次播放的点位 */
     protected long getStartPosition() {
-        if (mFromStart)
+        if (mFromStart) {
             return 0;
+        }
         // if (mStartPos <= 0.0f || mStartPos >= 1.0f)
         try {
-            return ShareDataManager.getInstance().getLong(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0, ShareDataManager
-                    .SHAREDATA_USER);
+            return ShareDataManager.getInstance().getLong(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0,
+                    ShareDataManager
+                            .SHAREDATA_USER);
         } catch (Exception e) {
             // 有一定不知明原因造成取出的播放点位int转long型失败,故加上这个值确保可以正常观看
             e.printStackTrace();
@@ -750,14 +768,17 @@ public class LiveBackVideoFragmentBase extends Fragment {
     protected void setFileName() {
         if (mUri != null) {
             String name = null;
-            if (mUri.getScheme() == null || mUri.getScheme().equals("file"))
+            if (mUri.getScheme() == null || mUri.getScheme().equals("file")) {
                 name = FileUtils.getFileName(mUri);
-            else
+            } else {
                 name = mUri.getLastPathSegment();
-            if (name == null)
+            }
+            if (name == null) {
                 name = "null";
-            if (mDisplayName == null)
+            }
+            if (mDisplayName == null) {
                 mDisplayName = name;
+            }
             mMediaController.setFileName(mDisplayName);
         }
     }
@@ -884,12 +905,16 @@ public class LiveBackVideoFragmentBase extends Fragment {
     protected void updateRefreshImage() {
         FooterIconEntity footerIconEntity = ShareDataManager.getInstance().getCacheEntity(FooterIconEntity.class, false,
                 ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
-        ImageView ivRefresh = (ImageView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.module.player.R.id.iv_course_video_refresh_bg);
+        ImageView ivRefresh = (ImageView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.module
+                .player.R.id.iv_course_video_refresh_bg);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
-                ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(com.xueersi.parentsmeeting.module.player.R.drawable.livevideo_cy_moren_logo_normal)
-                        .error(com.xueersi.parentsmeeting.module.player.R.drawable.livevideo_cy_moren_logo_normal).into(ivRefresh);
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
+                ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(com.xueersi.parentsmeeting.module
+                        .player.R.drawable.livevideo_cy_moren_logo_normal)
+                        .error(com.xueersi.parentsmeeting.module.player.R.drawable.livevideo_cy_moren_logo_normal)
+                        .into(ivRefresh);
+            }
         }
     }
 }

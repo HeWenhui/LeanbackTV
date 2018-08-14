@@ -192,10 +192,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         mUri = uri;
         mDisplayName = displayName;
 
-        if (viewRoot != null)
+        if (viewRoot != null) {
             viewRoot.invalidate();
-        if (mOpened != null)
+        }
+        if (mOpened != null) {
             mOpened.set(false);
+        }
 
         vPlayerHandler.sendEmptyMessage(OPEN_FILE);
     }
@@ -271,9 +273,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         vPlayer = new PlayerService(activity);
         vPlayer.onCreate();
         mServiceConnected = true;
-        if (mSurfaceCreated)
-            // 链接成功后尝试开始播放
+        if (mSurfaceCreated) {// 链接成功后尝试开始播放
             vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+        }
         // 设置当前是否为横屏
         setFileName(); // 设置视频显示名称
         showLongMediaController();
@@ -316,13 +318,16 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                         if (!mOpened.get() && vPlayer != null) {
                             mOpened.set(true);
                             vPlayer.setVPlayerListener(vPlayerServiceListener);
-                            if (vPlayer.isInitialized())
+                            if (vPlayer.isInitialized()) {
                                 mUri = vPlayer.getUri();
+                            }
 
-                            if (videoView != null)
+                            if (videoView != null) {
                                 vPlayer.setDisplay(videoView.getHolder());
-                            if (mUri != null)
+                            }
+                            if (mUri != null) {
                                 vPlayer.initialize(mUri, video, 0, vPlayerServiceListener, mIsHWCodec);
+                            }
                         }
                     }
                     break;
@@ -515,8 +520,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onBufferComplete() {
             String s = "onBufferComplete";
-            if (mIsPlayerEnable && vPlayer != null)
+            if (mIsPlayerEnable && vPlayer != null) {
                 vPlayerHandler.sendEmptyMessage(BUFFER_COMPLETE);
+            }
             if (vPlayer != null) {
                 vPlayer.startListenPlaying();
             }
@@ -613,8 +619,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     /** 加载播放器的默认设置参数 */
     private void loadVPlayerPrefs() {
-        if (!isInitialized())
+        if (!isInitialized()) {
             return;
+        }
         // 初始化播放器的参数
         vPlayer.setBuffer(VP.DEFAULT_BUF_SIZE);
         if (AppUtils.getAvailMemory(activity) > (long) (1024 * 1024 * 500)) {
@@ -626,8 +633,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
         vPlayer.setDeinterlace(VP.DEFAULT_DEINTERLACE);
         vPlayer.setVolume(leftVolume, rightVolume);
-        if (videoView != null && isInitialized())
+        if (videoView != null && isInitialized()) {
             setVideoLayout();
+        }
     }
 
     /***
@@ -673,14 +681,16 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     /** 控制开始播放视频 */
     public void start() {
-        if (isInitialized())
+        if (isInitialized()) {
             vPlayer.start();
+        }
     }
 
     /** 控制视频暂停 */
     public void pause() {
-        if (isInitialized())
+        if (isInitialized()) {
             vPlayer.pause();
+        }
     }
 
     /** 停止（按了返回键） */
@@ -689,9 +699,11 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     public void seekTo(long pos) {
-        if (isInitialized())
+        if (isInitialized()) {
             // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
+
             vPlayer.seekTo(pos);
+        }
         mShareDataManager.put(mUri + VP.SESSION_LAST_POSITION_SUFIX, (long) 0, ShareDataManager.SHAREDATA_USER);//重置播放进度
     }
 
@@ -756,10 +768,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     @Override
     public void onSurfaceCreated(SurfaceHolder holder) {
         mSurfaceCreated = true;
-        if (mServiceConnected)
+        if (mServiceConnected) {
             vPlayerHandler.sendEmptyMessage(OPEN_FILE);
-        if (vPlayer != null)
+        }
+        if (vPlayer != null) {
             vPlayer.setDisplay(holder);
+        }
     }
 
     @Override
@@ -775,27 +789,31 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                 vPlayer.setState(PlayerService.STATE_NEED_RESUME);
             }
             vPlayer.releaseSurface();
-            if (mIsPlayerEnable && vPlayer.needResume())
+            if (mIsPlayerEnable && vPlayer.needResume()) {
                 vPlayer.start();
+            }
         }
     }
 
     public long getCurrentPosition() {
-        if (isInitialized())
+        if (isInitialized()) {
             return vPlayer.getCurrentPosition();
+        }
         // return (long) (getStartPosition() * vPlayer.getDuration());
         return 0;
     }
 
     public long getDuration() {
-        if (isInitialized())
+        if (isInitialized()) {
             return vPlayer.getDuration();
+        }
         return 0;
     }
 
     public int getBufferPercentage() {
-        if (isInitialized())
+        if (isInitialized()) {
             return (int) (vPlayer.getBufferProgress() * 100);
+        }
         return 0;
     }
 
@@ -807,14 +825,17 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         float currentRatio = videoView.mVideoHeight / (float) videoHeight;
 
         currentRatio += (scaleFactor - 1);
-        if (videoWidth * currentRatio >= LiveVideoConfig.VIDEO_MAXIMUM_WIDTH)
+        if (videoWidth * currentRatio >= LiveVideoConfig.VIDEO_MAXIMUM_WIDTH) {
             currentRatio = LiveVideoConfig.VIDEO_MAXIMUM_WIDTH / (float) videoWidth;
+        }
 
-        if (videoHeight * currentRatio >= LiveVideoConfig.VIDEO_MAXIMUM_HEIGHT)
+        if (videoHeight * currentRatio >= LiveVideoConfig.VIDEO_MAXIMUM_HEIGHT) {
             currentRatio = LiveVideoConfig.VIDEO_MAXIMUM_HEIGHT / (float) videoHeight;
+        }
 
-        if (currentRatio < 0.5f)
+        if (currentRatio < 0.5f) {
             currentRatio = 0.5f;
+        }
 
         videoView.mVideoHeight = (int) (videoHeight * currentRatio);
         videoView.setVideoLayout(mVideoMode, userRatio, videoWidth, videoHeight, videoRatio);

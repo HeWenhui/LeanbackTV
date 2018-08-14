@@ -264,6 +264,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
     }
 
+    @Override
     protected void showRefresyLayout(int arg1, int arg2) {
         super.showRefresyLayout(arg1, arg2);
         TextView errorInfo = videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id
@@ -475,12 +476,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         super.onPause();
     }
 
+    @Override
     protected void onPlayOpenStart() {
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.VISIBLE);
         }
     }
 
+    @Override
     protected void onPlayOpenSuccess() {
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
@@ -488,6 +491,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         attachMediaController();
     }
 
+    @Override
     public void setSpeed(float speed) {
         String key = "null";
         if (mVideoEntity != null) {
@@ -739,10 +743,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)) {
                 ImageLoader.with(activity).load(loadingNoClickUrl).placeHolder(R.drawable
                         .livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into
                         (ivLoading);
+            }
         }
     }
 
