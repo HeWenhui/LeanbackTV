@@ -486,7 +486,8 @@ public class VideoChatBll implements VideoChatAction {
     };
 
     @Override
-    public void onJoin(final String onmic, final String openhands, final String room, final boolean classmateChange, final
+    public void onJoin(final String onmic, final String openhands, final String room, final boolean classmateChange,
+                       final
     ArrayList<ClassmateEntity> classmateEntities, final String from) {
         Log.e("VideoChatBill", onmic + " " + openhands + " " + room + " " + classmateChange + " " + from);
         btRaiseHands.post(new Runnable() {
@@ -504,7 +505,8 @@ public class VideoChatBll implements VideoChatAction {
                         break;
                     }
                 }
-                mLogtf.d("onJoin:from=" + from + ",onmic=" + onmic + ",openhands=" + openhands + ",size=" + classmateEntities.size() + "," +
+                mLogtf.d("onJoin:from=" + from + ",onmic=" + onmic + ",openhands=" + openhands + ",size=" +
+                        classmateEntities.size() + "," +
                         "classmateChange=" + classmateChange + ",contain=" + contain + ",isSuccess=" + isSuccess);
                 final boolean oldContainMe = containMe;
                 containMe = contain;
@@ -747,7 +749,7 @@ public class VideoChatBll implements VideoChatAction {
                         if ("on".equals(oldOpenhandsStatus)) {
                             if (!isSmallEnglish) {
                                 MicTipDialog micTipDialog = new MicTipDialog(activity);
-                                micTipDialog.setFail("老师结束了这次举手!");
+                                micTipDialog.setFail("老师已经结束了这次举手!");
                                 micTipDialog.showDialog();
                             } else {
                                 SmallEnglishMicTipDialog smallEnglishMicTipDialog = new SmallEnglishMicTipDialog
@@ -845,7 +847,7 @@ public class VideoChatBll implements VideoChatAction {
                         micTipDialog.showDialog();
                     } else {
                         SmallEnglishMicTipDialog smallEnglishMicTipDialog = new SmallEnglishMicTipDialog(activity);
-                        smallEnglishMicTipDialog.setFail("老师已经结束了这次举手!", 3000);
+                        smallEnglishMicTipDialog.setFail("老师结束了这次举手!", 3000);
 //                        smallEnglishMicTipDialog.showDialogAutoClose(3000);
                     }
                 }

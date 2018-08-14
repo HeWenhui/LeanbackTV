@@ -136,7 +136,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     //是否是小英
     private SmallEnglishSendFlowerPager smallEnglishSendFlowerPager;
     //测试使用的布尔值，用来控制无限发送弹幕
-    private boolean blTestSE = false;
+    private boolean blTestSEBullet = true;
     //打开献花弹窗时，北京变为80%黑色透明，且不可点击.
     private FrameLayout frameLayout;
     //整个布局的根View,用来献花弹窗增加背景时使用
@@ -875,11 +875,11 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             }
         });
         //测试时候使用
-        if (blTestSE) {
+        if (blTestSEBullet) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    while (blTestSE) {
+                    while (blTestSEBullet) {
                         addDanmaKuFlowers(FLOWERS_SMALL, "zyy");
                         try {
                             Thread.sleep(500);
