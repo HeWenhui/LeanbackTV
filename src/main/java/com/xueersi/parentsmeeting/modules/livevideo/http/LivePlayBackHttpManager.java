@@ -322,4 +322,17 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
         sendPost(liveVideoSAConfigInner.URL_LIVE_VISITTIME, params, httpCallBack);
     }
+
+    /**
+     * 回放获取弹幕接口
+     *
+     * @param requestCallBack
+     */
+    public void getVoiceBarrageMsg(String liveId, String stuCouId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_GET_VOICE_BARRAGE_MSG, params, requestCallBack);
+    }
 }

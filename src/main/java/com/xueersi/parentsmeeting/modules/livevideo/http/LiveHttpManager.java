@@ -1174,4 +1174,19 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
 
+
+    /**
+     * 学生端上传用户发言语句，用户统计分词结果
+     *
+     * @param requestCallBack
+     */
+    public void uploadVoiceBarrage(String liveId, String stuId, String voiceId, String msg, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("voiceId", voiceId);
+        params.addBodyParam("msg", msg);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_UPLOAD_VOICE_BARRAGE, params, requestCallBack);
+    }
 }

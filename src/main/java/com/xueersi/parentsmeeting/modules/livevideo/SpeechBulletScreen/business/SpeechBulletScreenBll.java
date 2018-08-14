@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -10,11 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.page.SpeechBulletScreenPager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.RoomAction;
+import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.page.SpeechBulletScreenPlayBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -25,7 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
  * 语音弹幕业务类
  */
 
-public class SpeechBulletScreenBll implements SpeechBulletScreenAction {
+public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
     public static final String TAG = "SpeechBulletScreenBll";
     private LiveHttpResponseParser mLiveHttpResponseParser = null;
     private Activity activity;
@@ -34,6 +31,8 @@ public class SpeechBulletScreenBll implements SpeechBulletScreenAction {
     private RelativeLayout rlSpeechBulContent;
     /** 语音弹幕的界面 */
     private SpeechBulletScreenPager mSpeechBulPager;
+    /** 回放弹幕的界面 */
+    private SpeechBulletScreenPlayBackPager mSpeechBulPlaybackPager;
 
     private SpeechBulletScreenHttp speechBulletScreenHttp;
     public void setSpeechBulletScreenHttp(SpeechBulletScreenHttp speechBulletScreenHttp) {
@@ -57,18 +56,46 @@ public class SpeechBulletScreenBll implements SpeechBulletScreenAction {
         this.mLiveBll = mLiveBll;
     }
 
-    public void initView(RelativeLayout bottomContent) {
-        if (rlSpeechBulContent != null) {
-            bottomContent.addView(rlSpeechBulContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        } else {
-            rlSpeechBulContent = new RelativeLayout(activity);
-            rlSpeechBulContent.setId(R.id.rl_livevideo_content_speechbul);
-            bottomContent.addView(rlSpeechBulContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        }
+    public void initView(final RelativeLayout bottomContent) {
+        mWeakHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (rlSpeechBulContent != null) {
+                    bottomContent.addView(rlSpeechBulContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                } else {
+                    rlSpeechBulContent = new RelativeLayout(activity);
+                    rlSpeechBulContent.setId(R.id.rl_livevideo_content_speechbul);
+                    bottomContent.addView(rlSpeechBulContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                }
+            }
+        });
+
+    }
+
+    public void onStartSpeechBulletScreenPlayBack() {
+        mWeakHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSpeechBulPlaybackPager = new SpeechBulletScreenPlayBackPager(activity,SpeechBulletScreenBll.this);
+                rlSpeechBulContent.removeAllViews();
+                rlSpeechBulContent.addView(mSpeechBulPlaybackPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                rlSpeechBulContent.setVisibility(View.VISIBLE);
+            }
+        },300);
     }
 
     @Override
     public void onStartSpeechBulletScreen() {
+        Log.i(TAG,"onStartSpeechBulletScreen()");
+//        activity.runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.i(TAG,"set:SOFT_INPUT_ADJUST_NOTHING()");
+//                WindowManager.LayoutParams attributes = activity.getWindow().getAttributes();
+//                activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING|WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+//                attributes = activity.getWindow().getAttributes();
+//            }
+//        });
         mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -76,20 +103,30 @@ public class SpeechBulletScreenBll implements SpeechBulletScreenAction {
                 rlSpeechBulContent.removeAllViews();
                 rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 rlSpeechBulContent.setVisibility(View.VISIBLE);
+                if (mSpeechBulPager != null) {
+                    mSpeechBulPager.setSpeechBulletScreenHttp(speechBulletScreenHttp);
+                    mSpeechBulPager.showShortToast("老师开启了语音弹幕");
+                }
             }
-        },1000);
+        },300);
     }
 
     @Override
-    public void onCloseSpeechBulletScreen() {
+    public void onCloseSpeechBulletScreen(final boolean hasTips) {
         mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
-                mSpeechBulPager = null;
-                rlSpeechBulContent.removeAllViews();
-                rlSpeechBulContent.setVisibility(View.INVISIBLE);
+                if (mSpeechBulPager != null) {
+                    mSpeechBulPager.CloseSpeechBulletScreen(hasTips);
+                }
             }
         });
+    }
+
+    public void addPlayBackDanmaku(final String name, final String msg, final String headImgUrl , final boolean isGuest) {
+        if (mSpeechBulPlaybackPager!=null) {
+            mSpeechBulPlaybackPager.addDanmaKuFlowers(name, msg, headImgUrl, true);
+        }
     }
 
     @Override
@@ -174,5 +211,9 @@ public class SpeechBulletScreenBll implements SpeechBulletScreenAction {
     @Override
     public void videoStatus(String status) {
 
+    }
+
+    public void onDestory() {
+        mSpeechBulPager.onDestroy();
     }
 }

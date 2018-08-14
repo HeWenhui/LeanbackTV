@@ -17,7 +17,7 @@ public interface SpeechBulletScreenAction {
     /**
      * 关闭语音弹幕
      */
-    void onCloseSpeechBulletScreen();
+    void onCloseSpeechBulletScreen(boolean hasTips);
 
     /** 开始连接 */
     void onStartConnect();
