@@ -387,6 +387,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                     isDestory = true;
                     isDestory2 = true;
                     rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
+                    //这里不能改为GONE，因为rl_livevideo_english_speak_error布局和rl_livevideo_english_speak_content在同一个高度和底部
                     rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
                     if (onAudioRequest != null) {
                         onAudioRequest.requestSuccess();
@@ -679,7 +680,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                 } else {
 //                    tv_livevideo_english_prog.setVisibility(View.VISIBLE);
 //                    rl_livevideo_english_stat.setVisibility(View.VISIBLE);
-                    rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+                    if (rl_livevideo_english_speak_error.getVisibility() != View.VISIBLE) {
+                        rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+                    }
                     if (!showTip) {
                         showTip = true;
 //                        int tips = mShareDataManager.getInt(ENGLISH_TIP, 0, ShareDataManager.SHAREDATA_NOT_CLEAR);

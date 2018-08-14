@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business;
+package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -16,29 +16,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.config.AppConfig;
-import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.StarInteractAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LineEvaluator;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -924,7 +914,9 @@ public class LiveAchievementBll implements StarInteractAction {
             iv_livevideo_starinteract_stat = (ImageView) flyStat.findViewById(R.id.iv_livevideo_starinteract_stat);
             if (type == AnimationType_STAR) {
                 endLinePoint.point = endStarPoint;
-                iv_livevideo_starinteract_stat.setImageResource(R.drawable.bg_livevideo_statinteract_stat_big);
+                iv_livevideo_starinteract_stat.setImageResource(isSmallEnglish ? R.drawable
+                        .bg_livevideo_small_english_statinteract_stat_big : R.drawable
+                        .bg_livevideo_statinteract_stat_big);
             } else {
                 endLinePoint.point = endGoldPoint;
                 iv_livevideo_starinteract_stat.setImageResource(R.drawable.bg_livevideo_statinteract_gold_big);
