@@ -1052,9 +1052,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void onClick(View v) {
                 if (liveBasePager instanceof BaseSpeechAssessmentPager) {
                     boolean isNotNull = speechAssessmentPager != null;
-                    rlQuestionContent.removeView(speechAssessmentPager.getRootView());
-                    mQueAndBool.add("" + speechAssessmentPager.getId());
-                    onPause();
+                    if (speechAssessmentPager != null) {
+                        speechAssessmentPager.onDestroy();
+                        rlQuestionContent.removeView(speechAssessmentPager.getRootView());
+                        mQueAndBool.add("" + speechAssessmentPager.getId());
+                        onPause();
+                    }
                     if (speechAssessmentPager != null) {
                         speechAssessmentPager.jsExamSubmit();
                     }
@@ -1205,7 +1208,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void stopSpeech(BaseSpeechAssessmentPager pager, final String num) {
         Loger.d(TAG, "stopSpeech:num=" + num + ",isAnaswer=" + isAnaswer);
         mQueAndBool.add("" + num);
-        if (speechAssessmentPager != null) {
+        if (pager == speechAssessmentPager && speechAssessmentPager != null) {
             speechAssessmentPager.onDestroy();
             rlQuestionContent.removeView(speechAssessmentPager.getRootView());
             if (speechAssessmentPager instanceof SpeechAssAutoPager) {
