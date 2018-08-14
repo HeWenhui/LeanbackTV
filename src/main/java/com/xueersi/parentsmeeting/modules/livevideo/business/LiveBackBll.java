@@ -217,9 +217,9 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
 
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
-
         VideoQuestionEntity oldQuestionEntity = mQuestionEntity;
         int playPosition = TimeUtils.gennerSecond(position);
+        logger.d("scanQuestion:playPosition=" + playPosition);
         mQuestionEntity = getPlayQuetion(TimeUtils.gennerSecond(position));
         if (oldQuestionEntity != null && oldQuestionEntity != mQuestionEntity) {
             if (oldQuestionEntity.isClick()) {
@@ -230,12 +230,14 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
             }
             LiveBackBaseBll liveBackBaseBll = array.get(oldQuestionEntity.getvCategory());
             if (liveBackBaseBll != null) {
+                logger.d("scanQuestion:onQuestionEnd");
                 liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
             }
             showQuestion.onShow(false);
         }
         if (mQuestionEntity != null && oldQuestionEntity != mQuestionEntity && !mQuestionEntity.isAnswered()) {
             mQuestionEntity.setAnswered(true);
+            logger.d("scanQuestion:showQuestion");
             showQuestion(oldQuestionEntity, showQuestion);
         }
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
@@ -286,9 +288,6 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         int index = 0;
         for (int i = 0; i < lstVideoQuestion.size(); i++) {
             VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(i);
-            if (videoQuestionEntity.isAnswered()) {
-                continue;
-            }
             startTime = videoQuestionEntity.getvQuestionInsretTime();
             endTime = videoQuestionEntity.getvEndTime();
             // 红包只有开始时间
