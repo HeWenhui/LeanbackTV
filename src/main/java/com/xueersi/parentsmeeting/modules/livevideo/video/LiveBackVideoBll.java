@@ -26,7 +26,7 @@ public class LiveBackVideoBll {
     LiveBackPlayerFragment liveBackPlayVideoFragment;
     /** 节名称 */
     private String mSectionName;
-    int index = 0;
+    static int index = 0;
     ArrayList<String> mWebPaths = new ArrayList<>();
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
@@ -63,7 +63,6 @@ public class LiveBackVideoBll {
             String mWebPath = mVideoEntity.getVideoPath();
             mWebPaths.add(mWebPath);
         }
-
     }
 
     public void setLiveBackPlayVideoFragment(LiveBackPlayerFragment liveBackPlayVideoFragment) {
@@ -83,7 +82,7 @@ public class LiveBackVideoBll {
     private PlayerService.VPlayerListener mPlayListener = new PlayerService.SimpleVPlayerListener() {
         @Override
         public void onOpenFailed(int arg1, int arg2) {
-            logger.d("onOpenFailed:arg2=" + arg2);
+            logger.d("onOpenFailed:index=" + index + ",arg2=" + arg2);
             super.onOpenFailed(arg1, arg2);
         }
 
@@ -95,7 +94,8 @@ public class LiveBackVideoBll {
 
         @Override
         public void onOpenSuccess() {
-            logger.d("onOpenSuccess");
+            logger.d("onOpenSuccess:index=" + index);
+            index--;
             super.onOpenSuccess();
         }
 
