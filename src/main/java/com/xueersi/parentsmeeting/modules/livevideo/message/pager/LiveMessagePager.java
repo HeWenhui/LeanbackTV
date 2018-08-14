@@ -136,7 +136,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     public LiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                             LiveAndBackDebug ums, BaseLiveMediaControllerBottom
-            liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity>
+                                    liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity>
                                     otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
@@ -163,6 +163,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 initData();
             }
         });
+        setVideoLayout(LiveVideoPoint.getInstance());
     }
 
     @Override
@@ -180,18 +181,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         switchFSPanelLinearLayout = (KPSwitchFSPanelLinearLayout) mView.findViewById(R.id
                 .rl_livevideo_message_panelroot);
         ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
-//        int screenWidth = ScreenUtils.getScreenWidth();
-//        int screenHeight = ScreenUtils.getScreenHeight();
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-//        int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
-//        int hradio = (int) ((LiveVideoConfig.VIDEO_HEIGHT - LiveVideoConfig.VIDEO_HEAD_HEIGHT) * screenHeight /
-//                LiveVideoConfig.VIDEO_HEIGHT);
-        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
-        params.width = liveVideoPoint.getRightMargin();
-        params.topMargin = liveVideoPoint.y3;
         logger.setLogMethod(false);
-        setVideoLayout(LiveVideoPoint.getInstance());
-        logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
         return mView;
     }
 
