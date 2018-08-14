@@ -561,6 +561,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     }
                     if (speechAssessmentPager != null) {
                         mLogtf.d("showQuestion:examSubmitAll:id=" + speechAssessmentPager.getId());
+                        speechAssessmentPager.onDestroy();
                         speechAssessmentPager.examSubmitAll();
                         if (speechAssessmentPager != null) {
                             rlQuestionContent.removeView(speechAssessmentPager.getRootView());
@@ -1206,7 +1207,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void stopSpeech(BaseSpeechAssessmentPager pager, final String num) {
-        Loger.d(TAG, "stopSpeech:num=" + num + ",isAnaswer=" + isAnaswer);
+        mLogtf.d("stopSpeech:num=" + num + ",isAnaswer=" + isAnaswer + ",same=" + (pager == speechAssessmentPager));
         mQueAndBool.add("" + num);
         if (pager == speechAssessmentPager && speechAssessmentPager != null) {
             speechAssessmentPager.onDestroy();
@@ -1242,11 +1243,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 speechAssessmentPagerUserBack = speechAssessmentPager;
                 setHaveSpeech(false);
             }
+        } else {
+            pager.onDestroy();
+            rlQuestionContent.removeView(pager.getRootView());
         }
         questionHttp.getStuGoldCount();
-
-        // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
-        //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
     }
 
     @Override
