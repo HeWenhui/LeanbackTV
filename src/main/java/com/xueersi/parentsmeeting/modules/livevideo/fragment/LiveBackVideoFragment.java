@@ -233,7 +233,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             lp.bottomMargin = 0;
             rl_course_video_live_controller_content.setLayoutParams(lp);
         }
-        setFileName(); // 设置视频显示名称
+        // 设置视频显示名称
+        mMediaController.setFileName(mDisplayName);
         if (liveBackBll.isShowQuestion()) {
             mMediaController.release();
             Loger.d(TAG, "attachMediaController:release:isShowQuestion");
@@ -362,6 +363,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
+        mDisplayName = mVideoEntity.getPlayVideoName();
         liveBackBll = new LiveBackBll(activity, mVideoEntity);
         liveBackBll.setStuCourId(stuCourId);
         liveBackBll.setvPlayer(vPlayer);
@@ -456,11 +458,18 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         liveBackBll.addBusinessBll(redPackagePlayBackBll);
         liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
-        if (liveBackBll.getPattern() != 2) {
-            liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));//回放聊天区加上MMD的皮肤
+        //直播
+        if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
+            //理科
+            if (liveBackBll.getIsArts() == 0) {
+                liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
+                initLiveRemarkBll();
+            } else {
+                if (liveBackBll.getPattern() != 2) {
+                    liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));//回放聊天区加上MMD的皮肤
+                }
+            }
         }
-        liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
-        initLiveRemarkBll();
     }
 
     @Override
