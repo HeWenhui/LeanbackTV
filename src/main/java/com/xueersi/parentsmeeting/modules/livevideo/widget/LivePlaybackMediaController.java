@@ -164,6 +164,9 @@ public class LivePlaybackMediaController extends MediaController2 {
                     }
                 } else {
                     if (!videoQuestionEntity.isAnswered()) {
+                        if( videoQuestionEntity.getvCategory()== LocalCourseConfig.CATEGORY_BULLETSCREEN) {
+                            continue;
+                        }
                         key = "" + videoQuestionEntity.getvCategory();
                         imageView.setBackgroundResource(R.drawable.shape_liveplayback_point);
                     }

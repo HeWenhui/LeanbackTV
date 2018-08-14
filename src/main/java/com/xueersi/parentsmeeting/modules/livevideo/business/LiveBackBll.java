@@ -217,6 +217,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
 
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
+
         VideoQuestionEntity oldQuestionEntity = mQuestionEntity;
         int playPosition = TimeUtils.gennerSecond(position);
         mQuestionEntity = getPlayQuetion(TimeUtils.gennerSecond(position));
@@ -236,6 +237,9 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         if (mQuestionEntity != null && oldQuestionEntity != mQuestionEntity && !mQuestionEntity.isAnswered()) {
             mQuestionEntity.setAnswered(true);
             showQuestion(oldQuestionEntity, showQuestion);
+        }
+        for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
+            businessBll.onPositionChanged(playPosition);
         }
     }
 

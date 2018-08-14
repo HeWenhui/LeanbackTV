@@ -108,6 +108,10 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
+    public void onPositionChanged(long position) {
+
+    }
+
     public <T> T getInstance(Class<T> clazz) {
         return ProxUtil.getProxUtil().get(mContext, clazz);
     }

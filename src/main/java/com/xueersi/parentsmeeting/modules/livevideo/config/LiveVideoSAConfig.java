@@ -156,6 +156,10 @@ public class LiveVideoSAConfig {
         /**文科表扬榜*/
         public String URL_ARTS_PRAISE_LIST ="http://app.arts.xueersi.com/LiveRank/getRankData";
 
+        /** 学生端上传用户发言语句，用户统计分词结果 */
+        public String URL_UPLOAD_VOICE_BARRAGE = HTTP_HOST + "/LiveCourse/uploadVoiceBarrage";
+        /** 回放获取弹幕接口 */
+        public String URL_GET_VOICE_BARRAGE_MSG = HTTP_HOST + "/LiveCourse/getVoiceBarrageMsg";
     }
 
 }

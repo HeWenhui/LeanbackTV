@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.dialog;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +28,12 @@ public class ShortToastDialog extends BaseAlertDialog {
         return view;
     }
 
-    public void setTips(String msg){
+    public void setMsg(String msg){
         tips.setText(msg);
+    }
+
+    public void setTypeface(Typeface typeface){
+        tips.setTypeface(typeface);
     }
 
     public void showDialog() {

@@ -159,6 +159,7 @@ public class SmallEnglishClassSignPager extends BasePager {
     //更新状态
     public void updateStatus(int status) {
         if (status == Config.SIGN_STATE_CODE_UNSIGN) {//准备签到
+            mView.removeCallbacks(closeRun);//移除之前关闭签到的Runnable.
             tvArtsStartSign.setVisibility(View.VISIBLE);
             tvArtsSignName.setVisibility(View.VISIBLE);
             ivArtsSignBoard.setVisibility(View.VISIBLE);
@@ -174,6 +175,7 @@ public class SmallEnglishClassSignPager extends BasePager {
             //3秒自动消失
             if (mView != null) {
 //                mView.getHandler().removeCallbacks(closeRun);
+                mView.removeCallbacks(closeRun);
                 mView.postDelayed(closeRun, 3000);
             }
         } else {//签到失败
@@ -185,6 +187,7 @@ public class SmallEnglishClassSignPager extends BasePager {
             //3秒自动消失
             if (mView != null) {
 //                mView.getHandler().removeCallbacks(closeRun);
+                mView.removeCallbacks(closeRun);
                 mView.postDelayed(closeRun, 3000);
             }
         }

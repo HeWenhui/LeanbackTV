@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
@@ -457,6 +458,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (liveBackBll.getPattern() != 2) {
             liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));//回放聊天区加上MMD的皮肤
         }
+        liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
         initLiveRemarkBll();
     }
 
