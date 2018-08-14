@@ -64,7 +64,7 @@ public class SmallEnglishMicTipDialog extends BaseAlertDialog {
         int oldStatus = status;
         status = FAIL;
         if (!isDialogShow()) {
-            showDialogAutoClose(3000);
+            showDialogAutoClose(seconds);
         }
         return oldStatus != status;
     }
@@ -74,7 +74,7 @@ public class SmallEnglishMicTipDialog extends BaseAlertDialog {
         int oldStatus = status;
         status = SUCCESS;
         if (!isDialogShow()) {
-            showDialogAutoClose(3000);
+            showDialogAutoClose(seconds);
         }
         return oldStatus != status;
     }

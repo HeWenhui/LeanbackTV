@@ -27,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
         android:layout_toLeftOf="@id/tv_livevideo_rank_item_right"
         android:layout_toRightOf="@id/rl_livevideo_rank_item_left"
         android:ellipsize="end"

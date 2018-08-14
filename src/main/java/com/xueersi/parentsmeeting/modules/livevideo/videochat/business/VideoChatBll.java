@@ -529,7 +529,7 @@ public class VideoChatBll implements VideoChatAction {
                             } else {
                                 dialog.setFail("你已被移出语音聊天室！耐心等待下次连麦机会！", 3000);
                             }
-                            dialog.showDialogAutoClose(3000);
+//                            dialog.showDialogAutoClose(3000);
                         } else {
                             final MicTipDialog micTipDialog = new MicTipDialog(activity);
 
@@ -747,13 +747,13 @@ public class VideoChatBll implements VideoChatAction {
                         if ("on".equals(oldOpenhandsStatus)) {
                             if (!isSmallEnglish) {
                                 MicTipDialog micTipDialog = new MicTipDialog(activity);
-                                micTipDialog.setFail("老师已经结束了这次举手!");
+                                micTipDialog.setFail("老师结束了这次举手!");
                                 micTipDialog.showDialog();
                             } else {
                                 SmallEnglishMicTipDialog smallEnglishMicTipDialog = new SmallEnglishMicTipDialog
                                         (activity);
-                                smallEnglishMicTipDialog.setFail("老师已经结束了这次举手!", 3000);
-                                smallEnglishMicTipDialog.showDialogAutoClose(3000);
+                                smallEnglishMicTipDialog.setFail("老师结束了这次举手!", 3000);
+//                                smallEnglishMicTipDialog.showDialogAutoClose(3000);
                             }
                         }
                     }
@@ -846,7 +846,7 @@ public class VideoChatBll implements VideoChatAction {
                     } else {
                         SmallEnglishMicTipDialog smallEnglishMicTipDialog = new SmallEnglishMicTipDialog(activity);
                         smallEnglishMicTipDialog.setFail("老师已经结束了这次举手!", 3000);
-                        smallEnglishMicTipDialog.showDialogAutoClose(3000);
+//                        smallEnglishMicTipDialog.showDialogAutoClose(3000);
                     }
                 }
             }
@@ -962,9 +962,9 @@ public class VideoChatBll implements VideoChatAction {
                 isFail = false;
                 onmicStatus = status;
                 //是小英不弹提示，其他的放在onJoin里处理
-                if (isSmallEnglish) {
-                    containMe = contain;
-                }
+//                if (isSmallEnglish) {
+//                    containMe = contain;
+//                }
                 if ("on".equals(status)) {
                     VideoChatLog.sno7(liveAndBackDebug, from, contain ? "1" : "0", nonce);
                     if (contain) {
