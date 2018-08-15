@@ -74,7 +74,7 @@
         <Button
             android:layout_width="120px"
             android:layout_height="40px"
-            android:layout_marginTop="148px"
+            android:layout_marginTop="145px"
             android:background="@drawable/bg_livevideo_small_english_sendflower_idol_img"
             android:clickable="false"
             android:text="&#160;&#160;&#160;&#160;10金币"
