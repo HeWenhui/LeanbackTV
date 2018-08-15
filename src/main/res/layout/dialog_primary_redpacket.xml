@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/psredpackage_confirm"
+            android:background="@drawable/selector_psredpackage_confirm"
             android:layout_marginBottom="38dp"
             />
         <ImageView
@@ -33,7 +33,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginRight="10dp"
             android:layout_marginTop="15dp"
-            android:src="@drawable/closeredpacketsbg"/>
+            android:src="@drawable/selector_closeredpacketsbg"/>
 
     </RelativeLayout>
 

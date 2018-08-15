@@ -139,7 +139,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/livevideo_pslearnreport_evaluation"
+            android:background="@drawable/selector_livevideo_pslearnreport_evaluation"
             android:layout_marginBottom="38dp"
             />
         <ImageView
@@ -150,7 +150,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:layout_marginRight="-6dp"
-            android:src="@drawable/understandclose"/>
+            android:src="@drawable/selector_understandclose_ps"/>
         <LinearLayout
             android:visibility="gone"
             android:id="@+id/ll_pslearnreport_secondview"

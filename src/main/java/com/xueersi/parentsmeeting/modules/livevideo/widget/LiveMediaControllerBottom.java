@@ -31,7 +31,11 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
 
     @Override
     public void onHide() {
-        findViewById(R.id.rl_livevideo_common_word).setVisibility(INVISIBLE);
+        if(LiveVideoConfig.isPrimary){
+            findViewById(R.id.rl_livevideo_common_wordps).setVisibility(INVISIBLE);
+        }else{
+            findViewById(R.id.rl_livevideo_common_word).setVisibility(INVISIBLE);
+        }
         super.onHide();
     }
 

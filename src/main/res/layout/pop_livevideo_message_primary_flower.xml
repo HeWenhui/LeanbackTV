@@ -165,7 +165,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginTop="12dp"
             android:layout_marginRight="-8dp"
-            android:src="@drawable/understandclose"/>
+            android:src="@drawable/selector_understandclose_ps"/>
     </RelativeLayout>
 
 

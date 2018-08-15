@@ -63,7 +63,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginRight="10dp"
             android:layout_marginTop="15dp"
-            android:src="@drawable/closeredpacketsbg"/>
+            android:src="@drawable/selector_closeredpacketsbg"/>
 
     </RelativeLayout>
 

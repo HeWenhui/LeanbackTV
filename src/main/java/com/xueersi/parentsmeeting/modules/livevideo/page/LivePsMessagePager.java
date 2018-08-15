@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordPsItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
@@ -185,7 +186,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 
     @Override
     public void initListener() {
-        rlLivevideoCommonWord = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_word);
+        rlLivevideoCommonWord = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_wordps);
 //        int screenWidth = ScreenUtils.getScreenWidth();
 //        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
 //        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
@@ -658,6 +659,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             @Override
             public AdapterItemInterface<String> getItemView(Object type) {
                 return new CommonWordItem(mContext, this);
+//                return new CommonWordPsItem(mContext, this);
             }
         });
         lvCommonWord.setOnItemClickListener(new AdapterView.OnItemClickListener() {

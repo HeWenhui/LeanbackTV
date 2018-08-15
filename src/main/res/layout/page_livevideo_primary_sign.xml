@@ -24,7 +24,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="28dp"
             android:layout_marginRight="30dp"
-            android:src="@drawable/understandclose"/>
+            android:src="@drawable/selector_understandclose_ps"/>
         <LinearLayout
             android:id="@+id/ll_start_sign"
             android:layout_above="@+id/bt_primary_sign"
@@ -57,7 +57,7 @@
             android:id="@+id/bt_primary_sign"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/primarysignbt"
+            android:background="@drawable/selector_primarysignbt"
             android:layout_marginBottom="25dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
