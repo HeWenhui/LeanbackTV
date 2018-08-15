@@ -513,6 +513,11 @@ public class LiveBackVideoFragmentBase extends Fragment {
             super.resultComplete();
             mIsEnd = true;
         }
+
+        @Override
+        protected long getStartPosition() {
+            return liveBackVideoFragment.getStartPosition();
+        }
     }
 
 
@@ -738,7 +743,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         } catch (Exception e) {
             // 有一定不知明原因造成取出的播放点位int转long型失败,故加上这个值确保可以正常观看
             e.printStackTrace();
-            return 0l;
+            return 0L;
         }
         // return mStartPos;
     }

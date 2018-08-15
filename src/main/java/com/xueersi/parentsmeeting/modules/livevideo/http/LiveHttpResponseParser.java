@@ -69,6 +69,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      */
     public void parseLiveGetInfoScience(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
         getInfo.setEducationStage(data.optString("educationStage", "0"));
+        try {
+            getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -79,7 +84,20 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param getInfo
      */
     public void parseLiveGetInfoLibarts(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
-
+        // 文科表扬榜
+        if (data.has("liveRank")) {
+            JSONObject jsonObject = data.optJSONObject("liveRank");
+            if (jsonObject != null) {
+                int showRank = jsonObject.optInt("showRankNum");
+                getInfo.setShowArtsPraise(showRank);
+            }
+        }
+        //小英萌萌哒皮肤专用
+        if (data.has("useSkin")) {
+            getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+        } else {
+            getInfo.setSmallEnglish(false);
+        }
     }
 
     /**
@@ -110,18 +128,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
             //getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
-            try {
-                //小英萌萌哒皮肤专用
-                if (data.has("useSkin")) {
-                    getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
-                } else {
-                    getInfo.setSmallEnglish(false);
-                }
-
-                getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             getInfo.setIsSeniorOfHighSchool(data.optInt("isSeniorOfHighSchool"));
 
             //getInfo.setIsShowCounselorWhisper("1");
@@ -132,14 +138,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 followTypeEntity.setInt3(followType.getInt("3"));
                 followTypeEntity.setInt4(followType.getInt("4"));
             }
-
-            // 文科表扬榜
-            if (data.has("liveRank")) {
-                JSONObject jsonObject = data.optJSONObject("liveRank");
-                int showRank = jsonObject.optInt("showRankNum");
-                getInfo.setShowArtsPraise(showRank);
-            }
-
 
             getInfo.setTeacherId(data.getString("teacherId"));
             getInfo.setTeacherName(data.getString("teacherName"));

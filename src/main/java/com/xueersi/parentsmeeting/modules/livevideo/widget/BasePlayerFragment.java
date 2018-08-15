@@ -326,7 +326,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                 vPlayer.setDisplay(videoView.getHolder());
                             }
                             if (mUri != null) {
-                                vPlayer.initialize(mUri, video, 0, vPlayerServiceListener, mIsHWCodec);
+                                vPlayer.initialize(mUri, video, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
                             }
                         }
                     }
@@ -447,6 +447,10 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     public void removeLoadingView() {
         videoLoadingLayout.setVisibility(View.GONE);
+    }
+
+    protected long getStartPosition() {
+        return 0L;
     }
 
     protected PlayerService.VPlayerListener vPlayerServiceListener = new PlayerService.VPlayerListener() {
