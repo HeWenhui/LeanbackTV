@@ -57,6 +57,9 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
     private int CIRCEL_WIDTH = 40;
     private int CIRCEL_HEIGHT = 40;
 
+    Drawable drawable;
+
+
     public BaseSmallEnglishLiveMessagePager(Context context) {
         super(context);
         DANMU_PADDING = SizeUtils.Dp2Px(context, DANMU_PADDING);
@@ -68,6 +71,9 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
         BITMAP_HEIGHT_ME = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_ME);
         CIRCEL_HEIGHT = SizeUtils.Dp2Px(context, CIRCEL_HEIGHT);
         CIRCEL_WIDTH = SizeUtils.Dp2Px(context, CIRCEL_WIDTH);
+        drawable = mContext.getResources().getDrawable(R.drawable
+                .bg_livevideo_send_flower_screen_bullet_background);
+
     }
 
     @Override
@@ -148,6 +154,9 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
         @Override
         public void releaseResource(BaseDanmaku danmaku) {
             // TODO 重要:清理含有ImageSpan的text中的一些占用内存的资源 例如drawable
+            if (danmaku.text instanceof SpannableStringBuilder) {
+                danmaku.text = "";
+            }
         }
     };
 
@@ -301,8 +310,7 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
 //                                    + danmaku.padding),
 //                    DANMU_RADIUS, DANMU_RADIUS, paint);
 //            }
-            Drawable drawable = mContext.getResources().getDrawable(R.drawable
-                    .bg_livevideo_send_flower_screen_bullet_background);
+
             float height = 0.0f;
             height = drawable.getIntrinsicHeight();
             float offsetRight = 0.0f;
