@@ -73,6 +73,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             keyboardShowingReg.addKeyboardShowing(mQuestionAction);
         }
         mQuestionAction.setLiveType(mLiveType);
+        if (mLiveAutoNoticeBll != null) {
+            mQuestionAction.setLiveAutoNoticeBll(mLiveAutoNoticeBll.getLiveAutoNoticeBll());
+        }
     }
 
     @Override
