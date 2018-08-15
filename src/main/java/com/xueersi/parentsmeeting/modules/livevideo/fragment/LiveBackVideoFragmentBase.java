@@ -560,6 +560,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
             }
             viewRoot.setLayoutParams(lp);
         }
+        liveBackPlayVideoFragment.loadLandOrPortView(mIsLand.get());
     }
 
     /** 设置播放器的界面布局 */
