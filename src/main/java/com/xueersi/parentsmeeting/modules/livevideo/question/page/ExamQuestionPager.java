@@ -44,7 +44,7 @@
 // * 直播试卷答题页面
 // */
 //public class ExamQuestionPager extends BasePager implements BaseExamQuestionInter {
-//    private String EXAM_URL = "http://live.xueersi.com/LiveExam/examPaper";
+//    private String EXAM_URL = "https://live.xueersi.com/LiveExam/examPaper";
 //    String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
 //    private Button btSubjectClose;
 //    Button bt_livevideo_subject_calljs;
@@ -142,7 +142,7 @@
 //        ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
 //        ((AnimationDrawable) ivLoading.getBackground()).start();
 //        String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
-//        EXAM_URL = "http://live.xueersi.com/" + host + "/LiveExam/examPaper";
+//        EXAM_URL = "https://live.xueersi.com/" + host + "/LiveExam/examPaper";
 //        examUrl = EXAM_URL + "?liveId=" + liveid
 //                + "&testPlan=" + num + "&isPlayBack=0&stuId=" + stuId + "&stuName=" + stuName;
 //        if (!StringUtils.isEmpty(nonce)) {
