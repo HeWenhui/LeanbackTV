@@ -223,7 +223,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     public void setIsAutoOrientation(boolean mIsAutoOrientation) {
         logger.d("setIsAutoOrientation:mIsAutoOrientation=" + mIsAutoOrientation);
-//        this.mIsAutoOrientation = mIsAutoOrientation;
+        this.mIsAutoOrientation = mIsAutoOrientation;
         if (mOrientationEventListener == null) {
             mOrientationEventListener = new VideoOrientationEventListener(activity);
             if (mOrientationEventListener.canDetectOrientation()) {
