@@ -276,27 +276,37 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
                         String sender = entity.getSender();
                         SpannableString spanttt = new SpannableString(sender + ": ");
-                        int color;
+                        int color, messageColor;
                         switch (entity.getType()) {
                             case LiveMessageEntity.MESSAGE_MINE:
                             case LiveMessageEntity.MESSAGE_TEACHER:
+                                color = nameColors[entity.getType()];
+                                messageColor = mContext.getResources().getColor(R.color.COLOR_FFC3DAFF);
+                                break;
                             case LiveMessageEntity.MESSAGE_TIP:
                             case LiveMessageEntity.MESSAGE_CLASS:
                                 color = nameColors[entity.getType()];
+                                messageColor = mContext.getResources().getColor(R.color.COLOR_FFFFFFFF);
                                 break;
                             default:
                                 color = nameColors[0];
+                                messageColor = mContext.getResources().getColor(R.color.COLOR_FFFFFFFF);
                                 break;
                         }
+                        SpannableStringBuilder messageSpan = new SpannableStringBuilder(entity.getText());
                         CharacterStyle characterStyle = new ForegroundColorSpan(color);
+                        CharacterStyle messageStyle = new ForegroundColorSpan(messageColor);
                         spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        messageSpan.setSpan(messageStyle, 0, entity.getText().length(), Spanned
+                                .SPAN_INCLUSIVE_EXCLUSIVE);
                         if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
                             tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
                             tvMessageItem.setText(entity.getText());
                             urlClick(tvMessageItem);
-                            CharSequence text = tvMessageItem.getText();
+//                            CharSequence text = tvMessageItem.getText();
                             tvMessageItem.setText(spanttt);
-                            tvMessageItem.append(text);
+                            tvMessageItem.append(messageSpan);
+//                            tvMessageItem.append(text);
                         } else {
                             tvMessageItem.setAutoLinkMask(0);
                             tvMessageItem.setText(spanttt);
