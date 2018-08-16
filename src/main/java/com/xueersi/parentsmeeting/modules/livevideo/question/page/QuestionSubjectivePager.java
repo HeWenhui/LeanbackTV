@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,12 +20,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.QuesReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import com.xueersi.ui.widget.button.progressbutton.CircularProgressButton;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+
+import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
 /**
  * @author linyuqiang 文科主观题
@@ -201,6 +205,22 @@ public class QuestionSubjectivePager extends BaseLiveQuestionPager {
                 Activity.INPUT_METHOD_SERVICE);
         inputmanger.hideSoftInputFromWindow(mImgDown.getWindowToken(), 0);
 
+    }
+
+    @Override
+    public void onKeyboardShowing(boolean isShowing) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
+        int bottomMargin;
+        if (isShowing) {
+            bottomMargin = KeyboardUtil.getValidPanelHeight(mContext);
+        } else {
+            bottomMargin = 0;
+        }
+        if (bottomMargin != lp.bottomMargin) {
+            lp.bottomMargin = bottomMargin;
+//            wvSubjectWeb.setLayoutParams(lp);
+            LayoutParamsUtil.setViewLayoutParams(mView, lp);
+        }
     }
 
     @Override

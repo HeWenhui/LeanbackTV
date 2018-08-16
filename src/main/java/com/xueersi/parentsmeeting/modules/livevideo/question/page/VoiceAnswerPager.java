@@ -17,7 +17,6 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -44,6 +43,8 @@ import java.util.List;
  */
 
 public class VoiceAnswerPager extends BaseVoiceAnswerPager {
+    static int staticInt = 0;
+    String TAG = "VoiceAnswerPager" + staticInt++;
     String eventId = LiveVideoConfig.LIVE_TEST_VOICE;
     private SpeechEvaluatorUtils mIse;
     BaseVideoQuestionEntity baseVideoQuestionEntity;
@@ -79,7 +80,6 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     /** 是不是用户切换答题 */
     boolean userSwitch = false;
     String type;
-    ScoreAndIndex lastMaxScoreAndIndex = null;
     int netWorkType = NetWorkHelper.WIFI_STATE;
     private long entranceTime;
 
@@ -159,7 +159,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                 logHashMap.put("sourcetype", sourcetype).put("clicktime", "" + (System.currentTimeMillis() - entranceTime) / 1000);
                 logHashMap.addExY().addExpect("1").addSno("6").addStable("2");
                 umsAgentDebugInter(eventId, logHashMap.getData());
-                switchQuestion();
+                switchQuestion("Click");
             }
         });
 //        tvVoiceansTitle.setOnClickListener(new View.OnClickListener() {
@@ -172,8 +172,8 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
 //        });
     }
 
-    private void switchQuestion() {
-        Loger.d(TAG, "switchQuestion:isEnd=" + isEnd);
+    private void switchQuestion(String method) {
+        mLogtf.d("switchQuestion:method=" + method + ",isEnd=" + isEnd);
         if (isEnd) {
             return;
         }
@@ -260,6 +260,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
 
     @Override
     public void setEnd() {
+        mLogtf.d("setEnd");
         isEnd = true;
     }
 
@@ -321,6 +322,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     VoiceEvaluatorListener listener = new VoiceEvaluatorListener();
 
     private void onEvaluatorError(final ResultEntity resultEntity) {
+        mLogtf.d("onEvaluatorError:userSwitch=" + userSwitch + ",userBack=" + userBack + ",isEnd=" + isEnd);
         isSpeechError = true;
         if (userSwitch || userBack) {
             return;
@@ -380,7 +382,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                     public void run() {
 //                        rlSpeectevalTip.setVisibility(View.GONE);
                         rlSpeectevalTipGone();
-                        switchQuestion();
+                        switchQuestion("NO_NETWORK");
                     }
                 }, 1500);
             }
@@ -392,7 +394,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    switchQuestion();
+                    switchQuestion("Other");
                 }
             }, 1500);
         }
@@ -623,201 +625,18 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     }
 
     private void startEvaluator() {
+        if (isEnd) {
+            ViewGroup group = (ViewGroup) mView.getParent();
+            mLogtf.d("examSubmitAll:group=" + group);
+            if (group == null) {
+                return;
+            }
+            questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
+            return;
+        }
         saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
         listener.saveVideoFile = saveVideoFile;
         mIse.startEnglishEvaluatorOffline(assess_ref.toString(), saveVideoFile.getPath(), multRef, listener);
     }
 
-    static class ScoreAndIndex {
-        int score;
-        int index;
-
-        @Override
-        public String toString() {
-            return "" + score;
-        }
-    }
-
-//    private void onEvaluatorSuccess2(final ResultEntity resultEntity) {
-//        if (userSwitch || userBack) {
-//            return;
-//        }
-//        int[] scores = resultEntity.getScores();
-//        if (scores == null) {
-//            Loger.d(TAG, "onResult(SUCCESS):scores.null");
-//        } else {
-//            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
-//                String sss = "";
-//                ScoreAndIndex maxScoreAndIndex = null;
-//                ScoreAndIndex secScoreAndIndex = null;
-//                for (int i = 0; i < scores.length; i++) {
-//                    int score = scores[i];
-//                    sss += score + ",";
-//                    if (score >= 70) {
-//                        ScoreAndIndex scoreAndIndex = new ScoreAndIndex();
-//                        scoreAndIndex.score = score;
-//                        scoreAndIndex.index = i;
-//                        if (maxScoreAndIndex == null) {
-//                            maxScoreAndIndex = scoreAndIndex;
-//                        } else {
-//                            if (maxScoreAndIndex.score < score) {
-//                                secScoreAndIndex = maxScoreAndIndex;
-//                                maxScoreAndIndex = scoreAndIndex;
-//                            } else {
-//                                if (secScoreAndIndex == null) {
-//                                    secScoreAndIndex = scoreAndIndex;
-//                                } else if (secScoreAndIndex.score < score) {
-//                                    secScoreAndIndex = scoreAndIndex;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//                Loger.d(TAG, "onResult(SUCCESS):scores=" + sss + ",max=" + maxScoreAndIndex + ",sec=" + secScoreAndIndex + ",isEnd=" + isEnd);
-//                if (maxScoreAndIndex != null) {
-//                    boolean isAnswer = false;
-//                    if (secScoreAndIndex == null) {
-//                        isAnswer = true;
-//                    } else {
-//                        if (lastMaxScoreAndIndex != null) {
-//                            isAnswer = true;
-//                        } else {
-//                            if (maxScoreAndIndex.score - secScoreAndIndex.score >= 10) {
-//                                isAnswer = true;
-//                            } else {
-//                                lastMaxScoreAndIndex = maxScoreAndIndex;
-//                                if (isEnd) {
-//                                    isAnswer = true;
-//                                } else {
-////                                XESToastUtils.showToast(mContext, "你的答案多读");
-//                                    rlSpeectevalTip.setVisibility(View.VISIBLE);
-//                                    tvSpeectevalTip.setText("要认真作答哦，\n赶紧再来一次！");
-//                                    tvSpeectevalTip.setTag("6");
-//                                    mView.postDelayed(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            rlSpeectevalTip.setVisibility(View.GONE);
-//                                        }
-//                                    }, 1500);
-//                                    Loger.d(TAG, "onResult(SUCCESS):more");
-//                                    mView.postDelayed(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            startEvaluator();
-//                                        }
-//                                    }, 200);
-//                                }
-//                            }
-//                        }
-//                    }
-//                    if (isAnswer) {
-//                        try {
-//                            JSONArray options = assess_ref.getJSONArray("options");
-//                            JSONObject jsonObject = options.getJSONObject(maxScoreAndIndex.index);
-//                            String option = jsonObject.optString("option");
-////                            XESToastUtils.showToast(mContext, "你的答案" + option);
-//                            tvVoiceansSwitch.setVisibility(View.GONE);
-//                            questionSwitch.uploadVoiceFile(saveVideoFile);
-//                            isSpeechSuccess = true;
-//                            questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, answer, option, maxScoreAndIndex.score, false, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
-//                                @Override
-//                                public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-//
-//                                }
-//
-//                                @Override
-//                                public void onAnswerFailure() {
-//                                    isSpeechSuccess = false;
-//                                    if (isEnd) {
-//                                        questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
-//                                    } else {
-//                                        tvVoiceansSwitch.setVisibility(View.VISIBLE);
-////                                        XESToastUtils.showToast(mContext, "提交失败，请重读");
-//                                        rlSpeectevalTip.setVisibility(View.VISIBLE);
-//                                        tvSpeectevalTip.setText("提交失败，请重读");
-//                                        tvSpeectevalTip.setTag("7");
-//                                        mView.postDelayed(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-//                                                rlSpeectevalTip.setVisibility(View.GONE);
-//                                            }
-//                                        }, 1500);
-//                                        Loger.d(TAG, "onResult(SUCCESS):onAnswerFailure");
-//                                        mView.postDelayed(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-//                                                startEvaluator();
-//                                            }
-//                                        }, 200);
-//                                    }
-//                                }
-//                            });
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                } else {
-//                    if (isEnd) {
-//                        questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
-//                    } else {
-////                        XESToastUtils.showToast(mContext, "重读");
-//                        rlSpeectevalTip.setVisibility(View.VISIBLE);
-//                        tvSpeectevalTip.setText("要认真作答哦，\n赶紧再来一次");
-//                        tvSpeectevalTip.setTag("8");
-//                        mView.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                rlSpeectevalTip.setVisibility(View.GONE);
-//                            }
-//                        }, 1500);
-//                        Loger.d(TAG, "onResult(SUCCESS):reread");
-//                        mView.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                startEvaluator();
-//                            }
-//                        }, 200);
-//                    }
-//                }
-//            } else {
-//                int score = scores[0];
-//                Loger.d(TAG, "onResult(SUCCESS):score=" + score);
-//                try {
-//                    JSONArray options = assess_ref.getJSONArray("options");
-//                    JSONObject jsonObject = options.getJSONObject(0);
-//                    JSONArray content1 = jsonObject.getJSONArray("content");
-////                    XESToastUtils.showToast(mContext, "你的答案" + answer);
-//                    tvVoiceansSwitch.setVisibility(View.GONE);
-//                    questionSwitch.uploadVoiceFile(saveVideoFile);
-//                    isSpeechSuccess = true;
-//                    questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, content1.getString(0), content1.getString(0), score, false, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
-//                        @Override
-//                        public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onAnswerFailure() {
-//                            isSpeechSuccess = false;
-//                            if (isEnd) {
-//                                questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
-//                            } else {
-//                                tvVoiceansSwitch.setVisibility(View.VISIBLE);
-//                                XESToastUtils.showToast(mContext, "提交失败，请重读");
-//                                Loger.d(TAG, "onResult(SUCCESS):onAnswerFailure");
-//                                mView.postDelayed(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        startEvaluator();
-//                                    }
-//                                }, 200);
-//                            }
-//                        }
-//                    });
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
 }

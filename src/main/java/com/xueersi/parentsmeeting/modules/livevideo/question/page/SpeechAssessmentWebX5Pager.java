@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -177,7 +178,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
 //        String url = "http://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
 //                liveid + "/" + stuCouId + "/" + testId + "/" + stuId;
-        String url = "http://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
+        String url = "https://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
                 liveid + "/" + testId + "/" + stuId;
 //        String url = "http://172.88.1.180:8082";
         if (!StringUtils.isEmpty(nonce)) {
@@ -691,63 +692,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                                 mIsStop = false;
                             }
                         }
-                        final boolean result = AudioPlayer.audioPlayerAsyncControl(playUrl, mContext, 1000, new
-                                AudioPlayerListening() {
-                                    @Override
-                                    public void playComplete(int where) {
-                                        mLogtf.i("playComplete:where=" + where + ",mIsStop=" + mIsStop);
-                                        try {
-                                            AudioPlayer.stop();
-                                        } catch (Exception e) {
-
-                                        }
-                                        if (mIsStop) {
-                                            if (!TextUtils.isEmpty(tip)) {
-                                                isRebotLast = false;
-                                                if (tip.equals("false")) {
-                                                    jsStopRecordBtn();
-                                                } else if (tip.equals("last")) {
-                                                    isRebotLast = true;
-                                                    jsStopRecordBtn();
-                                                }
-                                            }
-                                        }
-                                        mIsStop = true;
-                                        Loger.i(TAG, "playComplete");
-                                    }
-
-                                    @Override
-                                    public void prepared(int duration) {
-                                        mLogtf.i("prepared:duration=" + duration);
-                                        mCurrentPlayVoiceUrl = mVoiceUrl;
-                                        AudioPlayer.play();
-                                    }
-
-                                    @Override
-                                    public void currentDuration(int current, int duration) {
-                                        Loger.i(TAG, "currentDuration:current=" + current + ",duration=" +
-                                                duration);
-                                    }
-
-                                    @Override
-                                    public void onError(int what, int code) {
-                                        super.onError(what, code);
-                                        mLogtf.i("onError:what=" + what + ",code=" + code);
-                                        if (!TextUtils.isEmpty(tip)) {
-                                            isRebotLast = false;
-                                            if ("false".equals(tip)) {
-                                                jsStopRecordBtn();
-                                            } else if ("last".equals(tip)) {
-                                                isRebotLast = true;
-                                                jsStopRecordBtn();
-                                            }
-                                        }
-                                    }
-                                }, false, 0, true);
-                        mLogtf.i("jsRecordError:result=" + result);
-                        if (!result) {
-                            jsRecordError(ResultCode.PLAY_RECORD_FAIL);
-                        }
+                        remoteAudioPlayerControl(tip, playUrl);
                     }
                 });
             }
@@ -770,33 +715,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                     wvSubjectWeb.post(new Runnable() {
                         @Override
                         public void run() {
-                            AudioPlayer.releaseAudioPlayer(mContext);
-                            boolean result = AudioPlayer.audioPlayerControl(saveVideoFile.getPath(), mContext, 1000, new
-                                    AudioPlayerListening() {
-
-                                        @Override
-                                        public void playComplete(int where) {
-                                            setPlayStatus(false);
-                                            Loger.i(TAG, "playComplete");
-                                        }
-
-                                        @Override
-                                        public void prepared(int duration) {
-                                            setPlayStatus(true);
-                                            Loger.i(TAG, "prepared:duration=" + duration);
-                                        }
-
-                                        @Override
-                                        public void currentDuration(int current, int duration) {
-                                            Loger.i(TAG, "currentDuration:current=" + current + ",duration=" +
-                                                    duration);
-
-                                        }
-
-                                    }, false, 0, true);
-                            if (!result) {
-                                jsRecordError(ResultCode.PLAY_RECORD_FAIL);
-                            }
+                            localAudioPlayerControl();
                         }
                     });
                 }
@@ -804,6 +723,244 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                 mLogtf.i("playRecordFile:saveVideoFile=" + saveVideoFile + ",exists=false");
                 jsRecordError(ResultCode.PLAY_RECORD_FAIL);
             }
+        }
+    }
+
+    Runnable localPlayTimeOut = new Runnable() {
+        @Override
+        public void run() {
+            if (mView.getParent() == null) {
+                return;
+            }
+            mLogtf.i("localPlayTimeOut");
+            localAudioPlayerControl();
+        }
+    };
+
+    class RemotePlayTimeOut implements Runnable {
+        String tip;
+        String playUrl;
+
+        @Override
+        public void run() {
+            if (mView.getParent() == null) {
+                return;
+            }
+            mLogtf.i("remotePlayTimeOut");
+            remoteAudioPlayerControl(tip, playUrl);
+        }
+    }
+
+    RemotePlayTimeOut remotePlayTimeOut = new RemotePlayTimeOut();
+
+    /**
+     * 播放远程音频
+     *
+     * @param tip
+     * @param playUrl
+     */
+    private void remoteAudioPlayerControl(String tip, String playUrl) {
+        remoteAudioPlayerListening = new RemoteAudioPlayerListening(tip);
+        remotePlayTimeOut.tip = tip;
+        remotePlayTimeOut.playUrl = playUrl;
+        mHandler.removeCallbacks(remotePlayTimeOut);
+        mHandler.postDelayed(remotePlayTimeOut, 5000);
+        final boolean result = AudioPlayer.audioPlayerAsyncControl(playUrl, mContext, 1000, remoteAudioPlayerListening, false, 0, true);
+        mLogtf.i("remoteAudioPlayerControl:result=" + result + ",playUrl=" + playUrl);
+        if (!result) {
+            mHandler.removeCallbacks(remotePlayTimeOut);
+            jsRecordError(ResultCode.PLAY_RECORD_FAIL);
+        }
+    }
+
+    /**
+     * 播放本地音频
+     */
+    private void localAudioPlayerControl() {
+        AudioPlayer.releaseAudioPlayer(mContext);
+        localAudioPlayerListening = new LocalAudioPlayerListening();
+        mHandler.removeCallbacks(localPlayTimeOut);
+        mHandler.postDelayed(localPlayTimeOut, 5000);
+        boolean result = AudioPlayer.audioPlayerControl(saveVideoFile.getPath(), mContext, 1000, localAudioPlayerListening, false, 0, true);
+        mLogtf.i("localAudioPlayerControl:result=" + result);
+        if (!result) {
+            mHandler.removeCallbacks(localPlayTimeOut);
+            jsRecordError(ResultCode.PLAY_RECORD_FAIL);
+        }
+    }
+
+    private RemoteAudioPlayerListening remoteAudioPlayerListening;
+
+    class RemoteAudioPlayerListening extends AudioPlayerListening {
+        String tip;
+
+        RemoteAudioPlayerListening(String tip) {
+            this.tip = tip;
+        }
+
+        @Override
+        public void playComplete(int where) {
+            if (remoteAudioPlayerListening != this) {
+                mLogtf.i("remoteplayComplete:old:where=" + where + ",mIsStop=" + mIsStop);
+                return;
+            }
+            remoteAudioPlayerListening = null;
+            mHandler.removeCallbacks(remotePlayTimeOut);
+            mLogtf.i("remoteplayComplete:where=" + where + ",mIsStop=" + mIsStop);
+            try {
+                AudioPlayer.stop();
+            } catch (Exception e) {
+
+            }
+            if (mIsStop) {
+                if (!TextUtils.isEmpty(tip)) {
+                    isRebotLast = false;
+                    if (tip.equals("false")) {
+                        jsStopRecordBtn();
+                    } else if (tip.equals("last")) {
+                        isRebotLast = true;
+                        jsStopRecordBtn();
+                    }
+                }
+            }
+            mIsStop = true;
+            Loger.i(TAG, "playComplete");
+        }
+
+        @Override
+        public void prepared(int duration) {
+            if (remoteAudioPlayerListening != this) {
+                mLogtf.i("remoteprepared:old:duration=" + duration);
+                return;
+            }
+            mHandler.removeCallbacks(remotePlayTimeOut);
+            mLogtf.i("remoteprepared:duration=" + duration);
+            mCurrentPlayVoiceUrl = mVoiceUrl;
+            AudioPlayer.play();
+        }
+
+        int lastcurrent = -1;
+        int times = 0;
+
+        @Override
+        public void currentDuration(int current, int duration) {
+            if (lastcurrent != current) {
+                Loger.i(TAG, "remotecurrentDuration:current=" + current + ",duration=" +
+                        duration);
+            } else {
+                times++;
+                if (times > 15) {
+                    Loger.i(TAG, "remotecurrentDuration:times10:current=" + current);
+                    try {
+                        AudioPlayer.stop();
+                    } catch (Exception e) {
+
+                    }
+                    playComplete(100);
+                }
+            }
+            lastcurrent = current;
+        }
+
+//        @Override
+//        public void onError(MediaPlayer mp, int what, int extra) {
+//            if (remoteAudioPlayerListening != this) {
+//                mLogtf.i("remoteonError1:old:what=" + what + ",extra=" + extra);
+//                return;
+//            } else {
+//                mLogtf.i("remoteonError1:what=" + what + ",extra=" + extra);
+//            }
+//            if (!TextUtils.isEmpty(tip)) {
+//                isRebotLast = false;
+//                if ("false".equals(tip)) {
+//                    jsStopRecordBtn();
+//                } else if ("last".equals(tip)) {
+//                    isRebotLast = true;
+//                    jsStopRecordBtn();
+//                }
+//            }
+//        }
+
+        @Override
+        public void onError(int what, int code) {
+            if (remoteAudioPlayerListening != this) {
+                mLogtf.i("remoteonError2:old:what=" + what + ",code=" + code);
+                return;
+            } else {
+                mLogtf.i("remoteonError2:what=" + what + ",code=" + code);
+            }
+            if (!TextUtils.isEmpty(tip)) {
+                isRebotLast = false;
+                if ("false".equals(tip)) {
+                    jsStopRecordBtn();
+                } else if ("last".equals(tip)) {
+                    isRebotLast = true;
+                    jsStopRecordBtn();
+                }
+            }
+        }
+    }
+
+    private LocalAudioPlayerListening localAudioPlayerListening;
+
+    class LocalAudioPlayerListening extends AudioPlayerListening {
+
+        @Override
+        public void playComplete(int where) {
+            if (localAudioPlayerListening != this) {
+                Loger.i(TAG, "localplayComplete:old");
+                return;
+            }
+            mHandler.removeCallbacks(localPlayTimeOut);
+            localAudioPlayerListening = null;
+            setPlayStatus(false);
+            Loger.i(TAG, "localplayComplete");
+        }
+
+        @Override
+        public void prepared(int duration) {
+            if (localAudioPlayerListening != this) {
+                Loger.i(TAG, "localprepared:old:duration=" + duration);
+                return;
+            }
+            mHandler.removeCallbacks(localPlayTimeOut);
+            setPlayStatus(true);
+            Loger.i(TAG, "localprepared:duration=" + duration);
+        }
+
+        int lastcurrent = -1;
+
+        @Override
+        public void currentDuration(int current, int duration) {
+            if (lastcurrent != current) {
+                Loger.i(TAG, "remotecurrentDuration:current=" + current + ",duration=" +
+                        duration);
+            }
+            lastcurrent = current;
+        }
+
+//        @Override
+//        public void onError(MediaPlayer mp, int what, int extra) {
+//            if (localAudioPlayerListening != this) {
+//                mLogtf.i("localonError1:old:what=" + what + ",extra=" + extra);
+//                return;
+//            } else {
+//                mLogtf.i("localonError1:what=" + what + ",extra=" + extra);
+//            }
+//            mHandler.removeCallbacks(localPlayTimeOut);
+//            jsRecordError(ResultCode.PLAY_RECORD_FAIL);
+//        }
+
+        @Override
+        public void onError(int what, int code) {
+            if (localAudioPlayerListening != this) {
+                mLogtf.i("localonError2:old:what=" + what + ",code=" + code);
+                return;
+            } else {
+                mLogtf.i("localonError2:what=" + what + ",code=" + code);
+            }
+            mHandler.removeCallbacks(localPlayTimeOut);
+            jsRecordError(ResultCode.PLAY_RECORD_FAIL);
         }
     }
 

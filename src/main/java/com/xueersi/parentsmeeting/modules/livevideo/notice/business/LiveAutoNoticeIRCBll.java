@@ -41,11 +41,6 @@ public class LiveAutoNoticeIRCBll extends LiveBaseBll {
             liveAutoNoticeBll.setLiveBll(mLiveBll);
             liveAutoNoticeBll.setHttpManager(mLiveBll.getHttpManager());
             liveAutoNoticeBll.setLiveId(mLiveId);
-            //if (mQuestionAction instanceof QuestionBll) {
-            QuestionBll questionBll = ProxUtil.getProxUtil().get(activity, QuestionBll.class);
-            if (questionBll != null) {
-                questionBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
-            }
             EnglishH5CoursewareBll englishH5CoursewareBll = ProxUtil.getProxUtil().get(activity, EnglishH5CoursewareBll.class);
             if (englishH5CoursewareBll != null) {
                 englishH5CoursewareBll.setLiveAutoNoticeBll(liveAutoNoticeBll);

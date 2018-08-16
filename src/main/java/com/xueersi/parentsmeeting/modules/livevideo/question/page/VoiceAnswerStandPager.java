@@ -36,7 +36,6 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.LiveStandQuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
@@ -49,7 +48,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
-import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -460,7 +458,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
                         @Override
                         public void onAnimationEnd() {
-                            boolean switchQuestion = switchQuestion();
+                            boolean switchQuestion = switchQuestion("");
                             if (!switchQuestion) {
                                 ivVoiceansSwitch.setClickable(true);
                             }
@@ -472,7 +470,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         }
                     });
                 } else {
-                    switchQuestion();
+                    switchQuestion("Animation");
                 }
             }
         });
@@ -491,8 +489,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         return btframeAnimation1;
     }
 
-    private boolean switchQuestion() {
-        Loger.d(TAG, "switchQuestion:isEnd=" + isEnd);
+    private boolean switchQuestion(String method) {
+        mLogtf.d("switchQuestion:method=" + method + ",isEnd=" + isEnd);
         if (isEnd) {
             return false;
         }
@@ -578,6 +576,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     @Override
     public void setEnd() {
         isEnd = true;
+        mLogtf.d("setEnd");
     }
 
     @Override
@@ -636,6 +635,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     VoiceEvaluatorListener listener = new VoiceEvaluatorListener();
 
     private void onEvaluatorError(final ResultEntity resultEntity) {
+        mLogtf.d("onEvaluatorError:userSwitch=" + userSwitch + ",userBack=" + userBack + ",isEnd=" + isEnd);
         isSpeechError = true;
         if (userSwitch || userBack) {
             return;
@@ -705,7 +705,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                     public void run() {
 //                        rlSpeectevalTip.setVisibility(View.GONE);
                         rlSpeectevalTipGone();
-                        switchQuestion();
+                        switchQuestion("NO_NETWORK");
                     }
                 }, 1500);
             }
@@ -717,7 +717,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    switchQuestion();
+                    switchQuestion("Other");
                 }
             }, 1500);
         }
@@ -927,6 +927,15 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     }
 
     private void startEvaluator() {
+        if (isEnd) {
+            ViewGroup group = (ViewGroup) mView.getParent();
+            mLogtf.d("examSubmitAll:group=" + group);
+            if (group == null) {
+                return;
+            }
+            questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
+            return;
+        }
         saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
         listener.saveVideoFile = saveVideoFile;
         mIse.startEnglishEvaluatorOffline(assess_ref.toString(), saveVideoFile.getPath(), multRef, listener);
