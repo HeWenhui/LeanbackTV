@@ -28,4 +28,8 @@ public abstract class BaseLiveQuestionPager extends LiveBasePager {
 
     public void hideInputMode() {
     }
+
+    public void onKeyboardShowing(boolean isShowing) {
+
+    }
 }

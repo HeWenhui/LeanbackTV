@@ -321,6 +321,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (examQuestionPager != null) {
             examQuestionPager.onKeyboardShowing(isShowing);
         }
+        if (baseQuestionPager != null) {
+            baseQuestionPager.onKeyboardShowing(isShowing);
+        }
     }
 
     @Override
