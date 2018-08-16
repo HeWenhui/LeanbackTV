@@ -73,9 +73,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             keyboardShowingReg.addKeyboardShowing(mQuestionAction);
         }
         mQuestionAction.setLiveType(mLiveType);
-        if (mLiveAutoNoticeBll != null) {
-            mQuestionAction.setLiveAutoNoticeBll(mLiveAutoNoticeBll.getLiveAutoNoticeBll());
-        }
     }
 
     @Override
@@ -146,6 +143,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 @Override
                 public void run() {
                     mQuestionAction.setAnswerRankBll(mAnswerRankBll.getAnswerRankBll());
+                }
+            });
+        }
+        if (mLiveAutoNoticeBll != null) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mQuestionAction.setLiveAutoNoticeBll(mLiveAutoNoticeBll.getLiveAutoNoticeBll());
                 }
             });
         }
