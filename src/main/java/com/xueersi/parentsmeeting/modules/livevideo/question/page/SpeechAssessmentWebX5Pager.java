@@ -812,7 +812,6 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             } catch (Exception e) {
 
             }
-            AudioPlayer.releaseAudioPlayer(mContext);
             if (mIsStop) {
                 if (!TextUtils.isEmpty(tip)) {
                     isRebotLast = false;
@@ -852,7 +851,11 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                 times++;
                 if (times > 15) {
                     Loger.i(TAG, "remotecurrentDuration:times10:current=" + current);
-                    AudioPlayer.releaseAudioPlayer(mContext);
+                    try {
+                        AudioPlayer.stop();
+                    } catch (Exception e) {
+
+                    }
                     playComplete(100);
                 }
             }
@@ -910,7 +913,6 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             }
             mHandler.removeCallbacks(localPlayTimeOut);
             localAudioPlayerListening = null;
-            AudioPlayer.releaseAudioPlayer(mContext);
             setPlayStatus(false);
             Loger.i(TAG, "localplayComplete");
         }
