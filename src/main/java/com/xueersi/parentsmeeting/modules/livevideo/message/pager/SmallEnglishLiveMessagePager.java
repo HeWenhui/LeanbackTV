@@ -279,14 +279,20 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         int color, messageColor;
                         switch (entity.getType()) {
                             case LiveMessageEntity.MESSAGE_MINE:
+                                color = nameColors[entity.getType()];
+                                messageColor = mContext.getResources().getColor(R.color.COLOR_FFFFFFFF);
+                                break;
                             case LiveMessageEntity.MESSAGE_TEACHER:
                                 color = nameColors[entity.getType()];
                                 messageColor = mContext.getResources().getColor(R.color.COLOR_FFC3DAFF);
                                 break;
                             case LiveMessageEntity.MESSAGE_TIP:
-                            case LiveMessageEntity.MESSAGE_CLASS:
                                 color = nameColors[entity.getType()];
                                 messageColor = mContext.getResources().getColor(R.color.COLOR_FFFFFFFF);
+                                break;
+                            case LiveMessageEntity.MESSAGE_CLASS:
+                                color = nameColors[entity.getType()];
+                                messageColor = mContext.getResources().getColor(R.color.COLOR_FFC3DAFF);
                                 break;
                             default:
                                 color = nameColors[0];
