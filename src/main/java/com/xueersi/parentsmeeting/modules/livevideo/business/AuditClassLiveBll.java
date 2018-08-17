@@ -345,6 +345,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                             mCounteacher.isLeave = false;
                         }
                         String mode = jsonObject.optString("mode", LiveTopic.MODE_CLASS);
+                        mLogtf.d("STUDENT_REPLAY:mode=" + mode + ",oldMode=" + mLiveTopic.getMode());
                         if (!(mLiveTopic.getMode().equals(mode))) {
                             if (mVideoAction != null) {
                                 mVideoAction.onModeChange(mode, true);
@@ -368,6 +369,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                     break;
                     case XESCODE.STUDENT_MODECHANGE: {
                         String mode = jsonObject.optString("mode", LiveTopic.MODE_CLASS);
+                        mLogtf.d("STUDENT_MODECHANGE:mode=" + mode + ",oldMode=" + mLiveTopic.getMode());
                         if (!(mLiveTopic.getMode().equals(mode))) {
                             if (mVideoAction != null) {
                                 mVideoAction.onModeChange(mode, true);
@@ -671,7 +673,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                     auditClassAction.onGetStudyInfo(studyInfo);
                 }
                 String mode = studyInfo.getMode();
-                Loger.d(TAG, "getStudentLiveInfo:onPmSuccess:" + responseEntity.getJsonObject() + ",mode=" + oldMode + "," + mode);
+                mLogtf.d("getStudentLiveInfo:onPmSuccess:" + responseEntity.getJsonObject() + ",mode=" + oldMode + "," + mode);
                 if (!oldMode.equals(mode)) {
                     if (mVideoAction != null) {
                         mVideoAction.onModeChange(mode, true);
