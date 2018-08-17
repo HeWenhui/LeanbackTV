@@ -1034,6 +1034,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         });
     }
 
+    @Override
+    public void onFDOpenbarrage(boolean open, boolean b) {
+
+    }
+
+    @Override
+    public void onTeacherModeChange(String oldMode, String mode, boolean b, boolean zjlkOpenbarrage, boolean zjfdOpenbarrage) {
+
+    }
+
     /*添加聊天信息，超过120，移除60个*/
     @Override
     public void addMessage(final String sender, final int type, final String text, final String headUrl) {

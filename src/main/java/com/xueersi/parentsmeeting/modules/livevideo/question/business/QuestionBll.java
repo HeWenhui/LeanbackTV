@@ -1208,6 +1208,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
     }
 
+
     @Override
     public void stopSpeech(BaseSpeechAssessmentPager pager, final String num) {
         mLogtf.d("stopSpeech:num=" + num + ",isAnaswer=" + isAnaswer + ",same=" + (pager == speechAssessmentPager));
@@ -1252,6 +1253,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         questionHttp.getStuGoldCount();
     }
+
 
     @Override
     public void onSpeechSuccess(String num) {

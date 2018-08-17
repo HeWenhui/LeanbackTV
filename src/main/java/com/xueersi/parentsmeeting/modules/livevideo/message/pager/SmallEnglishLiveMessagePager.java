@@ -1330,6 +1330,17 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         });
     }
 
+    @Override
+    public void onFDOpenbarrage(boolean open, boolean b) {
+
+    }
+
+    @Override
+    public void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage,
+                                    boolean isFDLKOpenbarrage) {
+
+    }
+
 
     /*添加聊天信息，超过120，移除60个*/
     @Override
