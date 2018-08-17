@@ -540,6 +540,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                     case XESCODE.MODECHANGE:
                         String mode = object.getString("mode");
                         if (!(mLiveTopic.getMode().equals(mode))) {
+                            String oldMode = mLiveTopic.getMode();
                             mLiveTopic.setMode(mode);
                             mGetInfo.setMode(mode);
                             boolean isPresent = isPresent(mode);
@@ -551,7 +552,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                             }
                             liveVideoBll.onModeChange(mode, isPresent);
                             for (int i = 0; i < businessBlls.size(); i++) {
-                                businessBlls.get(i).onModeChange(mode, isPresent);
+                                businessBlls.get(i).onModeChange(oldMode, mode, isPresent);
                             }
                         }
                         break;
@@ -589,6 +590,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     //模式切换
                     if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
+                        String oldMode = mLiveTopic.getMode();
                         mLiveTopic.setMode(liveTopic.getMode());
                         mGetInfo.setMode(liveTopic.getMode());
                         boolean isPresent = isPresent(mLiveTopic.getMode());
@@ -596,7 +598,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                             mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
                         }
                         for (int i = 0; i < businessBlls.size(); i++) {
-                            businessBlls.get(i).onModeChange(mLiveTopic.getMode(), isPresent);
+                            businessBlls.get(i).onModeChange(oldMode, mLiveTopic.getMode(), isPresent);
                         }
                     }
                     if (mVideoAction != null) {

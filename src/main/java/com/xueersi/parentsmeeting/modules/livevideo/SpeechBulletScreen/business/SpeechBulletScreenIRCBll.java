@@ -76,9 +76,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
     }
 
     @Override
-    public void onModeChange(String mode, boolean isPresent) {
-        super.onModeChange(mode, isPresent);
-        //
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
         if (LiveTopic.MODE_TRANING.equals(mode) && mSpeechBulletScreenAction!=null) {
             mSpeechBulletScreenAction.onCloseSpeechBulletScreen(false);
         }

@@ -40,8 +40,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
     }
 
     @Override
-    public void onModeChange(String mode, boolean isPresent) {
-        super.onModeChange(mode, isPresent);
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
         //模式切换为主讲，关闭表扬榜
         if (mPraiseListAction != null && mode.equals(LiveTopic.MODE_CLASS))
             mPraiseListAction.closePraiseList();

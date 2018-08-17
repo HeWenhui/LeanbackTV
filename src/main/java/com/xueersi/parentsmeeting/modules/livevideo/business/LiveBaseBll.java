@@ -206,7 +206,7 @@ public class LiveBaseBll extends BaseBll {
         }
     }
 
-    public void onModeChange(String mode, boolean isPresent) {
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
 
     }
 

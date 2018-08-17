@@ -536,9 +536,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     }
 
     @Override
-    public void onTeacherModeChange(String oldMode, String mode, boolean b, boolean iszjlkOpenbarrage, boolean isFDLKOpenbarrage) {
+    public void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage, boolean isFDLKOpenbarrage) {
         if (mLiveMessagePager != null) {
-            mLiveMessagePager.onTeacherModeChange(oldMode, mode, b, iszjlkOpenbarrage, isFDLKOpenbarrage);
+            mLiveMessagePager.onTeacherModeChange(oldMode, mode, isShowNoticeTips, iszjlkOpenbarrage, isFDLKOpenbarrage);
         }
     }
 

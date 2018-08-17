@@ -126,11 +126,6 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
     }
 
     @Override
-    public void onModeChange(String mode, boolean isPresent) {
-        super.onModeChange(mode, isPresent);
-    }
-
-    @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         if (videoChatAction != null) {
             if (modeChange) {
