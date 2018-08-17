@@ -220,7 +220,7 @@ public class SpeechBulletScreenPlayBackPager extends BaseSpeechBulletScreenPager
             @Override
             public void prepared() {
                 dvSpeechbulDanmaku.start();
-                //generateSomeDanmaku();
+ //               generateSomeDanmaku();
             }
         });
 
@@ -460,6 +460,24 @@ public class SpeechBulletScreenPlayBackPager extends BaseSpeechBulletScreenPager
             }
         }
 
+    }
+
+    public void  pauseDanmaku(){
+        if (dvSpeechbulDanmaku!=null) {
+            dvSpeechbulDanmaku.pause();
+        }
+    }
+
+    public void  resumeDanmaku(){
+        if (dvSpeechbulDanmaku!=null) {
+            dvSpeechbulDanmaku.resume();
+        }
+    }
+
+    public void  setDanmakuSpeed(float speed){
+        if (mDanmakuContext!=null) {
+            mDanmakuContext.setScrollSpeedFactor(1.2f/speed);
+        }
     }
 
     public void onDestroy(){

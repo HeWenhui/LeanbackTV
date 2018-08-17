@@ -1,12 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -15,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.page.Spee
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.ShortToastDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 
 /**
@@ -90,25 +93,46 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
 //        activity.runOnUiThread(new Runnable() {
 //            @Override
 //            public void run() {
-//                Log.i(TAG,"set:SOFT_INPUT_ADJUST_NOTHING()");
+//                Log.i(TAG,"start setSoftInputMode:SOFT_INPUT_ADJUST_NOTHING");
 //                WindowManager.LayoutParams attributes = activity.getWindow().getAttributes();
 //                activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING|WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 //                attributes = activity.getWindow().getAttributes();
+//                Log.i(TAG,"end setSoftInputMode");
 //            }
 //        });
         mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                showShortToast("老师开启了语音弹幕");
+            }
+        },0);
+
+        mWeakHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG,"start setSoftInputMode:SOFT_INPUT_ADJUST_NOTHING");
+                WindowManager.LayoutParams attributes = activity.getWindow().getAttributes();
+                activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING|WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                attributes = activity.getWindow().getAttributes();
+                Log.i(TAG,"end setSoftInputMode");
+                Log.i(TAG,"start new:SpeechBulletScreenPager");
                 mSpeechBulPager = new SpeechBulletScreenPager(activity,SpeechBulletScreenBll.this);
                 rlSpeechBulContent.removeAllViews();
                 rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 rlSpeechBulContent.setVisibility(View.VISIBLE);
                 if (mSpeechBulPager != null) {
                     mSpeechBulPager.setSpeechBulletScreenHttp(speechBulletScreenHttp);
-                    mSpeechBulPager.showShortToast("老师开启了语音弹幕");
                 }
+                Log.i(TAG,"end  new:SpeechBulletScreenPager");
             }
-        },300);
+        },2000);
+    }
+
+    public void showShortToast(final String tips) {
+        ShortToastDialog shortToastDialog= new ShortToastDialog(activity);
+        shortToastDialog.setMsg(tips);
+        shortToastDialog.setTypeface(Typeface.createFromAsset(activity.getAssets(), "fangzhengcuyuan.ttf"));
+        shortToastDialog.showDialog();
     }
 
     @Override
@@ -126,6 +150,24 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
     public void addPlayBackDanmaku(final String name, final String msg, final String headImgUrl , final boolean isGuest) {
         if (mSpeechBulPlaybackPager!=null) {
             mSpeechBulPlaybackPager.addDanmaKuFlowers(name, msg, headImgUrl, true);
+        }
+    }
+
+    public void pauseDanmaku() {
+        if (mSpeechBulPlaybackPager!=null) {
+            mSpeechBulPlaybackPager.pauseDanmaku();
+        }
+    }
+
+    public void resumeDanmaku() {
+        if (mSpeechBulPlaybackPager!=null) {
+            mSpeechBulPlaybackPager.resumeDanmaku();
+        }
+    }
+
+    public void setDanmakuSpeed(float speed) {
+        if (mSpeechBulPlaybackPager!=null) {
+            mSpeechBulPlaybackPager.setDanmakuSpeed(speed);
         }
     }
 
@@ -212,8 +254,9 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
     public void videoStatus(String status) {
 
     }
-
     public void onDestory() {
-        mSpeechBulPager.onDestroy();
+        if (mSpeechBulPager != null) {
+            mSpeechBulPager.onDestroy();
+        }
     }
 }
