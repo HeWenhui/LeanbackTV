@@ -701,20 +701,20 @@ public class LectureLivePlayBackBll extends BaseBll {
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 ExPerienceLiveMessage livebackmsg = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), ExPerienceLiveMessage.class);
                 getLiveLectureMsgs.getLiveExperienceMsgs(livebackmsg);
-                Log.e("Duncan","livebackmsgsize:" + livebackmsg.getMsg().size());
+                Log.e("Duncan", "livebackmsgsize:" + livebackmsg.getMsg().size());
             }
         });
 
     }
 
     // 18.04.11 获取讲座直播回放中的更多课程的广告信息
-    public void getMoreCourseChoices(String liveId,final AbstractBusinessDataCallBack getDataCallBack){
-        mCourseHttpManager.getMoreCourseChoices(liveId,new HttpCallBack(false){
+    public void getMoreCourseChoices(String liveId, final AbstractBusinessDataCallBack getDataCallBack) {
+        mCourseHttpManager.getMoreCourseChoices(liveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Log.e("Duncan","playbackresponseEntity:" + responseEntity);
+                Log.e("Duncan", "playbackresponseEntity:" + responseEntity);
                 MoreChoice choiceEntity = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), MoreChoice.class);
-                if(choiceEntity != null){
+                if (choiceEntity != null) {
                     getDataCallBack.onDataSucess(choiceEntity);
                 }
             }
@@ -723,26 +723,26 @@ public class LectureLivePlayBackBll extends BaseBll {
     }
 
     // 获取体验学习报告
-    public void getExperienceResult(String termId,String liveId,final AbstractBusinessDataCallBack getDataCallBack){
+    public void getExperienceResult(String termId, String liveId, final AbstractBusinessDataCallBack getDataCallBack) {
         mCourseHttpManager.getExperienceResult(termId, liveId, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 ExperienceResult learn = JsonUtil.getEntityFromJson(responseEntity.getJsonObject().toString(), ExperienceResult.class);
-                if(learn != null){
+                if (learn != null) {
                     getDataCallBack.onDataSucess(learn);
                 }
-                Log.e("Duncan","playbackresponseEntity:" + responseEntity);
+                Log.e("Duncan", "playbackresponseEntity:" + responseEntity);
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                Log.e("Duncan","playbackerrorEntity:" + error);
+                Log.e("Duncan", "playbackerrorEntity:" + error);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Log.e("Duncan","playbackerrorEntity:" + responseEntity);
+                Log.e("Duncan", "playbackerrorEntity:" + responseEntity);
             }
 
 
@@ -821,6 +821,5 @@ public class LectureLivePlayBackBll extends BaseBll {
             }
         });
     }
-
 
 }

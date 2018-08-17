@@ -37,11 +37,13 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 
+
 /**
  * Created by linyuqiang on 2018/6/6.
  * 直播回放试卷答题页面
  */
 public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseExamQuestionInter {
+
     private String TAG = "ExamQuestionPlaybackPager";
     private Button btSubjectClose;
     private Button bt_livevideo_subject_calljs;
@@ -218,11 +220,9 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
 
     public class MyWebViewClient extends ErrorWebViewClient {
         String failingUrl;
-
         public MyWebViewClient() {
             super(TAG);
         }
-
         @Override
         public void onPageFinished(WebView view, String url) {
             Loger.i(TAG, "onPageFinished:url=" + url + ",failingUrl=" + failingUrl);

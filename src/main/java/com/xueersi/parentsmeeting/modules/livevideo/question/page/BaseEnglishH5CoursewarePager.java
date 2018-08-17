@@ -5,6 +5,7 @@ import android.view.View;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 
+
 /**
  * h5课件基础接口
  *
@@ -35,4 +36,5 @@ public interface BaseEnglishH5CoursewarePager {
     BasePager getBasePager();
 
     void setWebBackgroundColor(int color);
+
 }

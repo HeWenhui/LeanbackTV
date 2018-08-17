@@ -273,7 +273,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
      * 校准系统时间
      */
     private long sysTimeOffset;
-
     public static boolean isAllowTeamPk = false;
 
     public LiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form, LiveGetInfo

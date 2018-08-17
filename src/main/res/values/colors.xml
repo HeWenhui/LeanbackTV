@@ -24,6 +24,14 @@
 
     <color name="COLOR_707070">#707070</color>
     <color name="COLOR_80ffffff">#80FFFFFF</color>
+
+    <color name="COLOR_PKS">#ffbc2b</color>
+    <color name="COLOR_PKO">#47B7FF</color>
+    <color name="COLOR_REDBAG">#E54536</color>
+    <color name="COLOR_PKDEVIDING">#1D1311</color>
+    <color name="COLOR_PSPK">#2B1D1A</color>
+    <color name="COLOR_PSONLINECOUNT">#EFCCA0</color>
+    <color name="COLOR_PSDANMAKU">#3A2824</color>
     <color name="COLOR_FFC3DAFF">#FFC3DAFF</color>
     <color name="COLOR_FFFFFFFF">#FFFFFFFF</color>
 </resources>

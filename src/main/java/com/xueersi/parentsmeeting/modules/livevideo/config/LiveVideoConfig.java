@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.common.entity.EnglishH5Entity;
 
 /**
  * 直播模块配置
@@ -125,7 +126,7 @@ public class LiveVideoConfig {
     /** 站立直播-语音评测 */
     public static String LIVE_STAND_SPEECH_TEST = "standlive_voiceTest";
     /** 站立直播-roleplay */
-    public static String LIVE_STAND_ROLEPLAY= "standlive_roleplay";
+    public static String LIVE_STAND_ROLEPLAY = "standlive_roleplay";
     /** 直播-NB实验 */
     public static String LIVE_H5_EXPERIMENT = "live_h5experiment";
     /** 直播-星星互动 */
@@ -179,6 +180,8 @@ public class LiveVideoConfig {
     public static String URL_LIVE_DELETE_MARK_POINTS = AppConfig.HTTP_HOST + "/science/LiveCourse/deleteMarkpoint";
     /** 体验课播放器上传心跳时间 */
     public static String URL_EXPERIENCE_LIVE_ONLINETIME = AppConfig.HTTP_HOST + "/science/AutoLive/visitTime";
+    /** 回放式体验课上传心跳时间 */
+    public static String URL_PLAYBACKPLAYTIME = AppConfig.HTTP_HOST + "/ExpPlayback/visitTime";
     /** RolePlay请求对话信息 */
     public static String URL_ROLEPLAY_TESTINFOS = AppConfig.HTTP_HOST + "/libarts/LiveCourse/getRolePlay";
     /** 提交接口 */
@@ -194,6 +197,25 @@ public class LiveVideoConfig {
     public static Boolean isloading = false;
     /** 讲座直播广告Id */
     public static String LECTUREADID;
+
+    public static Boolean isNewEnglishH5 = false;
+    /** 一题多发发题和收题的标志*/
+    public static Boolean isSend = false;
+    public static String newEnglishH5 = "NewEnglishH5";
+    /** 强制收题的标志*/
+    public static EnglishH5Entity englishH5Entity;
+    /** 小学阶段年级的标识*/
+    public static Boolean isPrimary = false;
+    /** 一题多发的直播回放的标识*/
+    public static Boolean isMulLiveBack = false;
+    /** 年级阶段的标识*/
+    public static String educationstage;
+    /** 一发多题的日志*/
+    public static String nonce;
+    /** 战队PK改版 */
+    public static String tests;
+    public static String ctId;
+    public static String pSrc;
     public static interface SubjectIds {
         /**
          * 学科id，语文

@@ -1,0 +1,51 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mediacontroller_bg">
+
+    <ImageView
+        android:id="@id/iv_livevideo_under_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/dounderstand"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_livevideo_under_bg"
+        android:layout_alignLeft="@id/iv_livevideo_under_bg"
+        android:layout_alignRight="@id/iv_livevideo_under_bg"
+        android:layout_alignTop="@id/iv_livevideo_under_bg">
+       <LinearLayout
+           android:orientation="vertical"
+           android:layout_alignParentBottom="true"
+           android:layout_centerHorizontal="true"
+           android:layout_marginBottom="42dp"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content">
+           <ImageView
+               android:id="@+id/tv_livevideo_understand_understand"
+               android:background="@drawable/selector_understandedbg"
+               android:layout_marginBottom="-10dp"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+           <ImageView
+               android:id="@+id/tv_livevideo_understand_donotunderstand"
+               android:background="@drawable/selector_nounderstandbg"
+               android:layout_marginBottom="8dp"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+       </LinearLayout>
+        <ImageView
+            android:id="@+id/iv_understand_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="26dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/selector_understandclose_ps"/>
+    </RelativeLayout>
+</RelativeLayout>

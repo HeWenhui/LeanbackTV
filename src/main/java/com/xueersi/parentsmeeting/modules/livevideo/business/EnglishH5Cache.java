@@ -23,6 +23,9 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.ZipExtractorTask;
+import com.xueersi.lib.framework.utils.ZipProg;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -54,6 +57,7 @@ import ren.yale.android.cachewebviewlib.CachePreLoadService;
 import ren.yale.android.cachewebviewlib.CacheWebView;
 import ren.yale.android.cachewebviewlib.WebViewCache;
 import ren.yale.android.cachewebviewlib.config.CacheExtensionConfig;
+import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
 /**
  * 英语课件缓存
@@ -79,8 +83,10 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     private File mMorecachein;
     private File mMorecacheout;
     private ArrayList<String> mUrls;
-    private int count = 0;
     private LiveHttpManager mHttpManager;
+    private ArrayList<String> mtexts;
+    private int count = 0;
+    private Boolean add = true;
 
     public EnglishH5Cache(Context context, LiveBll liveBll, String liveId) {
         this.context = context;
@@ -89,7 +95,10 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         bottomContent = (RelativeLayout) activity.findViewById(R.id.rl_course_video_live_question_content);
         this.liveBll = liveBll;
         this.liveId = liveId;
-        cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
+        cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
+        if (cacheFile == null) {
+            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
+        }
 //        cacheFile = new File(context.getCacheDir(), "cache/webviewCache");
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
@@ -251,9 +260,149 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 Loger.e(TAG, "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
             }
         });
+
+        // 一次多发的接口调用
+        liveBll.getMoreCourseWareUrl(liveId, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Loger.e(TAG, "responseEntity.getJsonObject=" + responseEntity.getJsonObject());
+//                final Object jsonObject = responseEntity.getJsonObject();
+                JSONObject objects = new JSONObject(responseEntity.getJsonObject().toString());
+                JSONArray array = objects.optJSONArray("list");
+                JSONArray res = objects.optJSONArray("resource");
+                JSONArray loadpages = objects.optJSONArray("loadpages");
+                mList = new ArrayList<>();
+                mtexts = new ArrayList<>();
+                for (int i = 0; i < array.length(); i++) {
+                    MoreCache cache = new MoreCache();
+                    JSONObject object = array.getJSONObject(i);
+                    cache.setPackageId(object.optString("packageId"));
+                    cache.setPackageSource(object.optString("packageSource"));
+                    cache.setIsTemplate(object.optInt("isTemplate"));
+                    cache.setPageId(object.optString("pageId"));
+                    cache.setResourceUrl(object.optString("resourceUrl"));
+                    cache.setTemplateUrl(object.optString("templateUrl"));
+                    mList.add(cache);
+                }
+                for (int i = 0; i < res.length(); i++) {
+                    String txt = res.optString(i);
+                    mtexts.add(txt);
+                }
+                for (int i = 0; i < loadpages.length(); i++) {
+                    String txt = loadpages.optString(i);
+                    mtexts.add(txt);
+                }
+                Loger.e(TAG, "list=" + mList.size());
+                Loger.e(TAG, "text=" + mtexts.size());
+                if (mList.size() > 0) {
+                    download(todayLiveCacheDir);
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                super.onFailure(call, e);
+                Loger.e(TAG, "getCourseWareUrl:onFailure:e=" + e);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                Loger.e(TAG, "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
+            }
+        });
     }
 
-    @Override
+    private void download(File path) {
+        mUrls = new ArrayList<>();
+        mMorecachein = new File(path, liveId);
+        if (!mMorecachein.exists()) {
+            mMorecachein.mkdirs();
+        }
+        mMorecacheout = new File(path, liveId + "child");
+        if (!mMorecacheout.exists()) {
+            mMorecacheout.mkdirs();
+        }
+        // 下载以及解压预加载的文件
+        for (int i = 0; i < mList.size(); i++) {
+            if (!mUrls.contains(mList.get(i).getResourceUrl()) && !TextUtils.isEmpty(mList.get(i).getResourceUrl())) {
+                mUrls.add(mList.get(i).getResourceUrl());
+            }
+            if (!TextUtils.isEmpty(mList.get(i).getTemplateUrl())) {
+                mUrls.add(mList.get(i).getTemplateUrl());
+            }
+        }
+        // 添加字体的下载链接
+        if (mtexts.size() > 0) {
+            // 字体文件直接下载到zip解压的文件夹中
+            for (int i = 0; i < mtexts.size(); i++) {
+                String url = mtexts.get(i);
+                final String fileName = MD5Utils.getMD5(url);
+                final File save = new File(mMorecacheout, fileName);
+                if (!fileIsExists(save.getPath())) {
+                    final File tempFile = new File(mMorecacheout, fileName + ".temp");
+                    liveBll.download(mtexts.get(i), tempFile.getPath(), new DownloadCallBack() {
+                        @Override
+                        protected void onDownloadSuccess() {
+                            boolean renameTo = tempFile.renameTo(save);
+                            Loger.d(TAG, "onDownloadSuccess(mtexts):fileName=" + fileName + ",renameTo=" + renameTo);
+                        }
+
+                        @Override
+                        protected void onDownloadFailed() {
+                            Loger.d(TAG, "onDownloadFailed(mtexts):fileName=" + fileName);
+                            XESToastUtils.showToast(context, "下载字体包失败");
+                        }
+                    });
+                } else {
+                    Loger.d(TAG, "fileIsExists(mtexts):fileName=" + fileName);
+                }
+            }
+        }
+        for (int i = 0; i < mUrls.size(); i++) {
+            final String url = i + ".zip";
+            final File save = new File(mMorecachein, url);
+            if (!fileIsExists(save.getPath())) {
+                final File tempFile = new File(mMorecachein, url + ".temp");
+                liveBll.download(mUrls.get(i), tempFile.getPath(), new DownloadCallBack() {
+                    @Override
+                    protected void onDownloadSuccess() {
+                        boolean renameTo = tempFile.renameTo(save);
+                        Loger.d(TAG, "onDownloadSuccess(mUrls):url=" + url + ",renameTo=" + renameTo);
+                        new ZipExtractorTask(new File(mMorecachein, url), mMorecacheout, true, new Progresses()).execute();
+                    }
+
+                    @Override
+                    protected void onDownloadFailed() {
+                        Loger.d(TAG, "onDownloadFailed(mUrls):url=" + url);
+                        XESToastUtils.showToast(context, "下载资源包失败");
+                    }
+                });
+            } else {
+                Loger.d(TAG, "fileIsExists(mtexts):fileName=" + url);
+            }
+        }
+
+    }
+
+    private class Progresses implements ZipProg {
+        @Override
+        public void onProgressUpdate(Integer... values) {
+
+        }
+
+        @Override
+        public void onPostExecute(Exception exception) {
+
+        }
+
+        @Override
+        public void setMax(int max) {
+
+        }
+    }
+
+
     public void start() {
         isStart = true;
         logger.d("start");
@@ -457,6 +606,22 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             }
         }, 10000);
     }
+
+    //判断文件是否存在
+    public boolean fileIsExists(String strFile) {
+        try {
+            File f = new File(strFile);
+            if (!f.exists()) {
+                return false;
+            }
+
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
 
 //    public class MyWebViewClient extends WebViewClient {
 //        String failingUrl;

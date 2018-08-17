@@ -158,7 +158,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
      * @param enStuId
      * @param requestCallBack
      */
-    public void getLivePlayRedPackets(String enStuId, String operateId,String termId, String liveId, HttpCallBack
+    public void getLivePlayRedPackets(String enStuId, String operateId, String termId, String liveId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
@@ -238,8 +238,8 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     }
 
     // 03.14 获取体验课聊天记录
-    public void getExperiencenMsgs(String liveId, String classId,Long start,
-                                   HttpCallBack requestCallBack){
+    public void getExperiencenMsgs(String liveId, String classId, Long start,
+                                   HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         params.addBodyParam("liveId", liveId);
@@ -250,7 +250,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     }
 
     // 04.11 获取讲座直播回放中更多课程的广告信息
-    public void getMoreCourseChoices(String liveId, HttpCallBack requestCallBack){
+    public void getMoreCourseChoices(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         setDefaultParameter(params);
@@ -259,7 +259,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     }
 
     // 获取体验课学习报告
-    public void getExperienceResult(String termId,String liveId,HttpCallBack requestCallBack){
+    public void getExperienceResult(String termId, String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("orderId", termId);
         params.addBodyParam("liveId", liveId);
@@ -335,4 +335,5 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_GET_VOICE_BARRAGE_MSG, params, requestCallBack);
     }
+
 }

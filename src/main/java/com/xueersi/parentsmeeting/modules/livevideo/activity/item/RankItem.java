@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
@@ -31,6 +32,7 @@ public class RankItem implements AdapterItemInterface<RankEntity> {
 //        }
         return isSmallEnglish ? R.layout.item_livevodeo_rank_smalleng : R.layout.item_livevodeo_rank;
 //        return R.layout.item_livevodeo_rank;
+
     }
 
     @Override

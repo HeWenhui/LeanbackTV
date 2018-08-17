@@ -108,6 +108,10 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
         wvSubjectWeb.loadUrl(url);
     }
 
+    public void reloadUrl(){
+        wvSubjectWeb.reload();
+    }
+
     public void setErrorTip(String errorTip) {
         this.errorTip = errorTip;
         tv_error_center_refresh_tip.setText(errorTip);

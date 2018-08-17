@@ -1,0 +1,14 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <scale
+            android:drawable="@drawable/livevideo_psvote_indicator"
+            android:scaleWidth="100%" />
+    </item>
+
+    <item android:id="@android:id/progress">
+        <scale
+            android:drawable="@drawable/livevideo_psvote_indicatorbg"
+            android:scaleWidth="100%" />
+
+    </item>
+</layer-list>

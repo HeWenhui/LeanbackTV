@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -24,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -82,6 +84,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
     String[] noticeGaosan = {"网校公安局提醒你，请注意言辞！"
             , "警察叔叔还有30秒到达战场，请注意敏感词汇。"
             , "富强民主文明和谐自由平等公正法治……"};
+
 
     public LiveAutoNoticeBll(Activity context, LiveBll2 liveBll2, RelativeLayout bottom) {
         super(context, liveBll2);
@@ -227,7 +230,11 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
         }
         try {
             if (root == null) {
-                root = View.inflate(mContext, R.layout.layout_live_auto_notice, null);
+                if(LiveVideoConfig.isPrimary){
+                    root = View.inflate(mContext, R.layout.layout_live_auto_psnotice, null);
+                } else {
+                    root = View.inflate(mContext, R.layout.layout_live_auto_notice, null);
+                }
                 mSlowHorizontalScrollView = (SlowHorizontalScrollView) root.findViewById(R.id.sv_live_auto_notice);
                 vLeft = root.findViewById(R.id.v_live_auto_notice_left);
                 vRight = root.findViewById(R.id.v_live_auto_notice_right);
@@ -258,6 +265,82 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             TextPaint paint = new TextPaint();
             paint.setTextSize(SizeUtils.Dp2Px(mContext, 12));
             int tvWidth = (int) paint.measureText(content.toString());
+            LinearLayout.LayoutParams tvParam = new LinearLayout.LayoutParams(tvWidth + 40, ViewGroup.LayoutParams.WRAP_CONTENT);
+            tvParam.setMargins(10, 0, 0, 0);
+            tvContent.setLayoutParams(tvParam);
+            tvContent.setSingleLine();
+            mSlowHorizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return true;
+                }
+            });
+            mSlowHorizontalScrollView.setHorizontalScrollBarEnabled(false);
+            mSlowHorizontalScrollView.scrollTo(0, 0);
+            int last = Math.max(videoWidth, tvWidth) * 4;
+            mSlowHorizontalScrollView.smoothScrollToSlow(videoWidth + tvWidth + 200, 0, last);
+            mSlowHorizontalScrollView.getHandler().removeCallbacks(mRunnable);
+            mSlowHorizontalScrollView.postDelayed(mRunnable, last);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 显示送礼物成功的文案提示
+     *
+     *
+     * @param s
+     * @param head
+     */
+    public void showGiftSuccessNotice(String s, Drawable head) {
+//         if (isShowing) {
+//            return;
+//        }
+//        isShowing = true;
+        if(mRunnable == null){
+            mRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    bottom.removeView(root);
+                    isShowing = false;
+                }
+            };
+        }
+        try {
+            if (root == null) {
+                root = View.inflate(mContext, R.layout.layout_live_auto_notice, null);
+                mSlowHorizontalScrollView = (SlowHorizontalScrollView) root.findViewById(R.id.sv_live_auto_notice);
+                vLeft = root.findViewById(R.id.v_live_auto_notice_left);
+                vRight = root.findViewById(R.id.v_live_auto_notice_right);
+                ivAvatar = (ImageView) root.findViewById(R.id.iv_live_auto_notice_avatar);
+                tvContent = (TextView) root.findViewById(R.id.tv_live_auto_notice_content);
+            }
+            ivAvatar.setImageDrawable(head);
+//            ImageLoader.with(mContext).load(head).error(R.drawable.ic_default_head_square).into(ivAvatar);
+//            SpannableString content = new SpannableString(name + "@你  " + s);
+//            StyleSpan span = new StyleSpan(Typeface.BOLD);
+//            try {
+//                content.setSpan(span, 0, name.length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+            tvContent.setText(s);
+            RelativeLayout.LayoutParams rootParam = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            rootParam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            rootParam.setMargins(0, 0, 0, 40);
+            if(!isShowing) {
+                bottom.addView(root, 1, rootParam);
+                isShowing = true;
+            }
+            LinearLayout.LayoutParams svParam = new LinearLayout.LayoutParams(videoWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+            mSlowHorizontalScrollView.setLayoutParams(svParam);
+            LinearLayout.LayoutParams vParam = new LinearLayout.LayoutParams(videoWidth, 1);
+            vLeft.setLayoutParams(vParam);
+            vRight.setLayoutParams(vParam);
+            TextPaint paint = new TextPaint();
+            paint.setTextSize(SizeUtils.Dp2Px(mContext, 12));
+            int tvWidth = (int) paint.measureText(s.toString());
             LinearLayout.LayoutParams tvParam = new LinearLayout.LayoutParams(tvWidth + 40, ViewGroup.LayoutParams.WRAP_CONTENT);
             tvParam.setMargins(10, 0, 0, 0);
             tvContent.setLayoutParams(tvParam);

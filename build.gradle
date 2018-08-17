@@ -51,12 +51,29 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.recyclerview
     implementation rootProject.ext.thirdlibraries.okhttp
     implementation(rootProject.ext.xeslibraries.xeslottie) { changing = true }
+//    implementation project(':xesijkplayer')
     implementation(rootProject.ext.xeslibraries.ijkplayer) { changing = true }
-    implementation project(':business-base:player')
-    implementation project(':business-base:cloud')
-    implementation project(':business-base:browser')
+//    implementation project(':business-base:player')
+    implementation(rootProject.ext.businesslibraries.player) {
+        changing = true
+    }
+//    implementation project(':business-base:cloud')
+    implementation(rootProject.ext.businesslibraries.cloud) {
+        changing = true
+    }
+//    implementation project(':business-base:browser')
+    implementation(rootProject.ext.businesslibraries.browser) {
+        changing = true
+    }
     implementation rootProject.ext.thirdlibraries.arouterapi
     //
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
-    implementation project(path: ':business-base:audio')
+//    implementation project(path: ':business-base:audio')
+    implementation(rootProject.ext.businesslibraries.audio) {
+        changing = true
+    }
+    //分享
+    implementation(rootProject.ext.xeslibraries.share) {
+        changing = true
+    }
 }

@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
 
+
 /**
  * 直播播放器控制栏底部区域
  */
@@ -75,7 +76,9 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
 
     /** 播放器的布局界面 */
     public View inflateLayout() {
+
         return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
+
     }
 
     /** 初始化控制界面上的控制部件 */

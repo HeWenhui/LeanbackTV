@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePag
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePortPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -200,14 +201,22 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
         long before = System.currentTimeMillis();
         if (!isSmallEnglish) {
-            LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
-                    baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-            mLiveMessagePager = liveMessagePager;
+            if(LiveVideoConfig.isPrimary){
+                LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                mLiveMessagePager = liveMessagePager;
+            } else {
+                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                mLiveMessagePager = liveMessagePager;
+            }
+//            LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+//            mLiveMessagePager = liveMessagePager;
         } else {
             SmallEnglishLiveMessagePager sEnglishLiveMessagePager = new SmallEnglishLiveMessagePager(activity, this,
                     null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
             mLiveMessagePager = sEnglishLiveMessagePager;
         }
+
+
         Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
         mLiveMessagePager.setGetInfo(getInfo);

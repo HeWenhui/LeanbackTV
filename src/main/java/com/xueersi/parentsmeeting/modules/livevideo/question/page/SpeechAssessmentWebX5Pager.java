@@ -119,7 +119,6 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
     boolean IS_SCIENCE;
     private boolean isStandingLive = false;
     // private AudioPlayerManager mAudioPlayerManager;
-
     public SpeechAssessmentWebX5Pager(Context context, String liveid, String testId, String stuId, boolean isLive,
                                       String nonce,
                                       SpeechEvalAction speechEvalAction, String stuCouId, boolean IS_SCIENCE, LivePagerBack livePagerBack) {
@@ -133,7 +132,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         this.stuCouId = stuCouId;
         this.IS_SCIENCE = IS_SCIENCE;
         this.livePagerBack = livePagerBack;
-        dir = LiveCacheFile.geCacheFile(mContext, "liveSpeech");
+
+        dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/liveSpeech/");
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -696,7 +696,63 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                                 mIsStop = false;
                             }
                         }
-                        remoteAudioPlayerControl(tip, playUrl);
+                        final boolean result = AudioPlayer.audioPlayerAsyncControl(playUrl, mContext, 1000, new
+                                AudioPlayerListening() {
+                                    @Override
+                                    public void playComplete(int where) {
+                                        mLogtf.i("playComplete:where=" + where + ",mIsStop=" + mIsStop);
+                                        try {
+                                            AudioPlayer.stop();
+                                        } catch (Exception e) {
+
+                                        }
+                                        if (mIsStop) {
+                                            if (!TextUtils.isEmpty(tip)) {
+                                                isRebotLast = false;
+                                                if (tip.equals("false")) {
+                                                    jsStopRecordBtn();
+                                                } else if (tip.equals("last")) {
+                                                    isRebotLast = true;
+                                                    jsStopRecordBtn();
+                                                }
+                                            }
+                                        }
+                                        mIsStop = true;
+                                        Loger.i(TAG, "playComplete");
+                                    }
+
+                                    @Override
+                                    public void prepared(int duration) {
+                                        mLogtf.i("prepared:duration=" + duration);
+                                        mCurrentPlayVoiceUrl = mVoiceUrl;
+                                        AudioPlayer.play();
+                                    }
+
+                                    @Override
+                                    public void currentDuration(int current, int duration) {
+                                        Loger.i(TAG, "currentDuration:current=" + current + ",duration=" +
+                                                duration);
+                                    }
+
+                                    @Override
+                                    public void onError(int what, int code) {
+                                        super.onError(what, code);
+                                        mLogtf.i("onError:what=" + what + ",code=" + code);
+                                        if (!TextUtils.isEmpty(tip)) {
+                                            isRebotLast = false;
+                                            if ("false".equals(tip)) {
+                                                jsStopRecordBtn();
+                                            } else if ("last".equals(tip)) {
+                                                isRebotLast = true;
+                                                jsStopRecordBtn();
+                                            }
+                                        }
+                                    }
+                                }, false, 0, true);
+                        mLogtf.i("jsRecordError:result=" + result);
+                        if (!result) {
+                            jsRecordError(ResultCode.PLAY_RECORD_FAIL);
+                        }
                     }
                 });
             }
@@ -872,6 +928,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                 Loger.i(TAG, "remotecurrentDuration:current=" + current + ",duration=" +
                         duration);
             } else {
+                mLogtf.i("playRecordFile:saveVideoFile=" + saveVideoFile + ",exists=false");
+                jsRecordError(ResultCode.PLAY_RECORD_FAIL);
                 times++;
                 if (times > 15) {
                     Loger.i(TAG, "remotecurrentDuration:times10:current=" + current);

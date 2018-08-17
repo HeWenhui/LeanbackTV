@@ -16,6 +16,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -276,22 +277,43 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         }
         final String eventId = getLogEventId(event.getH5Type());
 
-        mHttpManager.teamEnergyNumAndContributionStar(mLiveBll.getLiveId(),
-                roomInitInfo.getStudentLiveInfo().getTeamId(),
-                roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), testId, testPlan, new
-                        HttpCallBack() {
-                            @Override
-                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                TeamEnergyAndContributionStarEntity entity = mHttpResponseParser
-                                        .parseTeanEnergyAndContribution(responseEntity);
-                                showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
-                                if (mLiveBll != null && entity != null) {
-                                    TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(), getNonce(), eventId,
-                                            entity.getMyTeamEngerInfo().getTeamName());
-                                }
+        if(LiveVideoConfig.isNewEnglishH5){
 
-                            }
-                        });
+            mHttpManager.teamEnergyNumAndContributionmulStar(mLiveBll.getLiveId(),
+                    roomInitInfo.getStudentLiveInfo().getTeamId(),
+                    roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), LiveVideoConfig.tests, LiveVideoConfig.ctId, LiveVideoConfig.pSrc,new
+                            HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                    TeamEnergyAndContributionStarEntity entity = mHttpResponseParser
+                                            .parseTeanEnergyAndContribution(responseEntity);
+                                    showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
+                                    if (mLiveBll != null && entity != null) {
+                                        TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(),getNonce(),eventId,
+                                                entity.getMyTeamEngerInfo().getTeamName());
+                                    }
+
+                                }
+                            });
+
+        } else {
+            mHttpManager.teamEnergyNumAndContributionStar(mLiveBll.getLiveId(),
+                    roomInitInfo.getStudentLiveInfo().getTeamId(),
+                    roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), testId, testPlan, new
+                            HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                    TeamEnergyAndContributionStarEntity entity = mHttpResponseParser
+                                            .parseTeanEnergyAndContribution(responseEntity);
+                                    showPkResultScene(entity, PK_RESULT_TYPE_PKRESULT);
+                                    if (mLiveBll != null && entity != null) {
+                                        TeamPkLog.showPerTestPk(mLiveBll, entity.isMe(),getNonce(),eventId,
+                                                entity.getMyTeamEngerInfo().getTeamName());
+                                    }
+
+                                }
+                            });
+        }
     }
 
     /**

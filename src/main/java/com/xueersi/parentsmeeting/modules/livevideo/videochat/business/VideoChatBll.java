@@ -1,5 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videochat.business;
-
+import com.xueersi.common.permission.config.PermissionConfig;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -1252,3 +1252,4 @@ public class VideoChatBll implements VideoChatAction {
         isHasPermission = unList.isEmpty();
     }
 }
+
