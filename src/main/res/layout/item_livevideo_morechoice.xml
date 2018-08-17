@@ -61,7 +61,6 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/v_livevideo_morechoice_gap"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_gravity="bottom"
