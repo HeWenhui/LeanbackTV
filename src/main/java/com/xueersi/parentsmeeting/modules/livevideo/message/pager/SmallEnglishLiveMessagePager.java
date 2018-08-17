@@ -762,12 +762,12 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initFlower(educationStage);
-            new Thread() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     OtherModulesEnter.requestGoldTotal(mContext);
                 }
-            }.start();
+            });
         }
     }
 
@@ -899,7 +899,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         });
         //测试时候使用
         if (blTestSEBullet) {
-            new Thread(new Runnable() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     while (blTestSEBullet) {
@@ -911,7 +911,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         }
                     }
                 }
-            }).start();
+            });
         }
 
         PopupWindow flowerWindow = new PopupWindow(mContext);

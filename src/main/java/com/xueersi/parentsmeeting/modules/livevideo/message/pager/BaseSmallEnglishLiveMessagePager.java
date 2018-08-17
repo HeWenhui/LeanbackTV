@@ -147,7 +147,7 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
             }
         }, mDanmakuContext);
         dvMessageDanmaku.showFPS(false);
-        dvMessageDanmaku.enableDanmakuDrawingCache(true);
+        dvMessageDanmaku.enableDanmakuDrawingCache(false);
     }
 
     protected BaseCacheStuffer.Proxy mCacheStufferAdapter = new BaseCacheStuffer.Proxy() {

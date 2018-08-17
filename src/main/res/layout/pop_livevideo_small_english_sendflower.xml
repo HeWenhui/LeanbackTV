@@ -72,7 +72,7 @@
             android:layout_marginTop="160px"
             android:background="@drawable/bg_livevideo_small_english_sendflower_idol_img"
             android:clickable="false"
-            android:text="&#160;&#160;&#160;&#160;100金币"
+            android:text="&#160;&#160;&#160;&#160;10金币"
             android:textColor="@color/COLOR_ECF4FF"
             android:textSize="8sp" />
     </com.xueersi.ui.widget.ZoomerLayout>

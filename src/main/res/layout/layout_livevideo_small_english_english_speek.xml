@@ -38,7 +38,7 @@
             android:layout_below="@id/rl_livevideo_english_stat"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="3dp"
             android:max="45"
             android:paddingLeft="0dp"
             android:paddingRight="0dp" />
@@ -53,8 +53,8 @@
 
             <ImageView
                 android:id="@id/iv_livevideo_english_stat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/bg_livevideo_small_english_statinteract_stat_small" />
@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="5dp"
+
                 android:layout_toLeftOf="@id/iv_livevideo_english_stat"
                 android:text="继续说15秒获得"
                 android:textColor="@color/COLOR_FFFFFF"
