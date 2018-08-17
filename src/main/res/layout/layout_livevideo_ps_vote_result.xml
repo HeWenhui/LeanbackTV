@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/iv_livevide_psvoteresult_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/livevideo_primarygiftbg"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_livevide_psvoteresult_bg"
+        android:layout_alignLeft="@id/iv_livevide_psvoteresult_bg"
+        android:layout_alignRight="@id/iv_livevide_psvoteresult_bg"
+        android:layout_alignTop="@id/iv_livevide_psvoteresult_bg"
+        android:paddingBottom="20dp">
+
+        <LinearLayout
+            android:id="@+id/ll_livevideo_vote_ps_result_content"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_psvoteresult_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/selector_understandclose_ps"/>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="-10dp"
+        android:background="@drawable/liveboardpsbg">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/liveboardpsresult"/>
+    </RelativeLayout>
+
+</RelativeLayout>

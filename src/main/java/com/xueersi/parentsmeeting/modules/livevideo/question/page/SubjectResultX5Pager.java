@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+
+import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,6 +31,7 @@ import java.util.Map;
  * 直播主观题结果页面
  */
 public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectResultInter {
+
     private String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
     private Button btSubjectClose;
     private Button bt_livevideo_subject_calljs;
@@ -48,12 +51,14 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
 
     public SubjectResultX5Pager(Context context, BaseQuestionWebInter.StopWebQuestion questionBll, String testPaperUrl, String stuId, String liveid, String testId, String stuCouId) {
         super(context);
+
         this.questionBll = questionBll;
         this.stuId = stuId;
         this.liveid = liveid;
         this.testId = testId;
         this.testPaperUrl = testPaperUrl;
         this.stuCouId = stuCouId;
+
         initData();
     }
 

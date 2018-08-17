@@ -115,6 +115,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         final HttpURLConnectionCancelable cancelable = new HttpURLConnectionCancelable();
         LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
         liveThreadPoolExecutor.execute(new Runnable() {
+
             Handler handler = new Handler(Looper.getMainLooper());
 
             @Override
@@ -1125,6 +1126,31 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testPlan", testPlan);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR + "/" + liveId, params, requestCallBack);
+    }
+
+    /**
+     * 每题战队能量 和贡献之星
+     *
+     * @param liveId
+     * @param teamId
+     * @param classId
+     * @param stuId
+     * @param tests
+     * @param ctId        互动课件或者互动题时 testPlan= ''; 测试卷请求时testId= ' '
+     * @param requestCallBack
+     */
+    public void teamEnergyNumAndContributionmulStar(String liveId, String teamId, String classId, String stuId, String tests,
+                                                 String ctId, String pSrc ,HttpCallBack requestCallBack) {
+
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("tests", tests);
+        params.addBodyParam("ctId", ctId);
+        params.addBodyParam("pSrc", pSrc);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params, requestCallBack);
     }
 
 

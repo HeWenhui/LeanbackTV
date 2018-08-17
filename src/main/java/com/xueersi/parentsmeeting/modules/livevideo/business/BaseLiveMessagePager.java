@@ -33,6 +33,7 @@ import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveExPressionEditData;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
@@ -134,6 +135,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     public final static int OTHER_FLOWER = 2;
 
     private boolean isSmallEnglish = false;
+
 
     public BaseLiveMessagePager(Context context) {
         super(context);
@@ -485,8 +487,11 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         danmaku.priority = 1;  // 一定会显示, 一般用于本机发送的弹幕
         danmaku.isLive = false;
         danmaku.time = dvMessageDanmaku.getCurrentTime() + 1200;
-        danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
-        danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
+        if(LiveVideoConfig.isPrimary){
+            danmaku.textSize = 20f * (mParser.getDisplayer().getDensity() - 0.6f);
+        } else {
+            danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
+        }
 //        danmaku.underlineColor = Color.GREEN;
 
         dvMessageDanmaku.addDanmaku(danmaku);
@@ -559,6 +564,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
                 .SPAN_INCLUSIVE_EXCLUSIVE);
 //        spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0,
 // spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
         return spannableStringBuilder;
     }
 

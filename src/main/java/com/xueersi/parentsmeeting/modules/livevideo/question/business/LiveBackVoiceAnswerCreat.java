@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 
+
 import org.json.JSONObject;
 
 import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE1;
@@ -32,6 +33,7 @@ public class LiveBackVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     LivePagerBack livePagerBack;
 
     public LiveBackVoiceAnswerCreat(WrapQuestionSwitch questionSwitch, LivePagerBack livePagerBack) {
+
         this.questionSwitch = questionSwitch;
         this.livePagerBack = livePagerBack;
     }

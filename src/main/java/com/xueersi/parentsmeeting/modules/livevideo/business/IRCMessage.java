@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,6 +50,7 @@ public class IRCMessage {
     private boolean connectError = false;
     /** 是不是获得过用户列表 */
     private boolean onUserList = false;
+    /** 和服务器的ping，线程池 */
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     public IRCMessage(int netWorkType, String channel, String login, String nickname) {
@@ -267,7 +269,7 @@ public class IRCMessage {
 
             @Override
             public void onJoin(String target, String sender, String login, String hostname) {
-                if (sender.startsWith("s_")) {
+                if (sender.startsWith("s_") || sender.startsWith("ws_")) {
                     Loger.i(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 } else {
                     mLogtf.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
@@ -279,8 +281,13 @@ public class IRCMessage {
 
             @Override
             public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-                mLogtf.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
-                        + sourceHostname + ",reason=" + reason);
+                if (sourceNick.startsWith("s_") || sourceNick.startsWith("ws_")) {
+                    Loger.d(TAG,"onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                            + sourceHostname + ",reason=" + reason);
+                }else {
+                    mLogtf.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                            + sourceHostname + ",reason=" + reason);
+                }
                 if (mIRCCallback != null) {
                     mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
                 }
@@ -388,6 +395,7 @@ public class IRCMessage {
             }
             mLogtf.d("connect:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
             mHandler.postDelayed(new Runnable() {
+
                 @Override
                 public void run() {
                     if (mIsDestory) {
@@ -401,6 +409,7 @@ public class IRCMessage {
                     });
                 }
             }, 2000);
+
         }
     }
 
@@ -550,6 +559,7 @@ public class IRCMessage {
                 return;
             }
             mHandler.postDelayed(new Runnable() {
+
                 @Override
                 public void run() {
                     if (mIsDestory) {

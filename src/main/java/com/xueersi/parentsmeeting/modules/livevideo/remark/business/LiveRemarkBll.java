@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
@@ -316,6 +317,7 @@ public class LiveRemarkBll {
     public void setList(List<VideoPointEntity> list) {
         mList = list;
         setEntityNum(mList);
+        setNewEntityNum(mList);
     }
 
 
@@ -657,6 +659,35 @@ public class LiveRemarkBll {
         }
     }
 
+    private void setNewEntityNum(List<VideoPointEntity> lst) {
+        if (lst == null || lst.size() == 0) {
+            return;
+        }
+        questionNum = 0;
+        redPackNum = 0;
+        examNum = 0;
+        englishH5Num = 0;
+        markNum = 0;
+        for (VideoPointEntity entity : lst) {
+            switch (entity.getNewType()) {
+                case "1":
+                case "6":
+                    entity.setNumone(++questionNum);
+                    break;
+                case "2":
+                case "3":
+                case "4":
+                    entity.setNumtwo(++examNum);
+                    break;
+                case "5":
+                case "10":
+                    entity.setNumthree(++englishH5Num);
+                    break;
+                default:
+                    entity.setNum(++markNum);
+            }
+        }
+    }
 
     private class PointListItem implements AdapterItemInterface<VideoPointEntity> {
         private ImageView ivShot;
@@ -753,38 +784,67 @@ public class LiveRemarkBll {
 
             StringBuilder sb = new StringBuilder();
             ivShot.setScaleType(ImageView.ScaleType.CENTER);
-            switch (entity.getType()) {
-                case CATEGORY_QUESTION:
-                    sb.append("互动题");
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
-                    ivShot.setImageResource(R.drawable.bg_live_mark_question);
-                    break;
-                case CATEGORY_REDPACKET:
-                    sb.append("红包");
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                    ivShot.setImageResource(R.drawable.bg_live_mark_redpack);
-                    break;
-                case CATEGORY_EXAM:
-                    sb.append("测试卷");
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_green);
-                    ivShot.setImageResource(R.drawable.bg_live_video_mark_exam);
-                    break;
-                case CATEGORY_H5COURSE_WARE:
-                case CATEGORY_ENGLISH_H5COURSE_WARE:
-                    sb.append("互动课件");
-                    vSig.setBackgroundResource(R.drawable.shape_blue_corners);
-                    ivShot.setImageResource(R.drawable.bg_live_video_mark_courceware);
-                    break;
-                default:
-                    ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
-                    vDelete.setVisibility(View.VISIBLE);
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                    ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
-                    sb.append("疑问点");
+            if (entity.getType() == 24) {
+                switch (entity.getNewType()) {
+                    case "1":
+                    case "6":
+                        sb.append("互动题");
+                        sb.append(entity.getNumone());
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
+                        ivShot.setImageResource(R.drawable.bg_live_mark_question);
+                        break;
+                    case "2":
+                    case "3":
+                    case "4":
+                        sb.append("测试卷");
+                        sb.append(entity.getNumtwo());
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_green);
+                        ivShot.setImageResource(R.drawable.bg_live_video_mark_exam);
+                        break;
+                    case "5":
+                    case "10":
+                        sb.append("互动游戏");
+                        sb.append(entity.getNumthree());
+                        vSig.setBackgroundResource(R.drawable.shape_blue_corners);
+                        ivShot.setImageResource(R.drawable.bg_live_video_mark_courceware);
+                        break;
+
+                }
+                tvText.setText(sb.toString());
+            } else {
+                switch (entity.getType()) {
+                    case CATEGORY_QUESTION:
+                        sb.append("互动题");
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
+                        ivShot.setImageResource(R.drawable.bg_live_mark_question);
+                        break;
+                    case CATEGORY_REDPACKET:
+                        sb.append("红包");
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
+                        ivShot.setImageResource(R.drawable.bg_live_mark_redpack);
+                        break;
+                    case CATEGORY_EXAM:
+                        sb.append("测试卷");
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_green);
+                        ivShot.setImageResource(R.drawable.bg_live_video_mark_exam);
+                        break;
+                    case CATEGORY_H5COURSE_WARE:
+                    case CATEGORY_ENGLISH_H5COURSE_WARE:
+                        sb.append("互动课件");
+                        vSig.setBackgroundResource(R.drawable.shape_blue_corners);
+                        ivShot.setImageResource(R.drawable.bg_live_video_mark_courceware);
+                        break;
+                    default:
+                        ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
+                        vDelete.setVisibility(View.VISIBLE);
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
+                        ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
+                        sb.append("疑问点");
+                }
+                sb.append(entity.getNum());
+                tvText.setText(sb.toString());
+                //tvText.setText("疑问点" + (i + 1));
             }
-            sb.append(entity.getNum());
-            tvText.setText(sb.toString());
-            //tvText.setText("疑问点" + (i + 1));
         }
     }
 

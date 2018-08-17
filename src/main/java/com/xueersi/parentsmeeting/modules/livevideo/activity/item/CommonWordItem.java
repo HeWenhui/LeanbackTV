@@ -6,11 +6,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+
 
 /**
  * Created by linyuqiang on 2017/7/19.
@@ -31,7 +33,12 @@ public class CommonWordItem implements AdapterItemInterface<String> {
 
     @Override
     public int getLayoutResId() {
-        return R.layout.item_livevideo_message_commonword;
+        if(LiveVideoConfig.isPrimary){
+            return R.layout.item_livevideo_message_pscommonword;
+        } else {
+            return R.layout.item_livevideo_message_commonword;
+        }
+
     }
 
     @Override

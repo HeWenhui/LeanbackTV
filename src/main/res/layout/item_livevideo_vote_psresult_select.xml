@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@id/tv_livevideo_vote_result_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="right"
+        android:text="99% 1000人"
+        android:textColor="#7D553F"
+        android:textSize="13sp" />
+
+    <RelativeLayout
+        android:id="@id/pb_livevideo_vote_result_item"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="20dp"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tv_livevideo_vote_result_item"
+        android:layout_below="@id/tv_livevideo_vote_result_count"
+        >
+        <ImageView
+            android:background="@drawable/livevideo_psvote_indicatorbg"
+            android:layout_width="wrap_content"
+            android:layout_height="168dp"/>
+        <ImageView
+            android:id="@+id/iv_livevideo_ps_progress"
+            android:background="@drawable/livevideo_psvote_indicator"
+            android:scaleType="centerCrop"
+            android:layout_width="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="3.5dp"
+            android:layout_marginBottom="3.5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+
+
+    <TextView
+        android:id="@id/tv_livevideo_vote_result_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="A"
+        android:textColor="#7D553F"
+        android:textSize="18sp" />
+</RelativeLayout>

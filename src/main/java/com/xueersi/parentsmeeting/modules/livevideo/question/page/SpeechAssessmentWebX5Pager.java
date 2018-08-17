@@ -38,6 +38,7 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -45,6 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.xueersi.parentsmeeting.module.audio.AudioPlayer.mVoiceUrl;
+
 
 /**
  * 语音评测WEB页
@@ -114,10 +116,10 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
     boolean IS_SCIENCE;
     private boolean isStandingLive = false;
     // private AudioPlayerManager mAudioPlayerManager;
-
     public SpeechAssessmentWebX5Pager(Context context, String liveid, String testId, String stuId, boolean isLive,
                                       String nonce,
                                       SpeechEvalAction speechEvalAction, String stuCouId, boolean IS_SCIENCE, LivePagerBack livePagerBack) {
+
         super(context);
         this.stuId = stuId;
         this.liveid = liveid;
@@ -128,6 +130,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         this.stuCouId = stuCouId;
         this.IS_SCIENCE = IS_SCIENCE;
         this.livePagerBack = livePagerBack;
+
         dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/liveSpeech/");
         if (!dir.exists()) {
             dir.mkdirs();
@@ -758,6 +761,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                 jsRecordError(ResultCode.PLAY_RECORD_FAIL);
             } else if (saveVideoFile.exists()) {
                 mLogtf.i("playRecordFile:saveVideoFile=" + saveVideoFile + ",exists=true");
+
                 if (AudioPlayer.isPlaying()) {
                     wvSubjectWeb.post(new Runnable() {
                         @Override

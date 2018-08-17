@@ -1,4 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videochat.page;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import android.app.Activity;
 import android.graphics.Rect;

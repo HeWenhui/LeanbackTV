@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -91,7 +93,11 @@ public class TeamPkStateLayout extends FrameLayout {
 
 
     private void initView() {
-        LayoutInflater.from(getContext()).inflate(R.layout.team_pk_state_layout, this);
+        if(LiveVideoConfig.isPrimary){
+            LayoutInflater.from(getContext()).inflate(R.layout.team_pspk_state_layout, this);
+        } else {
+            LayoutInflater.from(getContext()).inflate(R.layout.team_pk_state_layout, this);
+        }
         pkProgressBar = findViewById(R.id.tpb_teampk_pkstate_energy_bar);
         tvMyTeamEnergy = findViewById(R.id.tv_teampk_pkstate_myteam_energy);
         tvOtherTeamEnergy = findViewById(R.id.tv_teampk_pkstate_otherteam_energy);
@@ -163,8 +169,8 @@ public class TeamPkStateLayout extends FrameLayout {
         mOtherTeamEnergy = mOtherTeamEnergy + otherEnergyAdd;
         mCoinNum = mCoinNum + coinAdd;
         Loger.e("coinNum", "====>updateData22222:" + mMyTeamEnergy + ":" + mOtherTeamEnergy + ":" + mCoinNum);
-        if(mTeamPkBll != null && coinAdd > 0){
-            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(),mCoinNum+"");
+        if (mTeamPkBll != null && coinAdd > 0) {
+            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(), mCoinNum + "");
         }
         //正 增长 显示动画 ，负增涨 不显示动画
         if (ownEnergyAdd > 0) {
@@ -247,8 +253,8 @@ public class TeamPkStateLayout extends FrameLayout {
         tvMyTeamEnergy.setText(mMyTeamEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamAnergy + "");
 
-        if(mTeamPkBll != null && mCoinNum > 0){
-            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(),mCoinNum+"");
+        if (mTeamPkBll != null && mCoinNum > 0) {
+            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(), mCoinNum + "");
         }
 
         float ratio;
@@ -297,7 +303,7 @@ public class TeamPkStateLayout extends FrameLayout {
      * 淡入 淡出展示  当前pk 状态
      */
     private void showPkSateBar() {
-        showViewWithFadeInOutEffect(tvState,PK_STATE_DISPLAY_DURATION);
+        showViewWithFadeInOutEffect(tvState, PK_STATE_DISPLAY_DURATION);
     }
 
 
@@ -356,7 +362,7 @@ public class TeamPkStateLayout extends FrameLayout {
     }
 
 
-    public void setTeamPkBll(TeamPkBll teamPkBll){
+    public void setTeamPkBll(TeamPkBll teamPkBll) {
         mTeamPkBll = teamPkBll;
     }
 

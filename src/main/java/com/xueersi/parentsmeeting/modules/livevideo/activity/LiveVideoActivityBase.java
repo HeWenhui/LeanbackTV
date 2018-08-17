@@ -367,6 +367,8 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 //                        tvVideoLoadingText.setText(getString(R.string.video_layout_buffering_progress,
 //                                vPlayer.getBufferProgress()));
                         vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
+
+//                        stopPlayer(); 缓冲过程不暂停
                     }
                     break;
                 case BUFFER_COMPLETE:
@@ -1154,6 +1156,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             if (wrapListener != null) {
                 wrapListener.onBufferStart();
             }
+            if (totalFrameStat != null) {
+                totalFrameStat.onBufferStart();
+            }
         }
 
         /** 缓冲结束 */
@@ -1168,6 +1173,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onBufferComplete();
+            }
+            if (totalFrameStat != null) {
+                totalFrameStat.onBufferComplete();
             }
         }
 

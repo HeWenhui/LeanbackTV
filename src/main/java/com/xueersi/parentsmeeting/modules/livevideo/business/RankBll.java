@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RankItem;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -33,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,6 +134,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                         classId = mGetInfo.getStudentLiveInfo().getClassId();
                     }
                     getAllRanking(new AbstractBusinessDataCallBack() {
+
                         @Override
                         public void onDataSucess(Object... objData) {
                             allRankEntity = (AllRankEntity) objData[0];
@@ -339,8 +342,6 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
             final TextView tv_livevideo_rank_subtitle_mid = (TextView) relativeLayout.findViewById(R.id
                     .tv_livevideo_rank_subtitle_mid);
             lv_livevideo_rank_list = relativeLayout.findViewById(R.id.lv_livevideo_rank_list);
-
-
 //        ArrayList<RankEntity> rankEntities = new ArrayList<>();
 //        for (int i = 0; i < 10; i++) {
 //            RankEntity rankEntity = new RankEntity();

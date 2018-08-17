@@ -150,8 +150,6 @@ public class LiveVideoSAConfig {
         public String URL_TEMPK_STUPKRESULT = HTTP_HOST + "/LiveCourse/stuPKResult";
         /** 贡献之星结果 */
         public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStar";
-        /** 直播回放的用户在线心跳 */
-        public String URL_LIVE_VISITTIME = HTTP_HOST + "/LiveCourse/visitTime";
 
         /**文科表扬榜*/
         public String URL_ARTS_PRAISE_LIST ="http://app.arts.xueersi.com/LiveRank/getRankData";
@@ -160,6 +158,11 @@ public class LiveVideoSAConfig {
         public String URL_UPLOAD_VOICE_BARRAGE = HTTP_HOST + "/LiveCourse/uploadVoiceBarrage";
         /** 回放获取弹幕接口 */
         public String URL_GET_VOICE_BARRAGE_MSG = HTTP_HOST + "/LiveCourse/getVoiceBarrageMsg";
+
+        /** 贡献之星结果多题型 */
+        public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStarNew";
+        /** 直播回放的用户在线心跳 */
+        public String URL_LIVE_VISITTIME = HTTP_HOST + "/LiveCourse/visitTime";
     }
 
 }

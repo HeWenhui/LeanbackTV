@@ -168,4 +168,5 @@ public interface XESCODE {
     int ARTS_RECEIVE_PRAISE_NUM = 1002;
 
 
+
 }
