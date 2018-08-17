@@ -80,6 +80,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         mQuestionAction.initView(bottomContent, isLand.get());
     }
 
+    public void onPause() {
+        mQuestionAction.onPause();
+    }
+
     @Override
     public void onLiveInited(LiveGetInfo data) {
         super.onLiveInited(data);

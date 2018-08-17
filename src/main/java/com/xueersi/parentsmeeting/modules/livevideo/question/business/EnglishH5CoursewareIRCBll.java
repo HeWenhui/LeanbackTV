@@ -112,6 +112,20 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     }
 
     @Override
+    public void onPause() {
+        if (englishH5CoursewareBll != null) {
+            englishH5CoursewareBll.onPause();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        if (englishH5CoursewareBll != null) {
+            englishH5CoursewareBll.onResume();
+        }
+    }
+
+    @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         try {
             if (englishH5CoursewareBll != null && jsonObject.has("H5_Courseware")) {
@@ -342,6 +356,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     @Override
     public void onDestory() {
         super.onDestory();
+        if (englishH5CoursewareBll != null) {
+            englishH5CoursewareBll.destroy();
+        }
         if (englishH5Cache != null) {
             englishH5Cache.stop();
         }

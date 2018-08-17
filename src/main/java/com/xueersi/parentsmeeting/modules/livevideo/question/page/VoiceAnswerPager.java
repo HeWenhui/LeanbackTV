@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSw
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
@@ -199,7 +200,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                 vwvSpeectevalWave.start();
             }
         }, 1000);
-        dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/voice/");
+        dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
             dir.mkdirs();

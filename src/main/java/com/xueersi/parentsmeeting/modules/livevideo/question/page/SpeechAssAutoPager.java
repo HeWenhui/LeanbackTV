@@ -36,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StartProgress;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
@@ -265,7 +266,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(),
                 "fangzhengcuyuan.ttf");
         tvSpeectevalEncourage.setTypeface(fontFace);
-        File dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/livevideo/");
+        File dir =  LiveCacheFile.geCacheFile(mContext, "liveSpeech");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
             dir.mkdirs();
