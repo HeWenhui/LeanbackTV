@@ -74,6 +74,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (1 == data.optInt("isPrimarySchool")) {
+            LiveVideoConfig.isPrimary = true;
+        } else {
+            LiveVideoConfig.isPrimary = false;
+        }
     }
 
     /**
@@ -119,11 +124,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setsTime(data.optLong("stime"));
             getInfo.seteTime(data.optLong("etime"));
             getInfo.setNowTime(data.getDouble("nowTime"));
-            if(1 == data.getInt("isPrimarySchool")){
-                LiveVideoConfig.isPrimary = true;
-            }else{
-                LiveVideoConfig.isPrimary = false;
-            }
             //getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));\
             if (data.has("isAllowTeamPk")) {
                 getInfo.setIsAllowTeamPk(data.getString("isAllowTeamPk"));
@@ -407,13 +407,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             coachStatusEntity.setCalling(status.getBoolean("isCalling"));
             coachStatusEntity.setListStatus(status.optInt("listStatus"));
 
-            if(status.has("openbarrage")){
-                Loger.i("yzl_fd", "room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = "+status.getBoolean("openbarrage")+" "+status.toString());
+            if (status.has("openbarrage")) {
+                Loger.i("yzl_fd", "room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = " + status.getBoolean("openbarrage") + " " + status.toString());
                 //新增字段，辅导老师开启礼物与否 true开启
                 coachStatusEntity.setFDLKOpenbarrage(status.getBoolean("openbarrage"));
 
-            }else {
-                Loger.i("yzl_fd", "room2中没有openbarrage字段 文科"+status.toString());
+            } else {
+                Loger.i("yzl_fd", "room2中没有openbarrage字段 文科" + status.toString());
             }
 
             // 解析辅讲老师信息
@@ -424,7 +424,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             teamPkEntity.setRoomInfo2(roomInfo2);
 
             if (status.has("link_mic")) {
-                Loger.i("yzl_fd", "辅导老师 parseLiveTopic status = "+status.toString());
+                Loger.i("yzl_fd", "辅导老师 parseLiveTopic status = " + status.toString());
                 JSONObject link_mic = status.getJSONObject("link_mic");
                 coachStatusEntity.setOnmic(link_mic.optString("onmic", "off"));
                 coachStatusEntity.setOpenhands(link_mic.optString("openhands", "off"));
@@ -471,7 +471,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         if (liveTopicJson.has("room_1")) {
-            Loger.i("yzl_fd", "主讲老师 parseLiveTopic liveTopicJson = "+liveTopicJson.toString());
+            Loger.i("yzl_fd", "主讲老师 parseLiveTopic liveTopicJson = " + liveTopicJson.toString());
             JSONObject status = liveTopicJson.getJSONObject("room_1");
             RoomStatusEntity mainStatusEntity = liveTopic.getMainRoomstatus();
             mainStatusEntity.setOnbreak(status.optBoolean("isOnBreak"));
