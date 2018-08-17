@@ -435,7 +435,6 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                     params.addRule(RelativeLayout.CENTER_IN_PARENT);
                     rlRollCallContent.addView(mClassSignPager.getRootView(), params);
                     //80%的透明度
-                    rlRollCallContent.setBackgroundColor(0xCC000000);
                     activity.getWindow().getDecorView().requestLayout();
                     activity.getWindow().getDecorView().invalidate();
                 }
