@@ -495,4 +495,21 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         liveBackBaseBlls.clear();
     }
 
+    public void onPausePlayer() {
+        for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
+            businessBll.onPausePlayer();
+        }
+    }
+
+    public void onStartPlayer() {
+        for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
+            businessBll.onStartPlayer();
+        }
+    }
+
+    public void setSpeed(float speed) {
+        for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
+            businessBll.setSpeed(speed);
+        }
+    }
 }

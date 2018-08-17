@@ -472,6 +472,13 @@ public class LiveBackVideoFragmentBase extends Fragment {
         public void pause() {
             super.pause();
             liveBackVideoFragment.pausePlay = true;
+            liveBackVideoFragment.onPausePlayer();
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            liveBackVideoFragment.onStartPlayer();
         }
 
         @Override
@@ -518,6 +525,14 @@ public class LiveBackVideoFragmentBase extends Fragment {
         protected long getStartPosition() {
             return liveBackVideoFragment.getStartPosition();
         }
+        
+        
+    }
+
+    protected void onStartPlayer() {
+    }
+
+    protected void onPausePlayer() {
     }
 
 
