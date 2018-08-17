@@ -24,7 +24,10 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.common.http.BaseHttp;
+import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
+import com.xueersi.lib.framework.utils.string.MD5Utils;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayerListening;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -34,6 +37,7 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -129,7 +133,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         this.stuCouId = stuCouId;
         this.IS_SCIENCE = IS_SCIENCE;
         this.livePagerBack = livePagerBack;
-        dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/liveSpeech/");
+        dir = LiveCacheFile.geCacheFile(mContext, "liveSpeech");
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -765,11 +769,31 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         remotePlayTimeOut.playUrl = playUrl;
         mHandler.removeCallbacks(remotePlayTimeOut);
         mHandler.postDelayed(remotePlayTimeOut, 5000);
-        final boolean result = AudioPlayer.audioPlayerAsyncControl(playUrl, mContext, 1000, remoteAudioPlayerListening, false, 0, true);
-        mLogtf.i("remoteAudioPlayerControl:result=" + result + ",playUrl=" + playUrl);
+        final File saveFile = new File(dir, MD5Utils.disgest(playUrl));
+        String newPlayUrl = playUrl;
+        if (saveFile.exists()) {
+            newPlayUrl = saveFile.getPath();
+        }
+        final boolean result = AudioPlayer.audioPlayerAsyncControl(newPlayUrl, mContext, 1000, remoteAudioPlayerListening, false, 0, true);
+        mLogtf.i("remoteAudioPlayerControl:result=" + result + ",playUrl=" + newPlayUrl);
         if (!result) {
             mHandler.removeCallbacks(remotePlayTimeOut);
             jsRecordError(ResultCode.PLAY_RECORD_FAIL);
+        }
+        if (!saveFile.exists() && playUrl.startsWith("http")) {
+            BaseHttp baseHttp = new BaseHttp(mContext);
+            final File tempFile = new File(dir, MD5Utils.disgest(playUrl) + ".tmp");
+            baseHttp.download(playUrl, tempFile.getPath(), new DownloadCallBack() {
+                @Override
+                protected void onDownloadSuccess() {
+                    tempFile.renameTo(saveFile);
+                }
+
+                @Override
+                protected void onDownloadFailed() {
+
+                }
+            });
         }
     }
 

@@ -499,6 +499,19 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     @Override
+    protected void savePosition(long fromStart) {
+        liveBackVideoBll.savePosition(fromStart);
+    }
+
+    @Override
+    protected long getStartPosition() {
+        if (mFromStart) {
+            return 0;
+        }
+        return liveBackVideoBll.getStartPosition();
+    }
+
+    @Override
     public void setSpeed(float speed) {
         String key = "null";
         if (mVideoEntity != null) {
@@ -625,6 +638,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 mIsShowNoWifiAlert = true;
                 playNewVideo();
             }
+        } else {
+            liveBackVideoBll.onNetWorkChange(event.netWorkType);
         }
     }
 
