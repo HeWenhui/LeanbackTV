@@ -44,6 +44,6 @@ public class ShortToastDialog extends BaseAlertDialog {
             public void run() {
                 cancelDialog();
             }
-        }, 3000);
+        }, 2000);
     }
 }

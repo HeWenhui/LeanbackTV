@@ -2,8 +2,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business
 
 import android.app.Activity;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -20,7 +22,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
+
+import okhttp3.Call;
 
 /**
  * Created by Zhang Yuansun on 2018/7/12.
@@ -53,14 +58,12 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                 haveTeam = true;
             }
         }
-
 //        class MyThead extends Thread{
 //            @Override
 //            public void run() {
-//                String str = "{\"from\":\"t\",\"open\":true,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}";
 //                JSONObject data = null;
 //                try {
-//                    data = new JSONObject(str);
+//                    data = new JSONObject("{\"from\":\"t\",\"open\":true,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
@@ -77,7 +80,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
-        if (LiveTopic.MODE_TRANING.equals(mode) && mSpeechBulletScreenAction!=null) {
+        if ( mSpeechBulletScreenAction!=null) {
             mSpeechBulletScreenAction.onCloseSpeechBulletScreen(false);
         }
     }
@@ -162,7 +165,15 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                 JSONObject jsonObject = new JSONObject(message);
                 int type = jsonObject.getInt("type");
                 if (type == XESCODE.XCR_ROOM_DANMU_SEND) {
-                    String to = jsonObject.optString("to", teamId);
+                    //临调生
+//                    if (teamId.startsWith("-")) {
+//                        String temporary = jsonObject.optString("temporary");
+//                        if (!"1".equals(temporary)) {
+//                            return;
+//                        }
+//                    }
+                    //普通分组
+                    String to = jsonObject.optString("to");
                     if (!teamId.equals(to)) {
                         return;
                     }
@@ -225,9 +236,13 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                     String teamId = studentLiveInfo.getTeamId();
                     jsonObject.put("from", "android_" + teamId);
                     jsonObject.put("to", teamId);
+                    //如果teamId小于0，说明该生是临调生
+//                    if (!StringUtils.isEmpty(teamId) && teamId.startsWith("-")) {
+//                        jsonObject.put("temporary", "1");
+//                    }
                 }
+
                 mLiveBll.sendMessage(jsonObject);
-//            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
             } catch (Exception e) {
 //            Loger.e(TAG, "understand", e);
                 mLogtf.e("sendDanmakuMessage", e);

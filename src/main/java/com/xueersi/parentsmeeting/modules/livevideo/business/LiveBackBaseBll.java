@@ -112,6 +112,12 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
+    public void onPausePlayer() {}
+
+    public void onStartPlayer() {}
+
+    public void setSpeed(float speed) {}
+
     public <T> T getInstance(Class<T> clazz) {
         return ProxUtil.getProxUtil().get(mContext, clazz);
     }

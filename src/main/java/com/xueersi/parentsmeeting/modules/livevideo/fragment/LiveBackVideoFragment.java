@@ -536,6 +536,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         UmsAgentManager.umsAgentStatistics(activity, LiveVideoConfig.LIVE_VIDEO_PLAYBACK_SPEED,
                 "times=" + times + ",time=" + (System.currentTimeMillis() - createTime) + ",speed=" + speed + ",key="
                         + key);
+        liveBackBll.setSpeed(speed);
     }
 
     @Override
@@ -611,6 +612,18 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             return;
         }
         scanQuestion(currentPosition); // 扫描互动题
+    }
+
+    @Override
+    protected void onPausePlayer() {
+        super.onPausePlayer();
+        liveBackBll.onPausePlayer();
+    }
+
+    @Override
+    protected void onStartPlayer() {
+        super.onStartPlayer();
+        liveBackBll.onStartPlayer();
     }
 
     /** 扫描是否有需要弹出的互动题 */

@@ -6,7 +6,6 @@
 
 
     <ImageView
-        android:id="@+id/iv_livevideo_praiselist_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
@@ -64,7 +63,6 @@
         android:background="@drawable/shape_livevideo_praiselist_message">
 
         <ImageView
-            android:id="@+id/iv_livevideo_praiselist_heart"
             android:layout_width="14dp"
             android:layout_height="11.8dp"
             android:layout_centerVertical="true"
@@ -131,7 +129,6 @@
             android:background="@drawable/bg_livevideo_praiselist_light" />
 
         <ImageView
-            android:id="@+id/iv_livevideo_praiselist_scroll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

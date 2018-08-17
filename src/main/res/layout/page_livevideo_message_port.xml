@@ -173,7 +173,6 @@
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:id="@+id/content_description"
                     android:layout_height="82dp">
 
                     <TextView
@@ -333,7 +332,6 @@
             android:background="@color/COLOR_DCDCDC" />
 
         <RelativeLayout
-            android:id="@+id/choice_list_parent"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 

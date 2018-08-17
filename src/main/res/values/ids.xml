@@ -21,7 +21,6 @@
     <item name="tv_livevideo_student_team" type="id" />
     <item name="rl_livevideo_starinteract_stat_light_layout" type="id" />
     <item name="iv_livevideo_starinteract_stat_light" type="id" />
-    <item name="rl_livevideo_starinteract_stat" type="id" />
     <item name="tv_livevideo_starinteract_lable" type="id" />
     <item name="rl_livevideo_starinteract_layout" type="id" />
     <item name="iv_livevideo_starinteract_stat" type="id" />
@@ -47,7 +46,6 @@
     <item name="iv_livevideo_english_stat" type="id" />
     <item name="iv_livevideo_english_praise" type="id" />
     <item name="tv_livevideo_english_praise" type="id" />
-    <item name="iv_livevideo_english_remind" type="id" />
     <item name="tv_livevideo_english_tip" type="id" />
     <item name="bt_livevideo_english_tip_ok" type="id" />
     <item name="lav_live_stand_english_gold" type="id" />
@@ -68,7 +66,6 @@
     <item name="tv_livevideo_rank_item_mid" type="id" />
     <item name="tv_livevideo_rank_item_right" type="id" />
     <!--查看教师评价-->
-    <item name="icde_livevideo_learnreport_check" type="id" />
     <item name="tv_livevideo_learnreport_check_title" type="id" />
     <item name="v_livevideo_learnreport_check_borderline" type="id" />
     <item name="tv_livevideo_learnreport_check_generate" type="id" />
@@ -94,7 +91,6 @@
     <item name="tv_livevideo_evaluate_success_tip2" type="id" />
     <item name="vp_livevideo_learnreport" type="id" />
     <item name="rl_livevideo_learnreport" type="id" />
-    <item name="rb_livevideo_learnreport_keyword" type="id" />
     <!--学习反馈-->
     <item name="iv_livevideo_learnfeedback_left" type="id" />
     <item name="iv_livevideo_learnfeedback_right" type="id" />
@@ -104,12 +100,9 @@
     <item name="iv_livevideo_learnfeedback_duration" type="id" />
     <item name="tv_livevideo_learnfeedback_duration_title" type="id" />
     <item name="tv_livevideo_learnfeedback_duration" type="id" />
-    <item name="ll_livevideo_learnfeedback_accuracy" type="id" />
     <item name="iv_livevideo_learnfeedback_accuracy" type="id" />
     <item name="tv_livevideo_learnfeedback_accuracy_lable" type="id" />
     <item name="tv_livevideo_learnfeedback_accuracy" type="id" />
-    <item name="ll_livevideo_learnfeedback_accuracy_average" type="id" />
-    <item name="iv_livevideo_learnfeedback_accuracy_average" type="id" />
     <item name="tv_livevideo_learnfeedback_accuracy_average_lable" type="id" />
     <item name="tv_livevideo_learnfeedback_accuracy_average" type="id" />
     <item name="iv_livevideo_learnfeedback_ranking" type="id" />
@@ -147,7 +140,6 @@
     <item name="tv_livevideo_question_sele_lable" type="id" />
     <item name="tv_livevideo_question_sele_answer" type="id" />
     <!--选择题-->
-    <item name="btn_livevideo_question_select_line" type="id" />
     <item name="btn_livevideo_question_select_questiona" type="id" />
     <item name="btn_livevideo_question_select_questionb" type="id" />
     <item name="btn_livevideo_question_select_questionc" type="id" />
@@ -175,7 +167,6 @@
     <!--懂了吗-->
     <item name="iv_livevideo_under_bg" type="id" />
     <item name="tv_livevideo_under_title" type="id" />
-    <item name="ll_livevideo_under_tip" type="id" />
     <item name="tv_livevideo_under_user" type="id" />
     <item name="iv_livevideo_under_tip" type="id" />
     <item name="v_livevideo_under_center" type="id" />
@@ -220,7 +211,6 @@
     <item name="rl_livevideo_message_panelroot" type="id" />
     <item name="rl_livevideo_message_expression" type="id" />
     <item name="iv_livevideo_message_expression_cancle" type="id" />
-    <item name="rl_livevideo_message_content" type="id" />
     <item name="rl_livevideo_message_content2" type="id" />
     <item name="rl_livevideo_message_back" type="id" />
     <item name="bt_livevideo_message_express" type="id" />
@@ -292,28 +282,6 @@
     <!--直播-语音评测-->
     <item name="rl_livevideo_speecteval_group" type="id" />
     <item name="rl_livevideo_speecteval_title" type="id" />
-    <item name="rl_livevideo_speecteval_content" type="id" />
-    <item name="rl_livevideo_speecteval_control" type="id" />
-    <item name="v_livevideo_speecteval_line1" type="id" />
-    <item name="v_livevideo_speecteval_line2" type="id" />
-    <item name="tv_livevideo_speecteval_evaltype" type="id" />
-    <item name="wv_livevideo_speecteval_eval" type="id" />
-    <item name="tv_livevideo_speecteval_evaltime_lable" type="id" />
-    <item name="tv_livevideo_speecteval_evaltime" type="id" />
-    <item name="tv_livevideo_speecteval_evalres" type="id" />
-    <item name="iv_livevideo_speecteval_play" type="id" />
-    <item name="tv_livevideo_speecteval_play" type="id" />
-    <item name="iv_livevideo_speecteval_start" type="id" />
-    <item name="tv_livevideo_speecteval_start" type="id" />
-    <item name="rrp_livevideo_speecteval_video" type="id" />
-    <item name="tv_livevideo_speecteval_videotime" type="id" />
-    <item name="rl_livevideo_speecteval_upload" type="id" />
-    <item name="iv_livevideo_speecteval_upload" type="id" />
-    <item name="tv_livevideo_speecteval_upload" type="id" />
-    <item name="rl_livevideo_speecteval_cancle" type="id" />
-    <item name="iv_livevideo_speecteval_cancle" type="id" />
-    <item name="tv_livevideo_speecteval_cancle" type="id" />
-    <item name="wv_livevideo_speecteval_web" type="id" />
     <item name="rl_course_video_contentview" type="id" />
     <item name="vs_live_stand_update" type="id" />
     <item name="rl_live_stand_update" type="id" />
@@ -326,7 +294,6 @@
     <item name="tv_livevideo_speecteval_content" type="id" />
     <item name="rl_livevideo_speecteval_encourage" type="id" />
     <item name="v_livevideo_speecteval_encourage" type="id" />
-    <item name="iv_livevideo_speecteval_encourage" type="id" />
     <item name="tv_livevideo_speecteval_encourage" type="id" />
     <item name="rl_livevideo_speecteval_bg" type="id" />
     <item name="rl_livevideo_speecteval_countdown" type="id" />
@@ -358,7 +325,6 @@
     <item name="iv_live_star_result_count" type="id" />
     <item name="tv_live_star_result_count" type="id" />
     <!--直播-接麦-->
-    <item name="rl_livevideo_voicechat_raise_hands" type="id" />
     <item name="bt_livevideo_voicechat_raise_hands" type="id" />
     <item name="fl_livevideo_raise_hands_content" type="id" />
     <item name="rl_livevideo_raise_hands_wait" type="id" />
@@ -381,11 +347,6 @@
     <item name="iv_livevideo_raise_hands_success" type="id" />
     <item name="tv_livevideo_raise_hands_success" type="id" />
     <item name="tv_livevideo_raise_hands_success_content" type="id" />
-    <item name="ll_livevideo_chat_content" type="id" />
-    <item name="iv_livevideo_chat_people_head" type="id" />
-    <item name="iv_livevideo_chat_people_empty_head" type="id" />
-    <item name="tv_livevideo_chat_people_name" type="id" />
-    <item name="bt_livevideo_chat_webview_refresh" type="id" />
     <!--直播-体验-->
     <item name="tv_livevideo_expe_time" type="id" />
     <item name="bt_livevideo_expe_enroll" type="id" />
@@ -470,23 +431,12 @@
     <item name="tv_livelec_dialog_paiming_text2" type="id" />
     <!--讲座广告-->
     <item name="fl_livelec_advert_content" type="id" />
-    <item name="rl_livelec_advert_step1" type="id" />
-    <item name="rl_livelec_advert_step2" type="id" />
     <item name="iv_livelec_advert_step1_top" type="id" />
     <item name="iv_livelec_advert_step1_close" type="id" />
     <item name="tv_livelec_advert_step1_name" type="id" />
     <item name="tv_livelec_advert_step1_remainder" type="id" />
     <item name="tv_livelec_advert_step1_remainder2" type="id" />
     <item name="tv_livelec_advert_step1_enroll" type="id" />
-    <item name="rl_livelec_advert_step2_title" type="id" />
-    <item name="tv_livelec_advert_step2_title" type="id" />
-    <item name="iv_livelec_advert_step2_back" type="id" />
-    <item name="iv_livelec_advert_step2_close" type="id" />
-    <item name="rl_livelec_advert_step2_web" type="id" />
-    <item name="rl_livelec_advert_step3_title" type="id" />
-    <item name="iv_livelec_advert_step3_success" type="id" />
-    <item name="tv_livelec_advert_step3_tip1" type="id" />
-    <item name="tv_livelec_advert_step3_tip2" type="id" />
     <item name="ll_livevideo_bottom_controller" type="id" />
     <item name="sv_live_auto_notice" type="id" />
     <item name="v_live_auto_notice_left" type="id" />
@@ -518,12 +468,10 @@
     <item name="ll_live_roleplayer_countdown_main" type="id" />
     <item name="tv_live_roleplayer_countdown_tip" type="id" />
     <item name="gv_live_roleplayer_headshow" type="id" />
-    <item name="tv_live_roleplayer_nickname" type="id" />
     <item name="tv_live_roleplayer_item_rolehead_nickname" type="id" />
     <item name="civ_roleplayer_item_rolehead_img" type="id" />
     <item name="tv_live_roleplayer_item_rolename" type="id" />
     <item name="btn_live_roleplayer_enter" type="id" />
-    <item name="rl_live_roleplayer_rolelist_main" type="id" />
     <item name="rl_live_roleplayer_read_main" type="id" />
     <item name="lv_live_roleplayer_read_list" type="id" />
     <item name="civ_live_roleplayer_message_user_head" type="id" />
@@ -544,13 +492,10 @@
     <item name="btn_live_roleplayer_dz" type="id" />
 
     <!--战队pk-->
-    <item name="cad_livevideo_teampk_coinaward" type="id" />
     <item name="iv_teampk_team_select_bg" type="id" />
     <item name="rl_teampk_team_selecteing" type="id" />
     <item name="lav_teampk_team_select" type="id" />
     <item name="iv_teampk_bgmask" type="id" />
-    <item name="lav_teampk_team_selecting" type="id" />
-    <item name="rcl_teampk_teams" type="id" />
     <item name="rl_teampk_teaminfo_root" type="id" />
     <item name="rl_teampk_team_introduce" type="id" />
     <item name="rl_teampk_rule" type="id" />
@@ -561,13 +506,8 @@
 
     <item name="rl_teampk_rule_1" type="id" />
     <item name="tv_teampk_rule_1" type="id" />
-    <item name="tv_teampk_award_1" type="id" />
     <item name="rl_teampk_rule_2" type="id" />
-    <item name="tv_teampk_rule_2" type="id" />
-    <item name="tv_teampk_award_2" type="id" />
     <item name="rl_teampk_rule_3" type="id" />
-    <item name="tv_teampk_rule_3" type="id" />
-    <item name="tv_teampk_award_3" type="id" />
 
     <item name="tv_teampk_team_ready" type="id" />
     <item name="iv_teampk_btn_ok" type="id" />
@@ -620,8 +560,6 @@
     <item name="iv_teampk_pkresult_otherteam_state" type="id" />
 
     <item name="iv_teampk_pkresult_student_head" type="id" />
-    <item name="iv_teampk_pkresult_student_name" type="id" />
-    <item name="iv_teampk_pkresult_student_energy" type="id" />
     <item name="tv_teampk_pkresult_time_countdow" type="id" />
     <item name="tv_teampk_pkresult_contribution_name" type="id" />
 
@@ -688,13 +626,11 @@
 
     <item name="iv_roleplayer_item_shadow" type="id" />
     <item name="tv_live_roleplayer_match_tip2" type="id" />
-    <item name="tv_live_roleplayer_message_speech_tip" type="id" />
     <item name="iv_live_roleplayer_message_speech_start1" type="id" />
     <item name="iv_live_roleplayer_message_speech_start2" type="id" />
     <item name="iv_live_roleplayer_message_speech_start3" type="id" />
     <item name="iv_live_roleplayer_message_speech_start4" type="id" />
     <item name="iv_live_roleplayer_message_speech_start5" type="id" />
-    <item name="lav_live_roleplayer_message_dz" type="id" />
     <item name="rl_live_roleplayer_message_dz" type="id" />
     <item name="iv_live_roleplayer_message_dz" type="id" />
     <item name="rl_live_roleplayer_result_main" type="id" />
@@ -777,8 +713,6 @@
     <item name="rcl_livevideo_arts_praiselist" type="id" />
     <item name="tv_livevideo_arts_praiselist_name" type="id" />
     <item name="prsv_livevideo_arts_praise" type="id" />
-    <item name="iv_livevideo_arts_praise_btn" type="id" />
-    <item name="fl_livevideo_arts_praise_scalelayout" type="id" />
     <item name="iv_livevideo_arts_prasie_close" type="id" />
     <item name="rl_lievideo_arts_praise_msg" type="id" />
     <item name="iv_livevideo_arts_praise_teacherhead" type="id" />
