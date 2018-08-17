@@ -321,6 +321,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (examQuestionPager != null) {
             examQuestionPager.onKeyboardShowing(isShowing);
         }
+        if (baseQuestionPager != null) {
+            baseQuestionPager.onKeyboardShowing(isShowing);
+        }
     }
 
     @Override
@@ -1205,6 +1208,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
     }
 
+
     @Override
     public void stopSpeech(BaseSpeechAssessmentPager pager, final String num) {
         mLogtf.d("stopSpeech:num=" + num + ",isAnaswer=" + isAnaswer + ",same=" + (pager == speechAssessmentPager));
@@ -1249,6 +1253,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         questionHttp.getStuGoldCount();
     }
+
 
     @Override
     public void onSpeechSuccess(String num) {
@@ -1987,7 +1992,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
         @Override
         public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
-            mLogtf.d("stopSpeech:voiceAnswerPager");
+            mLogtf.d("stopSpeech:voiceAnswerPager:end=" + answerPager.isEnd());
             answerPager.onDestroy();
             rlQuestionContent.removeView(answerPager.getRootView());
             if (answerPager == voiceAnswerPager) {

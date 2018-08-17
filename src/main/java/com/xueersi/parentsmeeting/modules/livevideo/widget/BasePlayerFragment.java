@@ -214,18 +214,22 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mIsLand = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-        mOrientationEventListener = new VideoOrientationEventListener(activity);
-        if (mOrientationEventListener.canDetectOrientation()) {
-            mOrientationEventListener.enable();
-        }
         if (mIsLand) {
             mDirection = VideoOrientationEventListener.DIRECTION_RIGHT;
         }
+        logger.d("onActivityCreated:mIsLand=" + mIsLand + ",mDirection=" + mDirection);
         mCreated = true;
     }
 
     public void setIsAutoOrientation(boolean mIsAutoOrientation) {
+        logger.d("setIsAutoOrientation:mIsAutoOrientation=" + mIsAutoOrientation);
         this.mIsAutoOrientation = mIsAutoOrientation;
+        if (mOrientationEventListener == null) {
+            mOrientationEventListener = new VideoOrientationEventListener(activity);
+            if (mOrientationEventListener.canDetectOrientation()) {
+                mOrientationEventListener.enable();
+            }
+        }
     }
 
     public boolean isLandSpace() {
@@ -233,6 +237,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     public void changeLOrP() {
+        logger.d("changeLOrP:mIsLand=" + mIsLand);
         mClick = true;
         if (!mIsLand) {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -296,7 +301,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
      * @param requestedOrientation
      */
     public void setRequestedOrientation(int requestedOrientation) {
-        mOrientationEventListener.setRequestedOrientation(requestedOrientation, true);
+        if (mOrientationEventListener != null) {
+            mOrientationEventListener.setRequestedOrientation(requestedOrientation, true);
+        }
     }
 
     public void setVolume(float left, float right) {
@@ -326,7 +333,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                 vPlayer.setDisplay(videoView.getHolder());
                             }
                             if (mUri != null) {
-                                vPlayer.initialize(mUri, video, 0, vPlayerServiceListener, mIsHWCodec);
+                                vPlayer.initialize(mUri, video, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
                             }
                         }
                     }
@@ -447,6 +454,10 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     public void removeLoadingView() {
         videoLoadingLayout.setVisibility(View.GONE);
+    }
+
+    protected long getStartPosition() {
+        return 0L;
     }
 
     protected PlayerService.VPlayerListener vPlayerServiceListener = new PlayerService.VPlayerListener() {
@@ -657,7 +668,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     /** 视频非正常播放完毕，有可能是断网了，也有可能一开始打开失败了 */
-    protected void resultFailed(int arg1, int arg2) {
+    public void resultFailed(int arg1, int arg2) {
         showRefresyLayout(arg1, arg2);
     }
 
@@ -709,6 +720,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     /** 设置播放器的界面布局 */
     protected void setVideoLayout() {
+        logger.d("setVideoLayout:VideoWidth=" + vPlayer.getVideoWidth() + ",VideoHeight=" + vPlayer.getVideoHeight());
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, vPlayer.getVideoWidth(),
                 vPlayer.getVideoHeight(), vPlayer.getVideoAspectRatio());
     }

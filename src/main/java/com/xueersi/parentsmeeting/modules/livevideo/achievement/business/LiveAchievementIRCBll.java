@@ -190,8 +190,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     }
 
     @Override
-    public void onModeChange(String mode, boolean isPresent) {
-        super.onModeChange(mode, isPresent);
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
         initAchievement(mode);
     }
 

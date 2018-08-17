@@ -126,4 +126,3 @@ public class ClassSignPager extends BasePager {
         rlSignStatus2.setVisibility(View.VISIBLE);
     }
 }
-

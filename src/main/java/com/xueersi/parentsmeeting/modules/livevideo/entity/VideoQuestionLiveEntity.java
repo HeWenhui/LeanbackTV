@@ -4,7 +4,6 @@ import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,5 +148,4 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public void setAnswerDay(String answerDay) {
         this.answerDay = answerDay;
     }
-
 }

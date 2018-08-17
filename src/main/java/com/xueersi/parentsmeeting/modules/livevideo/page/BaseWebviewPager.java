@@ -21,7 +21,6 @@
 //import com.xueersi.common.logerhelper.LogerTag;
 //import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 //import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
-
 //
 ///**
 // * Created by linyuqiang on 2017/3/25

@@ -34,7 +34,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
-
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 
@@ -51,7 +50,6 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
     private WebView wvSubjectWeb;
     private String liveid;
     VideoQuestionLiveEntity mQuestionEntity;
-
     private String num;
     ExamStop examStop;
     private View errorView;

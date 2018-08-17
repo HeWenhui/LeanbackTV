@@ -1252,3 +1252,4 @@ public class VideoChatBll implements VideoChatAction {
         isHasPermission = unList.isEmpty();
     }
 }
+

@@ -70,10 +70,6 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
                 wvSubjectWeb.reload();
             }
         });
-        //  配合前端调试的临时代码08.09
-//        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            wvSubjectWeb.setWebContentsDebuggingEnabled(true);
-//        }
     }
 
     @Override

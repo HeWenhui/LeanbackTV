@@ -25,7 +25,6 @@ public class ErrorWebViewClient extends WebViewClient {
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     public HashMap<String, String> urlAndIp = new HashMap<>();
 
-
     public ErrorWebViewClient(String TAG) {
         this.TAG = TAG;
     }

@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 <<<<<<< HEAD:src/main/java/com/xueersi/parentsmeeting/modules/livevideo/question/page/SpeechAssessmentWebX5Pager.java~developing
+=======
+>>>>>>> da43f1527d4f3d6a07f437073c2fca676386f0d1
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
@@ -1076,6 +1079,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
     }
 
 }
+<<<<<<< HEAD
 =======
 //package com.xueersi.parentsmeeting.modules.livevideo.page;
 //
@@ -2253,3 +2257,5 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
 //
 //}
 >>>>>>> developing:src/main/java/com/xueersi/parentsmeeting/modules/livevideo/page/SpeechAssessmentWebPager.java
+=======
+>>>>>>> da43f1527d4f3d6a07f437073c2fca676386f0d1

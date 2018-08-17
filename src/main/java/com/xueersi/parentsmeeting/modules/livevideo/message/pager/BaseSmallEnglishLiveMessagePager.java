@@ -57,8 +57,9 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
     private int CIRCEL_WIDTH = 40;
     private int CIRCEL_HEIGHT = 40;
 
-    Drawable drawable;
+    private Drawable backgroundDrawable, flowerDrawable;
 
+    private Drawable[] sendFlowerArray;
 
     public BaseSmallEnglishLiveMessagePager(Context context) {
         super(context);
@@ -71,7 +72,7 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
         BITMAP_HEIGHT_ME = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_ME);
         CIRCEL_HEIGHT = SizeUtils.Dp2Px(context, CIRCEL_HEIGHT);
         CIRCEL_WIDTH = SizeUtils.Dp2Px(context, CIRCEL_WIDTH);
-        drawable = mContext.getResources().getDrawable(R.drawable
+        backgroundDrawable = mContext.getResources().getDrawable(R.drawable
                 .bg_livevideo_send_flower_screen_bullet_background);
 
     }
@@ -83,9 +84,13 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
         }
 
         if (flowsDrawLittleTips != null) {
-            flowsDrawLittleTips = new int[]{R.drawable.bg_livevideo_small_english_sendflower_oneflower_img, R.drawable
-                    .bg_livevideo_small_english_sendflower_threeflowers_img, R.drawable
-                    .bg_livevideo_small_english_sendflower_fiveflowers_img};
+            flowsDrawLittleTips = new int[]{R.drawable.bg_livevideo_small_english_sendflower_oneflower_img,
+                    R.drawable.bg_livevideo_small_english_sendflower_threeflowers_img,
+                    R.drawable.bg_livevideo_small_english_sendflower_fiveflowers_img};
+            sendFlowerArray = new Drawable[]{
+                    mContext.getResources().getDrawable(flowsDrawLittleTips[0]),
+                    mContext.getResources().getDrawable(flowsDrawLittleTips[1]),
+                    mContext.getResources().getDrawable(flowsDrawLittleTips[2])};
         }
 
 
@@ -204,21 +209,20 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
 //        int[] smallEnglishFlowers = new int[]{R.drawable.bg_livevideo_small_english_sendflower_oneflower_img, R
 //                .drawable.bg_livevideo_small_english_sendflower_threeflowers_img, R.drawable
 //                .bg_livevideo_small_english_sendflower_fiveflowers_img};
-        Drawable drawable;
         switch (ftype) {
             case FLOWERS_SMALL:
             case FLOWERS_MIDDLE:
             case FLOWERS_BIG:
-                drawable = mContext.getResources().getDrawable(flowsDrawLittleTips[ftype - 2]);
+                flowerDrawable = sendFlowerArray[ftype - 2];
                 danmaku.textColor = Color.WHITE;
                 break;
             default:
-                drawable = mContext.getResources().getDrawable(R.drawable.ic_launcher);
+                flowerDrawable = mContext.getResources().getDrawable(R.drawable.ic_launcher);
                 danmaku.textColor = Color.BLUE;
                 break;
         }
-        drawable.setBounds(0, 0, BITMAP_HEIGHT_ME, BITMAP_HEIGHT_ME);
-        SpannableStringBuilder spannable = createSpannable(ftype, name, drawable);
+        flowerDrawable.setBounds(0, 0, BITMAP_HEIGHT_ME, BITMAP_HEIGHT_ME);
+        SpannableStringBuilder spannable = createSpannable(ftype, name, flowerDrawable);
         danmaku.text = spannable;
         danmaku.padding = DANMU_PADDING;
         danmaku.priority = 1;  // 一定会显示, 一般用于本机发送的弹幕
@@ -310,18 +314,15 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
 //                                    + danmaku.padding),
 //                    DANMU_RADIUS, DANMU_RADIUS, paint);
 //            }
-
-            float height = 0.0f;
-            height = drawable.getIntrinsicHeight();
-            float offsetRight = 0.0f;
-            offsetRight = (BITMAP_HEIGHT_ME - CIRCEL_HEIGHT) / 2;
-            drawable.setBounds(
+            float height = backgroundDrawable.getIntrinsicHeight();
+            float offsetRight = (BITMAP_HEIGHT_ME - CIRCEL_HEIGHT) / 2;
+            backgroundDrawable.setBounds(
                     (int) (left + danmaku.padding + offsetRight),
                     (int) (top + danmaku.padding + (BITMAP_HEIGHT_ME - height) / 2),
                     (int) (left + danmaku.paintWidth),
                     (int) (top + height + (BITMAP_HEIGHT_ME - height) / 2
                             + danmaku.padding));
-            drawable.draw(canvas);
+            backgroundDrawable.draw(canvas);
         }
 
         @Override

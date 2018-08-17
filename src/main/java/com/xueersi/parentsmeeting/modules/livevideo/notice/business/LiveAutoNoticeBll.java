@@ -81,9 +81,9 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             "禁止脏话及敏感词汇，你会被禁言。",
             "我会收到你发的被屏蔽的留言，别发喽！",
             "脏话及敏感词汇会被屏蔽掉，别再发了。"};
-    String[] noticeGaosan={"网校公安局提醒你，请注意言辞！"
-            ,"警察叔叔还有30秒到达战场，请注意敏感词汇。"
-            ,"富强民主文明和谐自由平等公正法治……"};
+    String[] noticeGaosan = {"网校公安局提醒你，请注意言辞！"
+            , "警察叔叔还有30秒到达战场，请注意敏感词汇。"
+            , "富强民主文明和谐自由平等公正法治……"};
 
 
     public LiveAutoNoticeBll(Activity context, LiveBll2 liveBll2, RelativeLayout bottom) {
@@ -174,8 +174,8 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
                 content = noticeLowLevel[(i + 1) % 4];
             } else if (grade >= 4 && grade <= 7) {
                 content = noticeHighLevel[(i + 1) % 4];
-            }else if (grade==13){
-                content=noticeGaosan[(i+1)%3];
+            } else if (grade == 13) {
+                content = noticeGaosan[(i + 1) % 3];
             } else {
                 return;
             }
@@ -453,7 +453,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             if (e > 0 && e < 6) {
 //                ImageSpan span=new ImageSpan(mContext.getResources().getDrawable(emoji[e]));
 //                sp.setSpan(span,matcher.start(),matcher.end(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                src = src.replaceAll(s, emojis[e]);
+                src = src.replaceAll(s, emojis[e - 1]);
             } else {
                 src = src.replaceAll(s, "");
             }

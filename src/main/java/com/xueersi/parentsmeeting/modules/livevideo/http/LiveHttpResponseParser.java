@@ -69,6 +69,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      */
     public void parseLiveGetInfoScience(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
         getInfo.setEducationStage(data.optString("educationStage", "0"));
+        try {
+            getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -79,7 +84,20 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param getInfo
      */
     public void parseLiveGetInfoLibarts(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
-
+        // 文科表扬榜
+        if (data.has("liveRank")) {
+            JSONObject jsonObject = data.optJSONObject("liveRank");
+            if (jsonObject != null) {
+                int showRank = jsonObject.optInt("showRankNum");
+                getInfo.setShowArtsPraise(showRank);
+            }
+        }
+        //小英萌萌哒皮肤专用
+        if (data.has("useSkin")) {
+            getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+        } else {
+            getInfo.setSmallEnglish(false);
+        }
     }
 
     /**
@@ -115,18 +133,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
             //getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
-            try {
-                //小英萌萌哒皮肤专用
-                if (data.has("useSkin")) {
-                    getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
-                } else {
-                    getInfo.setSmallEnglish(false);
-                }
-
-                getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             getInfo.setIsSeniorOfHighSchool(data.optInt("isSeniorOfHighSchool"));
 
             //getInfo.setIsShowCounselorWhisper("1");
@@ -137,14 +143,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 followTypeEntity.setInt3(followType.getInt("3"));
                 followTypeEntity.setInt4(followType.getInt("4"));
             }
-
-            // 文科表扬榜
-            if (data.has("liveRank")) {
-                JSONObject jsonObject = data.optJSONObject("liveRank");
-                int showRank = jsonObject.optInt("showRankNum");
-                getInfo.setShowArtsPraise(showRank);
-            }
-
 
             getInfo.setTeacherId(data.getString("teacherId"));
             getInfo.setTeacherName(data.getString("teacherName"));
@@ -409,6 +407,15 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             coachStatusEntity.setCalling(status.getBoolean("isCalling"));
             coachStatusEntity.setListStatus(status.optInt("listStatus"));
 
+            if(status.has("openbarrage")){
+                Loger.i("yzl_fd", "room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = "+status.getBoolean("openbarrage")+" "+status.toString());
+                //新增字段，辅导老师开启礼物与否 true开启
+                coachStatusEntity.setFDLKOpenbarrage(status.getBoolean("openbarrage"));
+
+            }else {
+                Loger.i("yzl_fd", "room2中没有openbarrage字段 文科"+status.toString());
+            }
+
             // 解析辅讲老师信息
             LiveTopic.TeamPkEntity.RoomInfo roomInfo2 = new LiveTopic.TeamPkEntity.RoomInfo();
             roomInfo2.setAlloteam(status.optInt("alloteam"));
@@ -417,6 +424,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             teamPkEntity.setRoomInfo2(roomInfo2);
 
             if (status.has("link_mic")) {
+                Loger.i("yzl_fd", "辅导老师 parseLiveTopic status = "+status.toString());
                 JSONObject link_mic = status.getJSONObject("link_mic");
                 coachStatusEntity.setOnmic(link_mic.optString("onmic", "off"));
                 coachStatusEntity.setOpenhands(link_mic.optString("openhands", "off"));
@@ -463,12 +471,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         if (liveTopicJson.has("room_1")) {
+            Loger.i("yzl_fd", "主讲老师 parseLiveTopic liveTopicJson = "+liveTopicJson.toString());
             JSONObject status = liveTopicJson.getJSONObject("room_1");
             RoomStatusEntity mainStatusEntity = liveTopic.getMainRoomstatus();
             mainStatusEntity.setOnbreak(status.optBoolean("isOnBreak"));
             mainStatusEntity.setId(status.getInt("id"));
             mainStatusEntity.setClassbegin(status.getBoolean("classbegin"));
             mainStatusEntity.setOpenbarrage(status.getBoolean("openbarrage"));
+            liveTopic.getCoachRoomstatus().setZJLKOpenbarrage(status.getBoolean("openbarrage"));//一定不要忘记在topic返回的时候，room1里openbarrage字段的值设置到理科主讲实体中
             mainStatusEntity.setOpenchat(status.getBoolean("openchat"));
             mainStatusEntity.setOpenFeedback(status.optBoolean("isOpenFeedback"));
 

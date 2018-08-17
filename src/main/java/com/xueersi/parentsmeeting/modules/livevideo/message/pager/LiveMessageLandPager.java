@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.http.HttpCallBack;
@@ -50,7 +51,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -414,7 +414,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                 if (entity != null) {
                     if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
                         if (ircState.isOpenbarrage()) {
-                            ircState.praiseTeacher(entity.getFtype() + "", "", new HttpCallBack(false) {
+                            ircState.praiseTeacher("", entity.getFtype() + "", "", new HttpCallBack(false) {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) {
                                     if (goldNum == null) {
@@ -699,6 +699,17 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
     /** 关闭开启弹幕 */
     @Override
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
+
+    }
+
+    /**
+     * 理科辅导老师开启/关闭献花
+     *
+     * @param openbarrage
+     * @param fromNotice
+     */
+    @Override
+    public void onFDOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
             public void run() {
@@ -721,6 +732,12 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                 }
             }
         });
+    }
+
+    @Override
+    public void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage,
+                                    boolean isFDLKOpenbarrage) {
+
     }
 
     /*添加聊天信息，超过120，移除60个*/

@@ -55,4 +55,3 @@ public interface RollCallAction {
     void userSign(ClassSignEntity entity, HttpCallBack callBack);
 
 }
-

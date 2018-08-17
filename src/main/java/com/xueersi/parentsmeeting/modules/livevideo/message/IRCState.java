@@ -17,7 +17,7 @@ public interface IRCState {
 
     boolean sendMessage(String msg, String s);
 
-    void praiseTeacher(String s, String s1, HttpCallBack gold);
+    void praiseTeacher(String formWhichTeacher, String s, String s1, HttpCallBack gold);
 
     boolean isDisable();
 
@@ -26,4 +26,10 @@ public interface IRCState {
     boolean isSeniorOfHighSchool();
 
     void getMoreChoice(PageDataLoadEntity mPageDataLoadEntity, AbstractBusinessDataCallBack getDataCallBack);
+
+    boolean isOpenZJLKbarrage();
+
+    boolean isOpenFDLKbarrage();
+
+    String getLKNoticeMode();
 }

@@ -967,8 +967,18 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
         @Override
         public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
-            if (voiceAnswerPager != null) {
+            if (answerPager == null) {
+                logToFile.d("stopSpeech:answerPager == null");
+                return;
+            }
+            boolean same = answerPager == voiceAnswerPager;
+            logToFile.d("stopSpeech:answerPager=same?" + same);
+            if (answerPager == voiceAnswerPager) {
                 stopVoiceAnswerPager();
+            } else {
+                answerPager.stopPlayer();
+                answerPager.onDestroy();
+                bottomContent.removeView(answerPager.getRootView());
             }
 //            if (rlVoiceQuestionContent != null) {
 //                rlVoiceQuestionContent.removeAllViews();
@@ -993,4 +1003,3 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
     }
 }
-

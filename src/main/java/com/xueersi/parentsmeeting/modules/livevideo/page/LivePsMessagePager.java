@@ -168,6 +168,16 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
     }
 
     @Override
+    public void onFDOpenbarrage(boolean open, boolean b) {
+
+    }
+
+    @Override
+    public void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage, boolean isFDLKOpenbarrage) {
+
+    }
+
+    @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_psmessage, null);
         tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
@@ -598,7 +608,7 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
                     if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
                         if (ircState.isOpenbarrage()) {
                             String educationStage = getInfo.getEducationStage();
-                            ircState.praiseTeacher(entity.getFtype() + "", educationStage, new HttpCallBack(false) {
+                            ircState.praiseTeacher("",entity.getFtype() + "", educationStage, new HttpCallBack(false) {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) {
                                     if (goldNum == null) {

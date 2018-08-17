@@ -85,7 +85,7 @@
                 android:layout_toLeftOf="@id/iv_live_roleplayer_message_voice_main"
                 android:gravity="center_vertical"
                 android:maxWidth="200dp"
-                android:textColor="@color/black"
+                android:textColor="@color/COLOR_000000"
                 android:textSize="17sp"
                 android:layout_weight="1" />
 

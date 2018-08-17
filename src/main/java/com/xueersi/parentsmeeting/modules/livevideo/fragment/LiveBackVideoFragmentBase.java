@@ -79,7 +79,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
     /** 视频的名称，用于显示在播放器上面的信息栏 */
     protected String mDisplayName;
     /** 是否从头开始播放 */
-    private boolean mFromStart = true;
+    protected boolean mFromStart = false;
     protected boolean pausePlay = false;
     /** 当前界面是否横屏 */
     protected AtomicBoolean mIsLand = new AtomicBoolean(false);
@@ -493,7 +493,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
 
         @Override
-        protected void resultFailed(int arg1, int arg2) {
+        public void resultFailed(int arg1, int arg2) {
             liveBackVideoFragment.resultFailed(arg1, arg2);
         }
 
@@ -512,6 +512,11 @@ public class LiveBackVideoFragmentBase extends Fragment {
         protected void resultComplete() {
             super.resultComplete();
             mIsEnd = true;
+        }
+
+        @Override
+        protected long getStartPosition() {
+            return liveBackVideoFragment.getStartPosition();
         }
     }
 
@@ -555,6 +560,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
             }
             viewRoot.setLayoutParams(lp);
         }
+        liveBackPlayVideoFragment.loadLandOrPortView(mIsLand.get());
     }
 
     /** 设置播放器的界面布局 */
@@ -706,6 +712,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         if (vPlayer != null) {
             vPlayer.stopListenPlaying();
         }
+        savePosition();
         showRefresyLayout(arg1, arg2);
     }
 
@@ -720,8 +727,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
     protected void savePosition(long fromStart) {
         if (vPlayer != null && mUri != null) {
             ShareDataManager.getInstance().put(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, fromStart,
-                    ShareDataManager
-                            .SHAREDATA_USER);
+                    ShareDataManager.SHAREDATA_USER);
         }
     }
 
@@ -733,12 +739,11 @@ public class LiveBackVideoFragmentBase extends Fragment {
         // if (mStartPos <= 0.0f || mStartPos >= 1.0f)
         try {
             return ShareDataManager.getInstance().getLong(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0,
-                    ShareDataManager
-                            .SHAREDATA_USER);
+                    ShareDataManager.SHAREDATA_USER);
         } catch (Exception e) {
             // 有一定不知明原因造成取出的播放点位int转long型失败,故加上这个值确保可以正常观看
             e.printStackTrace();
-            return 0l;
+            return 0L;
         }
         // return mStartPos;
     }

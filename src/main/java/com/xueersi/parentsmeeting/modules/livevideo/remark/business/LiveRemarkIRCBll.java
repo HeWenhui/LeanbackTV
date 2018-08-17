@@ -90,8 +90,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
     }
 
     @Override
-    public void onModeChange(String mode, boolean isPresent) {
-        super.onModeChange(mode, isPresent);
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
         if (liveRemarkBll != null) {
             mHandler.post(new Runnable() {
                 @Override

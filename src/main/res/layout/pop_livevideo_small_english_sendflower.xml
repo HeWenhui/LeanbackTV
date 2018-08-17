@@ -33,7 +33,7 @@
         android:id="@id/tv_livevideo_small_english_sendflower_balance"
         android:layout_width="2000px"
         android:layout_height="50px"
-        android:layout_marginLeft="530px"
+        android:layout_marginLeft="500px"
         android:layout_marginTop="190px"
         android:gravity="left"
         android:text=""
@@ -45,7 +45,7 @@
         android:layout_width="150px"
         android:layout_height="200px"
         android:layout_marginLeft="260px"
-        android:layout_marginTop="260px"
+        android:layout_marginTop="250px"
         app:designHeight="200px"
         app:designWidth="150px">
 
@@ -74,7 +74,7 @@
         <Button
             android:layout_width="120px"
             android:layout_height="40px"
-            android:layout_marginTop="148px"
+            android:layout_marginTop="160px"
             android:background="@drawable/bg_livevideo_small_english_sendflower_idol_img"
             android:clickable="false"
             android:text="&#160;&#160;&#160;&#160;10金币"
@@ -87,7 +87,7 @@
         android:layout_width="150px"
         android:layout_height="200px"
         android:layout_marginLeft="430px"
-        android:layout_marginTop="260px"
+        android:layout_marginTop="250px"
         app:designHeight="200px"
         app:designWidth="150px">
 
@@ -102,7 +102,7 @@
             android:layout_width="180px"
             android:layout_height="190px"
             android:layout_marginLeft="-15px"
-            android:layout_marginTop="-40px"
+            android:layout_marginTop="-30px"
             android:clickable="false"
             android:src="@drawable/bg_livevideo_small_english_sendflower_threeflowers_img" />
 
@@ -118,7 +118,7 @@
             android:layout_width="120px"
             android:layout_height="40px"
             android:layout_marginLeft="10px"
-            android:layout_marginTop="145px"
+            android:layout_marginTop="160px"
             android:background="@drawable/bg_livevideo_small_english_sendflower_idol_img"
             android:clickable="false"
             android:text="&#160;&#160;&#160;&#160;50金币"
@@ -132,7 +132,7 @@
         android:layout_width="150px"
         android:layout_height="200px"
         android:layout_marginLeft="600px"
-        android:layout_marginTop="260px"
+        android:layout_marginTop="250px"
         app:designHeight="200px"
         app:designWidth="150px">
 
@@ -147,7 +147,7 @@
             android:layout_width="200px"
             android:layout_height="190px"
             android:layout_marginLeft="-25px"
-            android:layout_marginTop="-35px"
+            android:layout_marginTop="-25px"
             android:clickable="false"
             android:src="@drawable/bg_livevideo_small_english_sendflower_fiveflowers_img" />
 
@@ -163,7 +163,7 @@
             android:layout_width="120px"
             android:layout_height="40px"
             android:layout_marginLeft="10px"
-            android:layout_marginTop="145px"
+            android:layout_marginTop="160px"
             android:background="@drawable/bg_livevideo_small_english_sendflower_idol_img"
             android:clickable="false"
             android:text="&#160;&#160;&#160;&#160;100金币"

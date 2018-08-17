@@ -44,7 +44,6 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
     public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String nonce, VideoQuestionLiveEntity videoQuestionLiveEntity,
                                                   boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
         SpeechStandLog.sno2(liveAndBackDebug, videoQuestionLiveEntity.id, nonce);
-
         speechEvalAction = new LiveStandSpeechEvalActionImpl(speechEvalAction);
         StandSpeechAssAutoPager speechAssAutoPager =
                 new StandSpeechAssAutoPager(context, liveid, videoQuestionLiveEntity.id, nonce,

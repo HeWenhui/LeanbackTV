@@ -254,7 +254,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         }
 
         @Override
-        protected void resultFailed(final int arg1, final int arg2) {
+        public void resultFailed(final int arg1, final int arg2) {
             liveFragmentBase.postDelayedIfNotFinish(new Runnable() {
 
                 @Override

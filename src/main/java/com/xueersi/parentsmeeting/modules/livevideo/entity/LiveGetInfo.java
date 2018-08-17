@@ -327,7 +327,6 @@ public class LiveGetInfo {
     }
 
     public void setIsSeniorOfHighSchool(int isSeniorOfHighSchool) {
-
         this.isSeniorOfHighSchool = isSeniorOfHighSchool;
     }
 

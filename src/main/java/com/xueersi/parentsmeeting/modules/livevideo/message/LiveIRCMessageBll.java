@@ -165,11 +165,16 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     @Override
-    public void onModeChange(final String mode, boolean isPresent) {
-        super.onModeChange(mode, isPresent);
+    public void onModeChange(final String oldMode, final String mode, boolean isPresent) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                //理科，主讲和辅导切换的时候，给出提示（切流）
+                if (mRoomAction != null) {
+                    Loger.i("yzl_fd", "主讲和辅导切换的时候，给出提示（切流）");
+                    mRoomAction.onTeacherModeChange(oldMode, mode, false, mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage(), mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage());
+                    //mRoomAction.onTeacherModeChange(mode,false);
+                }
                 if (mGetInfo.getPattern() == 2) {
                     if (LiveTopic.MODE_CLASS.equals(mode)) {
                         mRoomAction.initViewLiveStand(mRootView);
@@ -425,11 +430,36 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.OPENBARRAGE: {
                 try {
                     boolean open = object.getBoolean("open");
-                    msg = open ? "OPENBARRAGE" : "CLOSEBARRAGE";
-                    mLiveTopic.getMainRoomstatus().setOpenbarrage(open);
-                    mLogtf.d(msg);
-                    if (mRoomAction != null) {
-                        mRoomAction.onOpenbarrage(open, true);
+                    String fromWhichTeacher = object.optString("from");//如果解析不到就默认主讲
+                    Loger.i("yzl_fd", "onNotice: XESCODE.OPENBARRAGE fromWhichTeacher = " + fromWhichTeacher);
+                    msg += open ? "OPENBARRAGE" : "CLOSEBARRAGE";
+
+                    if (!fromWhichTeacher.equals("t") && !fromWhichTeacher.equals("f")) {
+                        Loger.i("yzl_fd", "onNotice: XESCODE.OPENBARRAGE 文科没有form字段");
+                        mLiveTopic.getMainRoomstatus().setOpenbarrage(open);
+                        if (mRoomAction != null) {
+                            mRoomAction.onOpenbarrage(open, true);
+                        }
+                    } else {
+                        mLiveTopic.getCoachRoomstatus().setLKNoticeMode(fromWhichTeacher.equals("t") ? LiveTopic.MODE_CLASS : LiveTopic.MODE_TRANING);
+                        mLiveTopic.setLKNoticeMode(fromWhichTeacher.equals("t") ? LiveTopic.MODE_CLASS : LiveTopic.MODE_TRANING);
+                        Loger.i("yzl_fd", "onNotice: XESCODE.OPENBARRAGE 理科有form字段 open = " + open);
+
+                        if ("t".equals(fromWhichTeacher)) {
+                            //来自主讲的notice 主讲开启鲜花与否
+                            mLiveTopic.getCoachRoomstatus().setZJLKOpenbarrage(open);
+
+                            if (mRoomAction != null) {
+                                mRoomAction.onOpenbarrage(open, true);
+                            }
+                        } else {
+                            //来自辅导的notice 辅导开启鲜花与否
+                            mLiveTopic.getCoachRoomstatus().setFDLKOpenbarrage(open);
+
+                            if (mRoomAction != null) {
+                                mRoomAction.onFDOpenbarrage(open, true);
+                            }
+                        }
                     }
                 } catch (Exception e) {
                     loger.e("onNotice:OPENBARRAGE", e);
@@ -516,6 +546,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             default:
                 break;
         }
+        mLogtf.d(msg);
     }
 
     @Override
@@ -536,8 +567,40 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
         liveTopic.setDisable(forbidSendMsg);
         if (mRoomAction != null) {
-            mRoomAction.onOpenbarrage(liveTopic.getMainRoomstatus().isOpenbarrage(), false);
-            mRoomAction.onDisable(forbidSendMsg, false);
+            try {
+                if (jsonObject.has("room_2")) {
+                    JSONObject status = jsonObject.getJSONObject("room_2");
+                    if (status.has("openbarrage")) {
+                        //理科的room2里面才有openbarrage字段
+                        Loger.i("yzl_fd", "理科的room2里面才有openbarrage字段 ");
+
+                        if (mRoomAction != null) {
+                            if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode())) {
+                                Loger.i("yzl_fd", "mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage() =  " + mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage());
+                                //理科的主讲！！！！！！！mLiveTopic.getCoachRoomstatus()
+                                mRoomAction.onOpenbarrage(mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage(), false);
+                                mRoomAction.onDisable(forbidSendMsg, false);
+                            } else {
+                                Loger.i("yzl_fd", "mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage() =  " + mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage());
+                                //辅导
+                                mRoomAction.onFDOpenbarrage(mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage(), false);
+                                mRoomAction.onDisable(forbidSendMsg, false);
+                            }
+
+                        }
+                    } else {
+                        //文科的room2里面没有openbarrage字段
+                        Loger.i("yzl_fd", "文科的room2里面没有openbarrage字段");
+                        if (mRoomAction != null) {
+                            Loger.i("yzl_fd", "mLiveTopic.getMainRoomstatus().isOpenbarrage() =  " + mLiveTopic.getMainRoomstatus().isOpenbarrage());
+                            mRoomAction.onOpenbarrage(mLiveTopic.getMainRoomstatus().isOpenbarrage(), false);
+                            mRoomAction.onDisable(forbidSendMsg, false);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+
+            }
             if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
                 mRoomAction.onopenchat(liveTopic.getMainRoomstatus().isOpenchat(), LiveTopic.MODE_CLASS,
                         false);
@@ -587,6 +650,37 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             return openchat;
         }
 
+        /**
+         * 理科主讲是否开启献花
+         */
+        public boolean isOpenZJLKbarrage() {
+            return mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage();
+        }
+
+        /**
+         * 理科辅导老师是否开启献花
+         */
+        public boolean isOpenFDLKbarrage() {
+            return mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage();
+        }
+
+        /**
+         * 得到当前理科的notice模式
+         */
+        public String getLKNoticeMode() {
+            String mode;
+            if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+                if (mLiveTopic == null) {
+                    mode = LiveTopic.MODE_CLASS;
+                } else {
+                    mode = mLiveTopic.getLKNoticeMode();
+                }
+            } else {
+                mode = LiveTopic.MODE_CLASS;
+            }
+            return mode;
+        }
+
         @Override
         public boolean sendMessage(String msg, String name) {
             boolean sendMessage = false;
@@ -623,7 +717,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
 
         @Override
-        public void praiseTeacher(String ftype, String educationStage, final HttpCallBack callBack) {
+        public void praiseTeacher(final String formWhichTeacher, String ftype, String educationStage, final HttpCallBack callBack) {
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             String teacherId = mGetInfo.getMainTeacherInfo().getTeacherId();
             mHttpManager.praiseTeacher(mLiveType, enstuId, mLiveId, teacherId, ftype, educationStage, new
@@ -635,7 +729,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             if (responseEntity.getJsonObject() instanceof JSONObject) {
                                 try {
                                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                                    sendFlowerMessage(jsonObject.getInt("type"));
+                                    if (mGetInfo.getIsArts() == 0) {
+                                        sendFlowerMessage(jsonObject.getInt("type"), formWhichTeacher);
+                                    } else {
+                                        sendFlowerMessage(jsonObject.getInt("type"));
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -731,6 +829,27 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             return "mode=" + mode + ",mainnick=" + mainnick + ",coun=null";
         } else {
             return "mode=" + mode + ",mainnick=" + mainnick + ",coun.isLeave=" + mCounteacher.isLeave;
+        }
+    }
+
+    /**
+     * 发生献花消息
+     */
+    public void sendFlowerMessage(int ftype, String frommWhichTeacher) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "" + XESCODE.FLOWERS);
+            jsonObject.put("name", mGetInfo.getStuName());
+            jsonObject.put("ftype", ftype);
+
+            if (frommWhichTeacher != null) {
+                jsonObject.put("to", frommWhichTeacher);
+            }
+            mLiveBll.sendMessage(jsonObject);
+//            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
+        } catch (Exception e) {
+            // Loger.e(TAG, "understand", e);
+            mLogtf.e("sendFlowerMessage", e);
         }
     }
 
