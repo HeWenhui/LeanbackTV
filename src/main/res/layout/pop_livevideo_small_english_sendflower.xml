@@ -40,6 +40,7 @@
         android:textColor="@color/COLOR_C03321"
         android:textSize="11sp" />
 
+
     <com.xueersi.ui.widget.ZoomerLayout
         android:id="@id/zl_livevideo_small_english_oneflower"
         android:layout_width="150px"
@@ -60,27 +61,30 @@
         <ImageView
             android:layout_width="150px"
             android:layout_height="150px"
-
             android:clickable="false"
             android:src="@drawable/bg_livevideo_small_english_sendflower_oneflower_img" />
 
-        <ImageView
-            android:id="@id/iv_livevideo_small_english_sendflower_oneflower_tick"
-            android:layout_width="100px"
-            android:layout_height="100px"
-            android:clickable="false"
-            android:src="@drawable/bg_livevideo_small_english_sendflower_tick" />
 
         <Button
             android:layout_width="120px"
             android:layout_height="40px"
+            android:layout_marginLeft="12px"
             android:layout_marginTop="160px"
             android:background="@drawable/bg_livevideo_small_english_sendflower_idol_img"
             android:clickable="false"
-            android:text="&#160;&#160;&#160;&#160;10金币"
+            android:text="&#160;&#160;&#160;&#160;100金币"
             android:textColor="@color/COLOR_ECF4FF"
             android:textSize="8sp" />
     </com.xueersi.ui.widget.ZoomerLayout>
+
+    <ImageView
+        android:id="@id/iv_livevideo_small_english_sendflower_oneflower_tick"
+        android:layout_width="80px"
+        android:layout_height="80px"
+        android:layout_marginLeft="245px"
+        android:layout_marginTop="225px"
+        android:clickable="false"
+        android:src="@drawable/bg_livevideo_small_english_sendflower_tick" />
 
     <com.xueersi.ui.widget.ZoomerLayout
         android:id="@id/zl_livevideo_small_english_threeflower"
@@ -106,13 +110,6 @@
             android:clickable="false"
             android:src="@drawable/bg_livevideo_small_english_sendflower_threeflowers_img" />
 
-        <ImageView
-            android:id="@id/iv_livevideo_small_english_sendflower_threeflower_tick"
-            android:layout_width="100px"
-            android:layout_height="100px"
-            android:clickable="false"
-            android:src="@drawable/bg_livevideo_small_english_sendflower_tick"
-            android:visibility="gone" />
 
         <Button
             android:layout_width="120px"
@@ -124,8 +121,18 @@
             android:text="&#160;&#160;&#160;&#160;50金币"
             android:textColor="@color/COLOR_ECF4FF"
             android:textSize="8sp" />
+
     </com.xueersi.ui.widget.ZoomerLayout>
 
+    <ImageView
+        android:id="@id/iv_livevideo_small_english_sendflower_threeflower_tick"
+        android:layout_width="80px"
+        android:layout_height="80px"
+        android:layout_marginLeft="415px"
+        android:layout_marginTop="225px"
+        android:clickable="false"
+        android:src="@drawable/bg_livevideo_small_english_sendflower_tick"
+        android:visibility="gone" />
 
     <com.xueersi.ui.widget.ZoomerLayout
         android:id="@id/zl_livevideo_small_english_fiveflower"
@@ -151,13 +158,6 @@
             android:clickable="false"
             android:src="@drawable/bg_livevideo_small_english_sendflower_fiveflowers_img" />
 
-        <ImageView
-            android:id="@id/iv_livevideo_small_english_sendflower_fiveflower_tick"
-            android:layout_width="100px"
-            android:layout_height="100px"
-            android:clickable="false"
-            android:src="@drawable/bg_livevideo_small_english_sendflower_tick"
-            android:visibility="gone" />
 
         <Button
             android:layout_width="120px"
@@ -171,6 +171,16 @@
             android:textSize="8sp" />
 
     </com.xueersi.ui.widget.ZoomerLayout>
+
+    <ImageView
+        android:id="@id/iv_livevideo_small_english_sendflower_fiveflower_tick"
+        android:layout_width="80px"
+        android:layout_height="80px"
+        android:layout_marginLeft="585px"
+        android:layout_marginTop="225px"
+        android:clickable="false"
+        android:src="@drawable/bg_livevideo_small_english_sendflower_tick"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@id/iv_livevideo_small_english_sendflower_send"
