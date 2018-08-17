@@ -62,6 +62,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -87,7 +88,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.li
  * Created by David on 2018/8/1.
  */
 
-public class LivePsMessagePager extends BaseLiveMessagePager {
+public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     private static String TAG = "LivePsMessagePager";
     /** 聊天，默认开启 */
     private Button btMesOpen;
@@ -168,12 +169,129 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
     }
 
     @Override
-    public void onFDOpenbarrage(boolean open, boolean b) {
+    public void onFDOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
+        Loger.i("yzl_fd", ircState.getMode() + "老师" + openbarrage + "了献花 fromNotice = " + fromNotice + " ircState.getLKNoticeMode() = " + ircState.getLKNoticeMode());
+
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+
+                if (commonAction instanceof GiftDisable) {
+                    Loger.i("yzl_fd", "理科");
+                    if (!ircState.getMode().equals(ircState.getLKNoticeMode())) {
+                        Loger.i("yzl_fd", "当前mode和notimode不一致，不再响应提示，但要根据当前mode改变礼物/鲜花状态");
+                        //理科辅导送礼物功能
+                        setOnlyFlowerIconState(openbarrage, fromNotice, ircState.getMode());
+                        return;
+                    }
+                    Loger.i("yzl_fd", "理科当前mode和notimode一致，响应提示，改变当前mode改变礼物/鲜花状态");
+                    //理科辅导送礼物功能
+                    setFlowerIconState(openbarrage, fromNotice, ircState.getMode());
+                } else {
+                    //非理科辅导的走原来的逻辑
+                    Loger.i("yzl_fd", "文科");
+                    if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                        setFlowerIconState(openbarrage, fromNotice, null);
+                    }
+                }
+
+            }
+        });
 
     }
 
     @Override
     public void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage, boolean isFDLKOpenbarrage) {
+
+    }
+
+    /**
+     * 根据送 礼物/鲜花 开关来设置改icon的显示状态
+     *
+     * @param openbarrage
+     * @param fromNotice
+     * @param classMode
+     */
+    private void setOnlyFlowerIconState(boolean openbarrage, boolean fromNotice, String classMode) {
+        if (openbarrage) {
+
+            btMessageFlowers.setTag("1");
+            btMessageFlowers.setAlpha(1.0f);
+            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+        } else {
+
+            btMessageFlowers.setTag("0");
+            btMessageFlowers.setAlpha(0.4f);
+            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+        }
+    }
+
+    /**
+     * 根据送 礼物/鲜花 开关来设置改icon的显示状态和toast提示
+     *
+     * @param openbarrage
+     * @param fromNotice
+     * @param classMode   学科类型
+     */
+    private void setFlowerIconState(boolean openbarrage, boolean fromNotice, String classMode) {
+        if (openbarrage) {
+            if (fromNotice) {
+                if (commonAction instanceof GiftDisable) {
+                    //理科不区分主讲辅导
+                    ((GiftDisable) commonAction).onOpenbarrage(true, classMode);
+
+                } else {
+                    commonAction.onOpenbarrage(true);
+                }
+
+            }
+            btMessageFlowers.setTag("1");
+            btMessageFlowers.setAlpha(1.0f);
+            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+        } else {
+            if (fromNotice) {
+                if (commonAction instanceof GiftDisable) {
+                    //理科不区分主讲辅导
+                    ((GiftDisable) commonAction).onOpenbarrage(false, classMode);
+                    //只在理科，关闭鲜花的时候，去关闭鲜花面板，如果他还在显示的话
+                    setFlowerWindowDismiss(classMode, true);
+                } else {
+                    commonAction.onOpenbarrage(false);
+                }
+
+            }
+            btMessageFlowers.setTag("0");
+            btMessageFlowers.setAlpha(0.4f);
+            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+        }
+    }
+
+    /**
+     * 使送礼物面板消失
+     *
+     * @param mode
+     * @param notShowTips
+     */
+    private void setFlowerWindowDismiss(final String mode, final boolean notShowTips) {
+        //切记，此方法是在子线程中回调的，不会报错，但是mFlowerWindow就是无法消失，其方法返回的值都是错误的，无效的，方法调用也无效
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (commonAction instanceof GiftDisable) {
+                    Loger.i("yzl_fd", "切流，使送礼物面板消失");
+                    if (mFlowerWindow != null) {
+                        mFlowerWindow.dismiss();
+                    }
+                    if (notShowTips) {
+                        Loger.i("yzl_fd", "老师关闭了鲜花，切流，使送礼物面板消失,但不提示，切换主讲，辅导");
+                        return;
+                    }
+                    ((GiftDisable) commonAction).changeTeacherMode(mode);
+                }
+
+            }
+        });
+
 
     }
 
@@ -365,7 +483,6 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
                             onTitleShow(true);
                         }
                         keyboardShowing = isShowing;
-                        onKeyboardShowing(isShowing);
                         if (keyboardShowing) {
                             btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
                         }
@@ -509,12 +626,12 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
         if (getInfo != null) {
             String educationStage = getInfo.getEducationStage();
             initPrimaryFlower();
-            new Thread() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     OtherModulesEnter.requestGoldTotal(mContext);
                 }
-            }.start();
+            });
         }
     }
 
@@ -935,14 +1052,11 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-//                    tvMessageCount.setText("班内" + peopleCount + "人");
                     tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                 } else {
                     if (ircState.isHaveTeam()) {
-//                        tvMessageCount.setText("组内" + peopleCount + "人");
                         tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                     } else {
-//                        tvMessageCount.setText(peopleCount + "人正在上课");
                         tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                     }
                 }
@@ -956,14 +1070,11 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-//                    tvMessageCount.setText("班内" + peopleCount + "人");
                     tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                 } else {
                     if (ircState.isHaveTeam()) {
-//                        tvMessageCount.setText("组内" + peopleCount + "人");
                         tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                     } else {
-//                        tvMessageCount.setText(peopleCount + "人正在上课");
                         tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
                     }
                 }
@@ -1135,11 +1246,29 @@ public class LivePsMessagePager extends BaseLiveMessagePager {
 
         @Override
         public void onOpenbarrage(boolean openbarrage) {
+
+        }
+
+        //重载，添加参数：讲课模式
+        public void onOpenbarrage(boolean openbarrage, String classMode) {
+            String teacher = LiveTopic.MODE_CLASS.equals(classMode) ? "主讲" : "辅导";
             if (openbarrage) {
-                XESToastUtils.showToast(mContext, "主讲老师开启了送礼物功能");
+                XESToastUtils.showToast(mContext, teacher + "老师开启了送礼物功能");
             } else {
-                XESToastUtils.showToast(mContext, "主讲老师关闭了送礼物功能");
+                XESToastUtils.showToast(mContext, teacher + "老师关闭了送礼物功能");
             }
+        }
+
+        public void changeTeacherMode(String classMode) {
+            String teacher = LiveTopic.MODE_CLASS.equals(classMode) ? "主讲" : "辅导";
+            XESToastUtils.showToast(mContext, "已切换到" + teacher + "老师");
+
+        }
+
+        //重载，添加参数：讲课模式
+        public void clickIsnotOpenbarrage(String classMode) {
+            String teacher = LiveTopic.MODE_CLASS.equals(classMode) ? "主讲" : "辅导";
+            XESToastUtils.showToast(mContext, teacher + "老师未开启送礼物功能");
         }
 
         @Override
