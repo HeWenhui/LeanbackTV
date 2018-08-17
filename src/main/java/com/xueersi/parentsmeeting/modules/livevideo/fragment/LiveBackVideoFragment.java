@@ -638,6 +638,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 mIsShowNoWifiAlert = true;
                 playNewVideo();
             }
+        } else {
+            liveBackVideoBll.onNetWorkChange(event.netWorkType);
         }
     }
 

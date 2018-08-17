@@ -493,7 +493,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
 
         @Override
-        protected void resultFailed(int arg1, int arg2) {
+        public void resultFailed(int arg1, int arg2) {
             liveBackVideoFragment.resultFailed(arg1, arg2);
         }
 

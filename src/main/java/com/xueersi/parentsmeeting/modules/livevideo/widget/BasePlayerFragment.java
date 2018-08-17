@@ -668,7 +668,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     /** 视频非正常播放完毕，有可能是断网了，也有可能一开始打开失败了 */
-    protected void resultFailed(int arg1, int arg2) {
+    public void resultFailed(int arg1, int arg2) {
         showRefresyLayout(arg1, arg2);
     }
 

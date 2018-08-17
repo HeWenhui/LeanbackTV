@@ -744,7 +744,18 @@ public class SpeechBulletScreenPager extends BaseSpeechBulletScreenPager impleme
     }
 
     @Override
+    public void onFDOpenbarrage(boolean open, boolean b) {
+
+    }
+
+    @Override
     public void videoStatus(String status) {
+
+    }
+
+    @Override
+    public void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage,
+                                    boolean isFDLKOpenbarrage) {
 
     }
 

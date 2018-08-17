@@ -68,6 +68,25 @@ public interface RoomAction {
     /** 关闭开启弹幕 */
     void onOpenbarrage(final boolean openbarrage, boolean fromNotice);
 
+    /**
+     * 理科辅导老师开启关闭鲜花
+     * @param open
+     * @param b
+     */
+    void onFDOpenbarrage(boolean open, boolean b);
+
+
     /** 语音聊天状态 */
     void videoStatus(String status);
+
+
+    /**
+     * 理科，主讲和辅导切换的时候，给出提示（切流）
+     * @param oldMode
+     * @param mode
+     * @param isShowNoticeTips 为false的时候，默认显示"已切换到 主讲/辅导模式"
+     * @param iszjlkOpenbarrage
+     * @param isFDLKOpenbarrage
+     */
+    void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage, boolean isFDLKOpenbarrage);
 }
