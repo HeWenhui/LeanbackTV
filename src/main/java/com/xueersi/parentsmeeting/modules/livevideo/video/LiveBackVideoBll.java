@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
@@ -100,6 +101,13 @@ public class LiveBackVideoBll {
             return 0L;
         }
         // return mStartPos;
+    }
+
+    public void onNetWorkChange(int netWorkType) {
+        if (netWorkType == NetWorkHelper.NO_NETWORK) {
+            vPlayer.stop();
+            liveBackPlayVideoFragment.resultFailed(0, 0);
+        }
     }
 
     public PlayerService.VPlayerListener getPlayListener() {
