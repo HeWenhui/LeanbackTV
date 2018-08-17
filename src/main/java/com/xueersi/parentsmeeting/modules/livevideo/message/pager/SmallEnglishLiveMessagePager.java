@@ -281,22 +281,27 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                             case LiveMessageEntity.MESSAGE_MINE:
                                 color = nameColors[entity.getType()];
                                 messageColor = mContext.getResources().getColor(R.color.COLOR_FFFFFFFF);
+//                                Log.w(TAG, "1:" + messageColor);
                                 break;
                             case LiveMessageEntity.MESSAGE_TEACHER:
                                 color = nameColors[entity.getType()];
                                 messageColor = mContext.getResources().getColor(R.color.COLOR_FFC3DAFF);
+//                                Log.w(TAG, "2:" + messageColor);
                                 break;
                             case LiveMessageEntity.MESSAGE_TIP:
                                 color = nameColors[entity.getType()];
                                 messageColor = mContext.getResources().getColor(R.color.COLOR_FFFFFFFF);
+//                                Log.w(TAG, "3:" + messageColor);
                                 break;
                             case LiveMessageEntity.MESSAGE_CLASS:
                                 color = nameColors[entity.getType()];
                                 messageColor = mContext.getResources().getColor(R.color.COLOR_FFC3DAFF);
+//                                Log.w(TAG, "4:" + messageColor);
                                 break;
                             default:
                                 color = nameColors[0];
                                 messageColor = mContext.getResources().getColor(R.color.COLOR_FFFFFFFF);
+//                                Log.w(TAG, "5:" + messageColor);
                                 break;
                         }
                         SpannableStringBuilder messageSpan = new SpannableStringBuilder(entity.getText());
@@ -312,11 +317,13 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 //                            CharSequence text = tvMessageItem.getText();
                             tvMessageItem.setText(spanttt);
                             tvMessageItem.append(messageSpan);
+//                            Log.w(TAG, "6:" + messageColor + " " + entity.getText());
 //                            tvMessageItem.append(text);
                         } else {
                             tvMessageItem.setAutoLinkMask(0);
                             tvMessageItem.setText(spanttt);
-                            tvMessageItem.append(entity.getText());
+                            tvMessageItem.append(messageSpan);
+//                            Log.w(TAG, "7:" + messageColor + " " + entity.getText());
                         }
                     }
                 };
