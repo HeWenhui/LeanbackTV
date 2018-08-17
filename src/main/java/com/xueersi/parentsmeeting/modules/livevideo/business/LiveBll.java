@@ -3505,11 +3505,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         }
     }
 
-    @Override
-    public void praiseTeacher(String s, String s1, HttpCallBack gold) {
-
-    }
-
     /**
      * 发送上墙信号聊天消息
      */

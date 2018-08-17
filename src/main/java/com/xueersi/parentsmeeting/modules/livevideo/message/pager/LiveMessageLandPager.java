@@ -414,7 +414,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                 if (entity != null) {
                     if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
                         if (ircState.isOpenbarrage()) {
-                            ircState.praiseTeacher(entity.getFtype() + "", "", new HttpCallBack(false) {
+                            ircState.praiseTeacher("", entity.getFtype() + "", "", new HttpCallBack(false) {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) {
                                     if (goldNum == null) {
@@ -704,6 +704,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
 
     /**
      * 理科辅导老师开启/关闭献花
+     *
      * @param openbarrage
      * @param fromNotice
      */

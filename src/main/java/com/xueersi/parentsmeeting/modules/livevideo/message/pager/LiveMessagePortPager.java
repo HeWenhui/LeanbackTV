@@ -642,7 +642,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 if (entity != null) {
                     if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
                         if (ircState.isOpenbarrage()) {
-                            ircState.praiseTeacher(entity.getFtype() + "", "", new HttpCallBack(false) {
+                            ircState.praiseTeacher("", entity.getFtype() + "", "", new HttpCallBack(false) {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) {
                                     tvFlowersDisable.setVisibility(View.VISIBLE);

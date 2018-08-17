@@ -587,6 +587,37 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             return openchat;
         }
 
+        /**
+         * 理科主讲是否开启献花
+         */
+        public boolean isOpenZJLKbarrage() {
+            return mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage();
+        }
+
+        /**
+         * 理科辅导老师是否开启献花
+         */
+        public boolean isOpenFDLKbarrage() {
+            return mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage();
+        }
+
+        /**
+         * 得到当前理科的notice模式
+         */
+        public String getLKNoticeMode() {
+            String mode;
+            if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+                if (mLiveTopic == null) {
+                    mode = LiveTopic.MODE_CLASS;
+                } else {
+                    mode = mLiveTopic.getLKNoticeMode();
+                }
+            } else {
+                mode = LiveTopic.MODE_CLASS;
+            }
+            return mode;
+        }
+
         @Override
         public boolean sendMessage(String msg, String name) {
             boolean sendMessage = false;
@@ -623,7 +654,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
 
         @Override
-        public void praiseTeacher(String ftype, String educationStage, final HttpCallBack callBack) {
+        public void praiseTeacher(final String formWhichTeacher, String ftype, String educationStage, final HttpCallBack callBack) {
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             String teacherId = mGetInfo.getMainTeacherInfo().getTeacherId();
             mHttpManager.praiseTeacher(mLiveType, enstuId, mLiveId, teacherId, ftype, educationStage, new
@@ -635,7 +666,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             if (responseEntity.getJsonObject() instanceof JSONObject) {
                                 try {
                                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                                    sendFlowerMessage(jsonObject.getInt("type"));
+                                    if (mGetInfo.getIsArts() == 0) {
+                                        sendFlowerMessage(jsonObject.getInt("type"), formWhichTeacher);
+                                    } else {
+                                        sendFlowerMessage(jsonObject.getInt("type"));
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -731,6 +766,27 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             return "mode=" + mode + ",mainnick=" + mainnick + ",coun=null";
         } else {
             return "mode=" + mode + ",mainnick=" + mainnick + ",coun.isLeave=" + mCounteacher.isLeave;
+        }
+    }
+
+    /**
+     * 发生献花消息
+     */
+    public void sendFlowerMessage(int ftype, String frommWhichTeacher) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "" + XESCODE.FLOWERS);
+            jsonObject.put("name", mGetInfo.getStuName());
+            jsonObject.put("ftype", ftype);
+
+            if (frommWhichTeacher != null) {
+                jsonObject.put("to", frommWhichTeacher);
+            }
+            mLiveBll.sendMessage(jsonObject);
+//            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
+        } catch (Exception e) {
+            // Loger.e(TAG, "understand", e);
+            mLogtf.e("sendFlowerMessage", e);
         }
     }
 

@@ -823,7 +823,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
                         if (ircState.isOpenbarrage()) {
                             String educationStage = getInfo.getEducationStage();
-                            ircState.praiseTeacher(smallEnglishSendFlowerPager.getWhichFlower() + "",
+                            ircState.praiseTeacher("", smallEnglishSendFlowerPager.getWhichFlower() + "",
                                     educationStage, new HttpCallBack(false) {
                                         @Override
                                         public void onPmSuccess(ResponseEntity responseEntity) {
