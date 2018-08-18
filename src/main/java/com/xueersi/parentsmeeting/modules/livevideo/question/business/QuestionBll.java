@@ -20,6 +20,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
+import com.xueersi.parentsmeeting.modules.livevideo.business.KeyboardObserverReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -62,6 +63,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.KeyboardPopWindow;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONException;
@@ -88,7 +90,7 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  * 互动题bll
  */
 public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseQuestionWebInter
-        .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, QuestionShowReg, KeyboardUtil.OnKeyboardShowingListener, LivePagerBack {
+        .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, QuestionShowReg, KeyboardUtil.OnKeyboardShowingListener, KeyboardPopWindow.KeyboardObserver, LivePagerBack {
     private String TAG = "QuestionBll";
     private SpeechEvaluatorUtils mIse;
     private LiveVideoSAConfig liveVideoSAConfig;
@@ -192,6 +194,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         this.activity = activity;
         this.stuCouId = stuCouId;
         liveQuestionCreat = new LiveQuestionCreat(activity, isAbLand, this);
+        KeyboardObserverReg keyboardObserverReg = ProxUtil.getProxUtil().get(activity, KeyboardObserverReg.class);
+        if (keyboardObserverReg != null) {
+            keyboardObserverReg.addKeyboardObserver(this);
+        }
     }
 
     public void setLiveVideoSAConfig(LiveVideoSAConfig liveVideoSAConfig) {
@@ -313,6 +319,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 group.removeView(speechAssessmentPager.getRootView());
             }
             rlQuestionContent.addView(speechAssessmentPager.getRootView());
+        }
+    }
+
+    @Override
+    public void onKeyboardHeightChanged(int height, int orientation) {
+        Loger.d(TAG, "onKeyboardHeightChanged:height=" + height);
+        if (baseQuestionPager != null) {
+            baseQuestionPager.onKeyboardShowing(height > 0, height);
         }
     }
 

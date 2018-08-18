@@ -26,6 +26,7 @@ public class KeyboardPopWindow extends PopupWindow {
     private View popupView;
     private int keyboardPortraitHeight;
     private int keyboardLandscapeHeight;
+    private int lastHeight = -1;
 
     //在KeyboardPopWindow.class extends PopWindow.class中
     public KeyboardPopWindow(Activity activity) {
@@ -58,29 +59,39 @@ public class KeyboardPopWindow extends PopupWindow {
         //键盘高度=屏幕高度-popWindow的高度（需要设置   showAtLocation(parentView, Gravity.NO_GRAVITY, 0, 0);）
         int keyboardHeight = screenSize.y - rect.bottom;
         if (keyboardHeight == 0) {
-            notifyKeyboardHeightChanged(0, orientation);
+            if (lastHeight != 0) {
+                notifyKeyboardHeightChanged(0, orientation);
+            }
+            lastHeight = 0;
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             this.keyboardPortraitHeight = keyboardHeight;
-            notifyKeyboardHeightChanged(keyboardPortraitHeight, orientation);
+            if (lastHeight != keyboardHeight) {
+                notifyKeyboardHeightChanged(keyboardPortraitHeight, orientation);
+            }
+            lastHeight = keyboardHeight;
         } else {
             this.keyboardLandscapeHeight = keyboardHeight;
-            notifyKeyboardHeightChanged(keyboardLandscapeHeight, orientation);
+            if (lastHeight != keyboardHeight) {
+                notifyKeyboardHeightChanged(keyboardLandscapeHeight, orientation);
+            }
+            lastHeight = keyboardHeight;
         }
     }
 
-    public interface KeyboardObserver{
+    public interface KeyboardObserver {
         void onKeyboardHeightChanged(int height, int orientation);
     }
+
     private void notifyKeyboardHeightChanged(int height, int orientation) {
         if (observer != null) {
-            Loger.d("___软键盘状态： "+height);
+            Loger.d("___软键盘状态： " + height);
             observer.onKeyboardHeightChanged(height, orientation);
         }
     }
 
     private KeyboardObserver observer;
 
-    public void setKeyboardObserver(KeyboardObserver observer){
+    public void setKeyboardObserver(KeyboardObserver observer) {
         this.observer = observer;
     }
 }

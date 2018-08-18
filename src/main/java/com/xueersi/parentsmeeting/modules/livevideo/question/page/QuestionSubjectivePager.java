@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.nineoldandroids.animation.ValueAnimator;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
@@ -207,8 +208,11 @@ public class QuestionSubjectivePager extends BaseLiveQuestionPager {
 
     }
 
+    boolean keyIsShowing;
+
     @Override
     public void onKeyboardShowing(boolean isShowing) {
+        keyIsShowing = isShowing;
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
         int bottomMargin;
         if (isShowing) {
@@ -220,6 +224,37 @@ public class QuestionSubjectivePager extends BaseLiveQuestionPager {
             lp.bottomMargin = bottomMargin;
 //            wvSubjectWeb.setLayoutParams(lp);
             LayoutParamsUtil.setViewLayoutParams(mView, lp);
+        }
+    }
+
+    @Override
+    public void onKeyboardShowing(boolean isShowing, int height) {
+        keyIsShowing = isShowing;
+        final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
+        final int bottomMargin;
+        if (isShowing) {
+            bottomMargin = height;
+        } else {
+            bottomMargin = 0;
+        }
+        if (bottomMargin != lp.bottomMargin) {
+            ValueAnimator valueAnimator = ValueAnimator.ofInt(bottomMargin);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    if (keyIsShowing) {
+                        float fraction = valueAnimator.getAnimatedFraction();
+                        lp.bottomMargin = (int) (bottomMargin * fraction);
+                    } else {
+                        lp.bottomMargin = 0;
+                        valueAnimator.cancel();
+                    }
+                    LayoutParamsUtil.setViewLayoutParams(mView, lp);
+                }
+            });
+            valueAnimator.setDuration(100);
+            valueAnimator.start();
         }
     }
 

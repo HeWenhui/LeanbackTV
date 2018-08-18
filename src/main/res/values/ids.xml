@@ -132,6 +132,7 @@
     <item name="gv_livevideo_question_mulitSelect" type="id" />
     <item name="ll_livevideo_question_content_question" type="id" />
     <item name="rl_livevideo_question_content" type="id" />
+    <item name="v_livevideo_question_content_bord" type="id" />
     <item name="rl_livevideo_question_fillin_down" type="id" />
     <item name="iv_livevideo_question_fillin_down" type="id" />
     <item name="rl_livevideo_question_fillin_bottom" type="id" />

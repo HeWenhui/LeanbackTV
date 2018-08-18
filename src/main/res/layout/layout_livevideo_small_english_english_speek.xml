@@ -23,7 +23,7 @@
         <TextView
             android:id="@id/tv_livevideo_english_time"
             style="@style/text_font10_ffffff_style"
-            android:layout_width="wrap_content"
+            android:layout_width="45dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="5dp"
@@ -60,13 +60,12 @@
                 android:src="@drawable/bg_livevideo_small_english_statinteract_stat_small" />
 
             <TextView
-
                 android:id="@id/tv_livevideo_english_time2"
-                android:layout_width="wrap_content"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-
                 android:layout_toLeftOf="@id/iv_livevideo_english_stat"
+                android:gravity="right"
                 android:text="继续说15秒获得"
                 android:textColor="@color/COLOR_FFFFFF"
                 android:textSize="7sp" />

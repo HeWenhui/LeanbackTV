@@ -307,6 +307,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
         @Override
         protected void playComplete() {
+            liveFragmentBase.setFirstBackgroundVisible(View.VISIBLE);
             liveFragmentBase.postDelayedIfNotFinish(new Runnable() {
 
                 @Override
@@ -316,7 +317,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                         @Override
                         public void run() {
                             synchronized (mIjkLock) {
-                                liveFragmentBase.onFail(0, 0);
+                                liveFragmentBase.playComplete();
                             }
                         }
                     });
@@ -494,8 +495,10 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
-        Loger.i(TAG, "onEvent:netWorkType=" + event.netWorkType);
-        mLiveVideoBll.onNetWorkChange(event.netWorkType);
+        if (event.getClass() == AppEvent.class) {
+            Loger.i(TAG, "onEvent:netWorkType=" + event.netWorkType);
+            mLiveVideoBll.onNetWorkChange(event.netWorkType);
+        }
     }
 
     @Override

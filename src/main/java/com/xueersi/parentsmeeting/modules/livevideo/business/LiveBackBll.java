@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.AllLiveBasePagerIml;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveUidRx;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
@@ -79,6 +80,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
     boolean islocal;
     private int pattern = 1;
     ShowQuestion showQuestion;
+    private LiveUidRx liveUidRx;
 
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         this.activity = activity;
@@ -165,9 +167,10 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         if (liveVideoSAConfig != null) {
             liveGetInfo.setSubjectiveTestAnswerResult(liveVideoSAConfig.inner.subjectiveTestAnswerResult);
         }
-        liveGetInfo.setTestPaperUrl("http://live.xueersi.com/Live/getMultiTestPaper");
+        liveGetInfo.setTestPaperUrl("https://live.xueersi.com/Live/getMultiTestPaper");
         liveGetInfo.setIs_show_ranks("0");
         liveGetInfo.setLiveType(mLiveType);
+        liveGetInfo.setIsArts(isArts);
         MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
         if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
             liveGetInfo.setEn_name(mMyInfo.getEnglishName());
@@ -190,6 +193,9 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         } catch (Exception e) {
             logger.e("onCreate", e);
         }
+        liveUidRx = new LiveUidRx(activity, false);
+        liveUidRx.setLiveGetInfo(liveGetInfo);
+        liveUidRx.onCreate();
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
@@ -388,7 +394,6 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
      * 各模块 调用此方法 暴露自己需要和其他模块共享的参数
      *
      * @param key
-     * @param value
      */
     public void removeBusinessShareParam(String key) {
         synchronized (businessShareParamMap) {
@@ -493,6 +498,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         allLiveBasePagerIml.onDestory();
         businessShareParamMap.clear();
         liveBackBaseBlls.clear();
+        liveUidRx.onDestory();
     }
 
     public void onPausePlayer() {

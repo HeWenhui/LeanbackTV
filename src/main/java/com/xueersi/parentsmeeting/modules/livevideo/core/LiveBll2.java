@@ -102,6 +102,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private String mCurrentDutyId;
     private AtomicBoolean mIsLand;
     private static String Tag = "LiveBll2";
+    private LiveUidRx liveUidRx;
 
     /**
      * 直播的
@@ -315,6 +316,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     }
 
     public void onCreate() {
+        liveUidRx = new LiveUidRx(mContext, true);
+        liveUidRx.onCreate();
+        //activity创建
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onCreate(businessShareParamMap);
             Log.e("LiveBll2", "=======>onGetInfoSuccess 22222222");
@@ -382,6 +386,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             onLiveFailure("服务器异常", null);
             return;
         }
+        liveUidRx.setLiveGetInfo(getInfo);
         getInfo.setStuCouId(mStuCouId);
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
@@ -936,6 +941,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         if (mIRCMessage != null) {
             mIRCMessage.destory();
         }
+        liveUidRx.onDestory();
     }
 
     /////////////////////////////  播放相关 //////////////////////////////////

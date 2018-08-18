@@ -8,6 +8,8 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -19,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionMulitS
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSelectPortLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSubjectivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -115,17 +118,33 @@ public class LiveQuestionCreat {
     private PutQuestion mPutQuestion = new PutQuestion() {
 
         @Override
-        public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity2, String result) {
-            questionHttp.liveSubmitTestAnswer((VideoQuestionLiveEntity) videoQuestionLiveEntity2, mVSectionID, result,
+        public void onPutQuestionResult(final BaseVideoQuestionEntity videoQuestionLiveEntity2, String result) {
+            final VideoQuestionLiveEntity liveEntity = (VideoQuestionLiveEntity) videoQuestionLiveEntity2;
+            questionHttp.liveSubmitTestAnswer(liveEntity, mVSectionID, result,
                     false, false, new QuestionSwitch.OnAnswerReslut() {
                         @Override
                         public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
                             //onSubmit();
+                            if (entity == null) {
+                                onQuestionHide();
+                            }
                         }
 
                         @Override
                         public void onAnswerFailure() {
 
+                        }
+
+                        private void onQuestionHide() {
+                            MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(activity, MediaPlayerControl.class);
+                            if (mediaPlayerControl != null) {
+                                mediaPlayerControl.seekTo(liveEntity.getvEndTime() * 1000);
+                                mediaPlayerControl.start();
+                            }
+                            LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(activity, LiveBackBll.ShowQuestion.class);
+                            if (showQuestion != null) {
+                                showQuestion.onShow(false);
+                            }
                         }
                     });
         }
