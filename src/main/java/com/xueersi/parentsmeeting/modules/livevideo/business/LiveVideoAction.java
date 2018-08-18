@@ -16,6 +16,8 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -37,6 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LiveVideoAction implements VideoAction {
     private final String TAG = "LiveVideoAction";
+    Logger logger = LoggerFactory.getLogger(TAG);
     protected WeakHandler mHandler = new WeakHandler(null);
     Activity activity;
     /** 初始进入播放器时的预加载界面 */
@@ -129,11 +132,12 @@ public class LiveVideoAction implements VideoAction {
     }
 
     public void playComplete() {
-        Loger.d("playComplete");
         mHandler.post(new Runnable() {
 
             @Override
             public void run() {
+                int visibility = rlFirstBackgroundView.getVisibility();
+                logger.d("playComplete:First=" + visibility);
                 if (tvLoadingHint != null) {
                     PlayErrorCode playErrorCode = PlayErrorCode.TEACHER_LEAVE_200;
                     lastPlayErrorCode = playErrorCode;
@@ -148,7 +152,7 @@ public class LiveVideoAction implements VideoAction {
                     }
                     LiveTopic.RoomStatusEntity status = mGetInfo.getLiveTopic().getMainRoomstatus();
                     if (status != null) {
-                        mLogtf.d("onFail:classbegin=" + status.isClassbegin());
+                        mLogtf.d("playComplete:classbegin=" + status.isClassbegin());
                     }
                 }
             }
@@ -193,7 +197,8 @@ public class LiveVideoAction implements VideoAction {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mLogtf.d("onTeacherNotPresent:First=" + rlFirstBackgroundView.getVisibility());
+                int visibility = rlFirstBackgroundView.getVisibility();
+                mLogtf.d("onTeacherNotPresent:First=" + visibility);
                 if (rlFirstBackgroundView.getVisibility() == View.GONE) {
                     ivTeacherNotpresent.setVisibility(View.GONE);
                 } else {
