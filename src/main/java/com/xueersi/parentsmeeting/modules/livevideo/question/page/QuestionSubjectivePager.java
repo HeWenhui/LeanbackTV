@@ -224,6 +224,22 @@ public class QuestionSubjectivePager extends BaseLiveQuestionPager {
     }
 
     @Override
+    public void onKeyboardShowing(boolean isShowing, int height) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
+        int bottomMargin;
+        if (isShowing) {
+            bottomMargin = height;
+        } else {
+            bottomMargin = 0;
+        }
+        if (bottomMargin != lp.bottomMargin) {
+            lp.bottomMargin = bottomMargin;
+//            wvSubjectWeb.setLayoutParams(lp);
+            LayoutParamsUtil.setViewLayoutParams(mView, lp);
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         try {

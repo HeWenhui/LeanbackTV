@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
+import com.xueersi.parentsmeeting.modules.livevideo.business.KeyboardObserverReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
@@ -130,7 +131,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     private int progress = 0;
     protected LiveBackBll liveBackBll;
     protected LiveBackVideoBll liveBackVideoBll;
-
+    KeyboardObserverReg keyboardObserverReg;
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -373,6 +374,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, liveBackPlayVideoFragment);
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
+        keyboardObserverReg = new KeyboardObserverReg(activity);
+        keyboardObserverReg.initView(rlQuestionContentBottom);
         initBusiness();
         if (islocal) {
             // 互动题播放地址
@@ -640,19 +643,21 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (islocal) {
             return;
         }
-        if (event.netWorkType == NetWorkHelper.MOBILE_STATE) {
-            if (AppBll.getInstance().getAppInfoEntity().isNotificationOnlyWIFI()) {
-                EventBus.getDefault().post(new AppEvent.OnlyWIFIEvent());
-            } else if (AppBll.getInstance().getAppInfoEntity().isNotificationMobileAlert()) {
-                EventBus.getDefault().post(new AppEvent.NowMobileEvent());
+        if (event.getClass() == AppEvent.class) {
+            if (event.netWorkType == NetWorkHelper.MOBILE_STATE) {
+                if (AppBll.getInstance().getAppInfoEntity().isNotificationOnlyWIFI()) {
+                    EventBus.getDefault().post(new AppEvent.OnlyWIFIEvent());
+                } else if (AppBll.getInstance().getAppInfoEntity().isNotificationMobileAlert()) {
+                    EventBus.getDefault().post(new AppEvent.NowMobileEvent());
+                }
+            } else if (event.netWorkType == NetWorkHelper.WIFI_STATE) {
+                if (!mIsShowNoWifiAlert) {
+                    mIsShowNoWifiAlert = true;
+                    playNewVideo();
+                }
+            } else {
+                liveBackVideoBll.onNetWorkChange(event.netWorkType);
             }
-        } else if (event.netWorkType == NetWorkHelper.WIFI_STATE) {
-            if (!mIsShowNoWifiAlert) {
-                mIsShowNoWifiAlert = true;
-                playNewVideo();
-            }
-        } else {
-            liveBackVideoBll.onNetWorkChange(event.netWorkType);
         }
     }
 

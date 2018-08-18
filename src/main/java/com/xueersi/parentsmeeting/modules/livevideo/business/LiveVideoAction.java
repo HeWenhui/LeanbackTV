@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 
 import java.io.File;
@@ -128,6 +129,7 @@ public class LiveVideoAction implements VideoAction {
     }
 
     public void playComplete() {
+        Loger.d("playComplete");
         mHandler.post(new Runnable() {
 
             @Override

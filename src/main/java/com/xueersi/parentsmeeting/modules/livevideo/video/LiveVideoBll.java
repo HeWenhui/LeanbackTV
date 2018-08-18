@@ -421,7 +421,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
             if (openSuccess) {
                 playTime += (System.currentTimeMillis() - lastPlayTime);
             }
+            isPlay = false;
             openSuccess = false;
+            onFail(0, 0);
         }
 
         @Override

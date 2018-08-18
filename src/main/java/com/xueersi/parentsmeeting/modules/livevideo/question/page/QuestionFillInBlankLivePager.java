@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONObject;
+import com.nineoldandroids.animation.ValueAnimator;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.entity.AnswerEntity;
@@ -32,6 +33,8 @@ import com.xueersi.ui.adapter.XsBaseAdapter;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+
+import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
 /**
  * @author linyuqiang 填空题
@@ -56,6 +59,7 @@ public class QuestionFillInBlankLivePager extends BaseLiveQuestionPager {
     private RelativeLayout rlQuestionContent;
     private RelativeLayout rlQuestionHide;
     private ImageView ivQuestionVisible;
+    private View v_livevideo_question_content_bord;
     /** 提交 */
     public CircularProgressButton btnSubmit;
 
@@ -79,6 +83,7 @@ public class QuestionFillInBlankLivePager extends BaseLiveQuestionPager {
         rlDown = (RelativeLayout) mView.findViewById(R.id.rl_livevideo_question_fillin_down);
         ivQuestionVisible = (ImageView) mView.findViewById(R.id.iv_pop_question_visible);
         btnSubmit = (CircularProgressButton) mView.findViewById(R.id.btn_livevideo_question_fillin_submit);
+        v_livevideo_question_content_bord = mView.findViewById(R.id.v_livevideo_question_content_bord);
 //        btnSubmit.setEnabled(false);
         return mView;
     }
@@ -286,6 +291,55 @@ public class QuestionFillInBlankLivePager extends BaseLiveQuestionPager {
                 Activity.INPUT_METHOD_SERVICE);
         inputmanger.hideSoftInputFromWindow(mImgDown.getWindowToken(), 0);
 
+    }
+
+    boolean keyIsShowing;
+
+    @Override
+    public void onKeyboardShowing(boolean isShowing) {
+        keyIsShowing = isShowing;
+        final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v_livevideo_question_content_bord.getLayoutParams();
+        final int bottomMargin;
+        if (isShowing) {
+            bottomMargin = KeyboardUtil.getValidPanelHeight(mContext);
+        } else {
+            bottomMargin = 0;
+        }
+        if (bottomMargin != lp.height) {
+            ValueAnimator valueAnimator = ValueAnimator.ofInt(bottomMargin);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    if (keyIsShowing) {
+                        float fraction = valueAnimator.getAnimatedFraction();
+                        lp.height = (int) (bottomMargin * fraction);
+                    } else {
+                        lp.height = 0;
+                        valueAnimator.cancel();
+                    }
+                    LayoutParamsUtil.setViewLayoutParams(v_livevideo_question_content_bord, lp);
+                }
+            });
+            valueAnimator.setDuration(100);
+            valueAnimator.start();
+        }
+    }
+
+    @Override
+    public void onKeyboardShowing(boolean isShowing, int height) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
+        int bottomMargin;
+        if (isShowing) {
+            bottomMargin = height;
+        } else {
+            bottomMargin = 0;
+        }
+        if (bottomMargin != lp.bottomMargin) {
+            lp.bottomMargin = bottomMargin;
+//            wvSubjectWeb.setLayoutParams(lp);
+            LayoutParamsUtil.setViewLayoutParams(mView, lp);
+        }
     }
 
     @Override

@@ -62,9 +62,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -396,7 +397,8 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 if (goldNum == null) {
                     OtherModulesEnter.requestGoldTotal(mContext);
                 }
-                if (questionBll.isAnaswer()) {
+                QuestionStatic questionStatic = ProxUtil.getProxUtil().get(mContext, QuestionStatic.class);
+                if (questionStatic != null && questionStatic.isAnaswer()) {
                     commonAction.isAnaswer();
                     return;
                 }
@@ -483,6 +485,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                             onTitleShow(true);
                         }
                         keyboardShowing = isShowing;
+                        keyboardShowingListener.onKeyboardShowing(isShowing);
                         if (keyboardShowing) {
                             btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
                         }

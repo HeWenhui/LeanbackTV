@@ -32,4 +32,8 @@ public abstract class BaseLiveQuestionPager extends LiveBasePager {
     public void onKeyboardShowing(boolean isShowing) {
 
     }
+
+    public void onKeyboardShowing(boolean isShowing, int height) {
+
+    }
 }
