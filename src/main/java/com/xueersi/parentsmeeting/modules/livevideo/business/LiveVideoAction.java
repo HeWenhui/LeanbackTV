@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 普通三分屏的加载页
  */
 public class LiveVideoAction implements VideoAction {
-    private final String TAG = "LiveVideoAction";
+    private final String TAG = getClass().getSimpleName();
     Logger logger = LoggerFactory.getLogger(TAG);
     protected WeakHandler mHandler = new WeakHandler(null);
     Activity activity;
@@ -141,14 +141,12 @@ public class LiveVideoAction implements VideoAction {
                 if (tvLoadingHint != null) {
                     PlayErrorCode playErrorCode = PlayErrorCode.TEACHER_LEAVE_200;
                     lastPlayErrorCode = playErrorCode;
-                    if (tvLoadingHint != null) {
-                        tvLoadingHint.setVisibility(View.VISIBLE);
-                        int netWorkState = NetWorkHelper.getNetWorkState(activity);
-                        if (netWorkState == NetWorkHelper.NO_NETWORK) {
-                            tvLoadingHint.setText(PlayErrorCode.PLAY_NO_WIFI.getTip());
-                        } else {
-                            tvLoadingHint.setText("视频播放失败[" + playErrorCode.getCode() + "]");
-                        }
+                    tvLoadingHint.setVisibility(View.VISIBLE);
+                    int netWorkState = NetWorkHelper.getNetWorkState(activity);
+                    if (netWorkState == NetWorkHelper.NO_NETWORK) {
+                        tvLoadingHint.setText(PlayErrorCode.PLAY_NO_WIFI.getTip());
+                    } else {
+                        tvLoadingHint.setText("视频播放失败[" + playErrorCode.getCode() + "]");
                     }
                     LiveTopic.RoomStatusEntity status = mGetInfo.getLiveTopic().getMainRoomstatus();
                     if (status != null) {
@@ -263,12 +261,12 @@ public class LiveVideoAction implements VideoAction {
                 setFirstBackgroundVisible(View.VISIBLE);
                 if (isPresent) {
                     ivTeacherNotpresent.setVisibility(View.GONE);
-                    if (tvLoadingHint != null) {
-                        if (LiveTopic.MODE_CLASS.endsWith(mode)) {
-                            tvLoadingHint.setText(mainTeacherLoad);
-                        } else {
-                            tvLoadingHint.setText(coachTeacherLoad);
-                        }
+                }
+                if (tvLoadingHint != null) {
+                    if (LiveTopic.MODE_CLASS.endsWith(mode)) {
+                        tvLoadingHint.setText(mainTeacherLoad);
+                    } else {
+                        tvLoadingHint.setText(coachTeacherLoad);
                     }
                 }
             }

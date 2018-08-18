@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 
 public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
-    private boolean IS_SCIENCE;
+    private boolean IS_SCIENCE = true;
     private LiveGetInfo liveGetInfo;
     private AnswerRankIRCBll mAnswerRankIRCBll;
     QuestionHttp questionHttp;

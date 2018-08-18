@@ -394,7 +394,9 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
 
     @Override
     public void onPlayError(int errorCode, PlayErrorCode playErrorCode) {
-        liveVideoAction.onPlayError(errorCode, playErrorCode);
+        if (liveVideoAction != null) {
+            liveVideoAction.onPlayError(errorCode, playErrorCode);
+        }
     }
 
     /**

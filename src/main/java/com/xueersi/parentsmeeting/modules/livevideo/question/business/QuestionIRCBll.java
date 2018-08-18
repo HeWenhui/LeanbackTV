@@ -89,7 +89,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super.onLiveInited(data);
         mQuestionAction.setLiveGetInfo(data);
         LiveExamQuestionCreat liveExamQuestionCreat = new LiveExamQuestionCreat();
-        int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
+        int isArts = data.getIsArts();
         liveExamQuestionCreat.setIS_SCIENCE(isArts != 1);
         mQuestionAction.setLiveVideoSAConfig(mLiveBll.getLiveVideoSAConfig());
         liveExamQuestionCreat.setLiveGetInfo(data);

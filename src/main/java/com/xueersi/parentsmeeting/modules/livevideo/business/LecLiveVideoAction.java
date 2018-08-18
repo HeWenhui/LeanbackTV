@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -62,11 +63,23 @@ public class LecLiveVideoAction extends LiveVideoAction {
         });
     }
 
+    @Override
+    public void setFirstParam(LiveVideoPoint liveVideoPoint) {
+        if (mIsLand.get()) {
+            super.setFirstParam(liveVideoPoint);
+        } else {
+            setFirstParamPort();
+        }
+    }
+
     public void setFirstParamPort() {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
-        if (params.rightMargin != RelativeLayout.LayoutParams.MATCH_PARENT || params.bottomMargin != RelativeLayout.LayoutParams.MATCH_PARENT) {
-            params.rightMargin = RelativeLayout.LayoutParams.MATCH_PARENT;
-            params.bottomMargin = RelativeLayout.LayoutParams.MATCH_PARENT;
+        if (params.rightMargin != 0 || params.bottomMargin != 0 || params.topMargin != 0 || params.width != ViewGroup.LayoutParams.MATCH_PARENT || params.height != ViewGroup.LayoutParams.MATCH_PARENT) {
+            params.rightMargin = 0;
+            params.bottomMargin = 0;
+            params.topMargin = 0;
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
             rlFirstBackgroundView.setLayoutParams(params);
             ivTeacherNotpresent.setLayoutParams(params);
             if (dwTeacherNotpresen == null) {
