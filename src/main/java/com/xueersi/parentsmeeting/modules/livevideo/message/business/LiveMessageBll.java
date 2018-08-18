@@ -208,8 +208,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
             }
-//            LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-//            mLiveMessagePager = liveMessagePager;
         } else {
             SmallEnglishLiveMessagePager sEnglishLiveMessagePager = new SmallEnglishLiveMessagePager(activity, this,
                     null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);

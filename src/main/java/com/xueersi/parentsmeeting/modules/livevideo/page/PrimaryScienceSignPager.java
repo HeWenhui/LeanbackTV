@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallAction;
+import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle;
 
 import java.io.File;
@@ -31,7 +32,7 @@ import java.io.File;
 public class PrimaryScienceSignPager extends BasePager {
     String TAG = "PrimaryScienceSignPager";
     RollCallAction rollCallAction;
-    LiveBll liveBll;
+    RollCallBll rollCallBll;
     RelativeLayout rlSignStatus1, rlSignStatus2;
     LinearLayout mLinearLayout;
     TextView tvSignName;
@@ -44,11 +45,11 @@ public class PrimaryScienceSignPager extends BasePager {
     String[] bttips = {"签到成功", "签到失败"};
     private LogToFile logToFile;
 
-    public PrimaryScienceSignPager(Context context, RollCallAction rollCallAction, ClassSignEntity classSignEntity, LiveBll liveBll) {
+    public PrimaryScienceSignPager(Context context, RollCallBll rollCallBll, ClassSignEntity classSignEntity) {
         super(context);
         this.rollCallAction = rollCallAction;
         this.classSignEntity = classSignEntity;
-        this.liveBll = liveBll;
+        this.rollCallBll = rollCallBll;
         logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         initData();
@@ -85,12 +86,11 @@ public class PrimaryScienceSignPager extends BasePager {
                     rollCallAction.stopRollCall();
                     return;
                 }
-                liveBll.userSign(new HttpCallBack() {
+                rollCallBll.userSign(classSignEntity,new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         logToFile.d("onPmSuccess:responseEntity=" + responseEntity.getJsonObject().toString());
                         updateStatus(2);
-                        liveBll.onRollCallSuccess();
                     }
 
                     @Override
@@ -122,20 +122,6 @@ public class PrimaryScienceSignPager extends BasePager {
      * @param status
      */
     public void updateStatus(int status) {
-//        classSignEntity.setStatus(status);
-//        if (status == 1) {
-//            rlSignStatus1.setVisibility(View.VISIBLE);
-//            rlSignStatus2.setVisibility(View.GONE);
-//            return;
-//        } else if (status == 2) {
-//            tvSignStatus.setText(bttips[0]);
-//            ivSignStatus.setImageResource(R.drawable.bg_livevideo_sign_suc);
-//        } else {
-//            tvSignStatus.setText(bttips[1]);
-//            ivSignStatus.setImageResource(R.drawable.bg_web_request_error);
-//        }
-//        rlSignStatus1.setVisibility(View.GONE);
-//        rlSignStatus2.setVisibility(View.VISIBLE);
         classSignEntity.setStatus(status);
         if(status == 1){
             mLinearLayout.setVisibility(View.VISIBLE);

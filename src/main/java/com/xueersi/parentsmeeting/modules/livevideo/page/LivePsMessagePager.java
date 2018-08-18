@@ -402,17 +402,34 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                     commonAction.isAnaswer();
                     return;
                 }
-                if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
-                    if (!liveBll.isOpenbarrage()) {
-                        commonAction.clickIsnotOpenbarrage();
+                if (commonAction instanceof GiftDisable) {
+                    //理科送礼物功能，主讲，辅导,都要先判断上课模式
+                    if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                        if (!ircState.isOpenZJLKbarrage()) {
+                            //主讲没有开启送礼物
+                            ((GiftDisable) commonAction).clickIsnotOpenbarrage(ircState.getMode());
+                            return;
+                        }
+                    } else {
+                        if (!ircState.isOpenFDLKbarrage()) {
+                            //辅导没有开启送礼物
+                            ((GiftDisable) commonAction).clickIsnotOpenbarrage(ircState.getMode());
+                            return;
+                        }
+                    }
+
+                } else {
+                    if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                        if (!ircState.isOpenbarrage()) {
+                            commonAction.clickIsnotOpenbarrage();
+                            return;
+                        }
+                    } else {
+                        commonAction.clickTran();
                         return;
                     }
-                } else {
-                    commonAction.clickTran();
-                    return;
                 }
                 mFlowerWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
-//                mFlowerWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
                 isHaveFlowers = true;
             }
         });
