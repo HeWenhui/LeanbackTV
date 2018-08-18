@@ -328,17 +328,32 @@ public class QuestionFillInBlankLivePager extends BaseLiveQuestionPager {
 
     @Override
     public void onKeyboardShowing(boolean isShowing, int height) {
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
-        int bottomMargin;
+        keyIsShowing = isShowing;
+        final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v_livevideo_question_content_bord.getLayoutParams();
+        final int bottomMargin;
         if (isShowing) {
             bottomMargin = height;
         } else {
             bottomMargin = 0;
         }
-        if (bottomMargin != lp.bottomMargin) {
-            lp.bottomMargin = bottomMargin;
-//            wvSubjectWeb.setLayoutParams(lp);
-            LayoutParamsUtil.setViewLayoutParams(mView, lp);
+        if (bottomMargin != lp.height) {
+            ValueAnimator valueAnimator = ValueAnimator.ofInt(bottomMargin);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    if (keyIsShowing) {
+                        float fraction = valueAnimator.getAnimatedFraction();
+                        lp.height = (int) (bottomMargin * fraction);
+                    } else {
+                        lp.height = 0;
+                        valueAnimator.cancel();
+                    }
+                    LayoutParamsUtil.setViewLayoutParams(v_livevideo_question_content_bord, lp);
+                }
+            });
+            valueAnimator.setDuration(100);
+            valueAnimator.start();
         }
     }
 
