@@ -640,10 +640,10 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
-        if (islocal) {
-            return;
-        }
         if (event.getClass() == AppEvent.class) {
+            if (islocal) {
+                return;
+            }
             if (event.netWorkType == NetWorkHelper.MOBILE_STATE) {
                 if (AppBll.getInstance().getAppInfoEntity().isNotificationOnlyWIFI()) {
                     EventBus.getDefault().post(new AppEvent.OnlyWIFIEvent());

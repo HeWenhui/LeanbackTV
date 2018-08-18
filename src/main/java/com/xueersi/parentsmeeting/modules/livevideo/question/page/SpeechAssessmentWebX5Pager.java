@@ -27,6 +27,8 @@ import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.http.BaseHttp;
 import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.string.MD5Utils;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayerListening;
@@ -37,6 +39,7 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -194,8 +197,33 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         if (isStandingLive) {
             url += "&isStandingLive=1&isAudio=1";
         }
-        wvSubjectWeb.loadUrl(url);
-        mLogtf.d("initData:url=" + url);
+        final String finalUrl = url;
+        boolean have = XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
+
+            @Override
+            public void onFinish() {
+
+            }
+
+            @Override
+            public void onDeny(String permission, int position) {
+
+            }
+
+            @Override
+            public void onGuarantee(String permission, int position) {
+                if (mView.getParent() == null) {
+                    mLogtf.d("initData:onGuarantee:finish");
+                    return;
+                }
+                wvSubjectWeb.loadUrl(finalUrl);
+                mLogtf.d("initData:onGuarantee:url=" + finalUrl);
+            }
+        }, PermissionConfig.PERMISSION_CODE_AUDIO);
+        if (have) {
+            wvSubjectWeb.loadUrl(url);
+            mLogtf.d("initData:url=" + url);
+        }
     }
 
     @android.webkit.JavascriptInterface
