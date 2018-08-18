@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.PsLearnReportTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportHttp;
 import com.xueersi.ui.widget.RatingBar;
 
 import java.io.File;
@@ -32,7 +33,7 @@ import java.io.File;
 public class LearnPsReportPager extends BasePager {
     String TAG = "LearnPsReportPager";
     LearnReportEntity reportEntity;
-    LiveBll liveBll;
+    LearnReportHttp liveBll;
     LearnPsReportBll learnReportBll;
     LinearLayout firstview,secondview;
     /** 查看评价，查看按钮 */
@@ -52,7 +53,7 @@ public class LearnPsReportPager extends BasePager {
     private Activity activity;
     ImageView close;
     private LogToFile logToFile;
-    public LearnPsReportPager(Context context, LearnReportEntity reportEntity, LiveBll liveBll, LearnPsReportBll learnReportBll) {
+    public LearnPsReportPager(Context context, LearnReportEntity reportEntity, LearnReportHttp liveBll, LearnPsReportBll learnReportBll) {
         super(context);
         this.reportEntity = reportEntity;
         this.liveBll = liveBll;

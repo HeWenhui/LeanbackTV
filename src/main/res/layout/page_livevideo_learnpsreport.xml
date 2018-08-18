@@ -190,7 +190,7 @@
                         android:textColor="#7D553F"
                         android:textSize="13sp"/>
 
-                    <com.xueersi.xesalib.view.ratingbar.RatingBar
+                    <com.xueersi.ui.widget.RatingBar
                         android:id="@id/rb_livevideo_evaluate_star"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -224,7 +224,7 @@
                         android:textColor="#7D553F"
                         android:textSize="13sp"/>
 
-                    <com.xueersi.xesalib.view.ratingbar.RatingBar
+                    <com.xueersi.ui.widget.RatingBar
                         android:id="@id/rb_livevideo_evaluate_star2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -258,7 +258,7 @@
                         android:textColor="#7D553F"
                         android:textSize="13sp"/>
 
-                    <com.xueersi.xesalib.view.ratingbar.RatingBar
+                    <com.xueersi.ui.widget.RatingBar
                         android:id="@id/rb_livevideo_evaluate_star3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

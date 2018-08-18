@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportAction;
+import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LearnPsReportPager;
 
 import java.io.File;
@@ -24,7 +25,7 @@ public class LearnPsReportBll  implements LearnReportAction, Handler.Callback{
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
     private Activity activity;
-    private LiveBll mLiveBll;
+    private LearnReportHttp mLiveBll;
     /** 学习报告的布局 */
     private RelativeLayout rlLearnReportContent;
     /** 学习报告 */
@@ -43,7 +44,7 @@ public class LearnPsReportBll  implements LearnReportAction, Handler.Callback{
         this.activity = activity;
     }
 
-    public void setLiveBll(LiveBll mLiveBll) {
+    public void setLiveBll(LearnReportHttp mLiveBll) {
         this.mLiveBll = mLiveBll;
     }
 

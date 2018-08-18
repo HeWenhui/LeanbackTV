@@ -64,7 +64,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -396,21 +398,39 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 if (goldNum == null) {
                     OtherModulesEnter.requestGoldTotal(mContext);
                 }
-                if (questionBll.isAnaswer()) {
+                QuestionStatic questionStatic = ProxUtil.getProxUtil().get(mContext, QuestionStatic.class);
+                if (questionStatic != null && questionStatic.isAnaswer()) {
                     commonAction.isAnaswer();
                     return;
                 }
-                if (LiveTopic.MODE_CLASS.equals(liveBll.getMode())) {
-                    if (!liveBll.isOpenbarrage()) {
-                        commonAction.clickIsnotOpenbarrage();
+                if (commonAction instanceof GiftDisable) {
+                    //理科送礼物功能，主讲，辅导,都要先判断上课模式
+                    if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                        if (!ircState.isOpenZJLKbarrage()) {
+                            //主讲没有开启送礼物
+                            ((GiftDisable) commonAction).clickIsnotOpenbarrage(ircState.getMode());
+                            return;
+                        }
+                    } else {
+                        if (!ircState.isOpenFDLKbarrage()) {
+                            //辅导没有开启送礼物
+                            ((GiftDisable) commonAction).clickIsnotOpenbarrage(ircState.getMode());
+                            return;
+                        }
+                    }
+
+                } else {
+                    if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                        if (!ircState.isOpenbarrage()) {
+                            commonAction.clickIsnotOpenbarrage();
+                            return;
+                        }
+                    } else {
+                        commonAction.clickTran();
                         return;
                     }
-                } else {
-                    commonAction.clickTran();
-                    return;
                 }
                 mFlowerWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
-//                mFlowerWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
                 isHaveFlowers = true;
             }
         });
@@ -483,6 +503,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                             onTitleShow(true);
                         }
                         keyboardShowing = isShowing;
+                        keyboardShowingListener.onKeyboardShowing(isShowing);
                         if (keyboardShowing) {
                             btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
                         }

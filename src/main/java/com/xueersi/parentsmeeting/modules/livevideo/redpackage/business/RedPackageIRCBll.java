@@ -10,7 +10,9 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PScienceRedPackageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
@@ -52,7 +54,10 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
 
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        if (redPackageAction instanceof RedPackageBll) {
+        if(LiveVideoConfig.isPrimary && redPackageAction instanceof PScienceRedPackageBll){
+            PScienceRedPackageBll redPackageBll = (PScienceRedPackageBll) redPackageAction;
+            redPackageBll.initView(bottomContent);
+        }else if(redPackageAction instanceof RedPackageBll) {
             RedPackageBll redPackageBll = (RedPackageBll) redPackageAction;
             redPackageBll.initView(bottomContent);
         }
@@ -93,16 +98,29 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
             redPackageStandBll.initView(mRootView);
             redPackageAction = redPackageStandBll;
         } else {
-            RedPackageBll redPackageBll = new RedPackageBll(activity, mGetInfo, true);
-            redPackageBll.setVSectionID(mLiveId);
-            redPackageBll.initView(mRootView);
-            redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
-                @Override
-                public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
-                    RedPackageIRCBll.this.sendReceiveGold(operateId, liveId, callBack);
-                }
-            });
-            redPackageAction = redPackageBll;
+            if(LiveVideoConfig.isPrimary){
+                PScienceRedPackageBll redPackageBll = new PScienceRedPackageBll(activity, mGetInfo, true);
+                redPackageBll.setVSectionID(mLiveId);
+                redPackageBll.initView(mRootView);
+                redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
+                    @Override
+                    public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
+                        RedPackageIRCBll.this.sendReceiveGold(operateId, liveId, callBack);
+                    }
+                });
+                redPackageAction = redPackageBll;
+            }else{
+                RedPackageBll redPackageBll = new RedPackageBll(activity, mGetInfo, true);
+                redPackageBll.setVSectionID(mLiveId);
+                redPackageBll.initView(mRootView);
+                redPackageBll.setReceiveGold(new RedPackageAction.ReceiveGold() {
+                    @Override
+                    public void sendReceiveGold(int operateId, String liveId, AbstractBusinessDataCallBack callBack) {
+                        RedPackageIRCBll.this.sendReceiveGold(operateId, liveId, callBack);
+                    }
+                });
+                redPackageAction = redPackageBll;
+            }
         }
     }
 

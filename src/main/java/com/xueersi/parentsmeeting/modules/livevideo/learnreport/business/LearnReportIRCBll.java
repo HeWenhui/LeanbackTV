@@ -6,6 +6,7 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LearnPsReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -23,6 +24,7 @@ import org.json.JSONObject;
 public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
     /** 学习报告事件 */
     private LearnReportAction mLearnReportAction;
+    private LearnReportAction mLearnPsReportAction;
     /**
      * 签到成功 状态码
      */
@@ -81,8 +83,8 @@ public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
                     learnReportEntity.getStu().setStuName(mGetInfo.getStuName());
                     learnReportEntity.getStu().setTeacherName(mGetInfo.getTeacherName());
                     learnReportEntity.getStu().setTeacherIMG(mGetInfo.getTeacherIMG());
-                    if (mLearnReportAction == null) {
-                        LearnReportBll reportBll = new LearnReportBll(activity);
+                    if (LiveVideoConfig.isPrimary && mLearnPsReportAction == null) {
+                        LearnPsReportBll reportBll = new LearnPsReportBll(activity);
                         reportBll.initView(mRootView);
                         reportBll.setLiveBll(new LearnReportHttp() {
                             @Override
@@ -96,8 +98,26 @@ public class LearnReportIRCBll extends LiveBaseBll implements NoticeAction {
                             }
                         });
                         mLearnReportAction = reportBll;
+                        mLearnReportAction.onLearnReport(learnReportEntity);
+                    } else {
+                        if (mLearnReportAction == null) {
+                            LearnReportBll reportBll = new LearnReportBll(activity);
+                            reportBll.initView(mRootView);
+                            reportBll.setLiveBll(new LearnReportHttp() {
+                                @Override
+                                public void sendTeacherEvaluate(int[] score, HttpCallBack requestCallBack) {
+                                    LearnReportIRCBll.this.sendTeacherEvaluate(score, requestCallBack);
+                                }
+
+                                @Override
+                                public void showToast(String errorMsg) {
+                                    mLiveBll.showToast(errorMsg);
+                                }
+                            });
+                            mLearnReportAction = reportBll;
+                        }
+                        mLearnReportAction.onLearnReport(learnReportEntity);
                     }
-                    mLearnReportAction.onLearnReport(learnReportEntity);
                 }
                 XesMobAgent.liveLearnReport("request-ok:" + from);
                 mLogtf.d("getLearnReport:onPmSuccess:learnReportEntity=" + (learnReportEntity == null) + "," +

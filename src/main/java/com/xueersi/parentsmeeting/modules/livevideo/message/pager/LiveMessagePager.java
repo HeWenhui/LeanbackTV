@@ -273,8 +273,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     commonAction.isAnaswer();
                     return;
                 }
-
-
                 if (commonAction instanceof GiftDisable) {
                     //理科送礼物功能，主讲，辅导,都要先判断上课模式
                     if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {

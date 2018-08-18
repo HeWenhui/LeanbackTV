@@ -19,9 +19,15 @@ import android.widget.TextView;
 
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,14 +44,18 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
     private LiveBll mLiveBll;
     /** 直播id */
     private String mVSectionID;
+    private ReceiveGold receiveGold;
     /** 红包的布局 */
     private RelativeLayout rlRedpacketContent;
-
-    public PScienceRedPackageBll(Activity activity) {
+    boolean isLive;
+    private LiveGetInfo mGetInfo;
+    public PScienceRedPackageBll(Activity activity ,LiveGetInfo liveGetInfo, boolean isLive) {
         mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
                 + ".txt"));
         mLogtf.clear();
         this.activity = activity;
+        this.isLive = isLive;
+        this.mGetInfo = liveGetInfo;
     }
 
     public void setLiveBll(LiveBll mLiveBll) {
@@ -54,6 +64,10 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
 
     public void setVSectionID(String mVSectionID) {
         this.mVSectionID = mVSectionID;
+    }
+
+    public void setReceiveGold(ReceiveGold receiveGold) {
+        this.receiveGold = receiveGold;
     }
 
     @Override
@@ -73,7 +87,12 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
 
     private void onGetPackage(VideoResultEntity entity) {
         rlRedpacketContent.removeAllViews();
-        initRedPacketResult(entity.getGoldNum());
+        if (!isLive && entity.getResultType() == 0) {
+            initRedPacketOtherResult();
+        } else {
+            initRedPacketResult(entity.getGoldNum());
+        }
+//        initRedPacketResult(entity.getGoldNum());
     }
 
     private void onGetPackageFailure(int operateId) {
@@ -109,25 +128,7 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
         btnRedPacket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLiveBll.sendReceiveGold(operateId, mVSectionID, new AbstractBusinessDataCallBack() {
-                    @Override
-                    public void onDataSucess(Object... objData) {
-                        if (onReceivePackage != null) {
-                            onReceivePackage.onReceivePackage(operateId);
-                        }
-                        VideoResultEntity entity = (VideoResultEntity) objData[0];
-                        onGetPackage(entity);
-                    }
-
-                    @Override
-                    public void onDataFail(int errStatus, String failMsg) {
-                        if (errStatus == 0) {
-                            onGetPackageFailure(operateId);
-                        } else {
-                            onGetPackageError(operateId);
-                        }
-                    }
-                });
+                sendReceiveGold(operateId, mVSectionID);
             }
         });
         view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
@@ -155,6 +156,30 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
 //                rlRedpacketContent.removeAllViews();
 //            }
 //        });
+    }
+
+    private void sendReceiveGold(final int operateId, String sectionID) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        receiveGold.sendReceiveGold(operateId, sectionID, new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                VideoResultEntity entity = (VideoResultEntity) objData[0];
+                onGetPackage(entity);
+                // 广播 领取红包成功事件
+                EventBusUtil.post(new RedPackageEvent(mVSectionID, entity.getGoldNum(),
+                        operateId + "", RedPackageEvent.STATE_CODE_SUCCESS));
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                super.onDataFail(errStatus, failMsg);
+                if (errStatus == 0) {
+                    onGetPackageFailure(operateId);
+                } else {
+                    onGetPackageError(operateId);
+                }
+            }
+        });
     }
 
     /**
@@ -197,7 +222,11 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
         postDelayedIfNotFinish(new Runnable() {
             @Override
             public void run() {
-                mLiveBll.getStuGoldCount();
+                // 更新 本场成就
+                UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(activity, UpdateAchievement.class);
+                if (updateAchievement != null) {
+                    updateAchievement.getStuGoldCount();
+                }
             }
         }, 2900);
         view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
@@ -206,6 +235,36 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
                 rlRedpacketContent.removeAllViews();
             }
         });
+    }
+
+    /**
+     * 已获取红包
+     */
+    private void initRedPacketOtherResult() {
+        View popupWindow_view = activity.getLayoutInflater().inflate(R.layout.pop_question_redpacket_other, null,
+                false);
+        initQuestionAnswerReslut(popupWindow_view);
+    }
+
+    /**
+     * 创建互动题作答，抢红包结果提示PopupWindow
+     */
+    protected void initQuestionAnswerReslut(final View popupWindow_view) {
+        rlRedpacketContent.addView(popupWindow_view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
+                .MATCH_PARENT);
+        popupWindow_view.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                rlRedpacketContent.removeView(popupWindow_view);
+            }
+        });
+        mVPlayVideoControlHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rlRedpacketContent.removeView(popupWindow_view);
+            }
+        }, 3000);
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {

@@ -91,13 +91,28 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                 RelativeLayout.LayoutParams params = null;
                 //如果不是小英
                 if (!isSmallEnglish) {
-                    understandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,
-                            rlQuestionContent, false);
+                    if(LiveVideoConfig.isPrimary){
+                        understandView = activity.getLayoutInflater().inflate(R.layout.dialog_livevideo_primary_understand,
+                                rlQuestionContent,
+                                false);
+                        understandView.findViewById(R.id.iv_understand_close).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                removeView(rlQuestionContent, understandView);
+                            }
+                        });
+                    }else{
+                        understandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,
+                                rlQuestionContent,
+                                false);
+                        ((TextView) understandView.findViewById(R.id.tv_livevideo_under_user)).setText(mGetInfo.getStuName
+                                () + " 你好");
+                    }
                     understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
                             (listener);
                     understandView.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
-                    ((TextView) understandView.findViewById(R.id.tv_livevideo_under_user)).setText(mGetInfo.getStuName
-                            () + " 你好");
+//                    ((TextView) understandView.findViewById(R.id.tv_livevideo_under_user)).setText(mGetInfo.getStuName
+//                            () + " 你好");
                     params = (RelativeLayout.LayoutParams) understandView.getLayoutParams();
                     if (params == null) {
                         params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
