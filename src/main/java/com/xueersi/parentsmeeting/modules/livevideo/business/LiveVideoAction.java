@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 
 import java.io.File;
@@ -35,8 +35,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by linyuqiang on 2018/7/18.
+ * 普通三分屏的加载页
  */
-
 public class LiveVideoAction implements VideoAction {
     private final String TAG = "LiveVideoAction";
     Logger logger = LoggerFactory.getLogger(TAG);
@@ -46,6 +46,8 @@ public class LiveVideoAction implements VideoAction {
     protected RelativeLayout rlFirstBackgroundView;
     /** 老师不在直播间 */
     protected ImageView ivTeacherNotpresent;
+    /** 老师不在直播间背景图 */
+    protected Drawable dwTeacherNotpresen;
     PlayErrorCode lastPlayErrorCode;
     RelativeLayout mContentView;
     private TextView tvLoadingHint;
@@ -104,7 +106,7 @@ public class LiveVideoAction implements VideoAction {
         });
     }
 
-    public void rePlay(boolean modechange) {
+    public void rePlay(final boolean modechange) {
         LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
@@ -118,9 +120,7 @@ public class LiveVideoAction implements VideoAction {
                             if (tvLoadingHint != null) {
                                 mLogtf.d("rePlay:liveType=" + liveType + ",mode=" + mGetInfo.getLiveTopic().getMode() + ",lastPlayErrorCode=" + lastPlayErrorCode);
                                 lastPlayErrorCode = null;
-                                if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
-                                    tvLoadingHint.setText(playLoad);
-                                } else {
+                                if (!modechange) {
                                     tvLoadingHint.setText(playLoad);
                                 }
                             }
@@ -203,7 +203,10 @@ public class LiveVideoAction implements VideoAction {
                     ivTeacherNotpresent.setVisibility(View.GONE);
                 } else {
                     ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                    ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                    if (dwTeacherNotpresen == null) {
+                        dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                    }
+                    ivTeacherNotpresent.setBackgroundDrawable(dwTeacherNotpresen);
                     mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
                 }
             }
@@ -333,5 +336,9 @@ public class LiveVideoAction implements VideoAction {
             return;
         }
         mHandler.postDelayed(r, delayMillis);
+    }
+
+    public void onDestory() {
+        dwTeacherNotpresen = null;
     }
 }

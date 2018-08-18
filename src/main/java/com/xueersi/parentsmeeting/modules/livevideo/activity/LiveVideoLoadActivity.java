@@ -89,7 +89,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         finish();
                         return;
                     }
-                    getInfos.put(liveType + "-" + vSectionID, mGetInfo);
+                    String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
                     com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                     finish();
                 }

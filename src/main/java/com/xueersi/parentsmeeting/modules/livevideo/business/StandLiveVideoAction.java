@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -17,15 +18,21 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**
- * Created by lyqai on 2018/7/18.
+ * Created by linyuqiang on 2018/7/18.
+ * 站立直播的加载页
  */
-
 public class StandLiveVideoAction extends LiveVideoAction {
     private static final String TAG = "StandLiveVideoAction";
     private RelativeLayout rlFirstBackgroundContent;
     private FrameLayout flFirstBackgroundContent;
     boolean isSetFirstParam = true;
     protected String mode = LiveTopic.MODE_TRANING;
+    /** 老师不在直播间背景图 */
+    protected Drawable dwTeacherNotpresenBefore;
+    /** 老师不在直播间背景图 */
+    protected Drawable dwTeacherNotpresenAfter;
+    /** 老师不在直播间背景图 */
+    protected Drawable dwTeacherNotpresenDoing;
 
     public StandLiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView, String mode) {
         super(activity, mLiveBll, mContentView);
@@ -155,7 +162,8 @@ public class StandLiveVideoAction extends LiveVideoAction {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mLogtf.d("onTeacherNotPresent:First=" + rlFirstBackgroundView.getVisibility());
+                int visibility = rlFirstBackgroundView.getVisibility();
+                mLogtf.d("onTeacherNotPresent:First=" + visibility);
                 if (rlFirstBackgroundView.getVisibility() == View.GONE) {
                     ivTeacherNotpresent.setVisibility(View.GONE);
                 } else {
@@ -194,18 +202,38 @@ public class StandLiveVideoAction extends LiveVideoAction {
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             long now = System.currentTimeMillis() / 1000;
             if (now < mGetInfo.getsTime()) {
-                view.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before);
+                if (dwTeacherNotpresenBefore == null) {
+                    dwTeacherNotpresenBefore = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_before);
+                }
+                view.setBackgroundDrawable(dwTeacherNotpresenBefore);
                 Loger.d(TAG, "setTeacherNotpresent:before");
             } else if (now > mGetInfo.geteTime()) {
-                view.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_after);
+                if (dwTeacherNotpresenAfter == null) {
+                    dwTeacherNotpresenAfter = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_after);
+                }
+                view.setBackgroundDrawable(dwTeacherNotpresenAfter);
                 Loger.d(TAG, "setTeacherNotpresent:after");
             } else {
-                view.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before_doing);
+                if (dwTeacherNotpresenDoing == null) {
+                    dwTeacherNotpresenDoing = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_before_doing);
+                }
+                view.setBackgroundDrawable(dwTeacherNotpresenDoing);
                 Loger.d(TAG, "setTeacherNotpresent:doing");
             }
         } else {
             Loger.d(TAG, "setTeacherNotpresent:mode=training");
-            view.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+            if (dwTeacherNotpresen == null) {
+                dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_normal);
+            }
+            view.setBackgroundDrawable(dwTeacherNotpresen);
         }
+    }
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        dwTeacherNotpresenBefore = null;
+        dwTeacherNotpresenAfter = null;
+        dwTeacherNotpresenDoing = null;
     }
 }

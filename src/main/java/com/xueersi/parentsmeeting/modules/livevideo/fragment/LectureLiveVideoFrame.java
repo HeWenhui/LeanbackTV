@@ -91,7 +91,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
     @Override
     protected void startGetInfo() {
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-        LiveGetInfo mGetInfo = LiveVideoLoadActivity.getInfos.get(liveType + "-" + mVSectionID);
+        LiveGetInfo mGetInfo = LiveVideoLoadActivity.getInfos.get(liveType + "-" + stuId + "-" + mVSectionID);
         mLiveBll.getInfo(mGetInfo);
     }
 
@@ -133,7 +133,8 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         }
         from = intent.getIntExtra(ENTER_ROOM_FROM, 0);
         XesMobAgent.enterLiveRoomFrom(from);
-        LiveGetInfo mGetInfo = LiveVideoLoadActivity.getInfos.get(liveType + "-" + mVSectionID);
+        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        LiveGetInfo mGetInfo = LiveVideoLoadActivity.getInfos.get(liveType + "-" + stuId + "-" + mVSectionID);
         mLiveBll = new LiveBll2(activity, mVSectionID, liveType, from, mGetInfo);
         ProxUtil.getProxUtil().put(activity, LiveBll2.class, mLiveBll);
         return true;

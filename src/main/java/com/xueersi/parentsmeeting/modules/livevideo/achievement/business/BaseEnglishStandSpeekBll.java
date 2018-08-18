@@ -14,13 +14,13 @@ public class BaseEnglishStandSpeekBll {
 
     static {
         try {
-            Loger.i("EnglishSpeekBll", "loadLibrary");
+            Loger.i("BaseEnglishStandSpeekBll", "loadLibrary");
             System.loadLibrary(SpeechEvaluatorUtils.TAL_ASSESS_LIB);
-            Loger.i("EnglishSpeekBll", "loadLibrary ok");
+            Loger.i("BaseEnglishStandSpeekBll", "loadLibrary ok");
             loadSuccess = true;
         } catch (Throwable e) {
             loadSuccess = false;
-            Loger.e(BaseApplication.getContext(), "EnglishSpeekBll", "loadLibrary", e, true);
+            Loger.e(BaseApplication.getContext(), "BaseEnglishStandSpeekBll", "loadLibrary", e, true);
         }
     }
 

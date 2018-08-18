@@ -12,9 +12,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/18.
+ * Created by linyuqiang on 2018/7/18.
+ * 讲座的加载页
  */
-
 public class LecLiveVideoAction extends LiveVideoAction {
     private String TAG = "LecLiveVideoAction";
     /** 当前界面是否横屏 */
@@ -42,15 +42,19 @@ public class LecLiveVideoAction extends LiveVideoAction {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mLogtf.d("onTeacherNotPresent:First=" + rlFirstBackgroundView.getVisibility());
+                int visibility = rlFirstBackgroundView.getVisibility();
+                mLogtf.d("onTeacherNotPresent:First=" + visibility);
                 if (rlFirstBackgroundView.getVisibility() == View.GONE) {
                     ivTeacherNotpresent.setVisibility(View.GONE);
                 } else {
                     ivTeacherNotpresent.setVisibility(View.VISIBLE);
+                    if (dwTeacherNotpresen == null) {
+                        dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                    }
                     if (mIsLand.get()) {
-                        ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                        ivTeacherNotpresent.setBackgroundDrawable(dwTeacherNotpresen);
                     } else {
-                        ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                        ivTeacherNotpresent.setBackgroundDrawable(dwTeacherNotpresen);
                     }
                     mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
                 }
@@ -65,7 +69,10 @@ public class LecLiveVideoAction extends LiveVideoAction {
             params.bottomMargin = RelativeLayout.LayoutParams.MATCH_PARENT;
             rlFirstBackgroundView.setLayoutParams(params);
             ivTeacherNotpresent.setLayoutParams(params);
-            ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+            if (dwTeacherNotpresen == null) {
+                dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_normal);
+            }
+            ivTeacherNotpresent.setBackgroundDrawable(dwTeacherNotpresen);
         }
     }
 }

@@ -332,7 +332,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         });
         dvMessageDanmaku.prepare(mParser, mDanmakuContext);
         dvMessageDanmaku.showFPS(false);
-        dvMessageDanmaku.enableDanmakuDrawingCache(true);
+        dvMessageDanmaku.enableDanmakuDrawingCache(false);
     }
 
     private BaseDanmakuParser createParser(InputStream stream) {
