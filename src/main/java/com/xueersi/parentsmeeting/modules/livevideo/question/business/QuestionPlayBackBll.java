@@ -99,10 +99,10 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
                 questionBll.onStopQuestion(questionEntity.getvQuestionType(), "");
-                if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(questionEntity.getvQuestionType())) {
-                    MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
-                    mediaPlayerControl.pause();
-                }
+//                if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(questionEntity.getvQuestionType())) {
+//                    MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+//                    mediaPlayerControl.pause();
+//                }
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
@@ -234,13 +234,14 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
-                        if (!responseEntity.isJsonError()) {
-                            if (questionBll != null) {
-                                questionBll.onAnswerReslut(videoQuestionLiveEntity1, null);
-                            }
-                            if (answerReslut != null) {
-                                answerReslut.onAnswerReslut(videoQuestionLiveEntity1, null);
-                            }
+//                        if (!responseEntity.isJsonError()) {
+
+//                        }
+                        if (questionBll != null) {
+                            questionBll.onAnswerReslut(videoQuestionLiveEntity1, null);
+                        }
+                        if (answerReslut != null) {
+                            answerReslut.onAnswerReslut(videoQuestionLiveEntity1, null);
                         }
                     }
                 });

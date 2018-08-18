@@ -405,13 +405,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     public void onPmError(ResponseEntity responseEntity) {
                         mLogtf.d("liveSubmitTestAnswer:onPmError=" + responseEntity.getErrorMsg() + ",testId=" +
                                 videoQuestionLiveEntity.id);
-                        if (!responseEntity.isJsonError()) {
-                            if (mQuestionAction != null) {
-                                mQuestionAction.onAnswerReslut(videoQuestionLiveEntity, null);
-                            }
-                            if (answerReslut != null) {
-                                answerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
-                            }
+//                        if (!responseEntity.isJsonError()) {
+//
+//                        }
+                        if (mQuestionAction != null) {
+                            mQuestionAction.onAnswerReslut(videoQuestionLiveEntity, null);
+                        }
+                        if (answerReslut != null) {
+                            answerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
                         }
                     }
                 });
