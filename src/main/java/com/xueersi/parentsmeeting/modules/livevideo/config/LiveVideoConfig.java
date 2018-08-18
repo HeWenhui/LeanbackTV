@@ -97,6 +97,8 @@ public class LiveVideoConfig {
     public static String LIVE_VIDEO_AUDIO_LIVE = "live_video_audit_live";
     /** 直播回放倍速 */
     public static String LIVE_VIDEO_PLAYBACK_SPEED = "live_video_playback_speed";
+    /** 直播下载量 */
+    public static String LIVE_VIDEO_UID_RX = "live_video_uid_rx";
 
     /** 直播-调试日志 */
     public static String LIVE_DEBUG_LOG = "live_debug_log";
