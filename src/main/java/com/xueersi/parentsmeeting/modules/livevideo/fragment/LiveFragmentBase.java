@@ -427,14 +427,18 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
      * 播放完成时调用
      */
     private void playComplete() {
-        liveVideoAction.playComplete();
+        if (liveVideoAction != null) {
+            liveVideoAction.playComplete();
+        }
     }
 
     /**
      * 播放失败，或者完成时调用
      */
     private void onFail(int arg1, final int arg2) {
-        liveVideoAction.onFail(arg1, arg2);
+        if (liveVideoAction != null) {
+            liveVideoAction.onFail(arg1, arg2);
+        }
     }
 
     /**
@@ -510,6 +514,8 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         if (mLiveBll != null) {
             mLiveBll.onDestory();
         }
+        liveVideoAction.onDestory();
+        liveVideoAction = null;
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
         mHandler.post(new Runnable() {

@@ -156,7 +156,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new ArtsPraiseListBll(activity,mLiveBll));
+            mLiveBll.addBusinessBll(new ArtsPraiseListBll(activity, mLiveBll));
         } else {
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -377,7 +377,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
     @Override
     public void onPlayError(int errorCode, PlayErrorCode playErrorCode) {
-        liveVideoAction.onPlayError(errorCode, playErrorCode);
+        if (liveVideoAction != null) {
+            liveVideoAction.onPlayError(errorCode, playErrorCode);
+        }
     }
 
     /**

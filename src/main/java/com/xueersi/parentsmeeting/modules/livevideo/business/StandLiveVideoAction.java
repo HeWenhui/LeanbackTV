@@ -228,4 +228,12 @@ public class StandLiveVideoAction extends LiveVideoAction {
             view.setBackgroundDrawable(dwTeacherNotpresen);
         }
     }
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        dwTeacherNotpresenBefore = null;
+        dwTeacherNotpresenAfter = null;
+        dwTeacherNotpresenDoing = null;
+    }
 }

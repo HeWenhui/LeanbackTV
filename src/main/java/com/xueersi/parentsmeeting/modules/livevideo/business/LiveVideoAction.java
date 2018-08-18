@@ -106,7 +106,7 @@ public class LiveVideoAction implements VideoAction {
         });
     }
 
-    public void rePlay(boolean modechange) {
+    public void rePlay(final boolean modechange) {
         LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
@@ -120,9 +120,7 @@ public class LiveVideoAction implements VideoAction {
                             if (tvLoadingHint != null) {
                                 mLogtf.d("rePlay:liveType=" + liveType + ",mode=" + mGetInfo.getLiveTopic().getMode() + ",lastPlayErrorCode=" + lastPlayErrorCode);
                                 lastPlayErrorCode = null;
-                                if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo.getLiveTopic().getMode())) {
-                                    tvLoadingHint.setText(playLoad);
-                                } else {
+                                if (!modechange) {
                                     tvLoadingHint.setText(playLoad);
                                 }
                             }
@@ -338,5 +336,9 @@ public class LiveVideoAction implements VideoAction {
             return;
         }
         mHandler.postDelayed(r, delayMillis);
+    }
+
+    public void onDestory() {
+        dwTeacherNotpresen = null;
     }
 }
