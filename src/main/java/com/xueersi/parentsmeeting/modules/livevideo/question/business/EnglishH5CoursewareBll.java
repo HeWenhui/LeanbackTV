@@ -932,7 +932,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     if (voiceAnswerPager instanceof VoiceAnswerPager) {
                         stopVoiceAnswerPager();
                     }
-                    mLiveBll.getStuGoldCount();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mLiveBll.getStuGoldCount();
+                        }
+                    }, 2500);
                     // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
                     //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
 
