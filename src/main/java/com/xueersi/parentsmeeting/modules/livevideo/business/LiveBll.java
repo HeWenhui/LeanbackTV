@@ -4001,7 +4001,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     }
 
     public void getMoreCourseWareUrl(String liveId, HttpCallBack requestCallBack) {
-//        mHttpManager.getMoreCoureWareUrl(liveId, requestCallBack);
+        mHttpManager.getMoreCoureWareUrl(liveId, requestCallBack);
     }
 
 //    public void getPreDownload(String url,String path){

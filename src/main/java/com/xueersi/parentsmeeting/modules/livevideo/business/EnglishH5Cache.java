@@ -262,7 +262,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         });
 
         // 一次多发的接口调用
-        liveBll.getMoreCourseWareUrl(liveId, new HttpCallBack(false) {
+        mHttpManager.getMoreCoureWareUrl(liveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 Loger.e(TAG, "responseEntity.getJsonObject=" + responseEntity.getJsonObject());
