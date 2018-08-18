@@ -341,7 +341,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 final File save = new File(mMorecacheout, fileName);
                 if (!fileIsExists(save.getPath())) {
                     final File tempFile = new File(mMorecacheout, fileName + ".temp");
-                    liveBll.download(mtexts.get(i), tempFile.getPath(), new DownloadCallBack() {
+                    mHttpManager.download(mtexts.get(i), tempFile.getPath(), new DownloadCallBack() {
                         @Override
                         protected void onDownloadSuccess() {
                             boolean renameTo = tempFile.renameTo(save);
@@ -364,7 +364,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             final File save = new File(mMorecachein, url);
             if (!fileIsExists(save.getPath())) {
                 final File tempFile = new File(mMorecachein, url + ".temp");
-                liveBll.download(mUrls.get(i), tempFile.getPath(), new DownloadCallBack() {
+                mHttpManager.download(mUrls.get(i), tempFile.getPath(), new DownloadCallBack() {
                     @Override
                     protected void onDownloadSuccess() {
                         boolean renameTo = tempFile.renameTo(save);
