@@ -52,25 +52,32 @@ public class RankItem implements AdapterItemInterface<RankEntity> {
         String index = entity.getRank();
         if ("1".equals(index)) {
             tv_livevideo_rank_item_left.setText("");
-            if (isSmallEnglish) {
-                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_rank_no1);
-            } else {
-                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_small_english_rank_no1);
-            }
+            tv_livevideo_rank_item_left.setBackgroundResource(isSmallEnglish ? R.drawable
+                    .bg_livevideo_small_english_rank_no1 : R.drawable.bg_livevideo_rank_no1);
+//            if (isSmallEnglish) {
+//                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_rank_no1);
+//            } else {
+//                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_small_english_rank_no1);
+//            }
         } else if ("2".equals(index)) {
             tv_livevideo_rank_item_left.setText("");
-            if (isSmallEnglish) {
-                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_rank_no2);
-            } else {
-                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_small_english_rank_no2);
-            }
+            tv_livevideo_rank_item_left.setBackgroundResource(isSmallEnglish ? R.drawable
+                    .bg_livevideo_small_english_rank_no2 : R.drawable.bg_livevideo_rank_no2);
+//            if (isSmallEnglish) {
+//                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_rank_no2);
+//            } else {
+//                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_small_english_rank_no2);
+//            }
         } else if ("3".equals(index)) {
+            tv_livevideo_rank_item_left.setBackgroundResource(isSmallEnglish ? R.drawable
+                    .bg_livevideo_small_english_rank_no3 :
+                    R.drawable.bg_livevideo_rank_no3);
             tv_livevideo_rank_item_left.setText("");
-            if (!isSmallEnglish) {
-                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_rank_no3);
-            } else {
-                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_small_english_rank_no3);
-            }
+//            if (!isSmallEnglish) {
+//                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_rank_no3);
+//            } else {
+//                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_small_english_rank_no3);
+//            }
         } else {
             tv_livevideo_rank_item_left.setBackgroundDrawable(null);
             tv_livevideo_rank_item_left.setText("" + entity.getRank());

@@ -2,13 +2,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#cc000000"
-    android:visibility="gone">
+    android:background="#cc000000">
+    <!--android:visibility="gone">-->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/play_achievement_board1" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/play_achievement_board1">
+        android:layout_height="wrap_content">
+
+        <!--<ImageView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:src="@drawable/bg_livevideo_small_english_class" />-->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="21dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/bg_livevideo_small_english_my_group" />
 
         <ImageView
             android:id="@id/iv_livevideo_small_english_rank_mygroup"
@@ -17,12 +32,27 @@
             android:background="@drawable/play_achievement_grouponline_btn" />
 
         <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/bg_livevideo_small_english_groups" />
+
+        <ImageView
             android:id="@id/iv_livevideo_small_english_rank_groups"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:background="@drawable/play_achievement_teams_btn"
             android:visibility="gone" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="22dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/bg_livevideo_small_english_class" />
 
         <ImageView
             android:id="@id/iv_livevideo_small_english_rank_class"
