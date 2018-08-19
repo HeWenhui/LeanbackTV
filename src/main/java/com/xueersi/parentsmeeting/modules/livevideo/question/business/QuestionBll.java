@@ -194,10 +194,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         this.activity = activity;
         this.stuCouId = stuCouId;
         liveQuestionCreat = new LiveQuestionCreat(activity, isAbLand, this);
-        KeyboardObserverReg keyboardObserverReg = ProxUtil.getProxUtil().get(activity, KeyboardObserverReg.class);
-        if (keyboardObserverReg != null) {
-            keyboardObserverReg.addKeyboardObserver(this);
-        }
+//        KeyboardObserverReg keyboardObserverReg = ProxUtil.getProxUtil().get(activity, KeyboardObserverReg.class);
+//        if (keyboardObserverReg != null) {
+//            keyboardObserverReg.addKeyboardObserver(this);
+//        }
     }
 
     public void setLiveVideoSAConfig(LiveVideoSAConfig liveVideoSAConfig) {

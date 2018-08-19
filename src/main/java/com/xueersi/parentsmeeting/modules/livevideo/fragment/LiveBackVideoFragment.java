@@ -131,7 +131,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     private int progress = 0;
     protected LiveBackBll liveBackBll;
     protected LiveBackVideoBll liveBackVideoBll;
-    KeyboardObserverReg keyboardObserverReg;
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -374,8 +373,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, liveBackPlayVideoFragment);
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
-        keyboardObserverReg = new KeyboardObserverReg(activity);
-        keyboardObserverReg.initView(rlQuestionContentBottom);
         initBusiness();
         if (islocal) {
             // 互动题播放地址

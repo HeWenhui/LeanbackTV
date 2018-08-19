@@ -297,64 +297,64 @@ public class QuestionFillInBlankLivePager extends BaseLiveQuestionPager {
 
     @Override
     public void onKeyboardShowing(boolean isShowing) {
-        keyIsShowing = isShowing;
-        final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v_livevideo_question_content_bord.getLayoutParams();
-        final int bottomMargin;
-        if (isShowing) {
-            bottomMargin = KeyboardUtil.getValidPanelHeight(mContext);
-        } else {
-            bottomMargin = 0;
-        }
-        if (bottomMargin != lp.height) {
-            ValueAnimator valueAnimator = ValueAnimator.ofInt(bottomMargin);
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    if (keyIsShowing) {
-                        float fraction = valueAnimator.getAnimatedFraction();
-                        lp.height = (int) (bottomMargin * fraction);
-                    } else {
-                        lp.height = 0;
-                        valueAnimator.cancel();
-                    }
-                    LayoutParamsUtil.setViewLayoutParams(v_livevideo_question_content_bord, lp);
-                }
-            });
-            valueAnimator.setDuration(100);
-            valueAnimator.start();
-        }
+//        keyIsShowing = isShowing;
+//        final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v_livevideo_question_content_bord.getLayoutParams();
+//        final int bottomMargin;
+//        if (isShowing) {
+//            bottomMargin = KeyboardUtil.getValidPanelHeight(mContext);
+//        } else {
+//            bottomMargin = 0;
+//        }
+//        if (bottomMargin != lp.height) {
+//            ValueAnimator valueAnimator = ValueAnimator.ofInt(bottomMargin);
+//            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//
+//                @Override
+//                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+//                    if (keyIsShowing) {
+//                        float fraction = valueAnimator.getAnimatedFraction();
+//                        lp.height = (int) (bottomMargin * fraction);
+//                    } else {
+//                        lp.height = 0;
+//                        valueAnimator.cancel();
+//                    }
+//                    LayoutParamsUtil.setViewLayoutParams(v_livevideo_question_content_bord, lp);
+//                }
+//            });
+//            valueAnimator.setDuration(100);
+//            valueAnimator.start();
+//        }
     }
 
     @Override
     public void onKeyboardShowing(boolean isShowing, int height) {
-        keyIsShowing = isShowing;
-        final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v_livevideo_question_content_bord.getLayoutParams();
-        final int bottomMargin;
-        if (isShowing) {
-            bottomMargin = height;
-        } else {
-            bottomMargin = 0;
-        }
-        if (bottomMargin != lp.height) {
-            ValueAnimator valueAnimator = ValueAnimator.ofInt(bottomMargin);
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    if (keyIsShowing) {
-                        float fraction = valueAnimator.getAnimatedFraction();
-                        lp.height = (int) (bottomMargin * fraction);
-                    } else {
-                        lp.height = 0;
-                        valueAnimator.cancel();
-                    }
-                    LayoutParamsUtil.setViewLayoutParams(v_livevideo_question_content_bord, lp);
-                }
-            });
-            valueAnimator.setDuration(100);
-            valueAnimator.start();
-        }
+//        keyIsShowing = isShowing;
+//        final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v_livevideo_question_content_bord.getLayoutParams();
+//        final int bottomMargin;
+//        if (isShowing) {
+//            bottomMargin = height;
+//        } else {
+//            bottomMargin = 0;
+//        }
+//        if (bottomMargin != lp.height) {
+//            ValueAnimator valueAnimator = ValueAnimator.ofInt(bottomMargin);
+//            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//
+//                @Override
+//                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+//                    if (keyIsShowing) {
+//                        float fraction = valueAnimator.getAnimatedFraction();
+//                        lp.height = (int) (bottomMargin * fraction);
+//                    } else {
+//                        lp.height = 0;
+//                        valueAnimator.cancel();
+//                    }
+//                    LayoutParamsUtil.setViewLayoutParams(v_livevideo_question_content_bord, lp);
+//                }
+//            });
+//            valueAnimator.setDuration(100);
+//            valueAnimator.start();
+//        }
     }
 
     @Override
