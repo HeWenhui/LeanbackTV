@@ -51,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.util.TextStrokeUtil;
@@ -302,7 +303,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         content2 = content.replace("\n", " ");
         fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
         tvSpeectevalEncourage.setTypeface(fontFace);
-        File dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/livevideo/");
+        File dir =  LiveCacheFile.geCacheFile(mContext, "liveSpeech");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
             dir.mkdirs();
