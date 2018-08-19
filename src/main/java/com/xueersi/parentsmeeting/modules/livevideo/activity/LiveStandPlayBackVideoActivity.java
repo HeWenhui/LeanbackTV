@@ -1380,7 +1380,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         }
 
         @Override
-        public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
+        public BasePager questionSwitch(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseQuestionEntity) {
             // TODO mQuestionEntity==null
             VideoQuestionEntity videoQuestionLiveEntity1 = (VideoQuestionEntity) baseQuestionEntity;
             if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == videoQuestionLiveEntity1.getvCategory()) {

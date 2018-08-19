@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -178,7 +177,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         if (isEnd) {
             return;
         }
-        BasePager basePager = questionSwitch.questionSwitch(baseVideoQuestionEntity);
+        BasePager basePager = questionSwitch.questionSwitch(this, baseVideoQuestionEntity);
         if (basePager == null) {
             XESToastUtils.showToast(mContext, "切换失败");
         } else {

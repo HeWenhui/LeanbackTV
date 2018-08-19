@@ -12,7 +12,7 @@ import java.io.File;
  * 语音答题的一些接口
  */
 public interface QuestionSwitch {
-    BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity);
+    BasePager questionSwitch(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseQuestionEntity);
 
     String getsourcetype(BaseVideoQuestionEntity baseQuestionEntity);
 

@@ -20,7 +20,6 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
-import com.xueersi.parentsmeeting.modules.livevideo.business.KeyboardObserverReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -45,13 +44,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAsse
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionFillInBlankLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionFillInBlankPortLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionMulitSelectLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionMulitSelectPortLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSelectLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSelectPortLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSubjectivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
@@ -1689,6 +1681,16 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
+    private void stopVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
+        voiceAnswerPager.stopPlayer();
+        voiceAnswerPager.onDestroy();
+        rlQuestionContent.removeView(voiceAnswerPager.getRootView());
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+        if (audioRequest != null) {
+            audioRequest.release();
+        }
+    }
+
     private void stopVoiceAnswerPager() {
         voiceAnswerPager.stopPlayer();
         voiceAnswerPager.onDestroy();
@@ -1940,26 +1942,29 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
 
         @Override
-        public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
+        public BasePager questionSwitch(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseQuestionEntity) {
             VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) baseQuestionEntity;
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity1.type)) {
                 if ("1".equals(videoQuestionLiveEntity1.choiceType)) {
                     showSelectQuestion(videoQuestionLiveEntity1);
-                    if (voiceAnswerPager != null) {
-                        stopVoiceAnswerPager();
+                    stopVoiceAnswerPager(baseVoiceAnswerPager);
+                    if (voiceAnswerPager == baseVoiceAnswerPager) {
+                        voiceAnswerPager = null;
                     }
                     return baseQuestionPager;
                 } else {
                     showMulitSelectQuestion(videoQuestionLiveEntity1);
-                    if (voiceAnswerPager != null) {
-                        stopVoiceAnswerPager();
+                    stopVoiceAnswerPager(baseVoiceAnswerPager);
+                    if (voiceAnswerPager == baseVoiceAnswerPager) {
+                        voiceAnswerPager = null;
                     }
                     return baseQuestionPager;
                 }
             } else if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
                 showFillBlankQuestion(videoQuestionLiveEntity1);
-                if (voiceAnswerPager != null) {
-                    stopVoiceAnswerPager();
+                stopVoiceAnswerPager(baseVoiceAnswerPager);
+                if (voiceAnswerPager == baseVoiceAnswerPager) {
+                    voiceAnswerPager = null;
                 }
                 return baseQuestionPager;
             }

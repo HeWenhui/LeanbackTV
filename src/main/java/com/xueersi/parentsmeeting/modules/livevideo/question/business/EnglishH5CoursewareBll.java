@@ -15,7 +15,6 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
-import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -39,7 +38,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -546,6 +544,20 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
     }
 
+    private void stopVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
+        boolean isEnd = voiceAnswerPager.isEnd();
+        voiceAnswerPager.stopPlayer();
+        voiceAnswerPager.onDestroy();
+        bottomContent.removeView(voiceAnswerPager.getRootView());
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(context, AudioRequest.class);
+        if (audioRequest != null) {
+            audioRequest.release();
+        }
+        if (isEnd) {
+            onQuestionShow(false);
+        }
+    }
+
     @Override
     public void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
         final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(context, entity);
@@ -826,8 +838,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     /** 直播收到答题切换 */
     public class LiveStandQuestionSwitchImpl extends LiveQuestionSwitchImpl implements LiveStandQuestionSwitch {
         @Override
-        public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
-            BaseEnglishH5CoursewarePager h5CoursewarePager = (BaseEnglishH5CoursewarePager) super.questionSwitch(baseQuestionEntity);
+        public BasePager questionSwitch(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseQuestionEntity) {
+            BaseEnglishH5CoursewarePager h5CoursewarePager = (BaseEnglishH5CoursewarePager) super.questionSwitch(baseVoiceAnswerPager, baseQuestionEntity);
             if (h5CoursewarePager != null) {
                 h5CoursewarePager.setWebBackgroundColor(0);
                 return h5CoursewarePager.getBasePager();
@@ -873,10 +885,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
 
         @Override
-        public BasePager questionSwitch(BaseVideoQuestionEntity baseQuestionEntity) {
+        public BasePager questionSwitch(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseQuestionEntity) {
             VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) baseQuestionEntity;
-            if (voiceAnswerPager != null) {
-                stopVoiceAnswerPager();
+            stopVoiceAnswerPager(baseVoiceAnswerPager);
+            if (voiceAnswerPager == baseVoiceAnswerPager) {
+                voiceAnswerPager = null;
             }
             showH5Paper(videoQuestionLiveEntity1);
             return h5CoursewarePager.getBasePager();
