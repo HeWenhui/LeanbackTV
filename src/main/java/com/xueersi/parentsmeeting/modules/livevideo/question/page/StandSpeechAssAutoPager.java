@@ -851,6 +851,17 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         }
         LinearLayout llLivevideoSpeectevalResultMine = resultMine.findViewById(R.id.ll_livevideo_speecteval_result_mine);
 //        bg_livevideo_speecteval_result_number_0
+        //有用，误删
+        int[] scoreRes = {R.drawable.bg_livevideo_speecteval_result_number_0,
+                R.drawable.bg_livevideo_speecteval_result_number_1,
+                R.drawable.bg_livevideo_speecteval_result_number_2,
+                R.drawable.bg_livevideo_speecteval_result_number_3,
+                R.drawable.bg_livevideo_speecteval_result_number_4,
+                R.drawable.bg_livevideo_speecteval_result_number_5,
+                R.drawable.bg_livevideo_speecteval_result_number_6,
+                R.drawable.bg_livevideo_speecteval_result_number_7,
+                R.drawable.bg_livevideo_speecteval_result_number_8,
+                R.drawable.bg_livevideo_speecteval_result_number_9,};
         for (int i = 0; i < ("" + score).length(); i++) {
             char c = ("" + score).charAt(i);
             ImageView imageView = new ImageView(mContext);
