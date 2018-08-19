@@ -158,6 +158,7 @@ public class SmallEnglishClassSignPager extends BasePager {
 
     //更新状态
     public void updateStatus(int status) {
+        classSignEntity.setStatus(status);
         if (status == Config.SIGN_STATE_CODE_UNSIGN) {//准备签到
             mView.removeCallbacks(closeRun);//移除之前关闭签到的Runnable.
             tvArtsStartSign.setVisibility(View.VISIBLE);
