@@ -229,33 +229,33 @@ public class QuestionSubjectivePager extends BaseLiveQuestionPager {
 
     @Override
     public void onKeyboardShowing(boolean isShowing, int height) {
-        keyIsShowing = isShowing;
-        final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
-        final int bottomMargin;
-        if (isShowing) {
-            bottomMargin = height;
-        } else {
-            bottomMargin = 0;
-        }
-        if (bottomMargin != lp.bottomMargin) {
-            ValueAnimator valueAnimator = ValueAnimator.ofInt(bottomMargin);
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    if (keyIsShowing) {
-                        float fraction = valueAnimator.getAnimatedFraction();
-                        lp.bottomMargin = (int) (bottomMargin * fraction);
-                    } else {
-                        lp.bottomMargin = 0;
-                        valueAnimator.cancel();
-                    }
-                    LayoutParamsUtil.setViewLayoutParams(mView, lp);
-                }
-            });
-            valueAnimator.setDuration(100);
-            valueAnimator.start();
-        }
+//        keyIsShowing = isShowing;
+//        final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
+//        final int bottomMargin;
+//        if (isShowing) {
+//            bottomMargin = height;
+//        } else {
+//            bottomMargin = 0;
+//        }
+//        if (bottomMargin != lp.bottomMargin) {
+//            ValueAnimator valueAnimator = ValueAnimator.ofInt(bottomMargin);
+//            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//
+//                @Override
+//                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+//                    if (keyIsShowing) {
+//                        float fraction = valueAnimator.getAnimatedFraction();
+//                        lp.bottomMargin = (int) (bottomMargin * fraction);
+//                    } else {
+//                        lp.bottomMargin = 0;
+//                        valueAnimator.cancel();
+//                    }
+//                    LayoutParamsUtil.setViewLayoutParams(mView, lp);
+//                }
+//            });
+//            valueAnimator.setDuration(100);
+//            valueAnimator.start();
+//        }
     }
 
     @Override

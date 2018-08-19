@@ -38,27 +38,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        boolean have = XesPermission.checkPermission(this, new LiveActivityPermissionCallback() {
-
-                    @Override
-                    public void onFinish() {
-
-                    }
-
-                    @Override
-                    public void onDeny(String permission, int position) {
-
-                    }
-
-                    @Override
-                    public void onGuarantee(String permission, int position) {
-                        initData();
-                    }
-                },
-                PermissionConfig.PERMISSION_CODE_STORAGE);
-        if (have) {
-            initData();
-        }
+        initData();
     }
 
     @Override
