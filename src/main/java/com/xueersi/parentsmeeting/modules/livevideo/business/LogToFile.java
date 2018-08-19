@@ -34,7 +34,7 @@ public class LogToFile {
 
     public LogToFile(String tag) {
         this.TAG = "L:" + tag;
-        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag);
+        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
         if (!parent.exists()) {
@@ -45,7 +45,7 @@ public class LogToFile {
 
     public LogToFile(LiveBll2 liveBll2, String tag) {
         this.TAG = "L:" + tag;
-        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag);
+        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
         this.liveBll2 = liveBll2;
@@ -57,7 +57,7 @@ public class LogToFile {
 
     public LogToFile(Context context, String tag) {
         this.TAG = "L:" + tag;
-        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag);
+        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
         liveBll2 = ProxUtil.getProxUtil().get(context, LiveBll2.class);
