@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -289,8 +288,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpManager.addBodyParam("form", "" + form);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (liveGetInfo != null) {
@@ -306,8 +304,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -324,8 +321,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {

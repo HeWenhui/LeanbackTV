@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.video;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.os.Environment;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -32,7 +31,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,14 +95,12 @@ public class LiveVideoBll implements VPlayerListenerReg {
         this.activity = activity;
         this.mLiveBll = liveBll;
         this.mLiveType = liveType;
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         totalFrameStat = new TotalFrameStat(activity, true);
         liveVideoReportBll = new LiveVideoReportBll(activity, liveBll);
         liveVideoReportBll.setTotalFrameStat(totalFrameStat);
         mPlayStatistics.add(liveVideoReportBll.getVideoListener());
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         ProxUtil.getProxUtil().put(activity, VPlayerListenerReg.class, this);
     }

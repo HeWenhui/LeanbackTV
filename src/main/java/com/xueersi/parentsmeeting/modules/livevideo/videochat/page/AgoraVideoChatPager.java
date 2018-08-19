@@ -4,7 +4,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import android.app.Activity;
 import android.graphics.Rect;
-import android.os.Environment;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AGEventHandler;
@@ -25,12 +22,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -62,8 +56,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         this.liveBll = liveBll;
         this.getInfo = getInfo;
         netWorkType = NetWorkHelper.getNetWorkState(activity);
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.d("AgoraVideoChatPager:netWorkType=" + netWorkType);
         initView();
         initData();

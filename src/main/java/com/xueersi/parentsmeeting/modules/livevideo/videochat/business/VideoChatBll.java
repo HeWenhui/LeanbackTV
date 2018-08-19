@@ -9,7 +9,6 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Build;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,16 +47,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
-import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.PermissionItem;
 import com.xueersi.common.permission.XesPermission;
-import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
-import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,8 +123,7 @@ public class VideoChatBll implements VideoChatAction {
     public VideoChatBll(Activity activity, VideoChatEvent videoChatEvent) {
         this.activity = activity;
         this.videoChatEvent = videoChatEvent;
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         ProxUtil.getProxUtil().put(activity, VideoChatStartChange.class, new VideoChatStartChange() {
             @Override

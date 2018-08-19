@@ -1,14 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.rollcall.page;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Environment;
-import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,8 +15,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.Config;
-
-import java.io.File;
 
 public class SmallEnglishClassSignPager extends BasePager {
     private String TAG = "ArtsClassSignPager";
@@ -56,8 +48,7 @@ public class SmallEnglishClassSignPager extends BasePager {
         super(context);
 //        this.rollCallBll = rollCallBll;
         this.classSignEntity = classSignEntity;
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(TAG);
 
         initData();
         initListener();

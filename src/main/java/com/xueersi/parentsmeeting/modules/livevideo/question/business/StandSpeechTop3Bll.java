@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
-import android.os.Environment;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -17,7 +16,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
-import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -40,16 +38,14 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
     @Deprecated
     public StandSpeechTop3Bll(LiveBll liveBll) {
         this.liveBll = liveBll;
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(TAG);
         liveAndBackDebug = liveBll;
     }
 
     public StandSpeechTop3Bll(QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
         this.questionIRCBll = questionIRCBll;
         this.liveAndBackDebug = liveAndBackDebug;
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(TAG);
     }
 
     @Override

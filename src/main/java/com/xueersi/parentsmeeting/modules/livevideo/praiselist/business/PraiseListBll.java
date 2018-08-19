@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.praiselist.business;
 
 import android.app.Activity;
 import android.graphics.Rect;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -12,7 +11,6 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -25,9 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseListPa
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -65,8 +61,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     private int mPraiseListType = 0;
 
     public PraiseListBll(Activity activity) {
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         this.activity = activity;
         setVideoLayout(getScreenParam(), ScreenUtils.getScreenHeight());

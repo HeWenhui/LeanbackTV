@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +42,6 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -98,8 +96,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             onUserBackPressed();
             return false;
         }
-        mLogtf = new LogToFile(mLiveBll, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(mLiveBll, TAG);
         userOnline = new UserOnline(activity, liveType, mVSectionID);
         userOnline.setHttpManager(mLiveBll.getHttpManager());
         //先让播放器按照默认模式设置

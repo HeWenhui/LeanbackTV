@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.learnreport.business;
 
 import android.app.Activity;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -13,8 +12,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.page.LearnReportPager;
-
-import java.io.File;
 
 /**
  * Created by linyuqiang on 2016/9/23.
@@ -37,8 +34,7 @@ public class LearnReportBll implements LearnReportAction, Handler.Callback {
     private boolean mIsShowLearnReport = false;
 
     public LearnReportBll(Activity activity) {
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         this.activity = activity;
     }

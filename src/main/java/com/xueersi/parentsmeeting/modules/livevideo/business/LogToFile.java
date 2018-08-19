@@ -3,8 +3,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.content.Context;
 import android.util.Log;
 
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -30,8 +32,9 @@ public class LogToFile {
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
     }
 
-    public LogToFile(String tag, File file) {
+    public LogToFile(String tag) {
         this.TAG = "L:" + tag;
+        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag);
         this.path = file.getPath();
         File parent = file.getParentFile();
         if (!parent.exists()) {
@@ -40,8 +43,9 @@ public class LogToFile {
         file.delete();
     }
 
-    public LogToFile(LiveBll2 liveBll2, String tag, File file) {
+    public LogToFile(LiveBll2 liveBll2, String tag) {
         this.TAG = "L:" + tag;
+        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag);
         this.path = file.getPath();
         File parent = file.getParentFile();
         this.liveBll2 = liveBll2;
@@ -51,8 +55,9 @@ public class LogToFile {
         file.delete();
     }
 
-    public LogToFile(Context context, String tag, File file) {
+    public LogToFile(Context context, String tag) {
         this.TAG = "L:" + tag;
+        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag);
         this.path = file.getPath();
         File parent = file.getParentFile();
         liveBll2 = ProxUtil.getProxUtil().get(context, LiveBll2.class);

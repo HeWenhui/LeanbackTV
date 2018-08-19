@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -102,7 +101,6 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -227,8 +225,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         liveType = getIntent().getIntExtra("type", 0);

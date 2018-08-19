@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -51,7 +50,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import org.json.JSONObject;
 import org.xutils.xutils.http.RequestParams;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -128,8 +126,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpManager.addBodyParam("form", "" + form);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (liveGetInfo != null) {
@@ -159,8 +156,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (liveGetInfo != null) {
@@ -192,8 +188,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         mLiveTopic = new LiveTopic();

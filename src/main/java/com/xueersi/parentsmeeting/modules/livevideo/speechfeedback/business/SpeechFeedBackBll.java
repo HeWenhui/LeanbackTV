@@ -6,7 +6,6 @@ import android.graphics.Rect;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -29,7 +28,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.PermissionItem;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
@@ -113,15 +111,13 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         this.activity = activity;
         this.liveBll = liveBll;
         liveAndBackDebug = liveBll;
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(TAG);
     }
 
     public SpeechFeedBackBll(Activity activity, SpeechFeedBackHttp liveBll) {
         this.activity = activity;
         this.liveBll = liveBll;
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(TAG);
     }
 
     public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {

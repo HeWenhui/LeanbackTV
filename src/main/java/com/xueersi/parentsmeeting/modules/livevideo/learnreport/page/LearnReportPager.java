@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.learnreport.page;
 
 import android.content.Context;
-import android.os.Environment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.MotionEvent;
@@ -16,17 +15,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle;
-import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.ui.widget.RatingBar;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,8 +82,7 @@ public class LearnReportPager extends LiveBasePager {
         this.reportEntity = reportEntity;
         this.liveBll = liveBll;
         this.learnReportBll = learnReportBll;
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(TAG);
         initData();
     }
 

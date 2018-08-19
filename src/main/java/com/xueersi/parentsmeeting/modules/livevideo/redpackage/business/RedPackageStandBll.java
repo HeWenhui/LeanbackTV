@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.redpackage.business;
 
 import android.app.Activity;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -21,7 +20,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackage
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
 import com.xueersi.common.business.UserBll;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,8 +46,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     LiveAndBackDebug liveAndBackDebug;
 
     public RedPackageStandBll(Activity activity, boolean isLive, LiveAndBackDebug liveAndBackDebug) {
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         this.activity = activity;
         this.isLive = isLive;

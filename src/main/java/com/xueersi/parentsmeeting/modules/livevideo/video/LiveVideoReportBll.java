@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.video;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -20,7 +19,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,8 +49,7 @@ public class LiveVideoReportBll {
 
     LiveVideoReportBll(Activity activity, LiveBll2 liveBll) {
         this.liveBll = liveBll;
-        mLogtf = new LogToFile(activity, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(activity, TAG);
     }
 
     public void setServer(PlayServerEntity server) {

@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
@@ -16,8 +15,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.pager.BaseNbH
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.pager.NbH5CoursewareX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
-
-import java.io.File;
 
 /**
  * Created by linyuqiang on 2017/3/25.
@@ -33,8 +30,7 @@ public class H5CoursewareBll implements H5CoursewareAction {
     ActivityChangeLand activityChangeLand;
 
     public H5CoursewareBll(Context context) {
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(TAG);
         this.context = context;
         activityChangeLand = ProxUtil.getProxUtil().get(context, ActivityChangeLand.class);
     }

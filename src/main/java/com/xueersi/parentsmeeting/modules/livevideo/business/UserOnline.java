@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -15,8 +14,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.File;
 
 /**
  * Created by lyqai on 2018/6/26.
@@ -40,8 +37,7 @@ public class UserOnline {
         this.activity = activity;
         this.mLiveType = mLiveType;
         this.mLiveId = mLiveId;
-        mLogtf = new LogToFile(activity, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(activity, TAG);
     }
 
     public void setHttpManager(LiveHttpManager mHttpManager) {

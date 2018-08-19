@@ -1,10 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.understand.business;
 
 import android.app.Activity;
-import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +14,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.page.SmallEnglishUnderstandPager;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,9 +50,7 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
     public UnderstandBll(Activity activity, LiveAndBackDebug liveAndBackDebug) {
         this.activity = activity;
         this.liveAndBackDebug = liveAndBackDebug;
-        mLogtf = new LogToFile(activity, TAG, new File(Environment.getExternalStorageDirectory(),
-                "parentsmeeting/log/" + TAG
-                        + ".txt"));
+        mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
     }
 

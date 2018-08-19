@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message;
 
 import android.app.Activity;
-import android.os.Environment;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -50,7 +49,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,8 +95,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         super(context, liveBll);
         this.mLiveType = liveBll.getLiveType();
         mLiveId = liveBll.getLiveId();
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mRoomAction = new LiveMessageBll(context, mLiveType);
     }
 

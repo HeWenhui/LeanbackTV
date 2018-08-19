@@ -2,17 +2,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.graphics.Typeface;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.AbsoluteSizeSpan;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,7 +22,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackage
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
-import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -50,8 +42,7 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
     boolean isLive;
     private LiveGetInfo mGetInfo;
     public PScienceRedPackageBll(Activity activity ,LiveGetInfo liveGetInfo, boolean isLive) {
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         this.activity = activity;
         this.isLive = isLive;

@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.rollcall.business;
 
 import android.app.Activity;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.ViewGroup;
@@ -29,8 +28,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONObject;
-
-import java.io.File;
 
 /**
  * @author linyuqiang
@@ -119,9 +116,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
     private PrimaryScienceSignPager mPrimaryScienceSignPager;
 
     public RollCallBll(Activity activity) {
-        mLogtf = new LogToFile(activity, TAG, new File(Environment.getExternalStorageDirectory(),
-                "parentsmeeting/log/" + TAG
-                        + ".txt"));
+        mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
         this.activity = activity;
     }

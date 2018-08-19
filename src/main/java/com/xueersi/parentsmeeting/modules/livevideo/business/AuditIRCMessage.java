@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -16,7 +15,6 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.List;
 import java.util.Vector;
 
@@ -58,8 +56,7 @@ public class AuditIRCMessage {
         this.mChannel = channel;
         this.mNickname = nickname;
         this.liveAndBackDebug = liveAndBackDebug;
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         mLogtf.d("AuditIRCMessage:channel=" + channel + ",login=" + login + ",nickname=" + nickname);
         enterTime = System.currentTimeMillis();

@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
 import android.graphics.Rect;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -180,8 +179,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public QuestionBll(Activity activity, String stuCouId) {
         ProxUtil.getProxUtil().put(activity, QuestionStatic.class, this);
         ProxUtil.getProxUtil().put(activity, QuestionShowReg.class, this);
-        mLogtf = new LogToFile(activity, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
         this.activity = activity;
         this.stuCouId = stuCouId;

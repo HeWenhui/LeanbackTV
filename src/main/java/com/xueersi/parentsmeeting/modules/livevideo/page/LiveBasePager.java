@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
-import android.os.Environment;
 import android.view.View;
 import android.view.ViewParent;
 
@@ -14,7 +13,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
-import java.io.File;
 import java.util.Map;
 
 /**
@@ -67,8 +65,7 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     @Override
     protected void init(Context context) {
         super.init(context);
-        mLogtf = new LogToFile(context, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(context, TAG);
         AllLiveBasePagerInter allLiveBasePagerInter = ProxUtil.getProxUtil().get(context, AllLiveBasePagerInter.class);
         if (allLiveBasePagerInter != null) {
             allLiveBasePagerInter.addLiveBasePager(this);

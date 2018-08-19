@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 
-import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -76,8 +74,7 @@ public class LiveVideoAction implements VideoAction {
         tvLoadingHint = mContentView.findViewById(R.id.tv_course_video_loading_content);
         ivLoading = mContentView.findViewById(R.id.iv_course_video_loading_bg);
         tvLoadingHint.setText("正在获取视频资源，请稍后");
-        mLogtf = new LogToFile(mLiveBll, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(mLiveBll, TAG);
         updateLoadingImage();
     }
 
