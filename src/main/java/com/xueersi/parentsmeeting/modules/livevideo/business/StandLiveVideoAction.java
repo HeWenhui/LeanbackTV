@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -25,6 +27,8 @@ public class StandLiveVideoAction extends LiveVideoAction {
     private static final String TAG = "StandLiveVideoAction";
     private RelativeLayout rlFirstBackgroundContent;
     private FrameLayout flFirstBackgroundContent;
+    private LinearLayout ll_course_video_loading;
+    private ImageView iv_course_video_loading_bg;
     boolean isSetFirstParam = true;
     protected String mode = LiveTopic.MODE_TRANING;
     /** 老师不在直播间背景图 */
@@ -39,6 +43,8 @@ public class StandLiveVideoAction extends LiveVideoAction {
         this.mode = mode;
         flFirstBackgroundContent = mContentView.findViewById(R.id.fl_course_video_first_content);
         rlFirstBackgroundContent = mContentView.findViewById(R.id.rl_course_video_first_content);
+        ll_course_video_loading = mContentView.findViewById(R.id.ll_course_video_loading);
+        iv_course_video_loading_bg = mContentView.findViewById(R.id.iv_course_video_loading_bg);
     }
 
     @Override
@@ -90,6 +96,12 @@ public class StandLiveVideoAction extends LiveVideoAction {
                 LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
                 LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
             }
+            ll_course_video_loading.setVisibility(View.GONE);
+            iv_course_video_loading_bg.setVisibility(View.GONE);
+            if (dwTeacherNotpresenBefore == null) {
+                dwTeacherNotpresenBefore = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_before);
+            }
+            rlFirstBackgroundView.setBackgroundDrawable(dwTeacherNotpresenBefore);
         } else {
             if (first) {
                 //辅导模式去掉外层的FrameLayout
@@ -121,6 +133,9 @@ public class StandLiveVideoAction extends LiveVideoAction {
                 LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
                 Loger.d(TAG, "setFirstParam:rightMargin=" + rightMargin);
             }
+            ll_course_video_loading.setVisibility(View.VISIBLE);
+            iv_course_video_loading_bg.setVisibility(View.VISIBLE);
+            rlFirstBackgroundView.setBackgroundColor(0xff000000);
         }
         //Loger.e(TAG, "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
     }
@@ -141,6 +156,12 @@ public class StandLiveVideoAction extends LiveVideoAction {
                             flFirstBackgroundContent.addView(childView);
                         }
                     }
+                    iv_course_video_loading_bg.setVisibility(View.GONE);
+                    ll_course_video_loading.setVisibility(View.GONE);
+//                    if (dwTeacherNotpresenBefore == null) {
+//                        dwTeacherNotpresenBefore = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_before);
+//                    }
+//                    rlFirstBackgroundView.setBackgroundDrawable(dwTeacherNotpresenBefore);
                 } else {
                     //辅导模式去掉外层的FrameLayout
                     ViewGroup group = (ViewGroup) rlFirstBackgroundView.getParent();
@@ -151,7 +172,11 @@ public class StandLiveVideoAction extends LiveVideoAction {
                             rlFirstBackgroundContent.addView(childView);
                         }
                     }
+                    iv_course_video_loading_bg.setVisibility(View.VISIBLE);
+                    ll_course_video_loading.setVisibility(View.VISIBLE);
+                    rlFirstBackgroundView.setBackgroundColor(0xff000000);
                 }
+                setFirstParam(LiveVideoPoint.getInstance());
                 StandLiveVideoAction.super.onModeChange(mode, isPresent);
             }
         });
@@ -222,6 +247,10 @@ public class StandLiveVideoAction extends LiveVideoAction {
             }
         } else {
             Loger.d(TAG, "setTeacherNotpresent:mode=training");
+            if (view == rlFirstBackgroundView) {
+                rlFirstBackgroundView.setBackgroundColor(0xff000000);
+                return;
+            }
             if (dwTeacherNotpresen == null) {
                 dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_normal);
             }

@@ -89,11 +89,11 @@
         </RelativeLayout>
 
         <!-- 老师不再直播间 -->
-        <ImageView
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.VisibilitImageView
             android:id="@id/iv_course_video_teacher_notpresent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"></ImageView>
+            android:visibility="gone" />
         <!-- 接麦老师视频界面位置 -->
         <RelativeLayout
             android:id="@id/rl_course_video_live_agora_content"

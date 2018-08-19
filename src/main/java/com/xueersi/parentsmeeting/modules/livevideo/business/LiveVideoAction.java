@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -253,7 +254,7 @@ public class LiveVideoAction implements VideoAction {
 
     @Override
     public void onModeChange(final String mode, final boolean isPresent) {
-        mHandler.post(new Runnable() {
+        Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
@@ -270,7 +271,12 @@ public class LiveVideoAction implements VideoAction {
                     }
                 }
             }
-        });
+        };
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            runnable.run();
+        }else {
+            mHandler.post(runnable);
+        }
     }
 
     @Override
