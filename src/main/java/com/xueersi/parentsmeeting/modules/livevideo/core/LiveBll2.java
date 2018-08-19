@@ -941,7 +941,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         if (mIRCMessage != null) {
             mIRCMessage.destory();
         }
-        liveUidRx.onDestory();
+        if (liveUidRx != null) {
+            liveUidRx.onDestory();
+        }
     }
 
     /////////////////////////////  播放相关 //////////////////////////////////

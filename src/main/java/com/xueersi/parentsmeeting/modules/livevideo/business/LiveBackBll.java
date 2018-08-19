@@ -120,6 +120,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         mCourseHttpResponseParser = new LivePlayBackHttpResponseParser();
         allLiveBasePagerIml = new AllLiveBasePagerIml(activity);
         showQuestion = new LiveShowQuestion();
+        liveUidRx = new LiveUidRx(activity, false);
     }
 
     public int getLiveType() {
@@ -193,7 +194,6 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         } catch (Exception e) {
             logger.e("onCreate", e);
         }
-        liveUidRx = new LiveUidRx(activity, false);
         liveUidRx.setLiveGetInfo(liveGetInfo);
         liveUidRx.onCreate();
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
@@ -498,7 +498,9 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         allLiveBasePagerIml.onDestory();
         businessShareParamMap.clear();
         liveBackBaseBlls.clear();
-        liveUidRx.onDestory();
+        if (liveUidRx != null) {
+            liveUidRx.onDestory();
+        }
     }
 
     public void onPausePlayer() {
