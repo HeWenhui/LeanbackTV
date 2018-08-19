@@ -142,7 +142,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
 
     @Override
     public void rePlay(boolean modechange) {
-        if (mGetInfo == null) {//上次初始化尚未完成
+        if (mGetInfo == null || liveVideoAction == null) {//上次初始化尚未完成
             return;
         }
         liveVideoAction.rePlay(modechange);

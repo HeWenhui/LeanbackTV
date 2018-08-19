@@ -389,7 +389,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      */
     @Override
     public void rePlay(boolean modechange) {
-        if (mGetInfo == null) {//上次初始化尚未完成
+        if (mGetInfo == null || liveVideoAction == null) {//上次初始化尚未完成
             return;
         }
         VideoChatEvent videoChatEvent = ProxUtil.getProxUtil().get(activity, VideoChatEvent.class);

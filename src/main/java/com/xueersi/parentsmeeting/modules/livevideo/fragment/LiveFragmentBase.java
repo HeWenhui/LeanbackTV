@@ -327,7 +327,9 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
         @Override
         protected void onPlayError() {
-            liveFragmentBase.liveVideoAction.onPlayError();
+            if (liveFragmentBase.liveVideoAction != null) {
+                liveFragmentBase.liveVideoAction.onPlayError();
+            }
         }
 
         @Override
@@ -345,7 +347,9 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     }
 
     public void setFirstBackgroundVisible(int visible) {
-        liveVideoAction.setFirstBackgroundVisible(visible);
+        if (liveVideoAction != null) {
+            liveVideoAction.setFirstBackgroundVisible(visible);
+        }
     }
 
     protected abstract boolean initData();
@@ -354,7 +358,9 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     @Override
     public void onTeacherNotPresent(final boolean isBefore) {
-        liveVideoAction.onTeacherNotPresent(isBefore);
+        if (liveVideoAction != null) {
+            liveVideoAction.onTeacherNotPresent(isBefore);
+        }
     }
 
     @Override
@@ -373,16 +379,23 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         userOnline.setGetInfo(getInfo);
         userOnline.start();
         mGetInfo = getInfo;
-        liveVideoAction.onLiveInit(getInfo);
+        if (liveVideoAction != null) {
+            liveVideoAction.onLiveInit(getInfo);
+        }
     }
 
     @Override
     public void onClassTimoOut() {
-        liveVideoAction.onClassTimoOut();
+        if (liveVideoAction != null) {
+            liveVideoAction.onClassTimoOut();
+        }
     }
 
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
+        if (liveVideoAction == null) {
+            return;
+        }
         liveVideoAction.onLiveStart(server, cacheData, modechange);
         mLiveVideoBll.onLiveStart(server, cacheData, modechange);
         AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
@@ -396,12 +409,16 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     @Override
     public void onLiveDontAllow(final String msg) {
-        liveVideoAction.onLiveDontAllow(msg);
+        if (liveVideoAction != null) {
+            liveVideoAction.onLiveDontAllow(msg);
+        }
     }
 
     @Override
     public void onLiveError(ResponseEntity responseEntity) {
-        liveVideoAction.onLiveError(responseEntity);
+        if (liveVideoAction != null) {
+            liveVideoAction.onLiveError(responseEntity);
+        }
     }
 
     @Override
