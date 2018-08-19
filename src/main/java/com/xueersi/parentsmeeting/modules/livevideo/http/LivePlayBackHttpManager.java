@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 
 import com.xueersi.common.base.BaseHttpBusiness;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.http.HttpCallBack;
@@ -166,7 +167,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("operateId", operateId);
         params.addBodyParam("termId", termId);
         params.addBodyParam("liveId", liveId);
-        sendPost("http://laoshi.xueersi.com/science/AutoLive/receiveGold", params, requestCallBack);
+        sendPost(AppConfig.HTTP_HOST + "/science/AutoLive/receiveGold", params, requestCallBack);
     }
 
     public void getLiveLectureMsgs(String enstuId, String keyName, int count, String start, int sort,
@@ -245,7 +246,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("classId", classId);
         params.addBodyParam("start", start.toString());
-        sendPost("http://laoshi.xueersi.com/science/AutoLive/getLiveCourseMsgs", params, requestCallBack);
+        sendPost(AppConfig.HTTP_HOST + "/science/AutoLive/getLiveCourseMsgs", params, requestCallBack);
 
     }
 
@@ -254,7 +255,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         setDefaultParameter(params);
-        sendPost("http://laoshi.xueersi.com/LiveLecture/getAdCase", params, requestCallBack);
+        sendPost(AppConfig.HTTP_HOST + "/LiveLecture/getAdCase", params, requestCallBack);
 
     }
 
@@ -263,7 +264,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("orderId", termId);
         params.addBodyParam("liveId", liveId);
-        sendPost("http://laoshi.xueersi.com/science/AutoLive/learnFeedback", params, requestCallBack);
+        sendPost(AppConfig.HTTP_HOST + "/science/AutoLive/learnFeedback", params, requestCallBack);
     }
 
     /**
