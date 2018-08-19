@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -90,6 +91,14 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 
                 }
             });
+        }
+    }
+
+    @Override
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
+        super.onModeChange(oldMode, mode, isPresent);
+        if (mGetInfo.getPattern() == 2) {
+            onTitleShow(true);
         }
     }
 
