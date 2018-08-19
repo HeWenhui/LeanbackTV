@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView;
 import com.xueersi.common.business.UserBll;
@@ -268,7 +269,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         super(context, obj, isNewView);
         this.mRolePlayBll = rolePlayerBll;
         mLiveGetInfo = liveGetInfo;
-        dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/liveSpeech/");
+        dir = LiveCacheFile.geCacheFile(context, "liveSpeech");
         if (!dir.exists()) {
             dir.mkdirs();
         }
