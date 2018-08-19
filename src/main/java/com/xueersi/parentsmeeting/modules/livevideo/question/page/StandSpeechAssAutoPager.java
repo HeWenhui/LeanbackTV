@@ -865,8 +865,16 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         for (int i = 0; i < ("" + score).length(); i++) {
             char c = ("" + score).charAt(i);
             ImageView imageView = new ImageView(mContext);
-            String name = "bg_livevideo_speecteval_result_number_" + c;
-            imageView.setImageResource(mContext.getResources().getIdentifier(name, "drawable", mContext.getPackageName()));
+            int res = -1;
+            if (c - '0' < scoreRes.length) {
+                res = scoreRes[c - '0'];
+            }
+            if (res == -1) {
+                String name = "bg_livevideo_speecteval_result_number_" + c;
+                imageView.setImageResource(mContext.getResources().getIdentifier(name, "drawable", mContext.getPackageName()));
+            } else {
+                imageView.setImageResource(res);
+            }
             llLivevideoSpeectevalResultMine.addView(imageView);
         }
         ImageView imageViewScore = new ImageView(mContext);
