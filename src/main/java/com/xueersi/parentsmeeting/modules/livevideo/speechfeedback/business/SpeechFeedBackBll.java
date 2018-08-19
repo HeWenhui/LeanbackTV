@@ -36,6 +36,7 @@ import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.analytics.umsagent.DeviceInfo;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -205,10 +206,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                     long time = System.currentTimeMillis();
                     mWorkerThread = new WorkerThread(activity, stuid, true);
                     try {
-                        File alldir = activity.getExternalFilesDir(Environment.DIRECTORY_ALARMS + "/speechfeed");
-                        if (alldir == null) {
-                            alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/speechfeed/");
-                        }
+                        File alldir = LiveCacheFile.geCacheFile(activity, "speechfeed");
                         if (!alldir.exists()) {
                             alldir.mkdirs();
                         }
