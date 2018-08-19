@@ -899,10 +899,12 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             if (lastcurrent != current) {
                 Loger.i(TAG, "remotecurrentDuration:current=" + current + ",duration=" +
                         duration);
+                mLogtf.debugSave("remotecurrentDuration:current=" + current + ",duration=" +
+                        duration);
             } else {
                 times++;
                 if (times > 15) {
-                    Loger.i(TAG, "remotecurrentDuration:times10:current=" + current);
+                    mLogtf.i("remotecurrentDuration:times10:current=" + current);
                     try {
                         AudioPlayer.stop();
                     } catch (Exception e) {
