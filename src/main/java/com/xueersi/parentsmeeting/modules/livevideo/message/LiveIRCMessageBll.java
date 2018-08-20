@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message;
 
 import android.app.Activity;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -173,10 +174,17 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     //mRoomAction.onTeacherModeChange(mode,false);
                 }
                 if (mGetInfo.getPattern() == 2) {
+                    View view = mRoomAction.getView();
+                    if (view != null) {
+                        view.setVisibility(View.INVISIBLE);
+                    }
                     if (LiveTopic.MODE_CLASS.equals(mode)) {
                         mRoomAction.initViewLiveStand(mRootView);
                     } else {
                         mRoomAction.initViewLive(mRootView);
+                    }
+                    if (view != null) {
+                        view.setVisibility(View.VISIBLE);
                     }
                 }
             }
