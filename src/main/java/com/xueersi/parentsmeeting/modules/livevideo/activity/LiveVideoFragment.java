@@ -219,6 +219,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         courseId = intent.getStringExtra("courseId");
         vStuCourseID = intent.getStringExtra("vStuCourseID");
         mVSectionID = intent.getStringExtra("vSectionID");
+        LiveVideoConfig.isPrimary = intent.getBooleanExtra("isPrimary", false);
         mVideoType = MobEnumUtil.VIDEO_LIVE;
         if (TextUtils.isEmpty(mVSectionID)) {
             Toast.makeText(activity, "直播场次不存在", Toast.LENGTH_SHORT).show();

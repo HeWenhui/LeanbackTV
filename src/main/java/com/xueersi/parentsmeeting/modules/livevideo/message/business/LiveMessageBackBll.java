@@ -45,7 +45,7 @@ public class LiveMessageBackBll extends LiveBackBaseBll {
             RelativeLayout viewGroup = (RelativeLayout) liveBackVideoMessagePager.getRootView();
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewGroup.getLayoutParams();
             int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
-            if (wradio != params.width) {
+            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
                 //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;

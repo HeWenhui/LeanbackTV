@@ -111,6 +111,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putString("mode", mGetInfo.getMode());
                     bundle.putInt("isArts", mGetInfo.getIsArts());
                     bundle.putInt("pattern", mGetInfo.getPattern());
+                    bundle.putBoolean("isPrimary", LiveVideoConfig.isPrimary);
 //                if (mGetInfo.getPattern() == 2) {
 //                    StandLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle, -1);
 //                } else {

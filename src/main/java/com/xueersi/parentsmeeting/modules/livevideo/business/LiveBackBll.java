@@ -158,6 +158,16 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         }
     }
 
+    public void removeBusinessBll(LiveBackBaseBll bll) {
+        liveBackBaseBlls.remove(bll);
+        int[] categorys = bll.getCategorys();
+        if (categorys != null) {
+            for (int i = 0; i < categorys.length; i++) {
+                array.remove(categorys[i]);
+            }
+        }
+    }
+
     public void onCreate() {
         LiveGetInfo liveGetInfo = new LiveGetInfo(null);
         liveGetInfo.setId(mVideoEntity.getLiveId());
