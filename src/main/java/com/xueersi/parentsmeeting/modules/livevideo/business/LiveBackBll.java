@@ -261,6 +261,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         }
     }
 
+    @Override
     public void onOnPointClick(VideoQuestionEntity videoQuestionEntity, long position) {
         VideoQuestionEntity oldQuestionEntity = mQuestionEntity;
         mQuestionEntity = videoQuestionEntity;
