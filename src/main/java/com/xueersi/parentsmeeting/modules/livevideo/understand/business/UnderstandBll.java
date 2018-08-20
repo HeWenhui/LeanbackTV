@@ -72,11 +72,11 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
     @Override
     public void understand(final String nonce) {
 //        oldUnderstandView =
-        if (understandView != null && understandView.getParent() != null && understandView.getParent() ==
-                rlQuestionContent) {
-            removeView(rlQuestionContent, understandView);
+//        if (understandView != null && understandView.getParent() != null && understandView.getParent() ==
+//                rlQuestionContent) {
+        removeView(rlQuestionContent, understandView);
 //            rlQuestionContent.removeView(understandView);
-        }
+//        }
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "understandReceive");
         liveAndBackDebug.umsAgentDebugSys(understandEventId, mData);
@@ -86,22 +86,23 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                 RelativeLayout.LayoutParams params = null;
                 //如果不是小英
                 if (!isSmallEnglish) {
-                    if(LiveVideoConfig.isPrimary){
-                        understandView = activity.getLayoutInflater().inflate(R.layout.dialog_livevideo_primary_understand,
-                                rlQuestionContent,
-                                false);
-                        understandView.findViewById(R.id.iv_understand_close).setOnClickListener(new View.OnClickListener() {
+                    if (LiveVideoConfig.isPrimary) {
+                        understandView = activity.getLayoutInflater().inflate(
+                                R.layout.dialog_livevideo_primary_understand, rlQuestionContent, false);
+                        understandView.findViewById(R.id.iv_understand_close).setOnClickListener(new View
+                                .OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 removeView(rlQuestionContent, understandView);
                             }
                         });
-                    }else{
+                    } else {
                         understandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,
                                 rlQuestionContent,
                                 false);
-                        ((TextView) understandView.findViewById(R.id.tv_livevideo_under_user)).setText(mGetInfo.getStuName
-                                () + " 你好");
+                        ((TextView) understandView.findViewById(R.id.tv_livevideo_under_user)).setText(mGetInfo
+                                .getStuName
+                                        () + " 你好");
                     }
                     understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
                             (listener);
@@ -116,45 +117,31 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                     params.addRule(RelativeLayout.CENTER_IN_PARENT);
 
                 } else {
-                    smallEnglishUnderstandPager = new SmallEnglishUnderstandPager(activity);
-                    understandView = smallEnglishUnderstandPager.getRootView();
+                    if (smallEnglishUnderstandPager == null) {
+                        smallEnglishUnderstandPager = new SmallEnglishUnderstandPager(activity);
+                        understandView = smallEnglishUnderstandPager.getRootView();
 
-                    smallEnglishUnderstandPager.setListener(new SmallEnglishUnderstandPager.UnderStandListener() {
+                        smallEnglishUnderstandPager.setListener(new SmallEnglishUnderstandPager.UnderStandListener() {
 
-                        @Override
-                        public void closeListener() {
-                            removeView(rlQuestionContent, understandView);
-                        }
+                            @Override
+                            public void closeListener() {
+                                removeView(rlQuestionContent, understandView);
+                            }
 
-                        @Override
-                        public void underStandListener(boolean underStand) {
-                            smallEnglishUnderstandOnclick(underStand);
-                        }
+                            @Override
+                            public void underStandListener(boolean underStand) {
+                                smallEnglishUnderstandOnclick(underStand);
+                            }
 
-                        @Override
-                        public void noUnderStandListener(boolean noUnderStand) {
-                            smallEnglishUnderstandOnclick(noUnderStand);
-                        }
-                    });
-
-//                    understandView.findViewById(R.id.iv_livevideo_small_english_understand).setOnClickListener
-//                            (smallEnglishListener);
-//                    understandView.findViewById(R.id.iv_livevideo_small_english_no_understand).setOnClickListener
-//                            (smallEnglishListener);
-//                    understandView.findViewById(R.id.iv_livevideo_small_english_close).setOnClickListener
-//                            (smallEnglishCloseListener);
+                            @Override
+                            public void noUnderStandListener(boolean noUnderStand) {
+                                smallEnglishUnderstandOnclick(noUnderStand);
+                            }
+                        });
+                    }
                     params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                             .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     //在中间位置显示
-//                    LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
-//
-//                    Drawable drawable = activity.getResources().getDrawable(R.drawable
-//                            .bg_livevideo_small_english_understand_board);
-//                    int draweight = drawable.getIntrinsicWidth();
-//
-//                    params.leftMargin = (liveVideoPoint.x3 - liveVideoPoint.x2 - draweight) / 2;
-//
-//                    params.addRule(RelativeLayout.CENTER_VERTICAL);
                 }
                 rlQuestionContent.getHandler().removeCallbacks(closeRedPackage);
                 rlQuestionContent.addView(understandView, params);
@@ -210,13 +197,6 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
             removeView(rlQuestionContent, understandView);
         }
     };
-//    View.OnClickListener smallEnglishListener = new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            boolean isUnderstand = v.getId() == R.id.iv_livevideo_small_english_understand;
-//
-//        }
-//    };
 
     private void smallEnglishUnderstandOnclick(boolean isUnderstand) {
         mLogtf.d("understand:isUnderstand=" + isUnderstand);
@@ -234,13 +214,6 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
 
         removeView(rlQuestionContent, understandView);
     }
-
-//    private View.OnClickListener smallEnglishCloseListener = new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            removeView(rlQuestionContent, understandView);
-//        }
-//    };
 
     private void removeView(ViewGroup viewParent, View view) {
         if (view != null && viewParent != null && view.getParent() == viewParent) {
