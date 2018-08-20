@@ -167,7 +167,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("operateId", operateId);
         params.addBodyParam("termId", termId);
         params.addBodyParam("liveId", liveId);
-        sendPost(AppConfig.HTTP_HOST + "/science/AutoLive/receiveGold", params, requestCallBack);
+        sendPost(LiveVideoConfig.URL_AUTO_LIVE_RECEIVE_GOLD, params, requestCallBack);
     }
 
     public void getLiveLectureMsgs(String enstuId, String keyName, int count, String start, int sort,
@@ -246,8 +246,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("classId", classId);
         params.addBodyParam("start", start.toString());
-        sendPost(AppConfig.HTTP_HOST + "/science/AutoLive/getLiveCourseMsgs", params, requestCallBack);
-
+        sendPost(LiveVideoConfig.URL_AUTO_LIVE_MSGS, params, requestCallBack);
     }
 
     // 04.11 获取讲座直播回放中更多课程的广告信息
@@ -255,8 +254,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         setDefaultParameter(params);
-        sendPost(AppConfig.HTTP_HOST + "/LiveLecture/getAdCase", params, requestCallBack);
-
+        sendPost(LiveVideoConfig.URL_LEC_AD_CASE, params, requestCallBack);
     }
 
     // 获取体验课学习报告
@@ -264,7 +262,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("orderId", termId);
         params.addBodyParam("liveId", liveId);
-        sendPost(AppConfig.HTTP_HOST + "/science/AutoLive/learnFeedback", params, requestCallBack);
+        sendPost(LiveVideoConfig.URL_AUTO_LIVE_FEAD_BACK, params, requestCallBack);
     }
 
     /**

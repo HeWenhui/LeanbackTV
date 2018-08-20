@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 
 /**
@@ -11,26 +10,27 @@ import com.xueersi.common.entity.EnglishH5Entity;
  * Created by Administrator on 2017/3/31.
  */
 public class LiveVideoConfig {
+    public static String HTTP_HOST = "https://laoshi.xueersi.com";
     /** 直播辅导用户在线心跳 */
-    public final static String URL_LIVE_TUTORIAL_USER_ONLINE = AppConfig.HTTP_HOST + "/LiveTutorial/userOnline";
+    public final static String URL_LIVE_TUTORIAL_USER_ONLINE = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/userOnline";
     /** 公开直播用户在线心跳 */
-    public final static String URL_LIVE_LECTURE_USER_ONLINE = AppConfig.HTTP_HOST + "/LiveLecture/userOnline";
+    public final static String URL_LIVE_LECTURE_USER_ONLINE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/userOnline";
     /** 直播辅导领取金币 */
-    public final static String URL_LIVE_TUTORIAL_GOLD = AppConfig.HTTP_HOST + "/LiveTutorial/receiveGold";
+    public final static String URL_LIVE_TUTORIAL_GOLD = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/receiveGold";
     /** 公开直播领取金币 */
-    public final static String URL_LIVE_LECTURE_GOLD = AppConfig.HTTP_HOST + "/LiveLecture/receiveGold";
+    public final static String URL_LIVE_LECTURE_GOLD = LiveVideoConfig.HTTP_HOST + "/LiveLecture/receiveGold";
     /** 直播辅导献花 */
-    public final static String URL_LIVE_TUTORIAL_PRAISE_TEACHER = AppConfig.HTTP_HOST + "/LiveTutorial/praiseTeacher";
+    public final static String URL_LIVE_TUTORIAL_PRAISE_TEACHER = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/praiseTeacher";
     /** 直播讲座献花 */
-    public final static String URL_LIVE_LECTURE_PRAISE_TEACHER = AppConfig.HTTP_HOST + "/LiveLecture/praiseTeacher";
+    public final static String URL_LIVE_LECTURE_PRAISE_TEACHER = LiveVideoConfig.HTTP_HOST + "/LiveLecture/praiseTeacher";
     /** 得到语音评测试题 */
-    public final static String URL_LIVE_GET_SPEECHEVAL = AppConfig.HTTP_HOST + "/StudyCenter/getSpeechEvalInfo";
+    public final static String URL_LIVE_GET_SPEECHEVAL = LiveVideoConfig.HTTP_HOST + "/StudyCenter/getSpeechEvalInfo";
     /** 发送语音评测答案 */
-    public final static String URL_LIVE_SEND_SPEECHEVAL = AppConfig.HTTP_HOST + "/StudyCenter/submitSpeechEval";
-    public final static String URL_LIVE_TUTORIAL_SUBMIT_TEST_ANSWER = AppConfig.HTTP_HOST +
+    public final static String URL_LIVE_SEND_SPEECHEVAL = LiveVideoConfig.HTTP_HOST + "/StudyCenter/submitSpeechEval";
+    public final static String URL_LIVE_TUTORIAL_SUBMIT_TEST_ANSWER = LiveVideoConfig.HTTP_HOST +
             "/LiveTutorial/submitTestAnswer";
     /** 公开直播提交测试题 */
-    public final static String URL_LIVE_LECTURE_SUBMIT_TEST_ANSWER = AppConfig.HTTP_HOST + "/LiveLecture/submitTestAnswer";
+    public final static String URL_LIVE_LECTURE_SUBMIT_TEST_ANSWER = LiveVideoConfig.HTTP_HOST + "/LiveLecture/submitTestAnswer";
 
     /** 播放器异常日志 */
     public final static String URL_LIVE_ON_LOAD_LOGS = "http://netlive.xesv5.com/10011.gif";
@@ -69,29 +69,29 @@ public class LiveVideoConfig {
     /** 语音评测地址 */
     public static String SPEECH_URL = "https://live.xueersi.com/LivePlayBack/speechEvalResult/";
     /** 获取学习报告-讲座 */
-    public final static String URL_LIVE_GET_FEED_BACK = AppConfig.HTTP_HOST + "/LiveLecture/getFeedback";
+    public final static String URL_LIVE_GET_FEED_BACK = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getFeedback";
     /** 获取红包金币 */
-    public final static String URL_STUDY_GET_RED_PACKET = AppConfig.HTTP_HOST + "/MyCourse/receiveLiveTutoringGold";
+    public final static String URL_STUDY_GET_RED_PACKET = LiveVideoConfig.HTTP_HOST + "/MyCourse/receiveLiveTutoringGold";
     /** 直播回放提交答案地址 */
-    public final static String URL_STUDY_SAVE_TEST_RECORD = AppConfig.HTTP_HOST +
+    public final static String URL_STUDY_SAVE_TEST_RECORD = LiveVideoConfig.HTTP_HOST +
             "/MyCourse/submitLiveTutoringTestAnswer";
 
     /** 播放器数据初始化 */
-    public final static String URL_LIVE_GET_INFO = AppConfig.HTTP_HOST + "/LiveCourse/getInfo";
+    public final static String URL_LIVE_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveCourse/getInfo";
     /** 直播辅导播放器数据初始化 */
-    public final static String URL_LIVE_TUTORIAL_GET_INFO = AppConfig.HTTP_HOST + "/LiveTutorial/initInfo";
+    public final static String URL_LIVE_TUTORIAL_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/initInfo";
     /** 公开直播播放器数据初始化 */
-    public final static String URL_LIVE_LECTURE_GET_INFO = AppConfig.HTTP_HOST + "/LiveLecture/initInfo";
+    public final static String URL_LIVE_LECTURE_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveLecture/initInfo";
 
     /** 直播星星-讲座 */
-    public final static String URL_LIVE_LEC_SETSTAR = AppConfig.HTTP_HOST + "/LiveLecture/setStuStarCount";
+    public final static String URL_LIVE_LEC_SETSTAR = LiveVideoConfig.HTTP_HOST + "/LiveLecture/setStuStarCount";
     /** 提交互动题答案 */
-    public final static String URL_PUBLIC_LIVE_COURSE_SUBMIT_QUESTION = AppConfig.HTTP_HOST +
+    public final static String URL_PUBLIC_LIVE_COURSE_SUBMIT_QUESTION = LiveVideoConfig.HTTP_HOST +
             "/LiveLecture/submitTestAnswerForPlayBack";
-    public final static String URL_PUBLIC_LIVE_COURSE_GET_MESSAGE = AppConfig.HTTP_HOST +
+    public final static String URL_PUBLIC_LIVE_COURSE_GET_MESSAGE = LiveVideoConfig.HTTP_HOST +
             "/IrcMessage/getLiveLectureMsgs";
     /** 得到广告信息 */
-    public final static String URL_LIVE_GET_LEC_AD = AppConfig.HTTP_HOST + "/LiveLecture/getAdOnLL";
+    public final static String URL_LIVE_GET_LEC_AD = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getAdOnLL";
 
     /** 直播旁听统计 */
     public static String LIVE_VIDEO_AUDIO_LIVE = "live_video_audit_live";
@@ -175,25 +175,33 @@ public class LiveVideoConfig {
     public static String LIVE_SPEECH_BULLETSCREEN = "voice_barrage";
 
     //  体验课互动题提交答案
-    public static String LIVE_EXPE_SUBMIT = AppConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
+    public static String LIVE_EXPE_SUBMIT = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
     /** 获取标记点列表 */
-    public static String URL_LIVE_GET_MARK_POINTS = AppConfig.HTTP_HOST + "/science/LiveCourse/getMarkpoint";
+    public static String URL_LIVE_GET_MARK_POINTS = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/getMarkpoint";
     /** 保存标记点 */
-    public static String URL_LIVE_SET_MARK_POINTS = AppConfig.HTTP_HOST + "/science/LiveCourse/setMarkpoint";
+    public static String URL_LIVE_SET_MARK_POINTS = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/setMarkpoint";
     /** 删除标记点 */
-    public static String URL_LIVE_DELETE_MARK_POINTS = AppConfig.HTTP_HOST + "/science/LiveCourse/deleteMarkpoint";
+    public static String URL_LIVE_DELETE_MARK_POINTS = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/deleteMarkpoint";
     /** 体验课播放器上传心跳时间 */
-    public static String URL_EXPERIENCE_LIVE_ONLINETIME = AppConfig.HTTP_HOST + "/science/AutoLive/visitTime";
+    public static String URL_EXPERIENCE_LIVE_ONLINETIME = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/visitTime";
     /** 回放式体验课上传心跳时间 */
-    public static String URL_PLAYBACKPLAYTIME = AppConfig.HTTP_HOST + "/ExpPlayback/visitTime";
+    public static String URL_PLAYBACKPLAYTIME = LiveVideoConfig.HTTP_HOST + "/ExpPlayback/visitTime";
     /** RolePlay请求对话信息 */
-    public static String URL_ROLEPLAY_TESTINFOS = AppConfig.HTTP_HOST + "/libarts/LiveCourse/getRolePlay";
+    public static String URL_ROLEPLAY_TESTINFOS = LiveVideoConfig.HTTP_HOST + "/libarts/LiveCourse/getRolePlay";
     /** 提交接口 */
-    public static String URL_ROLEPLAY_RESULT = AppConfig.HTTP_HOST + "/libarts/LiveCourse/submitRolePlay";
+    public static String URL_ROLEPLAY_RESULT = LiveVideoConfig.HTTP_HOST + "/libarts/LiveCourse/submitRolePlay";
     /** 讲座直播获取更多课程 */
-    public static String URL_LECTURELIVE_MORE_COURSE = AppConfig.HTTP_HOST + "/LiveLecture/getAdCase";
+    public static String URL_LECTURELIVE_MORE_COURSE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getAdCase";
     /** 获取时时间戳 */
-    public static String URL_LIVE_GET_CURTIME = AppConfig.HTTP_HOST + "/science/LiveCourse/getCurTimestamp";
+    public static String URL_LIVE_GET_CURTIME = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/getCurTimestamp";
+    /** 获取体验直播课红包 */
+    public static String URL_AUTO_LIVE_RECEIVE_GOLD = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/receiveGold";
+    /** 获取体验课聊天记录 */
+    public static String URL_AUTO_LIVE_MSGS = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/getLiveCourseMsgs";
+    /** 获取讲座直播回放中更多课程的广告信息 */
+    public static String URL_LEC_AD_CASE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getAdCase";
+    /** 获取体验课学习报告 */
+    public static String URL_AUTO_LIVE_FEAD_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/learnFeedback";
     /** 直播云平台日志统计 */
     public static String URL_CDN_LOG = "http://log.xescdn.com/log";
     /** 更多课程数量的记录 */
