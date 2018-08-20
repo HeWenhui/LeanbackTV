@@ -164,6 +164,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
     public void setGetInfo(LiveGetInfo mGetInfo) {
         this.mGetInfo = mGetInfo;
+        isTeamPkAllowed = mGetInfo != null && "1".equals(mGetInfo.getIsAllowTeamPk());
     }
 
     public void setIse(SpeechEvaluatorUtils ise) {

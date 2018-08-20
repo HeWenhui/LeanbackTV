@@ -75,13 +75,16 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private EnglishH5Entity englishH5Entity;
     private String mLoadUrls;
     private String releasedPageInfos;
+    private boolean allowTeamPk;
 
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
         mEnglishH5CoursewareBll = englishH5CoursewareBll;
     }
 
-    public EnglishH5CoursewareX5Pager(Context context, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, String isShowRanks, boolean IS_SCIENCE) {
+    public EnglishH5CoursewareX5Pager(Context context, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
+                                      final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose,
+                                      String isShowRanks, boolean IS_SCIENCE,boolean allowTeamPk) {
         super(context);
         this.liveId = liveId;
         this.englishH5Entity = englishH5Entity;
@@ -93,6 +96,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         this.nonce = nonce;
         this.isShowRanks = isShowRanks;
         this.IS_SCIENCE = IS_SCIENCE;
+        this.allowTeamPk = allowTeamPk;
         LiveVideoConfig.englishH5Entity = englishH5Entity;
         initWebView();
         setErrorTip("H5课件加载失败，请重试");
@@ -387,7 +391,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             }
             loadUrl += "&isTowall=" + isShowRanks;
             Loger.i(TAG, "initData:loadUrl=" + loadUrl);
-            loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
+            loadUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
             loadUrl(loadUrl);
             Loger.e(TAG, "======> loadUrl:" + loadUrl);
             reloadurl = loadUrl;

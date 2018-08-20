@@ -228,6 +228,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void setLiveGetInfo(LiveGetInfo liveGetInfo) {
         this.liveGetInfo = liveGetInfo;
+        isTeamPkAllowed = liveGetInfo != null &&  "1".equals(liveGetInfo.getIsAllowTeamPk());
     }
 
     public void setIse(SpeechEvaluatorUtils ise) {
@@ -504,7 +505,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this, liveGetInfo
                                 .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
                                 liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
-                                videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), IS_SCIENCE, stuCouId);
+                                videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), IS_SCIENCE, stuCouId,
+                                "1".equals(liveGetInfo.getIsAllowTeamPk()));
                         questionWebPager.setLivePagerBack(QuestionBll.this);
                         rlQuestionContent.addView(questionWebPager.getRootView());
                         QuestionBll.this.questionWebPager = questionWebPager;

@@ -68,10 +68,11 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private int isTeamPkRoom; //是否是 teampk 房间
     private int mGoldNum;
     private int mEngerNum;
+    private boolean allowTeamPk;
 
     public QuestionWebX5Pager(Context context, StopWebQuestion questionBll, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
-                              String nonce, String isShowRanks, boolean IS_SCIENCE, String stuCouId) {
+                              String nonce, String isShowRanks, boolean IS_SCIENCE, String stuCouId,boolean allowTeamPk) {
         super(context);
         this.IS_SCIENCE = IS_SCIENCE;
         this.questionBll = questionBll;
@@ -83,6 +84,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         this.nonce = nonce;
         this.isShowRanks = isShowRanks;
         this.stuCouId = stuCouId;
+        this.allowTeamPk = allowTeamPk;
         mLogtf.i("QuestionWebX5Pager:liveid=" + liveid + ",testId=" + testId);
         initData();
     }
@@ -156,7 +158,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
         examUrl += "&stuCouId=" + stuCouId;
         examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
-        examUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
+        examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
         wvSubjectWeb.loadUrl(examUrl);
         Loger.e("QuestionWebPager", "======> loadUrl:" + examUrl);
 

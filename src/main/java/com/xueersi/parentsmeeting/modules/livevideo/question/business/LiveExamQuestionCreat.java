@@ -54,7 +54,7 @@ public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
         }
         BaseExamQuestionInter examQuestionPager = new ExamQuestionX5Pager(activity, questionBll, liveGetInfo.getStuId
                 (), liveGetInfo.getUname(), liveid, videoQuestionLiveEntity, mAnswerRankBll == null ? "0" : mAnswerRankBll
-                .getIsShow(), IS_SCIENCE, liveGetInfo.getStuCouId(), 0);
+                .getIsShow(), IS_SCIENCE, liveGetInfo.getStuCouId(), "1".equals(liveGetInfo.getIsAllowTeamPk()));
         return examQuestionPager;
     }
 }

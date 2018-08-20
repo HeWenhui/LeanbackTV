@@ -1033,7 +1033,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                                         LiveStandPlayBackVideoActivity.this, "http://live.xueersi" +
                                         ".com/Live/getMultiTestPaper",
                                         userInfoEntity.getStuId(), mAppInfoEntity.getLoginUserName(), mQuestionEntity
-                                        .getvSectionID(), mQuestionEntity.getvQuestionID(), "", "0", IS_SCIENCE, stuCourId);
+                                        .getvSectionID(), mQuestionEntity.getvQuestionID(), "", "0",
+                                        IS_SCIENCE, stuCourId,false);
                                 rlQuestionContent.removeAllViews();
                                 rlQuestionContent.addView(questionWebPager.getRootView(), new LayoutParams
                                         (LayoutParams.MATCH_PARENT,
@@ -1220,7 +1221,8 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
             Message msg = mPlayVideoControlHandler.obtainMessage(SHOW_QUESTION, "showEnglishH5CoursewarePager");
             mPlayVideoControlHandler.sendMessage(msg);
             EnglishH5Entity englishH5Entity = mQuestionEntity.getEnglishH5Entity();
-            englishH5CoursewarePager = new EnglishH5CoursewareX5Pager(LiveStandPlayBackVideoActivity.this, true, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), englishH5Entity,
+            englishH5CoursewarePager = new EnglishH5CoursewareX5Pager(LiveStandPlayBackVideoActivity.this,
+                    true, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(), englishH5Entity,
                     mQuestionEntity.getvQuestionType(), "", new
                     EnglishH5CoursewareBll.OnH5ResultClose() {
                         @Override
@@ -1228,7 +1230,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                             stopEnglishH5Exam();
                         }
 
-                    }, "0", IS_SCIENCE);
+                    }, "0", IS_SCIENCE,false);
             rlQuestionContent.removeAllViews();
             rlQuestionContent.addView(englishH5CoursewarePager.getRootView(), new LayoutParams(LayoutParams
                     .MATCH_PARENT,

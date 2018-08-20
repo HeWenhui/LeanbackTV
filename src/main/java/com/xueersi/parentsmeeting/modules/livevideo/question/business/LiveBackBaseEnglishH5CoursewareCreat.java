@@ -35,7 +35,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
         wrapOnH5ResultClose.setVideoQuestionH5Entity(videoQuestionH5Entity);
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
         EnglishH5CoursewareX5Pager h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
-                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", IS_SCIENCE);
+                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", IS_SCIENCE,false);
         h5CoursewarePager.setLivePagerBack(livePagerBack);
         return h5CoursewarePager;
     }

@@ -73,9 +73,11 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     private int isTeamPkRoom;
     private int mGoldNum;
     private int mEnergyNum;
+    private boolean allowTeamPk;
 
     public ExamQuestionX5Pager(Context context, QuestionBll questionBll, String stuId
-            , String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String isShowRankList, boolean IS_SCIENCE, String stuCouId, int isTeamPkRoom) {
+            , String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String isShowRankList,
+                               boolean IS_SCIENCE, String stuCouId, boolean allowTeamPk) {
         super(context);
         this.questionBll = questionBll;
         this.livePagerBack = questionBll;
@@ -87,6 +89,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         this.nonce = videoQuestionLiveEntity.nonce;
         this.IS_SCIENCE = IS_SCIENCE;
         this.stuCouId = stuCouId;
+        this.allowTeamPk = allowTeamPk;
         mLogtf.i("ExamQuestionX5Pager:liveid=" + liveid + ",num=" + num);
         this.isShowRankList = isShowRankList;
         this.isTeamPkRoom = isTeamPkRoom;
@@ -150,7 +153,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         examUrl += "&stuCouId=" + stuCouId;
         examUrl += "&isTowall=" + isShowRankList;
         examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
-        examUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
+        examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
         Loger.e("ExamQuestionPager", "======> loadUrl:" + examUrl);
         wvSubjectWeb.loadUrl(examUrl);
         mLogtf.d("initData:examUrl=" + examUrl);
