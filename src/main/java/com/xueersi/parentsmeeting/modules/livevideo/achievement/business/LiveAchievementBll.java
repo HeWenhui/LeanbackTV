@@ -917,12 +917,14 @@ public class LiveAchievementBll implements StarInteractAction {
             iv_livevideo_starinteract_stat = (ImageView) flyStat.findViewById(R.id.iv_livevideo_starinteract_stat);
             if (type == AnimationType_STAR) {
                 endLinePoint.point = endStarPoint;
-                iv_livevideo_starinteract_stat.setImageResource(isSmallEnglish ?
-                        R.drawable.bg_livevideo_small_english_statinteract_stat_big :
-                        R.drawable.bg_livevideo_statinteract_stat_big);
+                iv_livevideo_starinteract_stat.setImageResource(isSmallEnglish
+                        ? R.drawable.bg_livevideo_small_english_statinteract_stat_big
+                        : R.drawable.bg_livevideo_statinteract_stat_big);
             } else {
                 endLinePoint.point = endGoldPoint;
-                iv_livevideo_starinteract_stat.setImageResource(R.drawable.bg_livevideo_statinteract_gold_big);
+                iv_livevideo_starinteract_stat.setImageResource(isSmallEnglish
+                        ? R.drawable.bg_livevideo_small_english_statinteract_stat_big
+                        : R.drawable.bg_livevideo_statinteract_gold_big);
             }
         }
 
