@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.video;
 
 import android.app.Activity;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -28,7 +27,6 @@ import org.json.JSONObject;
 import org.xutils.xutils.common.Callback;
 import org.xutils.xutils.ex.HttpException;
 
-import java.io.File;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
@@ -66,8 +64,7 @@ public class LiveGetPlayServer {
         this.mLiveType = mLiveType;
         this.mGetInfo = mGetInfo;
         this.mLiveTopic = liveTopic;
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         logger.d("LiveGetPlayServer:netWorkType=" + netWorkType);

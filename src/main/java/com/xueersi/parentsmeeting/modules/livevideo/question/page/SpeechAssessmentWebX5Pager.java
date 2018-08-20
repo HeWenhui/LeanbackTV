@@ -721,6 +721,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
 //                                mIsStop = false;
 //                            }
                             if (AudioPlayer.isPlaying()) {
+                                mLogtf.d("isPlaying:tip=" + tip + ",mIsStop=" + mIsStop);
                                 mIsStop = false;
                             }
                         }
@@ -858,7 +859,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             }
             remoteAudioPlayerListening = null;
             mHandler.removeCallbacks(remotePlayTimeOut);
-            mLogtf.i("remoteplayComplete:where=" + where + ",mIsStop=" + mIsStop);
+            mLogtf.i("remoteplayComplete:where=" + where + ",tip=" + tip + ",mIsStop=" + mIsStop);
             try {
                 AudioPlayer.stop();
             } catch (Exception e) {
@@ -1199,7 +1200,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             wvSubjectWeb.post(new Runnable() {
                 @Override
                 public void run() {
-                    mLogtf.i("jsStopRecordBtn:mIsRecordFinish=" + mIsRecordFinish + " / " + isRebotLast);
+                    mLogtf.i("jsStopRecordBtn:mIsRecordFinish=" + mIsRecordFinish + ",isRebotLast=" + isRebotLast);
                     if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
                         wvSubjectWeb.loadUrl("javascript: " + getCurrentJsPrefix() + ".stopRecordBtn(" +
                                 mIsRecordFinish + "," +

@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,14 +16,11 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LearnPsReportBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.PsLearnReportTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportHttp;
 import com.xueersi.ui.widget.RatingBar;
-
-import java.io.File;
 
 /**
  * Created by David on 2018/7/16.
@@ -59,8 +55,7 @@ public class LearnPsReportPager extends BasePager {
         this.liveBll = liveBll;
         this.learnReportBll = learnReportBll;
         this.activity = (Activity) context;
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(TAG);
         initData();
     }
     @Override

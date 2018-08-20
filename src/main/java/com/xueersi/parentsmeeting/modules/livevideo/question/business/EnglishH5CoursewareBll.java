@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
@@ -124,8 +123,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
     public EnglishH5CoursewareBll(Context context) {
-        logToFile = new LogToFile(context, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(context, TAG);
         this.context = context;
         liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
         ProxUtil.getProxUtil().put(context, EnglishShowReg.class, this);

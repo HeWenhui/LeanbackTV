@@ -8,9 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
@@ -25,7 +23,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -49,8 +46,7 @@ public class StandLiveHeadView extends LottieAnimationView {
         paint = new Paint();
         paint.setTextSize(24);
         paint.setColor(Color.WHITE);
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(TAG);
     }
 
     public LiveMessageEntity getEntity() {

@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.rollcall.page;
 
 import android.content.Context;
-import android.os.Environment;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +10,10 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.ClassmateItem;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ScrollLinearLayout;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -49,8 +45,7 @@ public class ClassmateSignPager extends BasePager {
         mInflater = LayoutInflater.from(context);
         float density = ScreenUtils.getScreenDensity();
         topMargin = (int) (density * 15 + 0.5f);
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(TAG);
     }
 
     public void setClassSignStop(ClassSignStop classSignStop) {

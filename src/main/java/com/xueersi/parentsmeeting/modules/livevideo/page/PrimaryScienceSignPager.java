@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -16,14 +15,10 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallAction;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle;
-
-import java.io.File;
 
 /**
  * Created by David on 2018/7/9.
@@ -50,8 +45,7 @@ public class PrimaryScienceSignPager extends BasePager {
         this.rollCallAction = rollCallAction;
         this.classSignEntity = classSignEntity;
         this.rollCallBll = rollCallBll;
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(TAG);
         initData();
     }
 

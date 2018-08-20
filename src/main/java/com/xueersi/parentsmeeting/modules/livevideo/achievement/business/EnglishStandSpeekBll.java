@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +24,6 @@ import com.tal.speech.language.LanguageEncodeThread;
 import com.tal.speech.language.LanguageListener;
 import com.tal.speech.language.TalLanguage;
 import com.tal.speech.speechrecognizer.ResultEntity;
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
@@ -39,7 +37,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -111,8 +108,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 
     public EnglishStandSpeekBll(Activity activity) {
         this.activity = activity;
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         if (isDestory2) {
             mLogtf.d("EnglishSpeekBll:isDestory2=true");
         }

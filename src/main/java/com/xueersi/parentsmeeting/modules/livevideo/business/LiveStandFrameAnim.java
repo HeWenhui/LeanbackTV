@@ -70,8 +70,7 @@ public class LiveStandFrameAnim {
 
     public LiveStandFrameAnim(Activity activity) {
         this.activity = activity;
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
     }
 
     /**

@@ -1,10 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
-import android.os.Environment;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -23,7 +19,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSelect
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSubjectivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
-import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -43,8 +38,7 @@ public class LiveQuestionCreat {
         this.activity = activity;
         this.isAbLand = isAbLand;
         this.livePagerBack = livePagerBack;
-        mLogtf = new LogToFile(activity, TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(activity, TAG);
     }
 
     public void setmVSectionID(String mVSectionID) {

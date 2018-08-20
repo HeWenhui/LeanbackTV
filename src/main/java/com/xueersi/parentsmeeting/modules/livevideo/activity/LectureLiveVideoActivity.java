@@ -8,7 +8,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -78,7 +77,6 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -200,8 +198,7 @@ public class LectureLiveVideoActivity extends LiveVideoActivityBase implements V
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         liveType = getIntent().getIntExtra("type", 0);

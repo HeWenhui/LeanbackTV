@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.rollcall.page;
 
 import android.content.Context;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -17,11 +16,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.Config;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle;
-
-import java.io.File;
 
 /**
  * @author linyuqiang 签到
@@ -50,8 +46,7 @@ public class ClassSignPager extends BasePager {
         super(context);
         this.rollCallBll = rollCallBll;
         this.classSignEntity = classSignEntity;
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(TAG);
         initData();
     }
 

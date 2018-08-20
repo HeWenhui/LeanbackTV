@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
@@ -31,10 +32,7 @@ class CacheWebViewLog {
 
     static {
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
-        alldir = new File(BaseApplication.getContext().getExternalCacheDir(), "CacheWebView/log");
-        if (alldir == null) {
-            alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/CacheWebView/log");
-        }
+        alldir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "CacheWebView/log");
         if (!alldir.exists()) {
             alldir.mkdirs();
         }

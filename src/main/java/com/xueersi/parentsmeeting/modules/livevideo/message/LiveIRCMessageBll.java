@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message;
 
 import android.app.Activity;
-import android.os.Environment;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -50,7 +50,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,8 +96,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         super(context, liveBll);
         this.mLiveType = liveBll.getLiveType();
         mLiveId = liveBll.getLiveId();
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mRoomAction = new LiveMessageBll(context, mLiveType);
     }
 
@@ -176,10 +174,17 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     //mRoomAction.onTeacherModeChange(mode,false);
                 }
                 if (mGetInfo.getPattern() == 2) {
+                    View view = mRoomAction.getView();
+                    if (view != null) {
+                        view.setVisibility(View.INVISIBLE);
+                    }
                     if (LiveTopic.MODE_CLASS.equals(mode)) {
                         mRoomAction.initViewLiveStand(mRootView);
                     } else {
                         mRoomAction.initViewLive(mRootView);
+                    }
+                    if (view != null) {
+                        view.setVisibility(View.VISIBLE);
                     }
                 }
             }

@@ -1,9 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.redpackage.business;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
@@ -30,14 +28,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.SmallEnglishRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
-import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -66,8 +62,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private boolean isSmallEnglish = false;
 
     public RedPackageBll(Activity activity, LiveGetInfo liveGetInfo, boolean isLive) {
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         this.activity = activity;
         this.isLive = isLive;

@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -21,7 +20,6 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -77,8 +75,7 @@ public class IRCTalkConf {
         this.mLiveType = mLiveType;
         this.baseHttpBusiness = baseHttpBusiness;
         this.hosts = hosts;
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {
             classid = studentLiveInfo.getClassId();
