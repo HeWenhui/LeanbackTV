@@ -1247,7 +1247,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
      */
     public void examSubmitAll() {
         if (wvSubjectWeb != null) {
-            Loger.i(TAG, "js.speechExamSubmitAll");
+            mLogtf.i("js.speechExamSubmitAll");
             wvSubjectWeb.post(new Runnable() {
                 @Override
                 public void run() {
