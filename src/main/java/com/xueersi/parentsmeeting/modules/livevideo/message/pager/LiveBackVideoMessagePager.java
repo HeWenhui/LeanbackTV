@@ -44,7 +44,6 @@ public class LiveBackVideoMessagePager extends BasePager {
 //        ((ViewGroup) mView).addView(img, imgParams);
 
         mView = View.inflate(mContext, R.layout.layout_back_video_smll_english_message, null);
-
         return mView;
     }
 
