@@ -13,6 +13,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -36,6 +37,7 @@ public class LiveBackBaseBll extends BaseBll {
     protected AtomicBoolean mIsLand;
     protected Handler mHandler = new Handler(Looper.getMainLooper());
     protected final int mLiveType;
+    protected LiveVideoPoint liveVideoPoint;
 
     public LiveBackBaseBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity);
@@ -44,13 +46,15 @@ public class LiveBackBaseBll extends BaseBll {
         mLiveType = liveBackBll.getLiveType();
     }
 
-    public final void onCreateF(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
+    public final void onCreateF(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String,
+            Object> businessShareParamMap) {
         this.mVideoEntity = mVideoEntity;
         this.liveGetInfo = liveGetInfo;
         onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
     }
 
-    public final void initViewF(RelativeLayout rlQuestionContentBottom, RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+    public final void initViewF(RelativeLayout rlQuestionContentBottom, RelativeLayout bottomContent, AtomicBoolean
+            mIsLand) {
         mRootViewBottom = rlQuestionContentBottom;
         mRootView = bottomContent;
         this.mIsLand = mIsLand;
@@ -65,7 +69,8 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
-    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
+    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object>
+            businessShareParamMap) {
 
     }
 
@@ -77,7 +82,8 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
-    public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll.ShowQuestion showQuestion) {
+    public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
+            .ShowQuestion showQuestion) {
 
     }
 
@@ -112,11 +118,14 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
-    public void onPausePlayer() {}
+    public void onPausePlayer() {
+    }
 
-    public void onStartPlayer() {}
+    public void onStartPlayer() {
+    }
 
-    public void setSpeed(float speed) {}
+    public void setSpeed(float speed) {
+    }
 
     public <T> T getInstance(Class<T> clazz) {
         return ProxUtil.getProxUtil().get(mContext, clazz);
@@ -128,5 +137,14 @@ public class LiveBackBaseBll extends BaseBll {
 
     public <T> void putInstance(Class<T> clazz, T object) {
         ProxUtil.getProxUtil().put(mContext, clazz, object);
+    }
+
+    public final void setVideoLayoutF(LiveVideoPoint liveVideoPoint) {
+        this.liveVideoPoint = liveVideoPoint;
+        setVideoLayout(liveVideoPoint);
+    }
+
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+
     }
 }

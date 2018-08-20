@@ -37,6 +37,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
@@ -44,9 +46,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.KeyboardObserverReg
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
@@ -66,6 +70,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
@@ -131,6 +136,10 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     private int progress = 0;
     protected LiveBackBll liveBackBll;
     protected LiveBackVideoBll liveBackVideoBll;
+    /**
+     * 全屏显示
+     */
+    protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
 
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
@@ -149,6 +158,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         // 请求相应数据
         initData();
         initBll();
+        addOnGlobalLayoutListener();
     }
 
     @Nullable
@@ -813,5 +823,56 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     @Override
     public void setAutoOrientation(boolean isAutoOrientation) {
         super.setAutoOrientation(isAutoOrientation);
+    }
+
+    /**
+     * 监听虚拟键盘弹起，收起小英MMD皮肤
+     */
+    private void addOnGlobalLayoutListener() {
+        final View contentView = activity.findViewById(android.R.id.content);
+        contentView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                        .OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (videoView.getWidth() <= 0) {
+                            return;
+                        }
+                        boolean isLand = getResources().getConfiguration().orientation == Configuration
+                                .ORIENTATION_LANDSCAPE;
+                        if (!isLand) {
+                            return;
+                        }
+                        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) LiveVideoConfig.VIDEO_WIDTH,
+                                (int) LiveVideoConfig.VIDEO_HEIGHT, LiveVideoConfig.VIDEO_RATIO);
+                        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+                        boolean change = LiveVideoPoint.initLiveVideoPoint(activity, liveVideoPoint, lp);
+                        long before = System.currentTimeMillis();
+//                        setFirstParam();
+                        if (change) {
+                            onGlobalLayoutListener();
+                        }
+                        logger.d("onGlobalLayout:change=" + change + ",time=" + (System.currentTimeMillis() - before));
+                    }
+                });
+            }
+        }, 10);
+    }
+
+    /**
+     * 设置蓝屏界面
+     */
+//    protected void setFirstParam() {
+//        if (liveVideoAction != null) {
+//            liveVideoAction.setFirstParam(liveVideoPoint);
+//        }
+//    }
+    protected void onGlobalLayoutListener() {
+        ArrayList<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
+        for (LiveBackBaseBll businessBll : businessBlls) {
+            businessBll.setVideoLayoutF(liveVideoPoint);
+        }
     }
 }
