@@ -10,4 +10,5 @@ public interface SpeechBulletScreenHttp {
     public void sendDanmakuMessage(String msg);
     public void uploadSpeechBulletScreen(String msg, HttpCallBack requestCallBack);
     public String getHeadImgUrl();
+    public String getVoiceId();
 }

@@ -58,19 +58,15 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                 haveTeam = true;
             }
         }
-//        class MyThead extends Thread{
-//            @Override
-//            public void run() {
-//                JSONObject data = null;
-//                try {
-//                    data = new JSONObject("{\"from\":\"t\",\"open\":true,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                onNotice("","",data,260);
-//            }
+
+//        JSONObject data = null;
+//        try {
+//            data = new JSONObject("{\"from\":\"t\",\"open\":true,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
 //        }
-//        new MyThead().start();
+//        onNotice("","",data,260);
+
     }
 
     @Override
@@ -261,11 +257,15 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
         public String getHeadImgUrl() {
             return mGetInfo.getHeadImgPath();
         }
+
+        @Override
+        public String getVoiceId() {
+            return voiceId;
+        }
     }
 
     @Override
     public void onDestory() {
-        Log.i(TAG,"onDestory()");
         if (mSpeechBulletScreenAction != null) {
             mSpeechBulletScreenAction.onDestory();
         }

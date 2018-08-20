@@ -171,6 +171,8 @@ public class LiveVideoConfig {
     public static String LEC_LEARN_REPORT = "lec_learn_report";
     /** 直播网页加载失败 */
     public static String LIVE_WEBVIEW_ERROR = "live_webview_error";
+    /** 直播语音弹幕 */
+    public static String LIVE_SPEECH_BULLETSCREEN = "voice_barrage";
 
     //  体验课互动题提交答案
     public static String LIVE_EXPE_SUBMIT = AppConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";

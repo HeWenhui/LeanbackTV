@@ -84,7 +84,7 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
                 rlSpeechBulContent.addView(mSpeechBulPlaybackPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 rlSpeechBulContent.setVisibility(View.VISIBLE);
             }
-        },300);
+        },0);
     }
 
     @Override
@@ -110,20 +110,10 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
         mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.i(TAG,"start setSoftInputMode:SOFT_INPUT_ADJUST_NOTHING");
-                WindowManager.LayoutParams attributes = activity.getWindow().getAttributes();
-                activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING|WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-                attributes = activity.getWindow().getAttributes();
-                Log.i(TAG,"end setSoftInputMode");
-                Log.i(TAG,"start new:SpeechBulletScreenPager");
-                mSpeechBulPager = new SpeechBulletScreenPager(activity,SpeechBulletScreenBll.this);
+                mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp);
                 rlSpeechBulContent.removeAllViews();
                 rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 rlSpeechBulContent.setVisibility(View.VISIBLE);
-                if (mSpeechBulPager != null) {
-                    mSpeechBulPager.setSpeechBulletScreenHttp(speechBulletScreenHttp);
-                }
-                Log.i(TAG,"end  new:SpeechBulletScreenPager");
             }
         },2000);
     }
@@ -149,7 +139,7 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
 
     public void addPlayBackDanmaku(final String name, final String msg, final String headImgUrl , final boolean isGuest) {
         if (mSpeechBulPlaybackPager!=null) {
-            mSpeechBulPlaybackPager.addDanmaKuFlowers(name, msg, headImgUrl, true);
+            mSpeechBulPlaybackPager.addDanmaKuFlowers(name, msg, headImgUrl, isGuest);
         }
     }
 

@@ -96,8 +96,8 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll{
         for (int i=0; i<allBarrages.size(); i++) {
             VoiceBarrageMsgEntity.VoiceBarrageItemEntity voiceBarrageItemEntity = allBarrages.get(i);
             if (voiceBarrageItemEntity.getRelativeTime()== position) {
-                if (voiceBarrageItemEntity.getStuId()!=null && voiceBarrageItemEntity.getStuId().equals(liveGetInfo.getStuId())) {
-                    mSpeechBulletScreenAction.addPlayBackDanmaku(voiceBarrageItemEntity.getName(), voiceBarrageItemEntity.getMsg(), voiceBarrageItemEntity.getHeadImgPath(), false);
+                if (voiceBarrageItemEntity.getStuId()!= null && voiceBarrageItemEntity.getStuId().equals(liveGetInfo.getStuId())) {
+                    mSpeechBulletScreenAction.addPlayBackDanmaku("我", voiceBarrageItemEntity.getMsg(), voiceBarrageItemEntity.getHeadImgPath(), false);
                 }
                 else {
                     mSpeechBulletScreenAction.addPlayBackDanmaku(voiceBarrageItemEntity.getName(), voiceBarrageItemEntity.getMsg(), voiceBarrageItemEntity.getHeadImgPath(), true);
