@@ -152,7 +152,7 @@ public class LiveVideoSAConfig {
         public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStar";
 
         /**文科表扬榜*/
-        public String URL_ARTS_PRAISE_LIST ="https://app.arts.xueersi.com/LiveRank/getRankData";
+        public String URL_ARTS_PRAISE_LIST ="http://app.arts.xueersi.com/LiveRank/getRankData";
 
         /** 学生端上传用户发言语句，用户统计分词结果 */
         public String URL_UPLOAD_VOICE_BARRAGE = HTTP_HOST + "/LiveCourse/uploadVoiceBarrage";
