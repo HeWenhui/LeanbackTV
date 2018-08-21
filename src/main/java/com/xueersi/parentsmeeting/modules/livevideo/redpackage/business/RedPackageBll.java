@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author linyuqiang
- * Created by linyuqiang on 2016/9/23.
+ *         Created by linyuqiang on 2016/9/23.
  */
 public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private static final String TAG = "RedPackageBll";
@@ -62,7 +62,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private boolean isSmallEnglish = false;
 
     public RedPackageBll(Activity activity, LiveGetInfo liveGetInfo, boolean isLive) {
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
         this.activity = activity;
         this.isLive = isLive;

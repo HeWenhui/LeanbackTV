@@ -31,9 +31,9 @@ public class LearnPsReportPager extends BasePager {
     LearnReportEntity reportEntity;
     LearnReportHttp liveBll;
     LearnPsReportBll learnReportBll;
-    LinearLayout firstview,secondview;
+    LinearLayout firstview, secondview;
     /** 查看评价，查看按钮 */
-    Button btLearnreportCheck,btLearnreportSubmit;
+    Button btLearnreportCheck, btLearnreportSubmit;
     /** 学习时长 */
     TextView tvLearnfeedbackDuration;
     /** 答题正确率 */
@@ -49,15 +49,17 @@ public class LearnPsReportPager extends BasePager {
     private Activity activity;
     ImageView close;
     private LogToFile logToFile;
+
     public LearnPsReportPager(Context context, LearnReportEntity reportEntity, LearnReportHttp liveBll, LearnPsReportBll learnReportBll) {
         super(context);
         this.reportEntity = reportEntity;
         this.liveBll = liveBll;
         this.learnReportBll = learnReportBll;
         this.activity = (Activity) context;
-        logToFile = new LogToFile(TAG);
+        logToFile = new LogToFile(context, TAG);
         initData();
     }
+
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_learnpsreport, null);
@@ -153,7 +155,7 @@ public class LearnPsReportPager extends BasePager {
         int time = stu.getTime() / 60;
         tvLearnfeedbackDuration.setText(time + "分钟");
         tvLearnfeedbackAccuracy.setText("0".equals(stu.getRate()) ? "0%" : stu.getRate());
-        tvLearnfeedbackAccuracyAverage.setText("0".equals(stu.getAverageRate()) ? "0%" :"" + stu.getAverageRate());
+        tvLearnfeedbackAccuracyAverage.setText("0".equals(stu.getAverageRate()) ? "0%" : "" + stu.getAverageRate());
         tvLearnfeedbackRanking.setText("第" + stu.getRank() + "名");
     }
 }

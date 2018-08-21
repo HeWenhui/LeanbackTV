@@ -116,7 +116,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         if (liveGetInfo != null) {
             isSmallEnglish = liveGetInfo.getSmallEnglish();
         }
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(activity, TAG);
         if (isDestory2) {
             mLogtf.d("EnglishSpeekBll:isDestory2=true");
         }

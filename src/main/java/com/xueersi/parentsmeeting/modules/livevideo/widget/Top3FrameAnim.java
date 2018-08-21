@@ -52,7 +52,7 @@ public class Top3FrameAnim {
         this.rl_livevideo_redpackage_bg = rl_livevideo_redpackage_bg;
         this.stuHeadBitmap = stuHeadBitmap;
         this.frameAnimations = frameAnimations;
-        logToFile = new LogToFile(TAG);
+        logToFile = new LogToFile(mContext, TAG);
     }
 
     public void setHeadBitmap(Bitmap headBitmap) {

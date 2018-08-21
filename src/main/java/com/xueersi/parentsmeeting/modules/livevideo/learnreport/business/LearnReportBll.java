@@ -34,7 +34,7 @@ public class LearnReportBll implements LearnReportAction, Handler.Callback {
     private boolean mIsShowLearnReport = false;
 
     public LearnReportBll(Activity activity) {
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
         this.activity = activity;
     }

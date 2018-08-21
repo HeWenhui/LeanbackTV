@@ -107,7 +107,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (data.getPattern() == 2) {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction));
             mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(this, mLiveBll, mQuestionAction));
-            StandSpeechTop3Bll standSpeechTop3Bll = new StandSpeechTop3Bll(this, mLiveBll);
+            StandSpeechTop3Bll standSpeechTop3Bll = new StandSpeechTop3Bll(activity, this, mLiveBll);
             standSpeechTop3Bll.initView(mRootView);
             mQuestionAction.setSpeechEndAction(standSpeechTop3Bll);
         } else {

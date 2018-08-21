@@ -123,7 +123,7 @@ public class VideoChatBll implements VideoChatAction {
     public VideoChatBll(Activity activity, VideoChatEvent videoChatEvent) {
         this.activity = activity;
         this.videoChatEvent = videoChatEvent;
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(activity,TAG);
         mLogtf.clear();
         ProxUtil.getProxUtil().put(activity, VideoChatStartChange.class, new VideoChatStartChange() {
             @Override

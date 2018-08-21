@@ -46,7 +46,7 @@ public class RedPackageStandBll implements RedPackageAction, Handler.Callback {
     LiveAndBackDebug liveAndBackDebug;
 
     public RedPackageStandBll(Activity activity, boolean isLive, LiveAndBackDebug liveAndBackDebug) {
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
         this.activity = activity;
         this.isLive = isLive;

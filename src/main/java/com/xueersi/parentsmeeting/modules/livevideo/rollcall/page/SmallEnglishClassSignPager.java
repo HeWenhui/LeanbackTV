@@ -48,7 +48,7 @@ public class SmallEnglishClassSignPager extends BasePager {
         super(context);
 //        this.rollCallBll = rollCallBll;
         this.classSignEntity = classSignEntity;
-        logToFile = new LogToFile(TAG);
+        logToFile = new LogToFile(context, TAG);
 
         initData();
         initListener();

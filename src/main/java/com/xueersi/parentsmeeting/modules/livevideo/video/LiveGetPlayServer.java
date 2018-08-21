@@ -64,7 +64,7 @@ public class LiveGetPlayServer {
         this.mLiveType = mLiveType;
         this.mGetInfo = mGetInfo;
         this.mLiveTopic = liveTopic;
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         logger.d("LiveGetPlayServer:netWorkType=" + netWorkType);

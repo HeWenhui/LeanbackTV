@@ -95,12 +95,11 @@ public class LiveVideoBll implements VPlayerListenerReg {
         this.activity = activity;
         this.mLiveBll = liveBll;
         this.mLiveType = liveType;
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(activity, TAG);
         totalFrameStat = new TotalFrameStat(activity, true);
         liveVideoReportBll = new LiveVideoReportBll(activity, liveBll);
         liveVideoReportBll.setTotalFrameStat(totalFrameStat);
         mPlayStatistics.add(liveVideoReportBll.getVideoListener());
-        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         ProxUtil.getProxUtil().put(activity, VPlayerListenerReg.class, this);
     }

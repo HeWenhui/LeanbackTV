@@ -108,7 +108,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 
     public EnglishStandSpeekBll(Activity activity) {
         this.activity = activity;
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(activity, TAG);
         if (isDestory2) {
             mLogtf.d("EnglishSpeekBll:isDestory2=true");
         }

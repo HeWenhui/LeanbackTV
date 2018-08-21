@@ -45,7 +45,7 @@ public class ClassmateSignPager extends BasePager {
         mInflater = LayoutInflater.from(context);
         float density = ScreenUtils.getScreenDensity();
         topMargin = (int) (density * 15 + 0.5f);
-        logToFile = new LogToFile(TAG);
+        logToFile = new LogToFile(context,TAG);
     }
 
     public void setClassSignStop(ClassSignStop classSignStop) {
