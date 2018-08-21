@@ -103,11 +103,11 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
         ((AnimationDrawable) ivLoading.getBackground()).start();
 //        examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
 //                + "&stuId=" + stuId + "&stuName=" + stuName;
-        examUrl = testPaperUrl + "?testId=" + testId
+        examUrl = testPaperUrl + "/" + liveid + "?testId=" + testId
                 + "&stuId=" + stuId + "&stuName=" + stuName + "&stuCouId=" + stuCouId;
 //        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
 //        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
-        Loger.d(TAG, "initData:examUrl=" + examUrl);
+        mLogtf.d("initData:examUrl=" + examUrl);
         wvSubjectWeb.loadUrl(examUrl);
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
     }
