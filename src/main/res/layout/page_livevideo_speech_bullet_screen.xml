@@ -63,12 +63,13 @@
 
         <ImageView
             android:id="@id/tv_livevideo_speechbul_close"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
+            android:padding="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
             android:src="@drawable/livevideo_alertview_guanbi_img_normal" />
 
 
@@ -106,7 +107,7 @@
                 android:paddingLeft="21dp"
                 android:singleLine="true"
                 android:maxLength="15"
-                android:hint="请输入文字"/>
+                android:hint="请输入文字" />
             <TextView
                 android:id="@id/tv_livevideo_speechbul_count"
                 android:textSize="13sp"
