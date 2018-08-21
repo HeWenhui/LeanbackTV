@@ -422,6 +422,26 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
     }
 
+    //添加功能模块
+    protected void addBusiness(Activity activity) {
+        liveBackBll.addBusinessBll(new QuestionPlayBackBll(activity, liveBackBll));
+        RedPackagePlayBackBll redPackagePlayBackBll = new RedPackagePlayBackBll(activity, liveBackBll);
+        liveBackBll.addBusinessBll(redPackagePlayBackBll);
+        liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
+        //直播
+        if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
+            //理科
+            if (liveBackBll.getIsArts() == 0) {
+                liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
+                initLiveRemarkBll();
+            } else {
+                if (liveBackBll.getPattern() != 2) {
+                    liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));//回放聊天区加上MMD的皮肤
+                }
+            }
+        }
+    }
     protected void initLiveRemarkBll() {
         if (isArts == 1 || "PublicLiveDetailActivity".equals(where)) {
             return;
@@ -458,26 +478,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
     }
 
-    //添加功能模块
-    protected void addBusiness(Activity activity) {
-        liveBackBll.addBusinessBll(new QuestionPlayBackBll(activity, liveBackBll));
-        RedPackagePlayBackBll redPackagePlayBackBll = new RedPackagePlayBackBll(activity, liveBackBll);
-        liveBackBll.addBusinessBll(redPackagePlayBackBll);
-        liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
-        liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
-        //直播
-        if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            //理科
-            if (liveBackBll.getIsArts() == 0) {
-                liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
-                initLiveRemarkBll();
-            } else {
-                if (liveBackBll.getPattern() != 2) {
-                    liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));//回放聊天区加上MMD的皮肤
-                }
-            }
-        }
-    }
 
     @Override
     public void onResume() {
