@@ -53,7 +53,6 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
     private static final int RESULT_TYPE_ERRRO = 0;
 
     private int mReusltType;
-    private TextView tvToast;
     private ImageView ivResultBtn;
 
     /**单选题 答案 展示item  距离顶部的  距离*/
@@ -73,7 +72,6 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
         final View view = View.inflate(mContext, R.layout.page_livevideo_arts_anwserresult_normal, null);
         resultStateRootView = view.findViewById(R.id.rl_arts_answer_result_state);
         resultDetailRootView = view.findViewById(R.id.rl_arts_answer_result_resultdetail);
-        tvToast = view.findViewById(R.id.tv_arts_answer_result_sumbit_toast);
         ivResultBtn = view.findViewById(R.id.iv_arts_answer_result_answer_btn);
 
         ivResultBtn.setOnClickListener(new View.OnClickListener() {
@@ -113,11 +111,11 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
      */
     @Override
     public void remindSubmit() {
-        tvToast.setVisibility(View.VISIBLE);
+     /*   tvToast.setVisibility(View.VISIBLE);
         AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
                 .anim_livevido_arts_answer_result_alpha_in);
         alphaAnimation.setFillAfter(true);
-        tvToast.startAnimation(alphaAnimation);
+        tvToast.startAnimation(alphaAnimation);*/
     }
 
     @Override
@@ -126,12 +124,6 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
         return this.getRootView();
     }
 
-    private void hideSumbitToast() {
-        AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
-                .anim_livevido_arts_answer_result_alpha_out);
-        alphaAnimation.setFillAfter(true);
-        tvToast.startAnimation(alphaAnimation);
-    }
 
 
     private Runnable showAnswerDetailTask = new Runnable() {

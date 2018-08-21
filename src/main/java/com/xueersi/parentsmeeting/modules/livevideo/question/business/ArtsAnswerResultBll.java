@@ -2,13 +2,17 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
@@ -46,6 +50,8 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
 
     /**是否是小学英语*/
     private boolean isPse;
+    private View remindView;
+
     /**
      *
      * @param context
@@ -56,7 +62,7 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
     public ArtsAnswerResultBll(Context context,RelativeLayout rootView, boolean isPse) {
         super(context);
         this.rootView = rootView;
-        this.isPse = isPse;
+        this.isPse = true ;//isPse;
     }
 
 
@@ -120,11 +126,9 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
     }
 
     private void addPager() {
-
         if (mDsipalyer != null) {
             rlAnswerResultLayout.removeView(mDsipalyer.getRootLayout());
         }
-
         if(isPse){
              mDsipalyer = new ArtsPSEAnswerResultPager(mContext,mAnswerReulst);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
@@ -144,6 +148,9 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
      * 展示答题结果
      */
     private void showAnswerReulst() {
+        if(remindView != null){
+            remindView.setVisibility(View.GONE);
+        }
         rootView.post(new Runnable() {
             @Override
             public void run() {
@@ -156,19 +163,7 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
      * 显示老师 表扬
      */
     public void showTeacherPraise() {
-
         //单独 提取出去
-
-
-    }
-
-
-    /**
-     * 提示学生提交答案
-     */
-    public void remindSumbit() {
-
-
     }
 
     @Override
@@ -267,8 +262,20 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
 
     @Override
     public void remindSubmit() {
-        if(mDsipalyer != null){
-            mDsipalyer.remindSubmit();
+
+        if(remindView == null){
+            if(isPse){
+                remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_pse,null);
+            }else{
+                remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_nor,null);
+            }
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            rlAnswerResultLayout.addView(remindView,params);
         }
+
+        remindView.setVisibility(View.VISIBLE);
+        AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
+                .anim_livevido_arts_answer_result_alpha_in);
+        remindView.startAnimation(alphaAnimation);
     }
 }
