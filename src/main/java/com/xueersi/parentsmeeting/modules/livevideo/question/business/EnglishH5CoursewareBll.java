@@ -389,6 +389,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         hasQuestion = false;
                     }
                     closePageByTeamPk();
+                    // 文科答题结果页面
+                    if(mAnswerResultAction != null){
+                        mAnswerResultAction.closeAnswerResult();
+                    }
                 }
             }
         });
@@ -471,6 +475,25 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         if (webViewRequest != null) {
             webViewRequest.requestWebView();
         }
+
+        if(isArts()){
+           initAnswerResultAction();
+        }
+
+    }
+
+    private IAnswerResultAction mAnswerResultAction;
+    private void initAnswerResultAction() {
+      if(mAnswerResultAction == null){
+          ArtsAnswerResultBll answerResultBll = new ArtsAnswerResultBll(context,bottomContent,mGetInfo.getSmallEnglish());
+          answerResultBll.attachToView();
+          mAnswerResultAction = answerResultBll;
+      }
+    }
+
+    private boolean isArts() {
+        return  true;
+        //return mGetInfo!= null && mGetInfo.getIsArts() == 1;
     }
 
     public void setBaseVoiceAnswerCreat(BaseVoiceAnswerCreat baseVoiceAnswerCreat) {
@@ -1019,4 +1042,14 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             questionShowAction.onQuestionShow(isShow);
         }
     }
+
+    /**
+     * 文科h5 答题结果页  结果回调
+     */
+    public void onAnswerResult(String data){
+        if(mAnswerResultAction != null){
+            mAnswerResultAction.onAnswerResult(data);
+        }
+    }
+
 }

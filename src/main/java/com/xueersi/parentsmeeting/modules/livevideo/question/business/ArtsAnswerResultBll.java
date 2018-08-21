@@ -1,0 +1,274 @@
+package com.xueersi.parentsmeeting.modules.livevideo.question.business;
+
+import android.app.Activity;
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+
+import com.xueersi.common.base.BaseBll;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 文科答题结果
+ *
+ * @author chenkun
+ * @version 1.0, 2018/7/27 下午5:36
+ */
+
+public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction {
+
+    private RelativeLayout rootView;
+    private RelativeLayout rlAnswerResultLayout;
+    /**普通 统计 UI*/
+    private static final int UI_TYPE_NORMAL = 1;
+
+    /**小学英语 统计面板*/
+    private static final int UI_TYPE_PSE = 2;
+
+    private static final String TAG = "ArtsAnswerResultBll";
+    private IArtsAnswerRsultDisplayer mDsipalyer;
+    private AnswerResultEntity mAnswerReulst;
+
+    /**是否是小学英语*/
+    private boolean isPse;
+    /**
+     *
+     * @param context
+     * @param liveBll
+     * @param rootView
+     * @param isPse 是否是小学英语
+     */
+    public ArtsAnswerResultBll(Context context,RelativeLayout rootView, boolean isPse) {
+        super(context);
+        this.rootView = rootView;
+        this.isPse = isPse;
+    }
+
+
+    public void attachToView() {
+        rlAnswerResultLayout = new RelativeLayout(mContext);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
+                (ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+        rootView.addView(rlAnswerResultLayout);
+        test();
+    }
+
+
+    private void test() {
+        Button btn = new Button(mContext);
+        btn.setText("AnimTest");
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(400, 200);
+        rootView.addView(btn,params);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //addPager();
+
+                String testStr = "{\n" +
+                        "\t\"stat\": 1,\n" +
+                        "\t\"msg\": \"成功\",\n" +
+                        "\t\"data\": {\n" +
+                        "\t\t\"total\": {\n" +
+                        "\t\t\t\"liveId\": \"210987\",\n" +
+                        "\t\t\t\"stuId\": \"15602\",\n" +
+                        "\t\t\t\"stuCouId\": \"9617647\",\n" +
+                        "\t\t\t\"virtualId\": \"8381872fa17f9dcb5fdb58802461c46e\",\n" +
+                        "\t\t\t\"testCount\": \"1\",\n" +
+                        "\t\t\t\"isRight\": \"0\",\n" +
+                        "\t\t\t\"gold\": \"0\",\n" +
+                        "\t\t\t\"rightRate\": \"0\",\n" +
+                        "\t\t\t\"createTime\": \"0\"\n" +
+                        "\t\t},\n" +
+                        "\t\t\"split\": [{\n" +
+                        "\t\t\t\"liveId\": \"210987\",\n" +
+                        "\t\t\t\"stuId\": \"15602\",\n" +
+                        "\t\t\t\"stuCouId\": \"9617647\",\n" +
+                        "\t\t\t\"testId\": \"20005\",\n" +
+                        "\t\t\t\"testSrc\": \"1\",\n" +
+                        "\t\t\t\"testType\": \"2\",\n" +
+                        "\t\t\t\"choice\": [\"B\"],\n" +
+                        "\t\t\t\"blank\": [],\n" +
+                        "\t\t\t\"rightAnwer\": [\"A\"],\n" +
+                        "\t\t\t\"isRight\": \"0\",\n" +
+                        "\t\t\t\"rightRate\": \"0\",\n" +
+                        "\t\t\t\"useVoice\": \"0\",\n" +
+                        "\t\t\t\"voiceUrl\": \"\",\n" +
+                        "\t\t\t\"voiceTime\": \"0\",\n" +
+                        "\t\t\t\"createTime\": \"1534400651\"\n" +
+                        "\t\t}]\n" +
+                        "\t}\n" +
+                        "}";
+                onAnswerResult(testStr);
+            }
+        });
+    }
+
+    private void addPager() {
+
+        if (mDsipalyer != null) {
+            rlAnswerResultLayout.removeView(mDsipalyer.getRootLayout());
+        }
+
+        if(isPse){
+             mDsipalyer = new ArtsPSEAnswerResultPager(mContext,mAnswerReulst);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
+                    (ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+            rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
+        }else{
+            mDsipalyer = new ArtsAnswerResultPager(mContext,mAnswerReulst);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
+                    (ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+            rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
+        }
+        Loger.e("Arts","==========> ArtsAnswerResultBll addPager called:");
+    }
+
+
+    /**
+     * 展示答题结果
+     */
+    private void showAnswerReulst() {
+        rootView.post(new Runnable() {
+            @Override
+            public void run() {
+                addPager();
+            }
+        });
+    }
+
+    /**
+     * 显示老师 表扬
+     */
+    public void showTeacherPraise() {
+
+        //单独 提取出去
+
+
+    }
+
+
+    /**
+     * 提示学生提交答案
+     */
+    public void remindSumbit() {
+
+
+    }
+
+    @Override
+    public void onAnswerResult(String result) {
+        Loger.e(TAG, "=======>onAnswerResult:" + result);
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+            int stat = jsonObject.optInt("stat");
+            if(stat == 1){
+                JSONObject dataObject = jsonObject.getJSONObject("data");
+                mAnswerReulst = new AnswerResultEntity();
+
+                if(dataObject.has("total")){
+                    JSONObject totalObject = dataObject.getJSONObject("total");
+                    mAnswerReulst.setLiveId(totalObject.optString("liveId"));
+                    mAnswerReulst.setStuId(totalObject.optString("stuId"));
+                    mAnswerReulst.setVirtualId(totalObject.optString("virtualId"));
+                    mAnswerReulst.setTestCount(totalObject.optInt("testCount"));
+                    mAnswerReulst.setIsRight(totalObject.getInt("isRight"));
+                    mAnswerReulst.setGold(totalObject.optInt("gold"));
+                    mAnswerReulst.setRightRate(totalObject.optDouble("rightRate"));
+                    mAnswerReulst.setCreateTime(totalObject.optLong("createTime"));
+                }
+
+                if(dataObject.has("split")){
+                   JSONArray splitArray = dataObject.getJSONArray("split");
+                   JSONObject answerObject = null;
+                    AnswerResultEntity.Answer answer = null;
+                    JSONArray choiceArray = null;
+                    JSONArray blankArray = null;
+                    JSONArray rightAnswerArray = null;
+
+                    List<AnswerResultEntity.Answer> answerList = new ArrayList<AnswerResultEntity.Answer>();
+                    List<String> choiceList = new ArrayList <String>();
+                    List<String> blankList = new ArrayList <String>();
+                    List<String> rightAnswerList = new ArrayList<String>();
+
+
+                    for (int i = 0; i < splitArray.length(); i++) {
+                        answerObject = splitArray.getJSONObject(i);
+                        answer = new AnswerResultEntity.Answer();
+                        answer.setLiveId(answerObject.optString("liveId"));
+                        answer.setStuId(answerObject.optString("stuId"));
+                        answer.setTestId(answerObject.optString("testId"));
+                        answer.setTestSrc(answerObject.optString("testSrc"));
+                        answer.setTestType(answerObject.optInt("testType"));
+                        answer.setIsRight(answerObject.optInt("isRight"));
+                        answer.setRightRate(answerObject.optDouble("rightRate"));
+                        answer.setCreateTime(answerObject.optLong("createTime"));
+
+                        choiceArray = answerObject.optJSONArray("choice");
+                        for (int i1 = 0; i1 < choiceArray.length(); i1++) {
+                            choiceList.add(choiceArray.getString(i1));
+                        }
+                        answer.setChoiceList(choiceList);
+                        blankArray = answerObject.optJSONArray("blank");
+
+                        for (int i1 = 0; i1 < blankArray.length(); i1++) {
+                            blankList.add(blankArray.getString(i1));
+                        }
+                        answer.setBlankList(blankList);
+
+                        rightAnswerArray = answerObject.optJSONArray("rightAnwer");
+                        for (int i1 = 0; i1 < rightAnswerArray.length(); i1++) {
+                            rightAnswerList.add(rightAnswerArray.getString(i1));
+                        }
+                        answer.setRightAnswers(rightAnswerList);
+
+                        answerList.add(answer);
+                    }
+                    mAnswerReulst.setAnswerList(answerList);
+                }
+
+                showAnswerReulst();
+
+
+            }else{
+              String errorMsg = jsonObject.optString("msg");
+              XESToastUtils.showToast(mContext,errorMsg);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            XESToastUtils.showToast(mContext,"答题结果数据解析失败");
+        }
+    }
+
+    @Override
+    public void closeAnswerResult() {
+
+        if (mDsipalyer != null) {
+            mDsipalyer.close();
+            mDsipalyer = null;
+        }
+
+    }
+
+    @Override
+    public void remindSubmit() {
+        if(mDsipalyer != null){
+            mDsipalyer.remindSubmit();
+        }
+    }
+}

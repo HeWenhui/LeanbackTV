@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -280,6 +281,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         super.initData();
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
+        webSetting.setJavaScriptEnabled(true);
+        wvSubjectWeb.addJavascriptInterface(this,"wx_xesapp");
+
         if (LiveVideoConfig.isNewEnglishH5 || LiveVideoConfig.isMulLiveBack) {
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
@@ -459,6 +463,22 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         });
 
     }
+
+
+    /**
+     * 文科 课件 答题结果回调
+     *
+     */
+    @JavascriptInterface
+    public void showAnswerResult_LiveVideo(String data){
+        Loger.e("EnglishH5CourseWareX5Pager",
+                "=========>showAnswerResult_LiveVideo:"+data);
+        if(mEnglishH5CoursewareBll != null){
+            mEnglishH5CoursewareBll.onAnswerResult(data);
+        }
+    }
+
+
 
     @Override
     public BasePager getBasePager() {
