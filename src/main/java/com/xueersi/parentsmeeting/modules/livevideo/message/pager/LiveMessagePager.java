@@ -211,7 +211,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 LiveMediaController controller = liveMediaControllerBottom.getController();
                 controller.show();
                 if (rlLivevideoCommonWord.getVisibility() == View.VISIBLE) {
-                    rlLivevideoCommonWord.setVisibility(View.INVISIBLE);
+                    rlLivevideoCommonWord.setVisibility(View.GONE);
                     return;
                 }
                 int[] location = new int[2];

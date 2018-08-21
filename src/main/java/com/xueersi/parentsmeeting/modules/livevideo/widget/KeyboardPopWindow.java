@@ -84,7 +84,7 @@ public class KeyboardPopWindow extends PopupWindow {
 
     private void notifyKeyboardHeightChanged(int height, int orientation) {
         if (observer != null) {
-            Loger.d("___软键盘状态： " + height);
+            Loger.d("软键盘状态： " + height);
             observer.onKeyboardHeightChanged(height, orientation);
         }
     }

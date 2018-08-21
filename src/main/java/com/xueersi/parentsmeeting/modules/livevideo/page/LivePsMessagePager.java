@@ -344,7 +344,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 liveMediaControllerBottom.onChildViewClick(v);
                 LiveMediaController controller = liveMediaControllerBottom.getController();
                 controller.show();
-                if (rlLivevideoCommonWord.getVisibility() == View.VISIBLE) {
+                if (rlLivevideoCommonWord.getVisibility() == View.GONE) {
                     rlLivevideoCommonWord.setVisibility(View.INVISIBLE);
                     return;
                 }
