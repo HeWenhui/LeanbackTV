@@ -343,9 +343,11 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             }
             try {
                 String deUrl = URLDecoder.decode(url, "UTF-8");
+                mLogtf.d("shouldOverrideUrlLoading:deUrl=" + deUrl);
                 matchBusiness(deUrl);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
+                mLogtf.e("shouldOverrideUrlLoading:url=" + url, e);
             }
             return true;
         }

@@ -75,15 +75,13 @@ public class LogToFile {
 
     public void i(String message) {
         Loger.i(TAG, message);
-        if (liveBll != null) {
+        if (liveBll2 != null) {
+            liveBll2.getOnloadLogs(TAG, TAG + "**" + message);
+        } else if (liveBll != null) {
             liveBll.getOnloadLogs(TAG, TAG + "**" + message);
         } else {
             if (auditClassLiveBll != null) {
                 auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message);
-            } else {
-                if (liveBll2 != null) {
-                    liveBll2.getOnloadLogs(TAG, TAG + "**" + message);
-                }
             }
         }
         if (AppConfig.DEBUG) {
@@ -93,7 +91,9 @@ public class LogToFile {
 
     public void d(String message) {
         Loger.i(TAG, message);
-        if (liveBll != null) {
+        if (liveBll2 != null) {
+            liveBll2.getOnloadLogs(TAG, TAG + "**" + message);
+        } else if (liveBll != null) {
             liveBll.getOnloadLogs(TAG, TAG + "**" + message);
         } else {
             if (auditClassLiveBll != null) {
@@ -114,11 +114,13 @@ public class LogToFile {
 
     public void e(String message, Throwable e) {
         Loger.i(TAG, message, e);
-        if (liveBll != null) {
-            liveBll.getOnloadLogs(TAG, TAG + "**" + message);
+        if (liveBll2 != null) {
+            liveBll2.getOnloadLogs(TAG, TAG + "**" + message + "**" + e);
+        } else if (liveBll != null) {
+            liveBll.getOnloadLogs(TAG, TAG + "**" + message + "**" + e);
         } else {
             if (auditClassLiveBll != null) {
-                auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message);
+                auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message + "**" + e);
             }
         }
         liveThreadPoolExecutor.execute(new WriteThread(message, e));
