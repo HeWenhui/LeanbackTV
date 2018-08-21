@@ -237,8 +237,10 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         int playPosition = TimeUtils.gennerSecond(position);
         logger.d("scanQuestion:playPosition=" + playPosition);
         mQuestionEntity = getPlayQuetion(TimeUtils.gennerSecond(position));
+        //旧题不为空，新题和旧题不一样
         if (oldQuestionEntity != null && oldQuestionEntity != mQuestionEntity) {
-            if (oldQuestionEntity.isClick()) {
+            //新题不为空，旧题是点击过去的。
+            if (mQuestionEntity != null && oldQuestionEntity.isClick()) {
                 if (playPosition < oldQuestionEntity.getvEndTime()) {
                     mQuestionEntity = oldQuestionEntity;
                     return;
