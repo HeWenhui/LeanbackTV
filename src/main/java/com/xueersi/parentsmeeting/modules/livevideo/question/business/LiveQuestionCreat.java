@@ -112,9 +112,9 @@ public class LiveQuestionCreat {
     private PutQuestion mPutQuestion = new PutQuestion() {
 
         @Override
-        public void onPutQuestionResult(final BaseVideoQuestionEntity videoQuestionLiveEntity2, String result) {
+        public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, final BaseVideoQuestionEntity videoQuestionLiveEntity2, String result) {
             final VideoQuestionLiveEntity liveEntity = (VideoQuestionLiveEntity) videoQuestionLiveEntity2;
-            questionHttp.liveSubmitTestAnswer(liveEntity, mVSectionID, result,
+            questionHttp.liveSubmitTestAnswer(baseLiveQuestionPager, liveEntity, mVSectionID, result,
                     false, false, new QuestionSwitch.OnAnswerReslut() {
                         @Override
                         public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {

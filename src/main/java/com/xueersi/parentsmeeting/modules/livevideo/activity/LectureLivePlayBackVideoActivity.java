@@ -40,6 +40,7 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.logerhelper.MobEnumUtil;
@@ -948,7 +949,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
         mVideoCourseQuestionPager = new QuestionFillInBlankLivePager(LectureLivePlayBackVideoActivity.this, mQuestionEntity);
         mVideoCourseQuestionPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -965,7 +966,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                 mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -982,7 +983,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                 mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }

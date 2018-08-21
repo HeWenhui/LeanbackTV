@@ -25,7 +25,7 @@ public enum PlayErrorCode {
     EILSEQ(-84, -1, "Illegal byte sequence", ""),
     EINTR(-4, -1, "Interrupted system call", ""),
     EINVAL(-22, -1, "Invalid argument", ""),
-    EIO(-5, -1, "I/O error", ""),
+    EIO(-5, 207, "I/O error", ""),
     EISDIR(-21, -1, "Is a directory", ""),
     EMFILE(-24, -1, "Too many open files", ""),
     EMLINK(-31, -1, "Too many links", ""),

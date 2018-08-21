@@ -154,7 +154,7 @@ public class QuestionSelectLivePager extends BaseLiveQuestionPager {
                 }
             }
             if (putQuestion != null) {
-                putQuestion.onPutQuestionResult(baseVideoQuestionEntity, mAnswer);
+                putQuestion.onPutQuestionResult(QuestionSelectLivePager.this, baseVideoQuestionEntity, mAnswer);
             }
         }
     }

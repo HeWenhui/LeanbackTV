@@ -87,7 +87,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -97,6 +96,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.PutQuestio
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionFillInBlankLivePager;
@@ -104,7 +104,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionMulitS
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -119,11 +118,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.xueersi.ui.dialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE;
@@ -1585,7 +1581,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mVideoCourseQuestionPager = new QuestionFillInBlankLivePager(ExperienceLiveVideoActivity.this, mQuestionEntity);
         mVideoCourseQuestionPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -1605,7 +1601,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -1626,7 +1622,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }

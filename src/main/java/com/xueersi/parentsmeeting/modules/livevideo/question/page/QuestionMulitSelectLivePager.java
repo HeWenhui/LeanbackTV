@@ -192,7 +192,7 @@ public class QuestionMulitSelectLivePager extends BaseLiveQuestionPager {
                 }
             }
             if (putQuestion != null) {
-                putQuestion.onPutQuestionResult(baseVideoQuestionEntity, mAnswer);
+                putQuestion.onPutQuestionResult(QuestionMulitSelectLivePager.this, baseVideoQuestionEntity, mAnswer);
             }
         }
     }

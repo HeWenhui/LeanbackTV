@@ -130,7 +130,7 @@ public class QuestionSelectPortLivePager extends BaseLiveQuestionPager {
                 btnSubmit.setProgress(100);
             }
             if (putQuestion != null) {
-                putQuestion.onPutQuestionResult(interQues, mAnswer);
+                putQuestion.onPutQuestionResult(QuestionSelectPortLivePager.this, interQues, mAnswer);
             }
         }
     }

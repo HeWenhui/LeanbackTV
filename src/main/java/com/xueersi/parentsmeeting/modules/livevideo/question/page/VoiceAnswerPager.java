@@ -463,7 +463,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                         logHashMap.addExY().addExpect("1").addSno("4").addNonce("" + nonce).addStable("1");
                         umsAgentDebugInter(eventId, logHashMap.getData());
                         baseVideoQuestionEntity.nonce = nonce;
-                        questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, answer, option, 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
+                        questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, answer, option, 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
                             @Override
                             public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
                                 if (entity != null) {
@@ -571,7 +571,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                     tvVoiceansSwitch.setVisibility(View.GONE);
                     questionSwitch.uploadVoiceFile(saveVideoFile);
                     isSpeechSuccess = true;
-                    questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, content1.getString(0), content1.getString(0), 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
+                    questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, content1.getString(0), content1.getString(0), 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
                         @Override
                         public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
                             if (entity != null) {

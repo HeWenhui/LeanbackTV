@@ -6,7 +6,6 @@ import android.widget.RelativeLayout;
 import com.tal.speech.speechrecognizer.Constants;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -32,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONObject;
@@ -359,7 +359,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void liveSubmitTestAnswer(final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
+    public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                 videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="
@@ -386,7 +386,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             answerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
                         }
                         if (mQuestionAction != null) {
-                            mQuestionAction.onAnswerReslut(videoQuestionLiveEntity, entity);
+                            mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, entity);
                         }
                     }
 
@@ -409,7 +409,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //
 //                        }
                         if (mQuestionAction != null) {
-                            mQuestionAction.onAnswerReslut(videoQuestionLiveEntity, null);
+                            mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, null);
                         }
                         if (answerReslut != null) {
                             answerReslut.onAnswerReslut(videoQuestionLiveEntity, null);

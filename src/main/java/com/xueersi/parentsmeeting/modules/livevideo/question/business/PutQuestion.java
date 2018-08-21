@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
 
 /**
  * 互动题事件
@@ -12,7 +13,8 @@ public interface PutQuestion {
     /**
      * 提交互动题
      *
+     * @param baseLiveQuestionPager
      * @param result
      */
-    void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result);
+    void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result);
 }

@@ -180,7 +180,7 @@ public class QuestionMulitSelectPortLivePager extends BaseLiveQuestionPager {
                 }
             }
             if (putQuestion != null) {
-                putQuestion.onPutQuestionResult(baseVideoQuestionEntity, mAnswer);
+                putQuestion.onPutQuestionResult(QuestionMulitSelectPortLivePager.this, baseVideoQuestionEntity, mAnswer);
             }
         }
     }
