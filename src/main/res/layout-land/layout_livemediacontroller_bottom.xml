@@ -25,8 +25,8 @@
             android:background="@drawable/bg_livevideo_message_open" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
                 android:layout_weight="1"
-                android:visibility="invisible">
+                android:visibility="gone">
 
                 <com.xueersi.ui.widget.AutohListview
                     android:id="@id/lv_livevideo_common_word"

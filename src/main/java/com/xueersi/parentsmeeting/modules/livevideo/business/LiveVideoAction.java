@@ -200,7 +200,11 @@ public class LiveVideoAction implements VideoAction {
                 } else {
                     ivTeacherNotpresent.setVisibility(View.VISIBLE);
                     if (dwTeacherNotpresen == null) {
-                        dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                        if(LiveVideoConfig.isPrimary){
+                            dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_psnormal);
+                        }else{
+                            dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                        }
                     }
                     ivTeacherNotpresent.setBackgroundDrawable(dwTeacherNotpresen);
                     mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
