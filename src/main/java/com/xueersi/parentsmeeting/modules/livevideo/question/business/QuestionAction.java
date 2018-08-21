@@ -33,8 +33,9 @@ public interface QuestionAction {
     /** 考试开始 */
     void onExamStart(String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity);
 
-    /** 考试结束 */
-    void onExamStop();
+    /** 考试结束
+     * @param num*/
+    void onExamStop(String num);
 
     /** 语音评测刷新 */
     @Deprecated

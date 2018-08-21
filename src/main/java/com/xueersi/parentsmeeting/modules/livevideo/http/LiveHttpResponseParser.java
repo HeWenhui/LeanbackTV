@@ -495,7 +495,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 mainStatusEntity.setHaveExam(true);
                 JSONObject jsonObject = status.getJSONObject("exam");
                 mainStatusEntity.setExamStatus(jsonObject.optString("status", "off"));
-                mainStatusEntity.setExamNum(jsonObject.optString("num", "0"));
+                mainStatusEntity.setExamNum(jsonObject.optString("num", "-1"));
             } else {
                 mainStatusEntity.setHaveExam(false);
             }

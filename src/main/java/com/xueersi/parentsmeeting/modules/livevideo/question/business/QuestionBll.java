@@ -1012,14 +1012,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     @Override
-    public void onExamStop() {
+    public void onExamStop(final String num) {
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 int delayTime = 0;
                 if (examQuestionPager != null) {
                     curQuestionView = examQuestionPager.getBasePager();
-                    mLogtf.i("onExamStop:num=" + examQuestionPager.getNum());
+                    mLogtf.i("onExamStop:num=" + num + "," + examQuestionPager.getNum());
                     examQuestionPager.examSubmitAll();
                     delayTime = 3000;
                     closePageByTeamPk(examQuestionPager.getBasePager());

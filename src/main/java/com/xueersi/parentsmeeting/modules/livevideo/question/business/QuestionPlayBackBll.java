@@ -104,7 +104,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
-                questionBll.onExamStop();
+                questionBll.onExamStop(questionEntity.getvQuestionID());
             }
             break;
         }

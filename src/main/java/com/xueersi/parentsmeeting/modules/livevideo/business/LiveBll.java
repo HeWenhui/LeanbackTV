@@ -1064,8 +1064,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     }
                     LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
                     if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
+                        String num = mainRoomstatus.getExamNum();
                         if ("on".equals(mainRoomstatus.getExamStatus())) {
-                            String num = mainRoomstatus.getExamNum();
                             VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                             videoQuestionLiveEntity.id = num;
                             mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
@@ -1073,7 +1073,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                                 mAnswerRankBll.setTestId(num);
                             }
                         } else {
-                            mQuestionAction.onExamStop();
+                            mQuestionAction.onExamStop(num);
                         }
                     }
 //                    if (liveVoteAction == null && liveLazyBllCreat != null) {
@@ -1707,7 +1707,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         }
 
                         if (mQuestionAction != null) {
-                            mQuestionAction.onExamStop();
+                            String num = object.optString("num", "-1");
+                            mQuestionAction.onExamStop(num);
                             if (mQuestionAction instanceof QuestionBll) {
                                 ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
                                 Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: EXAM_STOP");
