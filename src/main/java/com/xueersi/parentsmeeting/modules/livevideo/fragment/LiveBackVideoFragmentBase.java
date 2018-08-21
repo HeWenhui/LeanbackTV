@@ -391,12 +391,6 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        videoCreate.savedInstanceState = savedInstanceState;
-    }
-
     // region 播放管理业务
     protected RelativeLayout mContentView;
 
@@ -409,8 +403,6 @@ public class LiveBackVideoFragmentBase extends Fragment {
         return mContentView;
     }
 
-
-    // region 播放管理业务
 
     /** 加载界面 */
     protected void loadView(int id) {
@@ -453,6 +445,15 @@ public class LiveBackVideoFragmentBase extends Fragment {
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // 使屏幕保持长亮
         loadLandOrPortView();
     }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        videoCreate.savedInstanceState = savedInstanceState;
+    }
+
+    // region 播放管理业务
+
 
     protected LiveBackPlayerFragment getFragment() {
         LiveVideoFragmentBase liveVideoPlayFragment = new LiveVideoFragmentBase();
@@ -525,8 +526,8 @@ public class LiveBackVideoFragmentBase extends Fragment {
         protected long getStartPosition() {
             return liveBackVideoFragment.getStartPosition();
         }
-        
-        
+
+
     }
 
     protected void onStartPlayer() {

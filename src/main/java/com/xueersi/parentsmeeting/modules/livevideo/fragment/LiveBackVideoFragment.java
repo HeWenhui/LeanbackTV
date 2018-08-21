@@ -141,6 +141,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
      */
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        mContentView = (RelativeLayout) super.onCreateView(inflater, container, savedInstanceState);
+        initView();
+        return mContentView;
+    }
+
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
@@ -159,14 +167,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         initData();
         initBll();
         addOnGlobalLayoutListener();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        mContentView = (RelativeLayout) super.onCreateView(inflater, container, savedInstanceState);
-        initView();
-        return mContentView;
     }
 
     @Override
@@ -257,8 +257,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
         if (mVideoEntity.getIsAllowMarkpoint() != 1) {
             mPlayBackMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-",
-                    lstVideoQuestion,
-                    vPlayer.getDuration());
+                    lstVideoQuestion, vPlayer.getDuration());
         }
     }
 
