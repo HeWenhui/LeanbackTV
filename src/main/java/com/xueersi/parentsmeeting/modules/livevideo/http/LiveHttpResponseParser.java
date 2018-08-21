@@ -317,7 +317,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             Object getTotalOpeningLengthObj = data.opt("getTotalOpeningLength");
             if (getTotalOpeningLengthObj instanceof JSONObject) {
                 JSONObject getTotalOpeningLength = (JSONObject) getTotalOpeningLengthObj;
-                totalOpeningLength.duration = getTotalOpeningLength.getDouble("duration");
+                totalOpeningLength.duration = getTotalOpeningLength.optDouble("duration", 0);
                 totalOpeningLength.speakingLen = getTotalOpeningLength.optString("speaking_len");
                 totalOpeningLength.speakingNum = getTotalOpeningLength.optInt("speaking_num", 0);
             }
