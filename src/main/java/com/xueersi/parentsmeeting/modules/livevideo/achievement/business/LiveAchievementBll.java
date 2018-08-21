@@ -923,7 +923,7 @@ public class LiveAchievementBll implements StarInteractAction {
             } else {
                 endLinePoint.point = endGoldPoint;
                 iv_livevideo_starinteract_stat.setImageResource(isSmallEnglish
-                        ? R.drawable.bg_livevideo_small_english_statinteract_stat_big
+                        ? R.drawable.bg_livevideo_small_english_statinteract_gold_big
                         : R.drawable.bg_livevideo_statinteract_gold_big);
             }
         }
