@@ -317,7 +317,9 @@ public class LiveRemarkBll {
     public void setList(List<VideoPointEntity> list) {
         mList = list;
         setEntityNum(mList);
-        setNewEntityNum(mList);
+        if(AppConfig.isMulLiveBack){
+            setNewEntityNum(mList);
+        }
     }
 
 
