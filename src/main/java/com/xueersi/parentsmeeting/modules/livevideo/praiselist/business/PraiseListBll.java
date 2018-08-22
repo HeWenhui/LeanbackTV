@@ -76,27 +76,32 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         this.mLiveBll = mLiveBll;
     }
 
-    public void initView(RelativeLayout bottomContent) {
+    public void initView(final RelativeLayout bottomContent) {
 
-        rBottomContent = bottomContent;
-        //表扬榜
-        if (rPraiseListContent != null) {
-            //设置主视图参数
-            RelativeLayout.LayoutParams mainParam=new RelativeLayout.LayoutParams(videoWidth, displayHeight);
-            mainParam.addRule(RelativeLayout.CENTER_VERTICAL);
-            rPraiseListContent.setLayoutParams(mainParam);
-            bottomContent.addView(rPraiseListContent);
-        }
+        mVPlayVideoControlHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                rBottomContent = bottomContent;
+                //表扬榜
+                if (rPraiseListContent != null) {
+                    //设置主视图参数
+                    RelativeLayout.LayoutParams mainParam=new RelativeLayout.LayoutParams(videoWidth, displayHeight);
+                    mainParam.addRule(RelativeLayout.CENTER_VERTICAL);
+                    rPraiseListContent.setLayoutParams(mainParam);
+                    bottomContent.addView(rPraiseListContent);
+                }
 
-        else{
-            rPraiseListContent = new RelativeLayout(activity);
-            rPraiseListContent.setId(R.id.rl_livevideo_content_praiselist);
-            //设置主视图参数
-            RelativeLayout.LayoutParams mainParam=new RelativeLayout.LayoutParams(videoWidth, displayHeight);
-            mainParam.addRule(RelativeLayout.CENTER_VERTICAL);
-            rPraiseListContent.setLayoutParams(mainParam);
-            bottomContent.addView(rPraiseListContent);
-        }
+                else{
+                    rPraiseListContent = new RelativeLayout(activity);
+                    rPraiseListContent.setId(R.id.rl_livevideo_content_praiselist);
+                    //设置主视图参数
+                    RelativeLayout.LayoutParams mainParam=new RelativeLayout.LayoutParams(videoWidth, displayHeight);
+                    mainParam.addRule(RelativeLayout.CENTER_VERTICAL);
+                    rPraiseListContent.setLayoutParams(mainParam);
+                    bottomContent.addView(rPraiseListContent);
+                }
+            }
+        });
     }
 
     /**
@@ -331,27 +336,32 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
      * @param height
      */
     @Override
-    public void setVideoLayout(int width, int height) {
-        int screenWidth = getScreenParam();
-        int screenHeight = ScreenUtils.getScreenHeight();
-        displayHeight = height;
-        displayWidth = screenWidth;
+    public void setVideoLayout(final int width, final int height) {
+        mVPlayVideoControlHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                int screenWidth = getScreenParam();
+                int screenHeight = ScreenUtils.getScreenHeight();
+                displayHeight = height;
+                displayWidth = screenWidth;
 
-        if (width > 0) {
-            wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
-            wradio += (screenWidth - width) / 2;
-            if (displayWidth-wradio==videoWidth){
-                return;
-            } else {
-                videoWidth = displayWidth - wradio;
+                if (width > 0) {
+                    wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
+                    wradio += (screenWidth - width) / 2;
+                    if (displayWidth-wradio==videoWidth){
+                        return;
+                    } else {
+                        videoWidth = displayWidth - wradio;
+                    }
+                }
+                if(rPraiseListContent!=null){
+                    RelativeLayout.LayoutParams params=(RelativeLayout.LayoutParams) rPraiseListContent.getLayoutParams();
+                    params.height=displayHeight;
+                    params.width=videoWidth;
+                    rPraiseListContent.setLayoutParams(params);
+                }
             }
-        }
-        if(rPraiseListContent!=null){
-            RelativeLayout.LayoutParams params=(RelativeLayout.LayoutParams) rPraiseListContent.getLayoutParams();
-            params.height=displayHeight;
-            params.width=videoWidth;
-            rPraiseListContent.setLayoutParams(params);
-        }
+        });
     }
 
     private int getScreenParam(){
