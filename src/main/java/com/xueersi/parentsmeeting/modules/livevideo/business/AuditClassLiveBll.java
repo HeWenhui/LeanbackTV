@@ -18,6 +18,7 @@ import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
@@ -68,7 +69,7 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
+public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, LiveOnLineLogs {
     private String TAG = "AuditClassLiveBllLog";
     String liveListenEventid = LiveVideoConfig.LIVE_LISTEN;
     private AuditVideoAction mVideoAction;

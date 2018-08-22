@@ -12,6 +12,9 @@ public class ProgressListEntity {
     /** 是否点赞标志位 */
     private int praiseStatus;
 
+    /** 是否在榜单中 */
+    int isMy;
+
     ArrayList<ProgressEntity> progressEntities = new ArrayList<>();
 
     public ArrayList<ProgressEntity> getProgressEntities() {
@@ -73,6 +76,14 @@ public class ProgressListEntity {
 
     public void setPraiseStatus(int praiseStatus) {
         this.praiseStatus = praiseStatus;
+    }
+
+    public int getIsMy() {
+        return isMy;
+    }
+
+    public void setIsMy(int isMy) {
+        this.isMy = isMy;
     }
 
 

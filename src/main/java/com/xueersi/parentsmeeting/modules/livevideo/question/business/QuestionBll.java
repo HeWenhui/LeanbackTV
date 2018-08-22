@@ -816,7 +816,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onStopQuestion(String ptype, final String nonce) {
-        Loger.i("=====questionbll  question stop");
+        mLogtf.d("onStopQuestion:ptype=" + ptype);
         boolean havePager = false;
         boolean oldisAnaswer = isAnaswer;
         isAnaswer = false;
@@ -2025,15 +2025,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         @Override
         public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
             mLogtf.d("stopSpeech:voiceAnswerPager:end=" + answerPager.isEnd());
-            answerPager.onDestroy();
-            rlQuestionContent.removeView(answerPager.getRootView());
-            if (answerPager == voiceAnswerPager) {
-                voiceAnswerPager = null;
-            }
-            AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
-            if (audioRequest != null) {
-                audioRequest.release();
-            }
+            stopVoiceAnswerPager(answerPager);
 //            if (rlVoiceQuestionContent != null) {
 //                rlVoiceQuestionContent.removeAllViews();
 //                bottomContent.removeView(rlVoiceQuestionContent);

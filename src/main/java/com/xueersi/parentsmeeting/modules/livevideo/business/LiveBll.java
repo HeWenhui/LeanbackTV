@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.English
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -132,7 +133,7 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, LiveAchievementHttp, EnglishSpeekHttp, EnglishH5CoursewareHttp, VideoChatHttp, SpeechFeedBackHttp, LearnReportHttp, LecAdvertHttp, LecLearnReportHttp {
+public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, LiveAchievementHttp, EnglishSpeekHttp, EnglishH5CoursewareHttp, VideoChatHttp, SpeechFeedBackHttp, LearnReportHttp, LecAdvertHttp, LecLearnReportHttp, LiveOnLineLogs {
     private String TAG = "LiveBllLog";
     private LiveLazyBllCreat liveLazyBllCreat;
     /** 互动题 */
@@ -289,7 +290,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpManager.addBodyParam("form", "" + form);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(TAG, this);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (liveGetInfo != null) {
@@ -305,7 +306,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(TAG, this);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -322,7 +323,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(TAG, this);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
