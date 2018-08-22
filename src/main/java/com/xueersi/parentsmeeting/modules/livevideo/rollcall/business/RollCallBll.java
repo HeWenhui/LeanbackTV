@@ -10,7 +10,6 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -149,7 +148,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
             @Override
             public void run() {
                 int screenWidth = ScreenUtils.getScreenWidth();
-                int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+                int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
                 rlRollCallContent = new RelativeLayout(activity);
                 bottomContent.addView(rlRollCallContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                         .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -188,7 +187,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) classmateSignPager.getRootView()
                     .getLayoutParams();
             int screenWidth = ScreenUtils.getScreenWidth();
-            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH) +
+            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH) +
                     (screenWidth - lp.width) / 2;
             params.rightMargin = wradio;
             LayoutParamsUtil.setViewLayoutParams(classmateSignPager.getRootView(), params);
