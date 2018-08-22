@@ -1698,6 +1698,18 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
+    private void switchVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
+        voiceAnswerPager.stopPlayer();
+        rlQuestionContent.removeView(voiceAnswerPager.getRootView());
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+        if (audioRequest != null) {
+            audioRequest.release();
+        }
+        if (voiceAnswerPager == QuestionBll.this.voiceAnswerPager) {
+            QuestionBll.this.voiceAnswerPager = null;
+        }
+    }
+
     private void stopVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
         voiceAnswerPager.stopPlayer();
         voiceAnswerPager.onDestroy();
@@ -1967,16 +1979,16 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity1.type)) {
                 if ("1".equals(videoQuestionLiveEntity1.choiceType)) {
                     showSelectQuestion(videoQuestionLiveEntity1);
-                    stopVoiceAnswerPager(baseVoiceAnswerPager);
+                    switchVoiceAnswerPager(baseVoiceAnswerPager);
                     return baseQuestionPager;
                 } else {
                     showMulitSelectQuestion(videoQuestionLiveEntity1);
-                    stopVoiceAnswerPager(baseVoiceAnswerPager);
+                    switchVoiceAnswerPager(baseVoiceAnswerPager);
                     return baseQuestionPager;
                 }
             } else if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
                 showFillBlankQuestion(videoQuestionLiveEntity1);
-                stopVoiceAnswerPager(baseVoiceAnswerPager);
+                switchVoiceAnswerPager(baseVoiceAnswerPager);
                 return baseQuestionPager;
             }
             return null;

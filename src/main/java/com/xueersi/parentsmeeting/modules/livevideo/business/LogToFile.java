@@ -97,10 +97,12 @@ public class LogToFile {
     }
 
     public void i(String message) {
-        Loger.i(TAG, message);
+        String getPrefix = "";
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, liveOnLineLogs.getPrefix() + ":" + TAG + "**" + message);
+            getPrefix = liveOnLineLogs.getPrefix();
+            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
         }
+        Loger.i(getPrefix + ":" + TAG, message);
 //        if (AppConfig.DEBUG) {
 //            liveThreadPoolExecutor.execute(new WriteThread(message));
 //        }
@@ -108,10 +110,12 @@ public class LogToFile {
     }
 
     public void d(String message) {
-        Loger.i(TAG, message);
+        String getPrefix = "";
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, liveOnLineLogs.getPrefix() + ":" + TAG + "**" + message);
+            getPrefix = liveOnLineLogs.getPrefix();
+            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
         }
+        Loger.i(getPrefix + ":" + TAG, message);
 //        if (AppConfig.DEBUG) {
 //            liveThreadPoolExecutor.execute(new WriteThread(message));
 //        }
@@ -127,10 +131,12 @@ public class LogToFile {
     }
 
     public void e(String message, Throwable e) {
-        Loger.i(TAG, message, e);
+        String getPrefix = "";
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, liveOnLineLogs.getPrefix() + ":" + TAG + "**" + message + "**" + e);
+            getPrefix = liveOnLineLogs.getPrefix();
+            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message + "**" + e);
         }
+        Loger.i(getPrefix + ":" + TAG, message, e);
         liveThreadPoolExecutor.execute(new WriteThread(message, e));
     }
 

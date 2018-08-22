@@ -268,10 +268,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         isEnd = true;
         endnonce = nonce;
         ViewGroup group = (ViewGroup) mView.getParent();
-        Loger.d(TAG, "examSubmitAll:method=" + method + ",error=" + isSpeechError + ",success=" + isSpeechSuccess);
-        if (group == null) {
-            return;
-        }
+        Loger.d(TAG, "examSubmitAll:method=" + method + ",group=" + (group == null)+ ",error=" + isSpeechError + ",success=" + isSpeechSuccess);
         if (isSpeechError || isSpeechSuccess) {
             questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
         } else {

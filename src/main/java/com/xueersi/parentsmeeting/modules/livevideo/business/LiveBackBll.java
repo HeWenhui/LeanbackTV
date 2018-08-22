@@ -94,6 +94,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
     LogToFile logToFile;
 
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
+        logger.setLogMethod(false);
         this.activity = activity;
         this.mVideoEntity = mVideoEntity;
         ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, this);
@@ -264,7 +265,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
             }
             LiveBackBaseBll liveBackBaseBll = array.get(oldQuestionEntity.getvCategory());
             if (liveBackBaseBll != null) {
-                logger.d("scanQuestion:onQuestionEnd" + oldQuestionEntity.getvCategory());
+                logger.d("scanQuestion:onQuestionEnd:id=" + oldQuestionEntity.getvCategory());
                 liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
             }
             showQuestion.onHide(oldQuestionEntity);
@@ -305,6 +306,12 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         @Override
         public void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity) {
             logToFile.d("onHide:mQuestionEntity=" + mQuestionEntity + ",baseVideoQuestionEntity=" + baseVideoQuestionEntity);
+            if (baseVideoQuestionEntity != null && mQuestionEntity != null) {
+                logToFile.d("onHide:vCategory=" + mQuestionEntity.getvCategory() + ",id=" + mQuestionEntity.getvQuestionID() + ",id2=" + baseVideoQuestionEntity.getvQuestionID());
+                if (!baseVideoQuestionEntity.getvQuestionID().equals(mQuestionEntity.getvQuestionID())) {
+                    return;
+                }
+            }
             mIsShowQuestion = false;
             MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
             mediaControllerAction.attachMediaController();
