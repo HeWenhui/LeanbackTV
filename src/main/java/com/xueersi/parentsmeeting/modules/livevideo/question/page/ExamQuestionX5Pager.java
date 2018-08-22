@@ -181,8 +181,6 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
             }
         });
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
-        wvSubjectWeb.getSettings().setJavaScriptEnabled(true);
-        wvSubjectWeb.addJavascriptInterface(this,"xesapp");
     }
 
     @Override
@@ -218,18 +216,6 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
 //        // 设置出现缩放工具
 //        webSetting.setBuiltInZoomControls(true);
 //        webSetting.setDisplayZoomControls(false);
-    }
-
-
-    /**
-     * 文科 课件 答题结果js回调
-     */
-    @JavascriptInterface
-    public void showAnswerResult_LiveVideo(String data){
-        Loger.e("ExamQuestionX5Pager","=========>showAnswerResult_LiveVideo:"+data);
-        if(questionBll != null){
-            questionBll.onAnswerResult(data);
-        }
     }
 
 

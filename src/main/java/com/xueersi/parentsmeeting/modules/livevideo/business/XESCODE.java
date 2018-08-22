@@ -171,12 +171,11 @@ public interface XESCODE {
     /**
      * 文科新课件平台 对接notice 指令
      */
-
     /**文科在线教研 发题*/
     int ARTS_SEND_QUESTION = 1104;
     /**文科在线教研收题*/
     int ARTS_STOP_QUESTION = 1105;
     /**文科设计组课件收发题*/
-    int ARTS_COURSEWARE = 1145;
+    int ARTS_H5_COURSEWARE = 1145;
 
 }

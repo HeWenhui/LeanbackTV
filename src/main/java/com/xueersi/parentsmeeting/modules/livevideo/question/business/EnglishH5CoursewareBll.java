@@ -287,6 +287,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     @Override
     public void onH5Courseware(final String status, final VideoQuestionLiveEntity videoQuestionLiveEntity) {
 //        logToFile.i("onH5Courseware:url=" + url + ",status=" + status);
+
+        com.xueersi.lib.log.Loger.e("EnglishH5CourseWareBll","===========>onH5Courseware:"+status+":"+videoQuestionLiveEntity);
+
+        setWebViewCloseByTeacher(true);
         handler.post(new Runnable() {
             @Override
             public void run() {
