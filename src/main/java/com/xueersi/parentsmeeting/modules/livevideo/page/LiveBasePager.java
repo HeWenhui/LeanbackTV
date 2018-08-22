@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewParent;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
@@ -24,9 +25,18 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected LogToFile mLogtf;
     protected LiveAndBackDebug mLiveBll;
     protected LivePagerBack livePagerBack;
+    protected BaseVideoQuestionEntity baseVideoQuestionEntity;
 
     public LiveBasePager(Context context) {
         super(context);
+    }
+
+    public BaseVideoQuestionEntity getBaseVideoQuestionEntity() {
+        return baseVideoQuestionEntity;
+    }
+
+    public void setBaseVideoQuestionEntity(BaseVideoQuestionEntity baseVideoQuestionEntity) {
+        this.baseVideoQuestionEntity = baseVideoQuestionEntity;
     }
 
     /***

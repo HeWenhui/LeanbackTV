@@ -426,7 +426,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
         OnH5ResultClose onH5ResultClose = new OnH5ResultClose() {
             @Override
-            public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager) {
+            public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
                 if (h5CoursewarePager == null) {
                     return;
                 }
@@ -682,7 +682,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
     public interface OnH5ResultClose {
-        void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager);
+        void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity);
     }
 
     private void getFullMarkList(final int delayTime) {

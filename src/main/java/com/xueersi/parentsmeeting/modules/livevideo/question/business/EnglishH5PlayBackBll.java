@@ -115,7 +115,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
                         mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                         mediaPlayerControl.start();
-                        showQuestion.onShow(false);
+                        showQuestion.onHide(questionEntity);
                     }
                 });
                 verifyCancelAlertDialog.showDialog();

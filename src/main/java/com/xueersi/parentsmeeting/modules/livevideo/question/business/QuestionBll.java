@@ -119,7 +119,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /** 互动题布局 */
     private BaseLiveQuestionPager baseQuestionPager;
     LiveQuestionCreat liveQuestionCreat;
-    RelativeLayout bottomContent;
     /** 互动题的布局 */
     private RelativeLayout rlQuestionContent;
     /** 互动题作答成功的布局 */
@@ -274,7 +273,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void initView(RelativeLayout bottomContent, boolean isLand) {
         this.isLand = isLand;
         isAbLand.set(isLand);
-        this.bottomContent = bottomContent;
         //互动题
         rlQuestionContent = new RelativeLayout(activity);
         rlQuestionContent.setId(R.id.rl_livevideo_content_question);
@@ -502,7 +500,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             rlQuestionContent.removeView(questionWebPager.getRootView());
                             questionWebPager = null;
                         }
-                        QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this, liveGetInfo
+                        QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, null, QuestionBll.this, liveGetInfo
                                 .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
                                 liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
                                 videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), IS_SCIENCE, stuCouId,
@@ -1205,7 +1203,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     @Override
-    public void stopWebQuestion(BasePager pager, String testId) {
+    public void stopWebQuestion(BasePager pager, String testId, BaseVideoQuestionEntity baseVideoQuestionEntity) {
         if (pager instanceof BaseQuestionWebInter) {
             mQueAndBool.add("" + testId);
             if (questionWebPager != null) {
@@ -1235,7 +1233,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
 
     @Override
-    public void stopSpeech(BaseSpeechAssessmentPager pager, final String num) {
+    public void stopSpeech(BaseSpeechAssessmentPager pager, BaseVideoQuestionEntity baseVideoQuestionEntity, final String num) {
         mLogtf.d("stopSpeech:num=" + num + ",isAnaswer=" + isAnaswer + ",same=" + (pager == speechAssessmentPager));
         mQueAndBool.add("" + num);
         if (pager == speechAssessmentPager && speechAssessmentPager != null) {
@@ -1490,13 +1488,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             if (voiceAnswerPager.isEnd()) {
                 mLogtf.d("removeBaseVoiceAnswerPager1");
                 voiceAnswerPager2.onDestroy();
-                bottomContent.removeView(voiceAnswerPager2.getRootView());
+                rlQuestionContent.removeView(voiceAnswerPager2.getRootView());
                 voiceAnswerPager = null;
             }
         } else {
             mLogtf.d("removeBaseVoiceAnswerPager1");
             voiceAnswerPager2.onDestroy();
-            bottomContent.removeView(voiceAnswerPager2.getRootView());
+            rlQuestionContent.removeView(voiceAnswerPager2.getRootView());
         }
     }
 

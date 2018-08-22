@@ -16,11 +16,10 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
@@ -70,10 +69,11 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private int mEngerNum;
     private boolean allowTeamPk;
 
-    public QuestionWebX5Pager(Context context, StopWebQuestion questionBll, String testPaperUrl,
+    public QuestionWebX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, StopWebQuestion questionBll, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
-                              String nonce, String isShowRanks, boolean IS_SCIENCE, String stuCouId,boolean allowTeamPk) {
+                              String nonce, String isShowRanks, boolean IS_SCIENCE, String stuCouId, boolean allowTeamPk) {
         super(context);
+        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.IS_SCIENCE = IS_SCIENCE;
         this.questionBll = questionBll;
         this.stuId = stuId;
@@ -134,7 +134,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             public void onClick(View v) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
-                questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId);
+                questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId, getBaseVideoQuestionEntity());
             }
         });
         btSubjectCalljs.setOnClickListener(new View.OnClickListener() {
@@ -384,7 +384,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 if (group != null) {
                     group.removeView(mView);
                 }
-                questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId);
+                questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId, getBaseVideoQuestionEntity());
                 Map<String, String> mData = new HashMap<>();
                 mData.put("testid", "" + testId);
                 mData.put("closetype", "clickWebCloseButton");

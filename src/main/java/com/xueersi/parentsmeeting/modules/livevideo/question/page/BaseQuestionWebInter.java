@@ -3,8 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.view.View;
 
 import com.xueersi.common.base.BasePager;
-
-import java.util.Map;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 
 /**
  * Created by lyqai on 2018/5/29.
@@ -23,6 +22,6 @@ public interface BaseQuestionWebInter {
     void onDestroy();
 
     interface StopWebQuestion {
-        void stopWebQuestion(BasePager pager, String testId);
+        void stopWebQuestion(BasePager pager, String testId, BaseVideoQuestionEntity baseVideoQuestionEntity);
     }
 }

@@ -47,7 +47,6 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     String TAG = "VoiceAnswerPager" + staticInt++;
     String eventId = LiveVideoConfig.LIVE_TEST_VOICE;
     private SpeechEvaluatorUtils mIse;
-    BaseVideoQuestionEntity baseVideoQuestionEntity;
     /** 评测标题 */
     TextView tvVoiceansTitle;
     /** 错误提示 */
@@ -85,7 +84,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
 
     public VoiceAnswerPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch) {
         super(context);
-        this.baseVideoQuestionEntity = baseVideoQuestionEntity;
+        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.questionSwitch = questionSwitch;
         this.type = type;
         this.assess_ref = assess_ref;

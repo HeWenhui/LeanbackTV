@@ -81,7 +81,6 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  */
 public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     private SpeechEvaluatorUtils mIse;
-    BaseVideoQuestionEntity baseVideoQuestionEntity;
     /** 所有帧动画 */
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
     /** 组内战况已经被加入的学生 */
@@ -153,7 +152,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
     public VoiceAnswerStandPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, String headUrl, String userName) {
         super(context);
-        this.baseVideoQuestionEntity = baseVideoQuestionEntity;
+        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.questionSwitch = questionSwitch;
         this.type = type;
         this.assess_ref = assess_ref;

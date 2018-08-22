@@ -41,7 +41,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
             mAnswerRankBll = mAnswerRankIRCBll.getAnswerRankBll();
         }
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
-        EnglishH5CoursewareX5Pager h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+        EnglishH5CoursewareX5Pager h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"
                 : mAnswerRankBll.getIsShow(), IS_SCIENCE,allowTeamPk);
         h5CoursewarePager.setLivePagerBack(livePagerBack);

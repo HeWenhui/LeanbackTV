@@ -137,7 +137,7 @@ public class LiveQuestionCreat {
                             }
                             LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(activity, LiveBackBll.ShowQuestion.class);
                             if (showQuestion != null) {
-                                showQuestion.onShow(false);
+                                showQuestion.onHide(videoQuestionLiveEntity2);
                             }
                         }
                     });

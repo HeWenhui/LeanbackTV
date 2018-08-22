@@ -40,7 +40,7 @@ public class LiveBackSpeechCreat implements BaseSpeechCreat {
         wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
         wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         SpeechAssAutoPager speechAssAutoPager = new SpeechAssAutoPager(context,
-                liveid, videoQuestionLiveEntity.id,
+                videoQuestionLiveEntity, liveid, videoQuestionLiveEntity.id,
                 "", videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time,
                 videoQuestionLiveEntity.getvEndTime() - videoQuestionLiveEntity.getvQuestionInsretTime(), learning_stage, wrapSpeechEvalAction, livePagerBack);
         return speechAssAutoPager;
@@ -52,7 +52,7 @@ public class LiveBackSpeechCreat implements BaseSpeechCreat {
         wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
         wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
-                liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
                 false, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false, livePagerBack);
         return speechAssessmentPager;
     }

@@ -20,7 +20,7 @@ public class LiveSubjectResultCreat implements BaseSubjectResultCreat {
 
     @Override
     public SubjectResultX5Pager creat(Context context, BaseQuestionWebInter.StopWebQuestion questionBll, String testPaperUrl, String stuId, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String stuCouId) {
-        SubjectResultX5Pager subjectResultPager = new SubjectResultX5Pager(context, questionBll,
+        SubjectResultX5Pager subjectResultPager = new SubjectResultX5Pager(context, videoQuestionLiveEntity, questionBll,
                 liveGetInfo.getSubjectiveTestAnswerResult(),
                 liveGetInfo.getStuId(), liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
                 stuCouId);
