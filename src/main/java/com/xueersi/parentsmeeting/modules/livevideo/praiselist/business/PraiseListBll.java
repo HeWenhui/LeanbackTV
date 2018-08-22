@@ -355,7 +355,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
                     }
                 }
                 if (rPraiseListContent != null){
-                    RelativeLayout.LayoutParams params = RelativeLayout.LayoutParams) rPraiseListContent.getLayoutParams();
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rPraiseListContent.getLayoutParams();
                     params.height= displayHeight;
                     params.width=videoWidth;
                     rPraiseListContent.setLayoutParams(params);
