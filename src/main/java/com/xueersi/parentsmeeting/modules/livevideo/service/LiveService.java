@@ -11,8 +11,15 @@ import android.os.Looper;
 import android.support.annotation.Nullable;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.config.AppConfig;
+import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.lib.log.FileLogger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xutils.xutils.common.util.IOUtil;
 
 import java.io.BufferedReader;
@@ -24,7 +31,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -76,12 +85,51 @@ public class LiveService extends Service {
         super.onCreate();
         Loger.d(TAG, "onCreate");
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
-        alldir = new File(BaseApplication.getContext().getExternalCacheDir(), "livelog/log");
-        if (alldir == null) {
-            alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/livelog/log");
-        }
+        alldir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/cache");
         if (!alldir.exists()) {
             alldir.mkdirs();
+        }
+        File[] files = alldir.listFiles();
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                File file = files[i];
+                File uploadfile = new File(file.getParentFile(), "upload" + file.getName());
+                if (!file.getName().contains("upload")) {
+                    List<String> stringList = FileUtils.readFile2List(file, "utf-8");
+                    boolean start = false;
+                    List<String> nativeList = new ArrayList<>();
+                    for (int j = stringList.size() - 1; j >= 0; j--) {
+                        String string = stringList.get(j);
+                        if (string.contains("Fatal signal")) {
+                            start = true;
+                        }
+                        if (start) {
+                            nativeList.add(string);
+                            Loger.d(TAG, "onCreate:string=" + string);
+                            if (nativeList.size() > 20) {
+                                break;
+                            }
+                        }
+                    }
+                    if (!nativeList.isEmpty()) {
+                        JSONObject jsonObject = new JSONObject();
+                        JSONArray jsonArray = new JSONArray();
+                        for (int j = nativeList.size() - 1; j >= 0; j--) {
+                            String string = nativeList.get(j);
+                            jsonArray.put(string);
+                        }
+                        try {
+                            jsonObject.put("eventid2", "livevideo_crash");
+                            jsonObject.put("message", jsonArray);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Exception exception = new Exception(jsonObject.toString());
+                        FileLogger.writeExceptionLog(exception);
+                    }
+                    file.renameTo(uploadfile);
+                }
+            }
         }
         handler.postDelayed(runnable, 10000);
     }

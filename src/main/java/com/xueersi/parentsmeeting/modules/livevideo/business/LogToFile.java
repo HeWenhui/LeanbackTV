@@ -84,9 +84,10 @@ public class LogToFile {
                 auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message);
             }
         }
-        if (AppConfig.DEBUG) {
-            liveThreadPoolExecutor.execute(new WriteThread(message));
-        }
+//        if (AppConfig.DEBUG) {
+//            liveThreadPoolExecutor.execute(new WriteThread(message));
+//        }
+        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
     public void d(String message) {
@@ -100,16 +101,18 @@ public class LogToFile {
                 auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message);
             }
         }
-        if (AppConfig.DEBUG) {
-            liveThreadPoolExecutor.execute(new WriteThread(message));
-        }
+//        if (AppConfig.DEBUG) {
+//            liveThreadPoolExecutor.execute(new WriteThread(message));
+//        }
+        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
     public void debugSave(String message) {
         Loger.i(TAG, message);
-        if (AppConfig.DEBUG) {
-            liveThreadPoolExecutor.execute(new WriteThread(message));
-        }
+//        if (AppConfig.DEBUG) {
+//            liveThreadPoolExecutor.execute(new WriteThread(message));
+//        }
+        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
     public void e(String message, Throwable e) {
