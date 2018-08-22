@@ -79,6 +79,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } else {
             LiveVideoConfig.isPrimary = false;
         }
+        LiveVideoConfig.educationstage = getInfo.getEducationStage();
     }
 
     /**

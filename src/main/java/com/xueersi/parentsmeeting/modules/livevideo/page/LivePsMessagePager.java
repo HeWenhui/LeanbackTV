@@ -59,6 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
@@ -167,6 +168,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 initData();
             }
         });
+        setVideoLayout(LiveVideoPoint.getInstance());
     }
 
     @Override
@@ -880,6 +882,47 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     @Override
     public boolean isCloseChat() {
         return cbMessageClock.isChecked();
+    }
+
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        {
+            int wradio = liveVideoPoint.getRightMargin();
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
+            if (wradio != params.width) {
+                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                // + ",wradio=" + wradio + "," + params.width);
+                params.width = wradio;
+//                rlInfo.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+            }
+            if (cbMessageClock != null) {
+                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+                if (params.rightMargin != wradio) {
+                    params.rightMargin = wradio;
+//                cbMessageClock.setLayoutParams(params);
+                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
+                }
+            }
+        }
+        {
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
+            int topMargin = liveVideoPoint.y3;
+            if (topMargin != params.topMargin) {
+                params.topMargin = topMargin;
+//                rlInfo.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+                logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
+            }
+            int bottomMargin = liveVideoPoint.y2;
+            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
+            if (params.bottomMargin != bottomMargin) {
+                params.bottomMargin = bottomMargin;
+//                lvMessage.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
+                //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+            }
+        }
     }
 
     public void setVideoWidthAndHeight(int width, int height) {
