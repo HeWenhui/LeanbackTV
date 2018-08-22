@@ -47,7 +47,6 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordPsItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
@@ -319,9 +318,9 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         int screenWidth = ScreenUtils.getScreenWidth();
         int screenHeight = ScreenUtils.getScreenHeight();
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
-        int hradio = (int) ((LiveVideoActivity.VIDEO_HEIGHT - LiveVideoActivity.VIDEO_HEAD_HEIGHT) * screenHeight /
-                LiveVideoActivity.VIDEO_HEIGHT);
+        int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
+        int hradio = (int) ((LiveVideoConfig.VIDEO_HEIGHT - LiveVideoConfig.VIDEO_HEAD_HEIGHT) * screenHeight /
+                LiveVideoConfig.VIDEO_HEIGHT);
         params.width = wradio;
         params.topMargin = screenHeight - hradio;
         return mView;
@@ -558,7 +557,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         });
         showExpressionView(true);
         int screenWidth = ScreenUtils.getScreenWidth();
-        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+        int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
         Loger.i(TAG, "initData:minisize=" + minisize);
@@ -1105,7 +1104,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         int screenHeight = ScreenUtils.getScreenHeight();
         if (width > 0) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
+            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
             if (wradio != params.width) {
                 //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
@@ -1125,8 +1124,8 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         }
         if (height > 0) {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
-            int topMargin = (int) ((LiveVideoActivity.VIDEO_HEIGHT - LiveVideoActivity.VIDEO_HEAD_HEIGHT) * height /
-                    LiveVideoActivity.VIDEO_HEIGHT);
+            int topMargin = (int) ((LiveVideoConfig.VIDEO_HEIGHT - LiveVideoConfig.VIDEO_HEAD_HEIGHT) * height /
+                    LiveVideoConfig.VIDEO_HEIGHT);
             topMargin = height - topMargin + (screenHeight - height) / 2;
             if (topMargin != params.topMargin) {
                 params.topMargin = topMargin;
