@@ -153,7 +153,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     };
 
     @Override
-    public void getCourseWareUrl() {
+    public void  getCourseWareUrl() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         final String today = dateFormat.format(date);
