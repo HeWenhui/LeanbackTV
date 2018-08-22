@@ -3,10 +3,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -63,6 +65,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -138,7 +141,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     private String termId;
     private View mFloatView;
     private PopupWindow mPopupWindow;
-    private int index;
+    private long mOldTime = 0;//记录点击赠送按钮那一刻的时间
 
     public LivePsMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener, LiveAndBackDebug ums, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -711,19 +714,16 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                     ice.setVisibility(View.GONE);
                     cup.setVisibility(View.GONE);
                     heart.setVisibility(View.VISIBLE);
-                    index = 0 ;
                 } else if (v.getId() == R.id.rl_cup) {
                     flowerContentView.setTag(flowerEntities.get(1));
                     ice.setVisibility(View.GONE);
                     cup.setVisibility(View.VISIBLE);
                     heart.setVisibility(View.GONE);
-                    index = 1;
                 } else if (v.getId() == R.id.rl_ice) {
                     flowerContentView.setTag(flowerEntities.get(2));
                     ice.setVisibility(View.VISIBLE);
                     cup.setVisibility(View.GONE);
                     heart.setVisibility(View.GONE);
-                    index = 2;
                 } else if (v.getId() == R.id.iv_livevideo_present_close) {
                     mFlowerWindow.dismiss();
                 }
@@ -739,57 +739,37 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 .OnClickListener() {
             @Override
             public void onClick(View v) {
-                final FlowerEntity entity = (FlowerEntity) flowerContentView.getTag();
-                ice.setVisibility(View.GONE);
-                cup.setVisibility(View.GONE);
-                heart.setVisibility(View.GONE);
-                if (entity != null) {
-                    if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
-                        if (ircState.isOpenbarrage()) {
-                            String educationStage = getInfo.getEducationStage();
-                            ircState.praiseTeacher("",entity.getFtype() + "", educationStage, new HttpCallBack(false) {
-                                @Override
-                                public void onPmSuccess(ResponseEntity responseEntity) {
-                                    if (goldNum == null) {
-                                        OtherModulesEnter.requestGoldTotal(mContext);
-                                    } else {
-                                        if (responseEntity.getJsonObject() instanceof JSONObject) {
-                                            try {
-                                                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                                                int gold = Integer.parseInt(goldNum);
-                                                goldNum = ("" + (gold - jsonObject.getInt("gold")));
-                                                onGetMyGoldDataEvent(goldNum);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    }
-                                    addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
-                                    mView.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mFlowerWindow.dismiss();
-                                        }
-                                    }, 1000);
-                                }
-
-                                @Override
-                                public void onPmFailure(Throwable error, String msg) {
-                                    mFlowerWindow.dismiss();
-                                }
-
-                                @Override
-                                public void onPmError(ResponseEntity responseEntity) {
-                                    mFlowerWindow.dismiss();
-                                }
-                            });
-//                        liveBll.sendFlowerMessage(entity.getFtype());
-                        } else {
-                            commonAction.clickIsnotOpenbarrage();
-                        }
-                    } else {
-                        commonAction.clickTran();
+                long curTime = System.currentTimeMillis();
+                if (commonAction instanceof GiftDisable) {
+                    if (mOldTime > 0 && (curTime - mOldTime) / 1000 <= 10) {
+                        Loger.i("yzl_fd", "理科 ，10s之内不让重复点击");
+                        return;
                     }
+                } else {
+                    if (mOldTime > 0 && (curTime - mOldTime) / 1000 <= 1) {
+                        Loger.i("yzl_fd", "文科，1s之内不让重复点击 ");
+                        return;
+                    }
+                }
+                mOldTime = System.currentTimeMillis();
+                final FlowerEntity entity = (FlowerEntity) flowerContentView.getTag();
+                if (entity != null) {
+
+                    if (goldNum == null || Integer.parseInt(goldNum) <= 0 || Integer.parseInt(goldNum) < entity.getGold()) {
+                        XESToastUtils.showToast(mContext, "您的金币不足啦");
+                        return;
+                    }
+                    if (commonAction instanceof GiftDisable) {
+                        startCountDownFlowerIcon();
+                        String formWhichTeacher = LiveTopic.MODE_CLASS.equals(ircState.getMode()) ? "t" : "f";
+                        ////理科点击赠送的逻辑
+                        Loger.i("yzl_fd", "理科，不区分主讲，点击了赠送，开始10s倒计时 formWhichTeacher = " + formWhichTeacher);
+                        logicForOpenbarrageLike(entity, formWhichTeacher);
+                    } else {
+                        //文科点击赠送的逻辑
+                        logicForChOnClickSendFlowerBt(entity);
+                    }
+
                 } else {
                     commonAction.clickNoChoice();
                 }
@@ -853,6 +833,197 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         return commonAction.createSpannable(ftype, name, drawable);
     }
 
+    /**
+     * 文科点击赠送按钮的逻辑
+     *
+     * @param entity
+     */
+    private void logicForChOnClickSendFlowerBt(final FlowerEntity entity) {
+        if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+            logicForOpenbarrage(entity);
+        } else {
+            commonAction.clickTran();
+        }
+    }
+
+    /**
+     * 理科，当老师开启了送花或者送礼物开关后，点击赠送按钮之后的逻辑处理
+     *
+     * @param entity
+     * @param formWhichTeacher
+     */
+    private void logicForOpenbarrageLike(final FlowerEntity entity, String formWhichTeacher) {
+        //主讲或者辅导有任一个开启了献花
+        if (ircState.isOpenZJLKbarrage() || ircState.isOpenFDLKbarrage()) {
+            String educationStage = getInfo.getEducationStage();
+            ircState.praiseTeacher(formWhichTeacher, entity.getFtype() + "", educationStage, new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) {
+                    if (goldNum == null) {
+                        OtherModulesEnter.requestGoldTotal(mContext);
+                    } else {
+                        if (responseEntity.getJsonObject() instanceof JSONObject) {
+                            try {
+                                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                                int gold = Integer.parseInt(goldNum);
+                                goldNum = ("" + (gold - jsonObject.getInt("gold")));
+                                if (Integer.parseInt(goldNum) <= 0) {
+                                    XESToastUtils.showToast(mContext, "您的金币不足啦");
+                                    return;
+                                }
+                                onGetMyGoldDataEvent(goldNum);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
+                    mView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mFlowerWindow.dismiss();
+                        }
+                    }, 1000);
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    mFlowerWindow.dismiss();
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    mFlowerWindow.dismiss();
+                }
+            });
+//                        liveBll.sendFlowerMessage(entity.getFtype());
+        } else {
+            if (commonAction instanceof GiftDisable) {
+                //理科要区分主讲和辅导，谁没有开启送礼物
+                ((GiftDisable) commonAction).clickIsnotOpenbarrage(ircState.getMode());
+            } else {
+                commonAction.clickIsnotOpenbarrage();
+            }
+
+        }
+    }
+
+    /**
+     * 文科，当老师开启了送花或者送礼物开关后，点击赠送按钮之后的逻辑处理
+     *
+     * @param entity
+     */
+    private void logicForOpenbarrage(final FlowerEntity entity) {
+        if (ircState.isOpenbarrage()) {
+            String educationStage = getInfo.getEducationStage();
+            ircState.praiseTeacher(ircState.getMode(), entity.getFtype() + "", educationStage, new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) {
+                    if (goldNum == null) {
+                        OtherModulesEnter.requestGoldTotal(mContext);
+                    } else {
+                        if (responseEntity.getJsonObject() instanceof JSONObject) {
+                            try {
+                                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                                int gold = Integer.parseInt(goldNum);
+                                goldNum = ("" + (gold - jsonObject.getInt("gold")));
+                                if (Integer.parseInt(goldNum) <= 0) {
+                                    XESToastUtils.showToast(mContext, "您的金币不足啦");
+                                    return;
+                                }
+                                onGetMyGoldDataEvent(goldNum);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
+                    mView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mFlowerWindow.dismiss();
+                        }
+                    }, 1000);
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    mFlowerWindow.dismiss();
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    mFlowerWindow.dismiss();
+                }
+            });
+//                        liveBll.sendFlowerMessage(entity.getFtype());
+        } else {
+            if (commonAction instanceof GiftDisable) {
+                //理科要区分主讲和辅导，谁没有开启送礼物
+                ((GiftDisable) commonAction).clickIsnotOpenbarrage(ircState.getMode());
+            } else {
+                commonAction.clickIsnotOpenbarrage();
+            }
+
+        }
+    }
+
+    /**
+     * 开始 礼物/鲜花 的倒计时 10秒后恢复 礼物/鲜花 icon
+     */
+    private void startCountDownFlowerIcon() {
+        CountDownTimer countDownTimer = new CountDownTimer(12000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (btMessageFlowers == null) {
+                    //防止在倒计时结束前，当前界面销毁，而倒计时还在回调此方法，控件已经为空，发生空指针的问题
+                    return;
+                }
+                btMessageFlowers.setEnabled(false);//倒计时的时候不可点击
+                btMessageFlowers.setAlpha(0.4f);
+                btMessageFlowers.setText(millisUntilFinished / 1000 + "");
+                btMessageFlowers.setTextColor(Color.WHITE);
+                btMessageFlowers.setBackgroundResource(R.drawable.shape_oval_black);
+
+            }
+
+            @Override
+            public void onFinish() {
+                if (btMessageFlowers == null) {
+                    //防止在倒计时结束前，当前界面销毁，而倒计时还在回调此方法，控件已经为空，发生空指针的问题
+                    return;
+                }
+                //只有理科才有倒计时的逻辑
+                if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                    if (ircState.isOpenZJLKbarrage()) {
+                        setFlowerHalfAlpha(1.0f);
+                    } else {
+                        setFlowerHalfAlpha(0.4f);
+                    }
+                } else {
+                    if (ircState.isOpenFDLKbarrage()) {
+                        setFlowerHalfAlpha(1.0f);
+                    } else {
+                        setFlowerHalfAlpha(0.4f);
+                    }
+                }
+                btMessageFlowers.setEnabled(true);//不管献花icon的透明度为多少，都要求改献花icon能够点击
+
+            }
+        };
+        countDownTimer.start();
+    }
+
+    /**
+     * 设置礼物icon的透明度
+     *
+     * @param alpha
+     */
+    private void setFlowerHalfAlpha(float alpha) {
+        btMessageFlowers.setAlpha(alpha);
+        btMessageFlowers.setText("");
+        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+    }
 
     public void onTitleShow(boolean show) {
         if (rlMessageContent.getVisibility() != View.GONE) {
@@ -1215,21 +1386,36 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 
             @Override
             public void run() {
-                // 主讲模式可以献花
-                if (LiveTopic.MODE_CLASS.equals(mode)) {
-                    if (ircState.isOpenbarrage()) {
+                if (commonAction != null && commonAction instanceof GiftDisable) {
+                    if (ircState.isOpenZJLKbarrage() || ircState.isOpenFDLKbarrage()) {
                         btMessageFlowers.setTag("1");
                         btMessageFlowers.setAlpha(1.0f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
                     } else {
                         btMessageFlowers.setTag("0");
                         btMessageFlowers.setAlpha(0.4f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                    }
+                    Loger.i("yzl_fd", "理科，不区分主讲，onModeChange不再往下执行");
+                    return;
+                }
+
+                // 主讲模式可以献花
+                if (LiveTopic.MODE_CLASS.equals(mode)) {
+                    Loger.i("yzl_fd", "文科，区分主讲，onModeChange");
+                    if (ircState.isOpenbarrage()) {
+                        btMessageFlowers.setTag("1");
+                        btMessageFlowers.setAlpha(1.0f);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                    } else {
+                        btMessageFlowers.setTag("0");
+                        btMessageFlowers.setAlpha(0.4f);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
                     }
                 } else {
                     btMessageFlowers.setTag("0");
                     btMessageFlowers.setAlpha(0.4f);
-                    btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+                    btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
                 }
             }
         });
