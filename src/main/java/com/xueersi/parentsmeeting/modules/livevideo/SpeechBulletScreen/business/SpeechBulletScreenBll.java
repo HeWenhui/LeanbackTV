@@ -8,7 +8,6 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -40,8 +39,6 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
     private SpeechBulletScreenHttp speechBulletScreenHttp;
     public void setSpeechBulletScreenHttp(SpeechBulletScreenHttp speechBulletScreenHttp) {
         this.speechBulletScreenHttp = speechBulletScreenHttp;
-        if (mSpeechBulPager != null)
-            mSpeechBulPager.setSpeechBulletScreenHttp(speechBulletScreenHttp);
     }
 
     private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(), new Handler.Callback() {
@@ -110,7 +107,10 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
         mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp);
+                if (mSpeechBulPlaybackPager != null) {
+                    mSpeechBulPlaybackPager.onDestroy();
+                }
+                mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp,SpeechBulletScreenBll.this);
                 rlSpeechBulContent.removeAllViews();
                 rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 rlSpeechBulContent.setVisibility(View.VISIBLE);
