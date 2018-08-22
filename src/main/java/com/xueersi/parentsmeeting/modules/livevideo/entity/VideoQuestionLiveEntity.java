@@ -58,6 +58,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     /** 测试题日期 */
     private String answerDay;
 
+    /**
+     * 1.在线教研
+     * 2 设计组
+     */
+    public int package_socurce;
+
+
     public VideoQuestionLiveEntity() {
     }
 
@@ -99,6 +106,20 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     @Override
     public String getvQuestionID() {
         return id;
+    }
+
+
+    /**
+     * 是否是 文科新课件平台 答题
+     * */
+    private boolean newArtsQuestion;
+
+    public void setNewArtsQuestion(boolean newArtsQuestion) {
+        this.newArtsQuestion = newArtsQuestion;
+    }
+
+    public boolean isNewArtsQuestion() {
+        return newArtsQuestion;
     }
 
     /**

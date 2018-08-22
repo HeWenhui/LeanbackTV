@@ -401,6 +401,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void showQuestion(final VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        setWebViewCloseByTeacher(false);
         if (videoQuestionLiveEntity == null) {
             mLogtf.d("showQuestion:noQuestion");
             if (isAnaswer) {
@@ -798,6 +799,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     @Override
     public void onStopQuestion(String ptype, final String nonce) {
         Loger.i("=====questionbll  question stop");
+        setWebViewCloseByTeacher(true);
         boolean havePager = false;
         boolean oldisAnaswer = isAnaswer;
         isAnaswer = false;
@@ -860,7 +862,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             });
             delayTime = 3000;
             closePageByTeamPk((BasePager) questionWebPager);
-            closeAnswerReuslt();
         } else if (hasQuestion && !hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
             hasQuestion = false;
@@ -1005,7 +1006,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     examQuestionPager.examSubmitAll();
                     delayTime = 3000;
                     closePageByTeamPk(examQuestionPager.getBasePager());
-                    closeAnswerReuslt();
                 } else if (hasExam && !hasSubmit) {
                     getFullMarkList(XESCODE.EXAM_STOP, delayTime);
                     hasExam = false;
@@ -2048,35 +2048,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
-     private IAnswerResultAction mAnswerResultAction;
-    /**
-     * 文科 h5 答题结果回调
-     * @param data
-     */
-    public void onAnswerResult(String data){
-        Loger.e("QuestionBll","=====>onAnswerResult:"+data);
-        if(mAnswerResultAction != null){
-            mAnswerResultAction.onAnswerResult(data);
-        }
-    }
 
-    /**
-     * 关闭答题结果面板
-     */
-    private void closeAnswerReuslt(){
-        if(mAnswerResultAction != null){
-            mAnswerResultAction.closeAnswerResult();
-        }
-    }
 
-    /**
-     * 初始化答题结果页面
-     */
-    private void initAnswerResultAction(){
-        if(mAnswerResultAction == null){
-            ArtsAnswerResultBll answerResultBll = new ArtsAnswerResultBll(activity,bottomContent,liveGetInfo.getSmallEnglish());
-            answerResultBll.attachToView();
-            mAnswerResultAction = answerResultBll;
-        }
-    }
+
 }

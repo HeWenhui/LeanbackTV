@@ -54,6 +54,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     /** RolePlayer功能接口 */
     private RolePlayAction rolePlayAction;
 
+    private String Tag = "QuestionIRCBll";
+
     public QuestionIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         mQuestionAction = new QuestionBll(context, liveBll.getStuCouId());
@@ -196,6 +198,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject object, int type) {
+        Loger.e("QuestionIRCBll","======>onNotice:"+type+":"+object);
         switch (type) {
             case XESCODE.SENDQUESTION: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
@@ -232,30 +235,70 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                         mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
                     }
-
-                    if (mQuestionAction instanceof QuestionBll) {
-                        ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
-                        Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: " +
-                                "SENDQUESTION");
-                    }
                 }
             }
             break;
+
+            case XESCODE.ARTS_SEND_QUESTION:
+            {
+                VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                videoQuestionLiveEntity.gold = object.optDouble("gold");
+                videoQuestionLiveEntity.id = object.optString("id");
+                videoQuestionLiveEntity.nonce = object.optString("nonce");
+                videoQuestionLiveEntity.type = object.optString("ptype");
+                videoQuestionLiveEntity.package_socurce = object.optInt("package_source");
+                videoQuestionLiveEntity.time = object.optDouble("time");
+                videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay");
+                videoQuestionLiveEntity.setNewArtsQuestion(true);
+
+                String isVoice = object.optString("isVoice");
+                videoQuestionLiveEntity.setIsVoice(isVoice);
+                if ("1".equals(isVoice)) {
+                    videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
+                    videoQuestionLiveEntity.questiontype =  object.optString("questionType");
+                    videoQuestionLiveEntity.setIsVoice(isVoice);
+                }
+
+                if (mQuestionAction != null) {
+                    mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(videoQuestionLiveEntity);
+                    mQuestionAction.showQuestion(videoQuestionLiveEntity);
+                    if (mAnswerRankBll != null) {
+                        mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                    }
+                    if (mLiveAutoNoticeBll != null) {
+                        mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                        mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
+                    }
+                }
+                break;
+            }
+
             case XESCODE.STOPQUESTION:
                 mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                 if (mQuestionAction != null) {
                     try {
                         mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
-                        if (mQuestionAction instanceof QuestionBll) {
-                            ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
-                            Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: " +
-                                    "STOPQUESTION");
-                        }
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
                 }
                 break;
+
+            case XESCODE.ARTS_STOP_QUESTION:
+            {
+                mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
+                String ptype = object.optString("ptype");
+                String package_socurce = object.optString("package_socurce");
+                if (mQuestionAction != null) {
+                    try {
+                        mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            }
+
             case XESCODE.EXAM_START:
                 if (mQuestionAction != null) {
                     String num = object.optString("num", "0");
@@ -297,7 +340,15 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.SENDQUESTION, XESCODE.STOPQUESTION, XESCODE.EXAM_START, XESCODE.EXAM_STOP, XESCODE.XCR_ROOM_ROLE_READ};
+        return new int[]{
+                XESCODE.SENDQUESTION,
+                XESCODE.STOPQUESTION,
+                XESCODE.EXAM_START,
+                XESCODE.EXAM_STOP,
+                XESCODE.XCR_ROOM_ROLE_READ,
+                XESCODE.ARTS_SEND_QUESTION,
+                XESCODE.ARTS_STOP_QUESTION
+         };
     }
 
     @Override

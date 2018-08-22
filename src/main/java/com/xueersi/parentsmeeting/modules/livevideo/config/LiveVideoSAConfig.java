@@ -163,6 +163,12 @@ public class LiveVideoSAConfig {
         public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStarNew";
         /** 直播回放的用户在线心跳 */
         public String URL_LIVE_VISITTIME = HTTP_HOST + "/LiveCourse/visitTime";
+
+        /**
+         * 文科新课件平台
+         * 加载H5 页面地址
+         * */
+        public String URL_ARTS_H5_URL = "https://static.arts.xueersi.com/kejian";
     }
 
 }

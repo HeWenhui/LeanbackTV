@@ -287,6 +287,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     @Override
     public void onH5Courseware(final String status, final VideoQuestionLiveEntity videoQuestionLiveEntity) {
 //        logToFile.i("onH5Courseware:url=" + url + ",status=" + status);
+
+        com.xueersi.lib.log.Loger.e("EnglishH5CourseWareBll","===========>onH5Courseware:"+status+":"+videoQuestionLiveEntity);
+
+        setWebViewCloseByTeacher(true);
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -488,15 +492,29 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
           ArtsAnswerResultBll answerResultBll = new ArtsAnswerResultBll(context,bottomContent,mGetInfo.getSmallEnglish());
           answerResultBll.attachToView();
           mAnswerResultAction = answerResultBll;
-          mAnswerResultAction.remindSubmit();
-      }else{
-          mAnswerResultAction.remindSubmit();
       }
     }
 
     private boolean isArts() {
-        return  true;
-        //return mGetInfo!= null && mGetInfo.getIsArts() == 1;
+        return mGetInfo!= null && mGetInfo.getIsArts() == 1;
+    }
+
+    /**
+     * 网页加载数据完成后 回调
+     */
+    public void onWebviewLoadFinish(String url){
+        if(mAnswerResultAction != null){
+            mAnswerResultAction.remindSubmit();
+        }
+    }
+
+    /**
+     * 网页移除时回调
+     */
+    public void onWebviewRemove(){
+        if(mAnswerResultAction != null){
+            mAnswerResultAction.closeAnswerResult();
+        }
     }
 
     public void setBaseVoiceAnswerCreat(BaseVoiceAnswerCreat baseVoiceAnswerCreat) {
