@@ -12,6 +12,10 @@ public class HonorListEntity {
     /** 是否点赞标志位 */
     private int praiseStatus;
 
+    /** 1表示我在榜上，0表示我不在榜上 */
+    private int isMy;
+
+
     ArrayList<HonorEntity> honorEntities = new ArrayList<>();
 
     public ArrayList<HonorEntity> getHonorEntities() {
@@ -22,22 +26,14 @@ public class HonorListEntity {
         this.honorEntities = honorEntities;
     }
 
-    public class HonorEntity{
-
-        /** 1表示我在榜上，0表示我不在榜上 */
-        private int isMy;
+    public class HonorEntity {
         /** 学生总共上过优秀榜的次数 */
         private String excellentNum;
         /** 用户姓名 */
         private String stuName;
 
-        public int getIsMy() {
-            return isMy;
-        }
-
-        public void setIsMy(int isMy) {
-            this.isMy = isMy;
-        }
+        /** 1表示我在榜上，0表示我不在榜上 */
+        private int isMy;
 
         public String getExcellentNum() {
             return excellentNum;
@@ -55,6 +51,13 @@ public class HonorListEntity {
             this.stuName = stuName;
         }
 
+        public int getIsMy() {
+            return isMy;
+        }
+
+        public void setIsMy(int isMy) {
+            this.isMy = isMy;
+        }
 
     }
 
@@ -67,5 +70,12 @@ public class HonorListEntity {
     }
 
 
+    public int getIsMy() {
+        return isMy;
+    }
+
+    public void setIsMy(int isMy) {
+        this.isMy = isMy;
+    }
 
 }
