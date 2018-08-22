@@ -214,7 +214,6 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         long before = System.currentTimeMillis();
         mLogtf = new LogToFile(TAG);
-        mLogtf.clear();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         liveType = getIntent().getIntExtra("type", 0);
         // 设置不可自动横竖屏
@@ -225,6 +224,7 @@ public class LiveVideoActivity extends LiveActivityBase implements VideoAction, 
             onUserBackPressed();
             return false;
         }
+        mLogtf.setLiveOnLineLogs(mLiveBll);
         Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System
                 .currentTimeMillis() - before));
         before = System.currentTimeMillis();

@@ -243,12 +243,13 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
             if (mQuestionEntity == null && oldQuestionEntity.isClick()) {
                 if (playPosition < oldQuestionEntity.getvEndTime()) {
                     mQuestionEntity = oldQuestionEntity;
+                    logger.d("scanQuestion:isClick");
                     return;
                 }
             }
             LiveBackBaseBll liveBackBaseBll = array.get(oldQuestionEntity.getvCategory());
             if (liveBackBaseBll != null) {
-                logger.d("scanQuestion:onQuestionEnd");
+                logger.d("scanQuestion:onQuestionEnd" + oldQuestionEntity.getvCategory());
                 liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
             }
             showQuestion.onShow(false);
