@@ -111,12 +111,15 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     boolean isSmallEnglish = false;
 
     public EnglishSpeekBll(Activity activity, LiveGetInfo liveGetInfo) {
+        if (staticInt > 5) {
+            staticInt = 0;
+        }
         this.activity = activity;
         this.liveGetInfo = liveGetInfo;
         if (liveGetInfo != null) {
             isSmallEnglish = liveGetInfo.getSmallEnglish();
         }
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(activity, TAG);
         if (isDestory2) {
             mLogtf.d("EnglishSpeekBll:isDestory2=true");
         }

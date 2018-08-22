@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="32dp"
-    android:gravity="center_horizontal">
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/iv_livevideo_praiselist_honor_crown"
-        android:layout_marginTop="7dp"
-        android:layout_width="13dp"
-        android:layout_height="11dp" />
-
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_praiselist_honor_name"
-        android:layout_width="64dp"
-        android:layout_height="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/iv_livevideo_praiselist_honor_crown"
-        android:layout_marginLeft="5dp"
-        android:gravity="top"
         android:ellipsize="end"
         android:singleLine="true"
-        style="@style/text_font16_666666_style" />
+        android:textColor="#5e2718"
+        android:textSize="12sp" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_praiselist_honor_counts"
-        android:layout_width="40dp"
-        android:layout_height="32dp"
-        android:layout_toRightOf="@+id/tv_livevideo_praiselist_honor_name"
-        android:layout_marginLeft="4dp"
-        android:gravity="top|left"
-        style="@style/text_font16_666666_style" />
+        android:layout_width="55dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="right"
+        android:drawablePadding="5dp"
+        android:paddingLeft="15dp"
+        android:drawableRight="@drawable/ic_livevideo_praiselist_praise"
+        android:maxLines="1"
+        android:textColor="#5e2718"
+        android:textSize="12sp" />
 
 
 </RelativeLayout>

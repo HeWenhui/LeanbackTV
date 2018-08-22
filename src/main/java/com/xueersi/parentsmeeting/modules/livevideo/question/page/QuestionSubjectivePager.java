@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.nineoldandroids.animation.ValueAnimator;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
@@ -175,7 +174,7 @@ public class QuestionSubjectivePager extends BaseLiveQuestionPager {
             }
         }
         if (putQuestion != null) {
-            putQuestion.onPutQuestionResult(baseVideoQuestionEntity, quesReslutEntity.getResult());
+            putQuestion.onPutQuestionResult(this, baseVideoQuestionEntity, quesReslutEntity.getResult());
         }
     }
 

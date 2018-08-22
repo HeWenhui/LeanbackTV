@@ -79,6 +79,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } else {
             LiveVideoConfig.isPrimary = false;
         }
+        LiveVideoConfig.educationstage = getInfo.getEducationStage();
     }
 
     /**
@@ -317,7 +318,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             Object getTotalOpeningLengthObj = data.opt("getTotalOpeningLength");
             if (getTotalOpeningLengthObj instanceof JSONObject) {
                 JSONObject getTotalOpeningLength = (JSONObject) getTotalOpeningLengthObj;
-                totalOpeningLength.duration = getTotalOpeningLength.getDouble("duration");
+                totalOpeningLength.duration = getTotalOpeningLength.optDouble("duration", 0);
                 totalOpeningLength.speakingLen = getTotalOpeningLength.optString("speaking_len");
                 totalOpeningLength.speakingNum = getTotalOpeningLength.optInt("speaking_num", 0);
             }
@@ -495,7 +496,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 mainStatusEntity.setHaveExam(true);
                 JSONObject jsonObject = status.getJSONObject("exam");
                 mainStatusEntity.setExamStatus(jsonObject.optString("status", "off"));
-                mainStatusEntity.setExamNum(jsonObject.optString("num", "0"));
+                mainStatusEntity.setExamNum(jsonObject.optString("num", "-1"));
             } else {
                 mainStatusEntity.setHaveExam(false);
             }
@@ -1099,6 +1100,22 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public HonorListEntity parseHonorList(ResponseEntity responseEntity) {
+
+//        HonorListEntity honorListEntity = new HonorListEntity();
+//        honorListEntity.setPraiseStatus(1);
+//        honorListEntity.setIsMy(1);
+//
+//        for (int i = 0; i < 10; i++) {
+//            HonorListEntity.HonorEntity honorEntity = honorListEntity.new HonorEntity();
+//            honorEntity.setExcellentNum(String.valueOf(i + 1));
+//            honorEntity.setStuName("学生" + i);
+//            if (honorEntity.getIsMy() == 1) {
+//                honorListEntity.setIsMy(1);
+//            } else {
+//                honorListEntity.getHonorEntities().add(honorEntity);
+//            }
+//        }
+
         Loger.i(TAG, "parseHonorList: " + responseEntity.getJsonObject());
         HonorListEntity honorListEntity = new HonorListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
@@ -1113,10 +1130,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 honorEntity.setExcellentNum(jsonObject.getString("excellent_num"));
                 honorEntity.setStuName(jsonObject.getString("stu_name"));
                 if (honorEntity.getIsMy() == 1) {
-                    honorListEntity.getHonorEntities().add(0, honorEntity);
-                } else {
-                    honorListEntity.getHonorEntities().add(honorEntity);
+                    honorListEntity.setIsMy(1);
                 }
+                honorListEntity.getHonorEntities().add(honorEntity);
             }
 
         } catch (Exception e) {
@@ -1134,6 +1150,22 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      */
     public ThumbsUpListEntity parseThumbsUpList(ResponseEntity responseEntity) {
 
+//        ThumbsUpListEntity thumbsUpListEntity = new ThumbsUpListEntity();
+//        for (int i = 0; i < 40; i++) {
+//            ThumbsUpListEntity.ThumbsUpEntity likeEntity = thumbsUpListEntity.new ThumbsUpEntity();
+//            likeEntity.setStuPraiseNum(i + 10);
+//            if (i % 2 == 0) {
+//                likeEntity.setStuName("学生" + i);
+//            } else {
+//                likeEntity.setStuName("学生地方撒" + i);
+//            }
+//            likeEntity.setIsMy(1);
+//            if (likeEntity.getIsMy() == 1) {
+//                thumbsUpListEntity.setIsMy(1);
+//            }
+//            thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
+//        }
+
         Loger.i(TAG, "parseThumbsUpList: " + responseEntity.getJsonObject());
         ThumbsUpListEntity thumbsUpListEntity = new ThumbsUpListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
@@ -1147,10 +1179,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 likeEntity.setStuPraiseNum(jsonObject.getInt("stu_praise_num"));
                 likeEntity.setStuName(jsonObject.getString("stu_name"));
                 if (likeEntity.getIsMy() == 1) {
-                    thumbsUpListEntity.getThumbsUpEntities().add(0, likeEntity);
-                } else {
-                    thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
+                    thumbsUpListEntity.setIsMy(1);
                 }
+                thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
             }
 
         } catch (Exception e) {
@@ -1167,6 +1198,23 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public ProgressListEntity parseProgressList(ResponseEntity responseEntity) {
+//        ProgressListEntity progressListEntity = new ProgressListEntity();
+//        for (int i = 0; i < 10; i++) {
+//            ProgressListEntity.ProgressEntity progressEntity = progressListEntity.new ProgressEntity();
+//            progressEntity.setStuId("11" + i);
+//            if (i % 2 == 0) {
+//                progressEntity.setStuName("学生大是大非" + i);
+//            } else {
+//                progressEntity.setStuName("学" + i);
+//            }
+//
+//            progressEntity.setIsMy(1);
+//            progressEntity.setProgressScore(String.valueOf(91 + i));
+//            if (progressEntity.getIsMy() == 1) {
+//                progressListEntity.setIsMy(1);
+//            }
+//            progressListEntity.getProgressEntities().add(progressEntity);
+//        }
         Loger.i(TAG, "parseProgressList: " + responseEntity.getJsonObject());
         ProgressListEntity progressListEntity = new ProgressListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
@@ -1182,10 +1230,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 progressEntity.setIsMy(jsonObject.getInt("isMy"));
                 progressEntity.setProgressScore(jsonObject.getString("progress_score"));
                 if (progressEntity.getIsMy() == 1) {
-                    progressListEntity.getProgressEntities().add(0, progressEntity);
-                } else {
-                    progressListEntity.getProgressEntities().add(progressEntity);
+                    progressListEntity.setIsMy(1);
                 }
+                progressListEntity.getProgressEntities().add(progressEntity);
             }
 
         } catch (Exception e) {
@@ -1194,7 +1241,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         }
         return progressListEntity;
     }
-
     /**
      * 解析点赞概率
      *

@@ -82,7 +82,7 @@ public class LearnReportPager extends LiveBasePager {
         this.reportEntity = reportEntity;
         this.liveBll = liveBll;
         this.learnReportBll = learnReportBll;
-        logToFile = new LogToFile(TAG);
+        logToFile = new LogToFile(context, TAG);
         initData();
     }
 

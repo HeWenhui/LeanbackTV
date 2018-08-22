@@ -194,6 +194,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             onUserBackPressed();
             return false;
         }
+        mLogtf.setLiveOnLineLogs(mLiveBll);
         initView();
         findViewById(R.id.rl_livevideo_student_liveinfo).setOnClickListener(new View.OnClickListener() {
             @Override

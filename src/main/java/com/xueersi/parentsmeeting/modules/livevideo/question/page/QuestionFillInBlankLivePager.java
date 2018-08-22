@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONObject;
-import com.nineoldandroids.animation.ValueAnimator;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.entity.AnswerEntity;
@@ -33,8 +32,6 @@ import com.xueersi.ui.adapter.XsBaseAdapter;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
-
-import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
 /**
  * @author linyuqiang 填空题
@@ -256,7 +253,7 @@ public class QuestionFillInBlankLivePager extends BaseLiveQuestionPager {
         }
         if (putQuestion != null) {
             mLogtf.d("commit:result=" + quesReslutEntity.getResult());
-            putQuestion.onPutQuestionResult(baseVideoQuestionEntity, quesReslutEntity.getResult());
+            putQuestion.onPutQuestionResult(this, baseVideoQuestionEntity, quesReslutEntity.getResult());
         }
     }
 

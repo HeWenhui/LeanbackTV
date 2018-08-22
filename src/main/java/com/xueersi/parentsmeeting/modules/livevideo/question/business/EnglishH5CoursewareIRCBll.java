@@ -170,7 +170,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                         mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.courseware_type);
                     }
-                }else{
+                } else {
                     LiveVideoConfig.isNewEnglishH5 = false;
                     if (englishH5CoursewareBll != null) {
                         JSONObject object = jsonObject.optJSONObject("platformTest");
@@ -275,65 +275,65 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
                 }
                 break;
-                case XESCODE.MULTIPLE_H5_COURSEWARE:
-                    LiveVideoConfig.isNewEnglishH5 = true;
-                    if (englishH5CoursewareBll != null) {
-                        VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                        LiveVideoConfig.isSend = object.optBoolean("open");
+            case XESCODE.MULTIPLE_H5_COURSEWARE:
+                LiveVideoConfig.isNewEnglishH5 = true;
+                if (englishH5CoursewareBll != null) {
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                    LiveVideoConfig.isSend = object.optBoolean("open");
 //                            String status = "";
-                        String status = object.optString("status", "off");
-                        String nonce = object.optString("nonce");
-                        LiveVideoConfig.nonce = nonce;
-                        LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-                        String teamId = studentLiveInfo.getTeamId();
-                        String classId = studentLiveInfo.getClassId();
-                        EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
-                        englishH5Entity.setNewEnglishH5(true);
-                        try {
-                            JSONObject objects = new JSONObject();
-                            objects.put("packageId", object.getString("pId"));
-                            englishH5Entity.setPackageId(object.getString("pId"));
-                            objects.put("packageSource", object.getString("pSrc"));
-                            LiveVideoConfig.pSrc = object.getString("pSrc");
-                            objects.put("packageAttr", object.getString("pAttr"));
-                            objects.put("releasedPageInfos", object.getString("tests"));
-                            LiveVideoConfig.tests = object.getString("tests");
-                            englishH5Entity.setReleasedPageInfos(object.getString("tests"));
-                            objects.put("teamId", teamId);
-                            objects.put("stuCouId", mLiveBll.getStuCouId());
-                            objects.put("stuId", mGetInfo.getStuId());
-                            objects.put("classId", classId);
-                            objects.put("classTestId", object.getString("ctId"));
-                            LiveVideoConfig.ctId = object.getString("ctId");
-                            mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(),
-                                    ShareDataManager.SHAREDATA_USER);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        // 08.07  课件之前的功能添加
-                        if (!LiveVideoConfig.isSend) {
-                            if (englishH5CoursewareBll instanceof EnglishH5CoursewareBll) {
-                                ((EnglishH5CoursewareBll) englishH5CoursewareBll).setWebViewCloseByTeacher(true);
-                            }
-                            if (mTeamPKBll != null) {
-                                mTeamPKBll.showCurrentPkResult();
-                                if (mTeamPKBll != null) {
-                                    mTeamPKBll.setNonce(object.optString("nonce", ""));
-                                    mTeamPKBll.showCurrentPkResult();
-                                    Loger.e("TeamPkBll", "======>showCurrentPkResult: called in " +
-                                            "ENGLISH_H5_COURSEWARE");
-                                }
-                            }
-                        }
-                        englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
+                    String status = object.optString("status", "off");
+                    String nonce = object.optString("nonce");
+                    LiveVideoConfig.nonce = nonce;
+                    LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+                    String teamId = studentLiveInfo.getTeamId();
+                    String classId = studentLiveInfo.getClassId();
+                    EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
+                    englishH5Entity.setNewEnglishH5(true);
+                    try {
+                        JSONObject objects = new JSONObject();
+                        objects.put("packageId", object.getString("pId"));
+                        englishH5Entity.setPackageId(object.getString("pId"));
+                        objects.put("packageSource", object.getString("pSrc"));
+                        LiveVideoConfig.pSrc = object.getString("pSrc");
+                        objects.put("packageAttr", object.getString("pAttr"));
+                        objects.put("releasedPageInfos", object.getString("tests"));
+                        LiveVideoConfig.tests = object.getString("tests");
+                        englishH5Entity.setReleasedPageInfos(object.getString("tests"));
+                        objects.put("teamId", teamId);
+                        objects.put("stuCouId", mLiveBll.getStuCouId());
+                        objects.put("stuId", mGetInfo.getStuId());
+                        objects.put("classId", classId);
+                        objects.put("classTestId", object.getString("ctId"));
+                        LiveVideoConfig.ctId = object.getString("ctId");
+                        mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(),
+                                ShareDataManager.SHAREDATA_USER);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                    break;
+                    // 08.07  课件之前的功能添加
+                    if (!LiveVideoConfig.isSend) {
+                        if (englishH5CoursewareBll instanceof EnglishH5CoursewareBll) {
+                            ((EnglishH5CoursewareBll) englishH5CoursewareBll).setWebViewCloseByTeacher(true);
+                        }
+                        if (mTeamPKBll != null) {
+                            mTeamPKBll.showCurrentPkResult();
+                            if (mTeamPKBll != null) {
+                                mTeamPKBll.setNonce(object.optString("nonce", ""));
+                                mTeamPKBll.showCurrentPkResult();
+                                Loger.e("TeamPkBll", "======>showCurrentPkResult: called in " +
+                                        "ENGLISH_H5_COURSEWARE");
+                            }
+                        }
+                    }
+                    englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
+                }
+                break;
         }
     }
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.ENGLISH_H5_COURSEWARE,XESCODE.MULTIPLE_H5_COURSEWARE};
+        return new int[]{XESCODE.ENGLISH_H5_COURSEWARE, XESCODE.MULTIPLE_H5_COURSEWARE};
     }
 
     class EnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {

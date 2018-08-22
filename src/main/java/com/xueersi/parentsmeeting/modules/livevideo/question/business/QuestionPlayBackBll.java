@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
@@ -22,7 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dataload.DataLoadEntity;
@@ -31,7 +30,6 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by linyuqiang on 2018/7/17.
@@ -106,7 +104,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
-                questionBll.onExamStop();
+                questionBll.onExamStop(questionEntity.getvQuestionID());
             }
             break;
         }
@@ -189,7 +187,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
-    public void liveSubmitTestAnswer(final VideoQuestionLiveEntity videoQuestionLiveEntity1, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
+    public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity1, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
         DataLoadEntity loadEntity = new DataLoadEntity(mContext);
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
@@ -202,13 +200,11 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         Loger.d(TAG, "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
                         VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer(responseEntity, isVoice);
                         entity.setVoice(isVoice);
-                        answerReslut.onAnswerReslut(videoQuestionLiveEntity1, entity);
-
                         if (answerReslut != null) {
                             answerReslut.onAnswerReslut(videoQuestionLiveEntity1, entity);
                         }
                         if (questionBll != null) {
-                            questionBll.onAnswerReslut(videoQuestionLiveEntity1, entity);
+                            questionBll.onAnswerReslut(liveBasePager, videoQuestionLiveEntity1, entity);
                         }
                         if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity1.type)) {
                             if (liveBackBll.getvPlayer() != null) {
@@ -238,7 +234,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 
 //                        }
                         if (questionBll != null) {
-                            questionBll.onAnswerReslut(videoQuestionLiveEntity1, null);
+                            questionBll.onAnswerReslut(liveBasePager, videoQuestionLiveEntity1, null);
                         }
                         if (answerReslut != null) {
                             answerReslut.onAnswerReslut(videoQuestionLiveEntity1, null);

@@ -18,6 +18,7 @@ import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
@@ -68,7 +69,7 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
+public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, LiveOnLineLogs {
     private String TAG = "AuditClassLiveBllLog";
     String liveListenEventid = LiveVideoConfig.LIVE_LISTEN;
     private AuditVideoAction mVideoAction;
@@ -137,7 +138,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         mHttpManager.addBodyParam("stuCouId", vStuCourseID);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
@@ -637,7 +638,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         mIRCMessage = new AuditIRCMessage(netWorkType, channel, mGetInfo.getStuName(), nickname, this);
         mIRCMessage.setNewTalkConf(newTalkConf);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(mGetInfo, mLiveType, mHttpManager, mGetInfo.getNewTalkConfHosts());
+        IRCTalkConf ircTalkConf = new IRCTalkConf(null, mGetInfo, mLiveType, mHttpManager, mGetInfo.getNewTalkConfHosts());
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();

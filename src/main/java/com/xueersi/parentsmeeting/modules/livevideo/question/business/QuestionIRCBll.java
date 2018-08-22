@@ -6,7 +6,6 @@ import android.widget.RelativeLayout;
 import com.tal.speech.speechrecognizer.Constants;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -32,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONObject;
@@ -107,7 +107,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (data.getPattern() == 2) {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction));
             mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(this, mLiveBll, mQuestionAction));
-            StandSpeechTop3Bll standSpeechTop3Bll = new StandSpeechTop3Bll(this, mLiveBll);
+            StandSpeechTop3Bll standSpeechTop3Bll = new StandSpeechTop3Bll(activity, this, mLiveBll);
             standSpeechTop3Bll.initView(mRootView);
             mQuestionAction.setSpeechEndAction(standSpeechTop3Bll);
         } else {
@@ -164,8 +164,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
         if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
+            String num = mainRoomstatus.getExamNum();
             if ("on".equals(mainRoomstatus.getExamStatus())) {
-                String num = mainRoomstatus.getExamNum();
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.id = num;
                 mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
@@ -173,7 +173,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mAnswerRankBll.setTestId(num);
                 }
             } else {
-                mQuestionAction.onExamStop();
+                mQuestionAction.onExamStop(num);
             }
         }
         if (liveTopic.getVideoQuestionLiveEntity() != null) {
@@ -272,7 +272,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
             case XESCODE.EXAM_STOP: {
                 if (mQuestionAction != null) {
-                    mQuestionAction.onExamStop();
+                    String num = object.optString("num", "-1");
+                    mQuestionAction.onExamStop(num);
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
                         Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: EXAM_STOP");
@@ -359,7 +360,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void liveSubmitTestAnswer(final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
+    public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                 videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="
@@ -386,7 +387,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             answerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
                         }
                         if (mQuestionAction != null) {
-                            mQuestionAction.onAnswerReslut(videoQuestionLiveEntity, entity);
+                            mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, entity);
                         }
                     }
 
@@ -409,7 +410,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //
 //                        }
                         if (mQuestionAction != null) {
-                            mQuestionAction.onAnswerReslut(videoQuestionLiveEntity, null);
+                            mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, null);
                         }
                         if (answerReslut != null) {
                             answerReslut.onAnswerReslut(videoQuestionLiveEntity, null);

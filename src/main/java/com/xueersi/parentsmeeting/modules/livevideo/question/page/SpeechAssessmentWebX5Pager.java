@@ -343,9 +343,11 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             }
             try {
                 String deUrl = URLDecoder.decode(url, "UTF-8");
+                mLogtf.d("shouldOverrideUrlLoading:deUrl=" + deUrl);
                 matchBusiness(deUrl);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
+                mLogtf.e("shouldOverrideUrlLoading:url=" + url, e);
             }
             return true;
         }
@@ -859,7 +861,11 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             }
             remoteAudioPlayerListening = null;
             mHandler.removeCallbacks(remotePlayTimeOut);
-            mLogtf.i("remoteplayComplete:where=" + where + ",tip=" + tip + ",mIsStop=" + mIsStop);
+            if (where == 0) {
+                mLogtf.e("remoteplayComplete:where=" + where + ",tip=" + tip + ",mIsStop=" + mIsStop + ",voiceurl=" + mVoiceUrl, new Exception());
+            } else {
+                mLogtf.i("remoteplayComplete:where=" + where + ",tip=" + tip + ",mIsStop=" + mIsStop + ",voiceurl=" + mVoiceUrl);
+            }
             try {
                 AudioPlayer.stop();
             } catch (Exception e) {

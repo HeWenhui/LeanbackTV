@@ -42,8 +42,8 @@ public class WrapQuestionSwitch implements QuestionSwitch {
     }
 
     @Override
-    public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut) {
-        questionSwitch.onPutQuestionResult(videoQuestionLiveEntity, answer, result, sorce, isRight, voiceTime, isSubmit, answerReslut);
+    public void onPutQuestionResult(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut) {
+        questionSwitch.onPutQuestionResult(baseVoiceAnswerPager, videoQuestionLiveEntity, answer, result, sorce, isRight, voiceTime, isSubmit, answerReslut);
     }
 
     @Override

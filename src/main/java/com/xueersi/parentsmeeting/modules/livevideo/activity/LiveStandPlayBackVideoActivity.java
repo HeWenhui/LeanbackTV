@@ -1433,7 +1433,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         }
 
         @Override
-        public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut) {
+        public void onPutQuestionResult(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut) {
 //            mLiveBll.liveSubmitTestAnswer((VideoQuestionLiveEntity) videoQuestionLiveEntity, mVSectionID, result, true, answerReslut);
             VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
             sendQuestionResultVoice(answer, result, sorce, mQuestionEntity, isSubmit, voiceTime, isRight, answerReslut);
@@ -1464,7 +1464,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
         mVideoCourseQuestionPager = new QuestionFillInBlankLivePager(LiveStandPlayBackVideoActivity.this, mQuestionEntity);
         mVideoCourseQuestionPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -1482,7 +1482,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -1501,7 +1501,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -1520,7 +1520,7 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
                 mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -1640,90 +1640,90 @@ public class LiveStandPlayBackVideoActivity extends VideoViewActivity implements
      * @param answerReslut
      */
     private void sendQuestionResultVoice(String answer, String result, int sorce, final VideoQuestionEntity questionEntity, String isSubmit, double voiceTime, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
-        DataLoadEntity loadEntity = new DataLoadEntity(mContext);
-        loadEntity.setLoadingTip(R.string.loading_tip_default);
-        BaseBll.postDataLoadEvent(loadEntity.beginLoading());
-        AbstractBusinessDataCallBack callBack = new AbstractBusinessDataCallBack() {
-            @Override
-            public void onDataSucess(Object... objData) {
-                PlaybackVideoEvent.OnAnswerReslut onAnswerReslut = (PlaybackVideoEvent.OnAnswerReslut) objData[0];
-                final VideoResultEntity entity = onAnswerReslut.getVideoResultEntity();
-                final VideoQuestionEntity questionEntity = onAnswerReslut.getQuestionEntity();
-                questionEntity.setAnswered(true);
-                mPlayVideoControlHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        rlQuestionContent.removeAllViews();
-                        if (answerReslut != null) {
-                            Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 14, 14, mQuestionEntity);
-                            mPlayVideoControlHandler.sendMessage(msg);
-                            seekTo(questionEntity.getvEndTime() * 1000);
-                            start();
-                        }
-                        questionViewGone("sendQuestionResultVoice");
-                    }
-                }, 2200);
-                if (answerReslut != null) {
-                    answerReslut.onAnswerReslut(questionEntity, entity);
-                }
-                if (voiceAnswerPager != null) {
-                    stopVoiceAnswerPager();
-                }
-                answerResultChk(questionEntity, entity, true);
-            }
-
-            @Override
-            public void onDataFail(int errStatus, String failMsg) {
-                super.onDataFail(errStatus, failMsg);
-                if (answerReslut != null) {
-                    answerReslut.onAnswerFailure();
-                }
-                if (errStatus == 1) {
-                    if (voiceAnswerPager != null) {
-                        stopVoiceAnswerPager();
-                    }
-                    Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 15, 15, mQuestionEntity);
-                    mPlayVideoControlHandler.sendMessage(msg);
-                    seekTo(questionEntity.getvEndTime() * 1000);
-                    start();
-                }
-            }
-        };
-        if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == questionEntity.getvCategory()) {
-            JSONObject answerObj = new JSONObject();
-            JSONArray answerAnswer = new JSONArray();
-            try {
-                answerObj.put("id", questionEntity.getvQuestionID());
-                answerObj.put("answer", answer);
-                if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(questionEntity.getVoiceQuestiontype())) {
-                    answerObj.put("useranswer", sorce);
-                } else {
-                    answerObj.put("useranswer", result + ":" + sorce);
-                }
-                answerObj.put("type", questionEntity.getvQuestionType());
-                answerObj.put("url", "");
-                answerObj.put("voiceTime", "" + voiceTime);
-                answerAnswer.put(answerObj);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            String testAnswer = "";
-            testAnswer = answerAnswer.toString();
-            lectureLivePlayBackBll.saveQuestionH5Result(loadEntity, questionEntity, testAnswer, mVideoEntity.getLiveId(), isSubmit, questionEntity.getvQuestionType(), voiceTime, isRight, callBack);
-        } else {
-            String testAnswer;
-            if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(questionEntity.getvQuestionType())) {
-//                testAnswer = "" + sorce;
-                testAnswer = "A";
-            } else {
-//                testAnswer = result + ":" + sorce;
-                testAnswer = result;
-            }
-            Loger.d(TAG, "saveQuestionResult:testAnswer=" + testAnswer);
-            lectureLivePlayBackBll.saveQuestionResult(loadEntity, questionEntity, testAnswer, mVideoEntity.getLiveId(), mVideoEntity.getvLivePlayBackType(), true, isRight, callBack);
-        }
-        XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.QUESTION_LIVEPLAYBACK, MobEnumUtil.QUESTION_ANSWER,
-                XesMobAgent.XES_VIDEO_INTERACTIVE);
+//        DataLoadEntity loadEntity = new DataLoadEntity(mContext);
+//        loadEntity.setLoadingTip(R.string.loading_tip_default);
+//        BaseBll.postDataLoadEvent(loadEntity.beginLoading());
+//        AbstractBusinessDataCallBack callBack = new AbstractBusinessDataCallBack() {
+//            @Override
+//            public void onDataSucess(Object... objData) {
+//                PlaybackVideoEvent.OnAnswerReslut onAnswerReslut = (PlaybackVideoEvent.OnAnswerReslut) objData[0];
+//                final VideoResultEntity entity = onAnswerReslut.getVideoResultEntity();
+//                final VideoQuestionEntity questionEntity = onAnswerReslut.getQuestionEntity();
+//                questionEntity.setAnswered(true);
+//                mPlayVideoControlHandler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        rlQuestionContent.removeAllViews();
+//                        if (answerReslut != null) {
+//                            Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 14, 14, mQuestionEntity);
+//                            mPlayVideoControlHandler.sendMessage(msg);
+//                            seekTo(questionEntity.getvEndTime() * 1000);
+//                            start();
+//                        }
+//                        questionViewGone("sendQuestionResultVoice");
+//                    }
+//                }, 2200);
+//                if (answerReslut != null) {
+//                    answerReslut.onAnswerReslut(null, questionEntity, entity);
+//                }
+//                if (voiceAnswerPager != null) {
+//                    stopVoiceAnswerPager();
+//                }
+//                answerResultChk(questionEntity, entity, true);
+//            }
+//
+//            @Override
+//            public void onDataFail(int errStatus, String failMsg) {
+//                super.onDataFail(errStatus, failMsg);
+//                if (answerReslut != null) {
+//                    answerReslut.onAnswerFailure();
+//                }
+//                if (errStatus == 1) {
+//                    if (voiceAnswerPager != null) {
+//                        stopVoiceAnswerPager();
+//                    }
+//                    Message msg = mPlayVideoControlHandler.obtainMessage(NO_QUESTION, 15, 15, mQuestionEntity);
+//                    mPlayVideoControlHandler.sendMessage(msg);
+//                    seekTo(questionEntity.getvEndTime() * 1000);
+//                    start();
+//                }
+//            }
+//        };
+//        if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == questionEntity.getvCategory()) {
+//            JSONObject answerObj = new JSONObject();
+//            JSONArray answerAnswer = new JSONArray();
+//            try {
+//                answerObj.put("id", questionEntity.getvQuestionID());
+//                answerObj.put("answer", answer);
+//                if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(questionEntity.getVoiceQuestiontype())) {
+//                    answerObj.put("useranswer", sorce);
+//                } else {
+//                    answerObj.put("useranswer", result + ":" + sorce);
+//                }
+//                answerObj.put("type", questionEntity.getvQuestionType());
+//                answerObj.put("url", "");
+//                answerObj.put("voiceTime", "" + voiceTime);
+//                answerAnswer.put(answerObj);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            String testAnswer = "";
+//            testAnswer = answerAnswer.toString();
+//            lectureLivePlayBackBll.saveQuestionH5Result(loadEntity, questionEntity, testAnswer, mVideoEntity.getLiveId(), isSubmit, questionEntity.getvQuestionType(), voiceTime, isRight, callBack);
+//        } else {
+//            String testAnswer;
+//            if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(questionEntity.getvQuestionType())) {
+////                testAnswer = "" + sorce;
+//                testAnswer = "A";
+//            } else {
+////                testAnswer = result + ":" + sorce;
+//                testAnswer = result;
+//            }
+//            Loger.d(TAG, "saveQuestionResult:testAnswer=" + testAnswer);
+//            lectureLivePlayBackBll.saveQuestionResult(loadEntity, questionEntity, testAnswer, mVideoEntity.getLiveId(), mVideoEntity.getvLivePlayBackType(), true, isRight, callBack);
+//        }
+//        XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.QUESTION_LIVEPLAYBACK, MobEnumUtil.QUESTION_ANSWER,
+//                XesMobAgent.XES_VIDEO_INTERACTIVE);
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
