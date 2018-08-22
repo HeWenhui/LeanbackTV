@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSw
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
@@ -1063,7 +1064,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 ImageLoader.with(mContext).load(student.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
-                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "updateHead", student.getAvatar_path());
                         InputStream inputStream = null;
                         try {
                             inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_2.png");
