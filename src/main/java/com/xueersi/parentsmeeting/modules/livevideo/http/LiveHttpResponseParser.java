@@ -318,7 +318,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             Object getTotalOpeningLengthObj = data.opt("getTotalOpeningLength");
             if (getTotalOpeningLengthObj instanceof JSONObject) {
                 JSONObject getTotalOpeningLength = (JSONObject) getTotalOpeningLengthObj;
-                totalOpeningLength.duration = getTotalOpeningLength.getDouble("duration");
+                totalOpeningLength.duration = getTotalOpeningLength.optDouble("duration", 0);
                 totalOpeningLength.speakingLen = getTotalOpeningLength.optString("speaking_len");
                 totalOpeningLength.speakingNum = getTotalOpeningLength.optInt("speaking_num", 0);
             }
@@ -496,7 +496,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 mainStatusEntity.setHaveExam(true);
                 JSONObject jsonObject = status.getJSONObject("exam");
                 mainStatusEntity.setExamStatus(jsonObject.optString("status", "off"));
-                mainStatusEntity.setExamNum(jsonObject.optString("num", "0"));
+                mainStatusEntity.setExamNum(jsonObject.optString("num", "-1"));
             } else {
                 mainStatusEntity.setHaveExam(false);
             }

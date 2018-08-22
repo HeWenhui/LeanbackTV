@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by David on 2018/6/29.
  */
 
-public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback{
+public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback {
     String TAG = "PScienceRedPackageBll";
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
@@ -41,8 +41,9 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
     private RelativeLayout rlRedpacketContent;
     boolean isLive;
     private LiveGetInfo mGetInfo;
-    public PScienceRedPackageBll(Activity activity ,LiveGetInfo liveGetInfo, boolean isLive) {
-        mLogtf = new LogToFile(TAG);
+
+    public PScienceRedPackageBll(Activity activity, LiveGetInfo liveGetInfo, boolean isLive) {
+        mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
         this.activity = activity;
         this.isLive = isLive;
@@ -188,7 +189,7 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
 //        msp.setSpan(new AbsoluteSizeSpan((int) (50 * screenDensity)), 0, msg.length(),
 //                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         // 将字体文件保存在assets/fonts/目录下，在程序中通过如下方式实例化自定义字体：
-        Typeface typeFace = Typeface.createFromAsset(activity.getAssets(),"fangzhengcuyuan.ttf");
+        Typeface typeFace = Typeface.createFromAsset(activity.getAssets(), "fangzhengcuyuan.ttf");
         TextView tvGoldHint = (TextView) view.findViewById(R.id.tv_livevideo_redpackage_gold);
         // 应用字体
         tvGoldHint.setTypeface(typeFace);

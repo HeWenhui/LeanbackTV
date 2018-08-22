@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -42,10 +43,10 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
         liveAndBackDebug = liveBll;
     }
 
-    public StandSpeechTop3Bll(QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
+    public StandSpeechTop3Bll(Context context, QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
         this.questionIRCBll = questionIRCBll;
         this.liveAndBackDebug = liveAndBackDebug;
-        logToFile = new LogToFile(TAG);
+        logToFile = new LogToFile(context, TAG);
     }
 
     @Override

@@ -776,7 +776,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         questionSwitch.uploadVoiceFile(saveVideoFile);
                         isSpeechSuccess = true;
                         boolean isRight = option.equalsIgnoreCase(answer);
-                        questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, answer, option, 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
+                        questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, answer, option, 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
                             @Override
                             public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
                                 if (entity != null) {
@@ -874,7 +874,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                     ivVoiceansSwitch.setVisibility(View.GONE);
                     questionSwitch.uploadVoiceFile(saveVideoFile);
                     isSpeechSuccess = true;
-                    questionSwitch.onPutQuestionResult(baseVideoQuestionEntity, content1.getString(0), content1.getString(0), 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
+                    questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, content1.getString(0), content1.getString(0), 1, isRight, resultEntity.getSpeechDuration(), isEnd ? "1" : "0", new QuestionSwitch.OnAnswerReslut() {
                         @Override
                         public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
                             if (entity != null) {

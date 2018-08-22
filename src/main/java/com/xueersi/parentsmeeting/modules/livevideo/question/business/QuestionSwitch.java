@@ -18,7 +18,7 @@ public interface QuestionSwitch {
 
     /**
      * 提交答案
-     *
+     * @param baseVoiceAnswerPager
      * @param videoQuestionLiveEntity
      * @param answer
      * @param result
@@ -28,7 +28,7 @@ public interface QuestionSwitch {
      * @param isSubmit
      * @param answerReslut
      */
-    void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut);
+    void onPutQuestionResult(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut);
 
     /**
      * 得到互动题，暂时没用
