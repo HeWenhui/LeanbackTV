@@ -63,7 +63,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author chekun
  *         created  at 2018/6/20 10:32
  */
-public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
+public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLogs {
     Logger logger = LoggerFactory.getLogger("LiveBll2");
     /** 需处理 topic 业务集合 */
     private List<TopicAction> mTopicActions = new ArrayList<>();

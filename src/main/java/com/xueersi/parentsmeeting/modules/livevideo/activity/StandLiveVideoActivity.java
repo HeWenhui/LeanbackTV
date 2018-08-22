@@ -237,6 +237,7 @@ public class StandLiveVideoActivity extends LiveActivityBase implements VideoAct
             onUserBackPressed();
             return false;
         }
+        mLogtf.setLiveOnLineLogs(mLiveBll);
         Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System
                 .currentTimeMillis() - before));
         before = System.currentTimeMillis();
