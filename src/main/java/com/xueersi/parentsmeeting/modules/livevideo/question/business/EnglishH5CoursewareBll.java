@@ -18,7 +18,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -653,7 +652,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
             int screenWidth = (r.right - r.left);
             if (width > 0) {
-                int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
+                int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
                 wradio += (screenWidth - width) / 2;
                 baseVoiceAnswerCreat.setViewLayoutParams(voiceAnswerPager, wradio);
             }

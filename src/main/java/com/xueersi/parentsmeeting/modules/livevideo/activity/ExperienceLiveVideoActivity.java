@@ -802,7 +802,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
-        int rightMargin = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth - lp
+        int rightMargin = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth - lp
                 .width) / 2);
         int topMargin = (ScreenUtils.getScreenHeight() - lp.height) / 2;
         if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {

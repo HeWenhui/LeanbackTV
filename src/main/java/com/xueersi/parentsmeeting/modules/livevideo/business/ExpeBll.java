@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.app.Activity;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,7 +15,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -29,8 +29,9 @@ import java.io.File;
  * Created by linyuqiang on 2017/7/13.
  * 体验直播
  */
+@Deprecated
 public class ExpeBll {
-    LiveVideoActivity activity;
+    Activity activity;
     LiveBll liveBll;
     /** 直播时间-当天据算，live_expe_time按单个场次计算 */
     private static final String EXPE_TIME = LiveVideoConfig.LIVE_EXPE_TIME;
@@ -49,7 +50,7 @@ public class ExpeBll {
     long enterTime;
     View view;
 
-    public ExpeBll(LiveVideoActivity activity, LiveBll liveBll) {
+    public ExpeBll(Activity activity, LiveBll liveBll) {
         this.activity = activity;
         this.liveBll = liveBll;
     }
