@@ -136,6 +136,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
             mLiveTopic = new LiveTopic();
         }
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
+        ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, this);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -166,6 +167,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
+        ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, this);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -196,6 +198,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
+        ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, this);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -418,7 +421,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
             }
         }
-        getOnloadLogs(TAG, "onGetInfoSuccess:old=" + businessBlls + ",new=" + businessBllTemps.size());
+        mLogtf.d("onGetInfoSuccess:old=" + businessBlls + ",new=" + businessBllTemps.size());
         businessBllTemps.clear();
         logger.d("=======>onGetInfoSuccess 333333333");
         LiveGetInfo.NewTalkConfEntity talkConfEntity = new LiveGetInfo.NewTalkConfEntity();
@@ -621,7 +624,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 }
                 mLiveTopic.copy(liveTopic);
             } catch (Exception e) {
-                getOnloadLogs(TAG, "" + e);
+                mLogtf.e("onTopic", e);
             }
         }
 
@@ -831,12 +834,17 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
     }
 
+    @Override
+    public String getPrefix() {
+        return "L";
+    }
+
     /**
      * 播放器异常日志
      *
      * @param str
      */
-    public void getOnloadLogs(String TAG, final String str) {
+    public void getOnloadLogs(String TAG, String str) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
         PackageManager packageManager = mContext.getPackageManager();

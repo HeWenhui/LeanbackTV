@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.English
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -109,6 +110,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.xutils.common.Callback;
 import org.xutils.xutils.ex.HttpException;
+import org.xutils.xutils.http.RequestParams;
 
 import java.io.File;
 import java.io.IOException;
@@ -398,12 +400,17 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         this.totalFrameStat = totalFrameStat;
     }
 
+    @Override
+    public String getPrefix() {
+        return "OL";
+    }
+
     /**
      * 播放器异常日志
      *
      * @param str
      */
-    public void getOnloadLogs(String TAG, final String str) {
+    public void getOnloadLogs(String TAG, String str) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
         PackageManager packageManager = mContext.getPackageManager();
@@ -422,30 +429,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             UmsAgent.onEvent(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
             return;
         }
-        mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
-                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, new Callback.CommonCallback<File>() {
-
-                    @Override
-                    public void onSuccess(File o) {
-                        //Loger.i(TAG, "getOnloadLogs:onSuccess");
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable, boolean b) {
-                        //Loger.i(TAG, "getOnloadLogs:onError", throwable);
-                    }
-
-                    @Override
-                    public void onCancelled(CancelledException e) {
-                        //Loger.i(TAG, "getOnloadLogs:onCancelled");
-                    }
-
-                    @Override
-                    public void onFinished() {
-                        //Loger.i(TAG, "getOnloadLogs:onFinished");
-                    }
-
-                });
+        LiveLogCallback liveLogCallback = new LiveLogCallback();
+        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
+                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, liveLogCallback);
+        liveLogCallback.setParams(params);
     }
 
     /**

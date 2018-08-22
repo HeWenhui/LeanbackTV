@@ -25,7 +25,6 @@ public class LogToFile {
     private static SimpleDateFormat dateFormat;
     /** 静态唯一 */
     public static LiveBll liveBll;
-    public LiveBll2 liveBll2;
     public static AuditClassLiveBll auditClassLiveBll;
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     public static int LIVE_TIME = 0;
@@ -36,7 +35,7 @@ public class LogToFile {
     }
 
     public LogToFile(String tag) {
-        this.TAG = "L:" + tag + ":" + LIVE_TIME;
+        this.TAG = "OL:" + tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
@@ -52,7 +51,7 @@ public class LogToFile {
     }
 
     public LogToFile(String tag, LiveOnLineLogs liveOnLineLogs) {
-        this.TAG = "L:" + tag + ":" + LIVE_TIME;
+        this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
@@ -67,12 +66,11 @@ public class LogToFile {
         this.liveOnLineLogs = liveOnLineLogs;
     }
 
-    public LogToFile(LiveBll2 liveBll2, String tag) {
-        this.TAG = "L:" + tag + ":" + LIVE_TIME;
+    public LogToFile(LiveOnLineLogs liveBll2, String tag) {
+        this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
-        this.liveBll2 = liveBll2;
         liveOnLineLogs = liveBll2;
         if (!parent.exists()) {
             parent.mkdirs();
@@ -81,12 +79,11 @@ public class LogToFile {
     }
 
     public LogToFile(Context context, String tag) {
-        this.TAG = "L:" + tag + ":" + LIVE_TIME;
+        this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
-        liveBll2 = ProxUtil.getProxUtil().get(context, LiveBll2.class);
-        liveOnLineLogs = liveBll2;
+        liveOnLineLogs = ProxUtil.getProxUtil().get(context, LiveOnLineLogs.class);
         if (!parent.exists()) {
             parent.mkdirs();
         }
@@ -102,7 +99,7 @@ public class LogToFile {
     public void i(String message) {
         Loger.i(TAG, message);
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, TAG + "**" + message);
+            liveOnLineLogs.getOnloadLogs(TAG, liveOnLineLogs.getPrefix() + ":" + TAG + "**" + message);
         }
 //        if (AppConfig.DEBUG) {
 //            liveThreadPoolExecutor.execute(new WriteThread(message));
@@ -113,7 +110,7 @@ public class LogToFile {
     public void d(String message) {
         Loger.i(TAG, message);
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, TAG + "**" + message);
+            liveOnLineLogs.getOnloadLogs(TAG, liveOnLineLogs.getPrefix() + ":" + TAG + "**" + message);
         }
 //        if (AppConfig.DEBUG) {
 //            liveThreadPoolExecutor.execute(new WriteThread(message));
@@ -132,7 +129,7 @@ public class LogToFile {
     public void e(String message, Throwable e) {
         Loger.i(TAG, message, e);
         if (liveOnLineLogs != null) {
-            liveOnLineLogs.getOnloadLogs(TAG, TAG + "**" + message + "**" + e);
+            liveOnLineLogs.getOnloadLogs(TAG, liveOnLineLogs.getPrefix() + ":" + TAG + "**" + message + "**" + e);
         }
         liveThreadPoolExecutor.execute(new WriteThread(message, e));
     }

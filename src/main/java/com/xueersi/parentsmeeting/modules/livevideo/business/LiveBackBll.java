@@ -91,6 +91,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
     private int pattern = 1;
     ShowQuestion showQuestion;
     private LiveUidRx liveUidRx;
+    LogToFile logToFile;
 
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         this.activity = activity;
@@ -125,6 +126,8 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
                 liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
             }
         }
+        logToFile = new LogToFile(this, TAG);
+        ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, this);
         mCourseHttpManager = new LivePlayBackHttpManager(activity);
         mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         mCourseHttpResponseParser = new LivePlayBackHttpResponseParser();
@@ -301,9 +304,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
 
         @Override
         public void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity) {
-            if (mQuestionEntity == null) {
-                return;
-            }
+            logToFile.d("onHide:mQuestionEntity=" + mQuestionEntity + ",baseVideoQuestionEntity=" + baseVideoQuestionEntity);
             mIsShowQuestion = false;
             MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
             mediaControllerAction.attachMediaController();
@@ -555,12 +556,17 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         }
     }
 
+    @Override
+    public String getPrefix() {
+        return "LB";
+    }
+
     /**
      * 播放器异常日志
      *
      * @param str
      */
-    public void getOnloadLogs(String TAG, final String str) {
+    public void getOnloadLogs(String TAG, String str) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
         PackageManager packageManager = activity.getPackageManager();
