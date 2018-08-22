@@ -77,7 +77,6 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     private RecyclerView recyclerView;
     private RelativeLayout rlAnswerRootLayout;
     private ImageView ivLookAnswer;
-    private TextView tvToast;
     private AnswerResultAdapter mAdapter;
     private int mRecyclHeight;
     private AnswerResultEntity mData;
@@ -110,10 +109,6 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         rlAnswerRootLayout = view.findViewById(R.id.rl_arts_pse_answer_result_root);
         ivLookAnswer = view.findViewById(R.id.iv_arts_answer_result_answer_btn);
         ivLookAnswer.setOnClickListener(this);
-        tvToast = view.findViewById(R.id.tv_arts_answer_result_sumbit_toast);
-
-
-
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -502,11 +497,10 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
     @Override
     public void remindSubmit() {
-        AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
+     /*   AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
                 .anim_livevido_arts_answer_result_alpha_in);
         alphaAnimation.setFillAfter(true);
-        tvToast.setVisibility(View.VISIBLE);
-        tvToast.startAnimation(alphaAnimation);
+        tvToast.startAnimation(alphaAnimation);*/
     }
 
     @Override

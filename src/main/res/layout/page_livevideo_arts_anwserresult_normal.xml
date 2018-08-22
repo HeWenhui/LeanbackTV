@@ -4,21 +4,6 @@
     android:layout_height="match_parent"
     android:background="#CC000000">
 
-
-    <TextView
-        android:layout_width="170dp"
-        android:layout_height="39dp"
-        android:background="@drawable/answer_toast_bg"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="你要快快提交哦~"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:textColor="#F13232"
-        android:id="@id/tv_arts_answer_result_sumbit_toast"
-        />
-
-
     <ImageView
         android:layout_width="55dp"
         android:layout_height="55dp"
@@ -29,8 +14,8 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="18dp"
         android:layout_marginRight="20dp"
+        android:visibility="gone"
         />
-
 
     <RelativeLayout
         android:id="@id/rl_arts_answer_result_state"

@@ -488,6 +488,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
           ArtsAnswerResultBll answerResultBll = new ArtsAnswerResultBll(context,bottomContent,mGetInfo.getSmallEnglish());
           answerResultBll.attachToView();
           mAnswerResultAction = answerResultBll;
+          mAnswerResultAction.remindSubmit();
+      }else{
+          mAnswerResultAction.remindSubmit();
       }
     }
 
