@@ -38,31 +38,36 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
 
     private RelativeLayout rootView;
     private RelativeLayout rlAnswerResultLayout;
-    /**普通 统计 UI*/
+    /**
+     * 普通 统计 UI
+     */
     private static final int UI_TYPE_NORMAL = 1;
 
-    /**小学英语 统计面板*/
+    /**
+     * 小学英语 统计面板
+     */
     private static final int UI_TYPE_PSE = 2;
 
     private static final String TAG = "ArtsAnswerResultBll";
     private IArtsAnswerRsultDisplayer mDsipalyer;
     private AnswerResultEntity mAnswerReulst;
 
-    /**是否是小学英语*/
+    /**
+     * 是否是小学英语
+     */
     private boolean isPse;
     private View remindView;
 
     /**
-     *
      * @param context
      * @param liveBll
      * @param rootView
-     * @param isPse 是否是小学英语
+     * @param isPse    是否是小学英语
      */
-    public ArtsAnswerResultBll(Context context,RelativeLayout rootView, boolean isPse) {
+    public ArtsAnswerResultBll(Context context, RelativeLayout rootView, boolean isPse) {
         super(context);
         this.rootView = rootView;
-        this.isPse = true ;//isPse;
+        this.isPse = true;//isPse;
     }
 
 
@@ -80,7 +85,7 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
         Button btn = new Button(mContext);
         btn.setText("AnimTest");
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(400, 200);
-        rootView.addView(btn,params);
+        rootView.addView(btn, params);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,18 +134,18 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
         if (mDsipalyer != null) {
             rlAnswerResultLayout.removeView(mDsipalyer.getRootLayout());
         }
-        if(isPse){
-             mDsipalyer = new ArtsPSEAnswerResultPager(mContext,mAnswerReulst);
+        if (isPse) {
+            mDsipalyer = new ArtsPSEAnswerResultPager(mContext, mAnswerReulst);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
-                    (ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+                    (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
-        }else{
-            mDsipalyer = new ArtsAnswerResultPager(mContext,mAnswerReulst);
+        } else {
+            mDsipalyer = new ArtsAnswerResultPager(mContext, mAnswerReulst);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
-                    (ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+                    (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
         }
-        Loger.e("Arts","==========> ArtsAnswerResultBll addPager called:");
+        Loger.e("Arts", "==========> ArtsAnswerResultBll addPager called:");
     }
 
 
@@ -148,7 +153,7 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
      * 展示答题结果
      */
     private void showAnswerReulst() {
-        if(remindView != null){
+        if (remindView != null) {
             remindView.setVisibility(View.GONE);
         }
         rootView.post(new Runnable() {
@@ -172,11 +177,11 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
         try {
             JSONObject jsonObject = new JSONObject(result);
             int stat = jsonObject.optInt("stat");
-            if(stat == 1){
+            if (stat == 1) {
                 JSONObject dataObject = jsonObject.getJSONObject("data");
                 mAnswerReulst = new AnswerResultEntity();
 
-                if(dataObject.has("total")){
+                if (dataObject.has("total")) {
                     JSONObject totalObject = dataObject.getJSONObject("total");
                     mAnswerReulst.setLiveId(totalObject.optString("liveId"));
                     mAnswerReulst.setStuId(totalObject.optString("stuId"));
@@ -188,17 +193,17 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
                     mAnswerReulst.setCreateTime(totalObject.optLong("createTime"));
                 }
 
-                if(dataObject.has("split")){
-                   JSONArray splitArray = dataObject.getJSONArray("split");
-                   JSONObject answerObject = null;
+                if (dataObject.has("split")) {
+                    JSONArray splitArray = dataObject.getJSONArray("split");
+                    JSONObject answerObject = null;
                     AnswerResultEntity.Answer answer = null;
                     JSONArray choiceArray = null;
                     JSONArray blankArray = null;
                     JSONArray rightAnswerArray = null;
 
                     List<AnswerResultEntity.Answer> answerList = new ArrayList<AnswerResultEntity.Answer>();
-                    List<String> choiceList = new ArrayList <String>();
-                    List<String> blankList = new ArrayList <String>();
+                    List<String> choiceList = new ArrayList<String>();
+                    List<String> blankList = new ArrayList<String>();
                     List<String> rightAnswerList = new ArrayList<String>();
 
 
@@ -240,42 +245,45 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
                 showAnswerReulst();
 
 
-            }else{
-              String errorMsg = jsonObject.optString("msg");
-              XESToastUtils.showToast(mContext,errorMsg);
+            } else {
+                String errorMsg = jsonObject.optString("msg");
+                XESToastUtils.showToast(mContext, errorMsg);
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            XESToastUtils.showToast(mContext,"答题结果数据解析失败");
+            XESToastUtils.showToast(mContext, "答题结果数据解析失败");
         }
     }
 
     @Override
     public void closeAnswerResult() {
-
         if (mDsipalyer != null) {
             mDsipalyer.close();
             mDsipalyer = null;
         }
-
+        reminded = false;
     }
+
+    private boolean reminded;
 
     @Override
     public void remindSubmit() {
-
-        if(remindView == null){
-            if(isPse){
-                remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_pse,null);
-            }else{
-                remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_nor,null);
+        if (!reminded) {
+            reminded = true;
+            if (remindView == null) {
+                if (isPse) {
+                    remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_pse, null);
+                } else {
+                    remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_nor, null);
+                }
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
+                        .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                rlAnswerResultLayout.addView(remindView, params);
             }
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            rlAnswerResultLayout.addView(remindView,params);
+            remindView.setVisibility(View.VISIBLE);
+            AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
+                    .anim_livevido_arts_answer_result_alpha_in);
+            remindView.startAnimation(alphaAnimation);
         }
-
-        remindView.setVisibility(View.VISIBLE);
-        AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
-                .anim_livevido_arts_answer_result_alpha_in);
-        remindView.startAnimation(alphaAnimation);
     }
 }

@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -348,14 +349,30 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     String id = object.optString("id","");
                     videoQuestionLiveEntity.id = id;
                     videoQuestionLiveEntity.nonce = object.optString("nonce");
-
+                    JSONArray jsonArray = object.optJSONArray("id");
+                    String testIds = "";
+                    try {
+                        StringBuilder stringBuilder = new StringBuilder();
+                        if(jsonArray != null){
+                            for (int i = 0,len = jsonArray.length(); i < len; i++) {
+                                if(i < (len-1)){
+                                    stringBuilder.append(jsonArray.getString(i)).append(",");
+                                }else{
+                                    stringBuilder.append(jsonArray.getString(i));
+                                }
+                            }
+                            testIds = stringBuilder.toString();
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     String isPlayback ="1";
                     if(LiveVideoConfig.LIVE_TYPE_TUTORIAL == mLiveBll.getLiveType()){
                         isPlayback = "2";
                     }
                     StringBuilder sb = new StringBuilder();
                     sb.append(mLiveBll.getLiveVideoSAConfig().inner.URL_ARTS_H5_URL).append("?liveId=").append(mLiveId)
-                            .append("&testIds=").append(id).append("&isPlayBack=").append(isPlayback)
+                            .append("&testIds=").append(testIds).append("&isPlayBack=").append(isPlayback)
                             .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo.getStuId())
                             .append("&cookie=").append(AppBll.getInstance().getUserToken());
                     videoQuestionLiveEntity.setUrl(sb.toString());

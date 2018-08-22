@@ -492,15 +492,29 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
           ArtsAnswerResultBll answerResultBll = new ArtsAnswerResultBll(context,bottomContent,mGetInfo.getSmallEnglish());
           answerResultBll.attachToView();
           mAnswerResultAction = answerResultBll;
-          mAnswerResultAction.remindSubmit();
-      }else{
-          mAnswerResultAction.remindSubmit();
       }
     }
 
     private boolean isArts() {
-        return  true;
-        //return mGetInfo!= null && mGetInfo.getIsArts() == 1;
+        return mGetInfo!= null && mGetInfo.getIsArts() == 1;
+    }
+
+    /**
+     * 网页加载数据完成后 回调
+     */
+    public void onWebviewLoadFinish(String url){
+        if(mAnswerResultAction != null){
+            mAnswerResultAction.remindSubmit();
+        }
+    }
+
+    /**
+     * 网页移除时回调
+     */
+    public void onWebviewRemove(){
+        if(mAnswerResultAction != null){
+            mAnswerResultAction.closeAnswerResult();
+        }
     }
 
     public void setBaseVoiceAnswerCreat(BaseVoiceAnswerCreat baseVoiceAnswerCreat) {
