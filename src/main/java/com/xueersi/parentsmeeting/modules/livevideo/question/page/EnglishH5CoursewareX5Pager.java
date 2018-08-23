@@ -324,10 +324,10 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 String packageId = "";
                 String packageSource = "";
                 String packageAttr = "";
-                releasedPageInfos = AppConfig.LIVEPLAYBACKINFOS;
-                String teamId = AppConfig.LIVEPLAYBACKTEAMID;
-                String stuCouId = AppConfig.LIVEPLAYBACKSTUID;
-                String classId = AppConfig.LIVEPLAYBACKCLASSID;
+                releasedPageInfos = LiveVideoConfig.LIVEPLAYBACKINFOS;
+                String teamId = LiveVideoConfig.LIVEPLAYBACKTEAMID;
+                String stuCouId = LiveVideoConfig.LIVEPLAYBACKSTUID;
+                String classId = LiveVideoConfig.LIVEPLAYBACKCLASSID;
                 String classTestId = "";
                 try {
                     JSONObject jsonObject = new JSONObject(courseware_type.toString());
@@ -373,7 +373,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 logHashMap.put("nonce", LiveVideoConfig.nonce);
                 umsAgentDebugSys("live_platformtest", logHashMap.getData());
             }
-            if (LiveBll.isAllowTeamPk) {
+            if (allowTeamPk) {
                 mLoadUrls += "&isShowTeamPk=1";
             }
             loadUrl(mLoadUrls);

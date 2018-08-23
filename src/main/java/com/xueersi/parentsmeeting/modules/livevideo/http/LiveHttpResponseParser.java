@@ -310,7 +310,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setUrlClick(data.optInt("urlClick", 0));
             getInfo.setAllowLinkMic(data.optInt("allowLinkMic", 1) == 1);
             getInfo.setStuLinkMicNum(data.optInt("stuLinkMicNum", 0));
-            getInfo.setTestPaperUrl(data.optString("testPaperUrl", "http://live.xueersi.com/Live/getMultiTestPaper"));
+            getInfo.setTestPaperUrl(data.optString("testPaperUrl", "https://live.xueersi.com/Live/getMultiTestPaper"));
             getInfo.setBlockChinese(data.optInt("blockChinese", 0) == 1);
             getInfo.setSubjectiveTestAnswerResult(data.optString("getSubjectiveTestResultUrl", "https://live.xueersi" +
                     ".com/Live/subjectiveTestAnswerResult/" + getInfo.getId()));

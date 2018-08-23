@@ -106,6 +106,14 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
             });
         }
+        if (mLiveAutoNoticeBll != null) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    englishH5CoursewareBll.setLiveAutoNoticeBll(mLiveAutoNoticeBll.getLiveAutoNoticeBll());
+                }
+            });
+        }
     }
 
     public void setIse(SpeechEvaluatorUtils ise) {

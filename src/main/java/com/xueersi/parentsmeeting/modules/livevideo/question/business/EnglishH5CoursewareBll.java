@@ -427,9 +427,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         OnH5ResultClose onH5ResultClose = new OnH5ResultClose() {
             @Override
             public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
-                if (h5CoursewarePager == null) {
-                    return;
-                }
                 mH5AndBool.add(baseEnglishH5CoursewarePager.getUrl());
                 try {
                     JSONObject object = new JSONObject();
@@ -442,7 +439,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 }
                 baseEnglishH5CoursewarePager.destroy();
                 bottomContent.removeView(baseEnglishH5CoursewarePager.getRootView());
-                Loger.d(TAG, "onH5ResultClose:same=" + (baseEnglishH5CoursewarePager == h5CoursewarePager));
+                Loger.d(TAG, "onH5ResultClose:pager=" + baseEnglishH5CoursewarePager + ",old=" + h5CoursewarePager);
                 if (baseEnglishH5CoursewarePager == h5CoursewarePager) {
                     h5CoursewarePager = null;
                 }

@@ -27,6 +27,7 @@ public interface XESCODE {
     int TEACHER_MESSAGE = 130;
     /** 学习报告 */
     int LEARNREPORT = 133;
+//    int LEARNREPORT = 106;
     /** 点名 */
     int ROLLCALL = 134;
     /** 结束点名 */
@@ -159,6 +160,9 @@ public interface XESCODE {
 
     /** 发送语音弹幕 TODO */
     int XCR_ROOM_DANMU_SEND = 261;
+    /**提醒学生标记*/
+    int MARK_POINT_TIP=800;
+
 
     /**文科表扬榜  开始notice*/
     int ARTS_PRAISE_START = 1000;

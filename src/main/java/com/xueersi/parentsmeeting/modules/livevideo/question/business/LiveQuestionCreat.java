@@ -60,6 +60,7 @@ public class LiveQuestionCreat {
         } else {
             baseQuestionPager = new QuestionFillInBlankPortLivePager(activity, videoQuestionLiveEntity);
         }
+        baseQuestionPager.setBaseVideoQuestionEntity(videoQuestionLiveEntity);
         baseQuestionPager.setPutQuestion(mPutQuestion);
         baseQuestionPager.setLivePagerBack(livePagerBack);
         return baseQuestionPager;
@@ -76,6 +77,7 @@ public class LiveQuestionCreat {
         } else {
             baseQuestionPager = new QuestionSelectPortLivePager(activity, videoQuestionLiveEntity);
         }
+        baseQuestionPager.setBaseVideoQuestionEntity(videoQuestionLiveEntity);
         baseQuestionPager.setPutQuestion(mPutQuestion);
         baseQuestionPager.setLivePagerBack(livePagerBack);
         return baseQuestionPager;
@@ -91,6 +93,7 @@ public class LiveQuestionCreat {
         } else {
             baseQuestionPager = new QuestionMulitSelectPortLivePager(activity, videoQuestionLiveEntity);
         }
+        baseQuestionPager.setBaseVideoQuestionEntity(videoQuestionLiveEntity);
         baseQuestionPager.setPutQuestion(mPutQuestion);
         baseQuestionPager.setLivePagerBack(livePagerBack);
         return baseQuestionPager;
@@ -101,6 +104,7 @@ public class LiveQuestionCreat {
      */
     public BaseLiveQuestionPager showSubjectiveQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         BaseLiveQuestionPager baseQuestionPager = new QuestionSubjectivePager(activity, videoQuestionLiveEntity);
+        baseQuestionPager.setBaseVideoQuestionEntity(videoQuestionLiveEntity);
         baseQuestionPager.setPutQuestion(mPutQuestion);
         baseQuestionPager.setLivePagerBack(livePagerBack);
         return baseQuestionPager;

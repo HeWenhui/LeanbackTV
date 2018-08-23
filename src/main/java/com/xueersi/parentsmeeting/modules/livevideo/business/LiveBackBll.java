@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.AllLiveBasePagerIml;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveUidRx;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
@@ -73,6 +74,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
     protected PlayerService vPlayer;
     /** 互动题 */
     private VideoQuestionEntity mQuestionEntity;
+    private HashMap<VideoQuestionEntity, VideoQuestionLiveEntity> liveEntityHashMap = new HashMap<>();
     /** 显示互动题 */
     private static final int SHOW_QUESTION = 0;
     /** 没有互动题 */
@@ -295,7 +297,8 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         }
 
         @Override
-        public void onShow(boolean isShow) {
+        public void onShow(boolean isShow, VideoQuestionLiveEntity videoQuestionLiveEntity) {
+            liveEntityHashMap.put(mQuestionEntity, videoQuestionLiveEntity);
             if (isShow) {
                 mIsShowQuestion = true;
                 MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
@@ -306,10 +309,13 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         @Override
         public void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity) {
             logToFile.d("onHide:mQuestionEntity=" + mQuestionEntity + ",baseVideoQuestionEntity=" + baseVideoQuestionEntity);
-            if (baseVideoQuestionEntity != null && mQuestionEntity != null) {
-                logToFile.d("onHide:vCategory=" + mQuestionEntity.getvCategory() + ",id=" + mQuestionEntity.getvQuestionID() + ",id2=" + baseVideoQuestionEntity.getvQuestionID());
-                if (!baseVideoQuestionEntity.getvQuestionID().equals(mQuestionEntity.getvQuestionID())) {
-                    return;
+            if (mQuestionEntity != null && baseVideoQuestionEntity != null) {
+                VideoQuestionLiveEntity videoQuestionLiveEntity = liveEntityHashMap.get(mQuestionEntity);
+                if (videoQuestionLiveEntity != null) {
+                    logToFile.d("onHide:vCategory=" + mQuestionEntity.getvCategory() + ",id=" + videoQuestionLiveEntity.getvQuestionID() + ",id2=" + baseVideoQuestionEntity.getvQuestionID());
+                    if (videoQuestionLiveEntity != baseVideoQuestionEntity) {
+                        return;
+                    }
                 }
             }
             mIsShowQuestion = false;
@@ -384,6 +390,17 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
             } else if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == videoQuestionEntity.getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime <= playPosition && playPosition < endTime) {
+                    LiveVideoConfig.isMulLiveBack = false;
+//                if (startTime == playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
+            } else if(LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()){
+                // 在开始时间和结束时间之间
+                if (startTime <= playPosition && playPosition < endTime) {
+                    LiveVideoConfig.isMulLiveBack = true;
 //                if (startTime == playPosition) {
                     mQuestionEntity = videoQuestionEntity;
                     hasQuestionShow = true;
@@ -415,7 +432,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
     }
 
     public interface ShowQuestion {
-        void onShow(boolean isShow);
+        void onShow(boolean isShow, VideoQuestionLiveEntity videoQuestionLiveEntity);
 
         void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity);
     }

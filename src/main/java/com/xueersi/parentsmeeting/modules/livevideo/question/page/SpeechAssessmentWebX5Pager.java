@@ -724,7 +724,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
 //                            }
                             if (AudioPlayer.isPlaying()) {
                                 mLogtf.d("isPlaying:tip=" + tip + ",mIsStop=" + mIsStop);
-                                mIsStop = false;
+//                                mIsStop = false;
                             }
                         }
                         remoteAudioPlayerControl(tip, playUrl);
