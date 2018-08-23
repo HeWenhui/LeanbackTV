@@ -24,6 +24,8 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
@@ -200,6 +202,9 @@ public class LiveRemarkBll {
         mLiveMediaControllerBottom.getBtMark().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                if(!XesPermission.checkPermissionNoAlert(mContext, PermissionConfig.PERMISSION_CODE_STORAGE)){
+                    return;
+                }
                 if (isMarking) {
                     return;
                 }
@@ -943,6 +948,24 @@ public class LiveRemarkBll {
                         sb.append("互动课件");
                         vSig.setBackgroundResource(R.drawable.shape_blue_corners);
                         ivShot.setImageResource(R.drawable.bg_live_video_mark_courceware);
+                        break;
+                    case MARK_TYPE_TEACHER_INCLUDE:
+                        ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
+                        ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
+                        sb.append("总结(老师发布)");
+                        break;
+                    case MARK_TYPE_TEACHER_HIGH_MARK:
+                        ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
+                        ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
+                        sb.append("高分点(老师发布)");
+                        break;
+                    case MARK_TYPE_TEACHER_PRACTICE:
+                        ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
+                        ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
+                        sb.append("要多练(老师发布)");
                         break;
                     default:
                         ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
