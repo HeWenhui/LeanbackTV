@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
@@ -64,7 +65,8 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
         this.activity = activity;
-        setVideoLayout(getScreenParam(), ScreenUtils.getScreenHeight());
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        setVideoLayout(liveVideoPoint);
     }
 
     @Override
@@ -331,28 +333,21 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
 
     /**
      * 播放器区域变化时更新视图
-     *
-     * @param width
-     * @param height
      */
     @Override
-    public void setVideoLayout(final int width, final int height) {
+    public void setVideoLayout(final LiveVideoPoint liveVideoPoint) {
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 int screenWidth = getScreenParam();
-                int screenHeight = ScreenUtils.getScreenHeight();
-                displayHeight = height;
+                displayHeight = liveVideoPoint.screenHeight;
                 displayWidth = screenWidth;
-
-                if (width > 0) {
-                    wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
-                    wradio += (screenWidth - width) / 2;
-                    if (displayWidth - wradio == videoWidth){
-                        return;
-                    } else {
-                        videoWidth = displayWidth - wradio;
-                    }
+                int screenHeight = ScreenUtils.getScreenHeight();
+                wradio = liveVideoPoint.getRightMargin();
+                if (displayWidth - wradio == videoWidth) {
+                    return;
+                } else {
+                    videoWidth = displayWidth - wradio;
                 }
                 if (rPraiseListContent != null){
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rPraiseListContent.getLayoutParams();
@@ -365,11 +360,8 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     }
 
     private int getScreenParam() {
-        final View contentView = activity.findViewById(android.R.id.content);
-        final View actionBarOverlayLayout = (View) contentView.getParent();
-        Rect r = new Rect();
-        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        return (r.right - r.left);
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        return liveVideoPoint.screenWidth;
     }
 
     /**
