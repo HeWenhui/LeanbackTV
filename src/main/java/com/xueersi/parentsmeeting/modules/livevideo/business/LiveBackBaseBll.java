@@ -74,14 +74,17 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
+    /**回放event事件*/
     public int[] getCategorys() {
         return new int[0];
     }
 
+    /**回放事件开始*/
     public void onQuestionEnd(VideoQuestionEntity questionEntity) {
 
     }
 
+    /**回放事件结束*/
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
             .ShowQuestion showQuestion) {
 
