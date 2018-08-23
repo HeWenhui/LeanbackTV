@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -35,10 +36,11 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.image.ImageUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoPointEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
-import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -81,14 +83,13 @@ public class LiveRemarkBll {
     private Context mContext;
     private PlayerService mPlayerService;
     private String TAG = "LiveRemarkBll";
+    Logger logger = LoggerFactory.getLogger(TAG);
     private Timer mTimer;
     private long offSet;
     private LiveMediaControllerBottom mLiveMediaControllerBottom;
     private long sysTimeOffset;
-    private VideoView mVideoView;
     private int displayHeight;
-    private int displayWidth;
-    private int wradio;
+    //    private int displayWidth;
     private double videoWidth;
     private LiveHttpManager mHttpManager;
     private XesCloudUploadBusiness mCloudUploadBusiness;
@@ -100,9 +101,6 @@ public class LiveRemarkBll {
     private CommonAdapter mAdapter;
     private TextureView mTextureView;
     private MediaController2 mController;
-    /**
-     * 标记点列表隐藏回调
-     */
     private AbstractBusinessDataCallBack mCallBack;
     private String liveId;
     private int markNum = 0;
@@ -111,25 +109,10 @@ public class LiveRemarkBll {
     private int redPackNum = 0;
     private int examNum = 0;
     private VerifyCancelAlertDialog mDialog;
-    /**
-     * 是否满足视频条件
-     */
     private boolean isVideoReady;
-    /**
-     * 是否满足上课条件
-     */
     private boolean isClassReady;
-    /**
-     * 是否在连麦
-     */
     private boolean isOnChat;
-    /**
-     * 是否正在标记
-     */
     private boolean isMarking;
-    /**
-     * 是否在倒计时中
-     */
     private boolean isCounting;
     private LiveAndBackDebug mLiveAndBackDebug;
     private View vTips;
@@ -162,20 +145,28 @@ public class LiveRemarkBll {
 
     public void initData() {
         setVideoReady(false);
-        //每秒检查帧数，达到12帧停止
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 if (mPlayerService.getPlayer() == null) {
                     return;
                 }
-                long tcpSpeed = ((IjkMediaPlayer) mPlayerService.getPlayer()).getTcpSpeed();
-                float vdfps = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoDecodeFramesPerSecond();
+                long tcpSpeed;
+                float vdfps;
+                try {
+                    tcpSpeed = ((IjkMediaPlayer) mPlayerService.getPlayer()).getTcpSpeed();
+                    vdfps = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoDecodeFramesPerSecond();
+                } catch (Exception e) {
+                    return;
+                }
                 if (mLiveMediaControllerBottom == null) {
                     return;
                 }
                 if (Math.round(vdfps) == 12) {
                     setVideoOffset(0);
+                    //mTimer.cancel();
+
+
                 }
 
             }
@@ -326,7 +317,6 @@ public class LiveRemarkBll {
         umsAgentMark(false, 0, 0, 0);
         isMarking = false;
     }
-
     public void showMarkGuide() {
         if (!isGaosan) {
             return;
@@ -355,6 +345,7 @@ public class LiveRemarkBll {
     }
 
     public void hideBtMark() {
+        logger.d("hideBtMark");
         if (mLiveMediaControllerBottom != null) {
             mLiveMediaControllerBottom.getBtMark().setVisibility(View.GONE);
         }
@@ -399,6 +390,39 @@ public class LiveRemarkBll {
     public void setList(List<VideoPointEntity> list) {
         mList = list;
         setEntityNum(mList);
+        if (AppConfig.isMulLiveBack) {
+            setNewEntityNum(mList);
+        }
+
+    }
+    private void setNewEntityNum(List<VideoPointEntity> lst) {
+        if (lst == null || lst.size() == 0) {
+            return;
+        }
+        questionNum = 0;
+        redPackNum = 0;
+        examNum = 0;
+        englishH5Num = 0;
+        markNum = 0;
+        for (VideoPointEntity entity : lst) {
+            switch (entity.getNewType()) {
+                case "1":
+                case "6":
+                    entity.setNumone(++questionNum);
+                    break;
+                case "2":
+                case "3":
+                case "4":
+                    entity.setNumtwo(++examNum);
+                    break;
+                case "5":
+                case "10":
+                    entity.setNumthree(++englishH5Num);
+                    break;
+                default:
+                    entity.setNum(++markNum);
+            }
+        }
     }
 
 
@@ -411,6 +435,7 @@ public class LiveRemarkBll {
     }
 
     public void showBtMark() {
+        logger.d("showBtMark:mLiveMediaControllerBottom=null?" + (mLiveMediaControllerBottom == null));
         if (mLiveMediaControllerBottom != null) {
             mLiveMediaControllerBottom.getBtMark().setVisibility(View.VISIBLE);
         }
@@ -422,10 +447,6 @@ public class LiveRemarkBll {
 
     public void setSysTimeOffset(long sysTimeOffset) {
         this.sysTimeOffset = sysTimeOffset;
-    }
-
-    public void setVideoView(VideoView videoView) {
-        mVideoView = videoView;
     }
 
     /**
@@ -532,6 +553,19 @@ public class LiveRemarkBll {
         mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.shape_oval_black);
         setIsCounting(true);
         timer.start();
+    }
+
+    public void setLayout(int width, int height) {
+        int screenWidth = getScreenParam();
+        displayHeight = height;
+        int displayWidth = screenWidth;
+        if (width > 0) {
+            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
+            wradio += (screenWidth - width) / 2;
+            if (displayWidth - wradio != videoWidth) {
+                videoWidth = displayWidth - wradio;
+            }
+        }
     }
 
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
@@ -858,94 +892,67 @@ public class LiveRemarkBll {
 
             StringBuilder sb = new StringBuilder();
             ivShot.setScaleType(ImageView.ScaleType.CENTER);
-            switch (entity.getType()) {
-                case CATEGORY_QUESTION:
-                    sb.append("互动题");
-                    sb.append(entity.getNum());
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
-                    ivShot.setImageResource(R.drawable.bg_live_mark_question);
-                    break;
-                case CATEGORY_REDPACKET:
-                    sb.append("红包");
-                    sb.append(entity.getNum());
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                    ivShot.setImageResource(R.drawable.bg_live_mark_redpack);
-                    break;
-                case CATEGORY_EXAM:
-                    sb.append("测试卷");
-                    sb.append(entity.getNum());
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_green);
-                    ivShot.setImageResource(R.drawable.bg_live_video_mark_exam);
-                    break;
-                case CATEGORY_H5COURSE_WARE:
-                case CATEGORY_ENGLISH_H5COURSE_WARE:
-                    sb.append("互动课件");
-                    sb.append(entity.getNum());
-                    vSig.setBackgroundResource(R.drawable.shape_blue_corners);
-                    ivShot.setImageResource(R.drawable.bg_live_video_mark_courceware);
-                    break;
-                case MARK_TYPE_QUESTION:
-                    ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
-                    vDelete.setVisibility(View.VISIBLE);
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                    ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
-                    sb.append("疑问");
-                    sb.append(entity.getNum());
-                    break;
-                case MARK_TYPE_INCLUDE:
-                    ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
-                    vDelete.setVisibility(View.VISIBLE);
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                    ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
-                    sb.append("总结");
-                    sb.append(entity.getNum());
-                    break;
-                case MARK_TYPE_HIGH_MARK:
-                    ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
-                    vDelete.setVisibility(View.VISIBLE);
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                    ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
-                    sb.append("高分点");
-                    sb.append(entity.getNum());
-                    break;
-                case MARK_TYPE_PRACTICE:
-                    ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
-                    vDelete.setVisibility(View.VISIBLE);
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                    ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
-                    sb.append("要多练");
-                    sb.append(entity.getNum());
-                    break;
-                case MARK_TYPE_TEACHER_INCLUDE:
-                    ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                    ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
-                    sb.append("总结(老师发布)");
-                    break;
-                case MARK_TYPE_TEACHER_HIGH_MARK:
-                    ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                    ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
-                    sb.append("高分点(老师发布)");
-                    break;
-                case MARK_TYPE_TEACHER_PRACTICE:
-                    ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                    ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
-                    sb.append("要多练(老师发布)");
-                    break;
-                default:
-                    ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
-                    vDelete.setVisibility(View.VISIBLE);
-                    vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                    ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
-                    sb.append("疑问点");
-                    sb.append(entity.getNum());
-                    break;
-            }
+            if (entity.getType() == 24) {
+                switch (entity.getNewType()) {
+                    case "1":
+                    case "6":
+                        sb.append("互动题");
+                        sb.append(entity.getNumone());
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
+                        ivShot.setImageResource(R.drawable.bg_live_mark_question);
+                        break;
+                    case "2":
+                    case "3":
+                    case "4":
+                        sb.append("测试卷");
+                        sb.append(entity.getNumtwo());
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_green);
+                        ivShot.setImageResource(R.drawable.bg_live_video_mark_exam);
+                        break;
+                    case "5":
+                    case "10":
+                        sb.append("互动游戏");
+                        sb.append(entity.getNumthree());
+                        vSig.setBackgroundResource(R.drawable.shape_blue_corners);
+                        ivShot.setImageResource(R.drawable.bg_live_video_mark_courceware);
+                        break;
 
-            tvText.setText(sb.toString());
-            //tvText.setText("疑问点" + (i + 1));
+                }
+                tvText.setText(sb.toString());
+            } else {
+                switch (entity.getType()) {
+                    case CATEGORY_QUESTION:
+                        sb.append("互动题");
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
+                        ivShot.setImageResource(R.drawable.bg_live_mark_question);
+                        break;
+                    case CATEGORY_REDPACKET:
+                        sb.append("红包");
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
+                        ivShot.setImageResource(R.drawable.bg_live_mark_redpack);
+                        break;
+                    case CATEGORY_EXAM:
+                        sb.append("测试卷");
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_green);
+                        ivShot.setImageResource(R.drawable.bg_live_video_mark_exam);
+                        break;
+                    case CATEGORY_H5COURSE_WARE:
+                    case CATEGORY_ENGLISH_H5COURSE_WARE:
+                        sb.append("互动课件");
+                        vSig.setBackgroundResource(R.drawable.shape_blue_corners);
+                        ivShot.setImageResource(R.drawable.bg_live_video_mark_courceware);
+                        break;
+                    default:
+                        ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
+                        vDelete.setVisibility(View.VISIBLE);
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
+                        ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
+                        sb.append("疑问点");
+                }
+                sb.append(entity.getNum());
+                tvText.setText(sb.toString());
+                //tvText.setText("疑问点" + (i + 1));
+            }
         }
     }
 
