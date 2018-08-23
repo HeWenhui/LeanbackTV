@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoView;
@@ -131,6 +132,7 @@ public class LiveRemarkBll {
     public LiveRemarkBll(Context context, PlayerService playerService) {
         mContext = context;
         mPlayerService = playerService;
+        mLiveAndBackDebug= ProxUtil.getProxUtil().get(mContext,LiveAndBackDebug.class);
         initData();
     }
 
