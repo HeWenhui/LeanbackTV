@@ -878,15 +878,18 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param url
      * @param callBack
      */
-    public void saveLiveMark(String time, String url, HttpCallBack callBack) {
+    public void saveLiveMark(String liveId,String type,String time, String url, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("curTime", time);
         params.addBodyParam("imageUrl", url);
+        params.addBodyParam("liveId",liveId);
+        params.addBodyParam("markType",type);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SAVE_MARK_POINT, params, callBack);
     }
+
 
     /**
      * 获取标记点
