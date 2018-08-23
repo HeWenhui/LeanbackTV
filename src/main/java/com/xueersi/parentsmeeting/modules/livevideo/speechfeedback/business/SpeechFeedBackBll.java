@@ -111,13 +111,13 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         this.activity = activity;
         this.liveBll = liveBll;
         liveAndBackDebug = liveBll;
-        logToFile = new LogToFile(TAG);
+        logToFile = new LogToFile(activity, TAG);
     }
 
     public SpeechFeedBackBll(Activity activity, SpeechFeedBackHttp liveBll) {
         this.activity = activity;
         this.liveBll = liveBll;
-        logToFile = new LogToFile(TAG);
+        logToFile = new LogToFile(activity, TAG);
     }
 
     public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {

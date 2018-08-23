@@ -35,7 +35,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     public static final String TAG = "PraiseListBll";
 
     private LiveAndBackDebug liveAndBackDebug;
-    private WeakHandler mVPlayVideoControlHandler = new WeakHandler(Looper.getMainLooper(),this);
+    private WeakHandler mVPlayVideoControlHandler = new WeakHandler(Looper.getMainLooper(), this);
     private LogToFile mLogtf;
     private Activity activity;
     private PraiseListIRCBll mLiveBll;
@@ -46,7 +46,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         return displayHeight;
     }
 
-    /** 直播底部布局*/
+    /** 直播底部布局 */
     private RelativeLayout rBottomContent;
     /** 表扬榜根布局 */
     private RelativeLayout rPraiseListContent;
@@ -61,7 +61,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     private int mPraiseListType = 0;
 
     public PraiseListBll(Activity activity) {
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
         this.activity = activity;
         setVideoLayout(getScreenParam(), ScreenUtils.getScreenHeight());
@@ -76,27 +76,32 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         this.mLiveBll = mLiveBll;
     }
 
-    public void initView(RelativeLayout bottomContent) {
+    public void initView(final RelativeLayout bottomContent) {
 
-        rBottomContent = bottomContent;
-        //表扬榜
-        if (rPraiseListContent != null) {
-            //设置主视图参数
-            RelativeLayout.LayoutParams mainParam=new RelativeLayout.LayoutParams(videoWidth, displayHeight);
-            mainParam.addRule(RelativeLayout.CENTER_VERTICAL);
-            rPraiseListContent.setLayoutParams(mainParam);
-            bottomContent.addView(rPraiseListContent);
-        }
+        mVPlayVideoControlHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                rBottomContent = bottomContent;
+                //表扬榜
+                if (rPraiseListContent != null) {
+                    //设置主视图参数
+                    RelativeLayout.LayoutParams mainParam=new RelativeLayout.LayoutParams(videoWidth, displayHeight);
+                    mainParam.addRule(RelativeLayout.CENTER_VERTICAL);
+                    rPraiseListContent.setLayoutParams(mainParam);
+                    bottomContent.addView(rPraiseListContent);
+                }
 
-        else{
-            rPraiseListContent = new RelativeLayout(activity);
-            rPraiseListContent.setId(R.id.rl_livevideo_content_praiselist);
-            //设置主视图参数
-            RelativeLayout.LayoutParams mainParam=new RelativeLayout.LayoutParams(videoWidth, displayHeight);
-            mainParam.addRule(RelativeLayout.CENTER_VERTICAL);
-            rPraiseListContent.setLayoutParams(mainParam);
-            bottomContent.addView(rPraiseListContent);
-        }
+                else{
+                    rPraiseListContent = new RelativeLayout(activity);
+                    rPraiseListContent.setId(R.id.rl_livevideo_content_praiselist);
+                    //设置主视图参数
+                    RelativeLayout.LayoutParams mainParam=new RelativeLayout.LayoutParams(videoWidth, displayHeight);
+                    mainParam.addRule(RelativeLayout.CENTER_VERTICAL);
+                    rPraiseListContent.setLayoutParams(mainParam);
+                    bottomContent.addView(rPraiseListContent);
+                }
+            }
+        });
     }
 
     /**
@@ -110,11 +115,11 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         this.nonce = nonce;
 
         StableLogHashMap logHashMap = new StableLogHashMap("receivePraiseList");
-        logHashMap.put("logtype","receivePraiseList");
-        logHashMap.put("listtype",listType+"");
-        logHashMap.put("sno","3");
-        logHashMap.put("stable","2");
-        logHashMap.put("ex","Y");
+        logHashMap.put("logtype", "receivePraiseList");
+        logHashMap.put("listtype", listType + "");
+        logHashMap.put("sno", "3");
+        logHashMap.put("stable", "2");
+        logHashMap.put("ex", "Y");
         umsAgentDebugSys(LiveVideoConfig.LIVE_PRAISE_LIST, logHashMap.getData());
     }
 
@@ -132,7 +137,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, honorListEntity, mLiveBll,PraiseListBll.this, mVPlayVideoControlHandler);
+                mPraiseList = new PraiseListPager(activity, honorListEntity, mLiveBll, PraiseListBll.this, mVPlayVideoControlHandler);
                 rPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rPraiseListContent.addView(mPraiseList.getRootView(), params);
@@ -142,13 +147,14 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         });
 
         StableLogHashMap logHashMap = new StableLogHashMap("showPraiseList");
-        logHashMap.put("listtype",PraiseListPager.PRAISE_LIST_TYPE_HONOR+"");
-        logHashMap.put("sno","4");
-        logHashMap.put("stable","1");
-        logHashMap.put("nonce",nonce);
-        logHashMap.put("ex","Y");
+        logHashMap.put("listtype", PraiseListPager.PRAISE_LIST_TYPE_HONOR + "");
+        logHashMap.put("sno", "4");
+        logHashMap.put("stable", "1");
+        logHashMap.put("nonce", nonce);
+        logHashMap.put("ex", "Y");
         umsAgentDebugPv(LiveVideoConfig.LIVE_PRAISE_LIST, logHashMap.getData());
     }
+
     /**
      * 显示点赞榜
      *
@@ -163,7 +169,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, thumbsUpListEntity, mLiveBll,PraiseListBll.this, mVPlayVideoControlHandler);
+                mPraiseList = new PraiseListPager(activity, thumbsUpListEntity, mLiveBll, PraiseListBll.this, mVPlayVideoControlHandler);
                 rPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rPraiseListContent.addView(mPraiseList.getRootView(), params);
@@ -173,11 +179,11 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         });
 
         StableLogHashMap logHashMap = new StableLogHashMap("showPraiseList");
-        logHashMap.put("listtype",PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP+"");
-        logHashMap.put("sno","4");
-        logHashMap.put("stable","1");
-        logHashMap.put("nonce",nonce);
-        logHashMap.put("ex","Y");
+        logHashMap.put("listtype", PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP + "");
+        logHashMap.put("sno", "4");
+        logHashMap.put("stable", "1");
+        logHashMap.put("nonce", nonce);
+        logHashMap.put("ex", "Y");
         umsAgentDebugPv(LiveVideoConfig.LIVE_PRAISE_LIST, logHashMap.getData());
     }
 
@@ -195,7 +201,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, progressListEntity, mLiveBll,PraiseListBll.this, mVPlayVideoControlHandler);
+                mPraiseList = new PraiseListPager(activity, progressListEntity, mLiveBll, PraiseListBll.this, mVPlayVideoControlHandler);
                 rPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rPraiseListContent.addView(mPraiseList.getRootView(), params);
@@ -205,11 +211,11 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         });
 
         StableLogHashMap logHashMap = new StableLogHashMap("showPraiseList");
-        logHashMap.put("listtype",PraiseListPager.PRAISE_LIST_TYPE_PROGRESS+"");
-        logHashMap.put("sno","4");
-        logHashMap.put("stable","1");
-        logHashMap.put("nonce",nonce);
-        logHashMap.put("ex","Y");
+        logHashMap.put("listtype", PraiseListPager.PRAISE_LIST_TYPE_PROGRESS + "");
+        logHashMap.put("sno", "4");
+        logHashMap.put("stable", "1");
+        logHashMap.put("nonce", nonce);
+        logHashMap.put("ex", "Y");
         umsAgentDebugPv(LiveVideoConfig.LIVE_PRAISE_LIST, logHashMap.getData());
     }
 
@@ -222,11 +228,11 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public void showPraiseScroll(final String stuName, final String tecName) {
         mLogtf.d("showPraiseScroll");
-        if(mPraiseList!=null)
+        if (mPraiseList != null)
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mPraiseList.startScrollAnimation(stuName,tecName);
+                    mPraiseList.startScrollAnimation(stuName, tecName);
                 }
             });
     }
@@ -239,7 +245,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public void receiveThumbsUpNotice(final ArrayList<String> stuNames) {
         mLogtf.d("receiveThumbsUpNotice");
-        if(mPraiseList!=null)
+        if (mPraiseList != null)
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -250,12 +256,11 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
 
     /**
      * 显示感谢点赞的Toast
-     *
      */
     @Override
     public void showThumbsUpToast() {
         mLogtf.d("showThumbsUpToast");
-        if(mPraiseList!=null)
+        if (mPraiseList != null)
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -273,15 +278,15 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         //停止点赞弹幕线程
         isShowing = false;
         mPraiseListType = 0;
-        if(mPraiseList!=null)
+        if (mPraiseList != null)
             mPraiseList.setDanmakuStop(true);
-        if(mPraiseList!=null)
+        if (mPraiseList != null)
             mPraiseList.releaseSoundPool();
         //rBottomContent.setClickable(false);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
-                if(rPraiseListContent!=null)
+                if (rPraiseListContent != null)
                     rPraiseListContent.removeAllViews();
             }
         });
@@ -302,7 +307,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
      * 获取点赞概率标识
      */
     @Override
-    public int getThumbsUpProbability( ) {
+    public int getThumbsUpProbability() {
         mLogtf.d("getThumbsUpProbability");
         return thumbsUpProbability;
     }
@@ -315,7 +320,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     @Override
     public void setThumbsUpBtnEnabled(final boolean enabled) {
         mLogtf.d("setThumbsUpBtnEnabled");
-        if(mPraiseList!=null)
+        if (mPraiseList != null)
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -331,30 +336,35 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
      * @param height
      */
     @Override
-    public void setVideoLayout(int width, int height) {
-        int screenWidth = getScreenParam();
-        int screenHeight = ScreenUtils.getScreenHeight();
-        displayHeight = height;
-        displayWidth = screenWidth;
+    public void setVideoLayout(final int width, final int height) {
+        mVPlayVideoControlHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                int screenWidth = getScreenParam();
+                int screenHeight = ScreenUtils.getScreenHeight();
+                displayHeight = height;
+                displayWidth = screenWidth;
 
-        if (width > 0) {
-            wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
-            wradio += (screenWidth - width) / 2;
-            if (displayWidth-wradio==videoWidth){
-                return;
-            } else {
-                videoWidth = displayWidth - wradio;
+                if (width > 0) {
+                    wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
+                    wradio += (screenWidth - width) / 2;
+                    if (displayWidth - wradio == videoWidth){
+                        return;
+                    } else {
+                        videoWidth = displayWidth - wradio;
+                    }
+                }
+                if (rPraiseListContent != null){
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rPraiseListContent.getLayoutParams();
+                    params.height= displayHeight;
+                    params.width=videoWidth;
+                    rPraiseListContent.setLayoutParams(params);
+                }
             }
-        }
-        if(rPraiseListContent!=null){
-            RelativeLayout.LayoutParams params=(RelativeLayout.LayoutParams) rPraiseListContent.getLayoutParams();
-            params.height=displayHeight;
-            params.width=videoWidth;
-            rPraiseListContent.setLayoutParams(params);
-        }
+        });
     }
 
-    private int getScreenParam(){
+    private int getScreenParam() {
         final View contentView = activity.findViewById(android.R.id.content);
         final View actionBarOverlayLayout = (View) contentView.getParent();
         Rect r = new Rect();
@@ -364,19 +374,17 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
 
     /**
      * Activity退出
-     *
      */
     @Override
-    public void destory(){
-        if(mPraiseList!=null)
+    public void destory() {
+        if (mPraiseList != null)
             mPraiseList.setDanmakuStop(true);
-        if(mPraiseList!=null)
+        if (mPraiseList != null)
             mPraiseList.releaseSoundPool();
     }
 
     /**
      * 判断榜单是否正在显示中
-     *
      */
     @Override
     public boolean isShowing() {
@@ -395,7 +403,6 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
 
     /**
      * 获取当前榜单类型
-     *
      */
     @Override
     public int getCurrentListType() {

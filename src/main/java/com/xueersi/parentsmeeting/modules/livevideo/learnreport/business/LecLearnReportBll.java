@@ -52,7 +52,7 @@ public class LecLearnReportBll implements LecLearnReportAction, Handler.Callback
     String liveId;
 
     public LecLearnReportBll(Activity activity) {
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
         this.activity = activity;
     }

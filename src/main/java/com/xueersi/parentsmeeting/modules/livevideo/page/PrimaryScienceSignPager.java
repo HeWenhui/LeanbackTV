@@ -33,7 +33,7 @@ public class PrimaryScienceSignPager extends BasePager {
     TextView tvSignName;
     /** 查看评价，查看按钮 */
     Button btLearnreportCheck;
-    ImageView ivSignSuccess,ivSignFail,ivClose;
+    ImageView ivSignSuccess, ivSignFail, ivClose;
     TextView tvSignStatus;
     ClassSignEntity classSignEntity;
     /** 点名按钮提示，0-准时签到，1-签到成功，2-签到失败(在签到的时候，老师点结束签到) */
@@ -45,7 +45,7 @@ public class PrimaryScienceSignPager extends BasePager {
         this.rollCallAction = rollCallAction;
         this.classSignEntity = classSignEntity;
         this.rollCallBll = rollCallBll;
-        logToFile = new LogToFile(TAG);
+        logToFile = new LogToFile(context, TAG);
         initData();
     }
 
@@ -80,7 +80,7 @@ public class PrimaryScienceSignPager extends BasePager {
                     rollCallAction.stopRollCall();
                     return;
                 }
-                rollCallBll.userSign(classSignEntity,new HttpCallBack() {
+                rollCallBll.userSign(classSignEntity, new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         logToFile.d("onPmSuccess:responseEntity=" + responseEntity.getJsonObject().toString());
@@ -90,14 +90,14 @@ public class PrimaryScienceSignPager extends BasePager {
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         logToFile.e("onPmFailure:msg=" + msg, error);
-                        Toast.makeText(mContext,TextUtils.isEmpty(msg)?"网络异常":msg,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, TextUtils.isEmpty(msg) ? "网络异常" : msg, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         // rollCallAction.stopRollCall();
-                        String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg())?"网络异常":responseEntity.getErrorMsg();
-                        Toast.makeText(mContext,errorMsg,Toast.LENGTH_SHORT).show();
+                        String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "网络异常" : responseEntity.getErrorMsg();
+                        Toast.makeText(mContext, errorMsg, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -117,13 +117,13 @@ public class PrimaryScienceSignPager extends BasePager {
      */
     public void updateStatus(int status) {
         classSignEntity.setStatus(status);
-        if(status == 1){
+        if (status == 1) {
             mLinearLayout.setVisibility(View.VISIBLE);
             btLearnreportCheck.setVisibility(View.VISIBLE);
             ivSignSuccess.setVisibility(View.GONE);
             ivSignFail.setVisibility(View.GONE);
             return;
-        }else if(status == 2){
+        } else if (status == 2) {
             ivSignSuccess.setVisibility(View.VISIBLE);
             ivSignFail.setVisibility(View.GONE);
         } else {

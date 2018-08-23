@@ -57,7 +57,7 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
         if (liveBasePager.getLivePagerBack() != null) {
             LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(context, LiveBackBll.ShowQuestion.class);
             if (showQuestion != null) {
-                showQuestion.onShow(false);
+                showQuestion.onHide(liveBasePager.getBaseVideoQuestionEntity());
             }
         }
     }

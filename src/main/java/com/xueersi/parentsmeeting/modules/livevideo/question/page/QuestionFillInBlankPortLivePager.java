@@ -235,7 +235,7 @@ public class QuestionFillInBlankPortLivePager extends BaseLiveQuestionPager {
             btnSubmit.setProgress(100);
         }
         if (putQuestion != null) {
-            putQuestion.onPutQuestionResult(videoQuestionLiveEntity, quesReslutEntity.getResult());
+            putQuestion.onPutQuestionResult(this, videoQuestionLiveEntity, quesReslutEntity.getResult());
         }
     }
 

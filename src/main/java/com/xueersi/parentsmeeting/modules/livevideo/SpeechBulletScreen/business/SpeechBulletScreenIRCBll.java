@@ -2,10 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business
 
 import android.app.Activity;
 import android.util.Log;
-import android.view.WindowManager;
 
 import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -22,10 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
-
-import okhttp3.Call;
 
 /**
  * Created by Zhang Yuansun on 2018/7/12.
@@ -66,6 +61,13 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 //            e.printStackTrace();
 //        }
 //        onNotice("","",data,260);
+//        final JSONObject finalData = data;
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                onNotice("","", finalData,260);
+//            }
+//        },10000);
 
     }
 

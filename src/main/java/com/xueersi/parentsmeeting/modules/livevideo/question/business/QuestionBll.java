@@ -119,7 +119,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /** 互动题布局 */
     private BaseLiveQuestionPager baseQuestionPager;
     LiveQuestionCreat liveQuestionCreat;
-    RelativeLayout bottomContent;
     /** 互动题的布局 */
     private RelativeLayout rlQuestionContent;
     /** 互动题作答成功的布局 */
@@ -228,7 +227,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void setLiveGetInfo(LiveGetInfo liveGetInfo) {
         this.liveGetInfo = liveGetInfo;
-        isTeamPkAllowed = liveGetInfo != null &&  "1".equals(liveGetInfo.getIsAllowTeamPk());
+        isTeamPkAllowed = liveGetInfo != null && "1".equals(liveGetInfo.getIsAllowTeamPk());
     }
 
     public void setIse(SpeechEvaluatorUtils ise) {
@@ -274,7 +273,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void initView(RelativeLayout bottomContent, boolean isLand) {
         this.isLand = isLand;
         isAbLand.set(isLand);
-        this.bottomContent = bottomContent;
         //互动题
         rlQuestionContent = new RelativeLayout(activity);
         rlQuestionContent.setId(R.id.rl_livevideo_content_question);
@@ -502,7 +500,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             rlQuestionContent.removeView(questionWebPager.getRootView());
                             questionWebPager = null;
                         }
-                        QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this, liveGetInfo
+                        QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, null, QuestionBll.this, liveGetInfo
                                 .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
                                 liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
                                 videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), IS_SCIENCE, stuCouId,
@@ -685,11 +683,20 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 4回答正确无金币
      * 5部分正确，无金币
      *
+     * @param liveBasePager
      * @param baseVideoQuestionEntity
      * @param entity
      */
     @Override
-    public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+    public void onAnswerReslut(LiveBasePager liveBasePager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+        BaseLiveQuestionPager tempBaseQuestionPager = null;
+        /** 语音答题 */
+        BaseVoiceAnswerPager tempVoiceAnswerPager = null;
+        if (liveBasePager instanceof BaseLiveQuestionPager) {
+            tempBaseQuestionPager = (BaseLiveQuestionPager) liveBasePager;
+        } else if (liveBasePager instanceof BaseVoiceAnswerPager) {
+            tempVoiceAnswerPager = (BaseVoiceAnswerPager) liveBasePager;
+        }
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         boolean isSuccess = false;
         int type = 0;
@@ -746,8 +753,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
         }
         if (isSuccess) {
-            if (baseQuestionPager != null) {
-                baseQuestionPager.onSubSuccess();
+            if (tempBaseQuestionPager != null) {
+                tempBaseQuestionPager.onSubSuccess();
             }
             postDelayedIfNotFinish(new Runnable() {
                 @Override
@@ -759,8 +766,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             }, 5000);
         } else {
-            if (baseQuestionPager != null) {
-                baseQuestionPager.onSubFailure();
+            if (tempBaseQuestionPager != null) {
+                tempBaseQuestionPager.onSubFailure();
             }
         }
         String testId = "";
@@ -774,18 +781,28 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             } else {
                 mQueAndBool.add(testId);
             }
-            videoQuestionLiveEntity = null;
         } else {
             mLogtf.d("onAnswerReslut:id=null,testId=" + testId + ",type=" + type);
         }
-        if (mLiveTopic != null) {
-//            mLiveTopic.setTopic(null);
-            mLiveTopic.setVideoQuestionLiveEntity(null);
+        if (tempVoiceAnswerPager != null) {
+            stopVoiceAnswerPager(tempVoiceAnswerPager);
         }
-        if (voiceAnswerPager != null) {
-            stopVoiceAnswerPager();
+        boolean same = true;
+        if (tempBaseQuestionPager != null) {
+            if (tempBaseQuestionPager != baseQuestionPager) {
+                same = false;
+            }
+        } else if (tempVoiceAnswerPager != null) {
+            if (tempVoiceAnswerPager != voiceAnswerPager) {
+                same = false;
+            }
         }
-        questionViewGone(true);
+        if (same) {
+            if (mLiveTopic != null) {
+                mLiveTopic.setVideoQuestionLiveEntity(null);
+            }
+            questionViewGone(true);
+        }
     }
 
     @Override
@@ -797,7 +814,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onStopQuestion(String ptype, final String nonce) {
-        Loger.i("=====questionbll  question stop");
+        mLogtf.d("onStopQuestion:ptype=" + ptype);
         boolean havePager = false;
         boolean oldisAnaswer = isAnaswer;
         isAnaswer = false;
@@ -993,14 +1010,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     @Override
-    public void onExamStop() {
+    public void onExamStop(final String num) {
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 int delayTime = 0;
                 if (examQuestionPager != null) {
                     curQuestionView = examQuestionPager.getBasePager();
-                    mLogtf.i("onExamStop:num=" + examQuestionPager.getNum());
+                    mLogtf.i("onExamStop:num=" + num + "," + examQuestionPager.getNum());
                     examQuestionPager.examSubmitAll();
                     delayTime = 3000;
                     closePageByTeamPk(examQuestionPager.getBasePager());
@@ -1186,7 +1203,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     @Override
-    public void stopWebQuestion(BasePager pager, String testId) {
+    public void stopWebQuestion(BasePager pager, String testId, BaseVideoQuestionEntity baseVideoQuestionEntity) {
         if (pager instanceof BaseQuestionWebInter) {
             mQueAndBool.add("" + testId);
             if (questionWebPager != null) {
@@ -1216,7 +1233,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
 
     @Override
-    public void stopSpeech(BaseSpeechAssessmentPager pager, final String num) {
+    public void stopSpeech(BaseSpeechAssessmentPager pager, BaseVideoQuestionEntity baseVideoQuestionEntity, final String num) {
         mLogtf.d("stopSpeech:num=" + num + ",isAnaswer=" + isAnaswer + ",same=" + (pager == speechAssessmentPager));
         mQueAndBool.add("" + num);
         if (pager == speechAssessmentPager && speechAssessmentPager != null) {
@@ -1471,13 +1488,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             if (voiceAnswerPager.isEnd()) {
                 mLogtf.d("removeBaseVoiceAnswerPager1");
                 voiceAnswerPager2.onDestroy();
-                bottomContent.removeView(voiceAnswerPager2.getRootView());
+                rlQuestionContent.removeView(voiceAnswerPager2.getRootView());
                 voiceAnswerPager = null;
             }
         } else {
             mLogtf.d("removeBaseVoiceAnswerPager1");
             voiceAnswerPager2.onDestroy();
-            bottomContent.removeView(voiceAnswerPager2.getRootView());
+            rlQuestionContent.removeView(voiceAnswerPager2.getRootView());
         }
     }
 
@@ -1681,6 +1698,18 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
+    private void switchVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
+        voiceAnswerPager.stopPlayer();
+        rlQuestionContent.removeView(voiceAnswerPager.getRootView());
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+        if (audioRequest != null) {
+            audioRequest.release();
+        }
+        if (voiceAnswerPager == QuestionBll.this.voiceAnswerPager) {
+            QuestionBll.this.voiceAnswerPager = null;
+        }
+    }
+
     private void stopVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
         voiceAnswerPager.stopPlayer();
         voiceAnswerPager.onDestroy();
@@ -1688,6 +1717,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
         if (audioRequest != null) {
             audioRequest.release();
+        }
+        if (voiceAnswerPager == QuestionBll.this.voiceAnswerPager) {
+            QuestionBll.this.voiceAnswerPager = null;
         }
     }
 
@@ -1947,25 +1979,16 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity1.type)) {
                 if ("1".equals(videoQuestionLiveEntity1.choiceType)) {
                     showSelectQuestion(videoQuestionLiveEntity1);
-                    stopVoiceAnswerPager(baseVoiceAnswerPager);
-                    if (voiceAnswerPager == baseVoiceAnswerPager) {
-                        voiceAnswerPager = null;
-                    }
+                    switchVoiceAnswerPager(baseVoiceAnswerPager);
                     return baseQuestionPager;
                 } else {
                     showMulitSelectQuestion(videoQuestionLiveEntity1);
-                    stopVoiceAnswerPager(baseVoiceAnswerPager);
-                    if (voiceAnswerPager == baseVoiceAnswerPager) {
-                        voiceAnswerPager = null;
-                    }
+                    switchVoiceAnswerPager(baseVoiceAnswerPager);
                     return baseQuestionPager;
                 }
             } else if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
                 showFillBlankQuestion(videoQuestionLiveEntity1);
-                stopVoiceAnswerPager(baseVoiceAnswerPager);
-                if (voiceAnswerPager == baseVoiceAnswerPager) {
-                    voiceAnswerPager = null;
-                }
+                switchVoiceAnswerPager(baseVoiceAnswerPager);
                 return baseQuestionPager;
             }
             return null;
@@ -1984,7 +2007,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
 
         @Override
-        public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String
+        public void onPutQuestionResult(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String
                 result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut) {
             final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
             String testAnswer;
@@ -1995,7 +2018,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 //                testAnswer = result + ":" + sorce;
                 testAnswer = result;
             }
-            questionHttp.liveSubmitTestAnswer(videoQuestionLiveEntity1, mVSectionID, testAnswer, true, isRight,
+            questionHttp.liveSubmitTestAnswer(baseVoiceAnswerPager, videoQuestionLiveEntity1, mVSectionID, testAnswer, true, isRight,
                     answerReslut);
         }
 
@@ -2012,15 +2035,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         @Override
         public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
             mLogtf.d("stopSpeech:voiceAnswerPager:end=" + answerPager.isEnd());
-            answerPager.onDestroy();
-            rlQuestionContent.removeView(answerPager.getRootView());
-            if (answerPager == voiceAnswerPager) {
-                voiceAnswerPager = null;
-            }
-            AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
-            if (audioRequest != null) {
-                audioRequest.release();
-            }
+            stopVoiceAnswerPager(answerPager);
 //            if (rlVoiceQuestionContent != null) {
 //                rlVoiceQuestionContent.removeAllViews();
 //                bottomContent.removeView(rlVoiceQuestionContent);

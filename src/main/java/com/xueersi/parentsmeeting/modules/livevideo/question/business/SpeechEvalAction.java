@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 
 /**
@@ -19,7 +18,7 @@ public interface SpeechEvalAction {
     /**
      * 关闭试题
      */
-    void stopSpeech(BaseSpeechAssessmentPager pager, String num);
+    void stopSpeech(BaseSpeechAssessmentPager pager, BaseVideoQuestionEntity baseVideoQuestionEntity, String num);
 
     void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, OnSpeechEval onSpeechEval);
 

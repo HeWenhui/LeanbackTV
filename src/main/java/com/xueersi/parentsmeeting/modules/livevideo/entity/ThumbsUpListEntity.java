@@ -10,6 +10,8 @@ import java.util.ArrayList;
 public class ThumbsUpListEntity {
 
     ArrayList<ThumbsUpEntity> thumbsUpEntities = new ArrayList<>();
+    /** 1代表我在榜上，0表示我不在榜上 */
+    private int isMy;
 
     public ArrayList<ThumbsUpEntity> getThumbsUpEntities() {
         return thumbsUpEntities;
@@ -17,6 +19,13 @@ public class ThumbsUpListEntity {
 
     public void setThumbsUpEntities(ArrayList<ThumbsUpEntity> thumbsUpEntities) {
         this.thumbsUpEntities = thumbsUpEntities;
+    }
+    public int getIsMy() {
+        return isMy;
+    }
+
+    public void setIsMy(int isMy) {
+        this.isMy = isMy;
     }
 
     public class ThumbsUpEntity{

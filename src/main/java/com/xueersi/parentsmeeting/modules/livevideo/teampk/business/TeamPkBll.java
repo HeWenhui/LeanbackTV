@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -693,7 +692,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     private int getRightMargin() {
         int screenWidth = ScreenUtils.getScreenWidth();
-        return (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+        return (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
     }
 
     private void addPager(BasePager aqAwardPager) {
@@ -728,7 +727,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         if (width > 0 && mFocusPager != null) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFocusPager.getRootView()
                     .getLayoutParams();
-            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
+            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
             if (wradio != params.rightMargin) {
                 params.rightMargin = wradio;

@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -48,11 +49,11 @@ public class IRCMessage {
     /** 和服务器的ping，线程池 */
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
-    public IRCMessage(int netWorkType, String channel, String login, String nickname) {
+    public IRCMessage(Context context, int netWorkType, String channel, String login, String nickname) {
         this.netWorkType = netWorkType;
         this.mChannel = channel;
         this.mNickname = nickname;
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         mLogtf.d("IRCMessage:channel=" + channel + ",login=" + login + ",nickname=" + nickname);
     }
@@ -276,9 +277,9 @@ public class IRCMessage {
             @Override
             public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
                 if (sourceNick.startsWith("s_") || sourceNick.startsWith("ws_")) {
-                    Loger.d(TAG,"onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                    Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                             + sourceHostname + ",reason=" + reason);
-                }else {
+                } else {
                     mLogtf.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                             + sourceHostname + ",reason=" + reason);
                 }
