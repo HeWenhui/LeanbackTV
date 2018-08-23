@@ -788,7 +788,7 @@ public class LiveRemarkBll {
 
             StringBuilder sb = new StringBuilder();
             ivShot.setScaleType(ImageView.ScaleType.CENTER);
-            if (entity.getType() == 24) {
+            if (entity.getType() == 24 && entity.getNewType() != null) {
                 switch (entity.getNewType()) {
                     case "1":
                     case "6":

@@ -27,6 +27,7 @@ public interface XESCODE {
     int TEACHER_MESSAGE = 130;
     /** 学习报告 */
     int LEARNREPORT = 133;
+//    int LEARNREPORT = 106;
     /** 点名 */
     int ROLLCALL = 134;
     /** 结束点名 */
