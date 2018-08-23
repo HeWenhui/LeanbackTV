@@ -400,6 +400,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             String loadUrl = url;
             loadUrl(loadUrl);
             reloadurl = loadUrl;
+            Loger.e(TAG, "======> newArtsH5CourseWare url:" + url);
         } else {
             String loadUrl = url + "?t=" + System.currentTimeMillis();
             if (isPlayBack) {

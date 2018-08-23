@@ -64,6 +64,11 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
      */
     public int package_socurce;
 
+    /**文科在线教研数据**/
+    private H5OnlineTechEntity onlineTechEntity;
+
+
+
 
     public VideoQuestionLiveEntity() {
     }
@@ -167,5 +172,12 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setAnswerDay(String answerDay) {
         this.answerDay = answerDay;
+    }
+
+    public void setOnlineTechEntity(H5OnlineTechEntity onlineTechEntity) {
+        this.onlineTechEntity = onlineTechEntity;
+    }
+    public H5OnlineTechEntity getOnlineTechEntity() {
+        return onlineTechEntity;
     }
 }
