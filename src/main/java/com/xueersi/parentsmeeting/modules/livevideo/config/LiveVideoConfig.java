@@ -262,4 +262,5 @@ public class LiveVideoConfig {
 
     /** 直播-roleplay */
     public static String LIVE_ROLE_PLAY = "live_mutiroleplay";
+    public static final String SP_LIVEVIDEO_MARK_POINT_COUNT="sp_livevideo_mark_point_count";
 }
