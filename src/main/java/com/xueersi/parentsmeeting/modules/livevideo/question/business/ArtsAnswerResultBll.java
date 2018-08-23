@@ -77,9 +77,8 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
                 (ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
         rootView.addView(rlAnswerResultLayout);
-        test();
+        //test();
     }
-
 
     private void test() {
         Button btn = new Button(mContext);
@@ -153,12 +152,12 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
      * 展示答题结果
      */
     private void showAnswerReulst() {
-        if (remindView != null) {
-            remindView.setVisibility(View.GONE);
-        }
         rootView.post(new Runnable() {
             @Override
             public void run() {
+                if (remindView != null) {
+                    remindView.setVisibility(View.GONE);
+                }
                 addPager();
             }
         });
