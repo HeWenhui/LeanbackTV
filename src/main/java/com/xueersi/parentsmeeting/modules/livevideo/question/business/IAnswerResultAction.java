@@ -18,8 +18,9 @@ public interface IAnswerResultAction {
 
     /**
      * 关闭答题结果页
+      * @param forceClose
      */
-    void closeAnswerResult();
+    void closeAnswerResult(boolean forceClose);
 
 
     /**

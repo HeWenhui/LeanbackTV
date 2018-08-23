@@ -122,7 +122,7 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
         englishH5Entity.setArtsNewH5Courseware(newH5Course);
     }
 
-    public boolean isNewArtsQuestion() {
+    public boolean isNewArtsH5Courseware() {
         return englishH5Entity.isArtsNewH5Courseware();
     }
 

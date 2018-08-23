@@ -34,7 +34,7 @@ import java.util.List;
  * @version 1.0, 2018/7/27 下午5:36
  */
 
-public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction {
+public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction, AnswerResultStateListener {
 
     private RelativeLayout rootView;
     private RelativeLayout rlAnswerResultLayout;
@@ -51,6 +51,7 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
     private static final String TAG = "ArtsAnswerResultBll";
     private IArtsAnswerRsultDisplayer mDsipalyer;
     private AnswerResultEntity mAnswerReulst;
+    private boolean reminded;
 
     /**
      * 是否是小学英语
@@ -58,16 +59,18 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
     private boolean isPse;
     private View remindView;
 
+    private EnglishH5CoursewareBll h5CoursewareBll;
     /**
      * @param context
      * @param liveBll
      * @param rootView
      * @param isPse    是否是小学英语
      */
-    public ArtsAnswerResultBll(Context context, RelativeLayout rootView, boolean isPse) {
+    public ArtsAnswerResultBll(Context context, RelativeLayout rootView, boolean isPse,EnglishH5CoursewareBll h5CoursewareBll) {
         super(context);
         this.rootView = rootView;
-        this.isPse = true;//isPse;
+        this.isPse = isPse;
+        this.h5CoursewareBll = h5CoursewareBll;
     }
 
 
@@ -134,12 +137,12 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
             rlAnswerResultLayout.removeView(mDsipalyer.getRootLayout());
         }
         if (isPse) {
-            mDsipalyer = new ArtsPSEAnswerResultPager(mContext, mAnswerReulst);
+            mDsipalyer = new ArtsPSEAnswerResultPager(mContext, mAnswerReulst,this);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
         } else {
-            mDsipalyer = new ArtsAnswerResultPager(mContext, mAnswerReulst);
+            mDsipalyer = new ArtsAnswerResultPager(mContext, mAnswerReulst,this);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
@@ -254,16 +257,22 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
         }
     }
 
+    private boolean forceSumbmit;
     @Override
-    public void closeAnswerResult() {
+    public void closeAnswerResult(boolean forceSumbmit) {
+        // 已展示过答题结果
+        reminded = false;
         if (mDsipalyer != null) {
+            forceSumbmit = false;
             mDsipalyer.close();
             mDsipalyer = null;
+            if(h5CoursewareBll != null){
+                h5CoursewareBll.froceClose();
+            }
         }
-        reminded = false;
+        this.forceSumbmit = forceSumbmit;
     }
 
-    private boolean reminded;
 
     @Override
     public void remindSubmit() {
@@ -284,5 +293,15 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
                     .anim_livevido_arts_answer_result_alpha_in);
             remindView.startAnimation(alphaAnimation);
         }
+    }
+
+
+    @Override
+    public void onCompeletShow() {
+          if(forceSumbmit){
+              if(h5CoursewareBll != null){
+                  h5CoursewareBll.froceClose();
+              }
+          }
     }
 }

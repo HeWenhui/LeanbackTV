@@ -21,6 +21,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ArtsAnswerTextView;
@@ -60,10 +61,12 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
     private static final String BG_COLOR = "#CC000000";
     private AnswerResultEntity mData;
+    private final AnswerResultStateListener mStateListenr;
 
-    public ArtsAnswerResultPager(Context context, AnswerResultEntity data) {
+    public ArtsAnswerResultPager(Context context, AnswerResultEntity data, AnswerResultStateListener listener) {
         super(context);
         mData = data;
+        mStateListenr = listener;
     }
 
 
@@ -111,11 +114,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
      */
     @Override
     public void remindSubmit() {
-     /*   tvToast.setVisibility(View.VISIBLE);
-        AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
-                .anim_livevido_arts_answer_result_alpha_in);
-        alphaAnimation.setFillAfter(true);
-        tvToast.startAnimation(alphaAnimation);*/
+
     }
 
     @Override
@@ -320,7 +319,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
         } else {
             mAdapter.notifyDataSetChanged();
         }
-
+        mStateListenr.onCompeletShow();
     }
 
 
