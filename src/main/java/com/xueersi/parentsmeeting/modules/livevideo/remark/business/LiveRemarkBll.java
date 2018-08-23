@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoView;
@@ -247,7 +248,7 @@ public class LiveRemarkBll {
                                         }
                                         bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) videoWidth, displayHeight);
                                         bitmap = Bitmap.createScaledBitmap(bitmap, 320, 240, true);
-                                        File saveDir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/save");
+                                        File saveDir = LiveCacheFile.geCacheFile(mContext, "liveremark");
                                         if (!saveDir.exists()) {
                                             saveDir.mkdirs();
                                         }
@@ -317,7 +318,7 @@ public class LiveRemarkBll {
     public void setList(List<VideoPointEntity> list) {
         mList = list;
         setEntityNum(mList);
-        if(AppConfig.isMulLiveBack){
+        if (AppConfig.isMulLiveBack) {
             setNewEntityNum(mList);
         }
 
