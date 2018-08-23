@@ -836,7 +836,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
 
     @Override
     public String getPrefix() {
-        return "L";
+        return "NL";
     }
 
     /**
