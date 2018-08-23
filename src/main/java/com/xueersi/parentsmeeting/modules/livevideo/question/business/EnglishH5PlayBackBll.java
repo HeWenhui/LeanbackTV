@@ -109,7 +109,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         }
                         VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
                         englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
-                        showQuestion.onShow(true);
+                        showQuestion.onShow(true, videoQuestionLiveEntity);
                     }
                 });
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
