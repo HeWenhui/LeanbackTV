@@ -373,7 +373,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 logHashMap.put("nonce", LiveVideoConfig.nonce);
                 umsAgentDebugSys("live_platformtest", logHashMap.getData());
             }
-            if (LiveBll.isAllowTeamPk) {
+            if (allowTeamPk) {
                 mLoadUrls += "&isShowTeamPk=1";
             }
             loadUrl(mLoadUrls);
