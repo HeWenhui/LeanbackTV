@@ -224,6 +224,17 @@ public class LiveVideoConfig {
     public static String educationstage;
     /** 一发多题的日志*/
     public static String nonce;
+    /** 直播回放一发多题的拼装参数*/
+    // 直播回放的URL
+    public static String LIVEPLAYBACKINFOS;
+    // 直播回放的stuCouId
+    public static String LIVEPLAYBACKSTUID;
+    // 直播回放的classId
+    public static String LIVEPLAYBACKCLASSID;
+    // 直播回放的teamId
+    public static String LIVEPLAYBACKTEAMID;
+    // 直播回放的edustage
+    public static String LIVEPLAYBACKSTAGE;
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;
