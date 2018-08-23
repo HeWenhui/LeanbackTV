@@ -60,6 +60,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private boolean isFinish = false;
     private String jsSubmitData = "javascript:submitData()";
     private String jsforceSubmit = "javascript:forceSubmit()";
+    /**文科新课件平台 强制提交js*/
+    private String jsArtsForceSubmit="javascript:examSubmitAll()";
     private EnglishH5CoursewareBll.OnH5ResultClose onClose;
     private String id;
     private String courseware_type;
@@ -77,6 +79,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private String mLoadUrls;
     private String releasedPageInfos;
     private boolean allowTeamPk;
+
+    private boolean isNewArtsCourseware;
 
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
@@ -98,6 +102,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         this.isShowRanks = isShowRanks;
         this.IS_SCIENCE = IS_SCIENCE;
         this.allowTeamPk = allowTeamPk;
+        this.isNewArtsCourseware = englishH5Entity.isArtsNewH5Courseware();
         LiveVideoConfig.englishH5Entity = englishH5Entity;
         initWebView();
         setErrorTip("H5课件加载失败，请重试");
@@ -151,6 +156,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     public void submitData() {
         isFinish = true;
         wvSubjectWeb.loadUrl(LiveVideoConfig.isNewEnglishH5 ? jsforceSubmit : jsSubmitData);
+        if(isNewArtsCourseware){
+            wvSubjectWeb.loadUrl(jsArtsForceSubmit);
+        }
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareEnd");
         logHashMap.put("coursewareid", id);
         logHashMap.put("coursewaretype", courseware_type);
@@ -161,6 +169,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     protected void onPageFinished(WebView view, String url) {
         if (isFinish) {
             wvSubjectWeb.loadUrl(LiveVideoConfig.isNewEnglishH5 ? jsforceSubmit : jsSubmitData);
+            if(isNewArtsCourseware){
+                wvSubjectWeb.loadUrl(jsArtsForceSubmit);
+            }
         }
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareDidLoad");
         logHashMap.put("coursewareid", id);
@@ -378,13 +389,17 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 logHashMap.put("nonce", LiveVideoConfig.nonce);
                 umsAgentDebugSys("live_platformtest", logHashMap.getData());
             }
-            if (LiveBll.isAllowTeamPk) {
+            if (allowTeamPk) {
                 mLoadUrls += "&isShowTeamPk=1";
             }
             loadUrl(mLoadUrls);
             Loger.e(TAG, "======> mulloadUrlLives:" + mLoadUrls);
             reloadurl = mLoadUrls;
             Loger.e(TAG, "======> mulloadUrlLive:" + reloadurl);
+        }if(isNewArtsCourseware) {
+            String loadUrl = url;
+            loadUrl(loadUrl);
+            reloadurl = loadUrl;
         } else {
             String loadUrl = url + "?t=" + System.currentTimeMillis();
             if (isPlayBack) {

@@ -11,6 +11,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -297,7 +298,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     String teamId = studentLiveInfo.getTeamId();
                     String classId = studentLiveInfo.getClassId();
                     EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
-                    englishH5Entity.setNewEnglishH5(true);
+
                     try {
                         JSONObject objects = new JSONObject();
                         objects.put("packageId", object.getString("pId"));
@@ -340,7 +341,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             case XESCODE.ARTS_H5_COURSEWARE: {
                 Loger.e(Tag,"===========>ARTS_H5_COURSEWARE");
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                videoQuestionLiveEntity.setNewArtsQuestion(true);
+                videoQuestionLiveEntity.setNewArtsCourseware(true);
                 String status = object.optString("status", "off");
                 if ("on".equals(status)) {
                     videoQuestionLiveEntity.gold = object.optDouble("gold");
@@ -371,12 +372,15 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         isPlayback = "2";
                     }
                     StringBuilder sb = new StringBuilder();
+                    String falseStr = Base64.encodeBytes("false".getBytes());
+
                     sb.append(mLiveBll.getLiveVideoSAConfig().inner.URL_ARTS_H5_URL).append("?liveId=").append(mLiveId)
                             .append("&testIds=").append(testIds).append("&isPlayBack=").append(isPlayback)
                             .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo.getStuId())
-                            .append("&cookie=").append(AppBll.getInstance().getUserToken());
+                            .append("&cookie=").append(AppBll.getInstance().getUserToken())
+                            .append("&stuClientPath=").append(falseStr)
+                            .append("&fontDir=").append(falseStr);
                     videoQuestionLiveEntity.setUrl(sb.toString());
-
 
                     String isVoice = object.optString("isVoice");
                     videoQuestionLiveEntity.setIsVoice(isVoice);

@@ -112,14 +112,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     /**
      * 是否是 文科新课件平台 答题
      * */
-    private boolean newArtsQuestion;
 
-    public void setNewArtsQuestion(boolean newArtsQuestion) {
-        this.newArtsQuestion = newArtsQuestion;
+    public void setNewArtsCourseware(boolean newH5Course) {
+        englishH5Entity.setArtsNewH5Courseware(newH5Course);
     }
 
     public boolean isNewArtsQuestion() {
-        return newArtsQuestion;
+        return englishH5Entity.isArtsNewH5Courseware();
     }
 
     /**
