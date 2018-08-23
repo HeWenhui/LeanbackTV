@@ -124,7 +124,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.showDialog();
             }
             break;
-            case LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE:{
+            case LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE: {
                 MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
                 if (mediaPlayerControl != null) {
                     mediaPlayerControl.pause();
@@ -148,7 +148,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         }
                         VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
                         englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
-                        showQuestion.onShow(true);
+                        showQuestion.onShow(true, videoQuestionLiveEntity);
                     }
                 });
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
@@ -162,7 +162,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 });
                 verifyCancelAlertDialog.showDialog();
             }
-                break;
+            break;
             default:
                 break;
         }
