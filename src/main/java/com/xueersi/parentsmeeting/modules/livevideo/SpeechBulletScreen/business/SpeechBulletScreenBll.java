@@ -87,16 +87,20 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
     @Override
     public void onStartSpeechBulletScreen() {
         Log.i(TAG,"onStartSpeechBulletScreen()");
-//        activity.runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.i(TAG,"start setSoftInputMode:SOFT_INPUT_ADJUST_NOTHING");
-//                WindowManager.LayoutParams attributes = activity.getWindow().getAttributes();
-//                activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING|WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-//                attributes = activity.getWindow().getAttributes();
-//                Log.i(TAG,"end setSoftInputMode");
-//            }
-//        });
+        mWeakHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp,SpeechBulletScreenBll.this);
+                rlSpeechBulContent.removeAllViews();
+                rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                rlSpeechBulContent.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    @Override
+    public void onShowSpeechBulletScreen() {
+        Log.i(TAG,"onStartSpeechBulletScreen()");
         mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -107,22 +111,16 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
         mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mSpeechBulPlaybackPager != null) {
-                    mSpeechBulPlaybackPager.onDestroy();
+                if (mSpeechBulPager != null) {
+                    mSpeechBulPager.onDestroy();
                 }
                 mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp,SpeechBulletScreenBll.this);
                 rlSpeechBulContent.removeAllViews();
                 rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 rlSpeechBulContent.setVisibility(View.VISIBLE);
+                mSpeechBulPager.ShowSpeechBulletScreen();
             }
         },2000);
-    }
-
-    public void showShortToast(final String tips) {
-        ShortToastDialog shortToastDialog= new ShortToastDialog(activity);
-        shortToastDialog.setMsg(tips);
-        shortToastDialog.setTypeface(Typeface.createFromAsset(activity.getAssets(), "fangzhengcuyuan.ttf"));
-        shortToastDialog.showDialog();
     }
 
     @Override
@@ -135,6 +133,13 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
                 }
             }
         });
+    }
+
+    public void showShortToast(final String tips) {
+        ShortToastDialog shortToastDialog= new ShortToastDialog(activity);
+        shortToastDialog.setMsg(tips);
+        shortToastDialog.setTypeface(Typeface.createFromAsset(activity.getAssets(), "fangzhengcuyuan.ttf"));
+        shortToastDialog.showDialog();
     }
 
     public void addPlayBackDanmaku(final String name, final String msg, final String headImgUrl , final boolean isGuest) {
@@ -187,20 +192,24 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
     }
 
     @Override
-    public void onMessage(final String target, final String sender, final String login, final String hostname, final String text, final String headurl) {
-        mWeakHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mSpeechBulPager != null) {
-                    mSpeechBulPager.onMessage(target, sender, login, hostname, text, headurl);
-                }
-            }
-        });
+    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
+
     }
 
     @Override
-    public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
-        if (mSpeechBulPager != null) {
+    public void onPrivateMessage(final boolean isSelf, final String sender, final String login, final String hostname, final String target, final String message) {
+        if (mSpeechBulPager == null) {
+            mWeakHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp,SpeechBulletScreenBll.this);
+                    rlSpeechBulContent.removeAllViews();
+                    rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    rlSpeechBulContent.setVisibility(View.VISIBLE);
+                    mSpeechBulPager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                }
+            });
+        } else if (mSpeechBulPager != null) {
             mSpeechBulPager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
         }
     }

@@ -56,19 +56,11 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 
 //        JSONObject data = null;
 //        try {
-//            data = new JSONObject("{\"from\":\"t\",\"open\":true,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
+//            data = new JSONObject("{\"from\":\"f\",\"open\":true,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
 //        onNotice("","",data,260);
-//        final JSONObject finalData = data;
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                onNotice("","", finalData,260);
-//            }
-//        },10000);
-
     }
 
     @Override
@@ -101,14 +93,18 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                             speechBulletScreenBll.initView(mRootView);
                             mSpeechBulletScreenAction = speechBulletScreenBll;
                             mSpeechBulletScreenAction.setSpeechBulletScreenHttp(new LiveSpeechBulletScreenHttp());
+                            mSpeechBulletScreenAction.onShowSpeechBulletScreen();
+                        } else if (mSpeechBulletScreenAction != null) {
+                            mSpeechBulletScreenAction.onShowSpeechBulletScreen();
                         }
-                        mSpeechBulletScreenAction.onStartSpeechBulletScreen();
                     } else if ("false".equals(open)) {
                         mSpeechBulletScreenAction.onCloseSpeechBulletScreen(true);
                     }
                 } else if ("".equals(voiceId)) {
                 // 教师端退出情况：如果收到的260消息中的voiceId字段为空，学生退出弹幕但不要弹出提示窗口。
-                    mSpeechBulletScreenAction.onCloseSpeechBulletScreen(false);
+                    if (mSpeechBulletScreenAction != null) {
+                        mSpeechBulletScreenAction.onCloseSpeechBulletScreen(false);
+                    }
                 }
                 break;
             }
@@ -155,31 +151,39 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
     public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
         Log.i("LiveBll", "=====> onPrivateMessage:" + sender + ":" + login + ":" + hostname + ":" + target + ":" +
                 message);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(message);
+            int type = jsonObject.getInt("type");
+            if (type != XESCODE.XCR_ROOM_DANMU_SEND) {
+                return;
+            }
+        } catch (JSONException e) {
+            return;
+        }
+
         //不同组的学生互相不能看弹幕
-        if (!"T".equals(message) && haveTeam) {
+        if (haveTeam) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             String teamId = studentLiveInfo.getTeamId();
             try {
-                JSONObject jsonObject = new JSONObject(message);
-                int type = jsonObject.getInt("type");
-                if (type == XESCODE.XCR_ROOM_DANMU_SEND) {
-                    //临调生
-//                    if (teamId.startsWith("-")) {
-//                        String temporary = jsonObject.optString("temporary");
-//                        if (!"1".equals(temporary)) {
-//                            return;
-//                        }
-//                    }
-                    //普通分组
-                    String to = jsonObject.optString("to");
-                    if (!teamId.equals(to)) {
-                        return;
-                    }
+                jsonObject = new JSONObject(message);
+                String to = jsonObject.optString("to");
+                if (!teamId.equals(to)) {
+                    return;
                 }
             } catch (JSONException e) {
-                Log.e("onPrivateMessage", e.toString());
+                return;
             }
         }
+
+        if (mSpeechBulletScreenAction == null) {
+            SpeechBulletScreenBll speechBulletScreenBll = new SpeechBulletScreenBll(activity);
+            speechBulletScreenBll.initView(mRootView);
+            mSpeechBulletScreenAction = speechBulletScreenBll;
+            mSpeechBulletScreenAction.setSpeechBulletScreenHttp(new LiveSpeechBulletScreenHttp());
+        }
+
         if (mSpeechBulletScreenAction != null) {
             mSpeechBulletScreenAction.onPrivateMessage(isSelf, sender, login, hostname, target, message);
         }
