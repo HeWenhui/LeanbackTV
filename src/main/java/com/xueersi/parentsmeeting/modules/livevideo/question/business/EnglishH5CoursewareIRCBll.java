@@ -436,6 +436,19 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
                 break;
             }
+            case XESCODE.ARTS_REMID_SUBMIT:
+                englishH5CoursewareBll.remindSubmit();
+                  break;
+            case 130:
+                String commondStr = object.optString("msg");
+                if("1".equals(commondStr)){
+                    englishH5CoursewareBll.remindSubmit();
+                }else if("0".equals(commondStr)){
+                    VideoQuestionLiveEntity entity = new VideoQuestionLiveEntity();
+                    englishH5CoursewareBll.onH5Courseware("off",entity);
+                }
+
+                 break;
             default:
                 break;
         }
@@ -463,7 +476,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         return new int[]{
                 XESCODE.ENGLISH_H5_COURSEWARE,
                 XESCODE.MULTIPLE_H5_COURSEWARE,
-                XESCODE.ARTS_H5_COURSEWARE
+                XESCODE.ARTS_H5_COURSEWARE,
+                XESCODE.ARTS_REMID_SUBMIT,
+                130
         };
     }
 

@@ -169,9 +169,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     protected void onPageFinished(WebView view, String url) {
         if (isFinish) {
             wvSubjectWeb.loadUrl(LiveVideoConfig.isNewEnglishH5 ? jsforceSubmit : jsSubmitData);
-            if(isNewArtsCourseware){
-                wvSubjectWeb.loadUrl(jsArtsForceSubmit);
-            }
         }
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareDidLoad");
         logHashMap.put("coursewareid", id);
@@ -189,7 +186,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             newlogHashMap.put("nonce", newlogHashMap.creatNonce());
             umsAgentDebugPv("live_platformtest", newlogHashMap.getData());
         }
-        mEnglishH5CoursewareBll.onWebviewLoadFinish(url);
     }
 
     @Override

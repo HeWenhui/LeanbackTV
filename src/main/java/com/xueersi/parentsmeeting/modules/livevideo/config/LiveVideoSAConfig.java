@@ -170,7 +170,7 @@ public class LiveVideoSAConfig {
          * 文科新课件平台
          * 加载H5 页面地址
          * */
-        public String URL_ARTS_H5_URL = "https://static.arts.xueersi.com/kejian";
+        public String URL_ARTS_H5_URL = "http://static.arts.xueersi.com/kejian/";
     }
 
 }

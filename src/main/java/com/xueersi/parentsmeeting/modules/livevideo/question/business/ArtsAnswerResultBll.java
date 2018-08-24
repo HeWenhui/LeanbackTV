@@ -34,7 +34,7 @@ import java.util.List;
  * @version 1.0, 2018/7/27 下午5:36
  */
 
-public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction {
+public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction, AnswerResultStateListener {
 
     private RelativeLayout rootView;
     private RelativeLayout rlAnswerResultLayout;
@@ -51,25 +51,27 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
     private static final String TAG = "ArtsAnswerResultBll";
     private IArtsAnswerRsultDisplayer mDsipalyer;
     private AnswerResultEntity mAnswerReulst;
-
+    /**提示提交展示时间*/
+    private long REMIND_UI_CLOSE_DELAY = 3000;
     /**
      * 是否是小学英语
      */
     private boolean isPse;
     private View remindView;
-
+    private EnglishH5CoursewareBll h5CoursewareBll;
     /**
      * @param context
      * @param liveBll
      * @param rootView
      * @param isPse    是否是小学英语
      */
-    public ArtsAnswerResultBll(Context context, RelativeLayout rootView, boolean isPse) {
+    public ArtsAnswerResultBll(Context context, RelativeLayout rootView, boolean isPse, EnglishH5CoursewareBll
+            h5CoursewareBll) {
         super(context);
         this.rootView = rootView;
-        this.isPse = true;//isPse;
+        this.isPse = isPse;
+        this.h5CoursewareBll = h5CoursewareBll;
     }
-
 
     public void attachToView() {
         rlAnswerResultLayout = new RelativeLayout(mContext);
@@ -77,57 +79,6 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
                 (ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
         rootView.addView(rlAnswerResultLayout);
-        test();
-    }
-
-
-    private void test() {
-        Button btn = new Button(mContext);
-        btn.setText("AnimTest");
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(400, 200);
-        rootView.addView(btn, params);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //addPager();
-
-                String testStr = "{\n" +
-                        "\t\"stat\": 1,\n" +
-                        "\t\"msg\": \"成功\",\n" +
-                        "\t\"data\": {\n" +
-                        "\t\t\"total\": {\n" +
-                        "\t\t\t\"liveId\": \"210987\",\n" +
-                        "\t\t\t\"stuId\": \"15602\",\n" +
-                        "\t\t\t\"stuCouId\": \"9617647\",\n" +
-                        "\t\t\t\"virtualId\": \"8381872fa17f9dcb5fdb58802461c46e\",\n" +
-                        "\t\t\t\"testCount\": \"1\",\n" +
-                        "\t\t\t\"isRight\": \"0\",\n" +
-                        "\t\t\t\"gold\": \"0\",\n" +
-                        "\t\t\t\"rightRate\": \"0\",\n" +
-                        "\t\t\t\"createTime\": \"0\"\n" +
-                        "\t\t},\n" +
-                        "\t\t\"split\": [{\n" +
-                        "\t\t\t\"liveId\": \"210987\",\n" +
-                        "\t\t\t\"stuId\": \"15602\",\n" +
-                        "\t\t\t\"stuCouId\": \"9617647\",\n" +
-                        "\t\t\t\"testId\": \"20005\",\n" +
-                        "\t\t\t\"testSrc\": \"1\",\n" +
-                        "\t\t\t\"testType\": \"2\",\n" +
-                        "\t\t\t\"choice\": [\"B\"],\n" +
-                        "\t\t\t\"blank\": [],\n" +
-                        "\t\t\t\"rightAnwer\": [\"A\"],\n" +
-                        "\t\t\t\"isRight\": \"0\",\n" +
-                        "\t\t\t\"rightRate\": \"0\",\n" +
-                        "\t\t\t\"useVoice\": \"0\",\n" +
-                        "\t\t\t\"voiceUrl\": \"\",\n" +
-                        "\t\t\t\"voiceTime\": \"0\",\n" +
-                        "\t\t\t\"createTime\": \"1534400651\"\n" +
-                        "\t\t}]\n" +
-                        "\t}\n" +
-                        "}";
-                onAnswerResult(testStr);
-            }
-        });
     }
 
     private void addPager() {
@@ -135,12 +86,12 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
             rlAnswerResultLayout.removeView(mDsipalyer.getRootLayout());
         }
         if (isPse) {
-            mDsipalyer = new ArtsPSEAnswerResultPager(mContext, mAnswerReulst);
+            mDsipalyer = new ArtsPSEAnswerResultPager(mContext, mAnswerReulst, this);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
         } else {
-            mDsipalyer = new ArtsAnswerResultPager(mContext, mAnswerReulst);
+            mDsipalyer = new ArtsAnswerResultPager(mContext, mAnswerReulst, this);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
@@ -148,17 +99,16 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
         Loger.e("Arts", "==========> ArtsAnswerResultBll addPager called:");
     }
 
-
     /**
      * 展示答题结果
      */
     private void showAnswerReulst() {
-        if (remindView != null) {
-            remindView.setVisibility(View.GONE);
-        }
         rootView.post(new Runnable() {
             @Override
             public void run() {
+                if (remindView != null) {
+                    remindView.setVisibility(View.GONE);
+                }
                 addPager();
             }
         });
@@ -243,8 +193,6 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
                 }
 
                 showAnswerReulst();
-
-
             } else {
                 String errorMsg = jsonObject.optString("msg");
                 XESToastUtils.showToast(mContext, errorMsg);
@@ -255,35 +203,67 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction 
         }
     }
 
+    private boolean forceSumbmit;
+
     @Override
-    public void closeAnswerResult() {
+    public void closeAnswerResult(boolean forceSumbmit) {
+        // 已展示过答题结果
         if (mDsipalyer != null) {
             mDsipalyer.close();
             mDsipalyer = null;
+            if (h5CoursewareBll != null) {
+                h5CoursewareBll.froceClose();
+            }
         }
-        reminded = false;
+         Loger.e("ArtsAnswerBll","=====>closeAnswerResult:"+forceSumbmit);
+          this.forceSumbmit = forceSumbmit;
     }
 
-    private boolean reminded;
+
+    /**
+     * 延时关闭 提交提示UI
+     */
+    private Runnable autoCloseTask = new Runnable() {
+        @Override
+        public void run() {
+            if(remindView != null){
+                remindView.setVisibility(View.GONE);
+            }
+        }
+    };
 
     @Override
     public void remindSubmit() {
-        if (!reminded) {
-            reminded = true;
-            if (remindView == null) {
-                if (isPse) {
-                    remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_pse, null);
-                } else {
-                    remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_nor, null);
+        rlAnswerResultLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                if (remindView == null) {
+                    if (isPse) {
+                        remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_pse, null);
+                    } else {
+                        remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_nor, null);
+                    }
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
+                            .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    rlAnswerResultLayout.addView(remindView, params);
                 }
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
-                        .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                rlAnswerResultLayout.addView(remindView, params);
+                remindView.setVisibility(View.VISIBLE);
+                AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
+                        .anim_livevido_arts_answer_result_alpha_in);
+                remindView.startAnimation(alphaAnimation);
+
+                rlAnswerResultLayout.removeCallbacks(autoCloseTask);
+                rlAnswerResultLayout.postDelayed(autoCloseTask,REMIND_UI_CLOSE_DELAY);
             }
-            remindView.setVisibility(View.VISIBLE);
-            AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
-                    .anim_livevido_arts_answer_result_alpha_in);
-            remindView.startAnimation(alphaAnimation);
+        });
+    }
+
+    @Override
+    public void onCompeletShow() {
+        if (forceSumbmit) {
+            if (h5CoursewareBll != null) {
+                h5CoursewareBll.froceClose();
+            }
         }
     }
 }

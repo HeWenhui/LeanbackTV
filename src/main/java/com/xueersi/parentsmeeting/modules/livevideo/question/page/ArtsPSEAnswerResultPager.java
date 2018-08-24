@@ -20,7 +20,6 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerResultLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerStateLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ArtsAnswerTextView;
@@ -53,6 +53,8 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result/";
     private String TAG = "ArtsPSEAnswerResultPager";
 
+    /**强制提交 展示答题结果 延时自动关闭**/
+    private final long AUTO_CLOSE_DELAY = 2000;
     /**
      * 关闭按钮 尺寸
      */
@@ -91,13 +93,12 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     private static final int RESULT_TYPE_CORRECT = 2;
     private static final int RESULT_TYPE_PART_CORRECT = 1;
     private static final int RESULT_TYPE_ERRRO = 0;
+    private AnswerResultStateListener mStateListener;
 
-
-
-
-    public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity) {
+    public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity,AnswerResultStateListener stateListener) {
         super(context);
         mData = entity;
+        this.mStateListener = stateListener;
     }
 
 
@@ -363,9 +364,8 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         int realY = Math.min(point.x, point.y);
         params.topMargin = (int) (realY * 0.30);
         recyclerView.setLayoutParams(params);
-
         recyclerView.startAnimation(alphaAnimation);
-
+        mStateListener.onCompeletShow();
     }
 
     @Override
@@ -495,16 +495,38 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         });
     }
 
+
+    /**
+     * 自动关闭统计面板
+     * @param timeDelay 延时时间
+     */
+    private void autoClose(long timeDelay){
+
+    }
+
+
+
     @Override
     public void remindSubmit() {
-     /*   AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
-                .anim_livevido_arts_answer_result_alpha_in);
-        alphaAnimation.setFillAfter(true);
-        tvToast.startAnimation(alphaAnimation);*/
+
     }
 
     @Override
     public View getRootLayout() {
         return this.getRootView();
     }
+
+
+  /*  private ResultStateListener stateListener;
+
+    public void setStateListener(ResultStateListener stateListener) {
+        this.stateListener = stateListener;
+    }
+    public interface  ResultStateListener{
+        *//**
+         * 答题面板是否展示完毕
+         *//*
+        void onCompeletShow();
+    }*/
+
 }
