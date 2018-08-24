@@ -149,7 +149,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     public void submitData() {
         isFinish = true;
-        wvSubjectWeb.loadUrl(LiveVideoConfig.isNewEnglishH5 ? jsforceSubmit : jsSubmitData);
+        String command = LiveVideoConfig.isNewEnglishH5 ? jsforceSubmit : jsSubmitData;
+        wvSubjectWeb.loadUrl(command);
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareEnd");
         logHashMap.put("coursewareid", id);
         logHashMap.put("coursewaretype", courseware_type);
@@ -159,7 +160,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     protected void onPageFinished(WebView view, String url) {
         if (isFinish) {
-            wvSubjectWeb.loadUrl(LiveVideoConfig.isNewEnglishH5 ? jsforceSubmit : jsSubmitData);
+            String command = LiveVideoConfig.isNewEnglishH5 ? jsforceSubmit : jsSubmitData;
+            wvSubjectWeb.loadUrl(command);
         }
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareDidLoad");
         logHashMap.put("coursewareid", id);

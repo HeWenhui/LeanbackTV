@@ -14,6 +14,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -293,10 +294,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     if (LiveVideoConfig.isSend) {
                         if (h5CoursewarePager != null) {
                             if (LiveVideoConfig.englishH5Entity.equals(videoQuestionLiveEntity.englishH5Entity)) {
-                                logToFile.i("onH5Courseware:url.equals:" + h5CoursewarePager.getUrl());
+                                logToFile.i("onH5Courseware:equals:English=" + h5CoursewarePager.getEnglishH5Entity());
                                 return;
                             } else {
-                                logToFile.i("onH5Courseware:url=" + h5CoursewarePager.getUrl());
+                                logToFile.i("onH5Courseware:English=" + h5CoursewarePager.getEnglishH5Entity());
+                                h5CoursewarePager.destroy();
                                 bottomContent.removeView(h5CoursewarePager.getRootView());
                             }
                         }
@@ -418,7 +420,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
     private void showH5Paper(final VideoQuestionLiveEntity videoQuestionH5Entity) {
         mUrl = videoQuestionH5Entity.getUrl();
-        logToFile.i("onH5Courseware:url=" + videoQuestionH5Entity.getUrl());
+        if (LiveVideoConfig.isSend) {
+            EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
+            logToFile.i("showH5Paper:packageId=" + englishH5Entity.getPackageId() + ",Released=" + englishH5Entity.getReleasedPageInfos());
+        } else {
+            logToFile.i("showH5Paper:url=" + videoQuestionH5Entity.getUrl());
+        }
         StableLogHashMap logHashMap = new StableLogHashMap("receiveCourseware");
         logHashMap.put("coursewareid", videoQuestionH5Entity.id);
         logHashMap.put("coursewaretype", videoQuestionH5Entity.courseware_type);
