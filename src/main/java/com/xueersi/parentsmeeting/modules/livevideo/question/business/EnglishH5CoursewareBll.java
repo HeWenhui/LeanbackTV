@@ -546,18 +546,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             mAnswerResultAction = answerResultBll;
         }
     }
-
-
-
-    /**
-     * 网页加载数据完成后 回调
-     */
-    public void onWebviewLoadFinish(String url) {
-        if (mAnswerResultAction != null) {
-            mAnswerResultAction.remindSubmit();
-        }
-    }
-
     /**
      * 网页移除时回调
      */
@@ -1147,4 +1135,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
     }
 
+    /**
+     * 提醒学生 提交
+     */
+    public void remindSubmit(){
+         if(mAnswerResultAction != null){
+             mAnswerResultAction.remindSubmit();
+         }
+    }
 }

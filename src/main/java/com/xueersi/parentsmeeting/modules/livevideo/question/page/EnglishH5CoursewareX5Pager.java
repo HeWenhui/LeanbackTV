@@ -186,7 +186,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             newlogHashMap.put("nonce", newlogHashMap.creatNonce());
             umsAgentDebugPv("live_platformtest", newlogHashMap.getData());
         }
-        mEnglishH5CoursewareBll.onWebviewLoadFinish(url);
     }
 
     @Override

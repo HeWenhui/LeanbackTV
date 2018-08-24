@@ -115,7 +115,8 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
 
 
     private int[] noticeCodes = {
-            XESCODE.TEACHER_PRAISE
+            XESCODE.TEACHER_PRAISE,
+            XESCODE.ARTS_TEACHER_PRAISE
     };
 
     @Override
@@ -127,7 +128,11 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
                 String nonce = data.optString("nonce", "");
                 TeamPkLog.receiveVoicePraise(mLiveBll, nonce);
                 break;
+            case XESCODE.ARTS_TEACHER_PRAISE:
+                // TODO: 2018/8/24  展示文科答题表扬
 
+
+                break;
             default:
                 break;
         }
