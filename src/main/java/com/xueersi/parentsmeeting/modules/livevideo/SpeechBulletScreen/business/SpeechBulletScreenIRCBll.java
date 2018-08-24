@@ -61,6 +61,14 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 //            e.printStackTrace();
 //        }
 //        onNotice("","",data,260);
+//
+//        final JSONObject finalData = data;
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                onNotice("","", finalData,260);
+//            }
+//        },5000);
     }
 
     @Override
@@ -93,8 +101,8 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                             speechBulletScreenBll.initView(mRootView);
                             mSpeechBulletScreenAction = speechBulletScreenBll;
                             mSpeechBulletScreenAction.setSpeechBulletScreenHttp(new LiveSpeechBulletScreenHttp());
-                            mSpeechBulletScreenAction.onShowSpeechBulletScreen();
-                        } else if (mSpeechBulletScreenAction != null) {
+                        }
+                        if (mSpeechBulletScreenAction != null) {
                             mSpeechBulletScreenAction.onShowSpeechBulletScreen();
                         }
                     } else if ("false".equals(open)) {

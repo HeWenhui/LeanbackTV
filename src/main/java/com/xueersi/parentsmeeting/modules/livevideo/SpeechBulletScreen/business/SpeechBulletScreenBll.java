@@ -101,21 +101,22 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
     @Override
     public void onShowSpeechBulletScreen() {
         Log.i(TAG,"onStartSpeechBulletScreen()");
-        mWeakHandler.postDelayed(new Runnable() {
+        mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
                 showShortToast("老师开启了语音弹幕");
+                if (mSpeechBulPager != null) {
+                    rlSpeechBulContent.removeAllViews();
+                    mSpeechBulPager.onDestroy();
+                    mSpeechBulPager = null;
+                }
             }
-        },0);
+        });
 
         mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mSpeechBulPager != null) {
-                    mSpeechBulPager.onDestroy();
-                }
                 mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp,SpeechBulletScreenBll.this);
-                rlSpeechBulContent.removeAllViews();
                 rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 rlSpeechBulContent.setVisibility(View.VISIBLE);
                 mSpeechBulPager.ShowSpeechBulletScreen();

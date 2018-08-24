@@ -480,7 +480,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
     private void startEvaluator() {
         Log.d(TAG,"startEvaluator()");
         File saveFile =new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startOnlineRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
+        mSpeechEvaluatorUtils.startSpeechBulletScreenRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                 new EvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
@@ -513,7 +513,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
     public void stopEvaluator() {
         Log.d(TAG,"stopEvaluator()");
         if (mSpeechEvaluatorUtils != null) {
-            mSpeechEvaluatorUtils.stop();
+            mSpeechEvaluatorUtils.cancel();
         }
         if (mAM != null) {
             mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
