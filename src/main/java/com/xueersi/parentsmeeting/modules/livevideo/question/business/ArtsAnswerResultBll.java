@@ -193,8 +193,6 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                 }
 
                 showAnswerReulst();
-
-
             } else {
                 String errorMsg = jsonObject.optString("msg");
                 XESToastUtils.showToast(mContext, errorMsg);
@@ -217,7 +215,8 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                 h5CoursewareBll.froceClose();
             }
         }
-        this.forceSumbmit = forceSumbmit;
+         Loger.e("ArtsAnswerBll","=====>closeAnswerResult:"+forceSumbmit);
+          this.forceSumbmit = forceSumbmit;
     }
 
 
