@@ -749,6 +749,9 @@ public class LectureLivePlayBackBll extends BaseBll {
         });
     }
 
+    public void sendExperienceFeedback(String user_id,String plan_id,String subject_id,String grade_id,String order_id,String suggest,JSONObject jsonOption,HttpCallBack requestCallBack){
+        mCourseHttpManager.sendExperienceFeedback(user_id, plan_id, subject_id, grade_id, order_id,suggest,jsonOption,requestCallBack);
+    }
     /**
      * 上传视频互动题答案
      *
