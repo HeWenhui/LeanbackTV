@@ -12,6 +12,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 
 
@@ -263,6 +266,20 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("orderId", termId);
         params.addBodyParam("liveId", liveId);
         sendPost(LiveVideoConfig.URL_AUTO_LIVE_FEAD_BACK, params, requestCallBack);
+    }
+
+    public void sendExperienceFeedback(String user_id, String plan_id, String subject_id, String grade_id, String order_id, String suggest, JSONObject jsonOption, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("user_id",user_id);
+        params.addBodyParam("plan_id",plan_id);
+        params.addBodyParam("subject_id",subject_id);
+        params.addBodyParam("grade_id",grade_id);
+        params.addBodyParam("order_id", order_id);
+        params.addBodyParam("suggest",suggest);
+        params.addBodyParam("option",jsonOption.toString());
+//        sendPost("https://www.easy-mock.com/mock/5b57f6919ddd1140ec2eb47b/xueersi.wx.android.app/livevideo/feedback",params,requestCallBack);
+        sendPost(LiveVideoConfig.URL_AUTO_LIVE_LEARN_FEED_BACK, params, requestCallBack);
     }
 
     /**
