@@ -329,7 +329,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             RelativeLayout.LayoutParams rootParam = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             rootParam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             rootParam.setMargins(0, 0, 0, 40);
-            if(!isShowing) {
+            if (!isShowing) {
                 bottom.addView(root, 1, rootParam);
                 isShowing = true;
             }
