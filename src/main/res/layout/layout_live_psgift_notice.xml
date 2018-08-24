@@ -22,7 +22,7 @@
                 android:layout_height="40dp"
                 android:gravity="center_vertical"
                 android:background="@drawable/livevideo_psgiftsuccess">
-                <com.xueersi.xesalib.view.image.CircleImageView
+                <com.xueersi.ui.widget.CircleImageView
                     android:id="@id/iv_live_auto_notice_avatar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
