@@ -1393,11 +1393,11 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                     if (ircState.isOpenZJLKbarrage() || ircState.isOpenFDLKbarrage()) {
                         btMessageFlowers.setTag("1");
                         btMessageFlowers.setAlpha(1.0f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                     } else {
                         btMessageFlowers.setTag("0");
                         btMessageFlowers.setAlpha(0.4f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                     }
                     Loger.i("yzl_fd", "理科，不区分主讲，onModeChange不再往下执行");
                     return;
@@ -1409,16 +1409,16 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                     if (ircState.isOpenbarrage()) {
                         btMessageFlowers.setTag("1");
                         btMessageFlowers.setAlpha(1.0f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                     } else {
                         btMessageFlowers.setTag("0");
                         btMessageFlowers.setAlpha(0.4f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                     }
                 } else {
                     btMessageFlowers.setTag("0");
                     btMessageFlowers.setAlpha(0.4f);
-                    btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                    btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                 }
             }
         });

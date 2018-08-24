@@ -217,6 +217,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 e.printStackTrace();
                             }
                         } else {
+                            LiveVideoConfig.isNewEnglishH5 = true;
                             LiveVideoConfig.isSend = false;
                         }
                     }
@@ -232,6 +233,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     public void onNotice(String sourceNick, String target, JSONObject object, int type) {
         switch (type) {
             case XESCODE.ENGLISH_H5_COURSEWARE:
+                LiveVideoConfig.isNewEnglishH5 = false;
                 try {
                     if (englishH5CoursewareBll != null) {
                         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
