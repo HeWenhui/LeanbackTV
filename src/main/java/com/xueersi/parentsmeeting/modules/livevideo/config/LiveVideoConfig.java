@@ -224,6 +224,8 @@ public class LiveVideoConfig {
     public static String educationstage;
     /** 一发多题的日志*/
     public static String nonce;
+    /** 文理科的标志*/
+    public static Boolean isScience;
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;

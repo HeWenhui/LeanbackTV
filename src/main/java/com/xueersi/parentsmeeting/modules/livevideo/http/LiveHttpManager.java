@@ -725,7 +725,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     * 获取一次多发的预加载课件地址
+     * 获取理科一次多发的预加载课件本地资源
      */
     public void getMoreCoureWareUrl(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
@@ -734,6 +734,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
+    /**
+     * 获取文科一发多题的预加载课件本地资源
+     */
+     public void getArtsMoreCoureWareUrl(String liveId, HttpCallBack requestCallBack){
+         HttpRequestParams params = new HttpRequestParams();
+         params.addBodyParam("liveId", liveId);
+         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_ARTSMORE_COURSEWARE_URL;
+         sendPost(requestCallBack.url, params, requestCallBack);
+     }
     /**
      * 获得广告信息
      */

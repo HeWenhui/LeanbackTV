@@ -80,6 +80,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveVideoConfig.isPrimary = false;
         }
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
+        LiveVideoConfig.isScience = true;
     }
 
     /**
@@ -332,6 +333,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 getInfo.setSubjectIds(arrSubjIds);
             }
             LiveVideoConfig.isPrimary = false;
+            LiveVideoConfig.isScience = false;
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 if (getInfo.getIsArts() == 1) {
                     parseLiveGetInfoLibarts(data, liveTopic, getInfo);
