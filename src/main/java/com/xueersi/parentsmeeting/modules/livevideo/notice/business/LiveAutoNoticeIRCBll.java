@@ -48,7 +48,6 @@ public class LiveAutoNoticeIRCBll extends LiveBaseBll {
     public void onUnknown(String line) {
         if (mLiveAutoNoticeBll != null) {
             if (line.contains("BLOCK")) {//发送了敏感词
-                blockTime=0;
                 if (System.currentTimeMillis() - blockTime > 30 * 60 * 1000) {
                     blockTime = System.currentTimeMillis();
                     postDelayedIfNotFinish(new Runnable() {
@@ -56,7 +55,7 @@ public class LiveAutoNoticeIRCBll extends LiveBaseBll {
                         public void run() {
                             mLiveAutoNoticeBll.showNotice(mGetInfo.getTeacherName(), mGetInfo.getTeacherIMG());
                         }
-                    }, 1000);
+                    }, 10000);
                 }
             }
         }
