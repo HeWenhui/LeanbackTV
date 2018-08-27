@@ -18,6 +18,7 @@ import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
@@ -37,6 +38,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -48,6 +50,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.xutils.common.Callback;
 import org.xutils.xutils.ex.HttpException;
+import org.xutils.xutils.http.RequestParams;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +71,7 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
+public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, LiveOnLineLogs {
     private String TAG = "AuditClassLiveBllLog";
     String liveListenEventid = LiveVideoConfig.LIVE_LISTEN;
     private AuditVideoAction mVideoAction;
@@ -193,12 +196,17 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         this.totalFrameStat = totalFrameStat;
     }
 
+    @Override
+    public String getPrefix() {
+        return "AC";
+    }
+
     /**
      * 播放器异常日志
      *
      * @param str
      */
-    public void getOnloadLogs(String TAG, final String str) {
+    public void getOnloadLogs(String TAG, String str) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
         PackageManager packageManager = mContext.getPackageManager();
@@ -217,30 +225,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             UmsAgent.onEvent(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
             return;
         }
-        mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
-                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, new Callback.CommonCallback<File>() {
-
-                    @Override
-                    public void onSuccess(File o) {
-                        //Loger.i(TAG, "getOnloadLogs:onSuccess");
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable, boolean b) {
-                        //Loger.i(TAG, "getOnloadLogs:onError", throwable);
-                    }
-
-                    @Override
-                    public void onCancelled(CancelledException e) {
-                        //Loger.i(TAG, "getOnloadLogs:onCancelled");
-                    }
-
-                    @Override
-                    public void onFinished() {
-                        //Loger.i(TAG, "getOnloadLogs:onFinished");
-                    }
-
-                });
+        LiveLogCallback liveLogCallback = new LiveLogCallback();
+        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
+                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, liveLogCallback);
+        liveLogCallback.setParams(params);
     }
 
     public void setVideoAction(AuditVideoAction videoAction) {

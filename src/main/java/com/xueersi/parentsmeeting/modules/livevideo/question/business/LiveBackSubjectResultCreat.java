@@ -27,7 +27,7 @@ public class LiveBackSubjectResultCreat implements BaseSubjectResultCreat {
     public SubjectResultX5Pager creat(Context context, BaseQuestionWebInter.StopWebQuestion questionBll, String testPaperUrl, String stuId, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String stuCouId) {
         wrapQuestionWebStop.setStopWebQuestion(questionBll);
         wrapQuestionWebStop.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
-        SubjectResultX5Pager subjectResultPager = new SubjectResultX5Pager(context, wrapQuestionWebStop,
+        SubjectResultX5Pager subjectResultPager = new SubjectResultX5Pager(context, videoQuestionLiveEntity, wrapQuestionWebStop,
                 liveGetInfo.getSubjectiveTestAnswerResult(),
                 liveGetInfo.getStuId(), liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
                 stuCouId);

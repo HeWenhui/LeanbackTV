@@ -739,5 +739,11 @@
     <item name="iv_livevideo_small_english_sendflower_fiveflower_square" type="id" />
     <item name="iv_livevideo_small_english_sendflower_fiveflower_tick" type="id" />
     <item name="iv_livevideo_small_english_sendflower_send" type="id" />
+    <item name="ll_livevideo_controller_mark_pop_menu" type="id" />
+    <item name="tv_livevideo_mark_point_tip_content" type="id" />
+    <item name="iv_livevideo_mark_point_tip_icon" type="id" />
+    <item name="ll_livevideo_bottom_controller_mark_menu" type="id" />
+    <item name="ll_livevideo_bottom_controller_mark_guide" type="id" />
+
 
 </resources>

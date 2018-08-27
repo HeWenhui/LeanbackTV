@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSw
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
@@ -81,7 +82,6 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  */
 public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     private SpeechEvaluatorUtils mIse;
-    BaseVideoQuestionEntity baseVideoQuestionEntity;
     /** 所有帧动画 */
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
     /** 组内战况已经被加入的学生 */
@@ -153,7 +153,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
     public VoiceAnswerStandPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, String headUrl, String userName) {
         super(context);
-        this.baseVideoQuestionEntity = baseVideoQuestionEntity;
+        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.questionSwitch = questionSwitch;
         this.type = type;
         this.assess_ref = assess_ref;
@@ -584,10 +584,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         isEnd = true;
         endnonce = nonce;
         ViewGroup group = (ViewGroup) mView.getParent();
-        Loger.d(TAG, "examSubmitAll:method=" + method + ",error=" + isSpeechError + ",success=" + isSpeechSuccess);
-        if (group == null) {
-            return;
-        }
+        Loger.d(TAG, "examSubmitAll:method=" + method + ",group=" + (group == null) + ",error=" + isSpeechError + ",success=" + isSpeechSuccess);
         if (isSpeechError || isSpeechSuccess) {
             questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
         } else {
@@ -1067,7 +1064,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 ImageLoader.with(mContext).load(student.getAvatar_path()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
                     @Override
                     public void onSuccess(Drawable drawable) {
-                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "updateHead", student.getAvatar_path());
                         InputStream inputStream = null;
                         try {
                             inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_2.png");

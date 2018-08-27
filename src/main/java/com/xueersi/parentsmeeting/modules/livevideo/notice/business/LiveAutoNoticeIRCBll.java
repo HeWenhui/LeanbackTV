@@ -41,10 +41,6 @@ public class LiveAutoNoticeIRCBll extends LiveBaseBll {
             liveAutoNoticeBll.setLiveBll(mLiveBll);
             liveAutoNoticeBll.setHttpManager(mLiveBll.getHttpManager());
             liveAutoNoticeBll.setLiveId(mLiveId);
-            EnglishH5CoursewareBll englishH5CoursewareBll = ProxUtil.getProxUtil().get(activity, EnglishH5CoursewareBll.class);
-            if (englishH5CoursewareBll != null) {
-                englishH5CoursewareBll.setLiveAutoNoticeBll(liveAutoNoticeBll);
-            }
             mLiveAutoNoticeBll = liveAutoNoticeBll;
         }
     }
@@ -62,12 +58,6 @@ public class LiveAutoNoticeIRCBll extends LiveBaseBll {
                     }, 10000);
                 }
             }
-        }
-    }
-
-    public void showNotice(String teacherName, String teacherIMG) {
-        if (mLiveAutoNoticeBll != null) {
-            mLiveAutoNoticeBll.showNotice(teacherName, teacherIMG);
         }
     }
 

@@ -111,9 +111,13 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
+    public void initView() {
+        questionBll.initView(mRootView, mIsLand.get());
+    }
+
+    @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, final LiveBackBll.ShowQuestion showQuestion) {
         mRootView.setVisibility(View.VISIBLE);
-        questionBll.initView(mRootView, mIsLand.get());
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
@@ -133,7 +137,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                 videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
                 questionBll.showQuestion(videoQuestionLiveEntity);
-                showQuestion.onShow(true);
+                showQuestion.onShow(true, videoQuestionLiveEntity);
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
@@ -151,7 +155,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
                         videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                         questionBll.onExamStart(mVideoEntity.getLiveId(), videoQuestionLiveEntity);
-                        showQuestion.onShow(true);
+                        showQuestion.onShow(true, videoQuestionLiveEntity);
                     }
                 });
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
@@ -160,7 +164,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
                         mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                         mediaPlayerControl.start();
-                        showQuestion.onShow(false);
+                        showQuestion.onHide(questionEntity);
                     }
                 });
                 verifyCancelAlertDialog.showDialog();
@@ -212,7 +216,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                             }
                         } else {
                             LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(activity, LiveBackBll.ShowQuestion.class);
-                            showQuestion.onShow(false);
+                            showQuestion.onHide(videoQuestionLiveEntity1);
                         }
                     }
 

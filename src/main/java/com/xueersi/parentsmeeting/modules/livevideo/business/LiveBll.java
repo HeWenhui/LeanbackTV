@@ -13,8 +13,9 @@ import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseBll;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.config.AppConfig;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.http.HttpCallBack;
@@ -23,14 +24,23 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.analytics.umsagent.UmsAgent;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.lib.framework.utils.DeviceUtils;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekAction;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.StarInteractAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
@@ -38,23 +48,24 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveArtsHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportHttp;
@@ -66,6 +77,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareAction;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListAction;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareAction;
@@ -84,32 +97,21 @@ import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBl
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackAction;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
-import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.lib.analytics.umsagent.UmsAgent;
-import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.analytics.umsagent.UmsConstants;
-import com.xueersi.lib.framework.utils.DeviceUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.StarInteractAction;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
-import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.video.TotalFrameStat;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatHttp;
-import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
+import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.xutils.common.Callback;
 import org.xutils.xutils.ex.HttpException;
+import org.xutils.xutils.http.RequestParams;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -132,7 +134,7 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, LiveAchievementHttp, EnglishSpeekHttp, EnglishH5CoursewareHttp, VideoChatHttp, SpeechFeedBackHttp, LearnReportHttp, LecAdvertHttp, LecLearnReportHttp {
+public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, LiveAchievementHttp, EnglishSpeekHttp, EnglishH5CoursewareHttp, VideoChatHttp, SpeechFeedBackHttp, LearnReportHttp, LecAdvertHttp, LecLearnReportHttp, LiveOnLineLogs {
     private String TAG = "LiveBllLog";
     private LiveLazyBllCreat liveLazyBllCreat;
     /** 互动题 */
@@ -289,7 +291,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpManager.addBodyParam("form", "" + form);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(TAG, this);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (liveGetInfo != null) {
@@ -305,7 +307,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(TAG, this);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -322,7 +324,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(TAG, this);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -397,12 +399,17 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         this.totalFrameStat = totalFrameStat;
     }
 
+    @Override
+    public String getPrefix() {
+        return "OL";
+    }
+
     /**
      * 播放器异常日志
      *
      * @param str
      */
-    public void getOnloadLogs(String TAG, final String str) {
+    public void getOnloadLogs(String TAG, String str) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
         PackageManager packageManager = mContext.getPackageManager();
@@ -421,30 +428,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             UmsAgent.onEvent(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
             return;
         }
-        mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
-                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, new Callback.CommonCallback<File>() {
-
-                    @Override
-                    public void onSuccess(File o) {
-                        //Loger.i(TAG, "getOnloadLogs:onSuccess");
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable, boolean b) {
-                        //Loger.i(TAG, "getOnloadLogs:onError", throwable);
-                    }
-
-                    @Override
-                    public void onCancelled(CancelledException e) {
-                        //Loger.i(TAG, "getOnloadLogs:onCancelled");
-                    }
-
-                    @Override
-                    public void onFinished() {
-                        //Loger.i(TAG, "getOnloadLogs:onFinished");
-                    }
-
-                });
+        LiveLogCallback liveLogCallback = new LiveLogCallback();
+        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
+                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, liveLogCallback);
+        liveLogCallback.setParams(params);
     }
 
     /**
@@ -1055,8 +1042,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         //主讲
                         Loger.i("LiveRemarkBll", "ontopic____onbreak:" + mLiveTopic.getMainRoomstatus().isOnbreak()
                                 + "   mode:" + getMode());
-                        if (!liveTopic.getMainRoomstatus().isOnbreak() && liveTopic.getMode().equals(LiveTopic
-                                .MODE_CLASS)) {
+                        if (!liveTopic.getMainRoomstatus().isOnbreak() && (liveTopic.getMode().equals(LiveTopic
+                                .MODE_CLASS)||mGetInfo.getIsSeniorOfHighSchool()==1)) {
                             mLiveRemarkBll.setClassReady(true);
                         } else {
                             mLiveRemarkBll.setClassReady(false);
@@ -1466,14 +1453,18 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         msg += begin ? "CLASSBEGIN" : "CLASSEND";
                         Loger.i("LiveRemarkBll", "classBegin____onbreak:" + mLiveTopic.getMainRoomstatus().isOnbreak()
                                 + "   mode:" + getMode());
-                        if (!mLiveTopic.getMainRoomstatus().isOnbreak() && mLiveRemarkBll != null && LiveTopic
-                                .MODE_CLASS.equals(getMode())) {
+                        if (!mLiveTopic.getMainRoomstatus().isOnbreak() && (mLiveRemarkBll != null && LiveTopic
+                                .MODE_CLASS.equals(getMode())||mGetInfo.getIsSeniorOfHighSchool()==1)) {
                             mLiveRemarkBll.setClassReady(true);
                         }
                         //正式上课 结束关闭签到相关UI
                         if (mRollCallAction != null) {
                             mRollCallAction.forceCloseRollCall();
                         }
+                        if(mLiveRemarkBll!=null){
+                            mLiveRemarkBll.showMarkGuide();
+                        }
+
                     }
                     break;
                     case XESCODE.OPENBARRAGE: {
@@ -2223,6 +2214,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         }
                         break;
                     }
+                    case XESCODE.MARK_POINT_TIP:
+                        if(mLiveRemarkBll!=null){
+                            mLiveRemarkBll.showMarkTip(object.optInt("markType"));
+                        }
+                        break;
+
 
 //                    case XESCODE.LEC_ADVERT: {
 //                        if (lecAdvertAction != null) {
@@ -4984,7 +4981,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         }
         Loger.i("LiveRemarkBll", "setlivebll____onbreak:" + mLiveTopic.getMainRoomstatus().isOnbreak()
                 + "   stat:" + mGetInfo.getStat() + "   mode:" + getMode());
-        if (!mLiveTopic.getMainRoomstatus().isOnbreak() && LiveTopic.MODE_CLASS.equals(getMode())) {
+        if (!mLiveTopic.getMainRoomstatus().isOnbreak() && LiveTopic.MODE_CLASS.equals(getMode())||mGetInfo.getIsSeniorOfHighSchool()==1) {
             mLiveRemarkBll.setClassReady(true);
         } else {
             mLiveRemarkBll.setClassReady(false);

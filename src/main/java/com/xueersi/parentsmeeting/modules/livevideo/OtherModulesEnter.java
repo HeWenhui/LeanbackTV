@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.common.route.ReflexCenter;
 
 /**

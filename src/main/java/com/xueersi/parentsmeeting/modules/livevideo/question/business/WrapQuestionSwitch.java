@@ -60,7 +60,7 @@ public class WrapQuestionSwitch implements QuestionSwitch {
     public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
         questionSwitch.stopSpeech(answerPager, baseVideoQuestionEntity);
         LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(context, LiveBackBll.ShowQuestion.class);
-        showQuestion.onShow(false);
+        showQuestion.onHide(baseVideoQuestionEntity);
         MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
         mediaPlayerControl.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
         mediaPlayerControl.start();

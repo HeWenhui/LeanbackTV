@@ -474,7 +474,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 initLiveRemarkBll();
             } else {
                 if (liveBackBll.getPattern() != 2) {
-                    liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));//回放聊天区加上MMD的皮肤
+                    //回放聊天区加上MMD的皮肤
+                    liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));
                 }
             }
         }

@@ -20,7 +20,6 @@ import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -370,7 +369,7 @@ public class LiveAchievementBll implements StarInteractAction {
                 //飞的星星的位置
                 int screenWidth = ScreenUtils.getScreenWidth();
                 int screenHeight = ScreenUtils.getScreenHeight();
-                int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+                int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
                 {
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
                     params.leftMargin = (screenWidth - wradio - flyStat.getWidth()) / 2;
