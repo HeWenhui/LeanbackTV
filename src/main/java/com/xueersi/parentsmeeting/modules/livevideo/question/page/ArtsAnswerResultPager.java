@@ -3,6 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
@@ -289,7 +292,6 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
             recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
                 @Override
                 public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-
                     if (mAdapter.getItemCount() > 1) {
                         int itemPosition = parent.getChildAdapterPosition(view);
                         int left = 0;
@@ -301,22 +303,13 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
                         }
                         outRect.set(left, top, right, bottom);
                     }else{
-                        outRect.set(0, singLeItemTopMargin<0?0:singLeItemTopMargin, 0, 0);
-                    }
-
-                }
-
-                @Override
-                public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                    super.onDrawOver(c, parent, state);
-                    if(mAdapter.getItemCount() == 1 && singLeItemTopMargin == 0){
-                        View childView = parent.getChildAt(0);
-                        Loger.e("Arts","=====> itemHeight:"+childView.getMeasuredHeight());
-                        singLeItemTopMargin = (recyclerView.getMeasuredHeight() - childView.getMeasuredHeight())/2;
-                        mAdapter.notifyDataSetChanged();
+                        int widthSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.getMeasuredWidth(), View.MeasureSpec.EXACTLY);
+                        int heightSpec = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+                        view.measure(widthSpec,heightSpec);
+                        int topMargin = (recyclerView.getLayoutParams().height - view.getMeasuredHeight())/2;
+                        outRect.set(0, topMargin<0?0:topMargin, 0, 0);
                     }
                 }
-
             });
         } else {
             mAdapter.notifyDataSetChanged();

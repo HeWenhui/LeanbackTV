@@ -192,7 +192,6 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     }
 
 
-    int singLeItemTopMargin;
 
 
     /**
@@ -339,22 +338,13 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                     }
                     outRect.set(left, top, right, bottom);
                 } else {
-                    outRect.set(0, singLeItemTopMargin < 0 ? 0 : singLeItemTopMargin, 0, 0);
-                    Loger.e("Arts", "=======> singLeItemTopMargin:" + singLeItemTopMargin);
+
+                    int widthSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.getMeasuredWidth(), View.MeasureSpec.EXACTLY);
+                    int heightSpec = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+                    view.measure(widthSpec,heightSpec);
+                    int topMargin = (recyclerView.getLayoutParams().height - view.getMeasuredHeight())/2;
+                    outRect.set(0, topMargin<0?0:topMargin, 0, 0);
                 }
-            }
-
-
-            @Override
-            public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                super.onDrawOver(c, parent, state);
-                if (mAdapter.getItemCount() == 1 && singLeItemTopMargin == 0) {
-                    View childView = parent.getChildAt(0);
-                    Loger.e("Arts", "=====> itemHeight:" + childView.getMeasuredHeight());
-                    singLeItemTopMargin = (recyclerView.getMeasuredHeight() - childView.getMeasuredHeight()) / 2;
-                    mAdapter.notifyDataSetChanged();
-                }
-
             }
         });
 
