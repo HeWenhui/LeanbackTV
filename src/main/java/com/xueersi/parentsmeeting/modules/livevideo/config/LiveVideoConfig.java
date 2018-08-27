@@ -235,6 +235,8 @@ public class LiveVideoConfig {
     public static String LIVEPLAYBACKTEAMID;
     // 直播回放的edustage
     public static String LIVEPLAYBACKSTAGE;
+    // 直播回放的type
+    public static String LIVEPLAYBACKTYPE;
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;
