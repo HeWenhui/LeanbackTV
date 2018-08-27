@@ -149,7 +149,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     public void submitData() {
         isFinish = true;
-        wvSubjectWeb.loadUrl(LiveVideoConfig.isNewEnglishH5 ? jsforceSubmit : jsSubmitData);
+        String command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
+        wvSubjectWeb.loadUrl(command);
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareEnd");
         logHashMap.put("coursewareid", id);
         logHashMap.put("coursewaretype", courseware_type);
@@ -159,7 +160,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     protected void onPageFinished(WebView view, String url) {
         if (isFinish) {
-            wvSubjectWeb.loadUrl(LiveVideoConfig.isNewEnglishH5 ? jsforceSubmit : jsSubmitData);
+            String command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
+            wvSubjectWeb.loadUrl(command);
         }
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareDidLoad");
         logHashMap.put("coursewareid", id);
@@ -167,7 +169,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         logHashMap.put("status", "success");
         logHashMap.put("loadurl", url);
         umsAgentDebugSys(eventId, logHashMap.getData());
-        if (LiveVideoConfig.isNewEnglishH5) {
+        if (englishH5Entity.getNewEnglishH5()) {
             StableLogHashMap newlogHashMap = new StableLogHashMap("loadPlatformtest");
             newlogHashMap.put("os", "Android");
             newlogHashMap.put("sno", "3");
@@ -280,7 +282,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         super.initData();
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
-        if (LiveVideoConfig.isNewEnglishH5 || LiveVideoConfig.isMulLiveBack) {
+        if (englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack) {
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
                 public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
@@ -324,10 +326,10 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 String packageId = "";
                 String packageSource = "";
                 String packageAttr = "";
-                releasedPageInfos = AppConfig.LIVEPLAYBACKINFOS;
-                String teamId = AppConfig.LIVEPLAYBACKTEAMID;
-                String stuCouId = AppConfig.LIVEPLAYBACKSTUID;
-                String classId = AppConfig.LIVEPLAYBACKCLASSID;
+                releasedPageInfos = LiveVideoConfig.LIVEPLAYBACKINFOS;
+                String teamId = LiveVideoConfig.LIVEPLAYBACKTEAMID;
+                String stuCouId = LiveVideoConfig.LIVEPLAYBACKSTUID;
+                String classId = LiveVideoConfig.LIVEPLAYBACKCLASSID;
                 String classTestId = "";
                 try {
                     JSONObject jsonObject = new JSONObject(courseware_type.toString());
@@ -373,7 +375,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 logHashMap.put("nonce", LiveVideoConfig.nonce);
                 umsAgentDebugSys("live_platformtest", logHashMap.getData());
             }
-            if (LiveBll.isAllowTeamPk) {
+            if (allowTeamPk) {
                 mLoadUrls += "&isShowTeamPk=1";
             }
             loadUrl(mLoadUrls);
@@ -405,7 +407,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 //                newWebView();
                 Loger.e(TAG, "======> reloadUrlLives:" + mLoadUrls);
                 Loger.e(TAG, "======> reloadUrlLive:" + reloadurl);
-                if ((LiveVideoConfig.isNewEnglishH5 || LiveVideoConfig.isMulLiveBack) && LiveVideoConfig.isPrimary) {
+                if ((englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack) && LiveVideoConfig.isPrimary) {
                     loadUrl(mLoadUrls);
                     Loger.e(TAG, "======> reloadUrlLiveds:" + mLoadUrls);
                 } else {

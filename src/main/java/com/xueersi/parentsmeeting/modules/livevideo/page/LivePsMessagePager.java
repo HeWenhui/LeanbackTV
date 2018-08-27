@@ -348,8 +348,8 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 liveMediaControllerBottom.onChildViewClick(v);
                 LiveMediaController controller = liveMediaControllerBottom.getController();
                 controller.show();
-                if (rlLivevideoCommonWord.getVisibility() == View.GONE) {
-                    rlLivevideoCommonWord.setVisibility(View.INVISIBLE);
+                if (rlLivevideoCommonWord.getVisibility() == View.VISIBLE) {
+                    rlLivevideoCommonWord.setVisibility(View.GONE);
                     return;
                 }
                 int[] location = new int[2];
@@ -470,9 +470,11 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                                 XESToastUtils.showToast(mContext, "你已被禁言!");
                             }
                         } else {
-                            //暂时去掉3秒发言，信息提示
+                            //暂时去掉3秒发言，信息提示z
 //                                addMessage("提示", LiveMessageEntity.MESSAGE_TIP, "3秒后才能再次发言，要认真听课哦!");
-                            XESToastUtils.showToast(mContext, ((SEND_MSG_INTERVAL - System.currentTimeMillis() + lastSendMsg) / 1000) + "秒后才能再次发言，要认真听课哦!");
+                            long timeDelay = (SEND_MSG_INTERVAL - System.currentTimeMillis() + lastSendMsg) / 1000;
+                            timeDelay = timeDelay <= 0 ? 1 : timeDelay;
+                            XESToastUtils.showToast(mContext, timeDelay + "秒后才能再次发言，要认真听课哦!");
                         }
                     } else {
                         XESToastUtils.showToast(mContext, "老师未开启聊天");
@@ -818,7 +820,9 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                     } else {
                         //暂时去掉3秒发言，信息提示
 //                                addMessage("提示", LiveMessageEntity.MESSAGE_TIP, "3秒后才能再次发言，要认真听课哦!");
-                        XESToastUtils.showToast(mContext, ((SEND_MSG_INTERVAL - System.currentTimeMillis() + lastSendMsg) / 1000) + "秒后才能再次发言，要认真听课哦!");
+                        long timeDelay = (SEND_MSG_INTERVAL - System.currentTimeMillis() + lastSendMsg) / 1000;
+                        timeDelay = timeDelay <= 0 ? 1 : timeDelay;
+                        XESToastUtils.showToast(mContext, timeDelay + "秒后才能再次发言，要认真听课哦!");
                     }
                 } else {
                     XESToastUtils.showToast(mContext, "老师未开启聊天");
@@ -1389,11 +1393,11 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                     if (ircState.isOpenZJLKbarrage() || ircState.isOpenFDLKbarrage()) {
                         btMessageFlowers.setTag("1");
                         btMessageFlowers.setAlpha(1.0f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                     } else {
                         btMessageFlowers.setTag("0");
                         btMessageFlowers.setAlpha(0.4f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                     }
                     Loger.i("yzl_fd", "理科，不区分主讲，onModeChange不再往下执行");
                     return;
@@ -1405,16 +1409,16 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                     if (ircState.isOpenbarrage()) {
                         btMessageFlowers.setTag("1");
                         btMessageFlowers.setAlpha(1.0f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                     } else {
                         btMessageFlowers.setTag("0");
                         btMessageFlowers.setAlpha(0.4f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                     }
                 } else {
                     btMessageFlowers.setTag("0");
                     btMessageFlowers.setAlpha(0.4f);
-                    btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+                    btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
                 }
             }
         });

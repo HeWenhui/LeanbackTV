@@ -273,6 +273,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                         params.addRule(RelativeLayout.CENTER_IN_PARENT);
+
                         rlRollCallContent.addView(smallEnglishClassSignPager.getRootView(), params);
                     }
 
@@ -322,17 +323,32 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                 }
             });
         } else {
-            mIsShowUserSign = false;
-            mVPlayVideoControlHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mClassSignPager != null) {
-                        rlRollCallContent.removeView(mClassSignPager.getRootView());
-                        mClassSignPager = null;
+            if(LiveVideoConfig.isPrimary){
+                mIsShowUserSign = false;
+                mVPlayVideoControlHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mPrimaryScienceSignPager != null) {
+                            rlRollCallContent.removeView(mPrimaryScienceSignPager.getRootView());
+                            mPrimaryScienceSignPager = null;
+                        }
                     }
-                }
-            });
-            mVPlayVideoControlHandler.sendEmptyMessage(NO_USERSIGN);
+                });
+                mVPlayVideoControlHandler.sendEmptyMessage(NO_USERSIGN);
+            }else{
+                mIsShowUserSign = false;
+                mVPlayVideoControlHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mClassSignPager != null) {
+                            rlRollCallContent.removeView(mClassSignPager.getRootView());
+                            mClassSignPager = null;
+                        }
+                    }
+                });
+                mVPlayVideoControlHandler.sendEmptyMessage(NO_USERSIGN);
+            }
+
         }
     }
 
@@ -484,7 +500,10 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                 }
 
                 if (!isSmallEnglish) {
-                    if (mClassSignPager != null) {
+                    if(mPrimaryScienceSignPager != null && LiveVideoConfig.isPrimary){
+                        rlRollCallContent.removeView(mPrimaryScienceSignPager.getRootView());
+                        mPrimaryScienceSignPager = null;
+                    }else if(mClassSignPager != null && !LiveVideoConfig.isPrimary) {
                         rlRollCallContent.removeView(mClassSignPager.getRootView());
                         mClassSignPager = null;
                     }

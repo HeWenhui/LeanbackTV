@@ -42,11 +42,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
-import com.xueersi.parentsmeeting.modules.livevideo.business.KeyboardObserverReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -149,6 +147,35 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         return mContentView;
     }
 
+
+    private void initView() {
+        // 预加载布局
+        rlFirstBackgroundView = mContentView.findViewById(R.id.rl_course_video_first_backgroud);
+        bottom = mContentView.findViewById(R.id.live_play_back_bottom);
+        ivLoading = mContentView.findViewById(R.id.iv_course_video_loading_bg);
+        updateLoadingImage();
+        tvLoadingContent = mContentView.findViewById(R.id.tv_course_video_loading_content);
+        // 预加载布局中退出事件
+        ImageView ivBack = mContentView.findViewById(R.id.iv_course_video_back);
+
+        if (ivBack != null) {
+            mContentView.findViewById(R.id.iv_course_video_back).setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    activity.onBackPressed();
+                }
+            });
+        }
+        rl_course_video_live_controller_content = mContentView.findViewById(R.id
+                .rl_course_video_live_controller_content);
+        // 加载横屏时互动题的列表布局
+        rlQuestionContentBottom = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_question_bottom);
+        rlQuestionContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
+        // 加载竖屏时显示更多课程广告的布局
+        rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
+    }
+
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
@@ -167,15 +194,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         initData();
         initBll();
         addOnGlobalLayoutListener();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
-        for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.onConfigurationChanged(newConfig);
-        }
     }
 
     /** 初始化互动题和竖屏时下方的列表布局 */
@@ -294,40 +312,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         rlQuestionContentBottom.setVisibility(View.GONE);
     }
 
-    /** 加载旋转屏时相关布局 */
-    @Override
-    protected void loadLandOrPortView() {
-        mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
-        super.loadLandOrPortView();
-    }
-
-    private void initView() {
-        // 预加载布局
-        rlFirstBackgroundView = mContentView.findViewById(R.id.rl_course_video_first_backgroud);
-        bottom = mContentView.findViewById(R.id.live_play_back_bottom);
-        ivLoading = mContentView.findViewById(R.id.iv_course_video_loading_bg);
-        updateLoadingImage();
-        tvLoadingContent = mContentView.findViewById(R.id.tv_course_video_loading_content);
-        // 预加载布局中退出事件
-        ImageView ivBack = mContentView.findViewById(R.id.iv_course_video_back);
-
-        if (ivBack != null) {
-            mContentView.findViewById(R.id.iv_course_video_back).setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    activity.onBackPressed();
-                }
-            });
-        }
-        rl_course_video_live_controller_content = mContentView.findViewById(R.id
-                .rl_course_video_live_controller_content);
-        // 加载横屏时互动题的列表布局
-        rlQuestionContentBottom = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_question_bottom);
-        rlQuestionContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
-        // 加载竖屏时显示更多课程广告的布局
-        rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
-    }
 
     /** 竖屏时填充视频列表布局 */
     protected void initData() {
@@ -406,10 +390,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
     }
 
-    @Override
-    protected void playNewVideo() {
-        liveBackVideoBll.playNewVideo();
-    }
 
     protected void initBusiness() {
         liveBackBll.addBusinessShareParam("videoView", videoView);
@@ -442,6 +422,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             }
         }
     }
+
     protected void initLiveRemarkBll() {
         if (isArts == 1 || "PublicLiveDetailActivity".equals(where)) {
             return;
@@ -478,6 +459,26 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
+        for (LiveBackBaseBll businessBll : businessBlls) {
+            businessBll.onConfigurationChanged(newConfig);
+        }
+    }
+
+    /** 加载旋转屏时相关布局 */
+    @Override
+    protected void loadLandOrPortView() {
+        mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
+        super.loadLandOrPortView();
+    }
+
+    @Override
+    protected void playNewVideo() {
+        liveBackVideoBll.playNewVideo();
+    }
 
     @Override
     public void onResume() {
@@ -623,6 +624,15 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         scanQuestion(currentPosition); // 扫描互动题
     }
 
+    /** 扫描是否有需要弹出的互动题 */
+    public void scanQuestion(long position) {
+        if (!mIsLand.get() || vPlayer == null || !vPlayer.isPlaying()) {
+            // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
+            return;
+        }
+        liveBackBll.scanQuestion(position);
+    }
+
     @Override
     protected void onPausePlayer() {
         super.onPausePlayer();
@@ -633,15 +643,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     protected void onStartPlayer() {
         super.onStartPlayer();
         liveBackBll.onStartPlayer();
-    }
-
-    /** 扫描是否有需要弹出的互动题 */
-    public void scanQuestion(long position) {
-        if (!mIsLand.get() || vPlayer == null || !vPlayer.isPlaying()) {
-            // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
-            return;
-        }
-        liveBackBll.scanQuestion(position);
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

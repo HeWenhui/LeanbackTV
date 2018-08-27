@@ -22,6 +22,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RankItem;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
@@ -328,9 +329,13 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 }
             });
         } else {
-            relativeLayout = LayoutInflater.from(activity).inflate(R.layout.layout_livevodeo_rank, bottomContent,
-                    false);
-
+            if(LiveVideoConfig.isPrimary){
+                relativeLayout = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_psrank, bottomContent,
+                        false);
+            } else {
+                relativeLayout = LayoutInflater.from(activity).inflate(R.layout.layout_livevodeo_rank, bottomContent,
+                        false);
+            }
             //小组
             View rl_livevideo_rank_mygroup = relativeLayout.findViewById(R.id.rl_livevideo_rank_mygroup);
             final TextView tv_livevideo_rank_mygroup = (TextView) relativeLayout.findViewById(R.id

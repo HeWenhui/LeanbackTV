@@ -17,7 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.Config;
 
 public class SmallEnglishClassSignPager extends BasePager {
-    private String TAG = "ArtsClassSignPager";
+    private String TAG = "SmallEnglishClassSignPager";
     //    private Context mContext;
     //iv_live_video_small_english_sign_background  //签到显示的背景图
     private ImageView ivArtsSignBoard;
@@ -107,6 +107,7 @@ public class SmallEnglishClassSignPager extends BasePager {
                  */
 //                rollCallBll.stopRollCall();
                 if (smallEnglishClassSign != null) {
+                    logToFile.d("点击了关闭签到按钮");
                     smallEnglishClassSign.close();
                 }
 
@@ -117,6 +118,7 @@ public class SmallEnglishClassSignPager extends BasePager {
             public void onClick(View v) {
 
                 if (smallEnglishClassSign != null) {
+                    logToFile.d("点击了签到按钮，发送了http请求");
                     smallEnglishClassSign.sign(mHttpCallBack);
                 }
 //                rollCallBll.userSign(classSignEntity, new HttpCallBack() {
@@ -141,6 +143,7 @@ public class SmallEnglishClassSignPager extends BasePager {
 
         @Override
         public void onPmError(ResponseEntity responseEntity) {
+            logToFile.d("onPmError:msg=" + responseEntity.getJsonObject().toString());
             String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "网络异常" : responseEntity
                     .getErrorMsg();
             XESToastUtils.showToast(mContext, errorMsg);
@@ -151,6 +154,7 @@ public class SmallEnglishClassSignPager extends BasePager {
     public void updateStatus(int status) {
         classSignEntity.setStatus(status);
         if (status == Config.SIGN_STATE_CODE_UNSIGN) {//准备签到
+            logToFile.d("准备签到");
             mView.removeCallbacks(closeRun);//移除之前关闭签到的Runnable.
             tvArtsStartSign.setVisibility(View.VISIBLE);
             tvArtsSignName.setVisibility(View.VISIBLE);
@@ -159,6 +163,7 @@ public class SmallEnglishClassSignPager extends BasePager {
             ivArtsSignBtn.setVisibility(View.VISIBLE);
 
         } else if (status == Config.SIGN_STATE_CODE_SIGNED) {//签到成功
+            logToFile.d("签到成功");
             tvArtsStartSign.setVisibility(View.GONE);
             ivArtsSignBtn.setVisibility(View.GONE);
             tvArtsSignName.setVisibility(View.GONE);
@@ -171,6 +176,7 @@ public class SmallEnglishClassSignPager extends BasePager {
                 mView.postDelayed(closeRun, 3000);
             }
         } else {//签到失败
+            logToFile.d("签到失败");
             tvArtsSignName.setVisibility(View.GONE);
             tvArtsStartSign.setVisibility(View.GONE);
             ivArtsSignBtn.setVisibility(View.GONE);

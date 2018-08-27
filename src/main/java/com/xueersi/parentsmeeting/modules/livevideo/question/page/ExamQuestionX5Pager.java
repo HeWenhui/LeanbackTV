@@ -56,7 +56,6 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     private QuestionBll questionBll;
     private String liveid;
     private String num;
-    VideoQuestionLiveEntity videoQuestionLiveEntity;
     /** 用户名称 */
     private String stuName;
     /** 用户Id */
@@ -84,7 +83,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         this.stuId = stuId;
         this.stuName = stuName;
         this.liveid = liveid;
-        this.videoQuestionLiveEntity = videoQuestionLiveEntity;
+        setBaseVideoQuestionEntity(videoQuestionLiveEntity);
         this.num = videoQuestionLiveEntity.id;
         this.nonce = videoQuestionLiveEntity.nonce;
         this.IS_SCIENCE = IS_SCIENCE;

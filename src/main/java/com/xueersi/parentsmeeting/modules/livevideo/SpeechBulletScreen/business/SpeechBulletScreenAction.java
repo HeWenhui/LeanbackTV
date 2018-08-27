@@ -14,6 +14,12 @@ public interface SpeechBulletScreenAction {
      */
     void onStartSpeechBulletScreen();
 
+
+    /**
+     * 显示语音弹幕
+     */
+    void onShowSpeechBulletScreen();
+
     /**
      * 关闭语音弹幕
      */

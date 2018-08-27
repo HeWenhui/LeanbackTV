@@ -137,7 +137,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                 videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
                 questionBll.showQuestion(videoQuestionLiveEntity);
-                showQuestion.onShow(true);
+                showQuestion.onShow(true, videoQuestionLiveEntity);
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
@@ -155,7 +155,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
                         videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                         questionBll.onExamStart(mVideoEntity.getLiveId(), videoQuestionLiveEntity);
-                        showQuestion.onShow(true);
+                        showQuestion.onShow(true, videoQuestionLiveEntity);
                     }
                 });
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {

@@ -6,16 +6,18 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:src="@drawable/bg_livevideo_small_english_raise_hand" />
 
     <TextView
+
         android:id="@id/iv_livevideo_small_english_raise_hand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="150dp"
-        android:layout_marginTop="120dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:gravity="center"
-        android:maxWidth="196dp"
+        android:maxEms="10"
         android:text="已举手，现在有11位小朋友在排队哦"
         android:textColor="@color/COLOR_3795E9"
         android:textSize="21sp" />

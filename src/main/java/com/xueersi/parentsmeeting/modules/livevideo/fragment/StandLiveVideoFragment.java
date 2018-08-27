@@ -37,7 +37,8 @@ public class StandLiveVideoFragment extends LiveVideoFragment {
 
     @Override
     protected void createMediaControllerBottom() {
-        liveMediaControllerBottom = standMediaControllerBottom = new LiveStandMediaControllerBottom(activity, mMediaController, videoFragment);
+        liveMediaControllerBottom = standMediaControllerBottom = new LiveStandMediaControllerBottom(activity,
+                mMediaController, videoFragment);
         liveMediaControllerBottom.setVisibility(View.INVISIBLE);
 
     }

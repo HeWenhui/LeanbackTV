@@ -106,6 +106,14 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
             });
         }
+        if (mLiveAutoNoticeBll != null) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    englishH5CoursewareBll.setLiveAutoNoticeBll(mLiveAutoNoticeBll.getLiveAutoNoticeBll());
+                }
+            });
+        }
     }
 
     public void setIse(SpeechEvaluatorUtils ise) {
@@ -138,12 +146,14 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         try {
             if (englishH5CoursewareBll != null && jsonObject.has("H5_Courseware")) {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
                 JSONObject h5_Experiment = jsonObject.getJSONObject("H5_Courseware");
                 String play_url = "";
                 String status = h5_Experiment.optString("status", "off");
                 String id = "";
                 String courseware_type = "";
                 if ("on".equals(status)) {
+                    englishH5Entity.setNewEnglishH5(false);
                     LiveVideoConfig.isNewEnglishH5 = false;
                     LiveVideoConfig.isSend = false;
                     id = h5_Experiment.getString("id");
@@ -171,10 +181,12 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.courseware_type);
                     }
                 } else {
+                    englishH5Entity.setNewEnglishH5(false);
                     LiveVideoConfig.isNewEnglishH5 = false;
                     if (englishH5CoursewareBll != null) {
                         JSONObject object = jsonObject.optJSONObject("platformTest");
                         if (object != null && !object.toString().equals("{}")) {
+                            englishH5Entity.setNewEnglishH5(true);
                             LiveVideoConfig.isNewEnglishH5 = true;
                             LiveVideoConfig.isSend = true;
                             status = LiveVideoConfig.isSend ? "on" : "off";
@@ -182,7 +194,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
                             String teamId = studentLiveInfo.getTeamId();
                             String classId = studentLiveInfo.getClassId();
-                            EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
+//                            EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
                             englishH5Entity.setNewEnglishH5(true);
                             try {
                                 JSONObject objects = new JSONObject();
@@ -209,6 +221,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 e.printStackTrace();
                             }
                         } else {
+                            englishH5Entity.setNewEnglishH5(true);
+                            LiveVideoConfig.isNewEnglishH5 = true;
                             LiveVideoConfig.isSend = false;
                         }
                     }
@@ -224,9 +238,12 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     public void onNotice(String sourceNick, String target, JSONObject object, int type) {
         switch (type) {
             case XESCODE.ENGLISH_H5_COURSEWARE:
+                LiveVideoConfig.isNewEnglishH5 = false;
                 try {
                     if (englishH5CoursewareBll != null) {
                         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                        EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
+                        englishH5Entity.setNewEnglishH5(false);
                         String play_url = "";
                         String status = object.optString("status", "off");
                         String nonce = object.optString("nonce");
