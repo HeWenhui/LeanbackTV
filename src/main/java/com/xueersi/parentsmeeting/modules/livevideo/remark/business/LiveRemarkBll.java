@@ -21,7 +21,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
@@ -483,20 +482,20 @@ public class LiveRemarkBll {
                         mHttpManager.saveLiveMark(liveId, type, "" + time, result.getHttpPath(), new HttpCallBack(false) {
                             @Override
                             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                StringBuilder sb=new StringBuilder("标记成功");
+                                StringBuilder sb=new StringBuilder("标记\"\"成功!看回放时可快速找到哟~");
                                 if(!TextUtils.isEmpty(type)){
                                     switch (type){
                                         case "1":
-                                            sb.insert(0,"疑问");
+                                            sb.insert(3,"疑问");
                                             break;
                                         case "2":
-                                            sb.insert(0,"总结");
+                                            sb.insert(3,"总结");
                                             break;
                                         case "3":
-                                            sb.insert(0,"高分点");
+                                            sb.insert(3,"高分点");
                                             break;
                                         case "4":
-                                            sb.insert(0,"要多练");
+                                            sb.insert(3,"要多练");
                                             break;
                                         default:
                                             break;
