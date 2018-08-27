@@ -366,13 +366,18 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 //        }
             final int COLOR_F13232 = activity.getResources().getColor(R.color.COLOR_F13232);
             final int white = activity.getResources().getColor(R.color.white);
+            final int slider = activity.getResources().getColor(R.color.COLOR_SLIDER);
             rl_livevideo_rank_mygroup.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     index = 1;
                     tv_livevideo_rank_subtitle_mid.setText("学员");
                     v_livevideo_rank_mygroup.setVisibility(View.VISIBLE);
-                    tv_livevideo_rank_mygroup.setTextColor(COLOR_F13232);
+                    if(LiveVideoConfig.isPrimary){
+                        tv_livevideo_rank_mygroup.setTextColor(slider);
+                    }else{
+                        tv_livevideo_rank_mygroup.setTextColor(COLOR_F13232);
+                    }
                     v_livevideo_rank_groups.setVisibility(View.GONE);
                     tv_livevideo_rank_groups.setTextColor(white);
                     v_livevideo_rank_class.setVisibility(View.GONE);
@@ -397,7 +402,11 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     v_livevideo_rank_mygroup.setVisibility(View.GONE);
                     tv_livevideo_rank_mygroup.setTextColor(white);
                     v_livevideo_rank_groups.setVisibility(View.VISIBLE);
-                    tv_livevideo_rank_groups.setTextColor(COLOR_F13232);
+                    if(LiveVideoConfig.isPrimary){
+                        tv_livevideo_rank_groups.setTextColor(slider);
+                    }else{
+                        tv_livevideo_rank_groups.setTextColor(COLOR_F13232);
+                    }
                     v_livevideo_rank_class.setVisibility(View.GONE);
                     tv_livevideo_rank_class.setTextColor(white);
                     if (allRankEntity == null) {
@@ -422,7 +431,11 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     v_livevideo_rank_groups.setVisibility(View.GONE);
                     tv_livevideo_rank_groups.setTextColor(white);
                     v_livevideo_rank_class.setVisibility(View.VISIBLE);
-                    tv_livevideo_rank_class.setTextColor(COLOR_F13232);
+                    if(LiveVideoConfig.isPrimary){
+                        tv_livevideo_rank_class.setTextColor(slider);
+                    }else{
+                        tv_livevideo_rank_class.setTextColor(COLOR_F13232);
+                    }
                     if (allRankEntity == null) {
                         return;
                     }

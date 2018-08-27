@@ -8,16 +8,14 @@
         android:id="@id/tv_livevideo_vote_result_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:gravity="right"
+        android:gravity="center"
         android:text="99% 1000人"
         android:textColor="#7D553F"
         android:textSize="13sp" />
 
     <RelativeLayout
         android:id="@id/pb_livevideo_vote_result_item"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
         android:layout_width="20dp"
         android:layout_centerInParent="true"
         android:layout_height="wrap_content"

@@ -79,10 +79,10 @@
     <RelativeLayout
         android:layout_above="@id/v_livevideo_mediacontrol_bottom"
         android:id="@+id/rl_livevideo_common_wordps"
-        android:layout_width="118dp"
+        android:layout_width="98dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="65dp"
-        android:layout_marginBottom="42dp"
+        android:layout_marginBottom="46dp"
         android:visibility="invisible"
         >
         <ImageView
@@ -90,18 +90,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="26dp"
+            android:layout_marginLeft="22dp"
             android:src="@drawable/bg_livevideo_common_word_arrow" />
         <com.xueersi.ui.widget.AutohListview
             android:layout_above="@id/iv_livevideo_common_word_arrow"
             android:id="@id/lv_livevideo_common_word"
             style="@style/listview_common_style"
-            android:layout_width="118dp"
+            android:background="@drawable/shape_livevideo_commonwordps_bg"
+            android:layout_width="98dp"
             android:layout_height="wrap_content"
+            android:divider="@null"
             android:layout_centerHorizontal="true"
-            android:layout_marginLeft="24dp"
-            android:divider="#2E1F1C"
-            android:dividerHeight="1dp"
             android:scrollbars="none" />
     </RelativeLayout>
 

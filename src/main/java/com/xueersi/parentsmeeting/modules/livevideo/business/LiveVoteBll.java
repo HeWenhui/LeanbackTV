@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -263,6 +265,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
                     gv1.setLayoutParams(lp1);
                     gv1.setHorizontalSpacing(50);
                     gv1.setVerticalSpacing(-40);
+                    gv1.setSelector(new ColorDrawable(Color.TRANSPARENT));
                     gv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> view, View view1, int position, long l) {
