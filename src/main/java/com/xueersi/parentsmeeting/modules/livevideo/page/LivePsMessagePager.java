@@ -229,11 +229,13 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             btMessageFlowers.setTag("1");
             btMessageFlowers.setAlpha(1.0f);
             btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+            Loger.i("mqtt", "送花开启");
         } else {
 
             btMessageFlowers.setTag("0");
             btMessageFlowers.setAlpha(0.4f);
             btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+            Loger.i("mqtt", "送花关闭");
         }
     }
 
@@ -1440,28 +1442,35 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         });
     }
 
-    /** 关闭开启弹幕 */
+    /** 关闭开启送花 */
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
+        Loger.i("yzl_fd", ircState.getMode() + "老师" + openbarrage + "了献花 fromNotice = " + fromNotice + " liveBll.getLKNoticeMode()" + ircState.getLKNoticeMode());
+
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
-                    if (openbarrage) {
-                        if (fromNotice) {
-                            commonAction.onOpenbarrage(true);
-                        }
-                        btMessageFlowers.setTag("1");
-                        btMessageFlowers.setAlpha(1.0f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
-                    } else {
-                        if (fromNotice) {
-                            commonAction.onOpenbarrage(false);
-                        }
-                        btMessageFlowers.setTag("0");
-                        btMessageFlowers.setAlpha(0.4f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+
+                if (commonAction instanceof GiftDisable) {
+                    Loger.i("yzl_fd", "理科");
+
+                    if (!ircState.getMode().equals(ircState.getLKNoticeMode())) {
+                        Loger.i("yzl_fd", "理科当前mode和notimode不一致，不再响应提示，但要根据当前mode改变礼物/鲜花状态");
+                        //理科主讲送礼物功能
+                        setOnlyFlowerIconState(openbarrage, fromNotice, ircState.getMode());
+                        return;
+                    }
+                    Loger.i("yzl_fd", "理科当前mode和notimode一致，响应提示，改变当前mode改变礼物/鲜花状态");
+                    //理科主讲送礼物功能
+                    setFlowerIconState(openbarrage, fromNotice, ircState.getMode());
+
+                } else {
+                    Loger.i("yzl_fd", "文科");
+                    //非理科主讲的走原来的逻辑
+                    if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                        setFlowerIconState(openbarrage, fromNotice, null);
                     }
                 }
+
             }
         });
     }
