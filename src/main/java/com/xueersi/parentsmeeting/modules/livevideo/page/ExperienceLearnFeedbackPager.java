@@ -74,6 +74,8 @@ public class ExperienceLearnFeedbackPager extends BasePager {
         this.closeAction = closeAction;
     }
     private void registerListener() {
+        rgDifficulty.clearCheck();
+        rgSatisficing.clearCheck();
         rgDifficulty.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
@@ -81,8 +83,10 @@ public class ExperienceLearnFeedbackPager extends BasePager {
                 if (checkedId == R.id.rbtn_difficulty_1) {
                     mDifficulty = "1";
                 } else if (checkedId == R.id.rbtn_difficulty_2) {
+                    group.check(R.id.rbtn_difficulty_2);
                     mDifficulty = "2";
                 } else if (checkedId == R.id.rbtn_difficulty_3) {
+                    group.check(R.id.rbtn_difficulty_3);
                     mDifficulty = "3";
                 } else {
                     mDifficulty = "-1";
