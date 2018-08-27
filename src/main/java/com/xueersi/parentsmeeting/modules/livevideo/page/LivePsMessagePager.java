@@ -34,6 +34,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.xueersi.common.base.BaseApplication;
@@ -179,26 +180,27 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 
     @Override
     public void onFDOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
-        Loger.i("yzl_fd", ircState.getMode() + "老师" + openbarrage + "了献花 fromNotice = " + fromNotice + " ircState.getLKNoticeMode() = " + ircState.getLKNoticeMode());
+        Loger.i("mqtt", ircState.getMode() + "老师" + openbarrage + "了献花 fromNotice = " + fromNotice + " ircState.getLKNoticeMode() = " + ircState.getLKNoticeMode());
 
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
 
                 if (commonAction instanceof GiftDisable) {
-                    Loger.i("yzl_fd", "理科");
+                    Loger.i("mqtt", "理科");
                     if (!ircState.getMode().equals(ircState.getLKNoticeMode())) {
-                        Loger.i("yzl_fd", "当前mode和notimode不一致，不再响应提示，但要根据当前mode改变礼物/鲜花状态");
+                        Loger.i("mqtt", "当前mode和notimode不一致，不再响应提示，但要根据当前mode改变礼物/鲜花状态");
                         //理科辅导送礼物功能
+                        Toast.makeText(liveVideoActivity,"开启和关闭献花功能",Toast.LENGTH_SHORT).show();
                         setOnlyFlowerIconState(openbarrage, fromNotice, ircState.getMode());
                         return;
                     }
-                    Loger.i("yzl_fd", "理科当前mode和notimode一致，响应提示，改变当前mode改变礼物/鲜花状态");
+                    Loger.i("mqtt", "理科当前mode和notimode一致，响应提示，改变当前mode改变礼物/鲜花状态");
                     //理科辅导送礼物功能
                     setFlowerIconState(openbarrage, fromNotice, ircState.getMode());
                 } else {
                     //非理科辅导的走原来的逻辑
-                    Loger.i("yzl_fd", "文科");
+                    Loger.i("mqtt", "文科");
                     if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
                         setFlowerIconState(openbarrage, fromNotice, null);
                     }
@@ -1509,12 +1511,6 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     class GiftDisable implements FlowerAction {
-
-        @Override
-        public void onOpenbarrage(boolean openbarrage) {
-
-        }
-
         //重载，添加参数：讲课模式
         public void onOpenbarrage(boolean openbarrage, String classMode) {
             String teacher = LiveTopic.MODE_CLASS.equals(classMode) ? "主讲" : "辅导";
@@ -1535,6 +1531,11 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         public void clickIsnotOpenbarrage(String classMode) {
             String teacher = LiveTopic.MODE_CLASS.equals(classMode) ? "主讲" : "辅导";
             XESToastUtils.showToast(mContext, teacher + "老师未开启送礼物功能");
+        }
+
+        @Override
+        public void onOpenbarrage(boolean openbarrage) {
+
         }
 
         @Override
