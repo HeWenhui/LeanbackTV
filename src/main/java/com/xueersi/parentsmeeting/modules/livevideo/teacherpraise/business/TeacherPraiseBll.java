@@ -40,7 +40,7 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
     private View praiseRootView;
     private boolean isAnimStart;
     private boolean isPse;
-    private final float SCALE_ANIM_FACTOR = 0.45f;
+    private final float SCALE_ANIM_FACTOR = 0.40f;
     /**文科表扬UI 展示时间*/
     private final long PARISE_UI_DISPLAY_DURATION = 4*1000;
 

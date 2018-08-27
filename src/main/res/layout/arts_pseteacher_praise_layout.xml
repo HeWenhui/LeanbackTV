@@ -4,9 +4,10 @@
 
     <ImageView
         android:layout_width="351dp"
-        android:layout_height="335dp"
+        android:layout_height="319dp"
         android:src="@drawable/live_arts_teacher_praise"
         android:layout_gravity="center"
+        android:scaleType="centerCrop"
         android:id="@id/iv_arts_pse_teacher_praise"
         />
 
