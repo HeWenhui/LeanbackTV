@@ -482,7 +482,7 @@ public class LiveRemarkBll {
                         mHttpManager.saveLiveMark(liveId, type, "" + time, result.getHttpPath(), new HttpCallBack(false) {
                             @Override
                             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                StringBuilder sb=new StringBuilder("标记\"\"成功!看回放复习时可快速找到哟~");
+                                StringBuilder sb=new StringBuilder("标记\"\"成功!看回放时可快速找到哟~");
                                 if(!TextUtils.isEmpty(type)){
                                     switch (type){
                                         case "1":
