@@ -229,13 +229,11 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             btMessageFlowers.setTag("1");
             btMessageFlowers.setAlpha(1.0f);
             btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
-            Loger.i("mqtt", "送花开启");
         } else {
 
             btMessageFlowers.setTag("0");
             btMessageFlowers.setAlpha(0.4f);
             btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
-            Loger.i("mqtt", "送花关闭");
         }
     }
 

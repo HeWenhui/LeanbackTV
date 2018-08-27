@@ -72,7 +72,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
     @Override
     public int[] getCategorys() {
-        return new int[]{LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE};
+        return new int[]{LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE,LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE};
     }
 
     @Override
