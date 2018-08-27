@@ -187,8 +187,10 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
         private String listToStr (List<String> data){
             StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < data.size(); i++) {
-                stringBuilder.append(data.get(i));
+            if(data != null){
+                for (int i = 0; i < data.size(); i++) {
+                    stringBuilder.append(data.get(i));
+                }
             }
             return  stringBuilder.toString();
         }

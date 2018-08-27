@@ -152,12 +152,14 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                     JSONArray rightAnswerArray = null;
 
                     List<AnswerResultEntity.Answer> answerList = new ArrayList<AnswerResultEntity.Answer>();
-                    List<String> choiceList = new ArrayList<String>();
-                    List<String> blankList = new ArrayList<String>();
-                    List<String> rightAnswerList = new ArrayList<String>();
-
+                    List<String> choiceList = null;
+                    List<String> blankList = null;
+                    List<String> rightAnswerList = null;
 
                     for (int i = 0; i < splitArray.length(); i++) {
+                        choiceList = new ArrayList<>();
+                        blankList = new ArrayList<>();
+                        rightAnswerList = new ArrayList<>();
                         answerObject = splitArray.getJSONObject(i);
                         answer = new AnswerResultEntity.Answer();
                         answer.setLiveId(answerObject.optString("liveId"));

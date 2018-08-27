@@ -771,4 +771,6 @@
     <item name="v_arts_pse_answer_result_closebtn" type="id"/>
     <item name="rl_arts_pse_answer_result_root" type="id"/>
 
+    <item name="iv_arts_pse_teacher_praise" type="id"/>
+
 </resources>
