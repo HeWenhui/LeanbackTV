@@ -19,6 +19,7 @@ import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -442,7 +443,7 @@ public class ArtsPraisePager extends BasePager {
                 .setBackgroundResource(mPraiseType == PRAISE_TYPE_PRAISE ? R.drawable.livevideo_arts_praise_praise_btn :
                         R.drawable.livevideo_arts_praise_encourage_btn);
 
-
+        Loger.e("ArtsPraisePager", "======>initPraiseBtn called:" + mCurrentNum);
         upDatePraiseNum(mCurrentNum, false);
 
         praiseLayout.findViewById(R.id.fl_livevideo_arts_praise_scaleanimlayout).setOnClickListener(new View
@@ -619,6 +620,7 @@ public class ArtsPraisePager extends BasePager {
      * @param praiseNum 当前点赞总数
      */
      public void upDatePraiseNum(long praiseNum){
+        // Loger.e("ArtsPraisePager","======>upDatePraiseNum:"+praiseNum+":"+mCurrentNum+":"+mTotalNum);
          if(mCurrentNum >0){
              if(praiseNum > mTotalNum && praiseNum > 0){
                  // step 1 cancle task
@@ -636,6 +638,8 @@ public class ArtsPraisePager extends BasePager {
              //首次初始化
              mCurrentNum = praiseNum;
              mTotalNum = praiseNum;
+             upDatePraiseNum(mCurrentNum, false);
+             //Loger.e("ArtsPraisePager","======>upDatePraiseNum 222222222:"+praiseNum+":"+mCurrentNum+":"+mTotalNum);
          }
      }
 
@@ -663,6 +667,8 @@ public class ArtsPraisePager extends BasePager {
             }
             tvPraiseNum.setText(sb.toString());
             mCurrentNum = praiseNum;
+            Loger.e("ArtsPraisePager", "======>upDatePraiseNum setText:"+mCurrentNum);
+
         }
     }
 
