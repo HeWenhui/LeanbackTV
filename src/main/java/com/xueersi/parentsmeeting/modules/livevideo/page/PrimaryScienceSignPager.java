@@ -20,6 +20,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallAction;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 
+import java.util.logging.Handler;
+
 /**
  * Created by David on 2018/7/9.
  */
@@ -132,6 +134,13 @@ public class PrimaryScienceSignPager extends BasePager {
         }
         mLinearLayout.setVisibility(View.GONE);
         btLearnreportCheck.setVisibility(View.GONE);
+        ivClose.setVisibility(View.GONE);
+        mView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mView.setVisibility(View.GONE);
+            }
+        },3000);
     }
 
 }

@@ -625,6 +625,7 @@ public class VideoChatBll implements VideoChatAction {
                             if(LiveVideoConfig.isPrimary  && psraiseHandDialog != null){
                                 isFail = true;
                                 psraiseHandDialog.setFail();
+                                psraiseHandDialog.showDialog();
                                 final PsRaiseHandDialog finalRaiseHandDialog = psraiseHandDialog;
                                 btRaiseHands.postDelayed(new Runnable() {
                                     @Override
