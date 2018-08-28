@@ -34,6 +34,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.xueersi.common.base.BaseApplication;
@@ -141,6 +142,10 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     private View mFloatView;
     private PopupWindow mPopupWindow;
     private long mOldTime = 0;//记录点击赠送按钮那一刻的时间
+    private ArrayList<FlowerEntity> mFlowerEntities;
+    private ImageView mIce;
+    private ImageView mCup;
+    private ImageView mHeart;
 
     public LivePsMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener, LiveAndBackDebug ums, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -175,26 +180,27 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 
     @Override
     public void onFDOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
-        Loger.i("yzl_fd", ircState.getMode() + "老师" + openbarrage + "了献花 fromNotice = " + fromNotice + " ircState.getLKNoticeMode() = " + ircState.getLKNoticeMode());
+        Loger.i("mqtt", ircState.getMode() + "老师" + openbarrage + "了献花 fromNotice = " + fromNotice + " ircState.getLKNoticeMode() = " + ircState.getLKNoticeMode());
 
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
 
                 if (commonAction instanceof GiftDisable) {
-                    Loger.i("yzl_fd", "理科");
+                    Loger.i("mqtt", "理科");
                     if (!ircState.getMode().equals(ircState.getLKNoticeMode())) {
-                        Loger.i("yzl_fd", "当前mode和notimode不一致，不再响应提示，但要根据当前mode改变礼物/鲜花状态");
+                        Loger.i("mqtt", "当前mode和notimode不一致，不再响应提示，但要根据当前mode改变礼物/鲜花状态");
                         //理科辅导送礼物功能
+                        Toast.makeText(liveVideoActivity,"开启和关闭献花功能",Toast.LENGTH_SHORT).show();
                         setOnlyFlowerIconState(openbarrage, fromNotice, ircState.getMode());
                         return;
                     }
-                    Loger.i("yzl_fd", "理科当前mode和notimode一致，响应提示，改变当前mode改变礼物/鲜花状态");
+                    Loger.i("mqtt", "理科当前mode和notimode一致，响应提示，改变当前mode改变礼物/鲜花状态");
                     //理科辅导送礼物功能
                     setFlowerIconState(openbarrage, fromNotice, ircState.getMode());
                 } else {
                     //非理科辅导的走原来的逻辑
-                    Loger.i("yzl_fd", "文科");
+                    Loger.i("mqtt", "文科");
                     if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
                         setFlowerIconState(openbarrage, fromNotice, null);
                     }
@@ -222,12 +228,12 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 
             btMessageFlowers.setTag("1");
             btMessageFlowers.setAlpha(1.0f);
-            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
         } else {
 
             btMessageFlowers.setTag("0");
             btMessageFlowers.setAlpha(0.4f);
-            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
         }
     }
 
@@ -252,7 +258,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             }
             btMessageFlowers.setTag("1");
             btMessageFlowers.setAlpha(1.0f);
-            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
         } else {
             if (fromNotice) {
                 if (commonAction instanceof GiftDisable) {
@@ -267,7 +273,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             }
             btMessageFlowers.setTag("0");
             btMessageFlowers.setAlpha(0.4f);
-            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
         }
     }
 
@@ -663,7 +669,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 
     private void initPrimaryFlower() {
         long before = System.currentTimeMillis();
-        final ArrayList<FlowerEntity> flowerEntities = new ArrayList<>();
+        mFlowerEntities = new ArrayList<>();
 
         commonAction = new GiftDisable();
         flowsDrawTips[0] = R.drawable.primarypresentheart;
@@ -677,9 +683,9 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         flowsTips[0] = "送老师一颗小心心，老师也喜欢你哟~";
         flowsTips[1] = "送老师一杯暖心茉莉茶，老师嗓子好舒服~";
         flowsTips[2] = "送老师一个冰淇淋，夏天好凉爽~";
-        flowerEntities.add(new FlowerEntity(FLOWERS_SMALL, flowsDrawTips[0], "小心心", 10));
-        flowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "暖心茉莉茶", 50));
-        flowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "冰淇淋", 100));
+        mFlowerEntities.add(new FlowerEntity(FLOWERS_SMALL, flowsDrawTips[0], "小心心", 10));
+        mFlowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "暖心茉莉茶", 50));
+        mFlowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "冰淇淋", 100));
         flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_primary_flower, null);
         PopupWindow flowerWindow = new PopupWindow(flowerContentView,dp2px(liveVideoActivity, 478), dp2px(liveVideoActivity, 347), false);
         flowerWindow.setBackgroundDrawable(new BitmapDrawable());
@@ -700,33 +706,39 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         Loger.i(TAG, "initFlower:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         Button flowerSend = flowerContentView.findViewById(R.id.bt_livevideo_message_flowersend);
-        final ImageView ice = flowerContentView.findViewById(R.id.iv_present_ice);
-        final ImageView cup = flowerContentView.findViewById(R.id.iv_present_cup);
-        final ImageView heart = flowerContentView.findViewById(R.id.iv_present_heart);
+        mIce = flowerContentView.findViewById(R.id.iv_present_ice);
+        mCup = flowerContentView.findViewById(R.id.iv_present_cup);
+        mHeart = flowerContentView.findViewById(R.id.iv_present_heart);
         ImageView close = flowerContentView.findViewById(R.id.iv_livevideo_present_close);
         RelativeLayout rl_heart = flowerContentView.findViewById(R.id.rl_heart);
         RelativeLayout rl_cup = flowerContentView.findViewById(R.id.rl_cup);
         RelativeLayout rl_ice = flowerContentView.findViewById(R.id.rl_ice);
+        // 默认选中第一个礼物
+        flowerContentView.setTag(mFlowerEntities.get(0));
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.rl_heart) {
-                    flowerContentView.setTag(flowerEntities.get(0));
-                    ice.setVisibility(View.GONE);
-                    cup.setVisibility(View.GONE);
-                    heart.setVisibility(View.VISIBLE);
+                    flowerContentView.setTag(mFlowerEntities.get(0));
+                    mIce.setVisibility(View.GONE);
+                    mCup.setVisibility(View.GONE);
+                    mHeart.setVisibility(View.VISIBLE);
                 } else if (v.getId() == R.id.rl_cup) {
-                    flowerContentView.setTag(flowerEntities.get(1));
-                    ice.setVisibility(View.GONE);
-                    cup.setVisibility(View.VISIBLE);
-                    heart.setVisibility(View.GONE);
+                    flowerContentView.setTag(mFlowerEntities.get(1));
+                    mIce.setVisibility(View.GONE);
+                    mCup.setVisibility(View.VISIBLE);
+                    mHeart.setVisibility(View.GONE);
                 } else if (v.getId() == R.id.rl_ice) {
-                    flowerContentView.setTag(flowerEntities.get(2));
-                    ice.setVisibility(View.VISIBLE);
-                    cup.setVisibility(View.GONE);
-                    heart.setVisibility(View.GONE);
+                    flowerContentView.setTag(mFlowerEntities.get(2));
+                    mIce.setVisibility(View.VISIBLE);
+                    mCup.setVisibility(View.GONE);
+                    mHeart.setVisibility(View.GONE);
                 } else if (v.getId() == R.id.iv_livevideo_present_close) {
                     mFlowerWindow.dismiss();
+                    flowerContentView.setTag(mFlowerEntities.get(0));
+                    mIce.setVisibility(View.GONE);
+                    mCup.setVisibility(View.GONE);
+                    mHeart.setVisibility(View.VISIBLE);
                 }
             }
         };
@@ -797,8 +809,8 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         lvCommonWord.setAdapter(new CommonAdapter<String>(words) {
             @Override
             public AdapterItemInterface<String> getItemView(Object type) {
-                return new CommonWordItem(mContext, this);
-//                return new CommonWordPsItem(mContext, this);
+//                return new CommonWordItem(mContext, this);
+                return new CommonWordPsItem(mContext, this);
             }
         });
         lvCommonWord.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -885,6 +897,10 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                         @Override
                         public void run() {
                             mFlowerWindow.dismiss();
+                            flowerContentView.setTag(mFlowerEntities.get(0));
+                            mIce.setVisibility(View.GONE);
+                            mCup.setVisibility(View.GONE);
+                            mHeart.setVisibility(View.VISIBLE);
                         }
                     }, 1000);
                 }
@@ -1025,7 +1041,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     private void setFlowerHalfAlpha(float alpha) {
         btMessageFlowers.setAlpha(alpha);
         btMessageFlowers.setText("");
-        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
+        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
     }
 
     public void onTitleShow(boolean show) {
@@ -1424,28 +1440,35 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         });
     }
 
-    /** 关闭开启弹幕 */
+    /** 关闭开启送花 */
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
+        Loger.i("yzl_fd", ircState.getMode() + "老师" + openbarrage + "了献花 fromNotice = " + fromNotice + " liveBll.getLKNoticeMode()" + ircState.getLKNoticeMode());
+
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
-                    if (openbarrage) {
-                        if (fromNotice) {
-                            commonAction.onOpenbarrage(true);
-                        }
-                        btMessageFlowers.setTag("1");
-                        btMessageFlowers.setAlpha(1.0f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
-                    } else {
-                        if (fromNotice) {
-                            commonAction.onOpenbarrage(false);
-                        }
-                        btMessageFlowers.setTag("0");
-                        btMessageFlowers.setAlpha(0.4f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+
+                if (commonAction instanceof GiftDisable) {
+                    Loger.i("yzl_fd", "理科");
+
+                    if (!ircState.getMode().equals(ircState.getLKNoticeMode())) {
+                        Loger.i("yzl_fd", "理科当前mode和notimode不一致，不再响应提示，但要根据当前mode改变礼物/鲜花状态");
+                        //理科主讲送礼物功能
+                        setOnlyFlowerIconState(openbarrage, fromNotice, ircState.getMode());
+                        return;
+                    }
+                    Loger.i("yzl_fd", "理科当前mode和notimode一致，响应提示，改变当前mode改变礼物/鲜花状态");
+                    //理科主讲送礼物功能
+                    setFlowerIconState(openbarrage, fromNotice, ircState.getMode());
+
+                } else {
+                    Loger.i("yzl_fd", "文科");
+                    //非理科主讲的走原来的逻辑
+                    if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                        setFlowerIconState(openbarrage, fromNotice, null);
                     }
                 }
+
             }
         });
     }
@@ -1495,12 +1518,6 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     class GiftDisable implements FlowerAction {
-
-        @Override
-        public void onOpenbarrage(boolean openbarrage) {
-
-        }
-
         //重载，添加参数：讲课模式
         public void onOpenbarrage(boolean openbarrage, String classMode) {
             String teacher = LiveTopic.MODE_CLASS.equals(classMode) ? "主讲" : "辅导";
@@ -1521,6 +1538,11 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         public void clickIsnotOpenbarrage(String classMode) {
             String teacher = LiveTopic.MODE_CLASS.equals(classMode) ? "主讲" : "辅导";
             XESToastUtils.showToast(mContext, teacher + "老师未开启送礼物功能");
+        }
+
+        @Override
+        public void onOpenbarrage(boolean openbarrage) {
+
         }
 
         @Override

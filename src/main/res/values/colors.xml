@@ -34,4 +34,6 @@
     <color name="COLOR_PSDANMAKU">#3A2824</color>
     <color name="COLOR_FFC3DAFF">#FFC3DAFF</color>
     <color name="COLOR_FFFFFFFF">#FFFFFFFF</color>
+    <color name="COLOR_SLIDER">#D44920</color>
+
 </resources>
