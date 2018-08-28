@@ -719,7 +719,6 @@ public class VideoChatBll implements VideoChatAction {
                             public void run() {
                                 if (!openhands.equals(oldOpenhandsStatus)) {
                                     if (!isSmallEnglish) {
-
                                         if(LiveVideoConfig.isPrimary){
                                             MicTipPsDialog micTipDialogs = new MicTipPsDialog(activity);
                                             micTipDialogs.setTips("老师已开启举手， \n 点击举手参与语音互动吧！");
