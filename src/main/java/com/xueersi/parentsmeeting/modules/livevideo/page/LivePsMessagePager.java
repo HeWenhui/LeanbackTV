@@ -191,7 +191,6 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                     if (!ircState.getMode().equals(ircState.getLKNoticeMode())) {
                         Loger.i("mqtt", "当前mode和notimode不一致，不再响应提示，但要根据当前mode改变礼物/鲜花状态");
                         //理科辅导送礼物功能
-                        Toast.makeText(liveVideoActivity,"开启和关闭献花功能",Toast.LENGTH_SHORT).show();
                         setOnlyFlowerIconState(openbarrage, fromNotice, ircState.getMode());
                         return;
                     }
@@ -211,9 +210,69 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 
     }
 
+    /**
+     * 理科，主讲和辅导切换的时候，给出提示（切流）
+     *
+     * @param oldMode
+     * @param newMode
+     * @param isShowNoticeTips  为false的时候，默认显示"已切换到 主讲/辅导模式"
+     * @param iszjlkOpenbarrage
+     * @param isFDLKOpenbarrage
+     */
     @Override
-    public void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage, boolean isFDLKOpenbarrage) {
+    public void onTeacherModeChange(String oldMode, String newMode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage, boolean isFDLKOpenbarrage) {
+        //理科辅导送礼物功能
+        Loger.i("yzl_fd", "onTeacherModeChange 切流，使送礼物面板消失");
+        if (LiveTopic.MODE_CLASS.equals(oldMode) && iszjlkOpenbarrage) {
+            //主讲老师是开启状态，切辅导，提醒“已切换到主讲/辅导”
+            Loger.i("yzl_fd", "主讲老师是开启状态，切辅导，提醒“已切换到" + newMode);
+            setFlowerWindowDismiss(newMode, isShowNoticeTips);
+            return;
+        }
+        if (LiveTopic.MODE_TRANING.equals(oldMode) && isFDLKOpenbarrage) {
+            //辅导老师是开启状态，切主讲，提醒“已切换到主讲/辅导”
+            Loger.i("yzl_fd", "主讲老师是开启状态，切辅导，提醒“已切换到" + newMode);
+            setFlowerWindowDismiss(newMode, isShowNoticeTips);
+            return;
+        }
 
+        if (LiveTopic.MODE_CLASS.equals(oldMode) && !iszjlkOpenbarrage) {
+            //主讲老师是关闭状态，切辅导
+            if (isFDLKOpenbarrage) {
+                //如果辅导是开启，提醒：“辅导老师开启了礼物功能”；如果辅导是关闭，不做提醒
+                Loger.i("yzl_fd", "如果辅导是开启，提醒：“辅导老师开启了礼物功能”；如果辅导是关闭，不做提醒newMode =" + newMode + " isFDLKOpenbarrage = " + isFDLKOpenbarrage);
+                showLKTipsWhenOldModeCloseLW(newMode, isFDLKOpenbarrage);
+
+            }
+            return;
+        }
+        if (LiveTopic.MODE_TRANING.equals(oldMode) && !isFDLKOpenbarrage) {
+            //辅导老师是关闭状态，切主讲
+            if (iszjlkOpenbarrage) {
+                //如果主讲是开启，提醒：“主讲老师开启了礼物功能”；如果主讲是关闭，不做提醒
+                Loger.i("yzl_fd", "如果主讲是开启，提醒：“主讲老师开启了礼物功能”；如果主讲是关闭，不做提醒newMode =" + newMode + " iszjlkOpenbarrage = " + iszjlkOpenbarrage);
+                showLKTipsWhenOldModeCloseLW(newMode, iszjlkOpenbarrage);
+            }
+            return;
+        }
+    }
+
+    private void showLKTipsWhenOldModeCloseLW(final String newMode, final boolean isOpenbarrage) {
+
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (commonAction instanceof GiftDisable) {
+
+                    if (mFlowerWindow != null) {
+                        mFlowerWindow.dismiss();
+                    }
+
+                    ((GiftDisable) commonAction).onOpenbarrage(isOpenbarrage, newMode);
+                }
+
+            }
+        });
     }
 
     /**
@@ -225,12 +284,10 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
      */
     private void setOnlyFlowerIconState(boolean openbarrage, boolean fromNotice, String classMode) {
         if (openbarrage) {
-
             btMessageFlowers.setTag("1");
             btMessageFlowers.setAlpha(1.0f);
             btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
         } else {
-
             btMessageFlowers.setTag("0");
             btMessageFlowers.setAlpha(0.4f);
             btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
