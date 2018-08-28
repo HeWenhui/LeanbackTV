@@ -67,8 +67,11 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     /**文科在线教研数据**/
     private H5OnlineTechEntity onlineTechEntity;
 
+    /**语文主观题独有。总分数**/
+    public String totalScore;
 
-
+    /**语音评测独有。答案**/
+    public String answer;
 
     public VideoQuestionLiveEntity() {
     }

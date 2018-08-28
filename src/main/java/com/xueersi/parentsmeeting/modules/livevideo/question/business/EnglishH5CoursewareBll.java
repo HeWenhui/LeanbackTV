@@ -541,7 +541,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private void initAnswerResultAction() {
         if (mAnswerResultAction == null) {
             ArtsAnswerResultBll answerResultBll = new ArtsAnswerResultBll(context, bottomContent, mGetInfo
-                    .getSmallEnglish(),this);
+                    .getSmallEnglish(), new AnswerResultCloseListener() {
+                @Override
+                public void onAnswerResultClose() {
+                    froceClose();
+                }
+            });
             answerResultBll.attachToView();
             mAnswerResultAction = answerResultBll;
         }

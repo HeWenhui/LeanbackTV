@@ -3,9 +3,9 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="351dp"
-        android:layout_height="335dp"
-        android:src="@drawable/live_arts_teacher_praise"
+        android:layout_width="205dp"
+        android:layout_height="155dp"
+        android:src="@drawable/live_arts_teacher_praise_nor"
         android:layout_gravity="center"
         android:id="@id/iv_arts_pse_teacher_praise"
         />

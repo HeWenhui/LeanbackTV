@@ -58,20 +58,26 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
      */
     private boolean isPse;
     private View remindView;
-    private EnglishH5CoursewareBll h5CoursewareBll;
+    private AnswerResultCloseListener resultCloseListener;
+
     /**
      * @param context
      * @param liveBll
      * @param rootView
      * @param isPse    是否是小学英语
      */
-    public ArtsAnswerResultBll(Context context, RelativeLayout rootView, boolean isPse, EnglishH5CoursewareBll
-            h5CoursewareBll) {
+    public ArtsAnswerResultBll(Context context, RelativeLayout rootView, boolean isPse, AnswerResultCloseListener listener) {
         super(context);
         this.rootView = rootView;
         this.isPse = isPse;
-        this.h5CoursewareBll = h5CoursewareBll;
+        this.resultCloseListener = listener;
     }
+
+
+    public void setResultCloseListener(AnswerResultCloseListener resultCloseListener) {
+        this.resultCloseListener = resultCloseListener;
+    }
+
 
     public void attachToView() {
         rlAnswerResultLayout = new RelativeLayout(mContext);
@@ -213,13 +219,16 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
         if (mDsipalyer != null) {
             mDsipalyer.close();
             mDsipalyer = null;
-            if (h5CoursewareBll != null) {
-                h5CoursewareBll.froceClose();
+            if (resultCloseListener != null) {
+                resultCloseListener.onAnswerResultClose();
             }
         }
          Loger.e("ArtsAnswerBll","=====>closeAnswerResult:"+forceSumbmit);
           this.forceSumbmit = forceSumbmit;
     }
+
+
+
 
 
     /**
@@ -262,9 +271,10 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
 
     @Override
     public void onCompeletShow() {
+        Log.e("ArtsAnswerResultBll","=======onCompeletShow called:"+forceSumbmit);
         if (forceSumbmit) {
-            if (h5CoursewareBll != null) {
-                h5CoursewareBll.froceClose();
+            if (resultCloseListener != null) {
+                resultCloseListener.onAnswerResultClose();
             }
         }
     }
