@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.fragment.StandLiveVideoExperience;
+package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience;
 
 import android.app.Activity;
 import android.content.Intent;
