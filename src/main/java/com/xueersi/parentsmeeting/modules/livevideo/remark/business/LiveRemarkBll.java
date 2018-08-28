@@ -503,7 +503,11 @@ public class LiveRemarkBll {
                                             break;
                                     }
                                 }
-                                XESToastUtils.showToast(mContext, sb.toString());
+                                if(isGaosan) {
+                                    XESToastUtils.showToast(mContext, sb.toString());
+                                }else{
+                                    XESToastUtils.showToast(mContext, "标记成功");
+                                }
                                 isMarking = false;
                                 umsAgentMark(true, pkt, cache, offSet);
                                 startCountDown();
