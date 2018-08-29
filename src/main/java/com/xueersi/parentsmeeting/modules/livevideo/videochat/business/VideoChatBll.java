@@ -1219,6 +1219,7 @@ public class VideoChatBll implements VideoChatAction {
 //                            }
                             if(LiveVideoConfig.isPrimary && psraiseHandDialog != null){
                                 psraiseHandDialog.setFail();
+                                psraiseHandDialog.showDialog();
                                 isFail = true;
                                 final PsRaiseHandDialog finalRaiseHandDialog = psraiseHandDialog;
                                 btRaiseHands.postDelayed(new Runnable() {
@@ -1226,7 +1227,7 @@ public class VideoChatBll implements VideoChatAction {
                                     public void run() {
                                         if (finalRaiseHandDialog == psraiseHandDialog) {
                                             finalRaiseHandDialog.cancelDialog();
-                                            raiseHandDialog = null;
+                                            psraiseHandDialog = null;
                                         }
                                     }
                                 }, 3000);
