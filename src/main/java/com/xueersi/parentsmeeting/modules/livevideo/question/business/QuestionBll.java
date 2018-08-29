@@ -629,6 +629,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             rlQuestionContent.addView(questionWebPager.getRootView());
                             QuestionBll.this.questionWebPager = questionWebPager;
                             setHaveWebQuestion(true);
+                            activity.getWindow().getDecorView().requestLayout();
+                            activity.getWindow().getDecorView().invalidate();
                         }
                     });
                 } else {

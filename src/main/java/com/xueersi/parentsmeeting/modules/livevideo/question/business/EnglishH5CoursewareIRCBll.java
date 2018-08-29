@@ -274,6 +274,11 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         }
     }
 
+    /**
+     * 是否是新文科 课件平台
+     * @param jsonObject
+     * @return
+     */
     private boolean isNewArtsH5Courseware(JSONObject jsonObject) {
         return jsonObject.has("coursewareH5");
     }
