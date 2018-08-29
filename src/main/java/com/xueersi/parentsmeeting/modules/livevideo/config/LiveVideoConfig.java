@@ -237,6 +237,9 @@ public class LiveVideoConfig {
     public static String LIVEPLAYBACKSTAGE;
     // 直播回放的type
     public static String LIVEPLAYBACKTYPE;
+    /** 一发多题的两个动态接口*/
+    public static String LIVEMULPRELOAD;
+    public static String LIVEMULH5URL;
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;
