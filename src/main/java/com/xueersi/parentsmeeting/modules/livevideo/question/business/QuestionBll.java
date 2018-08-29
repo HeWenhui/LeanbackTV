@@ -2142,15 +2142,22 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     private void initAnswerResultAction() {
         if (mAnswerResultAction == null) {
-            ArtsAnswerResultBll answerResultBll = new ArtsAnswerResultBll(activity, bottomContent, liveGetInfo
-                    .getSmallEnglish(), new AnswerResultCloseListener() {
-                @Override
-                public void onAnswerResultClose() {
-                    forceClose();
-                }
-            });
-            answerResultBll.attachToView();
-            mAnswerResultAction = answerResultBll;
+            if(mVPlayVideoControlHandler != null){
+                mVPlayVideoControlHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ArtsAnswerResultBll answerResultBll = new ArtsAnswerResultBll(activity, bottomContent, liveGetInfo
+                                .getSmallEnglish(), new AnswerResultCloseListener() {
+                            @Override
+                            public void onAnswerResultClose() {
+                                forceClose();
+                            }
+                        });
+                        answerResultBll.attachToView();
+                        mAnswerResultAction = answerResultBll;
+                    }
+                });
+            }
         }
     }
 
