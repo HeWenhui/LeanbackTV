@@ -454,8 +454,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }else if("0".equals(commondStr)){
                     VideoQuestionLiveEntity entity = new VideoQuestionLiveEntity();
                     englishH5CoursewareBll.onH5Courseware("off",entity);
+                }else if("3".equals(commondStr)){
+                    englishH5CoursewareBll.showTeacherPraise();
                 }
-
                  break;
             default:
                 break;
