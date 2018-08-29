@@ -1281,9 +1281,9 @@ public class VideoChatBll implements VideoChatAction {
                         if (!isSmallEnglish) {
                             BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
                             if(LiveVideoConfig.isPrimary){
-                                psraiseHandDialog = new PsRaiseHandDialog(activity,baseApplication);
-                                psraiseHandDialog.setRaiseHandsCount(raiseHandCount);
-                                psraiseHandDialog.showDialog();
+//                                psraiseHandDialog = new PsRaiseHandDialog(activity,baseApplication);
+//                                psraiseHandDialog.setRaiseHandsCount(raiseHandCount);
+//                                psraiseHandDialog.showDialog();
                             } else {
                                 raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
                                 raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
