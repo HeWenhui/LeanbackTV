@@ -310,6 +310,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 mIsPlaying = true;
                 rlMessageDZ.setVisibility(View.VISIBLE);
                 ivMessageDZ.setVisibility(View.VISIBLE);
+                ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_normal);
                 vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
                 tvMessageContent.setTextColor(Color.WHITE);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_other_voice_white_anim);
