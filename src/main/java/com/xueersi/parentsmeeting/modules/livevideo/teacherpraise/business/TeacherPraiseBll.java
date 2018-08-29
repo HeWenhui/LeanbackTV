@@ -134,8 +134,7 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
 
     private int[] noticeCodes = {
             XESCODE.TEACHER_PRAISE,
-            XESCODE.ARTS_TEACHER_PRAISE,
-            130
+           // XESCODE.ARTS_TEACHER_PRAISE,
     };
 
     @Override
@@ -150,12 +149,6 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
             case XESCODE.ARTS_TEACHER_PRAISE:
                 // TODO: 2018/8/24  展示文科答题表扬
                 showArtsTeacherPraise();
-                break;
-            case 130:
-                String commondStr = data.optString("msg");
-                if("3".equals(commondStr)){
-                     showArtsTeacherPraise();
-                }
                 break;
             default:
                 break;

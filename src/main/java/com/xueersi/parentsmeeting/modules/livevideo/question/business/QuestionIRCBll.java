@@ -393,10 +393,23 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
             }
 
-            case XESCODE.ARTS_REMID_SUBMIT:{
+            case XESCODE.ARTS_REMID_SUBMIT: {
                 mQuestionAction.remindSubmit();
                 break;
             }
+
+            case XESCODE.ARTS_TEACHER_PRAISE: {
+                mQuestionAction.teacherPraise();
+                break;
+            }
+
+            case 130:
+                String commondStr = object.optString("msg");
+                if("3".equals(commondStr)){
+                    mQuestionAction.teacherPraise();
+                }
+                break;
+
             case XESCODE.EXAM_START:
                 if (mQuestionAction != null) {
                     String num = object.optString("num", "0");
@@ -483,7 +496,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 XESCODE.XCR_ROOM_ROLE_READ,
                 XESCODE.ARTS_SEND_QUESTION,
                 XESCODE.ARTS_STOP_QUESTION,
-                XESCODE.ARTS_REMID_SUBMIT
+                XESCODE.ARTS_REMID_SUBMIT,
+                XESCODE.ARTS_TEACHER_PRAISE,
+                130
         };
     }
 

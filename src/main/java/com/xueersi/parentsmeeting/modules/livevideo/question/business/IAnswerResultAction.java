@@ -28,4 +28,9 @@ public interface IAnswerResultAction {
      */
     void remindSubmit();
 
+
+    /**
+     * 老师表扬答题学生
+     */
+    void teacherPraise();
 }

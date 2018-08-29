@@ -439,6 +439,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             case XESCODE.ARTS_REMID_SUBMIT:
                 englishH5CoursewareBll.remindSubmit();
                   break;
+            case XESCODE.ARTS_TEACHER_PRAISE:
+                englishH5CoursewareBll.showTeacherPraise();
+                break;
             case 130:
                 String commondStr = object.optString("msg");
                 if("1".equals(commondStr)){
@@ -478,6 +481,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 XESCODE.MULTIPLE_H5_COURSEWARE,
                 XESCODE.ARTS_H5_COURSEWARE,
                 XESCODE.ARTS_REMID_SUBMIT,
+                XESCODE.ARTS_TEACHER_PRAISE,
                 130
         };
     }

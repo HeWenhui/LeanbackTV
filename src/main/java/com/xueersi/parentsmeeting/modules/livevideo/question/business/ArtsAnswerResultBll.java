@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BaseBll;
@@ -19,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,7 +54,9 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
     private static final String TAG = "ArtsAnswerResultBll";
     private IArtsAnswerRsultDisplayer mDsipalyer;
     private AnswerResultEntity mAnswerReulst;
-    /**提示提交展示时间*/
+    /**
+     * 提示提交展示时间
+     */
     private long REMIND_UI_CLOSE_DELAY = 3000;
     /**
      * 是否是小学英语
@@ -66,7 +71,8 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
      * @param rootView
      * @param isPse    是否是小学英语
      */
-    public ArtsAnswerResultBll(Context context, RelativeLayout rootView, boolean isPse, AnswerResultCloseListener listener) {
+    public ArtsAnswerResultBll(Context context, RelativeLayout rootView, boolean isPse, AnswerResultCloseListener
+            listener) {
         super(context);
         this.rootView = rootView;
         this.isPse = isPse;
@@ -120,12 +126,6 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
         });
     }
 
-    /**
-     * 显示老师 表扬
-     */
-    public void showTeacherPraise() {
-        //单独 提取出去
-    }
 
     @Override
     public void onAnswerResult(String result) {
@@ -199,7 +199,6 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                     }
                     mAnswerReulst.setAnswerList(answerList);
                 }
-
                 showAnswerReulst();
             } else {
                 String errorMsg = jsonObject.optString("msg");
@@ -223,12 +222,9 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                 resultCloseListener.onAnswerResultClose();
             }
         }
-         Loger.e("ArtsAnswerBll","=====>closeAnswerResult:"+forceSumbmit);
-          this.forceSumbmit = forceSumbmit;
+        Loger.e("ArtsAnswerBll", "=====>closeAnswerResult:" + forceSumbmit);
+        this.forceSumbmit = forceSumbmit;
     }
-
-
-
 
 
     /**
@@ -237,7 +233,7 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
     private Runnable autoCloseTask = new Runnable() {
         @Override
         public void run() {
-            if(remindView != null){
+            if (remindView != null) {
                 remindView.setVisibility(View.GONE);
             }
         }
@@ -264,18 +260,91 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                 remindView.startAnimation(alphaAnimation);
 
                 rlAnswerResultLayout.removeCallbacks(autoCloseTask);
-                rlAnswerResultLayout.postDelayed(autoCloseTask,REMIND_UI_CLOSE_DELAY);
+                rlAnswerResultLayout.postDelayed(autoCloseTask, REMIND_UI_CLOSE_DELAY);
             }
         });
     }
 
     @Override
     public void onCompeletShow() {
-        Log.e("ArtsAnswerResultBll","=======onCompeletShow called:"+forceSumbmit);
+        Loger.e("ArtsAnswerResultBll", "=======onCompeletShow called:" + forceSumbmit);
         if (forceSumbmit) {
             if (resultCloseListener != null) {
                 resultCloseListener.onAnswerResultClose();
             }
+        }
+    }
+
+    private ViewGroup decorView;
+    private View praiseRootView;
+    private boolean isPerfectRight;
+
+    @Override
+    public void teacherPraise() {
+        if (mAnswerReulst != null && (mAnswerReulst.getIsRight() == 2)) {
+            try {
+                if (mContext != null) {
+                    ((Activity) mContext).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
+                            int layoutId = isPse ? R.layout.arts_pseteacher_praise_layout : R.layout
+                                    .arts_teacher_praise_layout;
+                            praiseRootView = View.inflate(mContext, layoutId, null);
+                            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
+                                    .MATCH_PARENT,
+                                    ViewGroup.LayoutParams.MATCH_PARENT);
+                            decorView.addView(praiseRootView, lp);
+                            View targetView = praiseRootView.findViewById(R.id.iv_arts_pse_teacher_praise);
+                            palyAnim(targetView);
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private final float SCALE_ANIM_FACTOR = 0.40f;
+    /**
+     * 文科表扬UI 展示时间
+     */
+    private final long PARISE_UI_DISPLAY_DURATION = 4 * 1000;
+    private Runnable mCloseTask;
+
+    private void palyAnim(View targetView) {
+        ScaleAnimation animation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R.anim
+                .anim_live_artsteahcer__praise);
+        animation.setInterpolator(new SpringScaleInterpolator(SCALE_ANIM_FACTOR));
+        targetView.startAnimation(animation);
+        mCloseTask = new Runnable() {
+            @Override
+            public void run() {
+                closeTeacherPriase();
+            }
+        };
+        praiseRootView.postDelayed(mCloseTask, PARISE_UI_DISPLAY_DURATION);
+    }
+
+    private void closeTeacherPriase() {
+        try {
+            if (decorView != null && praiseRootView != null) {
+                if (mCloseTask != null) {
+                    praiseRootView.removeCallbacks(mCloseTask);
+                    mCloseTask = null;
+                }
+                decorView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        decorView.removeView(praiseRootView);
+                        decorView = null;
+                        praiseRootView = null;
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -1949,7 +1949,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
         }, delayTime);
     }
-
     public void setBaseSpeechCreat(BaseSpeechCreat baseSpeechCreat) {
         this.baseSpeechCreat = baseSpeechCreat;
     }
@@ -2164,10 +2163,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 public void run() {
                     Loger.e("QuestionBll", "=======>forceClose 2222:" + curQuestionView);
                     if (questionWebPager != null) {
+                        rlQuestionContent.removeView(questionWebPager.getRootView());
                         if (questionWebPager instanceof BaseQuestionWebInter) {
                             setHaveWebQuestion(false);
                         }
-                        rlQuestionContent.removeView(questionWebPager.getRootView());
                     }
                 }
             });
@@ -2190,6 +2189,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void onWebviewRemove() {
         if (mAnswerResultAction != null) {
             mAnswerResultAction.closeAnswerResult(false);
+        }
+    }
+
+    /**
+     * 老师表扬 答题学生
+     */
+    public void teacherPraise(){
+        if(mAnswerResultAction != null){
+            mAnswerResultAction.teacherPraise();
         }
     }
 }

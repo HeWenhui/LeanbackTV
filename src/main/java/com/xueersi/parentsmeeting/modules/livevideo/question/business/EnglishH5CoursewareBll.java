@@ -1148,4 +1148,13 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
              mAnswerResultAction.remindSubmit();
          }
     }
+
+    /**
+     * 老师表扬 答题学生
+     */
+    public void showTeacherPraise(){
+        if(mAnswerResultAction != null){
+            mAnswerResultAction.teacherPraise();
+        }
+    }
 }
