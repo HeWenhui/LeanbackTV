@@ -6,8 +6,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 
 import com.airbnb.lottie.ImageAssetDelegate;
@@ -18,10 +16,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 
 import org.json.JSONObject;
 
@@ -114,13 +110,9 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
-
-    @Override
-    public void onLiveInited(LiveGetInfo getInfo) {
-        super.onLiveInited(getInfo);
-    }
 
     private int[] noticeCodes = {
             XESCODE.TEACHER_PRAISE
@@ -135,10 +127,12 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
                 String nonce = data.optString("nonce", "");
                 TeamPkLog.receiveVoicePraise(mLiveBll, nonce);
                 break;
+
             default:
                 break;
         }
     }
+
 
     @Override
     public void onDestory() {
