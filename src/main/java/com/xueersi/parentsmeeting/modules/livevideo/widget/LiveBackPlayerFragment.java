@@ -38,6 +38,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     private boolean mReceiverRegistered = false;
     /** 是否显示控制栏 */
     protected boolean mIsShowMediaController = true;
+    protected float mySpeed = 1.0f;
 
     private OnVideoCreate onVideoCreate;
 
@@ -320,9 +321,16 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
 
     }
 
+    /** 视频预加载成功 */
+    protected void onPlayOpenSuccess() {
+        if (mySpeed != 1.0f) {
+            setSpeed(mySpeed);
+        }
+    }
 
     @Override
     public void setSpeed(float speed) {
+        mySpeed = speed;
         if (isInitialized())
         // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
         {
