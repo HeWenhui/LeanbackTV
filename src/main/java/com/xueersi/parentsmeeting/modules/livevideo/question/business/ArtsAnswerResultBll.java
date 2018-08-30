@@ -41,6 +41,8 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
 
     private RelativeLayout rootView;
     private RelativeLayout rlAnswerResultLayout;
+    /**强制收卷 答题结果展示 时间**/
+    private final long AUTO_CLOSE_DELAY = 2000;
     /**
      * 普通 统计 UI
      */
@@ -270,7 +272,12 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
         Loger.e("ArtsAnswerResultBll", "=======onCompeletShow called:" + forceSumbmit);
         if (forceSumbmit) {
             if (resultCloseListener != null) {
-                resultCloseListener.onAnswerResultClose();
+                rootView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        resultCloseListener.onAnswerResultClose();
+                    }
+                },AUTO_CLOSE_DELAY);
             }
         }
     }
