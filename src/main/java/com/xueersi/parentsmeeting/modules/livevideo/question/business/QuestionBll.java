@@ -609,7 +609,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             @Override
             public void run() {
                 // 文科选择 填空题
-                if ("1".equals(videoQuestionLiveEntity.type) || "2".equals(videoQuestionLiveEntity.type)) {
+                if ("0".equals(videoQuestionLiveEntity.type) || "1".equals(videoQuestionLiveEntity.type)
+                        || "2".equals(videoQuestionLiveEntity.type)) {
                     mVPlayVideoControlHandler.post(new Runnable() {
                         @Override
                         public void run() {
