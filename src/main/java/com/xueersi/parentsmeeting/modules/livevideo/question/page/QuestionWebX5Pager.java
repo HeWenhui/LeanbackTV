@@ -191,7 +191,6 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             wvSubjectWeb.addJavascriptInterface(this,"wx_xesapp");
             Loger.e("QuestionX5Pager","=======> loadUrl:"+examUrl);
             wvSubjectWeb.loadUrl(examUrl);
-            Loger.e("QuestionX5Pager","=======> loadUrl:"+examUrl);
         } else {
             ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
             ((AnimationDrawable) ivLoading.getBackground()).start();
