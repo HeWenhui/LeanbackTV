@@ -327,24 +327,18 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    Loger.e("TeamPkBll", "======>888888" +"LiveVideoConfig.isSend:"+LiveVideoConfig.isSend+":"+mTeamPKBll);
                     // 08.07  课件之前的功能添加
                     if (!LiveVideoConfig.isSend) {
                         if (englishH5CoursewareBll instanceof EnglishH5CoursewareBll) {
                             ((EnglishH5CoursewareBll) englishH5CoursewareBll).setWebViewCloseByTeacher(true);
                         }
-                        if (mTeamPKBll != null) {
-                            mTeamPKBll.showCurrentPkResult();
-                            if (mTeamPKBll != null) {
-                                mTeamPKBll.setNonce(object.optString("nonce", ""));
-                                mTeamPKBll.showCurrentPkResult();
-                                Loger.e("TeamPkBll", "======>showCurrentPkResult: called in " +
-                                        "ENGLISH_H5_COURSEWARE");
-                            }
-                        }
                     }
                     englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
                 }
                 break;
+                default:
+                    break;
         }
     }
 

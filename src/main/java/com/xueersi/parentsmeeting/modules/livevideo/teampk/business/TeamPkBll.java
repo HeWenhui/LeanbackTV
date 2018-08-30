@@ -841,6 +841,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 显示当前的pk 结果
      */
     public void showCurrentPkResult() {
+        Loger.e("TeamPkBll", "======>showCurrentPkResult: called 666669999:"+h5CloseEvents);
         if (h5CloseEvents == null || h5CloseEvents.size() == 0) {
             return;
         }
@@ -947,8 +948,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             XESCODE.STOPQUESTION,
             XESCODE.EXAM_STOP, XESCODE.ENGLISH_H5_COURSEWARE,
             XESCODE.TEAM_PK_TEAM_SELECT, XESCODE.TEAM_PK_SELECT_PKADVERSARY,
-            XESCODE.TEAM_PK_PUBLIC_PK_RESULT, XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR,
-            XESCODE.TEAM_PK_EXIT_PK_RESULT
+            XESCODE.TEAM_PK_PUBLIC_PK_RESULT,
+            XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR,
+            XESCODE.TEAM_PK_EXIT_PK_RESULT,
+            XESCODE.MULTIPLE_H5_COURSEWARE
     };
 
 
@@ -965,7 +968,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                 case XESCODE.STOPQUESTION:
                 case XESCODE.EXAM_STOP:
                 case XESCODE.ENGLISH_H5_COURSEWARE:
-
+                case XESCODE.MULTIPLE_H5_COURSEWARE:
                     setNonce(data.optString("nonce", ""));
                     showCurrentPkResult();
                     break;
