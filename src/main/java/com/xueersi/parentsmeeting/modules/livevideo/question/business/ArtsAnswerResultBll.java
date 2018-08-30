@@ -203,8 +203,8 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                 }
                 showAnswerReulst();
             } else {
-                String errorMsg = jsonObject.optString("msg");
-                XESToastUtils.showToast(mContext, errorMsg);
+               // String errorMsg = jsonObject.optString("msg");
+                //XESToastUtils.showToast(mContext, errorMsg);
             }
         } catch (JSONException e) {
             e.printStackTrace();
