@@ -221,8 +221,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 e.printStackTrace();
                             }
                         } else {
-                            englishH5Entity.setNewEnglishH5(true);
-                            LiveVideoConfig.isNewEnglishH5 = true;
+//                            englishH5Entity.setNewEnglishH5(true);
+//                            LiveVideoConfig.isNewEnglishH5 = true;
                             LiveVideoConfig.isSend = false;
                         }
                     }
