@@ -1149,6 +1149,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     /** 聊天开始连接 */
+    @Override
     public void onStartConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1181,6 +1182,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     /** 聊天连上 */
+    @Override
     public void onConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1203,6 +1205,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     /** 聊天进入房间 */
+    @Override
     public void onRegister() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1214,6 +1217,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     /** 聊天断开 */
+    @Override
     public void onDisconnect() {
         mainHandler.post(new Runnable() {
             @Override

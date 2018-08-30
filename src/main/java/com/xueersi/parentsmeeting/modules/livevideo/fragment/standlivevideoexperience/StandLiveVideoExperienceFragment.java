@@ -51,7 +51,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerActi
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
@@ -69,6 +68,7 @@ import java.util.List;
 import java.util.Map;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
+
 //测试提交
 public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase implements MediaControllerAction,
         ActivityChangeLand {
@@ -285,7 +285,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     }
 
     protected void initBll() {
-        preLoadView();
+//        preLoadView();
         ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, liveBackPlayVideoFragment);
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
@@ -332,56 +332,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         RedPackagePlayBackBll redPackagePlayBackBll = new RedPackagePlayBackBll(activity, liveBackBll);
         liveBackBll.addBusinessBll(redPackagePlayBackBll);
         liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
-//        liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
-        //直播
-//        if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
-        //理科
-//            if (liveBackBll.getIsArts() == 0) {
-//                liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
-//                initLiveRemarkBll();
-//            } else {
-//            if (liveBackBll.getPattern() != 2) {
-//                liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));//回放聊天区加上MMD的皮肤
-//            }
-//            }
-//        }
+        //站立直播体验课聊天区的添加
+        liveBackBll.addBusinessBll(new StandLiveVideoExperienceBll(activity, liveBackBll));
     }
-
-//    protected void initLiveRemarkBll() {
-//        if (isArts == 1 || "PublicLiveDetailActivity".equals(where)) {
-//            return;
-//        }
-//        if (mVideoEntity != null && mVideoEntity.getIsAllowMarkpoint() == 1) {
-//            LiveRemarkBll liveRemarkBll = new LiveRemarkBll(activity, vPlayer);
-//            liveRemarkBll.setBottom(bottom);
-//            liveRemarkBll.setHttpManager(new LiveHttpManager(activity));
-//            liveRemarkBll.setList(mVideoEntity.getLstPoint());
-//            liveRemarkBll.setLiveId(mVideoEntity.getLiveId());
-//            //mLiveRemarkBll.showBtMark();
-//            liveRemarkBll.getMarkPoints(mVideoEntity.getLiveId(), new AbstractBusinessDataCallBack() {
-//                @Override
-//                public void onDataSucess(Object... objData) {
-//                    if (mMediaController != null) {
-//                        mMediaController.getTitleRightBtn().setVisibility(View.VISIBLE);
-//                        mMediaController.getTitleRightBtn().setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                mLiveRemarkBll.setController(mMediaController);
-//                                mLiveRemarkBll.showMarkPoints();
-//                            }
-//                        });
-//                    }
-//                }
-//            });
-//            mLiveRemarkBll = liveRemarkBll;
-//            liveRemarkBll.setCallBack(new AbstractBusinessDataCallBack() {
-//                @Override
-//                public void onDataSucess(Object... objData) {
-//                    attachMediaController();
-//                }
-//            });
-//        }
-//    }
 
     @Override
     public void attachMediaController() {
@@ -396,9 +349,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //            mMediaController.setWindowLayoutType();
             mMediaController.release();
         }
-//        if (mLiveRemarkBll != null) {
-//            mLiveRemarkBll.hideMarkPoints();
-//        }
         LivePlaybackMediaController mPlayBackMediaController = createLivePlaybackMediaController();
         mPlayBackMediaController.setOnPointClick(liveBackBll);
         this.mMediaController = mPlayBackMediaController;
@@ -406,18 +356,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         rl_course_video_live_controller_content.removeAllViews();
         rl_course_video_live_controller_content.addView(mMediaController, new ViewGroup.LayoutParams(ViewGroup
                 .LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-//        if (mLiveRemarkBll == null || mVideoEntity.getIsAllowMarkpoint() != 1) {
-//            mMediaController.getTitleRightBtn().setVisibility(View.GONE);
-//        } else {
-//            mMediaController.getTitleRightBtn().setVisibility(View.VISIBLE);
-//            mMediaController.getTitleRightBtn().setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mLiveRemarkBll.setController(mMediaController);
-//                    mLiveRemarkBll.showMarkPoints();
-//                }
-//            });
-//        }
         // 设置播放器横竖屏切换按钮不显示
         mMediaController.setAutoOrientation(false);
         // 播放下一个按钮不显示
@@ -527,8 +465,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 errorInfo.setText("视频播放失败 [" + playErrorCode.getCode() + "]");
             }
         }
-        rlQuestionContent.setVisibility(View.GONE);
-        rlQuestionContentBottom.setVisibility(View.GONE);
+//        rlQuestionContent.setVisibility(View.GONE);
+//        rlQuestionContentBottom.setVisibility(View.GONE);
     }
 
 

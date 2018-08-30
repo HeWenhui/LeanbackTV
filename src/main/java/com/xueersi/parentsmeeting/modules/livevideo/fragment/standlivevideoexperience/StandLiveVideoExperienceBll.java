@@ -2,25 +2,39 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexpe
 
 import android.app.Activity;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
+import com.xueersi.ui.dataload.PageDataLoadEntity;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +47,8 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
     /**
      * 聊天消失
      */
+    private final String TAG = "StandLiveVideoExperienceBll";
+
     private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
     /**
      * 在线直播的聊天区
@@ -51,15 +67,23 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
      */
     private String expChatId = "";
 
+    private LiveTopic mLiveTopic = new LiveTopic();
+
     private BaseLiveMediaControllerBottom baseLiveMediaControllerBottom;
     /**
      * 站立直播控制器，这里是站立直播体验课，并不适合。
      */
-    LiveStandMediaControllerBottom standMediaControllerBottom;
+//    LiveStandMediaControllerBottom standMediaControllerBottom;
 
     protected LivePlayerFragment videoFragment;
 
     protected LiveMediaController mMediaController;
+
+    private LiveAchievementIRCBll starAction;
+    /**
+     * 打印日志
+     */
+    LogToFile logToFile;
 
     public StandLiveVideoExperienceBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -70,30 +94,36 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
     private final String IRC_CHANNEL_PREFIX = "#4L";
 
     @Override
-
-    public void initView() {
-        super.initView();
-        videoFragment = new LivePlayerFragment();
-        mMediaController = new LiveMediaController(activity, videoFragment);
-        standMediaControllerBottom = new LiveStandMediaControllerBottom(activity, mMediaController, null);
-
-        mLiveMessagePager = new LiveMessageStandPager(
-                mContext,
-                this,
-                standMediaControllerBottom,
-                liveMessageLandEntities,
-                null);
-    }
-
-    @Override
-
-
-    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object>
-            businessShareParamMap) {
+    public void onCreate(VideoLivePlayBackEntity mVideoEntity,
+                         LiveGetInfo liveGetInfo,
+                         HashMap<String, Object> businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
 
         chatCfgServerList.add("");
 
+
+    }
+
+    //
+    @Override
+    public void initView() {
+        super.initView();
+        starAction = getInstance(LiveAchievementIRCBll.class);
+        videoFragment = new LivePlayerFragment();
+        mMediaController = new LiveMediaController(activity, videoFragment);
+        baseLiveMediaControllerBottom = new LiveStandMediaControllerBottom(activity, mMediaController, videoFragment);
+
+        mLiveMessagePager = new LiveMessageStandPager(
+                mContext,
+                this,
+                baseLiveMediaControllerBottom,
+                liveMessageLandEntities,
+                null);
+        mLiveMessagePager.onopenchat(true, "", false);
+        mLiveMessagePager.setIrcState(videoExperiencIRCState);
+        mRootViewBottom.addView(mLiveMessagePager.getRootView());
+
+        connectChatServer();
     }
 
     /**
@@ -112,6 +142,11 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
         // 获取 聊天服务器地址  的接口地址
         ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
+
+        chatCfgServerList.add("chatgslb.xescdn.com");
+        chatCfgServerList.add("chatgslb.xesimg.com");
+        chatCfgServerList.add("10.99.1.15");
+
         TalkConfHost confHost = null;
         if (chatCfgServerList != null && chatCfgServerList.size() > 0) {
             for (int i = 0; i < chatCfgServerList.size(); i++) {
@@ -128,6 +163,15 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
 
+    }
+
+    @Override
+    public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
+            .ShowQuestion showQuestion) {
+        super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.onQuestionShow(true);
+        }
     }
 
     private final IRCCallback mIRCcallback = new IRCCallback() {
@@ -188,7 +232,6 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         @Override
         public void onChannelInfo(String channel, int userCount, String topic) {
             Loger.e("ExperiencLvieAvtiv", "=====>onChannelInfo");
-
         }
 
         @Override
@@ -249,6 +292,100 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         }
     };
 
+    private final IRCState videoExperiencIRCState = new IRCState() {
+        @Override
+        public String getMode() {
+
+            return "";
+        }
+
+        @Override
+        public boolean isOpenbarrage() {
+            return false;
+        }
+
+        @Override
+        public boolean openchat() {
+            return false;
+        }
+
+        @Override
+        public boolean sendMessage(String msg, String name) {
+            boolean sendMessage = false;
+            if (mLiveTopic.isDisable()) {
+                return false;
+            } else {
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("type", "" + XESCODE.TEACHER_MESSAGE);
+                    if (StringUtils.isEmpty(name)) {
+                        name = liveGetInfo.getStuName();
+                    }
+                    jsonObject.put("name", name);
+                    jsonObject.put("path", "" + liveGetInfo.getHeadImgPath());
+                    jsonObject.put("version", "" + liveGetInfo.getHeadImgVersion());
+                    jsonObject.put("msg", msg);
+//                    if (haveTeam) {
+//                        LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
+//                        String teamId = studentLiveInfo.getTeamId();
+//                        jsonObject.put("from", "android_" + teamId);
+//                        jsonObject.put("to", teamId);
+//                    }
+                    mIRCMessage.sendMessage(jsonObject.toString());
+                    sendMessage = true;
+                    if (starAction != null) {
+                        starAction.onSendMsg(msg);
+                    }
+                } catch (Exception e) {
+                    // Loger.e(TAG, "understand", e);
+                    UmsAgentManager.umsAgentException(BaseApplication.getContext(), "livevideo_livebll_sendMessage", e);
+                    logToFile.e(TAG + ":sendMessage", e);
+                }
+            }
+            return sendMessage;
+        }
+
+        @Override
+        public void praiseTeacher(String formWhichTeacher, String s, String s1, HttpCallBack gold) {
+
+        }
+
+        @Override
+        public boolean isDisable() {
+            return false;
+        }
+
+        @Override
+        public boolean isHaveTeam() {
+            return false;
+        }
+
+        @Override
+        public boolean isSeniorOfHighSchool() {
+            return false;
+        }
+
+        @Override
+        public void getMoreChoice(PageDataLoadEntity mPageDataLoadEntity, AbstractBusinessDataCallBack
+                getDataCallBack) {
+
+        }
+
+        @Override
+        public boolean isOpenZJLKbarrage() {
+            return false;
+        }
+
+        @Override
+        public boolean isOpenFDLKbarrage() {
+            return false;
+        }
+
+        @Override
+        public String getLKNoticeMode() {
+            return "";
+        }
+    };
 
     @Override
     public void onKeyboardShowing(boolean isShowing) {

@@ -284,6 +284,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         }
 
+        @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
 
@@ -461,6 +462,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             return isMyTeam;
         }
 
+        @Override
         public void onJoin(String target, String sender, String login, String hostname) {
             Loger.d(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
             if (sender.startsWith(TEACHER_PREFIX)) {
@@ -492,6 +494,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         }
 
+        @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
             Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
@@ -523,6 +526,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         }
 
+        @Override
         public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname,
                            String recipientNick, String reason) {
             mLogtf.d("onKick:target=" + target + ",kickerNick=" + kickerNick + ",kickerLogin=" + kickerLogin
@@ -532,6 +536,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         }
 
+        @Override
         public void onUnknown(String line) {
         }
     };

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandLiveVideoExperienceFragment;
+
 /**
  * Created by linyuqiang on 2018/7/23.
  * 新直播回放
@@ -20,7 +22,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
         if (pattern == 2) {
             return new StandBackVideoFragment();
         }
-        return new LiveBackVideoFragment();
+        return isStandLiveExperience ? new StandLiveVideoExperienceFragment() : new LiveBackVideoFragment();
     }
 
     @Override
