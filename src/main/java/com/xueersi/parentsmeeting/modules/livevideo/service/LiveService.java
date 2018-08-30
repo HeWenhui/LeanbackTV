@@ -65,13 +65,15 @@ public class LiveService extends Service {
                 }
             }
             if (!isAlive) {
-                try {
-                    String s = dateFormat.format(new Date());
-                    String[] ss = s.split(",");
-                    String path = new File(alldir, ss[0] + "-" + livepid + ".txt").getPath();
-                    writeLogcat(path);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager.getRunningAppProcesses()) {
+                    try {
+                        String s = dateFormat.format(new Date());
+                        String[] ss = s.split(",");
+                        String path = new File(alldir, ss[0] + "-" + appProcess.pid + "-" + appProcess.processName + ".txt").getPath();
+                        writeLogcat(path, appProcess.pid);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 stopSelf();
             } else {
@@ -151,7 +153,7 @@ public class LiveService extends Service {
         return START_NOT_STICKY;
     }
 
-    public void writeLogcat(String filename) throws IOException {
+    public void writeLogcat(String filename, int pid) throws IOException {
         String[] args = {"logcat", "-v", "time", "-d"};
 
         Process process = Runtime.getRuntime().exec(args);
@@ -172,7 +174,7 @@ public class LiveService extends Service {
         try {
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.contains("" + livepid)) {
+                if (line.contains("" + pid)) {
                     bw.write(line);
                     bw.newLine();
                 }
