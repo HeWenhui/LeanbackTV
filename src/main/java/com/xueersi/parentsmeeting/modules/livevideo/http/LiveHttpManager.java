@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.alibaba.android.arouter.utils.TextUtils;
 import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.http.CommonRequestCallBack;
@@ -730,7 +731,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     public void getMoreCoureWareUrl(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
-        requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_MORE_WARE_URL;
+        requestCallBack.url = TextUtils.isEmpty(LiveVideoConfig.LIVEMULPRELOAD) ? liveVideoSAConfigInner.URL_LIVE_GET_MORE_WARE_URL : LiveVideoConfig.LIVEMULPRELOAD;
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
@@ -887,15 +888,18 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param url
      * @param callBack
      */
-    public void saveLiveMark(String time, String url, HttpCallBack callBack) {
+    public void saveLiveMark(String liveId,String type,String time, String url, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("curTime", time);
         params.addBodyParam("imageUrl", url);
+        params.addBodyParam("liveId",liveId);
+        params.addBodyParam("markType",type);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SAVE_MARK_POINT, params, callBack);
     }
+
 
     /**
      * 获取标记点

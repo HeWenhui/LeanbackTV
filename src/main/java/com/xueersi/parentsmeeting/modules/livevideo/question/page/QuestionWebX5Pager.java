@@ -18,6 +18,7 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -52,24 +53,16 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private WebView wvSubjectWeb;
     private View errorView;
     private StopWebQuestion questionBll;
-    /**
-     * 用户名称
-     */
+    /** 用户名称 */
     private String stuName;
-    /**
-     * 用户Id
-     */
+    /** 用户Id */
     private String stuId;
     private String liveid;
     private String testId;
     private String nonce;
-    /**
-     * 试卷地址
-     */
+    /** 试卷地址 */
     private String examUrl = "";
-    /**
-     * 是不是考试结束
-     */
+    /** 是不是考试结束 */
     private boolean isEnd = false;
     private String testPaperUrl;
     private String jsExamSubmitAll = "javascript:examSubmitAll()";
@@ -85,11 +78,11 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
      **/
     private boolean isNewArtsTest;
 
-    public QuestionWebX5Pager(Context context, StopWebQuestion questionBll, String testPaperUrl,
+    public QuestionWebX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, StopWebQuestion questionBll, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
-                              String nonce, String isShowRanks, boolean IS_SCIENCE, String stuCouId, boolean
-                                      allowTeamPk) {
+                              String nonce, String isShowRanks, boolean IS_SCIENCE, String stuCouId, boolean allowTeamPk) {
         super(context);
+        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.IS_SCIENCE = IS_SCIENCE;
         this.questionBll = questionBll;
         this.stuId = stuId;
@@ -170,7 +163,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             public void onClick(View v) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
-                questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId);
+                questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId, getBaseVideoQuestionEntity());
             }
         });
         btSubjectCalljs.setOnClickListener(new View.OnClickListener() {
@@ -207,14 +200,16 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
         mGoldNum = -1;
         mEngerNum = -1;
+
         mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
+
             }
+
             @Override
             public void onViewDetachedFromWindow(View v) {
-                LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEngerNum, LiveRoomH5CloseEvent
-                        .H5_TYPE_INTERACTION, testId);
+                LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEngerNum, LiveRoomH5CloseEvent.H5_TYPE_INTERACTION, testId);
                 if (questionBll != null && questionBll instanceof QuestionBll) {
                     event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
@@ -442,7 +437,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 if (group != null) {
                     group.removeView(mView);
                 }
-                questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId);
+                questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId, getBaseVideoQuestionEntity());
                 Map<String, String> mData = new HashMap<>();
                 mData.put("testid", "" + testId);
                 mData.put("closetype", "clickWebCloseButton");

@@ -12,7 +12,6 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -39,6 +38,7 @@ import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -58,7 +58,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.TextStrokeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
-import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
@@ -180,9 +179,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     LiveSoundPool liveSoundPool;
 
     /** 语音答题直播 */
-    public StandSpeechAssAutoPager(Context context, String liveid, String testId,
+    public StandSpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String testId,
                                    String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, String userName, String headUrl, String learning_stage, LivePagerBack livePagerBack) {
         super(context);
+        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = true;
         this.id = testId;
         this.nonce = nonce;
@@ -212,9 +212,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     /** 语音答题回放 */
-    public StandSpeechAssAutoPager(Context context, String liveid, String testId,
+    public StandSpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String testId,
                                    String nonce, String content, int time, int examSubmit, SpeechEvalAction speechEvalAction, String userName, String headUrl, String learning_stage) {
         super(context);
+        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = false;
         this.id = testId;
         this.nonce = nonce;
@@ -303,7 +304,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         content2 = content.replace("\n", " ");
         fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
         tvSpeectevalEncourage.setTypeface(fontFace);
-        File dir =  LiveCacheFile.geCacheFile(mContext, "liveSpeech");
+        File dir = LiveCacheFile.geCacheFile(mContext, "liveSpeech");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -887,7 +888,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 StandLiveMethod.onClickVoice(liveSoundPool);
                 group.removeView(resultMine);
                 if (isEnd || !isLive) {
-                    speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
+                    speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                 }
             }
         });
@@ -934,7 +935,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         group.removeView(resultMine);
                         frameAnimation2.destory();
                         if (isEnd || !isLive) {
-                            speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
+                            speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                         }
                     }
                 }, 3000);
@@ -1044,7 +1045,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
+                    speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                 }
             }, 1000);
         }
@@ -1264,7 +1265,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     mIse.stop();
                 }
                 if (isSpeechError || isSpeechSuccess) {
-                    speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
+                    speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                 }
             }
             count--;
@@ -1279,7 +1280,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             return;
         }
         if (!isSpeechStart || isSpeechError || isSpeechSuccess) {
-            speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, id);
+            speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
         } else {
 //            errorSetVisible();
 //            tvSpeectevalTip.setText(count + "秒后自动提交");

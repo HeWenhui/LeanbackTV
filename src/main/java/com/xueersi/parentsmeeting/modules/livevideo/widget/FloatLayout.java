@@ -11,7 +11,6 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity;
 

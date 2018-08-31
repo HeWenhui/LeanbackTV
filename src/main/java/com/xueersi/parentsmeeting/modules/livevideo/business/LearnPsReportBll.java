@@ -17,7 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LearnPsReportPager;
  * Created by David on 2018/7/16.
  */
 
-public class LearnPsReportBll  implements LearnReportAction, Handler.Callback{
+public class LearnPsReportBll implements LearnReportAction, Handler.Callback {
     String TAG = "LearnPsReportBll";
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
@@ -35,7 +35,7 @@ public class LearnPsReportBll  implements LearnReportAction, Handler.Callback{
     private boolean mIsShowLearnReport = false;
 
     public LearnPsReportBll(Activity activity) {
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
         this.activity = activity;
     }

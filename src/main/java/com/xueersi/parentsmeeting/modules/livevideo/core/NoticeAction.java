@@ -18,7 +18,6 @@ public interface NoticeAction {
      */
    void onNotice(String sourceNick, String target, JSONObject data, int type);
 
-
     /**
      * notice 消息过滤
      * @return

@@ -172,9 +172,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
-        for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.onConfigurationChanged(newConfig);
+        if (liveBackBll != null) {
+            List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
+            for (LiveBackBaseBll businessBll : businessBlls) {
+                businessBll.onConfigurationChanged(newConfig);
+            }
         }
     }
 
@@ -474,7 +476,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 initLiveRemarkBll();
             } else {
                 if (liveBackBll.getPattern() != 2) {
-                    liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));//回放聊天区加上MMD的皮肤
+                    //回放聊天区加上MMD的皮肤
+                    liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));
                 }
             }
         }
@@ -523,6 +526,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     public void setSpeed(float speed) {
+        super.setSpeed(speed);
         String key = "null";
         if (mVideoEntity != null) {
             if ("LivePlayBackActivity".equals(where)) {//直播辅导
@@ -755,7 +759,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     public void onDestroy() {
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
-        liveBackBll.onDestory();
+        if (liveBackBll != null) {
+            liveBackBll.onDestory();
+        }
         ProxUtil.getProxUtil().clear(activity);
     }
 
@@ -806,7 +812,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     @Override
     public void onStop() {
         super.onStop();
-        liveBackBll.onStop();
+        if (liveBackBll != null) {
+            liveBackBll.onStop();
+        }
     }
 
     @Override
@@ -840,7 +848,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                         if (videoView.getWidth() <= 0) {
                             return;
                         }
-                        boolean isLand = getResources().getConfiguration().orientation == Configuration
+                        boolean isLand = activity.getResources().getConfiguration().orientation == Configuration
                                 .ORIENTATION_LANDSCAPE;
                         if (!isLand) {
                             return;

@@ -2,13 +2,19 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.SparseArray;
 
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.MyUserInfoEntity;
+import com.xueersi.common.logerhelper.LogerTag;
+import com.xueersi.lib.analytics.umsagent.UmsAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.TimeUtils;
@@ -21,17 +27,20 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.AllLiveBasePagerIml;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveUidRx;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 
 import org.json.JSONObject;
+import org.xutils.xutils.http.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,10 +51,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by lyqai on 2018/7/17.
  */
-public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick {
+public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick, LiveOnLineLogs {
     private String TAG = "LiveBackBll";
     Logger logger = LoggerFactory.getLogger(TAG);
     Activity activity;
+    private LiveGetInfo mGetInfo;
+    LiveHttpManager mHttpManager;
     private AllLiveBasePagerIml allLiveBasePagerIml;
     /** 购课id */
     protected String stuCourId;
@@ -63,6 +74,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
     protected PlayerService vPlayer;
     /** 互动题 */
     private VideoQuestionEntity mQuestionEntity;
+    private HashMap<VideoQuestionEntity, VideoQuestionLiveEntity> liveEntityHashMap = new HashMap<>();
     /** 显示互动题 */
     private static final int SHOW_QUESTION = 0;
     /** 没有互动题 */
@@ -81,8 +93,10 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
     private int pattern = 1;
     ShowQuestion showQuestion;
     private LiveUidRx liveUidRx;
+    LogToFile logToFile;
 
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
+        logger.setLogMethod(false);
         this.activity = activity;
         this.mVideoEntity = mVideoEntity;
         ProxUtil.getProxUtil().put(activity, LiveAndBackDebug.class, this);
@@ -115,12 +129,15 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
                 liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
             }
         }
+        logToFile = new LogToFile(this, TAG);
+        ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, this);
         mCourseHttpManager = new LivePlayBackHttpManager(activity);
         mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         mCourseHttpResponseParser = new LivePlayBackHttpResponseParser();
         allLiveBasePagerIml = new AllLiveBasePagerIml(activity);
         showQuestion = new LiveShowQuestion();
         liveUidRx = new LiveUidRx(activity, false);
+        mHttpManager = new LiveHttpManager(activity);
     }
 
     public int getLiveType() {
@@ -170,6 +187,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
 
     public void onCreate() {
         LiveGetInfo liveGetInfo = new LiveGetInfo(null);
+        mGetInfo = liveGetInfo;
         liveGetInfo.setId(mVideoEntity.getLiveId());
         liveGetInfo.setUname(AppBll.getInstance().getAppInfoEntity().getChildName());
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
@@ -243,15 +261,16 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
             if (mQuestionEntity == null && oldQuestionEntity.isClick()) {
                 if (playPosition < oldQuestionEntity.getvEndTime()) {
                     mQuestionEntity = oldQuestionEntity;
+                    logger.d("scanQuestion:isClick");
                     return;
                 }
             }
             LiveBackBaseBll liveBackBaseBll = array.get(oldQuestionEntity.getvCategory());
             if (liveBackBaseBll != null) {
-                logger.d("scanQuestion:onQuestionEnd");
+                logger.d("scanQuestion:onQuestionEnd:id=" + oldQuestionEntity.getvCategory());
                 liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
             }
-            showQuestion.onShow(false);
+            showQuestion.onHide(oldQuestionEntity);
         }
         if (mQuestionEntity != null && oldQuestionEntity != mQuestionEntity && !mQuestionEntity.isAnswered()) {
             mQuestionEntity.setAnswered(true);
@@ -278,16 +297,30 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         }
 
         @Override
-        public void onShow(boolean isShow) {
+        public void onShow(boolean isShow, VideoQuestionLiveEntity videoQuestionLiveEntity) {
+            liveEntityHashMap.put(mQuestionEntity, videoQuestionLiveEntity);
             if (isShow) {
                 mIsShowQuestion = true;
                 MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
                 mediaControllerAction.release();
-            } else {
-                mIsShowQuestion = false;
-                MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
-                mediaControllerAction.attachMediaController();
             }
+        }
+
+        @Override
+        public void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity) {
+            logToFile.d("onHide:mQuestionEntity=" + mQuestionEntity + ",baseVideoQuestionEntity=" + baseVideoQuestionEntity);
+            if (mQuestionEntity != null && baseVideoQuestionEntity != null) {
+                VideoQuestionLiveEntity videoQuestionLiveEntity = liveEntityHashMap.get(mQuestionEntity);
+                if (videoQuestionLiveEntity != null) {
+                    logToFile.d("onHide:vCategory=" + mQuestionEntity.getvCategory() + ",id=" + videoQuestionLiveEntity.getvQuestionID() + ",id2=" + baseVideoQuestionEntity.getvQuestionID());
+                    if (videoQuestionLiveEntity != baseVideoQuestionEntity) {
+                        return;
+                    }
+                }
+            }
+            mIsShowQuestion = false;
+            MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
+            mediaControllerAction.attachMediaController();
         }
     }
 
@@ -357,6 +390,17 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
             } else if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == videoQuestionEntity.getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime <= playPosition && playPosition < endTime) {
+                    LiveVideoConfig.isMulLiveBack = false;
+//                if (startTime == playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
+            } else if(LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()){
+                // 在开始时间和结束时间之间
+                if (startTime <= playPosition && playPosition < endTime) {
+                    LiveVideoConfig.isMulLiveBack = true;
 //                if (startTime == playPosition) {
                     mQuestionEntity = videoQuestionEntity;
                     hasQuestionShow = true;
@@ -388,7 +432,9 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
     }
 
     public interface ShowQuestion {
-        void onShow(boolean isShow);
+        void onShow(boolean isShow, VideoQuestionLiveEntity videoQuestionLiveEntity);
+
+        void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity);
     }
 
     /**
@@ -532,5 +578,40 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
             businessBll.setSpeed(speed);
         }
+    }
+
+    @Override
+    public String getPrefix() {
+        return "LB";
+    }
+
+    /**
+     * 播放器异常日志
+     *
+     * @param str
+     */
+    public void getOnloadLogs(String TAG, String str) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
+        PackageManager packageManager = activity.getPackageManager();
+        PackageInfo packInfo = null;
+        String filenam = "f";
+        try {
+            packInfo = packageManager.getPackageInfo(activity.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (packInfo != null) {//else不会发生
+            filenam = packInfo.versionCode + "";
+        }
+        filenam = Build.VERSION.SDK_INT + "&" + filenam;
+        if (mGetInfo == null) {
+            UmsAgent.onEvent(activity, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
+            return;
+        }
+        LiveLogCallback liveLogCallback = new LiveLogCallback();
+        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mGetInfo.getId(), mGetInfo.getUname(), enstuId,
+                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, liveLogCallback);
+        liveLogCallback.setParams(params);
     }
 }

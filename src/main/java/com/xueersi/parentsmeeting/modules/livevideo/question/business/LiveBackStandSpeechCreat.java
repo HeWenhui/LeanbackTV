@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -24,6 +25,7 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
     LiveAndBackDebug liveAndBackDebug;
     LivePagerBack livePagerBack;
     WrapSpeechEvalAction wrapSpeechEvalAction;
+
     @Deprecated
     public LiveBackStandSpeechCreat(LiveBll liveBll) {
         liveAndBackDebug = liveBll;
@@ -52,7 +54,7 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
         wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
         speechEvalAction = new LiveStandSpeechEvalActionImpl(wrapSpeechEvalAction);
         StandSpeechAssAutoPager speechAssAutoPager = new StandSpeechAssAutoPager(context,
-                liveid, videoQuestionLiveEntity.id,
+                videoQuestionLiveEntity, liveid, videoQuestionLiveEntity.id,
                 "", videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time,
                 videoQuestionLiveEntity.getvEndTime() - videoQuestionLiveEntity.getvQuestionInsretTime(),
                 speechEvalAction, getInfo.getStandLiveName(), getInfo.getHeadImgPath(), learning_stage);
@@ -63,7 +65,7 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
     public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
                                                     SpeechEvalAction speechEvalAction, String stuCouId) {
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
-                liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
                 false, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
         speechAssessmentPager.setStandingLive(true);
         RolePlayStandLog.sno3(liveAndBackDebug, testId);
@@ -102,8 +104,8 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
         }
 
         @Override
-        public void stopSpeech(BaseSpeechAssessmentPager pager, String num) {
-            action.stopSpeech(pager, num);
+        public void stopSpeech(BaseSpeechAssessmentPager pager, BaseVideoQuestionEntity baseVideoQuestionEntity, String num) {
+            action.stopSpeech(pager, baseVideoQuestionEntity, num);
         }
 
         @Override

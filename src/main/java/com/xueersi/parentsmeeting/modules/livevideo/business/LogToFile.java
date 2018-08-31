@@ -6,6 +6,7 @@ import android.util.Log;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -24,16 +25,17 @@ public class LogToFile {
     private static SimpleDateFormat dateFormat;
     /** 静态唯一 */
     public static LiveBll liveBll;
-    public LiveBll2 liveBll2;
     public static AuditClassLiveBll auditClassLiveBll;
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+    public static int LIVE_TIME = 0;
+    public LiveOnLineLogs liveOnLineLogs;
 
     static {
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
     }
 
     public LogToFile(String tag) {
-        this.TAG = "L:" + tag;
+        this.TAG = "OL:" + tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
@@ -41,14 +43,35 @@ public class LogToFile {
             parent.mkdirs();
         }
         file.delete();
+        if (liveBll != null) {
+            liveOnLineLogs = liveBll;
+        } else if (auditClassLiveBll != null) {
+            liveOnLineLogs = auditClassLiveBll;
+        }
     }
 
-    public LogToFile(LiveBll2 liveBll2, String tag) {
-        this.TAG = "L:" + tag;
+    public LogToFile(String tag, LiveOnLineLogs liveOnLineLogs) {
+        this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
-        this.liveBll2 = liveBll2;
+        if (!parent.exists()) {
+            parent.mkdirs();
+        }
+        file.delete();
+        this.liveOnLineLogs = liveOnLineLogs;
+    }
+
+    public void setLiveOnLineLogs(LiveOnLineLogs liveOnLineLogs) {
+        this.liveOnLineLogs = liveOnLineLogs;
+    }
+
+    public LogToFile(LiveOnLineLogs liveBll2, String tag) {
+        this.TAG = tag + ":" + LIVE_TIME;
+        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
+        this.path = file.getPath();
+        File parent = file.getParentFile();
+        liveOnLineLogs = liveBll2;
         if (!parent.exists()) {
             parent.mkdirs();
         }
@@ -56,11 +79,11 @@ public class LogToFile {
     }
 
     public LogToFile(Context context, String tag) {
-        this.TAG = "L:" + tag;
+        this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
-        liveBll2 = ProxUtil.getProxUtil().get(context, LiveBll2.class);
+        liveOnLineLogs = ProxUtil.getProxUtil().get(context, LiveOnLineLogs.class);
         if (!parent.exists()) {
             parent.mkdirs();
         }
@@ -74,53 +97,46 @@ public class LogToFile {
     }
 
     public void i(String message) {
-        Loger.i(TAG, message);
-        if (liveBll != null) {
-            liveBll.getOnloadLogs(TAG, TAG + "**" + message);
-        } else {
-            if (auditClassLiveBll != null) {
-                auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message);
-            } else {
-                if (liveBll2 != null) {
-                    liveBll2.getOnloadLogs(TAG, TAG + "**" + message);
-                }
-            }
+        String getPrefix = "";
+        if (liveOnLineLogs != null) {
+            getPrefix = liveOnLineLogs.getPrefix();
+            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
         }
-        if (AppConfig.DEBUG) {
-            liveThreadPoolExecutor.execute(new WriteThread(message));
-        }
+        Loger.i(getPrefix + ":" + TAG, message);
+//        if (AppConfig.DEBUG) {
+//            liveThreadPoolExecutor.execute(new WriteThread(message));
+//        }
+        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
     public void d(String message) {
-        Loger.i(TAG, message);
-        if (liveBll != null) {
-            liveBll.getOnloadLogs(TAG, TAG + "**" + message);
-        } else {
-            if (auditClassLiveBll != null) {
-                auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message);
-            }
+        String getPrefix = "";
+        if (liveOnLineLogs != null) {
+            getPrefix = liveOnLineLogs.getPrefix();
+            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
         }
-        if (AppConfig.DEBUG) {
-            liveThreadPoolExecutor.execute(new WriteThread(message));
-        }
+        Loger.i(getPrefix + ":" + TAG, message);
+//        if (AppConfig.DEBUG) {
+//            liveThreadPoolExecutor.execute(new WriteThread(message));
+//        }
+        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
     public void debugSave(String message) {
         Loger.i(TAG, message);
-        if (AppConfig.DEBUG) {
-            liveThreadPoolExecutor.execute(new WriteThread(message));
-        }
+//        if (AppConfig.DEBUG) {
+//            liveThreadPoolExecutor.execute(new WriteThread(message));
+//        }
+        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
     public void e(String message, Throwable e) {
-        Loger.i(TAG, message, e);
-        if (liveBll != null) {
-            liveBll.getOnloadLogs(TAG, TAG + "**" + message);
-        } else {
-            if (auditClassLiveBll != null) {
-                auditClassLiveBll.getOnloadLogs(TAG, TAG + "**" + message);
-            }
+        String getPrefix = "";
+        if (liveOnLineLogs != null) {
+            getPrefix = liveOnLineLogs.getPrefix();
+            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message + "**" + e);
         }
+        Loger.i(getPrefix + ":" + TAG, message, e);
         liveThreadPoolExecutor.execute(new WriteThread(message, e));
     }
 

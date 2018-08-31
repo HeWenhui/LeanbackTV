@@ -30,7 +30,7 @@ public class H5CoursewareBll implements H5CoursewareAction {
     ActivityChangeLand activityChangeLand;
 
     public H5CoursewareBll(Context context) {
-        logToFile = new LogToFile(TAG);
+        logToFile = new LogToFile(context, TAG);
         this.context = context;
         activityChangeLand = ProxUtil.getProxUtil().get(context, ActivityChangeLand.class);
     }

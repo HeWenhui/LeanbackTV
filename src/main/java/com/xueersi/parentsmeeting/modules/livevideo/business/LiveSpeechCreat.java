@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.content.Context;
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -14,7 +13,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.BaseSpeech
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 
 /**
  * Created by linyuqiang on 2018/4/7.
@@ -37,7 +35,7 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
     @Override
     public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String nonce, VideoQuestionLiveEntity videoQuestionLiveEntity, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
         SpeechAssAutoPager speechAssAutoPager =
-                new SpeechAssAutoPager(context, liveid, videoQuestionLiveEntity.id, nonce,
+                new SpeechAssAutoPager(context, videoQuestionLiveEntity, liveid, videoQuestionLiveEntity.id, nonce,
                         videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, learning_stage, speechEvalAction, livePagerBack);
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         lp.rightMargin = liveVideoPoint.getRightMargin();
@@ -48,7 +46,7 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
     public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
                                                     SpeechEvalAction speechEvalAction, String stuCouId) {
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
-                liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
                 true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
         return speechAssessmentPager;
     }

@@ -60,6 +60,7 @@ public class LiveQuestionCreat {
         } else {
             baseQuestionPager = new QuestionFillInBlankPortLivePager(activity, videoQuestionLiveEntity);
         }
+        baseQuestionPager.setBaseVideoQuestionEntity(videoQuestionLiveEntity);
         baseQuestionPager.setPutQuestion(mPutQuestion);
         baseQuestionPager.setLivePagerBack(livePagerBack);
         return baseQuestionPager;
@@ -76,6 +77,7 @@ public class LiveQuestionCreat {
         } else {
             baseQuestionPager = new QuestionSelectPortLivePager(activity, videoQuestionLiveEntity);
         }
+        baseQuestionPager.setBaseVideoQuestionEntity(videoQuestionLiveEntity);
         baseQuestionPager.setPutQuestion(mPutQuestion);
         baseQuestionPager.setLivePagerBack(livePagerBack);
         return baseQuestionPager;
@@ -91,6 +93,7 @@ public class LiveQuestionCreat {
         } else {
             baseQuestionPager = new QuestionMulitSelectPortLivePager(activity, videoQuestionLiveEntity);
         }
+        baseQuestionPager.setBaseVideoQuestionEntity(videoQuestionLiveEntity);
         baseQuestionPager.setPutQuestion(mPutQuestion);
         baseQuestionPager.setLivePagerBack(livePagerBack);
         return baseQuestionPager;
@@ -101,6 +104,7 @@ public class LiveQuestionCreat {
      */
     public BaseLiveQuestionPager showSubjectiveQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         BaseLiveQuestionPager baseQuestionPager = new QuestionSubjectivePager(activity, videoQuestionLiveEntity);
+        baseQuestionPager.setBaseVideoQuestionEntity(videoQuestionLiveEntity);
         baseQuestionPager.setPutQuestion(mPutQuestion);
         baseQuestionPager.setLivePagerBack(livePagerBack);
         return baseQuestionPager;
@@ -112,9 +116,9 @@ public class LiveQuestionCreat {
     private PutQuestion mPutQuestion = new PutQuestion() {
 
         @Override
-        public void onPutQuestionResult(final BaseVideoQuestionEntity videoQuestionLiveEntity2, String result) {
+        public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, final BaseVideoQuestionEntity videoQuestionLiveEntity2, String result) {
             final VideoQuestionLiveEntity liveEntity = (VideoQuestionLiveEntity) videoQuestionLiveEntity2;
-            questionHttp.liveSubmitTestAnswer(liveEntity, mVSectionID, result,
+            questionHttp.liveSubmitTestAnswer(baseLiveQuestionPager, liveEntity, mVSectionID, result,
                     false, false, new QuestionSwitch.OnAnswerReslut() {
                         @Override
                         public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
@@ -137,7 +141,7 @@ public class LiveQuestionCreat {
                             }
                             LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(activity, LiveBackBll.ShowQuestion.class);
                             if (showQuestion != null) {
-                                showQuestion.onShow(false);
+                                showQuestion.onHide(videoQuestionLiveEntity2);
                             }
                         }
                     });
