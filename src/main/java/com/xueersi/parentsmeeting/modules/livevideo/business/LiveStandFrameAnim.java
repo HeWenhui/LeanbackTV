@@ -70,7 +70,7 @@ public class LiveStandFrameAnim {
 
     public LiveStandFrameAnim(Activity activity) {
         this.activity = activity;
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(activity, TAG);
     }
 
     /**

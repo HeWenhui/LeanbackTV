@@ -42,8 +42,8 @@ public class WrapQuestionSwitch implements QuestionSwitch {
     }
 
     @Override
-    public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut) {
-        questionSwitch.onPutQuestionResult(videoQuestionLiveEntity, answer, result, sorce, isRight, voiceTime, isSubmit, answerReslut);
+    public void onPutQuestionResult(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, OnAnswerReslut answerReslut) {
+        questionSwitch.onPutQuestionResult(baseVoiceAnswerPager, videoQuestionLiveEntity, answer, result, sorce, isRight, voiceTime, isSubmit, answerReslut);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class WrapQuestionSwitch implements QuestionSwitch {
     public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
         questionSwitch.stopSpeech(answerPager, baseVideoQuestionEntity);
         LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(context, LiveBackBll.ShowQuestion.class);
-        showQuestion.onShow(false);
+        showQuestion.onHide(baseVideoQuestionEntity);
         MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
         mediaPlayerControl.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
         mediaPlayerControl.start();

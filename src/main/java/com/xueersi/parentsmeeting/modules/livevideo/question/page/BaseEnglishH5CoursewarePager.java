@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.view.View;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 
 
@@ -37,4 +38,5 @@ public interface BaseEnglishH5CoursewarePager {
 
     void setWebBackgroundColor(int color);
 
+    EnglishH5Entity getEnglishH5Entity();
 }

@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 /**
  * 互动题,懂了吗事件
@@ -17,10 +18,11 @@ public interface QuestionAction {
     void showQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity);
 
     /**
+     * @param liveBasePager
      * @param videoQuestionLiveEntity
      * @param entity
      */
-    void onAnswerReslut(BaseVideoQuestionEntity videoQuestionLiveEntity, VideoResultEntity entity);
+    void onAnswerReslut(LiveBasePager liveBasePager, BaseVideoQuestionEntity videoQuestionLiveEntity, VideoResultEntity entity);
 
     /** 提交答题网络失败 */
     void onAnswerFailure();
@@ -31,8 +33,9 @@ public interface QuestionAction {
     /** 考试开始 */
     void onExamStart(String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity);
 
-    /** 考试结束 */
-    void onExamStop();
+    /** 考试结束
+     * @param num*/
+    void onExamStop(String num);
 
     /** 语音评测刷新 */
     @Deprecated

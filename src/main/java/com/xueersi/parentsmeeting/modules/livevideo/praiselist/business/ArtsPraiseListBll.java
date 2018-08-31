@@ -17,10 +17,10 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -96,7 +96,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
         if (width > 0 && artsPraisePager != null) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) artsPraisePager.getRootView()
                     .getLayoutParams();
-            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * width / LiveVideoActivity.VIDEO_WIDTH);
+            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
             if (wradio != params.rightMargin) {
                 params.rightMargin = wradio;
@@ -311,7 +311,7 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
      */
     private int getRightMargin() {
         int screenWidth = ScreenUtils.getScreenWidth();
-        return (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+        return (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
     }
 
     @Override
@@ -336,7 +336,9 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
         if (verifyCancelAlertDialog != null) {
             verifyCancelAlertDialog.cancelDialog();
         }
-        mRootView.removeCallbacks(clickTimeSendTask);
+        if(mRootView != null){
+            mRootView.removeCallbacks(clickTimeSendTask);
+        }
     }
 
 

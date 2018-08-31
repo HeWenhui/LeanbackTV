@@ -63,7 +63,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author chekun
  *         created  at 2018/6/20 10:32
  */
-public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
+public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLogs {
     Logger logger = LoggerFactory.getLogger("LiveBll2");
     /** 需处理 topic 业务集合 */
     private List<TopicAction> mTopicActions = new ArrayList<>();
@@ -126,7 +126,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpManager.addBodyParam("form", "" + form);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (liveGetInfo != null) {
@@ -136,6 +136,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             mLiveTopic = new LiveTopic();
         }
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
+        ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, this);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -156,7 +157,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (liveGetInfo != null) {
@@ -166,6 +167,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         }
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
+        ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, this);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -188,7 +190,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         mLiveTopic = new LiveTopic();
@@ -196,6 +198,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
+        ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, this);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -418,7 +421,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
             }
         }
-        getOnloadLogs(TAG, "onGetInfoSuccess:old=" + businessBlls + ",new=" + businessBllTemps.size());
+        mLogtf.d("onGetInfoSuccess:old=" + businessBlls + ",new=" + businessBllTemps.size());
         businessBllTemps.clear();
         logger.d("=======>onGetInfoSuccess 333333333");
         LiveGetInfo.NewTalkConfEntity talkConfEntity = new LiveGetInfo.NewTalkConfEntity();
@@ -453,9 +456,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        mIRCMessage = new IRCMessage(netWorkType, channel, mGetInfo.getStuName(), nickname);
+        mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, channel, mGetInfo.getStuName(), nickname);
         mIRCMessage.setNewTalkConf(newTalkConf);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
+        IRCTalkConf ircTalkConf = new IRCTalkConf(null, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
@@ -621,7 +624,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 }
                 mLiveTopic.copy(liveTopic);
             } catch (Exception e) {
-                getOnloadLogs(TAG, "" + e);
+                mLogtf.e("onTopic", e);
             }
         }
 
@@ -831,12 +834,17 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
     }
 
+    @Override
+    public String getPrefix() {
+        return "NL";
+    }
+
     /**
      * 播放器异常日志
      *
      * @param str
      */
-    public void getOnloadLogs(String TAG, final String str) {
+    public void getOnloadLogs(String TAG, String str) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
         PackageManager packageManager = mContext.getPackageManager();

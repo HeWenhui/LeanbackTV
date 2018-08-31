@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -69,13 +70,13 @@ public class IRCTalkConf {
         }
     };
 
-    public IRCTalkConf(LiveGetInfo liveGetInfo, int mLiveType, BaseHttpBusiness baseHttpBusiness,
+    public IRCTalkConf(Context context, LiveGetInfo liveGetInfo, int mLiveType, BaseHttpBusiness baseHttpBusiness,
                        ArrayList<TalkConfHost> hosts) {
         this.liveId = liveGetInfo.getId();
         this.mLiveType = mLiveType;
         this.baseHttpBusiness = baseHttpBusiness;
         this.hosts = hosts;
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(context, TAG);
         LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {
             classid = studentLiveInfo.getClassId();

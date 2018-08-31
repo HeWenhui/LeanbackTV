@@ -46,7 +46,7 @@ public class StandLiveHeadView extends LottieAnimationView {
         paint = new Paint();
         paint.setTextSize(24);
         paint.setColor(Color.WHITE);
-        logToFile = new LogToFile(TAG);
+        logToFile = new LogToFile(context,TAG);
     }
 
     public LiveMessageEntity getEntity() {

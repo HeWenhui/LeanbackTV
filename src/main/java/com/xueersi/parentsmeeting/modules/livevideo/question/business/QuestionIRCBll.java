@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONArray;
@@ -54,9 +55,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private AnswerRankIRCBll mAnswerRankBll;
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private SpeechEvaluatorUtils mIse;
-    /**
-     * RolePlayer功能接口
-     */
+    /** RolePlayer功能接口 */
     private RolePlayAction rolePlayAction;
 
     private String Tag = "QuestionIRCBll";
@@ -112,15 +111,13 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         baseSubjectResultCreat.setLiveGetInfo(data);
         mQuestionAction.setBaseSubjectResultCreat(baseSubjectResultCreat);
         if (data.getPattern() == 2) {
-            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new
-                    LiveQuestionSwitchImpl(), mQuestionAction));
+            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction));
             mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(this, mLiveBll, mQuestionAction));
-            StandSpeechTop3Bll standSpeechTop3Bll = new StandSpeechTop3Bll(this, mLiveBll);
+            StandSpeechTop3Bll standSpeechTop3Bll = new StandSpeechTop3Bll(activity, this, mLiveBll);
             standSpeechTop3Bll.initView(mRootView);
             mQuestionAction.setSpeechEndAction(standSpeechTop3Bll);
         } else {
-            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new
-                    LiveQuestionSwitchImpl(), mQuestionAction));
+            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction));
             mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat(mQuestionAction));
         }
         if (1 == data.getIsEnglish()) {
@@ -171,6 +168,34 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
+        LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
+        if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
+            String num = mainRoomstatus.getExamNum();
+            if ("on".equals(mainRoomstatus.getExamStatus())) {
+                VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                videoQuestionLiveEntity.id = num;
+                mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
+                if (mAnswerRankBll != null) {
+                    mAnswerRankBll.setTestId(num);
+                }
+            } else {
+                mQuestionAction.onExamStop(num);
+            }
+        }
+        if (liveTopic.getVideoQuestionLiveEntity() != null) {
+            if (mQuestionAction != null) {
+                mQuestionAction.showQuestion(liveTopic.getVideoQuestionLiveEntity());
+                if (mAnswerRankBll != null) {
+                    mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
+                }
+                if (mLiveAutoNoticeBll != null) {
+                    mLiveAutoNoticeBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
+                    mLiveAutoNoticeBll.setSrcType(liveTopic.getVideoQuestionLiveEntity().srcType);
+                }
+            }
+        } else {
+            if (mQuestionAction != null) {
+                mQuestionAction.showQuestion(null);
 
 
         /**新版文科课件平台 Topic**/
@@ -330,10 +355,15 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                         mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
                     }
+
+                    if (mQuestionAction instanceof QuestionBll) {
+                        ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
+                        Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: " +
+                                "SENDQUESTION");
+                    }
                 }
             }
             break;
-
             case XESCODE.ARTS_SEND_QUESTION: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.gold = object.optDouble("gold");
@@ -368,13 +398,21 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
             }
 
+
+
+
             case XESCODE.STOPQUESTION:
                 mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                 if (mQuestionAction != null) {
                     try {
                         mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
+                        if (mQuestionAction instanceof QuestionBll) {
+                            ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
+                            Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: " +
+                                    "STOPQUESTION");
+                        }
                     } catch (Exception e) {
-                        e.printStackTrace();
+
                     }
                 }
                 break;
@@ -403,6 +441,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
             }
 
+
             case XESCODE.EXAM_START:
                 if (mQuestionAction != null) {
                     String num = object.optString("num", "0");
@@ -419,7 +458,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
             case XESCODE.EXAM_STOP: {
                 if (mQuestionAction != null) {
-                    mQuestionAction.onExamStop();
+                    String num = object.optString("num", "-1");
+                    mQuestionAction.onExamStop(num);
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
                         Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: EXAM_STOP");
@@ -526,8 +566,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void getQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack
-            callBack) {
+    public void getQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         getHttpManager().getQuestion(enstuId, mGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(), new
                 HttpCallBack() {
@@ -554,9 +593,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void liveSubmitTestAnswer(final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID,
-                                     String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch
-            .OnAnswerReslut answerReslut) {
+    public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                 videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="
@@ -583,7 +620,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             answerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
                         }
                         if (mQuestionAction != null) {
-                            mQuestionAction.onAnswerReslut(videoQuestionLiveEntity, entity);
+                            mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, entity);
                         }
                     }
 
@@ -606,7 +643,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //
 //                        }
                         if (mQuestionAction != null) {
-                            mQuestionAction.onAnswerReslut(videoQuestionLiveEntity, null);
+                            mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, null);
                         }
                         if (answerReslut != null) {
                             answerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
@@ -648,12 +685,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval
-            onSpeechEval) {
+    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new HttpCallBack
-                (false) {
+        getHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -711,13 +746,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity, final
-    AbstractBusinessDataCallBack callBack) {
+    public void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
         getHttpManager().getTestAnswerTeamStatus(videoQuestionLiveEntity.id, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                GoldTeamStatus entity = getHttpResponseParser().testAnswerTeamStatus(responseEntity, mGetInfo
-                                .getStuId(),
+                GoldTeamStatus entity = getHttpResponseParser().testAnswerTeamStatus(responseEntity, mGetInfo.getStuId(),
                         mGetInfo.getHeadImgPath());
                 callBack.onDataSucess(entity);
             }
@@ -751,8 +784,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered
-            isAnswered) {
+    public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         getHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
             @Override

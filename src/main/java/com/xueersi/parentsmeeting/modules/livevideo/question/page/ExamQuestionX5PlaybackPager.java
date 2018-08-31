@@ -49,7 +49,6 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
     private Button bt_livevideo_subject_calljs;
     private WebView wvSubjectWeb;
     private String liveid;
-    VideoQuestionLiveEntity mQuestionEntity;
     private String num;
     ExamStop examStop;
     private View errorView;
@@ -66,8 +65,8 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         this.examStop = examStop;
         this.liveid = liveid;
         this.IS_SCIENCE = IS_SCIENCE;
-        this.mQuestionEntity = videoQuestionLiveEntity;
-        this.num = mQuestionEntity.getvQuestionID();
+        setBaseVideoQuestionEntity(videoQuestionLiveEntity);
+        this.num = videoQuestionLiveEntity.getvQuestionID();
         this.stuCouId = stuCouId;
         this.livePagerBack = livePagerBack;
         initData();
@@ -105,7 +104,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                examStop.stopExam(ExamQuestionX5PlaybackPager.this, mQuestionEntity);
+                examStop.stopExam(ExamQuestionX5PlaybackPager.this, (VideoQuestionLiveEntity) getBaseVideoQuestionEntity());
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -258,7 +257,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
-                examStop.stopExam(ExamQuestionX5PlaybackPager.this, mQuestionEntity);
+                examStop.stopExam(ExamQuestionX5PlaybackPager.this, (VideoQuestionLiveEntity) getBaseVideoQuestionEntity());
                 Loger.i(TAG, "shouldOverrideUrlLoading:stopExam");
             } else {
                 if (url.contains("xueersi.com")) {

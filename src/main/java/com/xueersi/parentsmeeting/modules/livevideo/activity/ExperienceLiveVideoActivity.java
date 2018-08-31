@@ -87,7 +87,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -97,6 +96,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.PutQuestio
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionFillInBlankLivePager;
@@ -104,7 +104,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionMulitS
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -119,11 +118,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.xueersi.ui.dialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE;
@@ -364,7 +360,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
      */
     private VideoQuestionEntity mQuestionEntity;
 
-    VideoQuestionLiveEntity  videoQuestionLiveEntity;
+    VideoQuestionLiveEntity videoQuestionLiveEntity;
     /**
      * 互动题为空的异常
      */
@@ -541,8 +537,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
         }
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        mIRCMessage = new IRCMessage(mNetWorkType, channel, mGetInfo.getStuName(), chatRoomUid);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
+        mIRCMessage = new IRCMessage(this, mNetWorkType, channel, mGetInfo.getStuName(), chatRoomUid);
+        IRCTalkConf ircTalkConf = new IRCTalkConf(null, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
@@ -806,7 +802,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
-        int rightMargin = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth - lp
+        int rightMargin = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth - lp
                 .width) / 2);
         int topMargin = (ScreenUtils.getScreenHeight() - lp.height) / 2;
         if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {
@@ -835,7 +831,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         // TODO: 2018/8/11 设置ircState
         //mLiveMessagePager.setLiveBll(mLiveBll);
         mLiveMessagePager.setIrcState(mLiveBll);
-
 
 
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
@@ -988,6 +983,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //            showQuestion(mQuestionEntity);
         }
         // 心跳时间的统计
+        mHandler.removeCallbacks(mPlayDuration);
         mHandler.postDelayed(mPlayDuration, mPlayDurTime);
     }
 
@@ -1408,11 +1404,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private void handleChatEvent(int playPosition, VideoQuestionEntity chatEntity) {
         //出现视频快进
         if ((playPosition - lastCheckTime) >= MAX_CHECK_TIME_RANG || !isChatSateInited) {
-           // isChatSateInited = false;
+            // isChatSateInited = false;
             boolean roomChatAvalible = recoverChatState(playPosition);
-            Loger.e("roomChat", "=====> resetRoomChatState_:roomChatAvalible=" + roomChatAvalible+":"+isChatSateInited);
+            Loger.e("roomChat", "=====> resetRoomChatState_:roomChatAvalible=" + roomChatAvalible + ":" + isChatSateInited);
             isChatSateInited = true;
-        }else{
+        } else {
             if (chatEntity != null) {
                 Loger.e("roomChat", "=====>handleChatEvent:category=" + chatEntity.getvCategory());
                 //关闭聊天
@@ -1466,13 +1462,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             mLiveMessagePager.onopenchat(false, "in-class", isRoomChatAvailable);
             mLiveBll.setChatOpen(false);
         } else {
-            mLiveMessagePager.onopenchat(true, "in-class",!isRoomChatAvailable);
+            mLiveMessagePager.onopenchat(true, "in-class", !isRoomChatAvailable);
             mLiveBll.setChatOpen(true);
         }
         return roomChatAvalible;
     }
-
-
 
 
     private VideoQuestionEntity getOpenChatEntity(int playPosition) {
@@ -1522,7 +1516,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             public void run() {
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     mPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
-                    if(videoQuestionLiveEntity == null){
+                    if (videoQuestionLiveEntity == null) {
                         videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                     }
                     videoQuestionLiveEntity.id = mQuestionEntity.getvQuestionID();
@@ -1585,7 +1579,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mVideoCourseQuestionPager = new QuestionFillInBlankLivePager(ExperienceLiveVideoActivity.this, mQuestionEntity);
         mVideoCourseQuestionPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -1605,7 +1599,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -1626,7 +1620,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }

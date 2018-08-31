@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -46,7 +47,7 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         SpeechStandLog.sno2(liveAndBackDebug, videoQuestionLiveEntity.id, nonce);
         speechEvalAction = new LiveStandSpeechEvalActionImpl(speechEvalAction);
         StandSpeechAssAutoPager speechAssAutoPager =
-                new StandSpeechAssAutoPager(context, liveid, videoQuestionLiveEntity.id, nonce,
+                new StandSpeechAssAutoPager(context, videoQuestionLiveEntity, liveid, videoQuestionLiveEntity.id, nonce,
                         videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, speechEvalAction, getInfo.getStandLiveName(), getInfo.getHeadImgPath(), learning_stage, livePagerBack);
         return speechAssAutoPager;
     }
@@ -55,7 +56,7 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
     public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
                                                     SpeechEvalAction speechEvalAction, String stuCouId) {
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
-                liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
                 true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
         speechAssessmentPager.setStandingLive(true);
         RolePlayStandLog.sno3(liveAndBackDebug, testId);
@@ -104,8 +105,8 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         }
 
         @Override
-        public void stopSpeech(BaseSpeechAssessmentPager pager, String num) {
-            action.stopSpeech(pager, num);
+        public void stopSpeech(BaseSpeechAssessmentPager pager, BaseVideoQuestionEntity baseVideoQuestionEntity, String num) {
+            action.stopSpeech(pager, baseVideoQuestionEntity, num);
         }
 
         @Override

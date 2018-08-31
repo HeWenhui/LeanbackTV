@@ -1,43 +1,71 @@
 package com.xueersi.parentsmeeting.modules.livevideo.praiselist.page;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.Build;
+import android.os.Environment;
+import android.support.v4.util.LruCache;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.AnimationUtils;
+import android.view.animation.GridLayoutAnimationController;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.ImageAssetDelegate;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListBll;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView;
 import com.xueersi.ui.adapter.RCommonAdapter;
 import com.xueersi.ui.adapter.RItemViewInterface;
 import com.xueersi.ui.adapter.ViewHolder;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.lib.framework.utils.SizeUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,56 +77,57 @@ import java.util.TimerTask;
 public class PraiseListPager extends LiveBasePager {
 
     public static final String TAG = "PraiseListPager";
+    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "praise_list/";
+
+    private static final int ANIMATOR_TYPE_MAIN = 1;
+
+    private static final int ANIMATOR_TYPE_THANKS = ANIMATOR_TYPE_MAIN + 1;
+
+    private static final int ANIMATOR_TYPE_TEACHER = ANIMATOR_TYPE_THANKS + 1;
 
     private HonorListEntity honorListEntity;
     private ThumbsUpListEntity thumbsUpListEntity;
     private ProgressListEntity progressListEntity;
-    private LiveVideoActivity videoActivity;
+    private PraiseListIRCBll liveBll;
     private PraiseListBll mPraiseListBll;
     private WeakHandler weakHandler;
-    private PraiseListIRCBll liveBll;
+
+    //主背景动画
+    private LottieAnimationView lottieAnimationBGView;
+    //主背景闪光循环动画
+    private LottieAnimationView lottieAnimationLoopBGView;
+
+    //感谢点赞
+    private LottieAnimationView lottieAnimationThanksView;
+    private View lottieAnimationThanksGroup;
+
+    //老师表扬学生
+    private LottieAnimationView lottieAnimationTeacherView;
+    private View lottieAnimationTeacherGroup;
+    private TextView teacherTipsView;
+
+    private View contentGroup;
 
     /** 表扬榜单 */
-    private RecyclerView rvPraiseList;
+    private RecyclerView rvPraiseListView;
     /** 备注 */
-    private TextView tvTips;
+    private TextView tvTipsView;
     /** 点赞弹幕 */
-    private AutoVerticalScrollTextView tvDanmaku;
+    private AutoVerticalScrollTextView tvDanmakuView;
     /** 点赞按钮 */
-    private Button btnThumbsUp;
-    /** 表扬榜图片 */
-    private ImageView ivTitle;
-    /** 光线图片 */
-    private ImageView ivLight;
-    /** 条幅光线图片 */
-    private ImageView ivScrollLight;
-    /** 条幅内容 */
-    private TextView tvScroll;
-    /** 条幅背景虚化图片 */
-    private ImageView ivScrollBackground;
+    private Button btnThumbsUpView;
 
-    private RelativeLayout rlMessage;
-    private RelativeLayout rlLight;
-    private RelativeLayout rlScroll;
+    private TextView noteView;
 
-    /** 测试按钮 */
-    private TextView tv1;
-    private TextView tv2;
-    private TextView tv3;
-    private TextView tv4;
-    private TextView tv5;
-    private TextView tv6;
 
     /** 当前表扬榜类型 */
-    private final int mPraiseListType;
-    public final static int PRAISE_LIST_TYPE_HONOR = 1;
-    public final static int PRAISE_LIST_TYPE_THUMBS_UP = 3;
-    public final static int PRAISE_LIST_TYPE_PROGRESS = 2;
+    private int mPraiseListType;
+    public final static int PRAISE_LIST_TYPE_HONOR = 1;//优秀榜
+    public final static int PRAISE_LIST_TYPE_THUMBS_UP = 3;//点赞榜
+    public final static int PRAISE_LIST_TYPE_PROGRESS = 2;//进步榜
 
     /** 我的姓名 */
     private String stuName;
-    /** 我是否在榜上 */
-    private boolean isOnList = false;
     /** 我在榜上的位置索引 */
     private int onListIndex = 0;
     /** 给我点赞同学姓名 */
@@ -123,48 +152,46 @@ public class PraiseListPager extends LiveBasePager {
     /** 点赞声音 */
     private int soundThumbsUp = 0;
 
+    //是否在榜上
+    private boolean isOnList = false;
+    private LruCache<String, Bitmap> mBitmapCache;
 
-    public PraiseListPager(Context context, HonorListEntity honorListEntity, PraiseListIRCBll liveBll, PraiseListBll mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
+    public PraiseListPager(Context context, HonorListEntity honorListEntity, PraiseListIRCBll liveBll, PraiseListBll
+            mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
         super(context);
         mPraiseListType = PRAISE_LIST_TYPE_HONOR;
-        videoActivity = (LiveVideoActivity) context;
         this.honorListEntity = honorListEntity;
+        if (honorListEntity != null && honorListEntity.getIsMy() == 1) {
+            isOnList = true;
+        }
         this.liveBll = liveBll;
         this.mPraiseListBll = mPraiseListBll;
         this.weakHandler = mVPlayVideoControlHandler;
         initData();
     }
 
-    public PraiseListPager(Context context, ThumbsUpListEntity thumbsUpListEntity, PraiseListIRCBll liveBll, PraiseListBll mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
+    public PraiseListPager(Context context, ThumbsUpListEntity thumbsUpListEntity, PraiseListIRCBll liveBll, PraiseListBll
+            mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
         super(context);
         mPraiseListType = PRAISE_LIST_TYPE_THUMBS_UP;
-        videoActivity = (LiveVideoActivity) context;
         this.thumbsUpListEntity = thumbsUpListEntity;
+        if (thumbsUpListEntity != null && thumbsUpListEntity.getIsMy() == 1) {
+            isOnList = true;
+        }
         this.liveBll = liveBll;
         this.mPraiseListBll = mPraiseListBll;
         this.weakHandler = mVPlayVideoControlHandler;
         initData();
     }
 
-    public PraiseListPager(Context context, ProgressListEntity progressListEntity, PraiseListIRCBll liveBll, PraiseListBll mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
+    public PraiseListPager(Context context, ProgressListEntity progressListEntity, PraiseListIRCBll liveBll, PraiseListBll
+            mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
         super(context);
         mPraiseListType = PRAISE_LIST_TYPE_PROGRESS;
-        videoActivity = (LiveVideoActivity) context;
         this.progressListEntity = progressListEntity;
-
-/*        ProgressListEntity testEntity = new ProgressListEntity();
-        testEntity.setPraiseStatus(0);
-        for(int i=0;i<30;i++){
-            ProgressListEntity.ProgressEntity test = testEntity.new ProgressEntity();
-            test.setStuName("张远荪"+i);
-            test.setProgressScore(i+"");
-            if(i==16)
-                test.setIsMy(1);
-            testEntity.getProgressEntities().add(test);
-
+        if (progressListEntity != null && progressListEntity.getIsMy() == 1) {
+            isOnList = true;
         }
-        this.progressListEntity = testEntity;*/
-
         this.liveBll = liveBll;
         this.mPraiseListBll = mPraiseListBll;
         this.weakHandler = mVPlayVideoControlHandler;
@@ -174,32 +201,162 @@ public class PraiseListPager extends LiveBasePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_praiselist, null);
-        tvTips = (TextView) mView.findViewById(R.id.tv_livevideo_praiselist_tips);
-        rvPraiseList = (RecyclerView) mView.findViewById(R.id.gv_livevideo_praiselist);
-        tvDanmaku = (AutoVerticalScrollTextView) mView.findViewById(R.id.tv_livevideo_praiselist_danmaku);
-        btnThumbsUp = (Button) mView.findViewById(R.id.btn_livevideo_praiselist_thumbs_up);
-        ivTitle = (ImageView) mView.findViewById(R.id.iv_livevideo_praiselist_title);
-        ivLight = (ImageView) mView.findViewById(R.id.iv_livevideo_praiselist_light);
-        ivScrollLight = (ImageView) mView.findViewById(R.id.iv_livevideo_praiselist_scroll_light);
-        rlLight = (RelativeLayout) mView.findViewById(R.id.rv_livevideo_praiselist_light);
-        rlMessage = (RelativeLayout) mView.findViewById(R.id.rv_livevideo_praiselist_message);
-        rlScroll = (RelativeLayout) mView.findViewById(R.id.rl_livevideo_praiselist_scroll);
-        tvScroll = (TextView) mView.findViewById(R.id.tv_livevideo_praiselist_scroll);
-        ivScrollBackground = (ImageView) mView.findViewById(R.id.rl_livevideo_praiselist_scroll_bg);
+        lottieAnimationBGView = (LottieAnimationView) mView.findViewById(R.id.lav_livevideo_praise_pager_bg);
+        lottieAnimationLoopBGView = (LottieAnimationView) mView.findViewById(R.id.lav_livevideo_praise_loop_pager_bg);
+        lottieAnimationThanksView = (LottieAnimationView) mView.findViewById(R.id.lav_livevideo_praise_thanks);
+        lottieAnimationThanksGroup = mView.findViewById(R.id.fl_livevideo_praise_thanks_group);
 
-        tv1 = (TextView) mView.findViewById(R.id.text_1);
-        tv2 = (TextView) mView.findViewById(R.id.text_2);
-        tv3 = (TextView) mView.findViewById(R.id.text_3);
-        tv4 = (TextView) mView.findViewById(R.id.text_4);
-        tv5 = (TextView) mView.findViewById(R.id.text_5);
-        tv6 = (TextView) mView.findViewById(R.id.text_6);
+        lottieAnimationTeacherView = (LottieAnimationView) mView.findViewById(R.id.lav_livevideo_praise_teacher);
+        lottieAnimationTeacherGroup = mView.findViewById(R.id.fl_livevideo_praise_teacher_group);
+        teacherTipsView = (TextView) mView.findViewById(R.id.tv_livevideo_praise_teacher_tips);
+
+        contentGroup = mView.findViewById(R.id.rl_livevideo_praiselist_content);
+
+        tvTipsView = (TextView) mView.findViewById(R.id.tv_livevideo_praiselist_tips);
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tvTipsView.getLayoutParams();
+        params.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 138));
+        tvTipsView.setLayoutParams(params);
+
+        rvPraiseListView = (RecyclerView) mView.findViewById(R.id.gv_livevideo_praiselist);
+        rvPraiseListView.addItemDecoration(new SpaceItemDecoration(SizeUtils.Dp2Px(mContext, 5)));
+        rvPraiseListView.setHasFixedSize(true);
+        GridLayoutAnimationController animationController = (GridLayoutAnimationController)
+                AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_praise_student_list);
+        rvPraiseListView.setLayoutAnimation(animationController);
+        rvPraiseListView.scheduleLayoutAnimation();
+
+        tvDanmakuView = (AutoVerticalScrollTextView) mView.findViewById(R.id.tv_livevideo_praiselist_danmaku);
+        btnThumbsUpView = (Button) mView.findViewById(R.id.btn_livevideo_praise);
+        noteView = (TextView) mView.findViewById(R.id.tv_livevideo_note);
+
+
+        lottieAnimationBGView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                .OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                //计算列表的位置
+                RelativeLayout.LayoutParams listParams = (RelativeLayout.LayoutParams) rvPraiseListView
+                        .getLayoutParams();
+                if (isOnList) {
+                    listParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 179));
+                } else {
+                    listParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 179 - 39));
+                }
+                if (mPraiseListType == PRAISE_LIST_TYPE_THUMBS_UP) {
+                    listParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 64));
+                } else {
+                    listParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 144));
+                }
+                listParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 97));
+                listParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 88));
+                rvPraiseListView.setLayoutParams(listParams);
+
+                //计算点赞区域的位置
+                RelativeLayout.LayoutParams danmakuLayoutParams = (RelativeLayout.LayoutParams) tvDanmakuView
+                        .getLayoutParams();
+                danmakuLayoutParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 271));
+                danmakuLayoutParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 83));
+                danmakuLayoutParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 168));
+                tvDanmakuView.setLayoutParams(danmakuLayoutParams);
+
+                RelativeLayout.LayoutParams thumbsUpLayoutParams = (RelativeLayout.LayoutParams) btnThumbsUpView
+                        .getLayoutParams();
+                thumbsUpLayoutParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 252));
+                thumbsUpLayoutParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 345));
+                thumbsUpLayoutParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 69));
+                btnThumbsUpView.setLayoutParams(thumbsUpLayoutParams);
+
+
+                //计算备注的位置
+                RelativeLayout.LayoutParams noteParams = (RelativeLayout.LayoutParams) noteView.getLayoutParams();
+                noteParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 313));
+                noteParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 76));
+
+
+                //计算老师点赞学生文字位置
+                RelativeLayout.LayoutParams teacherTipsParams = (RelativeLayout.LayoutParams) teacherTipsView
+                        .getLayoutParams();
+                teacherTipsParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 236));
+                teacherTipsParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 109));
+                teacherTipsParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 105));
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    lottieAnimationBGView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    lottieAnimationBGView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
+
+//        preloadBitmap();
         return mView;
     }
+
+    /**
+     * 预加载一部分图片，避免动画太卡
+     */
+    private void preloadBitmap() {
+        mBitmapCache = new LruCache<String, Bitmap>(10 * 1024 * 1024) {
+            @Override
+            protected int sizeOf(String key, Bitmap value) {
+                return value.getByteCount();
+            }
+        };
+        InputStream in = null;
+        try {
+            AssetManager assets = mContext.getAssets();
+            String dir = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_advance";
+            String[] list = assets.list(dir);
+            for (int i = 0; i < list.length; i++) {
+                in = mContext.getAssets().open(dir + File.separator + list[i]);
+                Bitmap bitmap = BitmapFactory.decodeStream(in);
+                mBitmapCache.put(list[i], bitmap);
+                in.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+
+
+    }
+
+    /**
+     * 根据效果图比例动态计算控件垂直方向边距
+     *
+     * @param rate
+     * @return
+     */
+    private int caculateVerticalMargin(int rate) {
+        int screenHeight = ScreenUtils.getScreenHeight();
+        return (rate * screenHeight) / SizeUtils.Dp2Px(mContext, 375);
+    }
+
+    /**
+     * 根据效果图比例动态计算控件水平方向边距
+     *
+     * @param rate
+     * @return
+     */
+    private int caculateHorizontalMargin(int rate) {
+        int measuredWidth = lottieAnimationBGView.getMeasuredWidth();
+        return (rate * measuredWidth) / SizeUtils.Dp2Px(mContext, 500);
+    }
+
 
     @Override
     public void initData() {
         //名字
         stuName = liveBll.getStuName();
+        tvTipsView.setText("恭喜 " + stuName + " 同学金榜题名!");
         //名字缩写
         String abbStuName = stuName;
         if (stuName != null && stuName.length() > 4) {
@@ -216,14 +373,20 @@ public class PraiseListPager extends LiveBasePager {
                 " 为你点赞，运气不错，额外获得<font color='#F13232'>1</font>颗赞哦~",
                 " 为你点赞，运气爆棚，额外获得<font color='#F13232'>2</font>颗赞哦!"};
 
-        //开始表扬榜榜头动画
-        startTitleAnimation();
+
+        weakHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startBGAnimation();
+            }
+        }, 300);
+
 
         //播放声音
         if (soundPool == null)
             soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         if (soundPraiselistIn == 0) {
-            soundPraiselistIn = soundPool.load(videoActivity, R.raw.praise_list, 1);
+            soundPraiselistIn = soundPool.load(mContext, R.raw.praise_list, 1);
             soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
                 public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
                     // TODO Auto-generated method stub
@@ -238,109 +401,66 @@ public class PraiseListPager extends LiveBasePager {
         GridLayoutManager layoutManager = null;
         switch (mPraiseListType) {
             case PRAISE_LIST_TYPE_HONOR:
-                tvTips.setText("全对或者订正到全对的同学可以上榜哦~");
+                noteView.setText("备注:全对或者订正到全对的同学可以上榜哦~");
                 adapter = new RCommonAdapter(mContext, honorListEntity.getHonorEntities());
                 adapter.addItemViewDelegate(new HonorItem());
-                layoutManager = new GridLayoutManager(mContext, 3);
-                layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                    @Override
-                    public int getSpanSize(int position) {
-                        if (position == 0 && honorListEntity.getHonorEntities().get(0).getIsMy() == 1) {
-                            return 3;
-                        } else {
-                            return 1;
-                        }
-                    }
-                });
-                rvPraiseList.setLayoutManager(layoutManager);
-
-                rvPraiseList.setAdapter(adapter);
+                layoutManager = new GridLayoutManager(mContext, 4);
+                rvPraiseListView.setLayoutManager(layoutManager);
+                rvPraiseListView.setAdapter(adapter);
                 if (honorListEntity.getPraiseStatus() != 0)
-                    btnThumbsUp.setVisibility(View.GONE);
-                for (int i = 0; i < honorListEntity.getHonorEntities().size(); i++) {
-                    if (honorListEntity.getHonorEntities().get(i).getIsMy() == 1) {
-                        isOnList = true;
-                        onListIndex = i;
-                        break;
-                    }
+                    btnThumbsUpView.setVisibility(View.INVISIBLE);
+
+                if (honorListEntity != null && honorListEntity.getIsMy() == 1) {
+                    tvTipsView.setVisibility(View.VISIBLE);
+                } else {
+                    tvTipsView.setVisibility(View.GONE);
                 }
-//                if(isOnList)
-//                    rvPraiseList.setSelection(onListIndex);
                 break;
             case PRAISE_LIST_TYPE_THUMBS_UP:
                 adapter = new RCommonAdapter(mContext, thumbsUpListEntity.getThumbsUpEntities());
                 adapter.addItemViewDelegate(new ThunbsUpItem());
                 layoutManager = new GridLayoutManager(mContext, 3);
-                layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                    @Override
-                    public int getSpanSize(int position) {
-                        if (position == 0 && thumbsUpListEntity.getThumbsUpEntities().get(0).getIsMy() == 1) {
-                            return 3;
-                        } else {
-                            return 1;
-                        }
-                    }
-                });
-                rvPraiseList.setLayoutManager(layoutManager);
-                rvPraiseList.setAdapter(adapter);
-                tvTips.setVisibility(View.GONE);
-                rlMessage.setVisibility(View.GONE);
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rvPraiseList.getLayoutParams();
-                lp.setMargins(SizeUtils.Dp2Px(videoActivity, 20),
-                        SizeUtils.Dp2Px(videoActivity, 53),
-                        SizeUtils.Dp2Px(videoActivity, 20),
-                        SizeUtils.Dp2Px(videoActivity, 24));
-                for (int i = 0; i < thumbsUpListEntity.getThumbsUpEntities().size(); i++) {
-                    if (thumbsUpListEntity.getThumbsUpEntities().get(i).getIsMy() == 1) {
-                        isOnList = true;
-                        onListIndex = i;
-                        break;
-                    }
+                rvPraiseListView.setLayoutManager(layoutManager);
+                rvPraiseListView.setAdapter(adapter);
+                if (thumbsUpListEntity != null && thumbsUpListEntity.getIsMy() == 1) {
+                    tvTipsView.setVisibility(View.VISIBLE);
+                } else {
+                    tvTipsView.setVisibility(View.GONE);
                 }
-//                if(isOnList)
-//                    rvPraiseList.setSelection(onListIndex);
+                tvDanmakuView.setVisibility(View.GONE);
+                btnThumbsUpView.setVisibility(View.GONE);
+                noteView.setVisibility(View.GONE);
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rvPraiseListView.getLayoutParams();
+                lp.setMargins(SizeUtils.Dp2Px(mContext, 20),
+                        SizeUtils.Dp2Px(mContext, 53),
+                        SizeUtils.Dp2Px(mContext, 20),
+                        SizeUtils.Dp2Px(mContext, 24));
                 break;
             case PRAISE_LIST_TYPE_PROGRESS:
-                tvTips.setText("连续两次作业分数(百分制)有进步可以上榜哦~");
+                noteView.setText("备注:连续两次作业分数(百分制)有进步可以上榜哦~");
                 adapter = new RCommonAdapter(mContext, progressListEntity.getProgressEntities());
                 adapter.addItemViewDelegate(new ProgressItem());
-                layoutManager = new GridLayoutManager(mContext, 2);
-                layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                    @Override
-                    public int getSpanSize(int position) {
-                        if (position == 0 && progressListEntity.getProgressEntities().get(0).getIsMy() == 1) {
-                            return 2;
-                        } else {
-                            return 1;
-                        }
-                    }
-                });
-                rvPraiseList.setLayoutManager(layoutManager);
-                rvPraiseList.setAdapter(adapter);
+                layoutManager = new GridLayoutManager(mContext, 3);
+                rvPraiseListView.setLayoutManager(layoutManager);
+                rvPraiseListView.setAdapter(adapter);
                 if (progressListEntity.getPraiseStatus() != 0)
-                    btnThumbsUp.setVisibility(View.GONE);
-                for (int i = 0; i < progressListEntity.getProgressEntities().size(); i++) {
-                    if (progressListEntity.getProgressEntities().get(i).getIsMy() == 1) {
-                        isOnList = true;
-                        onListIndex = i;
-                        break;
-                    }
+                    btnThumbsUpView.setVisibility(View.INVISIBLE);
+
+                if (progressListEntity != null && progressListEntity.getIsMy() == 1) {
+                    tvTipsView.setVisibility(View.VISIBLE);
+                } else {
+                    tvTipsView.setVisibility(View.GONE);
                 }
-//                if(isOnList)
-//                    rvPraiseList.setSelection(onListIndex);
                 break;
             default:
                 break;
         }
-        //屏蔽GridView的Item选中变色
-        //rvPraiseList.setSelector(new ColorDrawable(Color.TRANSPARENT));
-
         //监听点赞按钮点击事件
-        btnThumbsUp.setOnClickListener(new View.OnClickListener() {
+        btnThumbsUpView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (soundThumbsUp == 0) {
-                    soundThumbsUp = soundPool.load(videoActivity, R.raw.thumbs_up, 1);
+                    soundThumbsUp = soundPool.load(mContext, R.raw.thumbs_up, 1);
                     soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
                         public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
                             // TODO Auto-generated method stub
@@ -354,50 +474,32 @@ public class PraiseListPager extends LiveBasePager {
                     liveBll.getHonorList(1);
                 if (mPraiseListType == PRAISE_LIST_TYPE_PROGRESS)
                     liveBll.getProgressList(1);
-                btnThumbsUp.setEnabled(false);
+                btnThumbsUpView.setEnabled(false);
             }
         });
 
-        tv1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                liveBll.getHonorList(0);
+    }
+
+
+    public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
+
+        private int space;
+
+        public SpaceItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            //不是第一个的格子都设一个左边和底部的间距
+//            outRect.left = space;
+            outRect.bottom = space;
+            //由于每行都只有3个，所以第一个都是3的倍数，把左边距设为0
+            if (parent.getChildLayoutPosition(view) % 4 == 0) {
+                outRect.left = 0;
             }
-        });
-        tv2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                liveBll.getProgressList(0);
-            }
-        });
-        tv3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                liveBll.getThumbsUpList();
-            }
-        });
-        tv4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPraiseListBll.showPraiseScroll("测试", "测试");
-            }
-        });
-        tv5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ArrayList<String> arrayList = new ArrayList<>();
-                arrayList.add("测试1");
-                arrayList.add("测试22");
-                arrayList.add("测试333");
-                mPraiseListBll.receiveThumbsUpNotice(arrayList);
-            }
-        });
-        tv6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPraiseListBll.closePraiseList();
-            }
-        });
+        }
+
     }
 
     /** 计算点赞数量的规则 */
@@ -434,155 +536,219 @@ public class PraiseListPager extends LiveBasePager {
         return thumbsUpNum;
     }
 
-    /** 开始榜单头部动画 */
-    public void startTitleAnimation() {
+    /** 开始整个背景动画 */
+    public void startBGAnimation() {
 
-        //设置表扬榜榜头的上边距，使其居中显示
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivTitle.getLayoutParams();
-        int top = (int) (mPraiseListBll.getDisplayHeight() / 2 - SizeUtils.Dp2Px(videoActivity, 89.5f));
-        lp.setMargins(0, top, 0, 0);
+        String advanceResPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_advance";
+        String advanceJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/data.json";
+        final LottieEffectInfo advanceEffectInfo = new LottieEffectInfo(advanceResPath, advanceJsonPath);
 
-        ivTitle.setVisibility(View.VISIBLE);
-        ivLight.setVisibility(View.VISIBLE);
+        String praiseResPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_praise";
+        final LottieEffectInfo praiseEffectInfo = new LottieEffectInfo(praiseResPath, advanceJsonPath);
 
-        switch (mPraiseListType) {
-            case PRAISE_LIST_TYPE_HONOR:
-                ivTitle.setImageResource(R.drawable.bg_livevideo_praiselist_title_excellent);
-                break;
-            case PRAISE_LIST_TYPE_THUMBS_UP:
-                ivTitle.setImageResource(R.drawable.bg_livevideo_praiselist_title_thumbs_up);
-                break;
-            case PRAISE_LIST_TYPE_PROGRESS:
-                ivTitle.setImageResource(R.drawable.bg_livevideo_praiselist_title_progress);
-                break;
-            default:
-                break;
-        }
-        ivLight.setImageResource(R.drawable.bg_livevideo_praiselist_light);
+        String goodResPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_good";
+        final LottieEffectInfo goodEffectInfo = new LottieEffectInfo(goodResPath, advanceJsonPath);
 
-        //平移距离 = 平移前中心MarginTop - 平移后中心MarginTop
-        float moveUpDistance = (float) (mPraiseListBll.getDisplayHeight()) / 2 - SizeUtils.Dp2Px(videoActivity, 74.5f);
+        final ArrayList<String> praiseDeleteRes = new ArrayList<>(3);
+        praiseDeleteRes.add("img_11.png");
+        praiseDeleteRes.add("img_12.png");
 
-        /** 动画表扬榜 */
-        //渐现
-        ObjectAnimator fadeInTitle = ObjectAnimator.ofFloat(ivTitle, "alpha", 0f, 1f);
-        fadeInTitle.setDuration(1000);
-        //放大
-        ObjectAnimator expandXTitle = ObjectAnimator.ofFloat(ivTitle, "scaleX", 0.6f, 1f);
-        expandXTitle.setDuration(1000);
-        ObjectAnimator expandYTitle = ObjectAnimator.ofFloat(ivTitle, "scaleY", 0.6f, 1f);
-        expandYTitle.setDuration(1000);
-        //平移
-        ObjectAnimator moveUpTitle = ObjectAnimator.ofFloat(ivTitle, "translationY", 0f, -moveUpDistance);
-        moveUpTitle.setDuration(1000);
-        //缩小
-        ObjectAnimator ShrinkXTitle = ObjectAnimator.ofFloat(ivTitle, "scaleX", 1f, 0.6f);
-        ShrinkXTitle.setDuration(1000);
-        ObjectAnimator ShrinkYTitle = ObjectAnimator.ofFloat(ivTitle, "scaleY", 1f, 0.6f);
-        ShrinkYTitle.setDuration(1000);
-        AnimatorSet animSetTitle = new AnimatorSet();
-        animSetTitle.play(fadeInTitle).with(expandXTitle).with(expandYTitle).before(moveUpTitle).before(ShrinkXTitle).before(ShrinkYTitle);
-        animSetTitle.start();
+        final Map<String, String> praiseToAdvanceRes = new HashMap<>();
+        praiseToAdvanceRes.put("img_6.png", "img_11.png");
+        praiseToAdvanceRes.put("img_7.png", "img_12.png");
+        praiseToAdvanceRes.put("img_8.png", "img_13.png");
+        praiseToAdvanceRes.put("img_10.png", "img_15.png");
+        praiseToAdvanceRes.put("img_13.png", "img_17.png");
 
-        /** 动画光芒*/
-        //旋转
-        ObjectAnimator rotateLight = ObjectAnimator.ofFloat(ivLight, "rotation", 0f, 60f);
-        rotateLight.setDuration(1000);
-        //平移
-        ObjectAnimator moveUpLight = ObjectAnimator.ofFloat(ivLight, "translationY", 0f, -moveUpDistance);
-        moveUpLight.setDuration(1000);
-        AnimatorSet animSetLight = new AnimatorSet();
-        animSetLight.play(rotateLight).before(moveUpLight);
-        animSetLight.start();
+        final Map<String, String> goodToAdvanceRes = new HashMap<>();
+        goodToAdvanceRes.put("img_6.png", "img_11.png");
+        goodToAdvanceRes.put("img_7.png", "img_13.png");
+        goodToAdvanceRes.put("img_8.png", "img_12.png");
+        goodToAdvanceRes.put("img_10.png", "img_15.png");
 
-        moveUpLight.addListener(new AnimatorListenerAdapter() {
+        lottieAnimationBGView.setAnimationFromJson(advanceEffectInfo.getJsonStrFromAssets(mContext));
+        lottieAnimationBGView.useHardwareAcceleration(true);
+        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
-            public void onAnimationStart(Animator animation) {
-                //修改光芒所在的层级
-                super.onAnimationStart(animation);
-                ViewGroup viewGroup = (ViewGroup) ivLight.getParent();
-                viewGroup.removeView(ivLight);
-                rlLight.addView(ivLight);
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                String fileName = lottieImageAsset.getFileName();
+                //优秀榜
+                if (mPraiseListType == PRAISE_LIST_TYPE_HONOR) {
+                    if (goodToAdvanceRes.containsKey(fileName)) {
+                        return goodEffectInfo.fetchBitmapFromAssets(lottieAnimationBGView, goodToAdvanceRes.get
+                                        (fileName),
+                                lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
+                                mContext);
+                    }
+
+
+                } else if (mPraiseListType == PRAISE_LIST_TYPE_THUMBS_UP) {
+                    if (praiseToAdvanceRes.containsKey(fileName)) {
+                        return praiseEffectInfo.fetchBitmapFromAssets(lottieAnimationBGView, praiseToAdvanceRes.get
+                                        (fileName),
+                                lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
+                                mContext);
+                    } else if (praiseDeleteRes.contains(fileName)) {
+                        return null;
+                    }
+
+                }
+
+                return advanceEffectInfo.fetchBitmapFromAssets(lottieAnimationBGView, lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
+            }
+        };
+        lottieAnimationBGView.setImageAssetDelegate(imageAssetDelegate);
+        lottieAnimationBGView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float animatedFraction = animation.getAnimatedFraction();
+                if (animatedFraction > 0.8) {
+                    contentGroup.setVisibility(View.VISIBLE);
+                }
+
             }
         });
+        lottieAnimationBGView.addAnimatorListener(new BGAnimatorListener(ANIMATOR_TYPE_MAIN));
+        lottieAnimationBGView.playAnimation();
+
+
+        String loopResPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_advance";
+        String loopJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/data_loop.json";
+        final LottieEffectInfo loopEffectInfo = new LottieEffectInfo(loopResPath, loopJsonPath);
+        lottieAnimationLoopBGView.setAnimationFromJson(loopEffectInfo.getJsonStrFromAssets(mContext));
+        lottieAnimationLoopBGView.useHardwareAcceleration(true);
+        lottieAnimationLoopBGView.setRepeatCount(-1);
+        lottieAnimationLoopBGView.setImageAssetDelegate(imageAssetDelegate);
+
     }
 
-    /** 开始表扬条幅动画 */
+    /**
+     * 谢谢点赞
+     */
+    private void startThanksBGAnimation() {
+        String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "thanks/images";
+        String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "thanks/data.json";
+        final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(resPath, jsonPath);
+        lottieAnimationThanksView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
+        lottieAnimationThanksView.useHardwareAcceleration(true);
+        lottieAnimationThanksView.setImageAssetDelegate(new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return lottieEffectInfo.fetchBitmapFromAssets(lottieAnimationThanksView, lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
+            }
+        });
+
+        lottieAnimationThanksView.addAnimatorListener(new BGAnimatorListener(ANIMATOR_TYPE_THANKS));
+        lottieAnimationThanksView.playAnimation();
+    }
+
+
+    /**
+     * 显示老师表扬横幅
+     *
+     * @param stuName
+     * @param tecName
+     */
     public void startScrollAnimation(String stuName, String tecName) {
         if (!isOnList)
             return;
-        Loger.i(TAG, "startScrollAnimation");
+        lottieAnimationTeacherGroup.setVisibility(View.VISIBLE);
+        String student = stuName + "同学";
+        String str1 = " 获得 ";
+        String teacher = tecName + "老师";
+        String str2 = " 的重点表扬,要努力继续上榜哦～";
+        SpannableString spanText = new SpannableString(student + str1 + teacher + str2);
+        spanText.setSpan(new AbsoluteSizeSpan(SizeUtils.Sp2Px(mContext, 18)), 0, student.length()
+                , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int start = student.length() + str1.length();
+        spanText.setSpan(new AbsoluteSizeSpan(SizeUtils.Sp2Px(mContext, 18)), start,
+                start + teacher.length()
+                , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        teacherTipsView.setText(spanText);
 
-        if (stuName != null && stuName.length() > 4) {
-            stuName = stuName.substring(0, 3) + "...";
-        }
-
-        if (tecName != null && tecName.length() > 4) {
-            tecName = tecName.substring(0, 3) + "...";
-        }
-
-        rlScroll.setVisibility(View.VISIBLE);
-        ivScrollBackground.setVisibility(View.VISIBLE);
-        //ivLight.setVisibility(View.INVISIBLE);
-
-        //Html设置字体加粗效果
-        tvScroll.setText(
-                Html.fromHtml(
-                        "<b><tt>" + stuName + "同学</tt></b> 获得 <b><tt>" + tecName + "老师</tt></b> 的重点表扬<br />要努力继续上榜哦!"));
-
-        //渐现
-        ObjectAnimator fadeInBackground = ObjectAnimator.ofFloat(ivScrollBackground, "alpha", 0f, 0.8f);
-        fadeInBackground.setDuration(1000);
-        fadeInBackground.start();
-        //渐隐
-        ObjectAnimator fadeOutBackground = ObjectAnimator.ofFloat(ivScrollBackground, "alpha", 0.8f, 0f);
-        fadeOutBackground.setDuration(1000);
-        fadeOutBackground.setStartDelay(4000);
-        fadeOutBackground.start();
-
-        //渐现
-        ObjectAnimator fadeInTitle = ObjectAnimator.ofFloat(rlScroll, "alpha", 0f, 1f);
-        fadeInTitle.setDuration(1000);
-        //放大
-        ObjectAnimator expandXTitle = ObjectAnimator.ofFloat(rlScroll, "scaleX", 0.6f, 1f);
-        expandXTitle.setDuration(1000);
-        ObjectAnimator expandYTitle = ObjectAnimator.ofFloat(rlScroll, "scaleY", 0.6f, 1f);
-        expandYTitle.setDuration(1000);
-
-        //渐隐
-        ObjectAnimator fadeOutTitle = ObjectAnimator.ofFloat(rlScroll, "alpha", 1f, 0f);
-        fadeOutTitle.setDuration(1000);
-        //缩小
-        ObjectAnimator shrinkXTitle = ObjectAnimator.ofFloat(rlScroll, "scaleX", 1f, 0.6f);
-        shrinkXTitle.setDuration(1000);
-        ObjectAnimator shrinkYTitle = ObjectAnimator.ofFloat(rlScroll, "scaleY", 1f, 0.6f);
-        shrinkYTitle.setDuration(1000);
-
-        AnimatorSet animSetTitleIn = new AnimatorSet();
-        animSetTitleIn.play(fadeInTitle).with(expandXTitle).with(expandYTitle);
-        animSetTitleIn.start();
-
-        AnimatorSet animSetTitleOut = new AnimatorSet();
-        animSetTitleOut.play(fadeOutTitle).with(shrinkXTitle).with(shrinkYTitle).after(4000);
-        animSetTitleOut.start();
-
-        //旋转
-        ObjectAnimator rotateLight = ObjectAnimator.ofFloat(ivScrollLight, "rotation", 0f, 300f);
-        rotateLight.setDuration(5000);
-
-        rotateLight.start();
-        rotateLight.addListener(new AnimatorListenerAdapter() {
+        String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "praise_teacher/images";
+        String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "praise_teacher/data.json";
+        final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(resPath, jsonPath);
+        lottieAnimationTeacherView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
+        lottieAnimationTeacherView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                rlScroll.setVisibility(View.GONE);
-                ivScrollBackground.setVisibility(View.GONE);
-                //ivLight.setVisibility(View.VISIBLE);
-
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return lottieEffectInfo.fetchBitmapFromAssets(lottieAnimationTeacherView, lottieImageAsset
+                                .getFileName(),
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
             }
         });
-        liveBll.sendThumbsUpNum(1);
+        lottieAnimationTeacherView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float animatedFraction = animation.getAnimatedFraction();
+                if (animatedFraction > 0.1 && teacherTipsView.getVisibility() == View.INVISIBLE) {
+                    teacherTipsView.setVisibility(View.VISIBLE);
+                }
+                if (animatedFraction > 0.6) {
+                    teacherTipsView.setVisibility(View.INVISIBLE);
+                    lottieAnimationTeacherGroup.setVisibility(View.GONE);
+                }
+            }
+        });
+        lottieAnimationTeacherView.addAnimatorListener(new BGAnimatorListener(ANIMATOR_TYPE_TEACHER));
+        lottieAnimationTeacherView.playAnimation();
+
     }
+
+
+    /**
+     * 动画监听不准确，屏幕上已经没有动画但是end方法过一段时间才能收到
+     */
+    class BGAnimatorListener implements Animator.AnimatorListener {
+
+        private int mType;
+
+        BGAnimatorListener(int type) {
+            this.mType = type;
+        }
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            if (mType == ANIMATOR_TYPE_THANKS) {
+                lottieAnimationThanksGroup.setVisibility(View.GONE);
+            } else if (mType == ANIMATOR_TYPE_TEACHER) {
+                lottieAnimationTeacherGroup.setVisibility(View.GONE);
+            } else if (mType == ANIMATOR_TYPE_MAIN) {
+                contentGroup.setVisibility(View.VISIBLE);
+
+                lottieAnimationBGView.setVisibility(View.GONE);
+                lottieAnimationLoopBGView.setVisibility(View.VISIBLE);
+//                //开启循环动画
+                lottieAnimationLoopBGView.playAnimation();
+
+            }
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
+
+    }
+
+
+    public void setThumbsUpBtnEnabled(boolean enabled) {
+        btnThumbsUpView.setEnabled(enabled);
+    }
+
 
     /** 收到给我点赞的消息 */
     public void receiveThumbsUpNotice(ArrayList<String> stuNames) {
@@ -631,8 +797,8 @@ public class PraiseListPager extends LiveBasePager {
                 weakHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        tvDanmaku.next();
-                        tvDanmaku.setText(Html.fromHtml(
+                        tvDanmakuView.next();
+                        tvDanmakuView.setText(Html.fromHtml(
                                 "<font color='#F13232'>" + stuNames.get(number % stuNames.size()) + "</font>"
                                         + thumbsUpCopywriting[thumbsUpCopywritingIndex.get(number % stuNames.size())]
                         ));
@@ -664,9 +830,11 @@ public class PraiseListPager extends LiveBasePager {
         }
     }
 
+
     public void showThumbsUpToast() {
-        btnThumbsUp.setVisibility(View.GONE);
-        Toast.makeText(videoActivity, "你真棒！谢谢你的点赞", Toast.LENGTH_SHORT).show();
+        btnThumbsUpView.setVisibility(View.INVISIBLE);
+        lottieAnimationThanksGroup.setVisibility(View.VISIBLE);
+        startThanksBGAnimation();
         liveBll.sendThumbsUp();
 
         StableLogHashMap logHashMap = new StableLogHashMap("praisePraiseList");
@@ -676,18 +844,13 @@ public class PraiseListPager extends LiveBasePager {
         logHashMap.put("sno","5");
         logHashMap.put("ex","Y");
         umsAgentDebugInter(LiveVideoConfig.LIVE_PRAISE_LIST, logHashMap.getData());
-
     }
 
-    public void setThumbsUpBtnEnabled(boolean enabled) {
-        btnThumbsUp.setEnabled(enabled);
-    }
 
     /**
-     * 光荣榜item
+     * 优秀榜item
      */
     private class HonorItem implements RItemViewInterface<HonorListEntity.HonorEntity> {
-        ImageView ivCrown;
         TextView tvName;
         TextView tvCounts;
 
@@ -698,9 +861,9 @@ public class PraiseListPager extends LiveBasePager {
 
         @Override
         public void initView(ViewHolder viewHolder, int i) {
-            ivCrown = viewHolder.getView(R.id.iv_livevideo_praiselist_honor_crown);
             tvName = viewHolder.getView(R.id.tv_livevideo_praiselist_honor_name);
-            tvCounts = viewHolder.getView(R.id.tv_livevideo_praiselist_honor_counts);
+            tvCounts = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_honor_counts);
+            tvCounts.setVisibility(View.GONE);
         }
 
         @Override
@@ -710,19 +873,14 @@ public class PraiseListPager extends LiveBasePager {
 
         @Override
         public void convert(ViewHolder viewHolder, HonorListEntity.HonorEntity honorEntity, int i) {
-            if (honorEntity != null && !honorEntity.getStuName().equals("")) {
-                if (honorEntity.getIsMy() == 1) {
-                    ivCrown.setImageResource(R.drawable.ic_livevideo_praiselist_crown);
-                    tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
-                    tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
-                } else if (honorEntity.getIsMy() == 0) {
-                    ivCrown.setImageResource(0);
-                    tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
-                    tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
+            if (honorEntity != null) {
+                String stuName = honorEntity.getStuName();
+                if (!TextUtils.isEmpty(stuName)) {
+                    if (stuName.length() >= 5) {
+                        stuName = stuName.substring(0, 3) + "...";
+                    }
                 }
-                tvName.setText(honorEntity.getStuName());
-                tvCounts.setVisibility(View.GONE);
-//                tvCounts.setText("×" + honorEntity.getExcellentNum());
+                tvName.setText(stuName);
             }
         }
     }
@@ -731,13 +889,16 @@ public class PraiseListPager extends LiveBasePager {
      * 点赞榜item
      */
     private class ThunbsUpItem implements RItemViewInterface<ThumbsUpListEntity.ThumbsUpEntity> {
-        ImageView ivCrown;
         TextView tvName;
         TextView tvCounts;
+        ImageView ivArrow;
+        LinearLayout rootview;
+        int tvNameWidth;
+        int tvCountWidth;
 
         @Override
         public int getItemLayoutId() {
-            return R.layout.item_livevideo_praiselist_honor;
+            return R.layout.item_livevideo_praiselist_progress;
         }
 
         @Override
@@ -747,26 +908,39 @@ public class PraiseListPager extends LiveBasePager {
 
         @Override
         public void initView(ViewHolder viewHolder, int i) {
-            ivCrown = (ImageView) viewHolder.getView(R.id.iv_livevideo_praiselist_honor_crown);
-            tvName = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_honor_name);
-            tvCounts = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_honor_counts);
+            rootview = (LinearLayout) viewHolder.getView(R.id.rl_livevideo_praiselist_progress_root);
+            tvName = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_progress_name);
+            tvCounts = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_progress_counts);
+            ivArrow = (ImageView) viewHolder.getView(R.id.iv_livevideo_praiselist_progress_arrow);
+            ivArrow.setImageResource(R.drawable.ic_livevideo_praiselist_praise);
+            tvCountWidth = (int) Math.ceil(tvCounts.getPaint().measureText("999"));
+            float nameWidth = tvName.getPaint().measureText("一二三...");
+            tvNameWidth = (int) Math.ceil(nameWidth);
         }
 
         @Override
         public void convert(ViewHolder viewHolder, ThumbsUpListEntity.ThumbsUpEntity thumbsUpEntity, int i) {
-            if (thumbsUpEntity != null && !thumbsUpEntity.getStuName().equals("")) {
-                if (thumbsUpEntity.getIsMy() == 1) {
-                    ivCrown.setImageResource(R.drawable.ic_livevideo_praiselist_crown);
-                    tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
-                    tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
-                } else if (thumbsUpEntity.getIsMy() == 0) {
-                    ivCrown.setImageResource(0);
-                    tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
-                    tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
+            if ((i + 1) % 3 == 1) {
+                rootview.setGravity(Gravity.LEFT);
+            } else if ((i + 1) % 3 == 0) {
+                rootview.setGravity(Gravity.RIGHT);
+            } else {
+                rootview.setGravity(Gravity.CENTER_HORIZONTAL);
+            }
+            if (thumbsUpEntity != null) {
+                String stuName = thumbsUpEntity.getStuName();
+                if (!TextUtils.isEmpty(stuName)) {
+                    if (stuName.length() >= 5) {
+                        stuName = stuName.substring(0, 3) + "...";
+                    }
                 }
 
-                tvName.setText(thumbsUpEntity.getStuName());
-                tvCounts.setText("×" + thumbsUpEntity.getStuPraiseNum());
+                tvName.setWidth(tvNameWidth);
+                tvName.setText(stuName);
+
+                tvCounts.setWidth(tvCountWidth);
+                tvCounts.setText(String.valueOf(thumbsUpEntity.getStuPraiseNum()));
+
             }
         }
     }
@@ -775,10 +949,12 @@ public class PraiseListPager extends LiveBasePager {
      * 进步榜item
      */
     private class ProgressItem implements RItemViewInterface<ProgressListEntity.ProgressEntity> {
-        ImageView ivCrown;
         TextView tvName;
         TextView tvCounts;
         ImageView ivArrow;
+        LinearLayout rootview;
+        int tvNameWidth;
+        int tvCountWidth;
 
         @Override
         public int getItemLayoutId() {
@@ -792,28 +968,38 @@ public class PraiseListPager extends LiveBasePager {
 
         @Override
         public void initView(ViewHolder viewHolder, int i) {
-            ivCrown = (ImageView) viewHolder.getView(R.id.iv_livevideo_praiselist_progress_crown);
+            rootview = (LinearLayout) viewHolder.getView(R.id.rl_livevideo_praiselist_progress_root);
             tvName = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_progress_name);
             tvCounts = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_progress_counts);
             ivArrow = (ImageView) viewHolder.getView(R.id.iv_livevideo_praiselist_progress_arrow);
+            tvCountWidth = (int) Math.ceil(tvCounts.getPaint().measureText("100分"));
+            float nameWidth = tvName.getPaint().measureText("一二三...");
+            tvNameWidth = (int) Math.ceil(nameWidth);
         }
 
         @Override
         public void convert(ViewHolder viewHolder, ProgressListEntity.ProgressEntity progressEntity, int i) {
-            if (progressEntity != null && !progressEntity.getStuName().equals("")) {
-                if (progressEntity.getIsMy() == 1) {
-                    ivCrown.setImageResource(R.drawable.ic_livevideo_praiselist_crown);
-                    tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
-                    tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_F13232));
-                } else if (progressEntity.getIsMy() == 0) {
-                    ivCrown.setImageResource(0);
-                    tvName.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
-                    tvCounts.setTextColor(videoActivity.getResources().getColor(R.color.COLOR_666666));
-                }
+            if ((i + 1) % 3 == 1) {
+                rootview.setGravity(Gravity.LEFT);
+            } else if ((i + 1) % 3 == 0) {
+                rootview.setGravity(Gravity.RIGHT);
+            } else {
+                rootview.setGravity(Gravity.CENTER_HORIZONTAL);
+            }
 
-                tvName.setText(progressEntity.getStuName());
-                tvCounts.setText(progressEntity.getProgressScore() + "分");
-                ivArrow.setImageResource(R.drawable.ic_livevideo_praiselist_arrow);
+            if (progressEntity != null) {
+                String stuName = progressEntity.getStuName();
+                if (!TextUtils.isEmpty(stuName)) {
+                    if (stuName.length() >= 5) {
+                        stuName = stuName.substring(0, 3) + "...";
+                    }
+                }
+                tvName.setWidth(tvNameWidth);
+                tvName.setText(stuName);
+
+                String score = progressEntity.getProgressScore() + "分";
+                tvCounts.setWidth(tvCountWidth);
+                tvCounts.setText(score);
             }
         }
     }

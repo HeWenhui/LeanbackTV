@@ -10,25 +10,12 @@ import android.widget.Toast;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
-import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveStandPlayBackVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.StandLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.json.JSONObject;
 
@@ -71,7 +58,7 @@ public class LiveVideoEnter {
     /** PushBll */
     public static final int ENTER_FROM_25 = 25;
     public static HashMap<String, LiveGetInfo> getInfos = new HashMap();
-
+    public static final String ENTER_ROOM_FROM = "from";
     /**
      * 跳转到直播,直播课，通过网页,已经废弃
      * //https://live.xueersi.com/Live/index/30641
@@ -122,7 +109,7 @@ public class LiveVideoEnter {
         bundle.putString("courseId", courseId);
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
-        bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, from);
+        bundle.putInt(ENTER_ROOM_FROM, from);
         LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
         return true;
     }
@@ -145,7 +132,7 @@ public class LiveVideoEnter {
         bundle.putString("vStuCourseID", vStuCourseID);
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
-        bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, from);
+        bundle.putInt(ENTER_ROOM_FROM, from);
         LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
 //        DataLoadEntity dataLoadEntity = new DataLoadEntity(context);
 //        BaseBll.postDataLoadEvent(dataLoadEntity.beginLoading());
@@ -221,7 +208,7 @@ public class LiveVideoEnter {
         Bundle bundle = new Bundle();
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
-        bundle.putInt(LectureLiveVideoActivity.ENTER_ROOM_FROM, from);
+        bundle.putInt(ENTER_ROOM_FROM, from);
 //        LectureLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
         LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
     }
@@ -249,7 +236,7 @@ public class LiveVideoEnter {
         bundle.putString("vSectionID", vSectionID);
         bundle.putString("currentDutyId", currentDutyId);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_TUTORIAL);
-        bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, from);
+        bundle.putInt(ENTER_ROOM_FROM, from);
         LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
     }
 
@@ -270,7 +257,7 @@ public class LiveVideoEnter {
         bundle.putString("vStuCourseID", jsonObject.optString("stuCouId"));
         bundle.putString("courseId", jsonObject.optString("courseId"));
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
-        bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, LiveVideoBusinessConfig.ENTER_FROM_5);
+        bundle.putInt(ENTER_ROOM_FROM, LiveVideoBusinessConfig.ENTER_FROM_5);
         intent.putExtras(bundle);
         return intent;
     }
@@ -286,13 +273,13 @@ public class LiveVideoEnter {
                 ("currentDutyId"))) {
             return null;
         }
-        Intent intent = new Intent(context, LiveVideoActivity.class);
+        Intent intent = new Intent(context, LiveVideoLoadActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Bundle bundle = new Bundle();
         bundle.putString("vSectionID", jsonObject.optString("vSectionId"));
         bundle.putString("currentDutyId", jsonObject.optString("currentDutyId"));
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_TUTORIAL);
-        bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, LiveVideoBusinessConfig.ENTER_FROM_13);
+        bundle.putInt(ENTER_ROOM_FROM, LiveVideoBusinessConfig.ENTER_FROM_13);
         intent.putExtras(bundle);
         return intent;
     }
@@ -307,12 +294,12 @@ public class LiveVideoEnter {
         if (TextUtils.isEmpty(jsonObject.optString("courseId"))) {
             return null;
         }
-        Intent intent = new Intent(context, LiveVideoActivity.class);
+        Intent intent = new Intent(context, LiveVideoLoadActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Bundle bundle = new Bundle();
         bundle.putString("vSectionID", jsonObject.optString("courseId"));
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
-        bundle.putInt(LiveVideoActivity.ENTER_ROOM_FROM, LiveVideoBusinessConfig.ENTER_FROM_25);
+        bundle.putInt(ENTER_ROOM_FROM, LiveVideoBusinessConfig.ENTER_FROM_25);
         intent.putExtras(bundle);
         return intent;
     }

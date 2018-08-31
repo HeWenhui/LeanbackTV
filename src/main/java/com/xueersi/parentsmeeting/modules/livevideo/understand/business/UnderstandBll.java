@@ -145,7 +145,11 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                 }
                 rlQuestionContent.getHandler().removeCallbacks(closeRedPackage);
                 rlQuestionContent.addView(understandView, params);
-                rlQuestionContent.postDelayed(closeRedPackage, 10000);//十秒之后关闭
+                if(LiveVideoConfig.isPrimary){
+//                    rlQuestionContent.postDelayed(closeRedPackage, 100000);//十秒之后关闭
+                }else{
+                    rlQuestionContent.postDelayed(closeRedPackage, 10000);//十秒之后关闭
+                }
                 activity.getWindow().getDecorView().requestLayout();
                 activity.getWindow().getDecorView().invalidate();
                 Map<String, String> mData = new HashMap<>();

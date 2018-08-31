@@ -194,6 +194,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             onUserBackPressed();
             return false;
         }
+        mLogtf.setLiveOnLineLogs(mLiveBll);
         initView();
         findViewById(R.id.rl_livevideo_student_liveinfo).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -732,7 +733,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     public void run() {
                         videoCachedDuration = vPlayer.getVideoCachedDuration();
                         mHandler.postDelayed(getVideoCachedDurationRun, 30000);
-                        mLiveBll.getOnloadLogs(TAG, "videoCachedDuration=" + videoCachedDuration);
+                        mLogtf.d("videoCachedDuration=" + videoCachedDuration);
                         if (videoCachedDuration > 10000) {
                             mLiveBll.streamReport(AuditClassLiveBll.MegId.MEGID_12130, mGetInfo.getChannelname(), -1);
                         }

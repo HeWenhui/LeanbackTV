@@ -8,13 +8,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerBottomInter;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
-import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     /** 标记疑问点按钮 */
     public Button btMark;
     ArrayList<MediaChildViewClick> mediaChildViewClicks = new ArrayList<>();
+    private LinearLayout llMarkPopMenu;
+    private View vMarkGuide;
 
     public BaseLiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context);
@@ -89,6 +92,8 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         cbMessageClock = (CheckBox) findViewById(R.id.cb_livevideo_message_clock);
         lvCommonWord = (ListView) findViewById(R.id.lv_livevideo_common_word);
         btMark = (Button) findViewById(R.id.bt_livevideo_mark);
+        llMarkPopMenu=findViewById(R.id.ll_livevideo_controller_mark_pop_menu);
+        vMarkGuide=findViewById(R.id.ll_livevideo_bottom_controller_mark_guide);
         if (btMark != null) {
             btMark.setOnClickListener(new OnClickListener() {
                 @Override
@@ -98,6 +103,14 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
             });
         }
     }
+    public LinearLayout getLlMarkPopMenu(){
+        return llMarkPopMenu;
+    }
+    public View getvMarkGuide(){
+        return vMarkGuide;
+    }
+
+
 
     public Button getBtMesOpen() {
         return btMesOpen;
@@ -159,6 +172,10 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     @Override
     public void onHide() {
         startAnimation(mAnimSlideOutTop);
+        if(llMarkPopMenu!=null){
+            llMarkPopMenu.setVisibility(GONE);
+        }
+
     }
 
     public void setController(LiveMediaController controller) {

@@ -257,6 +257,9 @@ public class LiveGetInfo {
     private String educationStage;
     /** 直播课年级 */
     private int grade;
+    /** 一发多题的动态接口*/
+    private String mulpreload;
+    private String mulh5url;
 
     /**
      * 是否是高三理科
@@ -1157,5 +1160,21 @@ public class LiveGetInfo {
         public double duration = 0;
         public int speakingNum = 0;
         public String speakingLen = "";
+    }
+
+    public String getMulpreload() {
+        return mulpreload;
+    }
+
+    public void setMulpreload(String mulpreload) {
+        this.mulpreload = mulpreload;
+    }
+
+    public String getMulh5url() {
+        return mulh5url;
+    }
+
+    public void setMulh5url(String mulh5url) {
+        this.mulh5url = mulh5url;
     }
 }

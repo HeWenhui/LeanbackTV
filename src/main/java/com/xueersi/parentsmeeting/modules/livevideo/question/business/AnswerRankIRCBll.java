@@ -3,15 +3,19 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 import android.app.Activity;
 import android.widget.RelativeLayout;
 
+import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -32,6 +36,10 @@ public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
                 && mGetInfo.getIs_show_ranks().equals("1")) {
             mAnswerRankBll = new AnswerRankBll(activity, mLiveBll);
             mAnswerRankBll.initView(mRootView);
+            mAnswerRankBll.setLiveHttpManager(getHttpManager());
+            mAnswerRankBll.setClassId(mGetInfo.getStudentLiveInfo().getClassId());
+            mAnswerRankBll.setTeamId(mGetInfo.getStudentLiveInfo().getTeamId());
+            mAnswerRankBll.setIsShow(mGetInfo.getIs_show_ranks());
         } else {
             mLiveBll.removeBusinessBll(this);
         }
@@ -56,6 +64,17 @@ public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
                 setNonce(object.optString("nonce"));
             }
             break;
+            case XESCODE.RANK_TEA_MESSAGE: {
+                try {
+                    List<RankUserEntity> lst = JSON.parseArray(object.optString("stuInfo"), RankUserEntity.class);
+                    if (mAnswerRankBll != null) {
+                        mAnswerRankBll.showRankList(lst, -1);
+                    }
+                } catch (Exception e) {
+                    Loger.i("=====notice " + e.getMessage());
+                }
+            }
+            break;
             default:
                 break;
         }
@@ -64,7 +83,7 @@ public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
     @Override
     public int[] getNoticeFilter() {
         return new int[]{
-                XESCODE.STOPQUESTION, XESCODE.EXAM_START, XESCODE.EXAM_STOP
+                XESCODE.STOPQUESTION, XESCODE.EXAM_START, XESCODE.EXAM_STOP, XESCODE.RANK_TEA_MESSAGE
         };
     }
 

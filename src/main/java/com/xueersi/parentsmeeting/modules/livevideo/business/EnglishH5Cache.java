@@ -172,7 +172,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         }
         Loger.d(TAG, "getCourseWareUrl:exists=" + exists + ",mkdirs=" + mkdirs);
         CacheWebView.getCacheConfig().init(context, todayLiveCacheDir.getPath(), 1024 * 1024 * 100, 1024 * 1024 * 10)
-                .enableDebug(true);//100M 磁盘缓存空间,10M 内存缓存空间
+                .enableDebug(AppConfig.DEBUG);//100M 磁盘缓存空间,10M 内存缓存空间
         //替换x5浏览器，缓存mp3经常出问题
 //        CacheExtensionConfig.addGlobalExtension("mp3");
 //        CacheExtensionConfig.addGlobalExtension("WAV");

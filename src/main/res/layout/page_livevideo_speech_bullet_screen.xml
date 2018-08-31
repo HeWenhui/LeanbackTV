@@ -29,7 +29,7 @@
 
         <cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout
             android:id="@+id/rl_livevideo_speechbul_panelroot"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/panel_height"
             android:visibility="gone">
 
@@ -41,7 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="140dp"
         android:layout_above="@id/rl_livevideo_speechbul_panelcontent"
-        android:background="@drawable/livevideo_alertview_yuyinbeijing_icon_normal">
+        android:background="@drawable/livevideo_alertview_yuyinbeijing_icon_normal"
+        android:visibility="gone">
 
         <TextView
             android:id="@id/tv_livevideo_speechbul_title"

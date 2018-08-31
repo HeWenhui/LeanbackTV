@@ -226,6 +226,22 @@ public class LiveVideoConfig {
     public static String nonce;
     /** 文理科的标志*/
     public static Boolean isScience;
+    /** 直播回放一发多题的拼装参数*/
+    // 直播回放的URL
+    public static String LIVEPLAYBACKINFOS;
+    // 直播回放的stuCouId
+    public static String LIVEPLAYBACKSTUID;
+    // 直播回放的classId
+    public static String LIVEPLAYBACKCLASSID;
+    // 直播回放的teamId
+    public static String LIVEPLAYBACKTEAMID;
+    // 直播回放的edustage
+    public static String LIVEPLAYBACKSTAGE;
+    // 直播回放的type
+    public static String LIVEPLAYBACKTYPE;
+    /** 一发多题的两个动态接口*/
+    public static String LIVEMULPRELOAD;
+    public static String LIVEMULH5URL;
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;
@@ -253,4 +269,5 @@ public class LiveVideoConfig {
 
     /** 直播-roleplay */
     public static String LIVE_ROLE_PLAY = "live_mutiroleplay";
+    public static final String SP_LIVEVIDEO_MARK_POINT_COUNT="sp_livevideo_mark_point_count";
 }

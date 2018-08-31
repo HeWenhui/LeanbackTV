@@ -8,7 +8,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ScaleDrawable;
-import android.os.Environment;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -30,6 +29,7 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.umeng.analytics.MobclickAgent;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -140,9 +140,10 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     boolean haveAnswer;
     String learning_stage;
 
-    public SpeechAssAutoPager(Context context, String liveid, String testId,
+    public SpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String testId,
                               String nonce, String content, int time, boolean haveAnswer, String learning_stage, SpeechEvalAction speechEvalAction, LivePagerBack livePagerBack) {
         super(context);
+        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = true;
         this.id = testId;
         this.nonce = nonce;
@@ -169,9 +170,10 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         umsAgentDebugPv(eventId, mData);
     }
 
-    public SpeechAssAutoPager(Context context, String liveid, String testId,
+    public SpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String testId,
                               String nonce, String content, int time, int examSubmit, String learning_stage, SpeechEvalAction speechEvalAction, LivePagerBack livePagerBack) {
         super(context);
+        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = false;
         this.id = testId;
         this.nonce = nonce;
@@ -266,7 +268,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(),
                 "fangzhengcuyuan.ttf");
         tvSpeectevalEncourage.setTypeface(fontFace);
-        File dir =  LiveCacheFile.geCacheFile(mContext, "liveSpeech");
+        File dir = LiveCacheFile.geCacheFile(mContext, "liveSpeech");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -685,7 +687,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 if (group != null) {
                     group.removeView(spStarResult);
                     if (isEnd) {
-                        speechEvalAction.stopSpeech(SpeechAssAutoPager.this, id);
+                        speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                     }
                 }
                 group = (ViewGroup) v_live_star_result_out.getParent();
@@ -726,7 +728,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 if (group != null) {
                     group.removeView(spStarResult);
                     if (isEnd) {
-                        speechEvalAction.stopSpeech(SpeechAssAutoPager.this, id);
+                        speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                     }
                 }
                 group = (ViewGroup) v_live_star_result_out.getParent();
@@ -821,7 +823,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             spStarResult.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    speechEvalAction.stopSpeech(SpeechAssAutoPager.this, id);
+                    speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                 }
             }, 1000);
         }
@@ -1053,7 +1055,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     mIse.stop();
                 }
                 if (isSpeechError || isSpeechSuccess) {
-                    speechEvalAction.stopSpeech(SpeechAssAutoPager.this, id);
+                    speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                 }
             }
             count--;
@@ -1068,7 +1070,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             return;
         }
         if (!isSpeechStart || isSpeechError || isSpeechSuccess) {
-            speechEvalAction.stopSpeech(SpeechAssAutoPager.this, id);
+            speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
         } else {
             ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);
             errorSetVisible();

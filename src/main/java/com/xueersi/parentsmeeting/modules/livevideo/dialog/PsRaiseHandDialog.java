@@ -48,23 +48,23 @@ public class PsRaiseHandDialog extends BaseAlertDialog {
 
     public void setSuccess(){
         status = SUCCESS;
-        tip.setText("恭喜你！\n 你已经被老师选中，\n请准备一下等待接麦吧");
+        tip.setText("你被老师选中啦，\n请等待接麦吧。");
     }
 
     public void setFail(){
         status = FAIL;
-        tip.setText("本次没有被选中哦，\n下次还有机会");
+        tip.setText("本次没有被选中，\n下次还有机会。");
     }
 
     public void showDialog() {
         super.showDialog(false, false);
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                cancelDialog();
-//            }
-//        }, 3000);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                cancelDialog();
+            }
+        }, 3000);
     }
 
     public void setRaiseHandGiveup(RaiseHandGiveup raiseHandGiveup) {

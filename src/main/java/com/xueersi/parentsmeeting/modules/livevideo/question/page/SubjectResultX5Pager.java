@@ -13,6 +13,7 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -46,8 +47,9 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
     private String testPaperUrl;
     private String stuCouId;
 
-    public SubjectResultX5Pager(Context context, BaseQuestionWebInter.StopWebQuestion questionBll, String testPaperUrl, String stuId, String liveid, String testId, String stuCouId) {
+    public SubjectResultX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, BaseQuestionWebInter.StopWebQuestion questionBll, String testPaperUrl, String stuId, String liveid, String testId, String stuCouId) {
         super(context);
+        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.questionBll = questionBll;
         this.stuId = stuId;
         this.liveid = liveid;
@@ -86,7 +88,7 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
             public void onClick(View v) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
-                questionBll.stopWebQuestion(SubjectResultX5Pager.this, testId);
+                questionBll.stopWebQuestion(SubjectResultX5Pager.this, testId, getBaseVideoQuestionEntity());
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -103,11 +105,11 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
         ((AnimationDrawable) ivLoading.getBackground()).start();
 //        examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
 //                + "&stuId=" + stuId + "&stuName=" + stuName;
-        examUrl = testPaperUrl + "?testId=" + testId
+        examUrl = testPaperUrl + "/" + liveid + "?testId=" + testId
                 + "&stuId=" + stuId + "&stuName=" + stuName + "&stuCouId=" + stuCouId;
 //        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
 //        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
-        Loger.d(TAG, "initData:examUrl=" + examUrl);
+        mLogtf.d("initData:examUrl=" + examUrl);
         wvSubjectWeb.loadUrl(examUrl);
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
     }
@@ -226,7 +228,7 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
                 if (group != null) {
                     group.removeView(mView);
                 }
-                questionBll.stopWebQuestion(SubjectResultX5Pager.this, testId);
+                questionBll.stopWebQuestion(SubjectResultX5Pager.this, testId, getBaseVideoQuestionEntity());
                 Map<String, String> mData = new HashMap<>();
                 mData.put("testid", "" + testId);
                 mData.put("closetype", "clickWebCloseButton");

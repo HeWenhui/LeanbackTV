@@ -1,19 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.page;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Typeface;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -21,89 +14,35 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
-import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.util.Log;
-import android.util.Size;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.tal.speech.speechrecognizer.EvaluatorListener;
-import com.tal.speech.speechrecognizer.ResultCode;
-import com.tal.speech.speechrecognizer.ResultEntity;
-import com.xueersi.common.data.AppCacheData;
-import com.xueersi.common.permission.PermissionCallback;
-import com.xueersi.common.permission.XesPermission;
-import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.lib.framework.utils.CheckUtil;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenBll;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenHttp;
-import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.page.BaseSpeechBulletScreenPager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.RoomAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.CloseConfirmDialog;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.ShortToastDialog;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.KeyboardPopWindow;
-import com.xueersi.parentsmeeting.widget.VolumeWaveView;
-import com.xueersi.parentsmeeting.widget.blurpopupwindow.BlurPopupWindow;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
-import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
-import cn.dreamtobe.kpswitch.util.KeyboardUtil;
-import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
-import cn.dreamtobe.kpswitch.widget.KPSwitchPanelLinearLayout;
 import master.flame.danmaku.danmaku.controller.DrawHandler;
-import master.flame.danmaku.danmaku.controller.IDanmakuView;
-import master.flame.danmaku.danmaku.danmaku.loader.ILoader;
-import master.flame.danmaku.danmaku.danmaku.loader.IllegalDataException;
-import master.flame.danmaku.danmaku.danmaku.loader.android.DanmakuLoaderFactory;
 import master.flame.danmaku.danmaku.danmaku.model.BaseDanmaku;
 import master.flame.danmaku.danmaku.danmaku.model.DanmakuTimer;
-import master.flame.danmaku.danmaku.danmaku.model.IDanmakus;
 import master.flame.danmaku.danmaku.danmaku.model.IDisplayer;
 import master.flame.danmaku.danmaku.danmaku.model.android.BaseCacheStuffer;
 import master.flame.danmaku.danmaku.danmaku.model.android.DanmakuContext;
 import master.flame.danmaku.danmaku.danmaku.model.android.Danmakus;
 import master.flame.danmaku.danmaku.danmaku.model.android.SpannedCacheStuffer;
 import master.flame.danmaku.danmaku.danmaku.parser.BaseDanmakuParser;
-import master.flame.danmaku.danmaku.danmaku.parser.IDataSource;
-import master.flame.danmaku.danmaku.danmaku.parser.android.BiliDanmukuParser;
-import master.flame.danmaku.danmaku.ui.widget.DanmakuTextureView;
 import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
 
 /**
@@ -111,7 +50,7 @@ import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
  * Created by Zhang Yuansun on 2018/7/11.
  */
 
-public class SpeechBulletScreenPlayBackPager extends BaseSpeechBulletScreenPager {
+public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
 
     /** 底部语音识别模块的布局 */
     RelativeLayout rlSpeechbulBottomContent;
@@ -260,11 +199,6 @@ public class SpeechBulletScreenPlayBackPager extends BaseSpeechBulletScreenPager
         }).start();
     }
 
-    @Override
-    public void stopEvaluator() {
-
-    }
-
     /**
      * 绘制背景(自定义弹幕样式)
      */
@@ -321,13 +255,13 @@ public class SpeechBulletScreenPlayBackPager extends BaseSpeechBulletScreenPager
     };
 
     public void addDanmaKuFlowers(final String name, final String msg, final String headImgUrl , final boolean isGuest) {
-        if (mDanmakuContext == null) {
+        if (mDanmakuContext == null || !dvSpeechbulDanmaku.isPrepared()) {
             mWeakHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     addDanmaKuFlowers(name, msg, headImgUrl, isGuest);
                 }
-            }, 20);
+            }, 100);
             return;
         }
         final BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
@@ -335,31 +269,33 @@ public class SpeechBulletScreenPlayBackPager extends BaseSpeechBulletScreenPager
             return;
         }
         danmaku.isGuest = isGuest;
-        Glide.with(mContext).load(headImgUrl).into(new SimpleTarget<Drawable>() {
+        ImageLoader.with(mContext).load(headImgUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
-            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                Drawable drawable = resource;
+            public void onSuccess(Drawable drawable) {
+                Drawable circleDrawable = drawable;
                 if (isGuest) {
-                    drawable.setBounds(0, 0, BITMAP_WIDTH_GUEST, BITMAP_WIDTH_GUEST);
+                    circleDrawable.setBounds(0, 0, BITMAP_WIDTH_GUEST, BITMAP_WIDTH_GUEST);
                     danmaku.textColor = Color.WHITE;
                     danmaku.priority = 0;
                     danmaku.padding = DANMU_PADDING;
-                }
-                else {
-                    drawable.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
+                } else {
+                    circleDrawable.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
                     danmaku.textColor = Color.YELLOW;
                     danmaku.priority = 0;  // 1:一定会显示, 一般用于本机发送的弹幕,但会导致限制行数和禁止堆叠失效
                     danmaku.padding = DANMU_PADDING - (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2;
                 }
-                SpannableStringBuilder spannable = createSpannable(name, msg, drawable ,isGuest);
+                SpannableStringBuilder spannable = createSpannable(name, msg, circleDrawable, isGuest);
                 danmaku.text = spannable;
-
                 danmaku.isLive = false;
                 danmaku.time = dvSpeechbulDanmaku.getCurrentTime() + 1200;
-                danmaku.textSize = SizeUtils.Dp2Px(mContext,14f);
+                danmaku.textSize = SizeUtils.Dp2Px(mContext, 14f);
                 danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
-//                danmaku.underlineColor = Color.GREEN;
                 dvSpeechbulDanmaku.addDanmaku(danmaku);
+            }
+
+            @Override
+            public void onFail() {
+
             }
         });
     }

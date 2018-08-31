@@ -1,4 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videochat.page;
+
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
@@ -56,7 +57,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         this.liveBll = liveBll;
         this.getInfo = getInfo;
         netWorkType = NetWorkHelper.getNetWorkState(activity);
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(activity, TAG);
         mLogtf.d("AgoraVideoChatPager:netWorkType=" + netWorkType);
         initView();
         initData();

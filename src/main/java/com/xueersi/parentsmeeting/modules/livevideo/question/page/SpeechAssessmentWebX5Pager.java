@@ -3,9 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
-import android.media.MediaPlayer;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -24,6 +22,7 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.BaseHttp;
 import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
@@ -123,10 +122,11 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
     private boolean isStandingLive = false;
     // private AudioPlayerManager mAudioPlayerManager;
 
-    public SpeechAssessmentWebX5Pager(Context context, String liveid, String testId, String stuId, boolean isLive,
+    public SpeechAssessmentWebX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String testId, String stuId, boolean isLive,
                                       String nonce,
                                       SpeechEvalAction speechEvalAction, String stuCouId, boolean IS_SCIENCE, LivePagerBack livePagerBack) {
         super(context);
+        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.stuId = stuId;
         this.liveid = liveid;
         this.testId = testId;
@@ -343,9 +343,11 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             }
             try {
                 String deUrl = URLDecoder.decode(url, "UTF-8");
+                mLogtf.d("shouldOverrideUrlLoading:deUrl=" + deUrl);
                 matchBusiness(deUrl);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
+                mLogtf.e("shouldOverrideUrlLoading:url=" + url, e);
             }
             return true;
         }
@@ -668,7 +670,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                 if (group != null) {
                     wvSubjectWeb.destroy();
                     group.removeView(mView);
-                    speechEvalAction.stopSpeech(SpeechAssessmentWebX5Pager.this, testId);
+                    speechEvalAction.stopSpeech(SpeechAssessmentWebX5Pager.this, getBaseVideoQuestionEntity(), testId);
                 }
             }
         });
@@ -722,7 +724,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
 //                            }
                             if (AudioPlayer.isPlaying()) {
                                 mLogtf.d("isPlaying:tip=" + tip + ",mIsStop=" + mIsStop);
-                                mIsStop = false;
+//                                mIsStop = false;
                             }
                         }
                         remoteAudioPlayerControl(tip, playUrl);
@@ -859,7 +861,11 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             }
             remoteAudioPlayerListening = null;
             mHandler.removeCallbacks(remotePlayTimeOut);
-            mLogtf.i("remoteplayComplete:where=" + where + ",tip=" + tip + ",mIsStop=" + mIsStop);
+            if (where == 0) {
+                mLogtf.e("remoteplayComplete:where=" + where + ",tip=" + tip + ",mIsStop=" + mIsStop + ",voiceurl=" + mVoiceUrl, new Exception());
+            } else {
+                mLogtf.i("remoteplayComplete:where=" + where + ",tip=" + tip + ",mIsStop=" + mIsStop + ",voiceurl=" + mVoiceUrl);
+            }
             try {
                 AudioPlayer.stop();
             } catch (Exception e) {

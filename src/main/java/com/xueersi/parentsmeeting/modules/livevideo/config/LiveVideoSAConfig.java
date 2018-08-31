@@ -89,9 +89,9 @@ public class LiveVideoSAConfig {
         /** 得到试题 */
         public String URL_LIVE_GET_QUESTION = HTTP_HOST + "/LiveCourse/getQuestion";
         /** 得到h5课件-不区分文理 */
-        public String URL_LIVE_GET_WARE_URL = AppConfig.HTTP_HOST + "/LiveCourse/getCourseWareUrl";
+        public String URL_LIVE_GET_WARE_URL = LiveVideoConfig.HTTP_HOST + "/LiveCourse/getCourseWareUrl";
         /** 理科一次多发课件*/
-        public String URL_LIVE_GET_MORE_WARE_URL = AppConfig.HTTP_HOST + "/science/LiveCourse/courseWarePreLoad";
+        public String URL_LIVE_GET_MORE_WARE_URL = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/courseWarePreLoad";
         /** 文科一发多题课件*/
         public String URL_LIVE_GET_ARTSMORE_COURSEWARE_URL = "https://laoshi.xueersi.com/libarts/v2/preLoad/preLoading";
         /** 互动题满分榜接口 */

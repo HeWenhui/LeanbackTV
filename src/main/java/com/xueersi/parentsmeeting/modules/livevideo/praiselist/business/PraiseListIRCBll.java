@@ -13,7 +13,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
@@ -44,6 +46,26 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
         //模式切换为主讲，关闭表扬榜
         if (mPraiseListAction != null && mode.equals(LiveTopic.MODE_CLASS))
             mPraiseListAction.closePraiseList();
+    }
+
+
+
+    @Override
+    public void onLiveInited(LiveGetInfo getInfo) {
+        super.onLiveInited(getInfo);
+//        class TestThread extends Thread{
+//            @Override
+//            public void run() {
+//                JSONObject data = null;
+//                try {
+//                    data = new JSONObject("{\"from\":\"t\",\"open\":\"on\",\"zanType\":\"1\",\"voiceId\":\"2567_1533872215382\"}");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                onNotice("","",data,224);
+//            }
+//        }
+//        new TestThread().run();
     }
 
     @Override
@@ -431,5 +453,12 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
 
     public String getStuName() {
         return mLiveBll.getStuName();
+    }
+
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        if (mPraiseListAction != null) {
+            mPraiseListAction.setVideoLayout(liveVideoPoint);
+        }
     }
 }

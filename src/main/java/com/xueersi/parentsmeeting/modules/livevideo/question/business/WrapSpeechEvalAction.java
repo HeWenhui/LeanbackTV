@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.content.Context;
 
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
@@ -33,8 +34,8 @@ public class WrapSpeechEvalAction implements SpeechEvalAction {
     }
 
     @Override
-    public void stopSpeech(BaseSpeechAssessmentPager pager, String num) {
-        speechEvalAction.stopSpeech(pager, num);
+    public void stopSpeech(BaseSpeechAssessmentPager pager, BaseVideoQuestionEntity baseVideoQuestionEntity, String num) {
+        speechEvalAction.stopSpeech(pager, baseVideoQuestionEntity, num);
         MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
         if (mediaPlayerControl != null) {
             mediaPlayerControl.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);

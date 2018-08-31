@@ -96,7 +96,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         super(context, liveBll);
         this.mLiveType = liveBll.getLiveType();
         mLiveId = liveBll.getLiveId();
-        mLogtf = new LogToFile(TAG);
+        mLogtf = new LogToFile(context, TAG);
         mRoomAction = new LiveMessageBll(context, mLiveType);
     }
 
