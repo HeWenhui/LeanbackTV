@@ -172,9 +172,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
-        for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.onConfigurationChanged(newConfig);
+        if (liveBackBll != null) {
+            List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
+            for (LiveBackBaseBll businessBll : businessBlls) {
+                businessBll.onConfigurationChanged(newConfig);
+            }
         }
     }
 
@@ -808,7 +810,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     @Override
     public void onStop() {
         super.onStop();
-        liveBackBll.onStop();
+        if (liveBackBll != null) {
+            liveBackBll.onStop();
+        }
     }
 
     @Override
@@ -842,7 +846,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                         if (videoView.getWidth() <= 0) {
                             return;
                         }
-                        boolean isLand = getResources().getConfiguration().orientation == Configuration
+                        boolean isLand = activity.getResources().getConfiguration().orientation == Configuration
                                 .ORIENTATION_LANDSCAPE;
                         if (!isLand) {
                             return;
