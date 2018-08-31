@@ -168,36 +168,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-        LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
-        if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
-            String num = mainRoomstatus.getExamNum();
-            if ("on".equals(mainRoomstatus.getExamStatus())) {
-                VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                videoQuestionLiveEntity.id = num;
-                mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
-                if (mAnswerRankBll != null) {
-                    mAnswerRankBll.setTestId(num);
-                }
-            } else {
-                mQuestionAction.onExamStop(num);
-            }
-        }
-        if (liveTopic.getVideoQuestionLiveEntity() != null) {
-            if (mQuestionAction != null) {
-                mQuestionAction.showQuestion(liveTopic.getVideoQuestionLiveEntity());
-                if (mAnswerRankBll != null) {
-                    mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
-                }
-                if (mLiveAutoNoticeBll != null) {
-                    mLiveAutoNoticeBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
-                    mLiveAutoNoticeBll.setSrcType(liveTopic.getVideoQuestionLiveEntity().srcType);
-                }
-            }
-        } else {
-            if (mQuestionAction != null) {
-                mQuestionAction.showQuestion(null);
-
-
         /**新版文科课件平台 Topic**/
         if (isNewArtsH5Courseware(jsonObject)) {
             try {
@@ -273,8 +243,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         } else {
             LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
             if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
+                String num = mainRoomstatus.getExamNum();
                 if ("on".equals(mainRoomstatus.getExamStatus())) {
-                    String num = mainRoomstatus.getExamNum();
                     VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                     videoQuestionLiveEntity.id = num;
                     mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
@@ -282,7 +252,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         mAnswerRankBll.setTestId(num);
                     }
                 } else {
-                    mQuestionAction.onExamStop();
+                    mQuestionAction.onExamStop(num);
                 }
             }
             if (liveTopic.getVideoQuestionLiveEntity() != null) {
@@ -335,9 +305,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 videoQuestionLiveEntity.speechContent = object.optString("answer", "");
                 videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay", "0");
                 videoQuestionLiveEntity.roles = object.optString("roles", "");
-//                        if (BuildConfig.DEBUG) {onget
-//                            videoQuestionLiveEntity.isTestUseH5 = true;
-//                        }
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);
                 if ("1".equals(isVoice)) {
@@ -397,10 +364,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
                 break;
             }
-
-
-
-
             case XESCODE.STOPQUESTION:
                 mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                 if (mQuestionAction != null) {
@@ -435,12 +398,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 mQuestionAction.remindSubmit();
                 break;
             }
-
             case XESCODE.ARTS_TEACHER_PRAISE: {
                 mQuestionAction.teacherPraise();
                 break;
             }
-
 
             case XESCODE.EXAM_START:
                 if (mQuestionAction != null) {
@@ -593,7 +554,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
+    public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity,
+            String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                 videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="
@@ -916,3 +878,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
 }
+
+
+
+
+
+

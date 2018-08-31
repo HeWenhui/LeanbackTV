@@ -270,9 +270,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
+    private RelativeLayout bottomeContent;
     public void initView(RelativeLayout bottomContent, boolean isLand) {
         this.isLand = isLand;
         isAbLand.set(isLand);
+        bottomeContent = bottomContent;
         //互动题
         rlQuestionContent = new RelativeLayout(activity);
         rlQuestionContent.setId(R.id.rl_livevideo_content_question);
@@ -288,10 +290,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         bottomContent.addView(rlQuestionResContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-//        VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-//        QuestionMulitSelectLivePager questionMulitSelectLivePager = new QuestionMulitSelectLivePager(activity,
-// videoQuestionLiveEntity);
-//        rlQuestionContent.addView(questionMulitSelectLivePager.getRootView());
         if (videoQuestionLiveEntity != null) {
             showQuestion(videoQuestionLiveEntity);
         }
@@ -2056,15 +2054,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         public void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
             mLogtf.d("stopSpeech:voiceAnswerPager:end=" + answerPager.isEnd());
             stopVoiceAnswerPager(answerPager);
-//            if (rlVoiceQuestionContent != null) {
-//                rlVoiceQuestionContent.removeAllViews();
-//                bottomContent.removeView(rlVoiceQuestionContent);
-//                rlVoiceQuestionContent = null;
-//                if (activity instanceof AudioRequest) {
-//                    AudioRequest audioRequest = (AudioRequest) activity;
-//                    audioRequest.release();
-//                }
-//            }
         }
     }
 
@@ -2100,7 +2089,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 mVPlayVideoControlHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        ArtsAnswerResultBll answerResultBll = new ArtsAnswerResultBll(activity, bottomContent, liveGetInfo
+                        ArtsAnswerResultBll answerResultBll = new ArtsAnswerResultBll(activity, bottomeContent, liveGetInfo
                                 .getSmallEnglish(), new AnswerResultCloseListener() {
                             @Override
                             public void onAnswerResultClose() {
