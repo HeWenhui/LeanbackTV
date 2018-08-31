@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.worddictation.entity.WordStatisticInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -472,6 +473,21 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+            if (status.has("wordStatisticInfo")) {
+                try {
+                    WordStatisticInfo wordStatisticInfo = new WordStatisticInfo();
+                    int state = status.getInt("state");
+                    wordStatisticInfo.state = state;
+                    if (state == 1) {
+                        wordStatisticInfo.testid = status.getString("testid");
+                        wordStatisticInfo.pagetype = status.getString("pagetype");
+                        wordStatisticInfo.answers = status.getString("answers");
+                    }
+                    coachStatusEntity.setWordStatisticInfo(wordStatisticInfo);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         if (liveTopicJson.has("room_1")) {
@@ -1243,6 +1259,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         }
         return progressListEntity;
     }
+
     /**
      * 解析点赞概率
      *
