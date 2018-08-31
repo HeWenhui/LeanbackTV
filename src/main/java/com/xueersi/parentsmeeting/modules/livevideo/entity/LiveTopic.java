@@ -104,15 +104,17 @@ public class LiveTopic {
 
     /**
      * 设置理科notice时候“from”字段的返回值
+     *
      * @param lKNoticeMode
      */
     public void setLKNoticeMode(String lKNoticeMode) {
         coachRoomstatus.setLKNoticeMode(lKNoticeMode);
     }
 
-    public String getLKNoticeMode(){
+    public String getLKNoticeMode() {
         return coachRoomstatus.getLKNoticeMode();
     }
+
     public void copy(LiveTopic liveTopic) {
         topic = liveTopic.topic;
         isDisable = liveTopic.isDisable;
@@ -225,6 +227,7 @@ public class LiveTopic {
             isOpenFeedback = roomStatusEntity.isOpenFeedback;
             agoraVoiceChatRoom = roomStatusEntity.agoraVoiceChatRoom;
             onVideoChat = roomStatusEntity.onVideoChat;
+            isOnbreak = roomStatusEntity.isOnbreak;
         }
 
         public boolean isOnbreak() {
@@ -258,6 +261,7 @@ public class LiveTopic {
 
         /**
          * 理科设置主讲老师是否开启了礼物，数据来自教师端返回
+         *
          * @param openZJLKbarrage
          */
         public void setZJLKOpenbarrage(boolean openZJLKbarrage) {
@@ -270,6 +274,7 @@ public class LiveTopic {
 
         /**
          * 理科设置辅导老师是否开启了礼物，数据来自教师端返回
+         *
          * @param openFDLKbarrage
          */
         public void setFDLKOpenbarrage(boolean openFDLKbarrage) {
@@ -427,6 +432,7 @@ public class LiveTopic {
 
         /**
          * 设置理科notice时候“from”字段的返回值 保存到辅导老师的状态里room2
+         *
          * @param lKNoticeMode
          */
         public void setLKNoticeMode(String lKNoticeMode) {
