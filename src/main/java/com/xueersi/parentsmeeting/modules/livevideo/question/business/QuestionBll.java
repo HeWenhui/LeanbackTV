@@ -20,6 +20,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
@@ -634,9 +635,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             activity.getWindow().getDecorView().invalidate();
                         }
                     });
-                } else {
+                } else if("4".equals(videoQuestionLiveEntity.type)){
                     // fixme  完善语文特有题型相关逻辑
-
+//                    showVoiceAnswer(videoQuestionLiveEntity);
+                    try {
+                        showVoiceAnswer(videoQuestionLiveEntity);
+                    } catch (Exception e) {
+                        mLogtf.d("showQuestion:showVoiceAnswer.error1=" + e.getMessage());
+                        mErrorVoiceQue.add(videoQuestionLiveEntity.id);
+                        showQuestion(videoQuestionLiveEntity);
+                        return;
+                    }
                 }
             }
         });
