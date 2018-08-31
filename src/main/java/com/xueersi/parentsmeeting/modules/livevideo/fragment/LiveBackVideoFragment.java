@@ -759,7 +759,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     public void onDestroy() {
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
-        liveBackBll.onDestory();
+        if (liveBackBll != null) {
+            liveBackBll.onDestory();
+        }
         ProxUtil.getProxUtil().clear(activity);
     }
 
