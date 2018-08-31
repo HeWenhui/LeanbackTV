@@ -447,17 +447,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             case XESCODE.ARTS_TEACHER_PRAISE:
                 englishH5CoursewareBll.showTeacherPraise();
                 break;
-            case 130:
-                String commondStr = object.optString("msg");
-                if("1".equals(commondStr)){
-                    englishH5CoursewareBll.remindSubmit();
-                }else if("0".equals(commondStr)){
-                    VideoQuestionLiveEntity entity = new VideoQuestionLiveEntity();
-                    englishH5CoursewareBll.onH5Courseware("off",entity);
-                }else if("3".equals(commondStr)){
-                    englishH5CoursewareBll.showTeacherPraise();
-                }
-                 break;
             default:
                 break;
         }
@@ -487,8 +476,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 XESCODE.MULTIPLE_H5_COURSEWARE,
                 XESCODE.ARTS_H5_COURSEWARE,
                 XESCODE.ARTS_REMID_SUBMIT,
-                XESCODE.ARTS_TEACHER_PRAISE,
-                130
+                XESCODE.ARTS_TEACHER_PRAISE
         };
     }
 
