@@ -509,16 +509,4 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     }
 
 
-  /*  private ResultStateListener stateListener;
-
-    public void setStateListener(ResultStateListener stateListener) {
-        this.stateListener = stateListener;
-    }
-    public interface  ResultStateListener{
-        *//**
-         * 答题面板是否展示完毕
-         *//*
-        void onCompeletShow();
-    }*/
-
 }
