@@ -288,7 +288,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     public void onH5Courseware(final String status, final VideoQuestionLiveEntity videoQuestionLiveEntity) {
 //        logToFile.i("onH5Courseware:url=" + url + ",status=" + status);
 
-        com.xueersi.lib.log.Loger.e("EnglishH5CourseWareBll", "===========>onH5Courseware:" + status + ":" +
+        Loger.e("EnglishH5CourseWareBll", "===========>onH5Courseware:" + status + ":" +
                 videoQuestionLiveEntity);
 
         setWebViewCloseByTeacher(true);
@@ -343,10 +343,13 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             bottomContent.removeView(h5CoursewarePager.getRootView());
                         }
                     }
+                    Loger.e("Duncan", "======>EnglishH5CoursewareBll:" + "H5语音答题开启1" + "getIsVoice():" + videoQuestionLiveEntity.getIsVoice() + "getUrl():" + videoQuestionLiveEntity.getUrl());
                     if ("1".equals(videoQuestionLiveEntity.getIsVoice()) && !mErrorVoiceQue.contains(videoQuestionLiveEntity.getUrl())) {
                         try {
                             showVoiceAnswer(videoQuestionLiveEntity);
+                            Loger.e("Duncan", "======>EnglishH5CoursewareBll:" + "H5语音答题开启2");
                         } catch (Exception e) {
+                            Loger.e("Duncan", "======>EnglishH5CoursewareBll:" + "H5语音答题开启3");
                             logToFile.d("onH5Courseware:showVoiceAnswer.error1=" + e.getMessage());
                             mErrorVoiceQue.add(videoQuestionLiveEntity.getUrl());
                             showH5Paper(videoQuestionLiveEntity);
@@ -355,10 +358,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         showH5Paper(videoQuestionLiveEntity);
                     }
                 } else {
+                    Loger.e("Duncan", "======>EnglishH5CoursewareBll:" + "H5语音答题关闭1");
                     boolean havePager = false;
                     if (voiceAnswerPager != null && !voiceAnswerPager.isEnd()) {
                         voiceAnswerPager.examSubmitAll("onH5Courseware", videoQuestionLiveEntity.nonce);
                         havePager = true;
+                        Loger.e("Duncan", "======>EnglishH5CoursewareBll:" + "H5语音答题关闭2");
                     }
                     int delayTime = 0;
                     int isForce = 0;

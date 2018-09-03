@@ -10,9 +10,9 @@ public class H5OnlineTechEntity {
      /**页面包来源：1-设计部H5，2-在线教研，3-模板改编创建**/
      private int package_source;
      /**奖励金币**/
-     private double gold;
+     private String gold;
      /**时间，单位：分钟**/
-     private double time;
+     private String time;
      /**试题id的数组**/
      private String id;
     /**
@@ -35,6 +35,8 @@ public class H5OnlineTechEntity {
     /**当前状态**/
     private String status;
 
+
+
     public void setStatus(String status) {
         this.status = status;
     }
@@ -51,19 +53,19 @@ public class H5OnlineTechEntity {
         this.package_source = package_source;
     }
 
-    public double getGold() {
+    public String getGold() {
         return gold;
     }
 
-    public void setGold(double gold) {
+    public void setGold(String gold) {
         this.gold = gold;
     }
 
-    public double getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(double time) {
+    public void setTime(String time) {
         this.time = time;
     }
 

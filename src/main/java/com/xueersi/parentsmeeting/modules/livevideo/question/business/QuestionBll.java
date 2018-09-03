@@ -573,15 +573,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             activity.getWindow().getDecorView().invalidate();
                         }
                     });
-                } else if("4".equals(videoQuestionLiveEntity.type)){
+                } else if("4".equals(videoQuestionLiveEntity.type) || "50".equals(videoQuestionLiveEntity.type)){
                     // fixme  完善语文特有题型相关逻辑
 //                    showVoiceAnswer(videoQuestionLiveEntity);
                     try {
                         showVoiceAnswer(videoQuestionLiveEntity);
+                        Loger.e("QuestionIRCBll", "======> showVoiceAnswer Success:");
                     } catch (Exception e) {
                         mLogtf.d("showQuestion:showVoiceAnswer.error1=" + e.getMessage());
                         mErrorVoiceQue.add(videoQuestionLiveEntity.id);
                         showQuestion(videoQuestionLiveEntity);
+                        Loger.e("QuestionIRCBll", "======> showVoiceAnswer Failed:");
                         return;
                     }
                 }

@@ -51,6 +51,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private EnglishH5Cache englishH5Cache;
     private String Tag = "EnglishH5CoursewareIRCBll";
+    private Boolean newArts;
 
     public EnglishH5CoursewareIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -155,6 +156,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         try {
             //文科新课件平台  topic
             if (isNewArtsH5Courseware(jsonObject)) {
+                newArts = true;
                 boolean isCourseware = jsonObject.optBoolean("isCourseware");
                 JSONObject coursewareH5 = jsonObject.getJSONObject("coursewareH5");
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
@@ -182,20 +184,31 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     if (!"{}".equals(onlineTechObj.toString())) {
                         H5OnlineTechEntity h5OnlineTechEntity = new H5OnlineTechEntity();
                         h5OnlineTechEntity.setStatus(onlineTechObj.optString("status"));
+                        status = onlineTechObj.optString("status");
                         h5OnlineTechEntity.setPackage_source(onlineTechObj.optInt("package_source"));
-                        h5OnlineTechEntity.setGold(onlineTechObj.optDouble("gold"));
-                        h5OnlineTechEntity.setTime(onlineTechObj.optDouble("time"));
+                        h5OnlineTechEntity.setGold(onlineTechObj.optString("gold"));
+                        h5OnlineTechEntity.setTime(onlineTechObj.optString("time"));
                         h5OnlineTechEntity.setId(onlineTechObj.optString("id"));
                         h5OnlineTechEntity.setPtype(onlineTechObj.optString("ptype"));
+                        videoQuestionLiveEntity.setIsVoice(onlineTechObj.optString("isVoice"));
                         h5OnlineTechEntity.setMultiRolePlay(onlineTechObj.optString("multiRolePlay"));
-                        h5OnlineTechEntity.setRoles(onlineTechObj.getString("roles"));
+                        h5OnlineTechEntity.setRoles(onlineTechObj.optString("roles"));
                         h5OnlineTechEntity.setTotalScore(onlineTechObj.optString("totalScore"));
                         h5OnlineTechEntity.setAnswer(onlineTechObj.optString("answer"));
+                        videoQuestionLiveEntity.assess_ref = onlineTechObj.optString("assess_ref");
+                        // 09.03 拼接和前端交互的URL
+                        JSONArray jsonArray = onlineTechObj.optJSONArray("id");
+                        String testIds = getIdStr(jsonArray);
+                        videoQuestionLiveEntity.setUrl(buildCourseUrl(testIds));
+//                        videoQuestionLiveEntity.setUrl("123");
+                        videoQuestionLiveEntity.id = onlineTechObj.optString("id");
                         videoQuestionLiveEntity.setOnlineTechEntity(h5OnlineTechEntity);
                     }
                 }
                 englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
+                Loger.e("Duncan", "======>EnglishH5CoursewareIRCBll:" + "H5语音答题");
             } else {
+                newArts = false;
                 if (englishH5CoursewareBll != null && jsonObject.has("H5_Courseware")) {
                     VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                     EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
@@ -284,7 +297,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
             }
         } catch (Exception e) {
-
+            Loger.e("Duncan", "======>EnglishH5CoursewareIRCBlle:" + e.toString());
         }
     }
 

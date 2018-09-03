@@ -239,6 +239,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                Loger.e("Duncan", "======>QuestionIRCBlle:" + e.toString());
             }
         } else {
             LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
