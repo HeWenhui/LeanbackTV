@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:text="南极洲板块美洲板块,南极哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
+            android:text="南极洲板块美洲板块,南极"
             android:textColor="#756565"
             android:textSize="17sp"
             android:textStyle="bold"

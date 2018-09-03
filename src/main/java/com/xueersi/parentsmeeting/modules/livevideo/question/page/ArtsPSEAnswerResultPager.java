@@ -395,8 +395,10 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 tvStanderAnswerBelow.setVisibility(View.GONE);
                 tvAnswer.setText("你的答案:"+listToStr(answer.getChoiceList()));
             }else{
-                tvStanderAnswer.setVisibility(View.VISIBLE);
-                tvStanderAnswerBelow.setVisibility(View.GONE);
+                tvStanderAnswer.setVisibility(View.GONE);
+                tvAnswer.setText(listToStr(answer.getBlankList()));
+                tvStanderAnswerBelow.setVisibility(answer.getIsRight() ==2?View.GONE:View.VISIBLE);
+                tvStanderAnswerBelow.setText(listToStr(answer.getRightAnswers()));
             }
 
             int iconResId = 0;
