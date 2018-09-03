@@ -188,7 +188,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         h5OnlineTechEntity.setId(onlineTechObj.optString("id"));
                         h5OnlineTechEntity.setPtype(onlineTechObj.optString("ptype"));
                         h5OnlineTechEntity.setMultiRolePlay(onlineTechObj.optString("multiRolePlay"));
-                        h5OnlineTechEntity.setRoles(onlineTechObj.getString("roles"));
+                        h5OnlineTechEntity.setRoles(onlineTechObj.optString("roles"));
                         h5OnlineTechEntity.setTotalScore(onlineTechObj.optString("totalScore"));
                         h5OnlineTechEntity.setAnswer(onlineTechObj.optString("answer"));
                         videoQuestionLiveEntity.setOnlineTechEntity(h5OnlineTechEntity);
