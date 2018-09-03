@@ -212,9 +212,14 @@ public class LiveRemarkBll {
                     mLiveMediaControllerBottom.getvMarkGuide().setVisibility(View.GONE);
                 }
                 if (isGaosan) {
-                    mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.VISIBLE);
+                    if (mLiveMediaControllerBottom.getLlMarkPopMenu() != null) {
+                        mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.VISIBLE);
+                    }
                 } else {
-                    mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.GONE);
+
+                    if (mLiveMediaControllerBottom.getLlMarkPopMenu() != null) {
+                        mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.GONE);
+                    }
                     final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
 
                     if (liveTextureView == null) {
@@ -263,59 +268,61 @@ public class LiveRemarkBll {
                 }
             }
         });
-        for (int i = 0; i < mLiveMediaControllerBottom.getLlMarkPopMenu().getChildCount(); i++) {
-            mLiveMediaControllerBottom.getLlMarkPopMenu().getChildAt(i).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
+        if (isGaosan && mLiveMediaControllerBottom.getLlMarkPopMenu() != null) {
+            for (int i = 0; i < mLiveMediaControllerBottom.getLlMarkPopMenu().getChildCount(); i++) {
+                mLiveMediaControllerBottom.getLlMarkPopMenu().getChildAt(i).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
 
-                    mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.GONE);
-                    final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
+                        mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.GONE);
+                        final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
 
-                    if (liveTextureView == null) {
-                        return;
-                    }
-                    if (mPlayerService.getPlayer() == null) {
-                        XESToastUtils.showToast(mContext, "标记失败");
-                        return;
-                    }
-                    isMarking = true;
-                    final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
-//                liveVideoView.setVisibility(View.INVISIBLE);
-                    ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
-                    v.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
-                            v.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
-                                    v.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Bitmap bitmap = liveTextureView.getBitmap();
-                                            if (bitmap == null) {
-                                                markFail();
-                                                return;
-                                            }
-                                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) videoWidth, displayHeight);
-                                            bitmap = Bitmap.createScaledBitmap(bitmap, 320, 240, true);
-                                            File saveDir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/save");
-                                            if (!saveDir.exists()) {
-                                                saveDir.mkdirs();
-                                            }
-                                            File file = new File(saveDir, "" + System.currentTimeMillis() + ".png");
-                                            ImageUtils.save(bitmap, file, Bitmap.CompressFormat.JPEG);
-                                            reMark(file, (String) v.getTag());
-                                            ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
-                                        }
-                                    }, 100);
-                                }
-                            }, 100);
+                        if (liveTextureView == null) {
+                            return;
                         }
-                    }, 100);
-                }
-            });
+                        if (mPlayerService.getPlayer() == null) {
+                            XESToastUtils.showToast(mContext, "标记失败");
+                            return;
+                        }
+                        isMarking = true;
+                        final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
+//                liveVideoView.setVisibility(View.INVISIBLE);
+                        ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
+                        v.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
+                                v.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
+                                        v.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Bitmap bitmap = liveTextureView.getBitmap();
+                                                if (bitmap == null) {
+                                                    markFail();
+                                                    return;
+                                                }
+                                                bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) videoWidth, displayHeight);
+                                                bitmap = Bitmap.createScaledBitmap(bitmap, 320, 240, true);
+                                                File saveDir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/save");
+                                                if (!saveDir.exists()) {
+                                                    saveDir.mkdirs();
+                                                }
+                                                File file = new File(saveDir, "" + System.currentTimeMillis() + ".png");
+                                                ImageUtils.save(bitmap, file, Bitmap.CompressFormat.JPEG);
+                                                reMark(file, (String) v.getTag());
+                                                ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
+                                            }
+                                        }, 100);
+                                    }
+                                }, 100);
+                            }
+                        }, 100);
+                    }
+                });
+            }
         }
     }
 
@@ -506,9 +513,9 @@ public class LiveRemarkBll {
                                             break;
                                     }
                                 }
-                                if(isGaosan) {
+                                if (isGaosan) {
                                     XESToastUtils.showToast(mContext, sb.toString());
-                                }else{
+                                } else {
                                     XESToastUtils.showToast(mContext, "标记成功");
                                 }
                                 isMarking = false;
