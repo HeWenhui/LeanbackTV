@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
@@ -56,6 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.mediacontroller.StandLiveVideoExperienceMediaController;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -284,8 +286,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         });
     }
 
+
     protected void initBll() {
-//        preLoadView();
         ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, liveBackPlayVideoFragment);
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
@@ -349,9 +351,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //            mMediaController.setWindowLayoutType();
             mMediaController.release();
         }
-        LivePlaybackMediaController mPlayBackMediaController = createLivePlaybackMediaController();
-        mPlayBackMediaController.setOnPointClick(liveBackBll);
-        this.mMediaController = mPlayBackMediaController;
+//        StandLiveVideoExperienceMediaController mPlayBackMediaController = createLivePlaybackMediaController();
+//        mPlayBackMediaController.setOnPointClick(liveBackBll);
+        this.mMediaController = createLivePlaybackMediaController();
         liveBackPlayVideoFragment.setMediaController(mMediaController);
         rl_course_video_live_controller_content.removeAllViews();
         rl_course_video_live_controller_content.addView(mMediaController, new ViewGroup.LayoutParams(ViewGroup
@@ -361,17 +363,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         // 播放下一个按钮不显示
         mMediaController.setPlayNextVisable(false);
         // 设置速度按钮显示
-        mMediaController.setSetSpeedVisable(true);
+//        mMediaController.setSetSpeedVisable(true);
 
-        // 设置当前是否为横屏
-        if (mPlayBackMediaController == null) {
-
-        } else {
-//            mPlayBackMediaController.onAttach(mIsLand.get());
-//            rl_course_video_live_controller_content.removeAllViews();
-//            rl_course_video_live_controller_content.addView(mMediaController, new LayoutParams(LayoutParams
-// .MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        }
         if (mIsLand.get()) {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_course_video_live_controller_content
                     .getLayoutParams();
@@ -397,17 +390,17 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
             return;
         }
-        if (mVideoEntity.getIsAllowMarkpoint() != 1) {
-            mPlayBackMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-",
-                    lstVideoQuestion, vPlayer.getDuration());
-        }
+//        if (mVideoEntity.getIsAllowMarkpoint() != 1) {
+//            mPlayBackMediaController.setVideoQuestions("playback" + mVideoEntity.getvLivePlayBackType() + "-",
+//                    lstVideoQuestion, vPlayer.getDuration());
+//        }
     }
 
-    protected LivePlaybackMediaController createLivePlaybackMediaController() {
-        LivePlaybackMediaController mPlayBackMediaController = new LivePlaybackMediaController(
+    protected StandLiveVideoExperienceMediaController createLivePlaybackMediaController() {
+        return new StandLiveVideoExperienceMediaController(
                 activity,
-                liveBackPlayVideoFragment, mIsLand.get());
-        return mPlayBackMediaController;
+                liveBackPlayVideoFragment,
+                mIsLand.get());
     }
 
     @Override

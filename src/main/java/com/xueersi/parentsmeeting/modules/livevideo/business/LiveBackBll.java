@@ -310,11 +310,14 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         @Override
         public void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity) {
 
-            logToFile.d("onHide:mQuestionEntity=" + mQuestionEntity + ",baseVideoQuestionEntity=" + baseVideoQuestionEntity);
+            logToFile.d("onHide:mQuestionEntity=" + mQuestionEntity + ",baseVideoQuestionEntity=" +
+                    baseVideoQuestionEntity);
             if (mQuestionEntity != null && baseVideoQuestionEntity != null) {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = liveEntityHashMap.get(mQuestionEntity);
                 if (videoQuestionLiveEntity != null) {
-                    logToFile.d("onHide:vCategory=" + mQuestionEntity.getvCategory() + ",id=" + videoQuestionLiveEntity.getvQuestionID() + ",id2=" + baseVideoQuestionEntity.getvQuestionID());
+                    logToFile.d("onHide:vCategory=" + mQuestionEntity.getvCategory() + ",id=" +
+                            videoQuestionLiveEntity.getvQuestionID() + ",id2=" + baseVideoQuestionEntity
+                            .getvQuestionID());
                     if (videoQuestionLiveEntity != baseVideoQuestionEntity) {
                         return;
                     }
@@ -402,7 +405,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
                     index = i;
                     break;
                 }
-            } else if(LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()){
+            } else if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime <= playPosition && playPosition < endTime) {
                     LiveVideoConfig.isMulLiveBack = true;
@@ -420,6 +423,16 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
                     hasQuestionShow = true;
                     index = i;
                     break;
+                }
+            } else if (LocalCourseConfig.CATEGORY_OPEN_CHAT == videoQuestionEntity.getvCategory()) {//开启聊天
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    index = i;
+                }
+            } else if (LocalCourseConfig.CATEGORY_CLOSE_CHAT == videoQuestionEntity.getvCategory()) {//关闭聊天
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    index = i;
                 }
             }
         }

@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -84,6 +85,10 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
      * 打印日志
      */
     LogToFile logToFile;
+    /**
+     * 是否打开开关
+     */
+    private boolean openChat = false;
 
     public StandLiveVideoExperienceBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -99,7 +104,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
                          HashMap<String, Object> businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
 
-        chatCfgServerList.add("");
+//        chatCfgServerList.add("");
 
 
     }
@@ -121,7 +126,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
                 null);
         mLiveMessagePager.onopenchat(true, "", false);
         mLiveMessagePager.setIrcState(videoExperiencIRCState);
-        mRootViewBottom.addView(mLiveMessagePager.getRootView());
+        mRootView.addView(mLiveMessagePager.getRootView());
 
         connectChatServer();
     }
@@ -168,11 +173,28 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
     @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
             .ShowQuestion showQuestion) {
-        super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
+//        super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
+
+        if (questionEntity.getCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
+            openChat = true;
+        } else if (questionEntity.getCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
+            openChat = false;
+        }
+
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onQuestionShow(true);
         }
     }
+
+    /**
+     * 判断当前是什么类型题目所需要实现的接口，这里用来判断是否开启和关闭聊天，
+     */
+
+    @Override
+    public int[] getCategorys() {
+        return new int[]{LocalCourseConfig.CATEGORY_OPEN_CHAT, LocalCourseConfig.CATEGORY_CLOSE_CHAT};
+    }
+
 
     private final IRCCallback mIRCcallback = new IRCCallback() {
 
@@ -304,9 +326,10 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
             return false;
         }
 
+        //是否打开聊天消息
         @Override
         public boolean openchat() {
-            return false;
+            return openChat;
         }
 
         @Override
@@ -386,6 +409,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
             return "";
         }
     };
+
 
     @Override
     public void onKeyboardShowing(boolean isShowing) {

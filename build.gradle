@@ -14,9 +14,9 @@ android {
         }
     }
     compileSdkVersion 27
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-    }
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//    }
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -56,10 +56,10 @@ dependencies {
     implementation(rootProject.ext.xeslibraries.xeslottie) { changing = true }
     //    implementation project(':xesijkplayer')
     implementation(rootProject.ext.xeslibraries.ijkplayer) { changing = true }
-    //    implementation project(':business-base:player')
-    implementation(rootProject.ext.businesslibraries.player) {
-        changing = true
-    }
+    implementation project(':business-base:player')
+//    implementation(rootProject.ext.businesslibraries.player) {
+//        changing = true
+//    }
     //    implementation project(':business-base:cloud')
     implementation(rootProject.ext.businesslibraries.cloud) {
         changing = true

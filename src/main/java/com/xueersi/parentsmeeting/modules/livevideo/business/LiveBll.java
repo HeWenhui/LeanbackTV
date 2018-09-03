@@ -3442,6 +3442,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 是否开启聊天
      */
+    @Override
     public boolean openchat() {
         boolean openchat;
         if (LiveTopic.MODE_CLASS.equals(getMode())) {
