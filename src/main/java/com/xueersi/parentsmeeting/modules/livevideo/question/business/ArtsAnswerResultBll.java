@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -203,8 +204,8 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                 }
                 showAnswerReulst();
             } else {
-               // String errorMsg = jsonObject.optString("msg");
-                //XESToastUtils.showToast(mContext, errorMsg);
+                 String errorMsg = jsonObject.optString("msg");
+                 XESToastUtils.showToast(mContext, errorMsg);
             }
         } catch (JSONException e) {
             e.printStackTrace();
