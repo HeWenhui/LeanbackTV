@@ -45,6 +45,8 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_ROLE_TEAM = HTTP_HOST + "/LiveCourse/getRolePlayAnswerTeamRank";
         /** 直播课的直播提交测试题-h5课件 */
         public String URL_LIVE_SUBMIT_TEST_H5_ANSWER = HTTP_HOST + "/LiveCourse/sumitCourseWareH5AnswerUseVoice";
+        /** 直播课的文科新版课件对接新提交接口-*/
+        public String URL_LIVE_SUBMIT_NEWARTS_ANSWER = "http://live.xueersi.com/libarts/v2/commonTest/submitMultiTest";
         /** 直播献花 */
         public String URL_LIVE_PRAISE_TEACHER = HTTP_HOST + "/LiveCourse/praiseTeacher";
         /** 学生答题排名信息接口 */

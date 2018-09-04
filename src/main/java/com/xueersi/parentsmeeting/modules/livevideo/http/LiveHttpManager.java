@@ -7,6 +7,7 @@ import android.os.Looper;
 import com.alibaba.android.arouter.utils.TextUtils;
 import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.BaseHttpBusiness;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -449,6 +450,20 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("useVoice", "1");
         params.addBodyParam("voiceTime", "" + voiceTime);
         params.addBodyParam("isRight", isRight ? "1" : "0");
+        sendPost(url, params, requestCallBack);
+    }
+
+    public void liveSubmitNewArtsH5Answer(String srcType, String testId, String liveId, String
+            testAnswer, String type, String userMode, String isSubmit,
+                                       double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("testAnswer", testAnswer);
+        params.addBodyParam("isPlayBack", "1");
+        params.addBodyParam("isForce", "1");
+        params.addBodyParam("Cookie", AppBll.getInstance().getUserToken());
         sendPost(url, params, requestCallBack);
     }
 

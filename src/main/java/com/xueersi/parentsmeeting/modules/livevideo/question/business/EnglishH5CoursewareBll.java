@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.NewArtsAnswer;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
@@ -963,68 +964,142 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
         @Override
         public void onPutQuestionResult(BaseVoiceAnswerPager baseVoiceAnswerPager, final BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, final OnAnswerReslut answerReslut) {
-            final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
-            JSONObject answerObj = new JSONObject();
-            JSONArray answerAnswer = new JSONArray();
-            try {
-                answerObj.put("id", videoQuestionLiveEntity1.id);
-                answerObj.put("answer", answer);
+            if(LiveVideoConfig.isNewArts){
+                Loger.d("Duncan", "onPutQuestionResultNewArts0");
+                final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
+                List useranswer = new ArrayList();
+                JSONArray answerAnswer = new JSONArray();
+                NewArtsAnswer detail = new NewArtsAnswer();
                 if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
-                    answerObj.put("useranswer", sorce);
+                    if(useranswer.size() > 0 ){
+                        useranswer.clear();
+                    }
+                    useranswer.add(answer);
+                    detail.setBlank(useranswer);
                 } else {
-                    answerObj.put("useranswer", result + ":" + sorce);
+                    if(useranswer.size() > 0 ){
+                        useranswer.clear();
+                    }
+                    useranswer.add("A" + "");
+                    detail.setChoice(useranswer);
                 }
-                answerObj.put("type", videoQuestionLiveEntity1.type);
-                answerObj.put("url", "");
-                answerObj.put("voiceTime", "" + voiceTime);
-                answerAnswer.put(answerObj);
-            } catch (JSONException e) {
-                e.printStackTrace();
+                detail.setTestId(videoQuestionLiveEntity1.id);
+                detail.setVoiceUrl("");
+                detail.setUseVoice("1");
+                detail.setVoiceTime(voiceTime + "");
+                answerAnswer.put(detail);
+                String testAnswer = "";
+                testAnswer = answerAnswer.toString();
+                // 文科新课件平台的对接
+                mLiveBll.liveSubmitTestH5Answer(videoQuestionLiveEntity1, mVSectionID, testAnswer, videoQuestionLiveEntity1.courseware_type, isSubmit, voiceTime, isRight, new OnAnswerReslut() {
+
+                    @Override
+                    public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+                        Loger.d("Duncan", "onPutQuestionResultNewArts5");
+                        logToFile.d("liveSubmitTestH5Answer:question=" + baseVideoQuestionEntity + ",pager=" + (voiceAnswerPager == null));
+                        answerReslut.onAnswerReslut(baseVideoQuestionEntity, entity);
+                        if (entity != null) {
+                            if (entity.getIsAnswer() == 1) {
+                                XESToastUtils.showToast(context, "您已经答过此题");
+                            } else {
+                                baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
+                            }
+                        }
+                        if (voiceAnswerPager instanceof VoiceAnswerPager) {
+                            stopVoiceAnswerPager();
+                        }
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mLiveBll.getStuGoldCount();
+                            }
+                        }, 2500);
+                        // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
+                        //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
+
+                        mH5AndBool.add(videoQuestionLiveEntity1.getUrl());
+                        try {
+                            JSONObject object = new JSONObject();
+                            object.put("liveType", liveType);
+                            object.put("vSectionID", mVSectionID);
+                            object.put("url", videoQuestionLiveEntity1.getUrl());
+                            mShareDataManager.put(ENGLISH_H5, object.toString(), ShareDataManager.SHAREDATA_USER);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onAnswerFailure() {
+                        answerReslut.onAnswerFailure();
+                    }
+                });
+
+            } else {
+                final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
+                JSONObject answerObj = new JSONObject();
+                JSONArray answerAnswer = new JSONArray();
+                try {
+                    answerObj.put("id", videoQuestionLiveEntity1.id);
+                    answerObj.put("answer", answer);
+                    if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
+                        answerObj.put("useranswer", sorce);
+                    } else {
+                        answerObj.put("useranswer", result + ":" + sorce);
+                    }
+                    answerObj.put("type", videoQuestionLiveEntity1.type);
+                    answerObj.put("url", "");
+                    answerObj.put("voiceTime", "" + voiceTime);
+                    answerAnswer.put(answerObj);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String testAnswer = "";
+                testAnswer = answerAnswer.toString();
+                mLiveBll.liveSubmitTestH5Answer(videoQuestionLiveEntity1, mVSectionID, testAnswer, videoQuestionLiveEntity1.courseware_type, isSubmit, voiceTime, isRight, new OnAnswerReslut() {
+
+                    @Override
+                    public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+                        logToFile.d("liveSubmitTestH5Answer:question=" + baseVideoQuestionEntity + ",pager=" + (voiceAnswerPager == null));
+                        answerReslut.onAnswerReslut(baseVideoQuestionEntity, entity);
+                        if (entity != null) {
+                            if (entity.getIsAnswer() == 1) {
+                                XESToastUtils.showToast(context, "您已经答过此题");
+                            } else {
+                                baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
+                            }
+                        }
+                        if (voiceAnswerPager instanceof VoiceAnswerPager) {
+                            stopVoiceAnswerPager();
+                        }
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mLiveBll.getStuGoldCount();
+                            }
+                        }, 2500);
+                        // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
+                        //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
+
+                        mH5AndBool.add(videoQuestionLiveEntity1.getUrl());
+                        try {
+                            JSONObject object = new JSONObject();
+                            object.put("liveType", liveType);
+                            object.put("vSectionID", mVSectionID);
+                            object.put("url", videoQuestionLiveEntity1.getUrl());
+                            mShareDataManager.put(ENGLISH_H5, object.toString(), ShareDataManager.SHAREDATA_USER);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onAnswerFailure() {
+                        answerReslut.onAnswerFailure();
+                    }
+                });
             }
-            String testAnswer = "";
-            testAnswer = answerAnswer.toString();
-            mLiveBll.liveSubmitTestH5Answer(videoQuestionLiveEntity1, mVSectionID, testAnswer, videoQuestionLiveEntity1.courseware_type, isSubmit, voiceTime, isRight, new OnAnswerReslut() {
 
-                @Override
-                public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-                    logToFile.d("liveSubmitTestH5Answer:question=" + baseVideoQuestionEntity + ",pager=" + (voiceAnswerPager == null));
-                    answerReslut.onAnswerReslut(baseVideoQuestionEntity, entity);
-                    if (entity != null) {
-                        if (entity.getIsAnswer() == 1) {
-                            XESToastUtils.showToast(context, "您已经答过此题");
-                        } else {
-                            baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
-                        }
-                    }
-                    if (voiceAnswerPager instanceof VoiceAnswerPager) {
-                        stopVoiceAnswerPager();
-                    }
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mLiveBll.getStuGoldCount();
-                        }
-                    }, 2500);
-                    // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
-                    //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
-
-                    mH5AndBool.add(videoQuestionLiveEntity1.getUrl());
-                    try {
-                        JSONObject object = new JSONObject();
-                        object.put("liveType", liveType);
-                        object.put("vSectionID", mVSectionID);
-                        object.put("url", videoQuestionLiveEntity1.getUrl());
-                        mShareDataManager.put(ENGLISH_H5, object.toString(), ShareDataManager.SHAREDATA_USER);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onAnswerFailure() {
-                    answerReslut.onAnswerFailure();
-                }
-            });
         }
 
         @Override
