@@ -181,9 +181,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         String status = onlineTechObj.optString("status");
                         if ("on".equals(status)) {
                             videoQuestionLiveEntity.package_socurce = onlineTechObj.optInt("package_source");
-                            if("2".equals(videoQuestionLiveEntity.package_socurce)){
-                                return;
-                            }
                             videoQuestionLiveEntity.gold = onlineTechObj.optDouble("gold");
                             videoQuestionLiveEntity.time = onlineTechObj.optDouble("time");
                             videoQuestionLiveEntity.id = onlineTechObj.optString("id");
@@ -195,7 +192,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
                             videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.getJSONArray("id"))));
                             Loger.e("QuestionIRCBll", "======> onTopic 1111:" + mQuestionAction);
-                            if (mQuestionAction != null) {
+                            if (mQuestionAction != null && !"2".equals(videoQuestionLiveEntity.package_socurce)) {
                                 mQuestionAction.showQuestion(videoQuestionLiveEntity);
                                 if (mAnswerRankBll != null) {
                                     mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
