@@ -203,7 +203,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         String testIds = getIdStr(jsonArray);
                         videoQuestionLiveEntity.setUrl(buildCourseUrl(testIds));
 //                        videoQuestionLiveEntity.setUrl("123");
-                        videoQuestionLiveEntity.id = onlineTechObj.optString("id");
+                        JSONArray ids = onlineTechObj.getJSONArray("id");
+                        String detail = ids.getString(0);
+                        videoQuestionLiveEntity.id = detail;
                         videoQuestionLiveEntity.setOnlineTechEntity(h5OnlineTechEntity);
                     }
                 }
@@ -601,7 +603,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 mLogtf.d("liveSubmitTestH5Answer:onPmSuccess=" + responseEntity.getJsonObject()
                                         .toString() +
                                         "," + videoQuestionLiveEntity);
-                                VideoResultEntity entity = getHttpResponseParser().parseQuestionAnswer
+                                VideoResultEntity entity = getHttpResponseParser().parseNewArtsPlatformQuestionAnswer
                                         (responseEntity,
                                                 true);
                                 entity.setVoice(true);

@@ -460,7 +460,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
         setDefaultParameter(params);
         params.addBodyParam("liveId", liveId);
-        params.addBodyParam("testAnswer", testAnswer);
+        params.addBodyParam("answers", testAnswer);
         params.addBodyParam("isPlayBack", "1");
         params.addBodyParam("isForce", "1");
         params.addBodyParam("Cookie", AppBll.getInstance().getUserToken());

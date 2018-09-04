@@ -967,29 +967,36 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             if(LiveVideoConfig.isNewArts){
                 Loger.d("Duncan", "onPutQuestionResultNewArts0");
                 final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
-                List useranswer = new ArrayList();
-                JSONArray answerAnswer = new JSONArray();
-                NewArtsAnswer detail = new NewArtsAnswer();
+                JSONArray answers = new JSONArray();
+                JSONObject answerdetail = new JSONObject();
+                JSONArray blanks = new JSONArray();
+                JSONArray choices = new JSONArray();
                 if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
-                    if(useranswer.size() > 0 ){
-                        useranswer.clear();
+                    try {
+                        blanks.put(0,answer);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                    useranswer.add(answer);
-                    detail.setBlank(useranswer);
                 } else {
-                    if(useranswer.size() > 0 ){
-                        useranswer.clear();
+                    try {
+                        choices.put(0,answer);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                    useranswer.add("A" + "");
-                    detail.setChoice(useranswer);
                 }
-                detail.setTestId(videoQuestionLiveEntity1.id);
-                detail.setVoiceUrl("");
-                detail.setUseVoice("1");
-                detail.setVoiceTime(voiceTime + "");
-                answerAnswer.put(detail);
+                try {
+                    answerdetail.put("blank",blanks);
+                    answerdetail.put("choice",choices);
+                    answerdetail.put("useVoice","1");
+                    answerdetail.put("voiceTime",voiceTime + "");
+                    answerdetail.put("voiceUrl","");
+                    answerdetail.put("testId",videoQuestionLiveEntity1.id);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                answers.put(answerdetail);
                 String testAnswer = "";
-                testAnswer = answerAnswer.toString();
+                testAnswer = answers.toString();
                 // 文科新课件平台的对接
                 mLiveBll.liveSubmitTestH5Answer(videoQuestionLiveEntity1, mVSectionID, testAnswer, videoQuestionLiveEntity1.courseware_type, isSubmit, voiceTime, isRight, new OnAnswerReslut() {
 
