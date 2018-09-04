@@ -69,24 +69,28 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
                     int state = data.optInt("state", 0);
                     wordStatisticInfo.state = state;
                     if (state == 1) {
-                        String pagetype = data.getString("pagetype");
-                        String testid = data.getString("testid");
-                        String answers = data.getString("answers");
-                        wordStatisticInfo.pagetype = pagetype;
-                        wordStatisticInfo.testid = testid;
-                        wordStatisticInfo.answers = answers;
-                        isOpen = true;
-                        if (wordDictationAction == null) {
-                            WordDictationBll wordDictationBll = new WordDictationBll(activity);
-                            wordDictationBll.initView(mRootView);
-                            wordDictationBll.setGetInfo(mGetInfo);
-                            wordDictationAction = wordDictationBll;
+                        if (!isOpen) {
+                            String pagetype = data.getString("pagetype");
+                            String testid = data.getString("testid");
+                            String answers = data.getString("answers");
+                            wordStatisticInfo.pagetype = pagetype;
+                            wordStatisticInfo.testid = testid;
+                            wordStatisticInfo.answers = answers;
+                            isOpen = true;
+                            if (wordDictationAction == null) {
+                                WordDictationBll wordDictationBll = new WordDictationBll(activity);
+                                wordDictationBll.initView(mRootView);
+                                wordDictationBll.setGetInfo(mGetInfo);
+                                wordDictationAction = wordDictationBll;
+                            }
+                            wordDictationAction.onStart(wordStatisticInfo);
                         }
-                        wordDictationAction.onStart(wordStatisticInfo);
                     } else {
-                        isOpen = false;
-                        if (wordDictationAction != null) {
-                            wordDictationAction.onStop();
+                        if (isOpen) {
+                            isOpen = false;
+                            if (wordDictationAction != null) {
+                                wordDictationAction.onStop();
+                            }
                         }
                     }
                 } catch (Exception e) {
