@@ -192,7 +192,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
                             videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.getJSONArray("id"))));
                             Loger.e("QuestionIRCBll", "======> onTopic 1111:" + mQuestionAction);
-                            if (mQuestionAction != null && !"2".equals(videoQuestionLiveEntity.package_socurce)) {
+                            if (mQuestionAction != null && !"2".equals(videoQuestionLiveEntity.package_socurce + "")) {
                                 mQuestionAction.showQuestion(videoQuestionLiveEntity);
                                 if (mAnswerRankBll != null) {
                                     mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());

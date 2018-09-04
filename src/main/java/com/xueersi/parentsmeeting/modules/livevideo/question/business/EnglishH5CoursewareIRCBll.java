@@ -185,7 +185,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         h5OnlineTechEntity.setStatus(onlineTechObj.optString("status"));
                         status = onlineTechObj.optString("status");
                         h5OnlineTechEntity.setPackage_source(onlineTechObj.optInt("package_source"));
-                        if("1".equals(onlineTechObj.optInt("package_source"))){
+                        if("1".equals(onlineTechObj.optInt("package_source")+"")){
                             return;
                         }
                         h5OnlineTechEntity.setGold(onlineTechObj.optString("gold"));
