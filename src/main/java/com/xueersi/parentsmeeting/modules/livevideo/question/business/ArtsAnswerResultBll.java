@@ -191,8 +191,7 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                             blankList.add(blankArray.getString(i1));
                         }
                         answer.setBlankList(blankList);
-
-                        rightAnswerArray = answerObject.optJSONArray("rightAnwer");
+                        rightAnswerArray = answerObject.optJSONArray("rightAnswer");
                         for (int i1 = 0; i1 < rightAnswerArray.length(); i1++) {
                             rightAnswerList.add(rightAnswerArray.getString(i1));
                         }
