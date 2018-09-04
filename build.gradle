@@ -48,4 +48,5 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.okhttp
     //
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
+    implementation project(':business:endictation')
 }

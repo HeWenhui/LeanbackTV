@@ -476,13 +476,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             if (status.has("wordStatisticInfo")) {
                 try {
+                    JSONObject jsonWordStatisticInfo = status.getJSONObject("wordStatisticInfo");
                     WordStatisticInfo wordStatisticInfo = new WordStatisticInfo();
-                    int state = status.getInt("state");
+                    int state = jsonWordStatisticInfo.getInt("state");
                     wordStatisticInfo.state = state;
                     if (state == 1) {
-                        wordStatisticInfo.testid = status.getString("testid");
-                        wordStatisticInfo.pagetype = status.getString("pagetype");
-                        wordStatisticInfo.answers = status.getString("answers");
+                        wordStatisticInfo.testid = jsonWordStatisticInfo.getString("testid");
+                        wordStatisticInfo.pagetype = jsonWordStatisticInfo.getString("pagetype");
+                        wordStatisticInfo.answers = jsonWordStatisticInfo.getString("answers");
                     }
                     coachStatusEntity.setWordStatisticInfo(wordStatisticInfo);
                 } catch (Exception e) {
