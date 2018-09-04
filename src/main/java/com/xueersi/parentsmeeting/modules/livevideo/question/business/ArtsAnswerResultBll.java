@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -190,8 +191,7 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                             blankList.add(blankArray.getString(i1));
                         }
                         answer.setBlankList(blankList);
-
-                        rightAnswerArray = answerObject.optJSONArray("rightAnwer");
+                        rightAnswerArray = answerObject.optJSONArray("rightAnswer");
                         for (int i1 = 0; i1 < rightAnswerArray.length(); i1++) {
                             rightAnswerList.add(rightAnswerArray.getString(i1));
                         }
@@ -203,8 +203,8 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                 }
                 showAnswerReulst();
             } else {
-               // String errorMsg = jsonObject.optString("msg");
-                //XESToastUtils.showToast(mContext, errorMsg);
+                 String errorMsg = jsonObject.optString("msg");
+                 XESToastUtils.showToast(mContext, errorMsg);
             }
         } catch (JSONException e) {
             e.printStackTrace();
