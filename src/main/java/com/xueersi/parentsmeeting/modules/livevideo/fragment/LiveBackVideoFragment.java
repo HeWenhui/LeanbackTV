@@ -489,11 +489,13 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (isInitialized() && pausePlay) {
             vPlayer.pause();
         }
+        liveBackVideoBll.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        liveBackVideoBll.onPause();
     }
 
     @Override
@@ -761,6 +763,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         super.onDestroy();
         if (liveBackBll != null) {
             liveBackBll.onDestory();
+        }
+        if (liveBackVideoBll != null) {
+            liveBackVideoBll.onDestroy();
         }
         ProxUtil.getProxUtil().clear(activity);
     }

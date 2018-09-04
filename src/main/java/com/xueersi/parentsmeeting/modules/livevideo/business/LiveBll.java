@@ -100,7 +100,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.parentsmeeting.modules.livevideo.video.TotalFrameStat;
+import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatHttp;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -223,7 +223,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle;
     /** 直播帧数统计 */
-    private TotalFrameStat totalFrameStat;
+    private LivePlayLog livePlayLog;
     /**
      * 学习记录提交时间间隔
      */
@@ -395,8 +395,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         }
     }
 
-    public void setTotalFrameStat(TotalFrameStat totalFrameStat) {
-        this.totalFrameStat = totalFrameStat;
+    public void setLivePlayLog(LivePlayLog livePlayLog) {
+        this.livePlayLog = livePlayLog;
     }
 
     @Override
@@ -2959,8 +2959,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
                     + mGetInfo.getTeacherId());
         }
-        if (totalFrameStat != null) {
-            totalFrameStat.setChannelname(mGetInfo.getChannelname());
+        if (livePlayLog != null) {
+            livePlayLog.setChannelname(mGetInfo.getChannelname());
         }
         final String serverurl = mGetInfo.getGslbServerUrl() + "?cmd=live_get_playserver&userid=" + mGetInfo.getStuId()
                 + "&username=" + mGetInfo.getUname() + "&channelname=" + mGetInfo.getChannelname();
@@ -2981,7 +2981,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
-                        totalFrameStat.liveGetPlayServer(time, 3, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, 3, "", ipsb, serverurl);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
                                 mVideoAction.onLiveStart(null, mLiveTopic, modechange);
@@ -2993,10 +2993,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     }
                 } else {
                     if (ex instanceof UnknownHostException) {
-                        totalFrameStat.liveGetPlayServer(time, 1, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, 1, "", ipsb, serverurl);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            totalFrameStat.liveGetPlayServer(time, 2, "", ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, 2, "", ipsb, serverurl);
                         }
                     }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);
@@ -3030,9 +3030,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     JSONObject object = new JSONObject(result);
                     PlayServerEntity server = mHttpResponseParser.parsePlayerServer(object);
                     if (server != null) {
-                        if (totalFrameStat != null) {
+                        if (livePlayLog != null) {
                             long time = System.currentTimeMillis() - before;
-                            totalFrameStat.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -4547,9 +4547,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 return;
             }
         } else if (MegId.MEGID_12102 == msgid) {
-            if (totalFrameStat != null) {
-                String cpuName = totalFrameStat.getCpuName();
-                String memsize = totalFrameStat.getMemsize();
+            if (livePlayLog != null) {
+                String cpuName = livePlayLog.getCpuName();
+                String memsize = livePlayLog.getMemsize();
                 String ua = Build.VERSION.SDK_INT + ";" + cpuName + ";" + memsize;
                 entity.addBodyParam("UA", ua);
             }

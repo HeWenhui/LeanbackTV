@@ -13,9 +13,10 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
+
+import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
  * Created by linyuqiang on 2018/8/3.
@@ -36,10 +37,13 @@ public class LiveBackVideoBll {
     String mUri = "";
     /** 进度缓存的追加KEY值 */
     protected String mShareKey = "LiveBack";
+    /** 直播帧数统计 */
+    private LivePlayLog livePlayLog;
 
     public LiveBackVideoBll(Activity activity) {
         this.activity = activity;
         logger = LoggerFactory.getLogger("LiveBackVideoBll");
+        livePlayLog = new LivePlayLog(activity, true);
     }
 
     public void setSectionName(String mSectionName) {
@@ -48,6 +52,7 @@ public class LiveBackVideoBll {
 
     public void setvPlayer(PlayerService vPlayer) {
         this.vPlayer = vPlayer;
+        livePlayLog.setvPlayer(vPlayer);
     }
 
     public void setVideoEntity(VideoLivePlayBackEntity mVideoEntity) {
@@ -70,6 +75,18 @@ public class LiveBackVideoBll {
             String mWebPath = mVideoEntity.getVideoPath();
             mWebPaths.add(mWebPath);
         }
+    }
+
+    public void onResume() {
+
+    }
+
+    public void onPause() {
+
+    }
+
+    public void onDestroy() {
+
     }
 
     public void setLiveBackPlayVideoFragment(LiveBackPlayerFragment liveBackPlayVideoFragment) {
@@ -107,6 +124,7 @@ public class LiveBackVideoBll {
         if (netWorkType == NetWorkHelper.NO_NETWORK) {
             vPlayer.stop();
             liveBackPlayVideoFragment.resultFailed(0, 0);
+            livePlayLog.onOpenFailed(0, AvformatOpenInputError.ENETDOWN.getNum());
         }
     }
 
@@ -119,12 +137,14 @@ public class LiveBackVideoBll {
         public void onOpenFailed(int arg1, int arg2) {
             logger.d("onOpenFailed:index=" + index + ",arg2=" + arg2);
             super.onOpenFailed(arg1, arg2);
+            livePlayLog.onOpenFailed(arg1, arg2);
         }
 
         @Override
         public void onOpenStart() {
             logger.d("onOpenStart");
             super.onOpenStart();
+            livePlayLog.onOpenStart();
         }
 
         @Override
@@ -132,8 +152,20 @@ public class LiveBackVideoBll {
             logger.d("onOpenSuccess:index=" + index);
             index--;
             super.onOpenSuccess();
+            livePlayLog.onOpenSuccess();
         }
 
+        @Override
+        public void onPlaybackComplete() {
+            super.onPlaybackComplete();
+            livePlayLog.onPlaybackComplete();
+        }
+
+        @Override
+        public void onPlayError() {
+            super.onPlayError();
+            livePlayLog.onPlayError();
+        }
     };
 
 }

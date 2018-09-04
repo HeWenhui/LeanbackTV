@@ -50,7 +50,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     private PlayServerEntity mServer;
     private LiveGetInfo mGetInfo;
     /** 直播帧数统计 */
-    private TotalFrameStat totalFrameStat;
+    private LivePlayLog livePlayLog;
     private int lastIndex;
     /** 直播服务器选择 */
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
@@ -96,9 +96,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
         this.mLiveBll = liveBll;
         this.mLiveType = liveType;
         mLogtf = new LogToFile(activity, TAG);
-        totalFrameStat = new TotalFrameStat(activity, true);
+        livePlayLog = new LivePlayLog(activity, true);
         liveVideoReportBll = new LiveVideoReportBll(activity, liveBll);
-        liveVideoReportBll.setTotalFrameStat(totalFrameStat);
+        liveVideoReportBll.setLivePlayLog(livePlayLog);
         mPlayStatistics.add(liveVideoReportBll.getVideoListener());
         mLogtf.clear();
         ProxUtil.getProxUtil().put(activity, VPlayerListenerReg.class, this);
@@ -106,7 +106,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     public void setvPlayer(PlayerService vPlayer) {
         this.vPlayer = vPlayer;
-        totalFrameStat.setvPlayer(vPlayer);
+        livePlayLog.setvPlayer(vPlayer);
     }
 
     public void setHttpManager(LiveHttpManager httpManager) {
@@ -137,7 +137,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         liveGetPlayServer = new LiveGetPlayServer(activity, mLiveBll, mLiveType, getInfo, liveTopic);
         liveGetPlayServer.setHttpManager(mHttpManager);
         liveGetPlayServer.setHttpResponseParser(mHttpResponseParser);
-        liveGetPlayServer.setTotalFrameStat(totalFrameStat);
+        liveGetPlayServer.setLivePlayLog(livePlayLog);
         liveGetPlayServer.setVideoAction(mVideoAction);
         liveVideoReportBll.onLiveInit(getInfo, liveTopic);
         liveGetPlayServer(liveTopic.getMode(), false);
@@ -173,13 +173,13 @@ public class LiveVideoBll implements VPlayerListenerReg {
      * @param modechange
      */
     public void rePlay(boolean modechange) {
-        if (totalFrameStat != null) {
-            totalFrameStat.onReplay();
+        if (livePlayLog != null) {
+            livePlayLog.onReplay();
         }
         String url;
         String msg = "rePlay:";
         if (mServer == null) {
-            totalFrameStat.setLastPlayserverEntity(null);
+            livePlayLog.setLastPlayserverEntity(null);
             String rtmpUrl = null;
             String[] rtmpUrls = mGetInfo.getRtmpUrls();
             if (rtmpUrls != null) {
@@ -292,7 +292,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             }
             lastPlayserverEntity = entity;
             liveVideoReportBll.setPlayserverEntity(entity);
-            totalFrameStat.setLastPlayserverEntity(entity);
+            livePlayLog.setLastPlayserverEntity(entity);
             if (useFlv) {
                 url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
             } else {
@@ -783,8 +783,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
     }
 
     public void onPause() {
-        if (totalFrameStat != null) {
-            totalFrameStat.onPause();
+        if (livePlayLog != null) {
+            livePlayLog.onPause();
         }
     }
 

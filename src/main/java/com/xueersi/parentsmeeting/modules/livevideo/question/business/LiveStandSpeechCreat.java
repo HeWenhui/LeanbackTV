@@ -25,11 +25,6 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
     LiveAndBackDebug liveAndBackDebug;
     LivePagerBack livePagerBack;
 
-    @Deprecated
-    public LiveStandSpeechCreat(LiveBll liveBll) {
-        liveAndBackDebug = liveBll;
-    }
-
     public LiveStandSpeechCreat(QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug, LivePagerBack livePagerBack) {
         this.questionIRCBll = questionIRCBll;
         this.liveAndBackDebug = liveAndBackDebug;

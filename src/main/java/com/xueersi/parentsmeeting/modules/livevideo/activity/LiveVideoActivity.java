@@ -242,7 +242,7 @@
 //
 //    @Override
 //    protected void onVideoCreateEnd() {
-//        mLiveBll.setTotalFrameStat(totalFrameStat);
+//        mLiveBll.setLivePlayLog(livePlayLog);
 //        mLiveBll.getInfo(mGetInfo);
 //    }
 //
@@ -1206,7 +1206,7 @@
 //        if (startRemote.get()) {
 //            return;
 //        }
-//        totalFrameStat.onReplay();
+//        livePlayLog.onReplay();
 //        if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
 //            if (LiveTopic.MODE_TRANING.endsWith(mGetInfo.getLiveTopic().getMode()) && mGetInfo.getStudentLiveInfo()
 //                    .isExpe()) {
@@ -1242,7 +1242,7 @@
 //        String url;
 //        String msg = "rePlay:";
 //        if (mServer == null) {
-//            totalFrameStat.setLastPlayserverEntity(null);
+//            livePlayLog.setLastPlayserverEntity(null);
 //            String rtmpUrl = null;
 //            String[] rtmpUrls = mGetInfo.getRtmpUrls();
 //            if (rtmpUrls != null) {
@@ -1356,7 +1356,7 @@
 //            }
 //            lastPlayserverEntity = entity;
 //            mLiveBll.setPlayserverEntity(entity);
-//            totalFrameStat.setLastPlayserverEntity(entity);
+//            livePlayLog.setLastPlayserverEntity(entity);
 //            if (useFlv) {
 //                url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/"
 //                        + mGetInfo.getChannelname() + entity.getFlvpostfix();

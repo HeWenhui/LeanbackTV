@@ -343,7 +343,7 @@
 //
 //    @Override
 //    protected void onVideoCreateEnd() {
-//        mLiveBll.setTotalFrameStat(totalFrameStat);
+//        mLiveBll.setLivePlayLog(livePlayLog);
 //        mLiveBll.getInfo(null);
 //    }
 //
@@ -1019,7 +1019,7 @@
 //        if (mGetInfo == null) {//上次初始化尚未完成
 //            return;
 //        }
-//        totalFrameStat.onReplay();
+//        livePlayLog.onReplay();
 //        new Thread() {
 //            @Override
 //            public void run() {
@@ -1056,7 +1056,7 @@
 //            url = rtmpUrl + "/" + mGetInfo.getChannelname();
 //            msg += "mServer=null";
 //            mLiveBll.setPlayserverEntity(null);
-//            totalFrameStat.setLastPlayserverEntity(null);
+//            livePlayLog.setLastPlayserverEntity(null);
 //        } else {
 //            List<PlayserverEntity> playservers = mServer.getPlayserver();
 //            msg += "playservers=" + playservers.size();
@@ -1134,7 +1134,7 @@
 //            }
 //            lastPlayserverEntity = entity;
 //            mLiveBll.setPlayserverEntity(entity);
-//            totalFrameStat.setLastPlayserverEntity(entity);
+//            livePlayLog.setLastPlayserverEntity(entity);
 //            if (useFlv) {
 //                url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
 //            } else {

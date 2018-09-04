@@ -51,7 +51,7 @@ public class LiveGetPlayServer {
     private PlayServerEntity mServer;
     private Callback.Cancelable mGetPlayServerCancle;
     /** 直播帧数统计 */
-    TotalFrameStat totalFrameStat;
+    LivePlayLog livePlayLog;
     VideoAction mVideoAction;
     LiveHttpManager mHttpManager;
     LiveHttpResponseParser mHttpResponseParser;
@@ -78,8 +78,8 @@ public class LiveGetPlayServer {
         this.mHttpResponseParser = httpResponseParser;
     }
 
-    public void setTotalFrameStat(TotalFrameStat totalFrameStat) {
-        this.totalFrameStat = totalFrameStat;
+    public void setLivePlayLog(LivePlayLog livePlayLog) {
+        this.livePlayLog = livePlayLog;
     }
 
     public void setVideoAction(VideoAction mVideoAction) {
@@ -129,8 +129,8 @@ public class LiveGetPlayServer {
             mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
                     + mGetInfo.getTeacherId());
         }
-        if (totalFrameStat != null) {
-            totalFrameStat.setChannelname(mGetInfo.getChannelname());
+        if (livePlayLog != null) {
+            livePlayLog.setChannelname(mGetInfo.getChannelname());
         }
         final String serverurl = mGetInfo.getGslbServerUrl() + "?cmd=live_get_playserver&userid=" + mGetInfo.getStuId()
                 + "&username=" + mGetInfo.getUname() + "&channelname=" + mGetInfo.getChannelname();
@@ -150,7 +150,7 @@ public class LiveGetPlayServer {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
-                        totalFrameStat.liveGetPlayServer(time, 3, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, 3, "", ipsb, serverurl);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
                                 mVideoAction.onLiveStart(null, mLiveTopic, modechange);
@@ -160,11 +160,11 @@ public class LiveGetPlayServer {
                     }
                 } else {
                     if (ex instanceof UnknownHostException) {
-                        totalFrameStat.liveGetPlayServer(time, 1, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, 1, "", ipsb, serverurl);
                         mVideoAction.onPlayError(0, PlayErrorCode.PLAY_SERVER_CODE_101);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            totalFrameStat.liveGetPlayServer(time, 2, "", ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, 2, "", ipsb, serverurl);
                             mVideoAction.onPlayError(0, PlayErrorCode.PLAY_SERVER_CODE_102);
                         }
                     }
@@ -199,9 +199,9 @@ public class LiveGetPlayServer {
                     JSONObject object = new JSONObject(result);
                     PlayServerEntity server = mHttpResponseParser.parsePlayerServer(object);
                     if (server != null) {
-                        if (totalFrameStat != null) {
+                        if (livePlayLog != null) {
                             long time = System.currentTimeMillis() - before;
-                            totalFrameStat.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
