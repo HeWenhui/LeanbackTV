@@ -475,6 +475,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 if (mEnglishH5CoursewareBll != null) {
                     event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
                     mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
+                    mEnglishH5CoursewareBll.onWebviewRemove();
                 }
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
