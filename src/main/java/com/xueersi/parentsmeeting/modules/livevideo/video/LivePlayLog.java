@@ -93,6 +93,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private int heartCount;
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     private boolean isLive = true;
+    String logVersion = "1";
 
     public LivePlayLog(final Activity activity, boolean isLive) {
         this.activity = activity;
@@ -347,6 +348,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     public void liveGetPlayServer(long delay, int code, String cipdispatch, StringBuilder ipsb, String url) {
         Loger.d(TAG, "liveGetPlayServer:delay=" + delay + ",ipsb=" + ipsb.toString());
         HashMap<String, String> defaultKey = new HashMap<>();
+        defaultKey.put("ver", logVersion);
+        defaultKey.put("serv", "120");
+        defaultKey.put("pri", "0");
+        defaultKey.put("ts", "" + System.currentTimeMillis());
+        defaultKey.put("serv", "120");
+
         defaultKey.put("dataType", "0");
         defaultKey.put("delay", "" + delay);
         defaultKey.put("code", "" + code);
@@ -407,28 +414,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     Float f = framesPsTen.get(i);
                     totalfps += f;
                 }
-                int net = 0;
-                try {
-                    String strNetworkType = NetWorkHelper.getNetworkType(activity);
-                    if (NetWorkHelper.NETWORK_TYPE_2G.equals(strNetworkType)) {
-                        net = 1;
-                    } else if (NetWorkHelper.NETWORK_TYPE_3G.equals(strNetworkType)) {
-                        net = 2;
-                    } else if (NetWorkHelper.NETWORK_TYPE_4G.equals(strNetworkType)) {
-                        net = 3;
-                    } else if (NetWorkHelper.NETWORK_TYPE_WIFI.equals(strNetworkType)) {
-                        net = 5;
-                    } else {
-                        if (!StringUtils.isEmpty(strNetworkType)) {
-                            net = 10;
-                            Loger.d(BaseApplication.getContext(), TAG, "getNetworkType:strNetworkType=" + strNetworkType, true);
-                        }
-                    }
-                } catch (Exception e) {
-                    net = -1024;
-                    Loger.e(BaseApplication.getContext(), TAG, "getNetworkType", e, true);
-                }
-                defaultKey.put("net", "" + net);
+                defaultKey.put("net", "" + getNet());
                 float averagefps2 = totalfps / 10f;
                 Loger.d(TAG, "xescdnLogHeart:averagefps=" + averagefps + "," + averagefps2);
                 xescdnLogHeart(defaultKey, averagefps, averagefps2, bufferduration, bitrate);
@@ -473,7 +459,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             requestJson.put("serviceType", "6");
             requestJson.put("uid", "" + userId);
             requestJson.put("agent", "m-android " + versionName);
-            requestJson.put("data", dataJson);
+            requestJson.put("pridata", dataJson);
             for (String key : defaultKey.keySet()) {
                 String value = defaultKey.get(key);
                 requestJson.put(key, value);
@@ -649,5 +635,30 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             }
         }
         return 0;
+    }
+
+    private int getNet() {
+        int net = 0;
+        try {
+            String strNetworkType = NetWorkHelper.getNetworkType(activity);
+            if (NetWorkHelper.NETWORK_TYPE_2G.equals(strNetworkType)) {
+                net = 1;
+            } else if (NetWorkHelper.NETWORK_TYPE_3G.equals(strNetworkType)) {
+                net = 2;
+            } else if (NetWorkHelper.NETWORK_TYPE_4G.equals(strNetworkType)) {
+                net = 3;
+            } else if (NetWorkHelper.NETWORK_TYPE_WIFI.equals(strNetworkType)) {
+                net = 5;
+            } else {
+                if (!StringUtils.isEmpty(strNetworkType)) {
+                    net = 10;
+                    Loger.d(BaseApplication.getContext(), TAG, "getNetworkType:strNetworkType=" + strNetworkType, true);
+                }
+            }
+        } catch (Exception e) {
+            net = -1024;
+            Loger.e(BaseApplication.getContext(), TAG, "getNetworkType", e, true);
+        }
+        return net;
     }
 }
