@@ -173,6 +173,12 @@ public class LiveVideoSAConfig {
          * 加载H5 页面地址
          * */
         public String URL_ARTS_H5_URL = "https://static.arts.xueersi.com/kejian/";
+
+        /**
+         * 直播间 文科差异化参数配置接口 (注：直播间文科差异化配置参数 获取接口)
+         */
+        public String URL_ARTS_ROOM_INFO = "https://app.arts.xueersi.com/v2/Live/getInfoBaseData";
+
     }
 
 }
