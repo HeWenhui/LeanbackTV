@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
-import com.xueersi.parentsmeeting.config.AppConfig;
-import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.config.AppConfig;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 
 /**
  * 直播模块配置
@@ -12,7 +12,7 @@ public class LiveVideoSAConfig {
     public Inner inner;
 
     public LiveVideoSAConfig(String hostStr, boolean IS_SCIENCE) {
-        HTTP_HOST = AppConfig.HTTP_HOST + "/" + hostStr;
+        HTTP_HOST = LiveVideoConfig.HTTP_HOST + "/" + hostStr;
 //        HTTP_HOST = AppConfig.HTTP_HOST;
         this.IS_SCIENCE = IS_SCIENCE;
         inner = new Inner();
@@ -89,9 +89,9 @@ public class LiveVideoSAConfig {
         /** 得到试题 */
         public String URL_LIVE_GET_QUESTION = HTTP_HOST + "/LiveCourse/getQuestion";
         /** 得到h5课件-不区分文理 */
-        public String URL_LIVE_GET_WARE_URL = AppConfig.HTTP_HOST + "/LiveCourse/getCourseWareUrl";
-        /** 一次多发课件 */
-        public String URL_LIVE_GET_MORE_WARE_URL = AppConfig.HTTP_HOST + "/science/LiveCourse/courseWarePreLoad";
+        public String URL_LIVE_GET_WARE_URL = LiveVideoConfig.HTTP_HOST + "/LiveCourse/getCourseWareUrl";
+        /** 一次多发课件*/
+        public String URL_LIVE_GET_MORE_WARE_URL = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/courseWarePreLoad";
         /** 互动题满分榜接口 */
         public String LIVE_FULL_MARK_LIST_QUESTION = HTTP_HOST + "/LiveCourse/teamTestFullScoreRank";
         /** 互动课件满分榜接口 */
@@ -150,6 +150,17 @@ public class LiveVideoSAConfig {
         public String URL_TEMPK_STUPKRESULT = HTTP_HOST + "/LiveCourse/stuPKResult";
         /** 贡献之星结果 */
         public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStar";
+
+        /**文科表扬榜*/
+        public String URL_ARTS_PRAISE_LIST ="https://app.arts.xueersi.com/LiveRank/getRankData";
+
+        /** 学生端上传用户发言语句，用户统计分词结果 */
+        public String URL_UPLOAD_VOICE_BARRAGE = HTTP_HOST + "/LiveCourse/uploadVoiceBarrage";
+        /** 回放获取弹幕接口 */
+        public String URL_GET_VOICE_BARRAGE_MSG = HTTP_HOST + "/LiveCourse/getVoiceBarrageMsg";
+
+        /** 贡献之星结果多题型 */
+        public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStarNew";
         /** 直播回放的用户在线心跳 */
         public String URL_LIVE_VISITTIME = HTTP_HOST + "/LiveCourse/visitTime";
     }

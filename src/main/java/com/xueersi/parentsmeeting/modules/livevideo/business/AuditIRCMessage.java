@@ -1,22 +1,20 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.network.NetWorkHelper;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.List;
 import java.util.Vector;
 
@@ -58,8 +56,7 @@ public class AuditIRCMessage {
         this.mChannel = channel;
         this.mNickname = nickname;
         this.liveAndBackDebug = liveAndBackDebug;
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         mLogtf.d("AuditIRCMessage:channel=" + channel + ",login=" + login + ",nickname=" + nickname);
         enterTime = System.currentTimeMillis();

@@ -14,7 +14,7 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 
-import com.xueersi.parentsmeeting.config.AppConfig;
+import com.xueersi.common.config.AppConfig;
 
 import java.io.File;
 import java.io.IOException;

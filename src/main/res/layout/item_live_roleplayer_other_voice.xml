@@ -16,8 +16,7 @@
             android:id="@id/ll_live_roleplayer_message_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView
                 android:id="@id/civ_live_roleplayer_message_user_head"
@@ -37,8 +36,7 @@
                 android:textColor="#078EC2"
                 android:textSize="11sp"
                 android:singleLine="true"
-                android:ellipsize="end"
-                />
+                android:ellipsize="end" />
 
 
         </LinearLayout>
@@ -86,8 +84,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="-10dp"
             android:layout_toEndOf="@+id/rl_live_roleplayer_message_voice_main"
-            android:layout_toRightOf="@+id/rl_live_roleplayer_message_voice_main"
-            >
+            android:layout_toRightOf="@+id/rl_live_roleplayer_message_voice_main">
 
             <ImageView
                 android:id="@id/iv_live_roleplayer_message_dz"
@@ -99,12 +96,12 @@
 
                 />
 
-           <!-- <com.airbnb.lottie.LottieAnimationView
-                android:id="@id/lav_live_roleplayer_message_dz"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                app:lottie_fileName="live_stand_roleplayer_dz.json"
-                app:lottie_imageAssetsFolder="Images/roleplayer_dz" />-->
+            <!-- <com.airbnb.lottie.LottieAnimationView
+                 android:id="@id/lav_live_roleplayer_message_dz"
+                 android:layout_width="20dp"
+                 android:layout_height="20dp"
+                 app:lottie_fileName="live_stand_roleplayer_dz.json"
+                 app:lottie_imageAssetsFolder="Images/roleplayer_dz" />-->
         </RelativeLayout>
 
         <LinearLayout

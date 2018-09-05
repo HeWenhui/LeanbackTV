@@ -1,8 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.os.Environment;
-
-import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -16,8 +13,7 @@ public class XesAtomicInteger {
 
     public XesAtomicInteger(int count) {
         atomicInteger = new AtomicInteger(count);
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(TAG);
     }
 
     /**

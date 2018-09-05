@@ -2,14 +2,15 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
 
-import com.xueersi.parentsmeeting.base.BaseHttpBusiness;
+import com.xueersi.common.base.BaseHttpBusiness;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.parentsmeeting.http.HttpCallBack;
-import com.xueersi.parentsmeeting.http.HttpRequestParams;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
-import com.xueersi.xesalib.utils.string.StringUtils;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 
 import java.util.HashMap;
 
@@ -166,7 +167,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("operateId", operateId);
         params.addBodyParam("termId", termId);
         params.addBodyParam("liveId", liveId);
-        sendPost("http://laoshi.xueersi.com/science/AutoLive/receiveGold", params, requestCallBack);
+        sendPost(LiveVideoConfig.URL_AUTO_LIVE_RECEIVE_GOLD, params, requestCallBack);
     }
 
     public void getLiveLectureMsgs(String enstuId, String keyName, int count, String start, int sort,
@@ -245,8 +246,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("classId", classId);
         params.addBodyParam("start", start.toString());
-        sendPost("http://laoshi.xueersi.com/science/AutoLive/getLiveCourseMsgs", params, requestCallBack);
-
+        sendPost(LiveVideoConfig.URL_AUTO_LIVE_MSGS, params, requestCallBack);
     }
 
     // 04.11 获取讲座直播回放中更多课程的广告信息
@@ -254,8 +254,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         setDefaultParameter(params);
-        sendPost("http://laoshi.xueersi.com/LiveLecture/getAdCase", params, requestCallBack);
-
+        sendPost(LiveVideoConfig.URL_LEC_AD_CASE, params, requestCallBack);
     }
 
     // 获取体验课学习报告
@@ -263,7 +262,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("orderId", termId);
         params.addBodyParam("liveId", liveId);
-        sendPost("http://laoshi.xueersi.com/science/AutoLive/learnFeedback", params, requestCallBack);
+        sendPost(LiveVideoConfig.URL_AUTO_LIVE_FEAD_BACK, params, requestCallBack);
     }
 
     /**
@@ -303,15 +302,6 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         sendPost(liveUrl, params, requestCallBack);
     }
 
-    /* 上传回放式体验课播放器播放时长的接口 */
-    public void uploadPlaybackPlayTime(int liveId, Long hbTime, HttpCallBack callBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("liveId", liveId + "");
-        params.addBodyParam("enstuId", UserBll.getInstance().getMyUserInfoEntity().getEnstuId());
-        params.addBodyParam("hbTime", hbTime.toString());
-        sendPost(LiveVideoConfig.URL_PLAYBACKPLAYTIME, params, callBack);
-    }
-
     /**
      * 直播回放视频播放访问时长接口
      *
@@ -331,4 +321,18 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
         sendPost(liveVideoSAConfigInner.URL_LIVE_VISITTIME, params, httpCallBack);
     }
+
+    /**
+     * 回放获取弹幕接口
+     *
+     * @param requestCallBack
+     */
+    public void getVoiceBarrageMsg(String liveId, String stuCouId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_GET_VOICE_BARRAGE_MSG, params, requestCallBack);
+    }
+
 }

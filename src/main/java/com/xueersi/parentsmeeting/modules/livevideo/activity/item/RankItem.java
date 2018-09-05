@@ -4,8 +4,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
-import com.xueersi.xesalib.adapter.AdapterItemInterface;
+import com.xueersi.ui.adapter.AdapterItemInterface;
 
 /**
  * Created by lyqai on 2017/9/21.
@@ -15,15 +16,23 @@ public class RankItem implements AdapterItemInterface<RankEntity> {
     TextView tv_livevideo_rank_item_mid;
     TextView tv_livevideo_rank_item_right;
     int colorYellow, colorWhite;
+    //小英，第一第二第三图标不一样
+    boolean isSmallEnglish;
 
-    public RankItem(int colorYellow, int colorWhite) {
+    public RankItem(int colorYellow, int colorWhite, boolean isSmallEnglish) {
         this.colorYellow = colorYellow;
         this.colorWhite = colorWhite;
+        this.isSmallEnglish = isSmallEnglish;
     }
 
     @Override
     public int getLayoutResId() {
-        return R.layout.item_livevodeo_rank;
+//        if (isSmallEnglish) {
+//            return R.layout.item_livevodeo_rank_smalleng;
+//        }
+        return isSmallEnglish ? R.layout.item_livevodeo_rank_smalleng : R.layout.item_livevodeo_rank;
+//        return R.layout.item_livevodeo_rank;
+
     }
 
     @Override
@@ -43,13 +52,32 @@ public class RankItem implements AdapterItemInterface<RankEntity> {
         String index = entity.getRank();
         if ("1".equals(index)) {
             tv_livevideo_rank_item_left.setText("");
-            tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_rank_no1);
+            tv_livevideo_rank_item_left.setBackgroundResource(isSmallEnglish ? R.drawable
+                    .bg_livevideo_small_english_rank_no1 : R.drawable.bg_livevideo_rank_no1);
+//            if (isSmallEnglish) {
+//                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_rank_no1);
+//            } else {
+//                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_small_english_rank_no1);
+//            }
         } else if ("2".equals(index)) {
             tv_livevideo_rank_item_left.setText("");
-            tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_rank_no2);
+            tv_livevideo_rank_item_left.setBackgroundResource(isSmallEnglish ? R.drawable
+                    .bg_livevideo_small_english_rank_no2 : R.drawable.bg_livevideo_rank_no2);
+//            if (isSmallEnglish) {
+//                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_rank_no2);
+//            } else {
+//                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_small_english_rank_no2);
+//            }
         } else if ("3".equals(index)) {
+            tv_livevideo_rank_item_left.setBackgroundResource(isSmallEnglish ? R.drawable
+                    .bg_livevideo_small_english_rank_no3 :
+                    R.drawable.bg_livevideo_rank_no3);
             tv_livevideo_rank_item_left.setText("");
-            tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_rank_no3);
+//            if (!isSmallEnglish) {
+//                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_rank_no3);
+//            } else {
+//                tv_livevideo_rank_item_left.setBackgroundResource(R.drawable.bg_livevideo_small_english_rank_no3);
+//            }
         } else {
             tv_livevideo_rank_item_left.setBackgroundDrawable(null);
             tv_livevideo_rank_item_left.setText("" + entity.getRank());

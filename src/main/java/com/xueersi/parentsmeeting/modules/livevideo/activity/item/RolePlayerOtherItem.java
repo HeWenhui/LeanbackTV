@@ -17,20 +17,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AudioPlayerManager;
+import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
-import com.xueersi.xesalib.utils.app.ContextManager;
-import com.xueersi.xesalib.utils.app.XESToastUtils;
-import com.xueersi.xesalib.utils.audio.safeaudioplayer.AudioPlayerManager;
-import com.xueersi.xesalib.utils.audio.safeaudioplayer.PlayerCallback;
-import com.xueersi.xesalib.utils.listener.OnAlphaTouchListener;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.network.NetWorkHelper;
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.listener.OnAlphaTouchListener;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 
 import ren.yale.android.cachewebviewlib.utils.NetworkUtils;
 
@@ -83,14 +85,14 @@ public class RolePlayerOtherItem extends RolePlayerItem {
      */
     //private LottieAnimationView lavMessageDZ;
     private AudioPlayerManager mAudioPlayerManager;//音频播放管理类
-    private final LiveBll mLiveBll;//只为记录日志用
+    private final LiveAndBackDebug mLiveBll;//只为记录日志用
     private boolean mIsPlaying = false;//标记当前语音正在播放,true 表示正在播放； flase 表示已经停止播放
     private boolean mIsVideoUnClick = true;//标记当前语音是否可点击；true 不可点击 false 可点击；默认true
 
 
-    public RolePlayerOtherItem(Context context, RolePlayerBll bll, LiveBll liveBll) {
+    public RolePlayerOtherItem(Context context, RolePlayerBll bll) {
         super(context, bll);
-        mLiveBll = liveBll;
+        mLiveBll = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
     }
 
     @Override
@@ -308,6 +310,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 mIsPlaying = true;
                 rlMessageDZ.setVisibility(View.VISIBLE);
                 ivMessageDZ.setVisibility(View.VISIBLE);
+                ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_normal);
                 vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
                 tvMessageContent.setTextColor(Color.WHITE);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_other_voice_white_anim);

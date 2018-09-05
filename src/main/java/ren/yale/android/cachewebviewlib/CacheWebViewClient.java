@@ -14,6 +14,7 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ import java.util.Vector;
  * Created by yale on 2017/9/15.
  */
 
-final class CacheWebViewClient extends WebViewClient {
+final class CacheWebViewClient extends ErrorWebViewClient {
 
 
     public WebViewClient mCustomWebViewClient;
@@ -40,6 +41,7 @@ final class CacheWebViewClient extends WebViewClient {
     private WebViewCache mWebViewCache;
 
     public CacheWebViewClient(){
+        super("CacheWebViewClient");
         mHeaderMaps = new HashMap<>();
         mVisitVectorUrl = new Vector<>();
     }

@@ -13,7 +13,7 @@
 
         <!-- 存放播放器的布局 -->
 
-        <com.xueersi.parentsmeeting.modules.videoplayer.media.CenterLayout
+        <com.xueersi.parentsmeeting.module.videoplayer.media.CenterLayout
             android:id="@id/cl_course_video_root"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -22,7 +22,7 @@
 
             <!-- 播放器 -->
 
-            <com.xueersi.parentsmeeting.modules.videoplayer.media.VideoView
+            <com.xueersi.parentsmeeting.module.videoplayer.media.VideoView
                 android:id="@id/vv_course_video_video"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -62,7 +62,7 @@
                         android:visibility="gone" />
                 </RelativeLayout>
             </RelativeLayout>
-        </com.xueersi.parentsmeeting.modules.videoplayer.media.CenterLayout>
+        </com.xueersi.parentsmeeting.module.videoplayer.media.CenterLayout>
 
         <RelativeLayout
             android:id="@id/rl_course_video_first_backgroud"
@@ -201,7 +201,7 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <com.xueersi.xesalib.view.ScrollView.DragLayout
+        <com.xueersi.ui.widget.DragLayout
             android:id="@id/dl_coursedetail_course_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -216,7 +216,7 @@
                 android:id="@id/fg_coursedetail_fragment_bottom"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent" />
-        </com.xueersi.xesalib.view.ScrollView.DragLayout>
+        </com.xueersi.ui.widget.DragLayout>
 
         <RelativeLayout
             android:id="@id/rl_coursedetail_bottom"

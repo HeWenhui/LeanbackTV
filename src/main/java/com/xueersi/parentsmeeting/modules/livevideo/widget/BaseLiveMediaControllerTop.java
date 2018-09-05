@@ -15,9 +15,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.ControllerTopInter;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.FractionalTouchDelegate;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerTopInter;
+import com.xueersi.parentsmeeting.module.videoplayer.media.FractionalTouchDelegate;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 
 /**
  * 直播播放器控制栏顶部区域

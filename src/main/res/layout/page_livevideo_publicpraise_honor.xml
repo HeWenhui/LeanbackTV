@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_livevideo_praise_light"
-                android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_livevideo_praise_light"
+    android:orientation="vertical">
 
     <ImageView
         android:id="@id/iv_livevideo_public_praise_bg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/bg_livevideo_praise_honnr"/>
+        android:background="@drawable/bg_livevideo_praise_honnr" />
 
     <RelativeLayout
         android:id="@id/rl_livevideo_public_praise"
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="90dp"
             android:layout_marginTop="98dp"
-            android:background="@drawable/bg_web_request_praise_small"/>
+            android:background="@drawable/bg_web_request_praise_small" />
 
         <TextView
             android:id="@id/tv_livevideo_public_multi_praise"
@@ -41,7 +41,7 @@
             android:gravity="center_vertical"
             android:text="小新新同学"
             android:textColor="@color/COLOR_333333"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
 
         <GridView
             android:id="@id/gv_livevideo_public_multi_praise"
@@ -55,6 +55,6 @@
             android:listSelector="@android:color/transparent"
             android:numColumns="5"
             android:overScrollMode="never"
-            android:scrollbars="none"/>
+            android:scrollbars="none" />
     </RelativeLayout>
 </RelativeLayout>

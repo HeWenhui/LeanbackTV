@@ -2,7 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.view.View;
 
-import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.common.base.BasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
 /**
  * @author linyuqiang
@@ -23,6 +24,6 @@ public interface BaseExamQuestionInter {
     void onDestroy();
 
     interface ExamStop {
-        void stopExam();
+        void stopExam(BaseExamQuestionInter baseExamQuestionInter, VideoQuestionLiveEntity mQuestionEntity);
     }
 }

@@ -1,0 +1,20 @@
+package com.xueersi.parentsmeeting.modules.livevideo.question.business;
+
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
+
+/**
+ * Created by linyuqiang on 2018/4/7.
+ * 站立直播语音评测一些事件
+ */
+public interface LiveStandSpeechEvalAction extends SpeechEvalAction {
+    /**
+     * 得到小组战况
+     *
+     * @param testId
+     * @param callBack
+     */
+    void getSpeechEvalAnswerTeamStatus(String testId, AbstractBusinessDataCallBack callBack);
+
+    long getRequestTime();
+}

@@ -8,24 +8,21 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
-import com.xueersi.parentsmeeting.base.BaseApplication;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
-import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.imageloader.SingleConfig;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -49,8 +46,7 @@ public class StandLiveHeadView extends LottieAnimationView {
         paint = new Paint();
         paint.setTextSize(24);
         paint.setColor(Color.WHITE);
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        logToFile = new LogToFile(context,TAG);
     }
 
     public LiveMessageEntity getEntity() {
@@ -90,6 +86,7 @@ public class StandLiveHeadView extends LottieAnimationView {
         updateName();
     }
 
+    @Override
     public void setComposition(@NonNull LottieComposition composition) {
         super.setComposition(composition);
         updateName();

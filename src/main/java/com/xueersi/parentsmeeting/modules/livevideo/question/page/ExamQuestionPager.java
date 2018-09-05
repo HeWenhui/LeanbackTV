@@ -15,21 +15,22 @@
 //import android.widget.Button;
 //import android.widget.ImageView;
 //
-//import com.xueersi.parentsmeeting.base.BasePager;
-//import com.xueersi.parentsmeeting.logerhelper.LogerTag;
+//import com.xueersi.common.base.BasePager;
+//import com.xueersi.common.logerhelper.LogerTag;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-//import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
+//import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.TeamPkBll;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 //import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 //import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 //import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-//import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
-//import com.xueersi.xesalib.utils.log.Loger;
-//import com.xueersi.xesalib.utils.string.StringUtils;
-//import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+//import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+//import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+//import com.xueersi.lib.framework.utils.string.StringUtils;
+//import com.xueersi.lib.framework.utils.ScreenUtils;
+
 //
 //import org.greenrobot.eventbus.EventBus;
 //
@@ -44,7 +45,7 @@
 // * 直播试卷答题页面
 // */
 //public class ExamQuestionPager extends BasePager implements BaseExamQuestionInter {
-//    private String EXAM_URL = "http://live.xueersi.com/LiveExam/examPaper";
+//    private String EXAM_URL = "https://live.xueersi.com/LiveExam/examPaper";
 //    String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
 //    private Button btSubjectClose;
 //    Button bt_livevideo_subject_calljs;
@@ -142,7 +143,7 @@
 //        ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
 //        ((AnimationDrawable) ivLoading.getBackground()).start();
 //        String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
-//        EXAM_URL = "http://live.xueersi.com/" + host + "/LiveExam/examPaper";
+//        EXAM_URL = "https://live.xueersi.com/" + host + "/LiveExam/examPaper";
 //        examUrl = EXAM_URL + "?liveId=" + liveid
 //                + "&testPlan=" + num + "&isPlayBack=0&stuId=" + stuId + "&stuName=" + stuName;
 //        if (!StringUtils.isEmpty(nonce)) {

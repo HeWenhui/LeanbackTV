@@ -2,51 +2,33 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
 import android.os.Environment;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.base.BasePager;
-import com.xueersi.parentsmeeting.http.HttpCallBack;
-import com.xueersi.parentsmeeting.http.ResponseEntity;
-import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LearnReportBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LecLearnReportBll;
+import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LecLearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle;
-import com.xueersi.xesalib.view.ratingbar.RatingBar;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * @author linyuqiang 学习报告
  */
-public class LecLearnReportPager extends BasePager {
+public class LecLearnReportPager extends LiveBasePager {
     String TAG = "LecLearnReportPager";
     LearnReportEntity reportEntity;
     LiveBll liveBll;
     LecLearnReportBll learnReportBll;
-    private LogToFile logToFile;
     TextView tv_livelec_dialog_xxsc_text;
     TextView tv_livelec_dialog_zhengquelv_text;
     TextView tv_livelec_dialog_zhengquelv_text2;
     TextView tv_livelec_dialog_paiming_text;
     TextView tv_livelec_dialog_paiming_text2;
 
-    public LecLearnReportPager(Context context, LearnReportEntity reportEntity, LiveBll liveBll, LecLearnReportBll learnReportBll) {
+    public LecLearnReportPager(Context context, LearnReportEntity reportEntity, LecLearnReportBll learnReportBll) {
         super(context);
 //        if (reportEntity == null) {
 //            reportEntity = new LearnReportEntity();
@@ -60,10 +42,7 @@ public class LecLearnReportPager extends BasePager {
 //            reportEntity.setStu(stu);
 //        }
         this.reportEntity = reportEntity;
-        this.liveBll = liveBll;
         this.learnReportBll = learnReportBll;
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
         initData();
     }
 

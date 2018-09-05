@@ -1,13 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
-import com.xueersi.parentsmeeting.http.HttpResponseParser;
-import com.xueersi.parentsmeeting.http.ResponseEntity;
-import com.xueersi.parentsmeeting.logerhelper.MobAgent;
+import com.xueersi.common.http.HttpResponseParser;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.logerhelper.MobAgent;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.VoiceBarrageMsgEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntity;
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -129,5 +130,42 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
             return null;
         }
         return speechEvalEntity;
+    }
+
+    /**
+     * 解析回放弹幕
+     *
+     * @param responseEntity
+     * @return
+     */
+    public ArrayList<VoiceBarrageMsgEntity> parseVoiceBarrageMsg(ResponseEntity responseEntity) {
+        Object data = responseEntity.getJsonObject();
+        ArrayList<VoiceBarrageMsgEntity> arrayList = new ArrayList<>();
+        try {
+            JSONArray jsonArray = new JSONArray(data.toString());
+            for (int i=0;i<jsonArray.length();i++){
+                VoiceBarrageMsgEntity voiceBarrageMsgEntity = new VoiceBarrageMsgEntity();
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                voiceBarrageMsgEntity.setVoiceId(jsonObject.optString("voiceId"));
+                ArrayList<VoiceBarrageMsgEntity.VoiceBarrageItemEntity> voiceBarrageItemEntities = new ArrayList<>();
+                JSONArray itemArray = jsonObject.getJSONArray("msgData");
+                for (int j = 0; j < itemArray.length(); j++) {
+                    JSONObject itemObject = itemArray.getJSONObject(j);
+                    VoiceBarrageMsgEntity.VoiceBarrageItemEntity voiceBarrageItemEntity = voiceBarrageMsgEntity.new VoiceBarrageItemEntity();
+                    voiceBarrageItemEntity.setStuId(itemObject.optString("stuId"));
+                    voiceBarrageItemEntity.setMsg(itemObject.optString("msg"));
+                    voiceBarrageItemEntity.setRelativeTime(itemObject.optInt("relativeTime"));
+                    voiceBarrageItemEntity.setName(itemObject.optString("name"));
+                    voiceBarrageItemEntity.setHeadImgPath(itemObject.optString("headImgPath"));
+                    voiceBarrageItemEntities.add(voiceBarrageItemEntity);
+                }
+                voiceBarrageMsgEntity.setVoiceBarrageItemEntities(voiceBarrageItemEntities);
+                arrayList.add(voiceBarrageMsgEntity);
+            }
+
+        } catch (Exception e) {
+           return null;
+        }
+        return arrayList;
     }
 }

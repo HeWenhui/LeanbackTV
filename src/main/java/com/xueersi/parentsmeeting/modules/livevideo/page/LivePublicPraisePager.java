@@ -21,13 +21,13 @@ import android.widget.TextView;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
-import com.xueersi.xesalib.view.refresh.swiperefresh.XsBaseAdapter;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.ui.adapter.XsBaseAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;

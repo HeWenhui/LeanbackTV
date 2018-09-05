@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
@@ -116,7 +116,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
         } catch (Exception e) {
             exception = e;
             e.printStackTrace();
-        } finally {
+        }  finally {
             if (zip != null) {
                 try {
                     zip.close();

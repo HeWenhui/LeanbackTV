@@ -7,16 +7,17 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.base.BaseBll;
-import com.xueersi.parentsmeeting.business.AppBll;
-import com.xueersi.parentsmeeting.cloud.XesCloudUploadBusiness;
-import com.xueersi.parentsmeeting.cloud.config.CloudDir;
-import com.xueersi.parentsmeeting.cloud.config.XesCloudConfig;
-import com.xueersi.parentsmeeting.cloud.entity.CloudUploadEntity;
-import com.xueersi.parentsmeeting.cloud.entity.XesCloudResult;
-import com.xueersi.parentsmeeting.cloud.listener.XesStsUploadListener;
-import com.xueersi.parentsmeeting.http.HttpCallBack;
-import com.xueersi.parentsmeeting.http.ResponseEntity;
+import com.xueersi.common.base.BaseBll;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.component.cloud.XesCloudUploadBusiness;
+import com.xueersi.component.cloud.config.CloudDir;
+import com.xueersi.component.cloud.config.XesCloudConfig;
+import com.xueersi.component.cloud.entity.CloudUploadEntity;
+import com.xueersi.component.cloud.entity.XesCloudResult;
+import com.xueersi.component.cloud.listener.XesStsUploadListener;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -24,14 +25,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
-import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
-import com.xueersi.parentsmeeting.permission.PermissionCallback;
-import com.xueersi.parentsmeeting.permission.PermissionItem;
-import com.xueersi.parentsmeeting.permission.XesPermission;
-import com.xueersi.parentsmeeting.permission.config.PermissionConfig;
-import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
-import com.xueersi.xesalib.utils.app.XESToastUtils;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.common.permission.PermissionCallback;
+import com.xueersi.common.permission.PermissionItem;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,7 +95,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     /**
      * 直播基础BLL
      */
-    private LiveBll mLiveBll;
+    private LiveAndBackDebug mLiveBll;
 
     private RolePlayerPager mRolePlayerPager;
 
@@ -103,7 +106,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     private boolean mIsBeginSocket;
     private boolean isGoToRobot;//是否开始了人机
 
-    public RolePlayerBll(Context context, RelativeLayout bottomContent, LiveBll liveBll, LiveGetInfo liveGetInfo) {
+    public RolePlayerBll(Context context, RelativeLayout bottomContent, LiveAndBackDebug liveBll, LiveGetInfo liveGetInfo) {
         super(context);
         this.bottomContent = bottomContent;
         this.mLiveBll = liveBll;
@@ -125,7 +128,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         final List<PermissionItem> unList = new ArrayList<>();
 
         List<PermissionItem> unPermissionItems = XesPermission.checkPermissionUnPerList(mContext, new
-                PermissionCallback() {
+                LiveActivityPermissionCallback() {
 
                     @Override
                     public void onFinish() {
@@ -254,7 +257,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         //拉取试题a
         requestTestInfos();
-        mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo, mLiveBll);
+        mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo);
         mRolePlayerPager.initData();
         if (bottomContent != null) {
             bottomContent.addView(mRolePlayerPager.getRootView());
@@ -287,9 +290,13 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     bottomContent.removeView(mRolePlayerPager.getRootView());
                     mRolePlayerPager.onDestroy();
                     mRolePlayerPager = null;
-                    if (mContext instanceof AudioRequest) {
-                        AudioRequest audioRequest = (AudioRequest) mContext;
-                        audioRequest.releaseAudio();
+                    AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
+                    if (audioRequest != null) {
+                        audioRequest.release();
+                    }
+                    UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext,UpdateAchievement.class);
+                    if (updateAchievement != null) {
+                        updateAchievement.getStuGoldCount();
                     }
                 }
             }

@@ -9,7 +9,7 @@
         android:layout_alignParentBottom="true"
         android:background="#EEEEEE">
 
-        <com.xueersi.xesalib.view.listview.HorizontalListView
+        <com.xueersi.ui.widget.HorizontalListView
             android:id="@id/hlv_chat_expression_hlvCustomList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

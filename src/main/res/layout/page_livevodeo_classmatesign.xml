@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/COLOR_7F000000">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/COLOR_7F000000">
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -13,7 +13,7 @@
             android:id="@id/ll_livevideo_classmate_sign"
             android:layout_width="210dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+            android:orientation="vertical" />
     </ScrollView>
 
 

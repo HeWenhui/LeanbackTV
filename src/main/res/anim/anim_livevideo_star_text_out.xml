@@ -2,11 +2,11 @@
 
 <!-- 直播表扬渐现 -->
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-     android:fillAfter="true">
+    android:fillAfter="true">
 
     <translate
         android:duration="500"
         android:fromYDelta="0"
-        android:toYDelta="-200%"/>
+        android:toYDelta="-200%" />
 
 </set>

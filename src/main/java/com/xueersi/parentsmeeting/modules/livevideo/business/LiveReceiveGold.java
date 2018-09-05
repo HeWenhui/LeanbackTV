@@ -1,12 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageStandBll;
 
 /**
  * Created by linyuqiang on 2018/4/2.
  * 站立直播金币接口连接
  */
-public class LiveReceiveGold implements RedPackageStandBll.ReceiveGold {
+public class LiveReceiveGold implements RedPackageStandBll.ReceiveGoldStand {
     LiveBll mLiveBll;
 
     public LiveReceiveGold(LiveBll liveBll) {
@@ -21,6 +22,8 @@ public class LiveReceiveGold implements RedPackageStandBll.ReceiveGold {
     @Override
     public void onReceiveGold() {
         mLiveBll.getStuGoldCount();
+        // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
+        //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
     }
 
     @Override

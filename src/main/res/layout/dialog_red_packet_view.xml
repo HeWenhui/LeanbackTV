@@ -2,12 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <ImageView
         android:id="@id/iv_livevideo_redpackage_bg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/bg_live_dialog_red_packet"/>
+        android:background="@drawable/bg_live_dialog_red_packet" />
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +27,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/bg_livevideo_redpackage_close"/>
+            android:src="@drawable/bg_livevideo_redpackage_close" />
 
         <TextView
             android:id="@id/tv_livevideo_redpackage_title"
@@ -36,7 +38,8 @@
             android:includeFontPadding="false"
             android:text="领取红包"
             android:textColor="@color/white"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
+
         <TextView
             android:id="@id/tv_livevideo_redpackage_subtitle"
             android:layout_width="wrap_content"
@@ -48,7 +51,8 @@
             android:includeFontPadding="false"
             android:text="老师发金币了，快来领取吧！"
             android:textColor="@color/white"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
+
         <ImageView
             android:id="@id/iv_livevideo_redpackage_monkey"
             android:layout_width="wrap_content"
@@ -66,7 +70,7 @@
             android:background="@drawable/shape_livevideo_redpackage_cofirm"
             android:text="领取"
             android:textColor="#ff4343"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
     </RelativeLayout>
 
 

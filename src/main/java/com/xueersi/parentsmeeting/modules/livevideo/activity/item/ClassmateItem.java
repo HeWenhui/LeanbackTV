@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity.item;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,10 +7,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
-import com.xueersi.xesalib.adapter.AdapterItemInterface;
-import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
+import com.xueersi.ui.adapter.AdapterItemInterface;
+import com.xueersi.lib.imageloader.ImageLoader;
 
 /**
  * 免费课列表ITEM
@@ -52,13 +52,7 @@ public class ClassmateItem implements AdapterItemInterface<ClassmateEntity> {
                         .ic_default_head_square)
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
 
-        if (mContext instanceof Activity) {
-            Activity activity = (Activity) mContext;
-            if (activity.isFinishing()) {
-                return;
-            }
-        }
-        ImageLoader.with(mContext).load(entity.getImg())
+        ImageLoader.with(BaseApplication.getContext()).load(entity.getImg())
                 .placeHolder(R.drawable.ic_default_head_square)
                 .error(R.drawable.ic_default_head_square).into(ivClassmateHead);
     }

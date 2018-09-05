@@ -13,14 +13,39 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+    compileSdkVersion 27
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile(rootProject.ext.libraries.ijkplayer) { changing = true }
-    compile(rootProject.ext.libraries.speechrecognizer) { changing = true }
-    //    compile project(':lottiexes')
-    compile('com.xueersi.lib:xeslottie:1.0.1-SNAPSHOT@aar') {
-        changing = true
-    }
+
     compile 'org.java-websocket:Java-WebSocket:1.3.4'
+    //glide库
+    implementation rootProject.ext.thirdlibraries.glide
+    implementation(rootProject.ext.xeslibraries.speechrecognizer) { changing = true }
+    //uicomponent
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.uicomponent)
+    //framework
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.framework)
+    //统计
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.analytics)
+    //图片处理
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.imageloader)
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.businesslibraries.audio)
+    //日志
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.logger)
+//    implementation project(':xesijkplayer')
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.ijkplayer)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.player)
+
+    rootProject.xrsImplementation(this.getProject(),rootProject.ext.businesslibraries.cloud)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.share)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.browser)
+
+    implementation(rootProject.ext.xeslibraries.xeslottie) { changing = true }
+    implementation rootProject.ext.thirdlibraries.arouterapi
+    implementation rootProject.ext.thirdlibraries.appcompat
+    implementation rootProject.ext.thirdlibraries.recyclerview
+    implementation rootProject.ext.thirdlibraries.okhttp
+    //
+    annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
 }

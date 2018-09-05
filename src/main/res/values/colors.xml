@@ -5,13 +5,35 @@
     <color name="COLOR_99000000">#99000000</color>
     <color name="COLOR_73510A">#73510A</color>
     <color name="COLOR_189818">#189818</color>
-   <color name="COLOR_7D5807">#7D5807</color>
+    <color name="COLOR_7D5807">#7D5807</color>
     <color name="COLOR_9B9B9B">#9B9B9B</color>
     <color name="COLOR_979797">#979797</color>
-    <color name="COLOR_323B47">#323B47</color>
-    <color name="COLOR_EE4646">#EE4646</color>
     <color name="COLOR_53C058">#53c058</color>
     <color name="COLOR_FF4444">#FF4444</color>
     <color name="COLOR_19F164">#19F164</color>
     <color name="COLOR_FFFFFF">#FFFFFF</color>
+    <color name="COLOR_ECF4FF">#ECF4FF</color>
+    <color name="COLOR_3795E9">#3795E9</color>
+    <color name="COLOR_9A4A19">#9A4A19</color>
+    <color name="COLOR_C03321">#C03321</color>
+    <color name="COLOR_FFDB2A">#FFDB2A</color>
+    <color name="COLOR_78C6FF">#78C6FF</color>
+    <color name="COLOR_333368">#333368</color>
+    <color name="COLOR_FF8F24">#FF8F24</color>
+    <color name="COLOR_5AC8FF">#5AC8FF</color>
+
+    <color name="COLOR_707070">#707070</color>
+    <color name="COLOR_80ffffff">#80FFFFFF</color>
+
+    <color name="COLOR_PKS">#ffbc2b</color>
+    <color name="COLOR_PKO">#47B7FF</color>
+    <color name="COLOR_REDBAG">#E54536</color>
+    <color name="COLOR_PKDEVIDING">#1D1311</color>
+    <color name="COLOR_PSPK">#2B1D1A</color>
+    <color name="COLOR_PSONLINECOUNT">#EFCCA0</color>
+    <color name="COLOR_PSDANMAKU">#3A2824</color>
+    <color name="COLOR_FFC3DAFF">#FFC3DAFF</color>
+    <color name="COLOR_FFFFFFFF">#FFFFFFFF</color>
+    <color name="COLOR_SLIDER">#D44920</color>
+
 </resources>

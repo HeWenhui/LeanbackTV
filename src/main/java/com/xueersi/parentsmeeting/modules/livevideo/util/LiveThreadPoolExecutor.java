@@ -2,9 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 
 import android.support.annotation.NonNull;
 
-import com.xueersi.xesalib.utils.log.Loger;
-
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;

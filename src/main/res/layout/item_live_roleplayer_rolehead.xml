@@ -21,7 +21,7 @@
             android:src="@drawable/livevideo_roleplay_match_avatar_bg"
             android:visibility="invisible" />
 
-        <com.xueersi.xesalib.view.image.CircleImageView
+        <com.xueersi.ui.widget.CircleImageView
             android:id="@id/civ_roleplayer_item_rolehead_img"
             android:layout_width="73dp"
             android:layout_height="73dp"
@@ -45,8 +45,7 @@
         android:layout_marginTop="-8dp"
         android:singleLine="true"
         android:ellipsize="end"
-        android:maxEms="5"
-        />
+        android:maxEms="5" />
 
     <!--角色名-->
     <TextView
@@ -60,8 +59,7 @@
         android:textColor="@color/white"
         android:singleLine="true"
         android:ellipsize="end"
-        android:maxEms="5"
-        />
+        android:maxEms="5" />
 
 
 </RelativeLayout>

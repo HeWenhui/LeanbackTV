@@ -8,9 +8,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.base.BaseApplication;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.ui.dialog.BaseAlertDialog;
 
 /**
  * Created by Administrator on 2017/5/8.
@@ -84,6 +84,7 @@ public class MicTipDialog extends BaseAlertDialog {
         return oldStatus != status;
     }
 
+    @Override
     public void showDialog() {
         super.showDialog(false, false);
         Handler handler = new Handler();

@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
-import com.xueersi.xesalib.adapter.AdapterItemInterface;
+import com.xueersi.ui.adapter.AdapterItemInterface;
 
 /**
  * Created by linyuqiang on 2016/8/5.

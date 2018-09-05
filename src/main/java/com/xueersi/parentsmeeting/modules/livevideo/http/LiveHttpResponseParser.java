@@ -2,12 +2,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
 
-import com.xueersi.parentsmeeting.config.AppConfig;
-import com.xueersi.parentsmeeting.http.HttpResponseParser;
-import com.xueersi.parentsmeeting.logerhelper.MobAgent;
-import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.common.http.HttpResponseParser;
+import com.xueersi.common.logerhelper.MobAgent;
+import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
@@ -40,14 +37,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.Play
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.sharebusiness.config.LiveVideoBusinessConfig;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.parentsmeeting.http.ResponseEntity;
-import com.xueersi.xesalib.utils.string.StringUtils;
+import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.common.http.ResponseEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,6 +69,19 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      */
     public void parseLiveGetInfoScience(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
         getInfo.setEducationStage(data.optString("educationStage", "0"));
+        try {
+            getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (1 == data.optInt("isPrimarySchool")) {
+            LiveVideoConfig.isPrimary = true;
+        } else {
+            LiveVideoConfig.isPrimary = false;
+        }
+        LiveVideoConfig.educationstage = getInfo.getEducationStage();
+        LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
+        LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
     }
 
     /**
@@ -83,10 +92,25 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param getInfo
      */
     public void parseLiveGetInfoLibarts(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
-
+        // 文科表扬榜
+        if (data.has("liveRank")) {
+            JSONObject jsonObject = data.optJSONObject("liveRank");
+            if (jsonObject != null) {
+                int showRank = jsonObject.optInt("showRankNum");
+                getInfo.setShowArtsPraise(showRank);
+            }
+        }
+        //小英萌萌哒皮肤专用
+        if (data.has("useSkin")) {
+            getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+        } else {
+            getInfo.setSmallEnglish(false);
+        }
     }
 
-    /** 解析getInfo */
+    /**
+     * 解析getInfo
+     */
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
@@ -108,13 +132,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 getInfo.setIsAllowTeamPk(data.getString("isAllowTeamPk"));
             }
             getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
+            getInfo.setIsAIPartner(data.optInt("isAIPartner"));
+
             //getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
-            try {
-                getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             getInfo.setIsSeniorOfHighSchool(data.optInt("isSeniorOfHighSchool"));
 
             //getInfo.setIsShowCounselorWhisper("1");
@@ -125,6 +146,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 followTypeEntity.setInt3(followType.getInt("3"));
                 followTypeEntity.setInt4(followType.getInt("4"));
             }
+
             getInfo.setTeacherId(data.getString("teacherId"));
             getInfo.setTeacherName(data.getString("teacherName"));
             getInfo.setTeacherIMG(data.optString("teacherImg"));
@@ -184,7 +206,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 liveTopic.setMode(mode == 0 ? LiveTopic.MODE_TRANING : LiveTopic.MODE_CLASS);
                 getInfo.setMode(liveTopic.getMode());
             }
-            if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+            if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 JSONArray teamStuIdArray = data.optJSONArray("teamStuIds");
                 if (teamStuIdArray != null) {
                     try {
@@ -290,14 +312,15 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setUrlClick(data.optInt("urlClick", 0));
             getInfo.setAllowLinkMic(data.optInt("allowLinkMic", 1) == 1);
             getInfo.setStuLinkMicNum(data.optInt("stuLinkMicNum", 0));
-            getInfo.setTestPaperUrl(data.optString("testPaperUrl", "http://live.xueersi.com/Live/getMultiTestPaper"));
+            getInfo.setTestPaperUrl(data.optString("testPaperUrl", "https://live.xueersi.com/Live/getMultiTestPaper"));
             getInfo.setBlockChinese(data.optInt("blockChinese", 0) == 1);
-            getInfo.setSubjectiveTestAnswerResult(data.optString("getSubjectiveTestResultUrl", "https://live.xueersi.com/Live/subjectiveTestAnswerResult/" + getInfo.getId()));
+            getInfo.setSubjectiveTestAnswerResult(data.optString("getSubjectiveTestResultUrl", "https://live.xueersi" +
+                    ".com/Live/subjectiveTestAnswerResult/" + getInfo.getId()));
             LiveGetInfo.TotalOpeningLength totalOpeningLength = new LiveGetInfo.TotalOpeningLength();
             Object getTotalOpeningLengthObj = data.opt("getTotalOpeningLength");
             if (getTotalOpeningLengthObj instanceof JSONObject) {
                 JSONObject getTotalOpeningLength = (JSONObject) getTotalOpeningLengthObj;
-                totalOpeningLength.duration = getTotalOpeningLength.getDouble("duration");
+                totalOpeningLength.duration = getTotalOpeningLength.optDouble("duration", 0);
                 totalOpeningLength.speakingLen = getTotalOpeningLength.optString("speaking_len");
                 totalOpeningLength.speakingNum = getTotalOpeningLength.optInt("speaking_num", 0);
             }
@@ -310,7 +333,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 String[] arrSubjIds = strSubjIds.split(",");
                 getInfo.setSubjectIds(arrSubjIds);
             }
-            if (liveType == LiveBll.LIVE_TYPE_LIVE) {
+            LiveVideoConfig.isPrimary = false;
+            if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 if (getInfo.getIsArts() == 1) {
                     parseLiveGetInfoLibarts(data, liveTopic, getInfo);
                 } else {
@@ -325,7 +349,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
-    /** 解析直播服务器 */
+    /**
+     * 解析直播服务器
+     */
     public PlayServerEntity parsePlayerServer(JSONObject object) {
         PlayServerEntity server = new PlayServerEntity();
         try {
@@ -367,21 +393,32 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
-    /** 解析直播topic数据 */
+    /**
+     * 解析直播topic数据
+     */
     public LiveTopic parseLiveTopic(LiveTopic oldLiveTopic, JSONObject liveTopicJson, int type) throws JSONException {
         LiveTopic liveTopic = new LiveTopic();
-        if (type != LiveBll.LIVE_TYPE_LIVE) {
+        if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
             liveTopic.setMode(LiveTopic.MODE_CLASS);
         }
 
         LiveTopic.TeamPkEntity teamPkEntity = new LiveTopic.TeamPkEntity();
-        if (type == LiveBll.LIVE_TYPE_LIVE && liveTopicJson.has("room_2")) {
+        if (type == LiveVideoConfig.LIVE_TYPE_LIVE && liveTopicJson.has("room_2")) {
             JSONObject status = liveTopicJson.getJSONObject("room_2");
             RoomStatusEntity coachStatusEntity = liveTopic.getCoachRoomstatus();
             coachStatusEntity.setMode(status.getString("mode"));
             coachStatusEntity.setOpenchat(status.getBoolean("openchat"));
             coachStatusEntity.setCalling(status.getBoolean("isCalling"));
             coachStatusEntity.setListStatus(status.optInt("listStatus"));
+
+            if (status.has("openbarrage")) {
+                Loger.i("yzl_fd", "room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = " + status.getBoolean("openbarrage") + " " + status.toString());
+                //新增字段，辅导老师开启礼物与否 true开启
+                coachStatusEntity.setFDLKOpenbarrage(status.getBoolean("openbarrage"));
+
+            } else {
+                Loger.i("yzl_fd", "room2中没有openbarrage字段 文科" + status.toString());
+            }
 
             // 解析辅讲老师信息
             LiveTopic.TeamPkEntity.RoomInfo roomInfo2 = new LiveTopic.TeamPkEntity.RoomInfo();
@@ -391,6 +428,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             teamPkEntity.setRoomInfo2(roomInfo2);
 
             if (status.has("link_mic")) {
+                Loger.i("yzl_fd", "辅导老师 parseLiveTopic status = " + status.toString());
                 JSONObject link_mic = status.getJSONObject("link_mic");
                 coachStatusEntity.setOnmic(link_mic.optString("onmic", "off"));
                 coachStatusEntity.setOpenhands(link_mic.optString("openhands", "off"));
@@ -422,14 +460,29 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 coachStatusEntity.setOpenhands("off");
                 coachStatusEntity.getClassmateEntities().clear();
             }
+            // 文科表扬榜 topic中相关信息
+            try {
+                if (status.has("openPraiseList")) {
+                    JSONObject jsonObject = status.getJSONObject("openPraiseList");
+                    LiveTopic.ArtsPraiseTopicEntity artsPraiseTopicEntity = new LiveTopic.ArtsPraiseTopicEntity();
+                    artsPraiseTopicEntity.setId(jsonObject.optString("id", ""));
+                    artsPraiseTopicEntity.setStastus(jsonObject.optBoolean("stastus", false));
+                    artsPraiseTopicEntity.setRankType(jsonObject.optInt("rankType"));
+                    liveTopic.setArtsPraiseTopicEntity(artsPraiseTopicEntity);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if (liveTopicJson.has("room_1")) {
+            Loger.i("yzl_fd", "主讲老师 parseLiveTopic liveTopicJson = " + liveTopicJson.toString());
             JSONObject status = liveTopicJson.getJSONObject("room_1");
             RoomStatusEntity mainStatusEntity = liveTopic.getMainRoomstatus();
             mainStatusEntity.setOnbreak(status.optBoolean("isOnBreak"));
             mainStatusEntity.setId(status.getInt("id"));
             mainStatusEntity.setClassbegin(status.getBoolean("classbegin"));
             mainStatusEntity.setOpenbarrage(status.getBoolean("openbarrage"));
+            liveTopic.getCoachRoomstatus().setZJLKOpenbarrage(status.getBoolean("openbarrage"));//一定不要忘记在topic返回的时候，room1里openbarrage字段的值设置到理科主讲实体中
             mainStatusEntity.setOpenchat(status.getBoolean("openchat"));
             mainStatusEntity.setOpenFeedback(status.optBoolean("isOpenFeedback"));
 
@@ -445,7 +498,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 mainStatusEntity.setHaveExam(true);
                 JSONObject jsonObject = status.getJSONObject("exam");
                 mainStatusEntity.setExamStatus(jsonObject.optString("status", "off"));
-                mainStatusEntity.setExamNum(jsonObject.optString("num", "0"));
+                mainStatusEntity.setExamNum(jsonObject.optString("num", "-1"));
             } else {
                 mainStatusEntity.setHaveExam(false);
             }
@@ -1049,6 +1102,22 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public HonorListEntity parseHonorList(ResponseEntity responseEntity) {
+
+//        HonorListEntity honorListEntity = new HonorListEntity();
+//        honorListEntity.setPraiseStatus(1);
+//        honorListEntity.setIsMy(1);
+//
+//        for (int i = 0; i < 10; i++) {
+//            HonorListEntity.HonorEntity honorEntity = honorListEntity.new HonorEntity();
+//            honorEntity.setExcellentNum(String.valueOf(i + 1));
+//            honorEntity.setStuName("学生" + i);
+//            if (honorEntity.getIsMy() == 1) {
+//                honorListEntity.setIsMy(1);
+//            } else {
+//                honorListEntity.getHonorEntities().add(honorEntity);
+//            }
+//        }
+
         Loger.i(TAG, "parseHonorList: " + responseEntity.getJsonObject());
         HonorListEntity honorListEntity = new HonorListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
@@ -1063,10 +1132,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 honorEntity.setExcellentNum(jsonObject.getString("excellent_num"));
                 honorEntity.setStuName(jsonObject.getString("stu_name"));
                 if (honorEntity.getIsMy() == 1) {
-                    honorListEntity.getHonorEntities().add(0, honorEntity);
-                } else {
-                    honorListEntity.getHonorEntities().add(honorEntity);
+                    honorListEntity.setIsMy(1);
                 }
+                honorListEntity.getHonorEntities().add(honorEntity);
             }
 
         } catch (Exception e) {
@@ -1084,6 +1152,22 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      */
     public ThumbsUpListEntity parseThumbsUpList(ResponseEntity responseEntity) {
 
+//        ThumbsUpListEntity thumbsUpListEntity = new ThumbsUpListEntity();
+//        for (int i = 0; i < 40; i++) {
+//            ThumbsUpListEntity.ThumbsUpEntity likeEntity = thumbsUpListEntity.new ThumbsUpEntity();
+//            likeEntity.setStuPraiseNum(i + 10);
+//            if (i % 2 == 0) {
+//                likeEntity.setStuName("学生" + i);
+//            } else {
+//                likeEntity.setStuName("学生地方撒" + i);
+//            }
+//            likeEntity.setIsMy(1);
+//            if (likeEntity.getIsMy() == 1) {
+//                thumbsUpListEntity.setIsMy(1);
+//            }
+//            thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
+//        }
+
         Loger.i(TAG, "parseThumbsUpList: " + responseEntity.getJsonObject());
         ThumbsUpListEntity thumbsUpListEntity = new ThumbsUpListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
@@ -1097,10 +1181,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 likeEntity.setStuPraiseNum(jsonObject.getInt("stu_praise_num"));
                 likeEntity.setStuName(jsonObject.getString("stu_name"));
                 if (likeEntity.getIsMy() == 1) {
-                    thumbsUpListEntity.getThumbsUpEntities().add(0, likeEntity);
-                } else {
-                    thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
+                    thumbsUpListEntity.setIsMy(1);
                 }
+                thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
             }
 
         } catch (Exception e) {
@@ -1117,6 +1200,23 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public ProgressListEntity parseProgressList(ResponseEntity responseEntity) {
+//        ProgressListEntity progressListEntity = new ProgressListEntity();
+//        for (int i = 0; i < 10; i++) {
+//            ProgressListEntity.ProgressEntity progressEntity = progressListEntity.new ProgressEntity();
+//            progressEntity.setStuId("11" + i);
+//            if (i % 2 == 0) {
+//                progressEntity.setStuName("学生大是大非" + i);
+//            } else {
+//                progressEntity.setStuName("学" + i);
+//            }
+//
+//            progressEntity.setIsMy(1);
+//            progressEntity.setProgressScore(String.valueOf(91 + i));
+//            if (progressEntity.getIsMy() == 1) {
+//                progressListEntity.setIsMy(1);
+//            }
+//            progressListEntity.getProgressEntities().add(progressEntity);
+//        }
         Loger.i(TAG, "parseProgressList: " + responseEntity.getJsonObject());
         ProgressListEntity progressListEntity = new ProgressListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
@@ -1132,10 +1232,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 progressEntity.setIsMy(jsonObject.getInt("isMy"));
                 progressEntity.setProgressScore(jsonObject.getString("progress_score"));
                 if (progressEntity.getIsMy() == 1) {
-                    progressListEntity.getProgressEntities().add(0, progressEntity);
-                } else {
-                    progressListEntity.getProgressEntities().add(progressEntity);
+                    progressListEntity.setIsMy(1);
                 }
+                progressListEntity.getProgressEntities().add(progressEntity);
             }
 
         } catch (Exception e) {
@@ -1144,7 +1243,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         }
         return progressListEntity;
     }
-
     /**
      * 解析点赞概率
      *
@@ -1285,10 +1383,20 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         StudentChestEntity studentChestEntity = null;
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
-            String gold = data.getString("gold");
+            int gold = data.optInt("gold");
+            studentChestEntity = new StudentChestEntity();
             String isGet = data.getString("isGet");
-            studentChestEntity = new StudentChestEntity(gold, isGet);
+            studentChestEntity.setIsGet(isGet);
+            studentChestEntity.setGold(gold);
 
+            if (data.has("chip")) {
+                JSONObject chipObject = data.getJSONObject("chip");
+                studentChestEntity.setAiPatner(true);
+                studentChestEntity.setChipName(chipObject.optString("chipName", ""));
+                studentChestEntity.setChipNum(chipObject.optInt("chipNum"));
+                studentChestEntity.setChipType(chipObject.optInt("chipType"));
+                studentChestEntity.setChipUrl(chipObject.optString("chipUrl"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1308,7 +1416,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             JSONObject data = (JSONObject) responseEntity.getJsonObject();
             if (data.has("sumGold")) {
                 long sumGold = data.getLong("sumGold");
+                long sumChip = data.optLong("sumChip");
                 classChestEntity.setSumGold(sumGold);
+                classChestEntity.setSumChip(sumChip);
             }
             if (data.has("stuList")) {
                 List<ClassChestEntity.SubChestEntity> list = new ArrayList<ClassChestEntity.SubChestEntity>();
@@ -1321,6 +1431,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     String avatarPath = jsonObject.getString("avatarPath");
                     String stuId = jsonObject.getString("stuId");
                     subChestEntity = new ClassChestEntity.SubChestEntity(gold, stuName, avatarPath, stuId);
+                    long chipNum = jsonObject.optLong("chipNum");
+                    String chipName = jsonObject.optString("chipName");
+                    subChestEntity.setChipName(chipName);
+                    subChestEntity.setChipNum(chipNum);
+                    subChestEntity.setChipType(jsonObject.optInt("chipType"));
+                    subChestEntity.setChipUrl(jsonObject.optString("chipUrl"));
                     list.add(subChestEntity);
                 }
                 classChestEntity.setSubChestEntityList(list);
@@ -1510,8 +1626,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     }
 
     /*
-    * 解析更多课程的数据
-    * */
+     * 解析更多课程的数据
+     * */
     public MoreChoice parseMoreChoice(ResponseEntity responseEntity) {
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         MoreChoice moreChoice = new MoreChoice();

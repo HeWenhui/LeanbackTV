@@ -15,12 +15,12 @@
 //import android.widget.ImageView;
 //import android.widget.TextView;
 //
-//import com.xueersi.parentsmeeting.base.BaseApplication;
+//import com.xueersi.common.base.BaseApplication;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
-//import com.xueersi.parentsmeeting.base.BasePager;
-//import com.xueersi.parentsmeeting.logerhelper.LogerTag;
-//import com.xueersi.xesalib.utils.log.Loger;
-//import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
+//import com.xueersi.common.base.BasePager;
+//import com.xueersi.common.logerhelper.LogerTag;
+//import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+//import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 //
 ///**
 // * Created by linyuqiang on 2017/3/25

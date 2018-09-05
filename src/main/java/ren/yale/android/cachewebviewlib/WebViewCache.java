@@ -7,7 +7,7 @@ import android.util.LruCache;
 
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.File;
 import java.io.IOException;
@@ -195,7 +195,7 @@ public class WebViewCache {
             DiskLruCache.Editor editor = mDiskLruCache.edit(key);
             return editor;
         } catch (IOException e) {
-            CacheWebViewLog.d(e.toString());
+            CacheWebViewLog.d(e.toString(), e);
             e.printStackTrace();
         }
         return null;
@@ -260,13 +260,13 @@ public class WebViewCache {
             }
 
         } catch (MalformedURLException e) {
-            CacheWebViewLog.d(e.toString() + " " + url);
+            CacheWebViewLog.d(e.toString() + " " + url, e);
             e.printStackTrace();
         } catch (IOException e) {
-            CacheWebViewLog.d(e.toString() + " " + url);
+            CacheWebViewLog.d(e.toString() + " " + url, e);
             e.printStackTrace();
         } catch (Exception e) {
-            CacheWebViewLog.d(e.toString() + " " + url);
+            CacheWebViewLog.d(e.toString() + " " + url, e);
             e.printStackTrace();
         } finally {
             if (httpURLConnection != null) {

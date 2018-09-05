@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
-import com.xueersi.xesalib.utils.string.StringUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +39,8 @@ public class LiveGetInfo {
      * 用户Id
      */
     private String stuId;
+    /** 用户购课Id */
+    private String stuCouId;
     /**
      * 用户拼音，现阶段取用户名
      */
@@ -217,6 +219,8 @@ public class LiveGetInfo {
     private String testPaperUrl;
     private boolean blockChinese;
     private String subjectiveTestAnswerResult;
+    //是否是小英
+    private boolean smallEnglish;
     /**
      * 当前的直播模式
      */
@@ -246,17 +250,36 @@ public class LiveGetInfo {
      * 1 :是pk 直播间  0 :非pk直播间
      */
     private String isAllowTeamPk;
+    /**是否是AI 伴侣直播间*/
+    private int isAIPartner;
     private String[] subjectIds;//所有学科id
     /** 小学理科改版，教育阶段，区分献花 */
     private String educationStage;
     /** 直播课年级 */
     private int grade;
+    /** 一发多题的动态接口*/
+    private String mulpreload;
+    private String mulh5url;
 
     /**
      * 是否是高三理科
      */
     private int isSeniorOfHighSchool;
+    /**是否显示文科表扬榜信息*/
+    private int showArtsPraise;
+    public int getShowArtsPraise() {
+        return showArtsPraise;
+    }
+    public void setShowArtsPraise(int showArtsPraise) {
+        this.showArtsPraise = showArtsPraise;
+    }
+    public void setSmallEnglish(boolean smallEnglish) {
+        this.smallEnglish = smallEnglish;
+    }
 
+    public boolean getSmallEnglish() {
+        return smallEnglish;
+    }
 
     public int getGrade() {
         return grade;
@@ -264,6 +287,14 @@ public class LiveGetInfo {
 
     public void setGrade(int grade) {
         this.grade = grade;
+    }
+
+    public void setIsAIPartner(int isAIPartner) {
+        this.isAIPartner = isAIPartner;
+    }
+
+    public int getIsAIPartner() {
+        return isAIPartner;
     }
 
     public void setIsAllowTeamPk(String isAllowTeamPk) {
@@ -298,7 +329,7 @@ public class LiveGetInfo {
         this.is_show_ranks = is_show_ranks;
     }
 
-    public void setIsSeniorOfHighSchool(int isSeniorOfHighSchool){
+    public void setIsSeniorOfHighSchool(int isSeniorOfHighSchool) {
         this.isSeniorOfHighSchool = isSeniorOfHighSchool;
     }
 
@@ -316,6 +347,14 @@ public class LiveGetInfo {
 
     public void setStuId(String stuId) {
         this.stuId = stuId;
+    }
+
+    public String getStuCouId() {
+        return stuCouId;
+    }
+
+    public void setStuCouId(String stuCouId) {
+        this.stuCouId = stuCouId;
     }
 
     public void setUname(String uname) {
@@ -1121,5 +1160,21 @@ public class LiveGetInfo {
         public double duration = 0;
         public int speakingNum = 0;
         public String speakingLen = "";
+    }
+
+    public String getMulpreload() {
+        return mulpreload;
+    }
+
+    public void setMulpreload(String mulpreload) {
+        this.mulpreload = mulpreload;
+    }
+
+    public String getMulh5url() {
+        return mulh5url;
+    }
+
+    public void setMulh5url(String mulh5url) {
+        this.mulh5url = mulh5url;
     }
 }

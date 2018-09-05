@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/mediacontroller_bg">
+    <ImageView
+        android:id="@id/iv_livevideo_redpackage_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/redpacketsbg"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_livevideo_redpackage_bg"
+        android:layout_alignLeft="@id/iv_livevideo_redpackage_bg"
+        android:layout_alignRight="@id/iv_livevideo_redpackage_bg"
+        android:layout_alignTop="@id/iv_livevideo_redpackage_bg"
+        android:paddingBottom="22dp">
+        <ImageView
+            android:id="@+id/iv_livevideo_redpackage_cofirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/selector_psredpackage_confirm"
+            android:layout_marginBottom="38dp"
+            />
+        <ImageView
+            android:id="@id/iv_livevideo_redpackage_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/selector_closeredpacketsbg"/>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

@@ -9,10 +9,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <View
+            android:id="@id/v_livevideo_question_content_bord"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_alignParentBottom="true" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_above="@id/v_livevideo_question_content_bord"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -38,7 +44,7 @@
                     android:layout_below="@id/rl_livevideo_question_fillin_down"
                     android:background="@color/white">
 
-                    <com.xueersi.xesalib.view.button.progressbutton.CircularProgressButton
+                    <com.xueersi.ui.widget.button.progressbutton.CircularProgressButton
                         android:id="@id/btn_livevideo_question_fillin_submit"
                         android:layout_width="100dp"
                         android:layout_height="40dp"
@@ -61,7 +67,7 @@
                         android:layout_toLeftOf="@id/btn_livevideo_question_fillin_submit"
                         android:paddingBottom="10dp">
 
-                        <com.xueersi.xesalib.view.gridview.AutohGridview
+                        <com.xueersi.ui.widget.AutohGridview
                             android:id="@id/gv_livevideo_question_fillin"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

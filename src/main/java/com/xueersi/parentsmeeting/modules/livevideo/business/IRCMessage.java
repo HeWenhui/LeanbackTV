@@ -1,26 +1,23 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.os.Environment;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.network.NetWorkHelper;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * IRC消息。连接IRCConnection和LiveBll，控制聊天的连接和断开
@@ -47,17 +44,16 @@ public class IRCMessage {
     private int netWorkType;
     /** 调度是不是在无网络下失败 */
     private boolean connectError = false;
-    /** 和服务器的ping，线程池 */
-    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     /** 是不是获得过用户列表 */
     private boolean onUserList = false;
+    /** 和服务器的ping，线程池 */
+    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
-    public IRCMessage(int netWorkType, String channel, String login, String nickname) {
+    public IRCMessage(Context context, int netWorkType, String channel, String login, String nickname) {
         this.netWorkType = netWorkType;
         this.mChannel = channel;
         this.mNickname = nickname;
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         mLogtf.d("IRCMessage:channel=" + channel + ",login=" + login + ",nickname=" + nickname);
     }
@@ -91,12 +87,12 @@ public class IRCMessage {
             mLogtf.d("onNetWorkChange:connectError=" + connectError);
             if (connectError) {
                 connectError = false;
-                new Thread() {
+                liveThreadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         connect("onNetWorkChange");
                     }
-                }.start();
+                });
             }
         }
         if (ircTalkConf != null) {
@@ -242,16 +238,17 @@ public class IRCMessage {
                 }
                 mHandler.removeCallbacks(mPingRunnable);
                 if (!isQuitting) {
-                    new Thread() {
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
                         public void run() {
-                            try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            IRCMessage.this.connect("onDisconnect");
+                            liveThreadPoolExecutor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    IRCMessage.this.connect("onDisconnect");
+                                }
+                            });
                         }
-                    }.start();
+                    }, 2000);
                 }
             }
 
@@ -280,9 +277,9 @@ public class IRCMessage {
             @Override
             public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
                 if (sourceNick.startsWith("s_") || sourceNick.startsWith("ws_")) {
-                    Loger.d(TAG,"onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                    Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                             + sourceHostname + ",reason=" + reason);
-                }else {
+                } else {
                     mLogtf.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                             + sourceHostname + ",reason=" + reason);
                 }
@@ -392,17 +389,22 @@ public class IRCMessage {
                 mNewTalkConf.remove(index);
             }
             mLogtf.d("connect:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
-            liveThreadPoolExecutor.execute(new Runnable() {
+            mHandler.postDelayed(new Runnable() {
+
                 @Override
                 public void run() {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    if (mIsDestory) {
+                        return;
                     }
-                    connect("connect2");
+                    liveThreadPoolExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            connect("connect2");
+                        }
+                    });
                 }
-            });
+            }, 2000);
+
         }
     }
 
@@ -439,12 +441,12 @@ public class IRCMessage {
         @Override
         public void onDataSucess(Object... objData) {
             mNewTalkConf = (List<NewTalkConfEntity>) objData[0];
-            new Thread() {
+            liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     connect("onDataSucess");
                 }
-            }.start();
+            });
         }
     };
 
@@ -495,9 +497,14 @@ public class IRCMessage {
         mIsDestory = true;
         mHandler.removeCallbacks(mPingRunnable);
         mHandler.removeCallbacks(mTimeoutRunnable);
-        if (mConnection != null) {
-            mConnection.disconnect();
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                if (mConnection != null) {
+                    mConnection.disconnect();
+                }
+            }
+        }.start();
         if (ircTalkConf != null) {
             ircTalkConf.destory();
         }
@@ -543,28 +550,32 @@ public class IRCMessage {
 
         @Override
         public void run() {
-            new Thread() {
+            if (mIsDestory) {
+                return;
+            }
+            mHandler.postDelayed(new Runnable() {
+
                 @Override
                 public void run() {
                     if (mIsDestory) {
                         return;
                     }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    IRCConnection old = mConnection;
-                    mConnection = new IRCConnection(privMsg);
-                    mConnection.setCallback(old.getCallback());
-                    old.setCallback(null);
-                    old.disconnect();
-                    if (mIRCCallback != null) {
-                        mIRCCallback.onDisconnect(old, false);
-                    }
-                    connect("mTimeoutRunnable");
+                    liveThreadPoolExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            IRCConnection old = mConnection;
+                            mConnection = new IRCConnection(privMsg);
+                            mConnection.setCallback(old.getCallback());
+                            old.setCallback(null);
+                            old.disconnect();
+                            if (mIRCCallback != null) {
+                                mIRCCallback.onDisconnect(old, false);
+                            }
+                            connect("mTimeoutRunnable");
+                        }
+                    });
                 }
-            }.start();
+            }, 2000);
         }
     };
 }

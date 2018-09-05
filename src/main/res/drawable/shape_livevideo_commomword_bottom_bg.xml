@@ -3,6 +3,6 @@
     <!-- 圆角 -->
     <corners
         android:bottomLeftRadius="2dp"
-        android:bottomRightRadius="2dp"/><!-- 设置圆角半径 -->
-    <solid android:color="@color/transparent_80"/>
+        android:bottomRightRadius="2dp" /><!-- 设置圆角半径 -->
+    <solid android:color="@color/transparent_80" />
 </shape>

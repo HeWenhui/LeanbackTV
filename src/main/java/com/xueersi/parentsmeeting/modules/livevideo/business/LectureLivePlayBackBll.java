@@ -5,21 +5,21 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
-import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.base.BaseBll;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.BaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
-import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.parentsmeeting.http.ResponseEntity;
-import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
-import com.xueersi.parentsmeeting.entity.VideoCourseEntity;
-import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.http.HttpCallBack;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.entity.MyUserInfoEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoCourseEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
@@ -27,14 +27,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
-import com.xueersi.parentsmeeting.util.JsonUtil;
-import com.xueersi.xesalib.utils.app.XESToastUtils;
-import com.xueersi.xesalib.utils.app.XSAsykTask;
-import com.xueersi.xesalib.utils.file.FileUtils;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.network.NetWorkHelper;
-import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.lib.framework.utils.JsonUtil;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.XSAsykTask;
+import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -785,16 +787,6 @@ public class LectureLivePlayBackBll extends BaseBll {
                         XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
                     }
                 });
-    }
-
-    // 回放式体验课的心跳时间
-    public void uploadPlaybackVideoPlayTime(int liveId, Long hbtime) {
-        mCourseHttpManager.uploadPlaybackPlayTime(liveId, hbtime, new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.e("Duncan", "uploadplaybacktime:" + responseEntity.getJsonObject());
-            }
-        });
     }
 
     public void sendLiveCourseVisitTime(final String stuCouId, final String liveId, final int hbTime, final Handler handler, final long delayMillis) {

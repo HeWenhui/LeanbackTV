@@ -1,14 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle
         android:id="@id/lrf_livevideo_evaluate_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:floattitle="课程感受"
-        app:showcancle="false"/>
+        app:showcancle="false" />
 
     <LinearLayout
         android:id="@id/ll_livevideo_evaluate_tip"
@@ -27,7 +27,7 @@
             android:layout_marginTop="15dp"
             android:text="感谢您的评价!"
             android:textColor="@color/white"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <TextView
             android:id="@id/tv_livevideo_evaluate_success_tip2"
@@ -37,7 +37,7 @@
             android:layout_marginTop="15dp"
             android:text="您的评价是教师提高教学质量的动力!"
             android:textColor="@color/white"
-            android:textSize="10sp"/>
+            android:textSize="10sp" />
 
     </LinearLayout>
 
@@ -52,14 +52,14 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="17dp"
-            android:src="@drawable/ic_mokey_success"/>
+            android:src="@drawable/ic_mokey_success" />
 
         <View
             android:id="@id/v_livevideo_evaluate_bottom2"
             android:layout_width="wrap_content"
             android:layout_height="1px"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true" />
 
         <Button
             android:id="@id/bt_livevideo_evaluate_submit_close"
@@ -70,7 +70,7 @@
             android:layout_marginBottom="20dp"
             android:background="@drawable/bg_livevideo_close"
             android:text="关闭"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white" />
     </RelativeLayout>
 
 

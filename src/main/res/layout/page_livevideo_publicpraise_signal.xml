@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_livevideo_praise_light">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_livevideo_praise_light">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="75dp"
             android:layout_marginTop="113dp"
-            android:background="@drawable/ic_mokey_success"/>
+            android:background="@drawable/ic_mokey_success" />
 
         <TextView
             android:id="@id/tv_livevideo_public_signal_praise"
@@ -27,6 +27,6 @@
             android:layout_toRightOf="@id/iv_livevideo_public_praise"
             android:text="小新新同学"
             android:textColor="@color/COLOR_333333"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
     </RelativeLayout>
 </RelativeLayout>

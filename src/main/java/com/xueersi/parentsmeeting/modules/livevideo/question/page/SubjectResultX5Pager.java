@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,17 +13,15 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
-import com.xueersi.parentsmeeting.base.BasePager;
-import com.xueersi.parentsmeeting.logerhelper.LogerTag;
-import com.xueersi.parentsmeeting.logerhelper.UmsAgentUtil;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.logerhelper.LogerTag;
+import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseQuestionWebInter;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +29,7 @@ import java.util.Map;
  * Created by linyuqiang on 2018/6/6.
  * 直播主观题结果页面
  */
-public class SubjectResultX5Pager extends BasePager implements BaseSubjectResultInter {
+public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectResultInter {
     private String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
     private Button btSubjectClose;
     private Button bt_livevideo_subject_calljs;
@@ -45,23 +42,20 @@ public class SubjectResultX5Pager extends BasePager implements BaseSubjectResult
     private String stuId;
     private String liveid;
     private String testId;
-    private LogToFile logToFile;
     /** 试卷地址 */
     private String examUrl = "";
     private String testPaperUrl;
     private String stuCouId;
 
-    public SubjectResultX5Pager(Context context, BaseQuestionWebInter.StopWebQuestion questionBll, String testPaperUrl, String stuId, String liveid, String testId, String stuCouId) {
+    public SubjectResultX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, BaseQuestionWebInter.StopWebQuestion questionBll, String testPaperUrl, String stuId, String liveid, String testId, String stuCouId) {
         super(context);
-        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.questionBll = questionBll;
         this.stuId = stuId;
         this.liveid = liveid;
         this.testId = testId;
         this.testPaperUrl = testPaperUrl;
         this.stuCouId = stuCouId;
-        logToFile.i(TAG + ":liveid=" + liveid + ",testId=" + testId);
         initData();
     }
 
@@ -94,7 +88,7 @@ public class SubjectResultX5Pager extends BasePager implements BaseSubjectResult
             public void onClick(View v) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
-                questionBll.stopWebQuestion(SubjectResultX5Pager.this, testId);
+                questionBll.stopWebQuestion(SubjectResultX5Pager.this, testId, getBaseVideoQuestionEntity());
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -111,11 +105,11 @@ public class SubjectResultX5Pager extends BasePager implements BaseSubjectResult
         ((AnimationDrawable) ivLoading.getBackground()).start();
 //        examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
 //                + "&stuId=" + stuId + "&stuName=" + stuName;
-        examUrl = testPaperUrl + "?testId=" + testId
+        examUrl = testPaperUrl + "/" + liveid + "?testId=" + testId
                 + "&stuId=" + stuId + "&stuName=" + stuName + "&stuCouId=" + stuCouId;
 //        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
 //        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
-        Loger.d(TAG, "initData:examUrl=" + examUrl);
+        mLogtf.d("initData:examUrl=" + examUrl);
         wvSubjectWeb.loadUrl(examUrl);
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
     }
@@ -183,7 +177,7 @@ public class SubjectResultX5Pager extends BasePager implements BaseSubjectResult
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            logToFile.i("onPageFinished:url=" + url + ",failingUrl=" + failingUrl);
+            mLogtf.i("onPageFinished:url=" + url + ",failingUrl=" + failingUrl);
             if (failingUrl == null) {
                 wvSubjectWeb.setVisibility(View.VISIBLE);
                 errorView.setVisibility(View.GONE);
@@ -193,7 +187,7 @@ public class SubjectResultX5Pager extends BasePager implements BaseSubjectResult
             mData.put("logtype", "interactTestDidLoad");
             mData.put("status", "success");
             mData.put("loadurl", url);
-            questionBll.umsAgentDebugSys(questionEventId, mData);
+            umsAgentDebugSys(questionEventId, mData);
 //            super.onPageFinished(view, url);
         }
 
@@ -201,7 +195,7 @@ public class SubjectResultX5Pager extends BasePager implements BaseSubjectResult
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             this.failingUrl = null;
             if (!url.equals(examUrl)) {
-                logToFile.i("onPageStarted:setInitialScale");
+                mLogtf.i("onPageStarted:setInitialScale");
                 int scale = ScreenUtils.getScreenWidth() * 100 / 878;
                 wvSubjectWeb.setInitialScale(scale);
             }
@@ -213,7 +207,7 @@ public class SubjectResultX5Pager extends BasePager implements BaseSubjectResult
             this.failingUrl = failingUrl;
             Loger.d(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
                     "&&," + description, true);
-            logToFile.i("onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
+            mLogtf.i("onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
 //            super.onReceivedError(view, errorCode, description, failingUrl);
             wvSubjectWeb.setVisibility(View.INVISIBLE);
             errorView.setVisibility(View.VISIBLE);
@@ -223,23 +217,23 @@ public class SubjectResultX5Pager extends BasePager implements BaseSubjectResult
             mData.put("status", "fail");
             mData.put("loadurl", failingUrl);
             mData.put("msg", description);
-            questionBll.umsAgentDebugSys(questionEventId, mData);
+            umsAgentDebugSys(questionEventId, mData);
         }
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            logToFile.i("shouldOverrideUrlLoading:url=" + url);
+            mLogtf.i("shouldOverrideUrlLoading:url=" + url);
             if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
                 ViewGroup group = (ViewGroup) mView.getParent();
                 if (group != null) {
                     group.removeView(mView);
                 }
-                questionBll.stopWebQuestion(SubjectResultX5Pager.this, testId);
+                questionBll.stopWebQuestion(SubjectResultX5Pager.this, testId, getBaseVideoQuestionEntity());
                 Map<String, String> mData = new HashMap<>();
                 mData.put("testid", "" + testId);
                 mData.put("closetype", "clickWebCloseButton");
                 mData.put("logtype", "interactTestClose");
-                questionBll.umsAgentDebugSys(questionEventId, mData);
+                umsAgentDebugSys(questionEventId, mData);
             } else {
                 if (url.contains("xueersi.com")) {
                     view.loadUrl(url);

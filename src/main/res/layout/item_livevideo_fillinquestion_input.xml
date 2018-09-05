@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
     <EditText
         android:id="@id/et_livevideo_question_fillin_input"
         android:layout_width="match_parent"
@@ -10,6 +11,6 @@
         android:background="@drawable/shape_livevideo_fillin_edittext_port_bg"
         android:imeOptions="flagNoExtractUi"
         android:maxLines="1"
-        android:paddingLeft="10dp"/>
+        android:paddingLeft="10dp" />
 
 </RelativeLayout>

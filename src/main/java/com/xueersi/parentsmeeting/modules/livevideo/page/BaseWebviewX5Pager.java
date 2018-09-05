@@ -16,15 +16,17 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
-import com.xueersi.parentsmeeting.base.BaseApplication;
-import com.xueersi.parentsmeeting.base.BasePager;
-import com.xueersi.parentsmeeting.logerhelper.LogerTag;
-import com.xueersi.parentsmeeting.logerhelper.UmsAgentUtil;
+import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.logerhelper.LogerTag;
+import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
+
+import java.io.File;
 
 import java.io.File;
 
@@ -32,7 +34,7 @@ import java.io.File;
  * Created by linyuqiang on 2017/3/25
  * 直播基本的WebView，增加刷新
  */
-public abstract class BaseWebviewX5Pager extends BasePager {
+public abstract class BaseWebviewX5Pager extends LiveBasePager {
     protected WebView wvSubjectWeb;
     private TextView tv_error_center_refresh_tip;
     private TextView tv_data_loading_tip;
@@ -109,6 +111,10 @@ public abstract class BaseWebviewX5Pager extends BasePager {
 
     public void loadUrl(String url) {
         wvSubjectWeb.loadUrl(url);
+    }
+
+    public void reloadUrl(){
+        wvSubjectWeb.reload();
     }
 
     public void setErrorTip(String errorTip) {

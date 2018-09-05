@@ -18,7 +18,7 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.util.logging.Logger;
 
@@ -164,7 +164,7 @@ public class TeamPkProgressBar extends View {
 
 
     public void setProgress(int progress) {
-        Loger.e("8888", "====>isAnimRunning:" + isAnimRunning());
+        Loger.e("8888", "====>isAnimRunning:"+isAnimRunning());
         if (!isAnimRunning()) {
             this.mProgress = progress;
             setProgressRightBound(-1);
@@ -294,6 +294,8 @@ public class TeamPkProgressBar extends View {
      * @param progress 进度增量
      */
     public void smoothAddProgress(int progress) {
+        animRunning = true;
+        canceled = false;
         mProgress += progress;
         if (progressRect == null) {
             setProgress(mProgress);
@@ -324,21 +326,20 @@ public class TeamPkProgressBar extends View {
             });
             invalidate();
         }
-
     }
 
     /**
      * @param cacheProgress
      */
     private void cacheProgress(int cacheProgress) {
-        Loger.e("8888", "====>cacheProgress:" + mCacheProgress);
+        Loger.e("8888", "====>cacheProgress:"+mCacheProgress);
         mCacheProgress = cacheProgress;
     }
 
     boolean animRunning;
     boolean canceled;
 
-    private boolean isAnimRunning() {
+    public boolean isAnimRunning() {
         return animRunning;
     }
 
@@ -349,8 +350,7 @@ public class TeamPkProgressBar extends View {
     }
 
     float tempOffsetX;
-    private static final float HALF_PROGRESS = 0.5f;
-
+     private static final float HALF_PROGRESS = 0.5f;
     @Override
     public void computeScroll() {
 
@@ -422,8 +422,8 @@ public class TeamPkProgressBar extends View {
                 offsetX = progressRect.width() * getProgress() / getMaxProgress();
                 setProgressRightBound(offsetX);
             }
-            currentProgressPaintShader = new LinearGradient(progressRect.left + offsetX / 2, progressRect.top,
-                    progressRect.left + offsetX / 2, progressRect.bottom,
+            currentProgressPaintShader = new LinearGradient(progressRect.left + offsetX/2, progressRect.top,
+                    progressRect.left + offsetX/2, progressRect.bottom,
                     Color.parseColor("#FFCF1B"),
                     Color.parseColor("#FF881B"), Shader.TileMode.CLAMP);
             currentProgressPaint.setShader(currentProgressPaintShader);
@@ -466,7 +466,7 @@ public class TeamPkProgressBar extends View {
                 float startX = currentPorgressRect.right - mSliderWidth / 2;
                 float startY = (getMeasuredHeight() - mSliderHeight) / 2;
 
-                float leftBound = animExtraSpace / 2;
+                float  leftBound = animExtraSpace / 2;
                 if (animExtraSpace != 0) {
                     if (startX < leftBound) {
                         startX = leftBound;

@@ -13,6 +13,7 @@ public interface XESCODE {
     int CLASSBEGIN = 105;
     /** 懂了吗老师 */
     int UNDERSTANDT = 106;
+//    int UNDERSTANDT = 133;
     /** 懂了吗学生 */
     int UNDERSTANDS = 107;
     /** 打开弹幕 */
@@ -27,6 +28,7 @@ public interface XESCODE {
     int TEACHER_MESSAGE = 130;
     /** 学习报告 */
     int LEARNREPORT = 133;
+//    int LEARNREPORT = 106;
     /** 点名 */
     int ROLLCALL = 134;
     /** 结束点名 */
@@ -34,12 +36,14 @@ public interface XESCODE {
     /** 其他学生点名 */
     int CLASS_MATEROLLCALL = 136;
     /** 直播表扬批评功能 */
+    @Deprecated
     int PRAISE = 138;
     /** 考试开始 */
     int EXAM_START = 142;
     /** 考试停止 */
     int EXAM_STOP = 143;
     /** 考试停止 */
+    @Deprecated
     int SPEECH_RESULT = 144;
     /** 英语h5课件 */
     int ENGLISH_H5_COURSEWARE = 145;
@@ -49,6 +53,7 @@ public interface XESCODE {
     int H5_STOP = 147;
     /** 老师开启/关闭举手,私发:{"type": "153", "status": "off"/"on"} */
     int RAISE_HAND_SELF = 153;
+    @Deprecated
     int RAISE_HAND_AGAIN = 154;
     /** 老师开启/关闭举手:{"type": "155", "status": "off"/"on"} */
     int RAISE_HAND = 155;
@@ -62,10 +67,14 @@ public interface XESCODE {
     int ST_MICRO = 159;
     /** 举手人数 */
     int RAISE_HAND_COUNT = 160;
-    int ROOM_STAR_OPEN = 165;     // 老师开启星星互动
-    int ROOM_STAR_CLOSE = 166;     // 老师关闭星星互动
-    int ROOM_STAR_SEND_S = 167;        // 学生发送答案给老师
-    int ROOM_STAR_SEND_T = 168;       // 老师私发学生提交的答案
+    /** 老师开启星星互动 */
+    int ROOM_STAR_OPEN = 165;
+    /** 老老师关闭星星互动 */
+    int ROOM_STAR_CLOSE = 166;
+    /** 学生发送答案给老师 */
+    int ROOM_STAR_SEND_S = 167;
+    /** 老师私发学生提交的答案 */
+    int ROOM_STAR_SEND_T = 168;
     /** 请求学生端推流 */
     int REQUEST_STUDENT_PUSH = 170;
     /** 学生端开始 */
@@ -79,6 +88,7 @@ public interface XESCODE {
     /** 回复学生端心跳 */
     int STUDENT_MY_HEART = 175;
     /** 老师进出直播室 */
+    @Deprecated
     int TEACHER_JOIN_LEVEL = 176;
     /** 学生发送秒数指令 */
     int XCR_ROOM_DB_STUDENT = 190;
@@ -92,7 +102,7 @@ public interface XESCODE {
     int XCR_ROOM_DB_CLOSE = 194;
     /** roleplay领读消息指令 */
     int XCR_ROOM_ROLE_READ = 195;
-    /** 学习报告-讲座 */
+    /** 学习报告-讲座 TODO */
     int LEC_LEARNREPORT = 199;
     /** 语音反馈 */
     int SPEECH_FEEDBACK = 200;
@@ -106,11 +116,11 @@ public interface XESCODE {
 
     /** 学生私聊老师点赞 */
     int XCR_ROOM_AGREE_SEND_S = 220;
-    /** 老师广播学生点赞 */
+    /** 老师广播学生点赞 TODO */
     int XCR_ROOM_AGREE_SEND_T = 221;
     /** 学生计算赞数后私发老师 */
     int XCR_ROOM_AGREE_NUM_S = 222;
-    /** 开/关榜单 */
+    /** 开/关榜单 TODO */
     int XCR_ROOM_AGREE_OPEN = 224;
 
     int RANK_STU_MESSAGE = 225;
@@ -119,31 +129,46 @@ public interface XESCODE {
     /** 上墙-学生重连发送消息 */
     int RANK_STU_RECONNECT_MESSAGE = 227;
 
-    /** 讲座购课广告 */
+    /** 讲座购课广告 TODO */
     int LEC_ADVERT = 2000;
 
-    /**老师点赞*/
+    /** 老师点赞 */
     int TEACHER_PRAISE = 236;
 
-    /** 分队仪式*/
+    /** 分队仪式 */
     int TEAM_PK_TEAM_SELECT = 230;
 
-    /**分配PK 对手*/
+    /** 分配PK 对手 */
     int TEAM_PK_SELECT_PKADVERSARY = 231;
 
-    /**分队仪式 学生准备ok*/
+    /** 分队仪式 学生准备ok */
     int TEAM_PK_STUDENT_READY = 232;
 
-    /**公布pk 结果*/
+    /** 公布pk 结果 */
     int TEAM_PK_PUBLIC_PK_RESULT = 233;
 
-    /**公布 本轮pk  战队pk 情况*/
+    /** 公布 本轮pk  战队pk 情况 */
     int TEAM_PK_PUBLIC_CONTRIBUTION_STAR = 234;
 
-    /**退出每题pk 结果*/
+    /** 退出每题pk 结果 */
     int TEAM_PK_EXIT_PK_RESULT = 235;
 
-    /**一题多发*/
+    /** 一题多发 TODO */
     int MULTIPLE_H5_COURSEWARE = 251;
 
+    /** 开启/关闭语音弹幕 TODO */
+    int XCR_ROOM_DANMU_OPEN = 260;
+
+    /** 发送语音弹幕 TODO */
+    int XCR_ROOM_DANMU_SEND = 261;
+    /**提醒学生标记*/
+    int MARK_POINT_TIP=800;
+
+
+    /**文科表扬榜  开始notice*/
+    int ARTS_PRAISE_START = 1000;
+    /**文科表扬榜 学生上报点赞数*/
+    int ARTS_SEND_PRAISE_NUM =1001;
+    /**文科表扬榜接受到点赞数*/
+    int ARTS_RECEIVE_PRAISE_NUM = 1002;
 }

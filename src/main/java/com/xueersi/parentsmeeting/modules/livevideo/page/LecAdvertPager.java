@@ -2,28 +2,17 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.base.BasePager;
-import com.xueersi.parentsmeeting.browser.business.BrowserBll;
-import com.xueersi.parentsmeeting.business.AppBll;
-import com.xueersi.parentsmeeting.event.MiniEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
+import com.xueersi.common.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LecAdvertPagerClose;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.LecAdvertLog;
-import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -31,7 +20,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by linyuqiang on 2018/1/15.
  * 广告
  */
-public class LecAdvertPager extends BasePager {
+public class LecAdvertPager extends LiveBasePager {
     private View step1;
     private View step2;
     private View step3;
@@ -42,16 +31,14 @@ public class LecAdvertPager extends BasePager {
     private int step = 1;
     LecAdvertEntity lecAdvertEntity;
     String liveid;
-    LiveAndBackDebug liveAndBackDebug;
     private Activity mActivity;
 
-    public LecAdvertPager(Context context, LecAdvertEntity lecAdvertEntity, LecAdvertPagerClose lecAdvertBll, String liveid, LiveAndBackDebug liveAndBackDebug) {
+    public LecAdvertPager(Context context, LecAdvertEntity lecAdvertEntity, LecAdvertPagerClose lecAdvertBll, String liveid) {
         super(context);
         this.mActivity = (Activity) context;
         this.lecAdvertBll = lecAdvertBll;
         this.lecAdvertEntity = lecAdvertEntity;
         this.liveid = liveid;
-        this.liveAndBackDebug = liveAndBackDebug;
         initData();
     }
 
@@ -69,7 +56,7 @@ public class LecAdvertPager extends BasePager {
         step1.findViewById(R.id.iv_livelec_advert_step1_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                lecAdvertBll.close();
+                lecAdvertBll.close(true);
                 EventBus.getDefault().post(new MiniEvent("Advertisement","","",""));
             }
         });
@@ -93,7 +80,7 @@ public class LecAdvertPager extends BasePager {
 //                LecAdvertLog.sno5(lecAdvertEntity, liveAndBackDebug);
                 // 04.09 直接跳转到订单支付页面
                 EventBus.getDefault().post(new MiniEvent("Order",lecAdvertEntity.courseId,lecAdvertEntity.classId,lecAdvertEntity.id));
-                lecAdvertBll.close();
+                lecAdvertBll.close(false);
             }
         });
     }

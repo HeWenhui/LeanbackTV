@@ -3,15 +3,15 @@ package com.xueersi.parentsmeeting.modules.livevideo.stablelog;
 
 import android.content.Context;
 
-import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.xesalib.umsagent.UmsAgentManager;
-import com.xueersi.xesalib.umsagent.UmsConstants;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 
 /**

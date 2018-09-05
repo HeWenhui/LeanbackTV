@@ -5,8 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
-import com.xueersi.parentsmeeting.route.ReflexCenter;
+import com.xueersi.common.route.ReflexCenter;
 
 /**
  * Created by lyqai on 2017/10/9.
@@ -19,14 +18,10 @@ public class OtherModulesEnter {
     }
 
     public static void intentToAuditClassActivity(AuditClassLiveActivity auditClassLiveActivity, String mVSectionID, String stuCouId, Bundle bundle) {
-        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.chat.ChatEnter",
+        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.pschat.ChatEnter",
                 "intentToAuditClassActivity", new Class[]{Activity.class, String.class, String.class, Bundle.class}, new Object[]{auditClassLiveActivity, mVSectionID, stuCouId, bundle});
     }
 
-    public static void intentToGradeActivityLive(Activity activity, String selectGrade) {
-        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.xesmall.XesMallEnter",
-                "intentToGradeActivityLive", new Class[]{Context.class, String.class}, new Object[]{activity, selectGrade});
-    }
 
     public static void requestGoldTotal(Context mContext) {
         ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.personals.PersonalsEnter",

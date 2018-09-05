@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.stablelog;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.xesalib.utils.string.StringUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 
 /**
  * Created by linyuqiang on 2018/1/12.

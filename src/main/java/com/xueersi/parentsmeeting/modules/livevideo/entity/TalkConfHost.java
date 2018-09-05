@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

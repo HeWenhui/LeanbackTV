@@ -8,7 +8,7 @@
 
     <!-- 存放播放器的布局 -->
 
-    <com.xueersi.parentsmeeting.modules.videoplayer.media.CenterLayout
+    <com.xueersi.parentsmeeting.module.videoplayer.media.CenterLayout
         android:id="@id/cl_course_video_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,7 +17,7 @@
 
         <!-- 播放器 -->
 
-        <com.xueersi.parentsmeeting.modules.videoplayer.media.VideoView
+        <com.xueersi.parentsmeeting.module.videoplayer.media.VideoView
             android:id="@id/vv_course_video_video"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -57,7 +57,7 @@
                     android:visibility="gone" />
             </RelativeLayout>
         </RelativeLayout>
-    </com.xueersi.parentsmeeting.modules.videoplayer.media.CenterLayout>
+    </com.xueersi.parentsmeeting.module.videoplayer.media.CenterLayout>
 
     <RelativeLayout
         android:id="@id/rl_course_video_content"
@@ -71,7 +71,7 @@
             android:layout_alignParentRight="true"
             android:background="@color/COLOR_000000">
 
-            <com.xueersi.parentsmeeting.modules.videoplayer.media.XESVideoView
+            <com.xueersi.parentsmeeting.module.videoplayer.media.XESVideoView
                 android:id="@id/xv_livevideo_student_video"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

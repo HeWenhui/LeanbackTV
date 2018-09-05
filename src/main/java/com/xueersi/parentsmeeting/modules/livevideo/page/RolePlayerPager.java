@@ -16,7 +16,6 @@ import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -31,12 +30,12 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
-import com.xueersi.parentsmeeting.base.BaseApplication;
-import com.xueersi.parentsmeeting.base.BasePager;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerSelfItem;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -45,19 +44,21 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView;
-import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
-import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.speech.SpeechEvaluatorUtils;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
-import com.xueersi.xesalib.adapter.AdapterItemInterface;
-import com.xueersi.xesalib.adapter.CommonAdapter;
-import com.xueersi.xesalib.utils.app.ContextManager;
-import com.xueersi.xesalib.utils.app.XESToastUtils;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.uikit.SizeUtils;
-import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
-import com.xueersi.xesalib.view.image.CircleImageView;
+import com.xueersi.ui.adapter.AdapterItemInterface;
+import com.xueersi.ui.adapter.CommonAdapter;
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.ui.widget.CircleImageView;
 
 import java.io.File;
 import java.util.HashMap;
@@ -72,7 +73,7 @@ import io.agora.rtc.RtcEngine;
  * Created by zouhao on 2018/3/29.
  */
 
-public class RolePlayerPager extends BasePager<RolePlayerEntity> {
+public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
 
     /**
      * 匹配页默认停留时间
@@ -259,23 +260,26 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
     private RolePlayerSelfItem mRolePlayerSelfItem;
     private RolePlayerOtherItem mRolePlayerOtherItem;
     private ImageView iv_live_roleplayer_title;//roleplay标题icon
-    private final LiveBll mLiveBll;//只为记录日志调用方便
+    private final LiveAndBackDebug liveAndBackDebug;//只为记录日志调用方便
     private boolean mIsListViewUnSroll;//listview是否可滑动
     //private boolean mIsEvaluatoring;//标记正在测评中
 
     public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll,
-                           LiveGetInfo liveGetInfo, LiveBll liveBll) {
+                           LiveGetInfo liveGetInfo) {
         super(context, obj, isNewView);
         this.mRolePlayBll = rolePlayerBll;
         mLiveGetInfo = liveGetInfo;
-        dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/liveSpeech/");
+        dir = LiveCacheFile.geCacheFile(context, "liveSpeech");
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        mWorkerThread = new WorkerThread(ContextManager.getApplication(), Integer.parseInt(UserBll.getInstance()
-                .getMyUserInfoEntity().getStuId()), false, true);
+        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        if (StringUtils.isEmpty(stuId)) {
+            stuId = liveGetInfo.getStuId();
+        }
+        mWorkerThread = new WorkerThread(ContextManager.getApplication(), Integer.parseInt(stuId), false, true);
 
-        mLiveBll = liveBll;
+        liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
 
     }
 
@@ -514,11 +518,11 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
             public AdapterItemInterface<RolePlayerEntity.RolePlayerMessage> getItemView(Object type) {
                 if ((boolean) type) {
                     //自己朗读的
-                    mRolePlayerSelfItem = new RolePlayerSelfItem(mContext, mRolePlayBll, mLiveBll);
+                    mRolePlayerSelfItem = new RolePlayerSelfItem(mContext, mRolePlayBll);
                     return mRolePlayerSelfItem;
                 } else {
                     //他人朗读的
-                    mRolePlayerOtherItem = new RolePlayerOtherItem(mContext, mRolePlayBll, mLiveBll);
+                    mRolePlayerOtherItem = new RolePlayerOtherItem(mContext, mRolePlayBll);
                     return mRolePlayerOtherItem;
                 }
             }
@@ -744,7 +748,7 @@ public class RolePlayerPager extends BasePager<RolePlayerEntity> {
         isShowResult = true;
         Loger.i("RolePlayerDemoTestlog", "显示结果,记录日志");
         //显示结果的时候记录日志
-        RolePlayLog.sno7(mLiveBll, mEntity, mContext);
+        RolePlayLog.sno7(liveAndBackDebug, mEntity, mContext);
         tvBeginTipMsg.setVisibility(View.GONE);//readgo不再占位
 
         vwvSpeechVolume.stop();

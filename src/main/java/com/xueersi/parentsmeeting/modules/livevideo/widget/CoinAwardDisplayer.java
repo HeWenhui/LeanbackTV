@@ -135,16 +135,34 @@ public class CoinAwardDisplayer extends View {
         if (drawableInfoList == null) {
             drawableInfoList = new ArrayList<DrawableInfo>();
         }
-        // 获取前缀Bitmap
-        Bitmap prefixBitmap = BitmapFactory.decodeResource(getContext().getResources(), prefixResId);
-        DrawableInfo drawableInfo = new DrawableInfo(prefixBitmap);
+        Bitmap prefixBitmap = null;
+        Bitmap suffixBitmap = null;
+        DrawableInfo drawableInfo = null;
 
-        drawableInfo.setLeft(0f);
-        drawableInfo.setTop(0f);
-        drawableInfoList.add(drawableInfo);
-        // 默认前缀 bitmap 的高度 就为整个 布局的高度
-        mHeight = prefixBitmap.getHeight();
-        mWidth = prefixBitmap.getWidth();
+        if (prefixResId > 0) {
+            // 获取前缀Bitmap
+            prefixBitmap = BitmapFactory.decodeResource(getContext().getResources(), prefixResId);
+        }
+        if (suffixResId > 0) {
+            // 获取前缀Bitmap
+            suffixBitmap = BitmapFactory.decodeResource(getContext().getResources(), suffixResId);
+        }
+        if (prefixBitmap != null) {
+            drawableInfo = new DrawableInfo(prefixBitmap);
+            drawableInfo.setLeft(0f);
+            drawableInfo.setTop(0f);
+            drawableInfoList.add(drawableInfo);
+            // 默认前缀 bitmap 的高度 就为整个 布局的高度
+            mHeight = prefixBitmap.getHeight();
+            mWidth = prefixBitmap.getWidth();
+        }
+        if (suffixBitmap != null && mHeight <= 0) {
+            mHeight = suffixBitmap.getHeight();
+        }
+        if (mHeight <= 0) {
+            mHeight = BitmapFactory.decodeResource(getContext().getResources(), numberResIds[0]).getHeight();
+        }
+
         String coinNumStr = coinNum + "";
         Bitmap numBitmap;
         // 获取 数字 对应的 bitMap
@@ -158,13 +176,13 @@ public class CoinAwardDisplayer extends View {
             mWidth += numBitmap.getWidth();
         }
 
-        // 获取前缀Bitmap
-        Bitmap suffixBitmap = BitmapFactory.decodeResource(getContext().getResources(), suffixResId);
-        drawableInfo = new DrawableInfo(suffixBitmap);
-        drawableInfo.setTop(0);
-        drawableInfo.setLeft(mWidth);
-        drawableInfoList.add(drawableInfo);
-        mWidth += suffixBitmap.getWidth();
+        if (suffixBitmap != null) {
+            drawableInfo = new DrawableInfo(suffixBitmap);
+            drawableInfo.setTop(0);
+            drawableInfo.setLeft(mWidth);
+            drawableInfoList.add(drawableInfo);
+            mWidth += suffixBitmap.getWidth();
+        }
         //重新布局
         requestLayout();
     }

@@ -15,34 +15,35 @@ import com.tencent.smtt.export.external.interfaces.JsResult;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
-import com.tencent.smtt.sdk.WebViewClient;
-import com.xueersi.parentsmeeting.base.BasePager;
-import com.xueersi.parentsmeeting.business.AppBll;
-import com.xueersi.parentsmeeting.entity.AppInfoEntity;
-import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
-import com.xueersi.parentsmeeting.logerhelper.LogerTag;
-import com.xueersi.parentsmeeting.logerhelper.UmsAgentUtil;
+import com.xueersi.common.base.BasePager;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.entity.AppInfoEntity;
+import com.xueersi.common.entity.MyUserInfoEntity;
+import com.xueersi.common.logerhelper.LogerTag;
+import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
-import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
-import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
-
-import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.MESSAGE_VERIFY_TYPE;
 
 
 /**
  * Created by linyuqiang on 2018/6/6.
  * 直播回放试卷答题页面
  */
-public class ExamQuestionX5PlaybackPager extends BasePager implements BaseExamQuestionInter {
+public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseExamQuestionInter {
+
     private String TAG = "ExamQuestionPlaybackPager";
     private Button btSubjectClose;
     private Button bt_livevideo_subject_calljs;
@@ -59,13 +60,15 @@ public class ExamQuestionX5PlaybackPager extends BasePager implements BaseExamQu
     boolean IS_SCIENCE;
     String stuCouId;
 
-    public ExamQuestionX5PlaybackPager(Context context, String liveid, String num, boolean IS_SCIENCE, String stuCouId, ExamStop examStop) {
+    public ExamQuestionX5PlaybackPager(Context context, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, boolean IS_SCIENCE, String stuCouId, ExamStop examStop, LivePagerBack livePagerBack) {
         super(context);
         this.examStop = examStop;
         this.liveid = liveid;
         this.IS_SCIENCE = IS_SCIENCE;
-        this.num = num;
+        setBaseVideoQuestionEntity(videoQuestionLiveEntity);
+        this.num = videoQuestionLiveEntity.getvQuestionID();
         this.stuCouId = stuCouId;
+        this.livePagerBack = livePagerBack;
         initData();
     }
 
@@ -101,9 +104,7 @@ public class ExamQuestionX5PlaybackPager extends BasePager implements BaseExamQu
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ViewGroup group = (ViewGroup) mView.getParent();
-                group.removeView(mView);
-                examStop.stopExam();
+                examStop.stopExam(ExamQuestionX5PlaybackPager.this, (VideoQuestionLiveEntity) getBaseVideoQuestionEntity());
             }
         });
         bt_livevideo_subject_calljs.setOnClickListener(new View.OnClickListener() {
@@ -183,7 +184,7 @@ public class ExamQuestionX5PlaybackPager extends BasePager implements BaseExamQu
     public class MyWebChromeClient extends WebChromeClient {
         @Override
         public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, MESSAGE_VERIFY_TYPE);
+            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, VerifyCancelAlertDialog.MESSAGE_VERIFY_TYPE);
             verifyCancelAlertDialog.initInfo(message);
             verifyCancelAlertDialog.showDialog();
             result.confirm();
@@ -218,11 +219,9 @@ public class ExamQuestionX5PlaybackPager extends BasePager implements BaseExamQu
 
     public class MyWebViewClient extends ErrorWebViewClient {
         String failingUrl;
-
         public MyWebViewClient() {
             super(TAG);
         }
-
         @Override
         public void onPageFinished(WebView view, String url) {
             Loger.i(TAG, "onPageFinished:url=" + url + ",failingUrl=" + failingUrl);
@@ -258,11 +257,7 @@ public class ExamQuestionX5PlaybackPager extends BasePager implements BaseExamQu
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
-                ViewGroup group = (ViewGroup) mView.getParent();
-                if (group != null) {
-                    group.removeView(mView);
-                    examStop.stopExam();
-                }
+                examStop.stopExam(ExamQuestionX5PlaybackPager.this, (VideoQuestionLiveEntity) getBaseVideoQuestionEntity());
                 Loger.i(TAG, "shouldOverrideUrlLoading:stopExam");
             } else {
                 if (url.contains("xueersi.com")) {

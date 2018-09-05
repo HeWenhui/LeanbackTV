@@ -5,8 +5,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
-import com.xueersi.xesalib.utils.uikit.imageloader.SingleConfig;
+import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.imageloader.SingleConfig;
 
 /**
  * 分队仪式 lottie 资源信息

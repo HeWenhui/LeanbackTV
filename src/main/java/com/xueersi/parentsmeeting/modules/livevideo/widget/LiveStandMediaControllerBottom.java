@@ -8,9 +8,12 @@ import android.widget.Button;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController.MediaPlayerControl;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+
+import java.util.ArrayList;
 
 /**
  * 直播播放器控制栏底部区域
@@ -21,6 +24,7 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
     View mainLiveView;
     String mode = LiveTopic.MODE_TRANING;
     private Button btRaiseHands;
+    ArrayList<OnViewChange> onViewChanges = new ArrayList<>();
 
     public LiveStandMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context, controller, player);
@@ -33,6 +37,7 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
     }
 
     /** 播放器的布局界面 */
+    @Override
     public View inflateLayout() {
         View view;
 //        return LayoutInflater.from(mContext).inflate(R.layout.layout_livestand_mediacontroller_bottom, this);
@@ -63,11 +68,18 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
             boolean allowLinkMic = getInfo.isAllowLinkMic();
             btRaiseHands.setVisibility(allowLinkMic ? VISIBLE : GONE);
         }
+        for (OnViewChange onViewChange : onViewChanges) {
+            onViewChange.onViewChange(this);
+        }
     }
 
-    @Override
-    public void onHide() {
-        super.onHide();
+    public void addOnViewChange(OnViewChange onViewChange) {
+        if (!onViewChanges.contains(onViewChange)) {
+            onViewChanges.add(onViewChange);
+        }
     }
 
+    public interface OnViewChange {
+        void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom);
+    }
 }

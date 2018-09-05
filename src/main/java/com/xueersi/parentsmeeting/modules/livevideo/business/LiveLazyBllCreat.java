@@ -3,7 +3,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListAction;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
 /**
  * Created by linyuqiang on 2018/1/1.
@@ -67,15 +73,17 @@ public class LiveLazyBllCreat {
     }
 
     AnswerRankBll createAnswerRankBll() {
-        return new AnswerRankBll(liveVideoActivity, bottomContent, liveBll);
+        AnswerRankBll answerRankBll = new AnswerRankBll(liveVideoActivity, liveBll);
+        answerRankBll.initView(bottomContent);
+        return answerRankBll;
     }
 
     public LiveAutoNoticeBll createAutoNoticeBll() {
-        return new LiveAutoNoticeBll(liveVideoActivity, bottomContent);
+        return new LiveAutoNoticeBll(liveVideoActivity, null, bottomContent);
     }
 
     RolePlayAction createRolePlayBll() {
-        RolePlayerBll rolePlayerBll = new RolePlayerBll(liveVideoActivity, bottomContent, liveBll,liveGetInfo);
+        RolePlayerBll rolePlayerBll = new RolePlayerBll(liveVideoActivity, bottomContent, liveBll, liveGetInfo);
         questionBll.setRolePlayAction(rolePlayerBll);
         return rolePlayerBll;
     }
@@ -84,15 +92,21 @@ public class LiveLazyBllCreat {
 
         if (praiseListBll == null) {
             praiseListBll = new PraiseListBll(liveVideoActivity);
-            praiseListBll.initView(praiselistContent);
-            praiseListBll.setLiveBll(liveBll);
+            praiselistContent.post(new Runnable() {
+                @Override
+                public void run() {
+                    praiseListBll.initView(praiselistContent);
+
+                }
+            });
+            //praiseListBll.setLiveBll(liveBll);
             liveBll.setPraiseListAction(praiseListBll);
         }
         return praiseListBll;
     }
 
-    public TeamPkBll createTeamPkBll(){
-        return new TeamPkBll(liveVideoActivity, bottomContent);
+    public TeamPkBll createTeamPkBll() {
+        return null;//new TeamPkBll(liveVideoActivity, bottomContent);
     }
 
 }

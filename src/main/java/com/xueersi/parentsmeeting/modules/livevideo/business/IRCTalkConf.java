@@ -1,27 +1,26 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.os.Environment;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.base.BaseApplication;
-import com.xueersi.parentsmeeting.base.BaseHttpBusiness;
-import com.xueersi.parentsmeeting.http.HttpCallBack;
-import com.xueersi.parentsmeeting.http.HttpRequestParams;
-import com.xueersi.parentsmeeting.http.ResponseEntity;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.base.BaseHttpBusiness;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.network.NetWorkHelper;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -71,13 +70,13 @@ public class IRCTalkConf {
         }
     };
 
-    public IRCTalkConf(LiveGetInfo liveGetInfo, int mLiveType, BaseHttpBusiness baseHttpBusiness, ArrayList<TalkConfHost> hosts) {
+    public IRCTalkConf(Context context, LiveGetInfo liveGetInfo, int mLiveType, BaseHttpBusiness baseHttpBusiness,
+                       ArrayList<TalkConfHost> hosts) {
         this.liveId = liveGetInfo.getId();
         this.mLiveType = mLiveType;
         this.baseHttpBusiness = baseHttpBusiness;
         this.hosts = hosts;
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
+        mLogtf = new LogToFile(context, TAG);
         LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
         if (studentLiveInfo != null) {
             classid = studentLiveInfo.getClassId();
@@ -93,6 +92,7 @@ public class IRCTalkConf {
         if (baseHost == null) {
             baseHost = "chatgslb.xescdn.com";
         }
+        mLogtf.d("baseHost=" + baseHost);
     }
 
     public boolean getserver(final AbstractBusinessDataCallBack businessDataCallBack) {
@@ -111,9 +111,9 @@ public class IRCTalkConf {
         if (mIsDestory) {
             return;
         }
-        HttpRequestParams params = new HttpRequestParams();
+        final HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveid", liveId);
-        if (mLiveType == LiveBll.LIVE_TYPE_LIVE) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             params.addBodyParam("appid", "1");
             params.addBodyParam("classid", classid);
         } else {
@@ -121,7 +121,7 @@ public class IRCTalkConf {
         }
         params.addBodyParam("ip", getHostIP());
         params.setWriteAndreadTimeOut(GET_SERVER_TIMEOUT);
-        TalkConfHost talkConfHost = hosts.get(mSelectTalk++ % hosts.size());
+        final TalkConfHost talkConfHost = hosts.get(mSelectTalk++ % hosts.size());
         final String host = talkConfHost.getHost();
         String url = "http://" + host + "/getserver";
         if (talkConfHost.isIp()) {
@@ -137,8 +137,8 @@ public class IRCTalkConf {
                     return;
                 }
                 handler.removeMessages(GET_SERVER);
+                mLogtf.d("onPmSuccess:url=" + url + ",jsonObject=" + responseEntity.getJsonObject());
                 JSONArray jsonArray = (JSONArray) responseEntity.getJsonObject();
-                mLogtf.d("onPmSuccess:jsonObject=" + jsonArray);
                 List<LiveGetInfo.NewTalkConfEntity> mNewTalkConf = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
@@ -153,7 +153,7 @@ public class IRCTalkConf {
                     }
                 }
                 if (!mIsDestory) {
-                    businessDataCallBack.onDataSucess(mNewTalkConf);
+                    businessDataCallBack.onDataSucess(mNewTalkConf);//回调IRCMessage中businessDataCallBack的onDataSucess方法
                 }
 //                if (callBack != this) {
 //                    return;
@@ -206,6 +206,7 @@ public class IRCTalkConf {
                 }
             }
         };
+        callBack.url = url;
         baseHttpBusiness.sendGet(url, params, callBack);
         handler.sendEmptyMessageDelayed(GET_SERVER, GET_SERVER_TIMEOUT);
     }

@@ -8,13 +8,18 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerBottomInter;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.ControllerBottomInter;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController.MediaPlayerControl;
-import com.xueersi.xesalib.utils.app.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+
+import java.util.ArrayList;
+
 
 /**
  * 直播播放器控制栏底部区域
@@ -40,6 +45,9 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     private CheckBox cbMessageClock;
     /** 标记疑问点按钮 */
     public Button btMark;
+    ArrayList<MediaChildViewClick> mediaChildViewClicks = new ArrayList<>();
+    private LinearLayout llMarkPopMenu;
+    private View vMarkGuide;
 
     public BaseLiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context);
@@ -47,6 +55,17 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         mPlayer = player;
         this.controller = controller;
         initResources();
+        ProxUtil.getProxUtil().put(context, RegMediaChildViewClick.class, new RegMediaChildViewClick() {
+            @Override
+            public void regMediaViewClick(MediaChildViewClick mediaChildViewClick) {
+                mediaChildViewClicks.add(mediaChildViewClick);
+            }
+
+            @Override
+            public void remMediaViewClick(MediaChildViewClick mediaChildViewClick) {
+                mediaChildViewClicks.remove(mediaChildViewClick);
+            }
+        });
     }
 
     protected void initResources() {
@@ -60,7 +79,9 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
 
     /** 播放器的布局界面 */
     public View inflateLayout() {
+
         return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
+
     }
 
     /** 初始化控制界面上的控制部件 */
@@ -71,6 +92,8 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         cbMessageClock = (CheckBox) findViewById(R.id.cb_livevideo_message_clock);
         lvCommonWord = (ListView) findViewById(R.id.lv_livevideo_common_word);
         btMark = (Button) findViewById(R.id.bt_livevideo_mark);
+        llMarkPopMenu=findViewById(R.id.ll_livevideo_controller_mark_pop_menu);
+        vMarkGuide=findViewById(R.id.ll_livevideo_bottom_controller_mark_guide);
         if (btMark != null) {
             btMark.setOnClickListener(new OnClickListener() {
                 @Override
@@ -80,6 +103,14 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
             });
         }
     }
+    public LinearLayout getLlMarkPopMenu(){
+        return llMarkPopMenu;
+    }
+    public View getvMarkGuide(){
+        return vMarkGuide;
+    }
+
+
 
     public Button getBtMesOpen() {
         return btMesOpen;
@@ -141,6 +172,10 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     @Override
     public void onHide() {
         startAnimation(mAnimSlideOutTop);
+        if(llMarkPopMenu!=null){
+            llMarkPopMenu.setVisibility(GONE);
+        }
+
     }
 
     public void setController(LiveMediaController controller) {
@@ -148,10 +183,15 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     }
 
     public void onChildViewClick(View child) {
-        if (mPlayer instanceof MediaChildViewClick) {
-            MediaChildViewClick liveVideoActivity = (MediaChildViewClick) mPlayer;
-            liveVideoActivity.onMediaViewClick(child);
+        for (MediaChildViewClick childViewClick : mediaChildViewClicks) {
+            childViewClick.onMediaViewClick(child);
         }
+    }
+
+    public interface RegMediaChildViewClick {
+        void regMediaViewClick(MediaChildViewClick mediaChildViewClick);
+
+        void remMediaViewClick(MediaChildViewClick mediaChildViewClick);
     }
 
     public interface MediaChildViewClick {

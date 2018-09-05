@@ -14,56 +14,58 @@ import android.util.Log;
 
 /** Java wrapper for a C++ MediaStreamTrackInterface. */
 public class MediaStreamTrack {
-  private String TAG="MediaStreamTrack";
+    private String TAG = "MediaStreamTrack";
 
-  /** Tracks MediaStreamTrackInterface.TrackState */
-  public enum State { LIVE, ENDED }
+    /** Tracks MediaStreamTrackInterface.TrackState */
+    public enum State {
+        LIVE, ENDED
+    }
 
-  public enum MediaType {
-    MEDIA_TYPE_AUDIO,
-    MEDIA_TYPE_VIDEO,
-  }
+    public enum MediaType {
+        MEDIA_TYPE_AUDIO,
+        MEDIA_TYPE_VIDEO,
+    }
 
-  final long nativeTrack;
+    final long nativeTrack;
 
-  public MediaStreamTrack(long nativeTrack) {
-    this.nativeTrack = nativeTrack;
-  }
+    public MediaStreamTrack(long nativeTrack) {
+        this.nativeTrack = nativeTrack;
+    }
 
-  public String id() {
-    return nativeId(nativeTrack);
-  }
+    public String id() {
+        return nativeId(nativeTrack);
+    }
 
-  public String kind() {
-    return nativeKind(nativeTrack);
-  }
+    public String kind() {
+        return nativeKind(nativeTrack);
+    }
 
-  public boolean enabled() {
-    return nativeEnabled(nativeTrack);
-  }
+    public boolean enabled() {
+        return nativeEnabled(nativeTrack);
+    }
 
-  public boolean setEnabled(boolean enable) {
-    return nativeSetEnabled(nativeTrack, enable);
-  }
+    public boolean setEnabled(boolean enable) {
+        return nativeSetEnabled(nativeTrack, enable);
+    }
 
-  public State state() {
-    return nativeState(nativeTrack);
-  }
+    public State state() {
+        return nativeState(nativeTrack);
+    }
 
-  public void dispose() {
-    Log.i(TAG,"dispose:nativeTrack="+nativeTrack);
-    free(nativeTrack);
-  }
+    public void dispose() {
+        Log.i(TAG, "dispose:nativeTrack=" + nativeTrack);
+        free(nativeTrack);
+    }
 
-  private static native String nativeId(long nativeTrack);
+    private static native String nativeId(long nativeTrack);
 
-  private static native String nativeKind(long nativeTrack);
+    private static native String nativeKind(long nativeTrack);
 
-  private static native boolean nativeEnabled(long nativeTrack);
+    private static native boolean nativeEnabled(long nativeTrack);
 
-  private static native boolean nativeSetEnabled(long nativeTrack, boolean enabled);
+    private static native boolean nativeSetEnabled(long nativeTrack, boolean enabled);
 
-  private static native State nativeState(long nativeTrack);
+    private static native State nativeState(long nativeTrack);
 
-  private static native void free(long nativeTrack);
+    private static native void free(long nativeTrack);
 }

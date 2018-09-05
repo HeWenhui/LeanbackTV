@@ -16,15 +16,15 @@
 //import android.webkit.WebViewClient;
 //import android.widget.RelativeLayout;
 //
-//import com.xueersi.parentsmeeting.http.DownloadCallBack;
-//import com.xueersi.parentsmeeting.http.HttpCallBack;
-//import com.xueersi.parentsmeeting.http.ResponseEntity;
+//import com.xueersi.common.http.DownloadCallBack;
+//import com.xueersi.common.http.HttpCallBack;
+//import com.xueersi.common.http.ResponseEntity;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
 //import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 //import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
-//import com.xueersi.xesalib.utils.file.FileUtils;
-//import com.xueersi.xesalib.utils.log.Loger;
-//import com.xueersi.xesalib.utils.network.NetWorkHelper;
+//import com.xueersi.lib.framework.utils.file.FileUtils;
+//import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+//import com.xueersi.lib.framework.utils.NetWorkHelper;
 //
 //import org.json.JSONArray;
 //import org.json.JSONException;
@@ -70,7 +70,7 @@
 //        this.context = context;
 //        Activity activity = (Activity) context;
 //        bottomContent = (RelativeLayout) activity.findViewById(R.id.rl_course_video_live_question_content);
-//        this.liveBll = liveBll;
+//        this.liveBll = ircState;
 //        this.liveId = liveId;
 //        zipFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/zip");
 //        unzipFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/unzip");

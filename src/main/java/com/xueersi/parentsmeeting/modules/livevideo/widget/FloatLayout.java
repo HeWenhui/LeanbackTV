@@ -11,8 +11,8 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity;
 
 /**
  * Author:xishuang
@@ -92,9 +92,9 @@ public class FloatLayout extends FrameLayout {
             /** type为1代表直播 type为2代表回放*/
             Intent intent = null;
             if(mType == 1){
-                intent = new Intent(mContext, LectureLiveVideoActivity.class);
+                intent = new Intent(mContext, LecVideoActivity.class);
             }else{
-                intent = new Intent(mContext, LivePlayBackVideoActivity.class);
+                intent = new Intent(mContext, LivePlaybackVideoActivity.class);
             }
             mContext.startActivity(intent);
         }

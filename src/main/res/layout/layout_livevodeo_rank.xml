@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="#cc000000"
-              android:clickable="true"
-              android:orientation="vertical"
-              android:visibility="gone">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#cc000000"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:visibility="gone">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="组内"
-                android:textColor="@color/COLOR_F13232"/>
+                android:textColor="@color/COLOR_F13232" />
 
             <View
                 android:id="@id/v_livevideo_rank_mygroup"
@@ -32,7 +32,7 @@
                 android:layout_height="2dp"
                 android:layout_below="@id/tv_livevideo_rank_mygroup"
                 android:layout_marginTop="10dp"
-                android:background="@color/COLOR_F13232"/>
+                android:background="@color/COLOR_F13232" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="小组"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white" />
 
             <View
                 android:id="@id/v_livevideo_rank_groups"
@@ -56,7 +56,7 @@
                 android:layout_below="@id/tv_livevideo_rank_groups"
                 android:layout_marginTop="10dp"
                 android:background="@color/COLOR_F13232"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="班级"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white" />
 
             <View
                 android:id="@id/v_livevideo_rank_class"
@@ -81,7 +81,7 @@
                 android:layout_below="@id/tv_livevideo_rank_class"
                 android:layout_marginTop="10dp"
                 android:background="@color/COLOR_F13232"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </RelativeLayout>
 
     </RelativeLayout>
@@ -89,7 +89,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/white"/>
+        android:background="@color/white" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -103,7 +103,7 @@
             android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="排名"/>
+            android:text="排名" />
 
         <TextView
             android:id="@id/tv_livevideo_rank_subtitle_mid"
@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="学员"/>
+            android:text="学员" />
 
         <TextView
             style="@style/text_font11_ffffff_style"
@@ -121,7 +121,7 @@
             android:layout_alignParentRight="true"
             android:gravity="center"
             android:includeFontPadding="false"
-            android:text="正确率"/>
+            android:text="正确率" />
     </RelativeLayout>
 
     <ListView
@@ -131,5 +131,5 @@
         android:layout_height="match_parent"
         android:layout_marginTop="20dp"
         android:divider="@color/transparent"
-        android:dividerHeight="10dp"/>
+        android:dividerHeight="10dp" />
 </LinearLayout>

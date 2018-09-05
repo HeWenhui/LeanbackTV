@@ -4,9 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.xueersi.parentsmeeting.base.BaseApplication;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.xesalib.view.alertdialog.BaseAlertDialog;
+import com.xueersi.ui.dialog.BaseAlertDialog;
 
 /**
  * Created by linyuqiang on 2018/1/1.

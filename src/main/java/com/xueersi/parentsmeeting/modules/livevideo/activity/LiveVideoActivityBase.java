@@ -28,31 +28,31 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xueersi.parentsmeeting.entity.FooterIconEntity;
+import com.xueersi.common.entity.FooterIconEntity;
+import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.base.BaseApplication;
-import com.xueersi.parentsmeeting.base.XesActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.TotalFrameStat;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.base.XesActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.video.TotalFrameStat;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.event.AppEvent;
-import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
-import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.videoplayer.business.VideoBll;
-import com.xueersi.parentsmeeting.modules.videoplayer.config.MediaPlayer;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.PlayerService.VPlayerListener;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoView;
-import com.xueersi.xesalib.utils.app.ActivityUtils;
-import com.xueersi.xesalib.utils.app.AppUtils;
-import com.xueersi.xesalib.utils.audio.AudioPlayer;
-import com.xueersi.xesalib.utils.file.FileUtils;
-import com.xueersi.xesalib.utils.log.FileLogger;
-import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
-import com.xueersi.xesalib.view.layout.dataload.DataLoadManager;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.event.AppEvent;
+import com.xueersi.common.logerhelper.MobEnumUtil;
+import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
+import com.xueersi.lib.framework.utils.ActivityUtils;
+import com.xueersi.lib.framework.utils.AppUtils;
+import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.lib.log.FileLogger;
+import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.ui.dataload.DataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -367,6 +367,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 //                        tvVideoLoadingText.setText(getString(R.string.video_layout_buffering_progress,
 //                                vPlayer.getBufferProgress()));
                         vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
+
 //                        stopPlayer(); 缓冲过程不暂停
                     }
                     break;

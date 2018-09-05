@@ -11,9 +11,9 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.xueersi.parentsmeeting.util.FontCache;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.PaintTextUtil;
-import com.xueersi.xesalib.utils.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.IOException;
 

@@ -14,8 +14,8 @@ import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -340,7 +340,7 @@ public class FrameAnimation {
                         play(i + 1);
                     }
                 } else {
-                    Thread thread = new Thread() {
+                    Runnable thread = new Runnable() {
                         @Override
                         public void run() {
                             if (destory) {

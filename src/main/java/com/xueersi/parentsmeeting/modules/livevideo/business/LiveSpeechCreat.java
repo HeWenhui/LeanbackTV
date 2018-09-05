@@ -3,35 +3,42 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.content.Context;
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.SpeechAssAutoPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssAutoPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.BaseSpeechCreat;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
 
 /**
- * Created by lyqai on 2018/4/7.
+ * Created by linyuqiang on 2018/4/7.
+ * 直播的语音评测创建
  */
-
 public class LiveSpeechCreat implements BaseSpeechCreat {
+
+    LivePagerBack livePagerBack;
+
+    public LiveSpeechCreat(LivePagerBack livePagerBack) {
+        this.livePagerBack = livePagerBack;
+    }
 
     @Override
     public void receiveRolePlay(VideoQuestionLiveEntity videoQuestionLiveEntity) {
 
     }
 
+
     @Override
-    public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String testId, String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
+    public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String nonce, VideoQuestionLiveEntity videoQuestionLiveEntity, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
         SpeechAssAutoPager speechAssAutoPager =
-                new SpeechAssAutoPager(context, liveid, testId, nonce,
-                        content, (int) time, haveAnswer, learning_stage, speechEvalAction);
-        int screenWidth = ScreenUtils.getScreenWidth();
-        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
-        lp.rightMargin = wradio;
+                new SpeechAssAutoPager(context, videoQuestionLiveEntity, liveid, videoQuestionLiveEntity.id, nonce,
+                        videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time, haveAnswer, learning_stage, speechEvalAction, livePagerBack);
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        lp.rightMargin = liveVideoPoint.getRightMargin();
         return speechAssAutoPager;
     }
 
@@ -39,8 +46,8 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
     public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
                                                     SpeechEvalAction speechEvalAction, String stuCouId) {
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
-                liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false);
+                videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
         return speechAssessmentPager;
     }
 
@@ -52,4 +59,5 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
             LayoutParamsUtil.setViewLayoutParams(baseVoiceAnswerPager.getRootView(), params);
         }
     }
+
 }

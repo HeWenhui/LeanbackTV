@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 
 /**
  * Created by lyqai on 2018/3/21.
@@ -19,6 +19,7 @@ public class LiveStandMediaControllerTop extends BaseLiveMediaControllerTop {
     }
 
     /** 播放器的布局界面 */
+    @Override
     protected View inflateLayout() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livestand_mediacontroller_top, this);
         return view;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.pager.BaseNbH5CoursewarePager;
 
 /**
  * Created by linyuqiang on 2017/3/25.

@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.tencent.cos.xml.utils.StringUtils;
+
 /**
  * Created by linyuqiang on 2018/4/28.
  * 站立直播，4个中文，8个英文字体
@@ -51,6 +53,9 @@ public class StandLiveTextView extends TextView {
     }
 
     public static boolean isChinese(String str) {
+        if (StringUtils.isEmpty(str)) {
+            return false;
+        }
         char[] chars = str.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             byte[] bytes = ("" + chars[i]).getBytes();

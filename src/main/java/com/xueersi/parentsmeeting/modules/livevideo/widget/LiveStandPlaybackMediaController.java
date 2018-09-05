@@ -12,18 +12,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.EmptyControllerBottomInter;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaController2;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaControllerBottom2;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.MediaPlayerControl;
-import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.time.TimeUtils;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
+import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom2;
+import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.framework.utils.TimeUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import java.util.List;
 

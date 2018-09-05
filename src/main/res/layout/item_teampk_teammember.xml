@@ -7,8 +7,7 @@
         android:layout_width="62dp"
         android:layout_height="62dp"
         android:layout_centerHorizontal="true"
-        android:id="@id/rl_teampk_head_container"
-        >
+        android:id="@id/rl_teampk_head_container">
 
         <ImageView
             android:id="@id/iv_teampk_member_head"

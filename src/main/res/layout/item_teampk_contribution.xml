@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -14,16 +13,14 @@
             android:layout_width="38dp"
             android:layout_height="38dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
-         />
+            android:layout_marginTop="5dp" />
 
         <ImageView
             android:layout_width="38dp"
             android:layout_height="38dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
-            android:src="@drawable/live_video_teampk_headmask"
-            />
+            android:src="@drawable/live_video_teampk_headmask" />
 
 
         <LinearLayout
@@ -32,8 +29,7 @@
             android:orientation="horizontal"
             android:layout_below="@id/iv_teampk_pkresult_student_head"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
-            >
+            android:layout_marginTop="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -48,8 +44,7 @@
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:drawablePadding="5dp"
-                android:id="@id/tv_teampk_pkresult_contribution_name"
-                />
+                android:id="@id/tv_teampk_pkresult_contribution_name" />
 
             <TextView
                 android:id="@id/tv_teampk_student_add_energy"
@@ -59,8 +54,7 @@
                 android:text="+10"
                 android:textSize="11sp"
                 android:textStyle="bold"
-                android:singleLine="true"
-                />
+                android:singleLine="true" />
         </LinearLayout>
 
 

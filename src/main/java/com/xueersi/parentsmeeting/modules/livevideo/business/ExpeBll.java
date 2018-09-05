@@ -1,13 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
-import android.graphics.Rect;
+import android.app.Activity;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,22 +12,14 @@ import android.widget.TextView;
 
 import com.umeng.analytics.MobclickAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.base.BaseApplication;
-import com.xueersi.parentsmeeting.browser.activity.BrowserActivity;
-import com.xueersi.parentsmeeting.business.AppBll;
-import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivity;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.ExpeAlertDialog;
-import com.xueersi.xesalib.utils.file.FileUtils;
-import com.xueersi.xesalib.utils.string.StringUtils;
-import com.xueersi.xesalib.utils.time.TimeUtils;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.framework.utils.TimeUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import org.json.JSONObject;
 
@@ -41,8 +29,9 @@ import java.io.File;
  * Created by linyuqiang on 2017/7/13.
  * 体验直播
  */
+@Deprecated
 public class ExpeBll {
-    LiveVideoActivity activity;
+    Activity activity;
     LiveBll liveBll;
     /** 直播时间-当天据算，live_expe_time按单个场次计算 */
     private static final String EXPE_TIME = LiveVideoConfig.LIVE_EXPE_TIME;
@@ -61,7 +50,7 @@ public class ExpeBll {
     long enterTime;
     View view;
 
-    public ExpeBll(LiveVideoActivity activity, LiveBll liveBll) {
+    public ExpeBll(Activity activity, LiveBll liveBll) {
         this.activity = activity;
         this.liveBll = liveBll;
     }
@@ -178,7 +167,7 @@ public class ExpeBll {
         long time = userModeTotalTime - startTime;
 //        setTimeText(textView, time);
         int screenWidth = ScreenUtils.getScreenWidth();
-        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
+        int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
         lp.rightMargin = wradio;
         bottomContent.addView(view, lp);

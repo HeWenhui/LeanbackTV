@@ -16,18 +16,18 @@
 //import android.widget.ImageView;
 //
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
-//import com.xueersi.parentsmeeting.base.BasePager;
+//import com.xueersi.common.base.BasePager;
 //import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-//import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
-//import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
-//import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
-//import com.xueersi.parentsmeeting.business.AppBll;
-//import com.xueersi.parentsmeeting.entity.AppInfoEntity;
-//import com.xueersi.parentsmeeting.logerhelper.LogerTag;
-//import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
-//import com.xueersi.xesalib.utils.log.Loger;
-//import com.xueersi.xesalib.utils.uikit.ScreenUtils;
-//import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
+//import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+//import com.xueersi.common.sharedata.ShareDataManager;
+//import com.xueersi.common.entity.MyUserInfoEntity;
+//import com.xueersi.common.business.AppBll;
+//import com.xueersi.common.entity.AppInfoEntity;
+//import com.xueersi.common.logerhelper.LogerTag;
+//import com.xueersi.common.business.UserBll;
+//import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+//import com.xueersi.lib.framework.utils.ScreenUtils;
+//import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 //
 //import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 //import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;

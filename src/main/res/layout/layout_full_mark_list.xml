@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="500dp"
     android:layout_height="375dp"
-    android:background="@drawable/livevideo_pic_img_normal"
-    >
+    android:background="@drawable/livevideo_pic_img_normal">
 
     <com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView
         android:id="@id/sv_live_full_mark_list"

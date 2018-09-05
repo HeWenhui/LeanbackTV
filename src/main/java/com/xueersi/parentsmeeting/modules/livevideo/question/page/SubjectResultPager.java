@@ -13,14 +13,14 @@
 //import android.widget.Button;
 //import android.widget.ImageView;
 //
-//import com.xueersi.parentsmeeting.base.BasePager;
-//import com.xueersi.parentsmeeting.logerhelper.LogerTag;
+//import com.xueersi.common.base.BasePager;
+//import com.xueersi.common.logerhelper.LogerTag;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 //import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 //import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
-//import com.xueersi.xesalib.utils.log.Loger;
-//import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+//import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+//import com.xueersi.lib.framework.utils.ScreenUtils;
 //
 //import java.io.File;
 //import java.util.HashMap;

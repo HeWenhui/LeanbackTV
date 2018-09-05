@@ -34,48 +34,50 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.entity.FooterIconEntity;
+import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.base.BaseApplication;
-import com.xueersi.parentsmeeting.base.BaseBll;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.base.BaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
-import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
-import com.xueersi.parentsmeeting.business.AppBll;
-import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.entity.AnswerEntity;
-import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
-import com.xueersi.parentsmeeting.entity.VideoLivePlayBackEntity;
-import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.event.AppEvent;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.logerhelper.MobEnumUtil;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.common.entity.AnswerEntity;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.common.event.AppEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageEmojiParser;
-import com.xueersi.parentsmeeting.modules.livevideo.business.PutQuestion;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.PutQuestion;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.RedPacketAlertDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecturePeopleEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionFillInBlankLivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionMulitSelectLivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LectureLivePlaybackMediaController;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.VideoActivity;
-import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.widget.LivePlaybackMediaController;
-import com.xueersi.xesalib.utils.app.XESToastUtils;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.network.NetWorkHelper;
-import com.xueersi.xesalib.utils.string.StringUtils;
-import com.xueersi.xesalib.utils.time.TimeUtils;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
-import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
-import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
-import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
-import com.xueersi.xesalib.view.refresh.swiperefresh.XsBaseAdapter;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoActivity;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.parentsmeeting.module.videoplayer.widget.LivePlaybackMediaController;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.framework.utils.TimeUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
+import com.xueersi.ui.dataload.DataLoadEntity;
+import com.xueersi.ui.adapter.XsBaseAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -88,8 +90,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE;
 
 /**
  * 直播回放播放页
@@ -828,7 +828,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                     vPlayer.pause();
                 }
                 mQuestionEntity.setAnswered(true);
-                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
+                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
                 verifyCancelAlertDialog.initInfo("测试提醒", "老师发布了一套测试题，是否现在开始答题？");
                 verifyCancelAlertDialog.setVerifyBtnListener(new OnClickListener() {
                     @Override
@@ -922,13 +922,17 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
             public void run() {
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     mPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
-                    examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(LectureLivePlayBackVideoActivity.this, mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                    videoQuestionLiveEntity.id = mQuestionEntity.getvQuestionID();
+                    examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(LectureLivePlayBackVideoActivity.this, mVideoEntity.getLiveId(), videoQuestionLiveEntity,
                             false, "", new BaseExamQuestionInter.ExamStop() {
                         @Override
-                        public void stopExam() {
+                        public void stopExam(BaseExamQuestionInter baseExamQuestionInter, VideoQuestionLiveEntity mQuestionEntity) {
                             LectureLivePlayBackVideoActivity.this.stopExam();
+                            rlQuestionContent.removeView(baseExamQuestionInter.getRootView());
+                            baseExamQuestionInter.onDestroy();
                         }
-                    });
+                    }, null);
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(examQuestionPlaybackPager.getRootView(), new LayoutParams(LayoutParams.MATCH_PARENT,
                             LayoutParams.WRAP_CONTENT));
@@ -945,7 +949,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
         mVideoCourseQuestionPager = new QuestionFillInBlankLivePager(LectureLivePlayBackVideoActivity.this, mQuestionEntity);
         mVideoCourseQuestionPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -962,7 +966,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                 mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -979,7 +983,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                 mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }

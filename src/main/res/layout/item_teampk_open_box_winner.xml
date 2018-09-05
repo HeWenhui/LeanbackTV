@@ -11,14 +11,12 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:id="@id/iv_teampk_open_box_winner_head"
-            />
+            android:id="@id/iv_teampk_open_box_winner_head" />
 
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/live_video_teampk_headmask"
-            />
+            android:src="@drawable/live_video_teampk_headmask" />
 
         <ImageView
             android:layout_width="48dp"
@@ -26,8 +24,7 @@
             android:src="@drawable/livevideo_alertview_luckystar_img_disable"
             android:layout_below="@id/iv_teampk_open_box_winner_head"
             android:layout_marginTop="-12dp"
-            android:id="@id/iv_teampk_open_box_lucky_guy"
-            />
+            android:id="@id/iv_teampk_open_box_lucky_guy" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -43,8 +40,7 @@
             android:layout_marginTop="6dp"
             android:layout_toRightOf="@id/iv_teampk_open_box_winner_head"
             android:layout_marginLeft="5dp"
-            android:singleLine="true"
-            />
+            android:singleLine="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -62,8 +58,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textSize="12sp"
-            android:drawablePadding="5dp"
-            />
+            android:drawablePadding="5dp" />
 
     </RelativeLayout>
 

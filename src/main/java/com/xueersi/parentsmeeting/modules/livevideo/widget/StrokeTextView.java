@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 
 /**
  * Created by lyqai on 2017/9/26.

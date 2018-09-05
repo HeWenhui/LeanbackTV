@@ -36,22 +36,35 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xueersi.parentsmeeting.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.base.BaseApplication;
-import com.xueersi.parentsmeeting.base.BaseBll;
-import com.xueersi.parentsmeeting.browser.activity.BrowserActivity;
-import com.xueersi.parentsmeeting.browser.event.BrowserEvent;
-import com.xueersi.parentsmeeting.business.AppBll;
-import com.xueersi.parentsmeeting.entity.AnswerEntity;
-import com.xueersi.parentsmeeting.entity.BaseVideoQuestionEntity;
-import com.xueersi.parentsmeeting.entity.FooterIconEntity;
-import com.xueersi.parentsmeeting.entity.MyUserInfoEntity;
-import com.xueersi.parentsmeeting.entity.VideoLivePlayBackEntity;
-import com.xueersi.parentsmeeting.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.event.AppEvent;
-import com.xueersi.parentsmeeting.logerhelper.MobEnumUtil;
-import com.xueersi.parentsmeeting.logerhelper.XesMobAgent;
+import com.tencent.cos.xml.utils.StringUtils;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.base.BaseBll;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.entity.AnswerEntity;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.entity.FooterIconEntity;
+import com.xueersi.common.event.AppEvent;
+import com.xueersi.common.logerhelper.MobEnumUtil;
+import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.TimeUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.log.Loger;
+import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
+import com.xueersi.parentsmeeting.module.browser.event.BrowserEvent;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
@@ -60,9 +73,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.PutQuestion;
-import com.xueersi.parentsmeeting.modules.livevideo.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
@@ -77,40 +87,29 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseSpeechAssessmentPager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.PutQuestion;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.LiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionFillInBlankLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionMulitSelectLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.QuestionSelectLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.VoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5PlaybackPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionFillInBlankLivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionMulitSelectLivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionSelectLivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
-import com.xueersi.parentsmeeting.modules.loginregisters.business.UserBll;
-import com.xueersi.parentsmeeting.modules.videoplayer.media.VP;
-import com.xueersi.parentsmeeting.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.parentsmeeting.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.parentsmeeting.sharedata.ShareDataManager;
-import com.xueersi.xesalib.umsagent.UmsAgentManager;
-import com.xueersi.xesalib.umsagent.UmsConstants;
-import com.xueersi.xesalib.utils.app.XESToastUtils;
-import com.xueersi.xesalib.utils.log.Loger;
-import com.xueersi.xesalib.utils.network.NetWorkHelper;
-import com.xueersi.xesalib.utils.string.StringUtils;
-import com.xueersi.xesalib.utils.time.TimeUtils;
-import com.xueersi.xesalib.utils.uikit.ScreenUtils;
-import com.xueersi.xesalib.utils.uikit.imageloader.ImageLoader;
-import com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog;
-import com.xueersi.xesalib.view.layout.dataload.DataLoadEntity;
+import com.xueersi.ui.dataload.DataLoadEntity;
+import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -119,14 +118,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.xueersi.xesalib.view.alertdialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE;
+import static com.xueersi.ui.dialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE;
 
 /**
  * Created by David on 2018/3/6.
@@ -363,6 +359,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
      * 互动题
      */
     private VideoQuestionEntity mQuestionEntity;
+
+    VideoQuestionLiveEntity videoQuestionLiveEntity;
     /**
      * 互动题为空的异常
      */
@@ -539,8 +537,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
         }
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        mIRCMessage = new IRCMessage(mNetWorkType, channel, mGetInfo.getStuName(), chatRoomUid);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
+        mIRCMessage = new IRCMessage(this, mNetWorkType, channel, mGetInfo.getStuName(), chatRoomUid);
+        IRCTalkConf ircTalkConf = new IRCTalkConf(null, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
@@ -804,7 +802,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
-        int rightMargin = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth - lp
+        int rightMargin = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth - lp
                 .width) / 2);
         int topMargin = (ScreenUtils.getScreenHeight() - lp.height) / 2;
         if (params.rightMargin != rightMargin || params.bottomMargin != topMargin) {
@@ -830,7 +828,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         // 关联聊天人数
         mLiveMessagePager.setPeopleCount(peopleCount);
         mLiveMessagePager.setMessageBll(liveMessageBll);
-        mLiveMessagePager.setLiveBll(mLiveBll);
+        // TODO: 2018/8/11 设置ircState
+        //mLiveMessagePager.setLiveBll(mLiveBll);
+        mLiveMessagePager.setIrcState(mLiveBll);
+
+
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
         mLiveMessagePager.setIsRegister(true);
 
@@ -981,6 +983,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //            showQuestion(mQuestionEntity);
         }
         // 心跳时间的统计
+        mHandler.removeCallbacks(mPlayDuration);
         mHandler.postDelayed(mPlayDuration, mPlayDurTime);
     }
 
@@ -1401,11 +1404,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private void handleChatEvent(int playPosition, VideoQuestionEntity chatEntity) {
         //出现视频快进
         if ((playPosition - lastCheckTime) >= MAX_CHECK_TIME_RANG || !isChatSateInited) {
-           // isChatSateInited = false;
+            // isChatSateInited = false;
             boolean roomChatAvalible = recoverChatState(playPosition);
-            Loger.e("roomChat", "=====> resetRoomChatState_:roomChatAvalible=" + roomChatAvalible+":"+isChatSateInited);
+            Loger.e("roomChat", "=====> resetRoomChatState_:roomChatAvalible=" + roomChatAvalible + ":" + isChatSateInited);
             isChatSateInited = true;
-        }else{
+        } else {
             if (chatEntity != null) {
                 Loger.e("roomChat", "=====>handleChatEvent:category=" + chatEntity.getvCategory());
                 //关闭聊天
@@ -1459,13 +1462,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             mLiveMessagePager.onopenchat(false, "in-class", isRoomChatAvailable);
             mLiveBll.setChatOpen(false);
         } else {
-            mLiveMessagePager.onopenchat(true, "in-class",!isRoomChatAvailable);
+            mLiveMessagePager.onopenchat(true, "in-class", !isRoomChatAvailable);
             mLiveBll.setChatOpen(true);
         }
         return roomChatAvalible;
     }
-
-
 
 
     private VideoQuestionEntity getOpenChatEntity(int playPosition) {
@@ -1515,14 +1516,19 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             public void run() {
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     mPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
+                    if (videoQuestionLiveEntity == null) {
+                        videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                    }
+                    videoQuestionLiveEntity.id = mQuestionEntity.getvQuestionID();
+
                     examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(ExperienceLiveVideoActivity.this,
-                            mVideoEntity.getLiveId(), mQuestionEntity.getvQuestionID(),
+                            mVideoEntity.getLiveId(), videoQuestionLiveEntity,
                             false, "", new BaseExamQuestionInter.ExamStop() {
                         @Override
-                        public void stopExam() {
+                        public void stopExam(BaseExamQuestionInter baseExamQuestionInter, VideoQuestionLiveEntity mQuestionEntity) {
 
                         }
-                    });
+                    }, null);
                     rlQuestionContent.removeAllViews();
                     rlQuestionContent.addView(examQuestionPlaybackPager.getRootView(), new ViewGroup.LayoutParams
                             (ViewGroup.LayoutParams.MATCH_PARENT,
@@ -1573,7 +1579,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mVideoCourseQuestionPager = new QuestionFillInBlankLivePager(ExperienceLiveVideoActivity.this, mQuestionEntity);
         mVideoCourseQuestionPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -1593,7 +1599,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -1614,7 +1620,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         mQuestionEntity);
         questionSelectPager.setPutQuestion(new PutQuestion() {
             @Override
-            public void onPutQuestionResult(BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
+            public void onPutQuestionResult(BaseLiveQuestionPager baseLiveQuestionPager, BaseVideoQuestionEntity videoQuestionLiveEntity, String result) {
                 VideoQuestionEntity mQuestionEntity = (VideoQuestionEntity) videoQuestionLiveEntity;
                 sendQuestionResult(result, mQuestionEntity);
             }
@@ -2046,7 +2052,5 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         super.resultFailed(arg1, arg2);
         resultFailed = true;
         mIsShowQuestion = mIsShowRedpacket = false;
-        Loger.d(this,TAG, "liveId=" + mVideoEntity.getLiveId() + "," +
-                "url=" + Uri.parse(mWebPath),true);
     }
 }

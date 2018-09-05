@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+   <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+       android:layout_width="70dp"
+       android:layout_height="wrap_content"
+       android:text="安俊杰"
+       android:id="@id/tv_livevideo_arts_praiselist_name"
+       android:textSize="13sp"
+       android:textColor="@color/COLOR_707070"
+       android:maxLines="2"
+       android:ellipsize="end"
+       />
+
+</RelativeLayout>
