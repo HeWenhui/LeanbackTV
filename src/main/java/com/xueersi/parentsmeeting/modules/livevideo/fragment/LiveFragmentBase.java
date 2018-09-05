@@ -393,6 +393,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         if (liveVideoAction == null) {
             return;
         }
+        mLogtf.d("onLiveStart:mHaveStop=" + mHaveStop);
         liveVideoAction.onLiveStart(server, cacheData, modechange);
         mLiveVideoBll.onLiveStart(server, cacheData, modechange);
         AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化

@@ -395,6 +395,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      */
     @Override
     public void rePlay(boolean modechange) {
+        mLogtf.d("rePlay:mHaveStop=" + mHaveStop);
         if (mGetInfo == null || liveVideoAction == null) {//上次初始化尚未完成
             return;
         }
