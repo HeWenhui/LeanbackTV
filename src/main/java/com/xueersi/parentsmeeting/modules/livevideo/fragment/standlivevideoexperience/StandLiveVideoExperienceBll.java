@@ -88,7 +88,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
     /**
      * 是否打开开关
      */
-    private boolean openChat = false;
+    private boolean openChat = true;
 
     public StandLiveVideoExperienceBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -127,7 +127,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         mLiveMessagePager.onopenchat(true, "", false);
         mLiveMessagePager.setIrcState(videoExperiencIRCState);
         mRootView.addView(mLiveMessagePager.getRootView());
-
+        mLiveMessagePager.setGetInfo(liveGetInfo);
         connectChatServer();
     }
 

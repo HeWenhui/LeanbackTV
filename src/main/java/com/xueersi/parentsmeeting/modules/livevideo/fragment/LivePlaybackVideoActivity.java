@@ -12,6 +12,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexper
  */
 public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
 
+    /**
+     * 用来判断是否是站立直播体验课
+     */
+    private Boolean isExperience = false;
+
     @Override
     protected LiveBackVideoFragmentBase getFragment() {
         String where = getIntent().getStringExtra("where");
@@ -19,10 +24,15 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             return new LecBackVideoFragment();
         }
         int pattern = getIntent().getIntExtra("pattern", 0);
-        if (pattern == 2) {
-            return new StandBackVideoFragment();
+
+        isExperience = getIntent().getBooleanExtra("isExperience", false);
+        if (!isExperience) {
+            if (pattern == 2) {
+                return new StandBackVideoFragment();
+            }
+            return new LiveBackVideoFragment();
         }
-        return isStandLiveExperience ? new StandLiveVideoExperienceFragment() : new LiveBackVideoFragment();
+        return new StandLiveVideoExperienceFragment();
     }
 
     @Override

@@ -976,7 +976,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         });
     }
 
-    /** 关闭开启聊天 */
+    /**
+     * 关闭开启聊天
+     *
+     * @param openchat   是否开启聊天
+     * @param mode       直播或辅导模式
+     * @param fromNotice
+     */
     @Override
     public void onopenchat(final boolean openchat, final String mode, final boolean fromNotice) {
         mainHandler.post(new Runnable() {

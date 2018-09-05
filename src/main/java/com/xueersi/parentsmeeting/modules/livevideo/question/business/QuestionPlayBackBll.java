@@ -38,6 +38,7 @@ import java.util.HashMap;
 public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp {
     QuestionBll questionBll;
 
+
     public QuestionPlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         questionBll = new QuestionBll(activity, liveBackBll.getStuCourId());
@@ -46,7 +47,8 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
-    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
+    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object>
+            businessShareParamMap) {
         questionBll.setVSectionID(mVideoEntity.getLiveId());
         questionBll.setShareDataManager(mShareDataManager);
         questionBll.setLiveGetInfo(liveGetInfo);
@@ -54,15 +56,18 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         //站立直播
         if (liveBackBll.getPattern() == 2) {
             //语音答题
-            WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new LiveQuestionSwitchImpl());
+            WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
+                    LiveQuestionSwitchImpl());
             questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
             //语音评测
-            LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(this, liveBackBll, questionBll);
+            LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(this, liveBackBll,
+                    questionBll);
             liveBackStandSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
             questionBll.setBaseSpeechCreat(liveBackStandSpeechCreat);
         } else {
             //语音答题
-            WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new LiveQuestionSwitchImpl());
+            WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
+                    LiveQuestionSwitchImpl());
             questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
             //语音评测
             LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
@@ -116,7 +121,8 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
-    public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, final LiveBackBll.ShowQuestion showQuestion) {
+    public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, final
+    LiveBackBll.ShowQuestion showQuestion) {
         mRootView.setVisibility(View.VISIBLE);
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
@@ -130,7 +136,8 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.speechContent = questionEntity.getSpeechContent();
                 videoQuestionLiveEntity.time = questionEntity.getEstimatedTime();
                 videoQuestionLiveEntity.num = questionEntity.getQuestionNum();
-                videoQuestionLiveEntity.examSubmit = questionEntity.getvEndTime() - questionEntity.getvQuestionInsretTime();
+                videoQuestionLiveEntity.examSubmit = questionEntity.getvEndTime() - questionEntity
+                        .getvQuestionInsretTime();
                 videoQuestionLiveEntity.srcType = questionEntity.getSrcType();
                 videoQuestionLiveEntity.setAnswerDay(questionEntity.getAnswerDay());
                 videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
@@ -141,7 +148,8 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
-                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
+                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
+                        .getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
                 verifyCancelAlertDialog.initInfo("测试提醒", "老师发布了一套测试题，是否现在开始答题？");
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
@@ -186,72 +194,103 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
-    public void getQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity1, AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
+    public void getQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity1, AbstractBusinessDataCallBack
+            abstractBusinessDataCallBack) {
 //回放没有
     }
 
     @Override
-    public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity1, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
+    public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity
+            videoQuestionLiveEntity1, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight,
+                                     final QuestionSwitch.OnAnswerReslut answerReslut) {
         DataLoadEntity loadEntity = new DataLoadEntity(mContext);
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getCourseHttpManager().saveTestRecord(enstuId, videoQuestionLiveEntity1.srcType, videoQuestionLiveEntity1.id, testAnswer, videoQuestionLiveEntity1.getAnswerDay(),
-                mVSectionID, mVideoEntity.getvLivePlayBackType(), isVoice, isRight, new HttpCallBack(loadEntity) {
+        HttpCallBack httpCallBack = new HttpCallBack(loadEntity) {
 
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        Loger.d(TAG, "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
-                        VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer(responseEntity, isVoice);
-                        entity.setVoice(isVoice);
-                        if (answerReslut != null) {
-                            answerReslut.onAnswerReslut(videoQuestionLiveEntity1, entity);
-                        }
-                        if (questionBll != null) {
-                            questionBll.onAnswerReslut(liveBasePager, videoQuestionLiveEntity1, entity);
-                        }
-                        if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity1.type)) {
-                            if (liveBackBll.getvPlayer() != null) {
-                                liveBackBll.getvPlayer().pause();
-                            }
-                        } else {
-                            LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(activity, LiveBackBll.ShowQuestion.class);
-                            showQuestion.onHide(videoQuestionLiveEntity1);
-                        }
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                Loger.d(TAG, "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity
+                        .getJsonObject());
+                VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer(responseEntity,
+                        isVoice);
+                entity.setVoice(isVoice);
+                if (answerReslut != null) {
+                    answerReslut.onAnswerReslut(videoQuestionLiveEntity1, entity);
+                }
+                if (questionBll != null) {
+                    questionBll.onAnswerReslut(liveBasePager, videoQuestionLiveEntity1, entity);
+                }
+                if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity1.type)) {
+                    if (liveBackBll.getvPlayer() != null) {
+                        liveBackBll.getvPlayer().pause();
                     }
+                } else {
+                    LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(activity, LiveBackBll
+                            .ShowQuestion.class);
+                    showQuestion.onHide(videoQuestionLiveEntity1);
+                }
+            }
 
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        XESToastUtils.showToast(mContext, msg);
-                        if (questionBll != null) {
-                            questionBll.onAnswerFailure();
-                        }
-                        if (answerReslut != null) {
-                            answerReslut.onAnswerFailure();
-                        }
-                    }
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                XESToastUtils.showToast(mContext, msg);
+                if (questionBll != null) {
+                    questionBll.onAnswerFailure();
+                }
+                if (answerReslut != null) {
+                    answerReslut.onAnswerFailure();
+                }
+            }
 
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
 //                        if (!responseEntity.isJsonError()) {
 
 //                        }
-                        if (questionBll != null) {
-                            questionBll.onAnswerReslut(liveBasePager, videoQuestionLiveEntity1, null);
-                        }
-                        if (answerReslut != null) {
-                            answerReslut.onAnswerReslut(videoQuestionLiveEntity1, null);
-                        }
-                    }
-                });
+                if (questionBll != null) {
+                    questionBll.onAnswerReslut(liveBasePager, videoQuestionLiveEntity1, null);
+                }
+                if (answerReslut != null) {
+                    answerReslut.onAnswerReslut(videoQuestionLiveEntity1, null);
+                }
+            }
+        };
+        if (!videoQuestionLiveEntity1.type.equals("8")) {
+            getCourseHttpManager().saveTestRecord(
+                    enstuId,
+                    videoQuestionLiveEntity1.srcType,
+                    videoQuestionLiveEntity1.id,
+                    testAnswer,
+                    videoQuestionLiveEntity1.getAnswerDay(),
+                    mVSectionID,
+                    mVideoEntity.getvLivePlayBackType(),
+                    isVoice,
+                    isRight,
+                    httpCallBack);
+        } else {
+            getCourseHttpManager().saveExperienceTestRecord(
+                    mVideoEntity.getSubjectiveSubmitUrl(),
+                    enstuId,
+                    videoQuestionLiveEntity1.srcType,
+                    videoQuestionLiveEntity1.id,
+                    testAnswer,
+                    videoQuestionLiveEntity1.getAnswerDay(),
+                    mVSectionID,
+                    mVideoEntity.getvLivePlayBackType(),
+                    isVoice,
+                    isRight,
+                    httpCallBack);
+        }
     }
 
     @Override
     public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
         String liveid = mVideoEntity.getLiveId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getCourseHttpManager().getSpeechEval(enstuId, liveid, id, new HttpCallBack() {
+        HttpCallBack httpCallBack = new HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -276,15 +315,21 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             public void onPmError(ResponseEntity responseEntity) {
                 onSpeechEval.onPmError(responseEntity);
             }
-        });
+        };
+        if (isStandExperience == 0) {
+            getCourseHttpManager().getSpeechEval(enstuId, liveid, id, httpCallBack);
+        } else if (isStandExperience == 1) {
+            getCourseHttpManager().getExperienceSpeechEval(mVideoEntity.getSpeechEvalUrl(), enstuId,
+                    liveid, id, httpCallBack);
+        }
     }
 
     @Override
-    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval onSpeechEval) {
+    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval
+            onSpeechEval) {
         String liveid = mVideoEntity.getLiveId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new HttpCallBack(false) {
-
+        HttpCallBack httpCallBack = new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 onSpeechEval.onSpeechEval(null);
@@ -299,7 +344,14 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             public void onPmError(ResponseEntity responseEntity) {
                 onSpeechEval.onPmError(responseEntity);
             }
-        });
+        };
+        if (isStandExperience == 0) {
+            getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
+                    httpCallBack);
+        } else if (isStandExperience == 1) {
+            getCourseHttpManager().sendExperienceSpeechEvalResult(mVideoEntity.getSpeechEvalSubmitUrl(), enstuId,
+                    liveid, id, stuAnswer, times, entranceTime, httpCallBack);
+        }
     }
 
     @Override
@@ -335,12 +387,14 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
-    public void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
+    public void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity, final
+    AbstractBusinessDataCallBack callBack) {
         //回放没有
     }
 
     @Override
-    public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
+    public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered
+            isAnswered) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         getCourseHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
             @Override

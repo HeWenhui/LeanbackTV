@@ -37,7 +37,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     }
 
     @Override
-    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
+    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object>
+            businessShareParamMap) {
         englishH5CoursewareBll = new EnglishH5CoursewareBll(activity);
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(mLiveType);
@@ -47,17 +48,21 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         if (liveBackBll.getPattern() == 2) {
             //语音答题
             LiveAndBackDebug liveAndBackDebug = getInstance(LiveAndBackDebug.class);
-            LiveBackStandVoiceAnswerCreat liveStandVoiceAnswerCreat = new LiveBackStandVoiceAnswerCreat(activity, englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), liveBackBll);
+            LiveBackStandVoiceAnswerCreat liveStandVoiceAnswerCreat = new LiveBackStandVoiceAnswerCreat(activity,
+                    englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), liveBackBll);
             liveStandVoiceAnswerCreat.setUserName(liveGetInfo.getStandLiveName());
             liveStandVoiceAnswerCreat.setHeadUrl(liveGetInfo.getHeadImgPath());
             liveStandVoiceAnswerCreat.setLivePagerBack(englishH5CoursewareBll);
             englishH5CoursewareBll.setBaseVoiceAnswerCreat(liveStandVoiceAnswerCreat);
         } else {
             //语音答题
-            WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, englishH5CoursewareBll.new LiveQuestionSwitchImpl());
-            englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(wrapQuestionSwitch, englishH5CoursewareBll));
+            WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, englishH5CoursewareBll.new
+                    LiveQuestionSwitchImpl());
+            englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(wrapQuestionSwitch,
+                    englishH5CoursewareBll));
         }
-        LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBackBaseEnglishH5CoursewareCreat();
+        LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new
+                LiveBackBaseEnglishH5CoursewareCreat();
         int isArts = liveBackBll.getIsArts();
         liveBaseEnglishH5CoursewareCreat.setIS_SCIENCE(isArts != 1);
         liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
@@ -87,7 +92,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     }
 
     @Override
-    public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, final LiveBackBll.ShowQuestion showQuestion) {
+    public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, final
+    LiveBackBll.ShowQuestion showQuestion) {
         mRootView.setVisibility(View.VISIBLE);
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
@@ -97,7 +103,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                     mediaPlayerControl.pause();
                 }
                 questionEntity.setAnswered(true);
-                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
+                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
+                        .getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
                 verifyCancelAlertDialog.initInfo("课件提醒", "老师发布了课件，是否参与互动？");
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
@@ -136,7 +143,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 LiveVideoConfig.LIVEPLAYBACKCLASSID = mVideoEntity.getClassId();
                 LiveVideoConfig.LIVEPLAYBACKTEAMID = mVideoEntity.getTeamId();
                 LiveVideoConfig.LIVEPLAYBACKSTAGE = mVideoEntity.getEdustage();
-                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
+                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
+                        .getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
                 verifyCancelAlertDialog.initInfo("课件提醒", "老师发布了课件，是否参与互动？");
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
@@ -199,47 +207,80 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         }
 
         @Override
-        public void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
+        public void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity, final
+        AbstractBusinessDataCallBack callBack) {
             //回放没有
         }
 
         @Override
-        public void liveSubmitTestH5Answer(final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID, String testAnswer, String courseware_type, String isSubmit, double voiceTime, boolean isRight, final QuestionSwitch.OnAnswerReslut onAnswerReslut) {
+        public void liveSubmitTestH5Answer(final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID,
+                                           String testAnswer, String courseware_type, String isSubmit, double
+                                                   voiceTime, boolean isRight, final QuestionSwitch
+                .OnAnswerReslut onAnswerReslut) {
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             String userMode = "1";
-            getCourseHttpManager().sumitCourseWareH5(enstuId, videoQuestionLiveEntity.srcType,
-                    videoQuestionLiveEntity.id, testAnswer, videoQuestionLiveEntity.getAnswerDay(), mVideoEntity.getLiveId(), videoQuestionLiveEntity.courseware_type, isSubmit, voiceTime, isRight, new
-                            HttpCallBack() {
+            HttpCallBack httpCallBack = new
 
-                                @Override
-                                public void onPmSuccess(ResponseEntity responseEntity) {
-                                    VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer(responseEntity,
+                    HttpCallBack() {
+
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) {
+                            VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer
+                                    (responseEntity,
                                             true);
-                                    entity.setVoice(true);
-                                    if (StringUtils.isSpace(entity.getTestId())) {
-                                        entity.setTestId(videoQuestionLiveEntity.id);
-                                    }
-                                    if (onAnswerReslut != null) {
-                                        onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
-                                    }
-                                }
+                            entity.setVoice(true);
+                            if (StringUtils.isSpace(entity.getTestId())) {
+                                entity.setTestId(videoQuestionLiveEntity.id);
+                            }
+                            if (onAnswerReslut != null) {
+                                onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
+                            }
+                        }
 
-                                @Override
-                                public void onPmFailure(Throwable error, String msg) {
-                                    if (onAnswerReslut != null) {
-                                        onAnswerReslut.onAnswerFailure();
-                                    }
-                                }
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            if (onAnswerReslut != null) {
+                                onAnswerReslut.onAnswerFailure();
+                            }
+                        }
 
-                                @Override
-                                public void onPmError(ResponseEntity responseEntity) {
-                                    if (!responseEntity.isJsonError()) {
-                                        if (onAnswerReslut != null) {
-                                            onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
-                                        }
-                                    }
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            if (!responseEntity.isJsonError()) {
+                                if (onAnswerReslut != null) {
+                                    onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
                                 }
-                            });
+                            }
+                        }
+                    };
+            if (isStandExperience == 0) {
+                getCourseHttpManager().sumitCourseWareH5(
+                        enstuId,
+                        videoQuestionLiveEntity.srcType,
+                        videoQuestionLiveEntity.id,
+                        testAnswer,
+                        videoQuestionLiveEntity.getAnswerDay(),
+                        mVideoEntity.getLiveId(),
+                        videoQuestionLiveEntity.courseware_type,
+                        isSubmit,
+                        voiceTime,
+                        isRight,
+                        httpCallBack);
+            } else if (isStandExperience == 1) {
+                getCourseHttpManager().submitExperienceCourseWareH5(
+                        mVideoEntity.getSubmitCourseWareH5AnswerUseVoiceUrl(),
+                        enstuId,
+                        videoQuestionLiveEntity.srcType,
+                        videoQuestionLiveEntity.id,
+                        testAnswer,
+                        videoQuestionLiveEntity.getAnswerDay(),
+                        mVideoEntity.getLiveId(),
+                        videoQuestionLiveEntity.courseware_type,
+                        isSubmit,
+                        voiceTime,
+                        isRight,
+                        httpCallBack);
+            }
         }
     }
 

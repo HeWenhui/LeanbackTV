@@ -32,10 +32,7 @@ public class LiveBackVideoActivityBase extends XesActivity {
     /** 当前界面是否横屏 */
     protected boolean mIsLand = false;
     LiveBackVideoFragmentBase liveVideoFragmentBase;
-    /**
-     * 用来判断是否是站立直播体验课
-     */
-    protected boolean isStandLiveExperience = true;
+
     // endregion
 
     // region 生命周期及系统调用

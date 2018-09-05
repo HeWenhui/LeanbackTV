@@ -626,6 +626,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
      * @param testAnswer
      * @param isRight
      */
+    @Override
     public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity, String liveId, String
             testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -685,6 +686,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 });
     }
 
+    @Override
     public void getTestAnswerTeamStatus(final VideoQuestionLiveEntity videoQuestionLiveEntity, final
     AbstractBusinessDataCallBack callBack) {
         mHttpManager.getTestAnswerTeamStatus(videoQuestionLiveEntity.id, new HttpCallBack(false) {
@@ -2470,6 +2472,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
      *
      * @return
      */
+    @Override
     public boolean isSeniorOfHighSchool() {
         return mGetInfo != null && mGetInfo.getIsSeniorOfHighSchool() == 1;
     }
@@ -3339,6 +3342,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         }
     }
 
+    @Override
     public void praiseTeacher(final String formWhichTeacher, String ftype, String educationStage, final HttpCallBack callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String teacherId = mGetInfo.getMainTeacherInfo().getTeacherId();
@@ -3424,6 +3428,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         }
     }
 
+    @Override
     public boolean isDisable() {
         return mLiveTopic.isDisable();
     }
@@ -3435,6 +3440,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         return mIRCMessage.isConnected();
     }
 
+    @Override
     public boolean isHaveTeam() {
         return haveTeam;
     }
@@ -3469,6 +3475,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 发生聊天消息
      */
+    @Override
     public boolean sendMessage(String msg, String name) {
         if (mSendMsgListener != null) {
             mSendMsgListener.onMessageSend(msg, name);
@@ -3509,6 +3516,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 发送上墙信号聊天消息
      */
+    @Override
     public void sendRankMessage(int code) {
         if (mLiveTopic.isDisable()) {
             return;
@@ -3527,6 +3535,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 是否开启献花
      */
+    @Override
     public boolean isOpenbarrage() {
         return mLiveTopic.getMainRoomstatus().isOpenbarrage();
     }
@@ -3534,6 +3543,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 理科主讲是否开启献花
      */
+    @Override
     public boolean isOpenZJLKbarrage() {
         return mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage();
     }
@@ -3541,6 +3551,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 理科辅导老师是否开启献花
      */
+    @Override
     public boolean isOpenFDLKbarrage() {
         return mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage();
     }
@@ -3695,6 +3706,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 得到当前模式
      */
+    @Override
     public String getMode() {
         String mode;
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -3709,6 +3721,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 得到当前理科的notice模式
      */
+    @Override
     public String getLKNoticeMode() {
         String mode;
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -3736,6 +3749,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         return mGetInfo.getStuName();
     }
 
+    @Override
     public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -3767,6 +3781,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         });
     }
 
+    @Override
     public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval
             onSpeechEval) {
         String liveid = mGetInfo.getId();
@@ -3793,6 +3808,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         });
     }
 
+    @Override
     public void sendSpeechEvalResult2(final String id, final String stuAnswer, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -3851,6 +3867,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         });
     }
 
+    @Override
     public void speechEval42IsAnswered(final String id, String num, final SpeechEvalAction.SpeechIsAnswered
             isAnswered) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -3875,6 +3892,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         });
     }
 
+    @Override
     public void getStuGoldCount() {
         postDelayedIfNotFinish(new Runnable() {
             @Override
@@ -3971,6 +3989,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         });
     }
 
+    @Override
     public void getQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack
             callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -5034,6 +5053,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
 
     // 04.04 获取更多课程
+    @Override
     public void getMoreChoice(final PageDataLoadEntity pageDataLoadEntity, final AbstractBusinessDataCallBack
             getDataCallBack) {
         mHttpManager.getMoreChoiceCount(mLiveId, new HttpCallBack(pageDataLoadEntity) {

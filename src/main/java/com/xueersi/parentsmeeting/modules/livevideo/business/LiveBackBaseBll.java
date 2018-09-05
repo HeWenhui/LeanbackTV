@@ -38,6 +38,11 @@ public class LiveBackBaseBll extends BaseBll {
     protected Handler mHandler = new Handler(Looper.getMainLooper());
     protected final int mLiveType;
     protected LiveVideoPoint liveVideoPoint;
+    /**
+     * 0 liveback
+     * 1 experience
+     */
+    protected int isStandExperience = 0;
 
     public LiveBackBaseBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity);
@@ -51,6 +56,10 @@ public class LiveBackBaseBll extends BaseBll {
         this.mVideoEntity = mVideoEntity;
         this.liveGetInfo = liveGetInfo;
         onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
+    }
+
+    public void setIsStandExperience(int isStandExperience) {
+        this.isStandExperience = isStandExperience;
     }
 
     public final void initViewF(RelativeLayout rlQuestionContentBottom, RelativeLayout bottomContent, AtomicBoolean
@@ -74,17 +83,17 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
-    /**回放event事件*/
+    /** 回放event事件 */
     public int[] getCategorys() {
         return new int[0];
     }
 
-    /**回放事件开始*/
+    /** 回放事件开始 */
     public void onQuestionEnd(VideoQuestionEntity questionEntity) {
 
     }
 
-    /**回放事件结束*/
+    /** 回放事件结束 */
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
             .ShowQuestion showQuestion) {
 
