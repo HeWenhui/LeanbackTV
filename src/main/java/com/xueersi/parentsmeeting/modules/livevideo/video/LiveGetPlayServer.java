@@ -139,18 +139,18 @@ public class LiveGetPlayServer {
             mGetPlayServerCancle.cancel();
             mGetPlayServerCancle = null;
         }
-        final StringBuilder ipsb = new StringBuilder();
-        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(ipsb, serverurl, new CommonRequestCallBack<String>() {
+        final URLDNS urldns = new URLDNS();
+        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(urldns, serverurl, new CommonRequestCallBack<String>() {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                mLogtf.d("liveGetPlayServer:onError:ex=" + ex + ",isOnCallback=" + isOnCallback + "," + ipsb);
+                mLogtf.d("liveGetPlayServer:onError:ex=" + ex + ",isOnCallback=" + isOnCallback + "," + urldns);
                 long time = System.currentTimeMillis() - before;
                 if (ex instanceof HttpException) {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
-                        livePlayLog.liveGetPlayServer(time, 20, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, 20, "", urldns, serverurl);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
                                 mVideoAction.onLiveStart(null, mLiveTopic, modechange);
@@ -160,11 +160,11 @@ public class LiveGetPlayServer {
                     }
                 } else {
                     if (ex instanceof UnknownHostException) {
-                        livePlayLog.liveGetPlayServer(time, 10, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, 10, "", urldns, serverurl);
                         mVideoAction.onPlayError(0, PlayErrorCode.PLAY_SERVER_CODE_101);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            livePlayLog.liveGetPlayServer(time, 15, "", ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, 15, "", urldns, serverurl);
                             mVideoAction.onPlayError(0, PlayErrorCode.PLAY_SERVER_CODE_102);
                         }
                     }
@@ -201,7 +201,7 @@ public class LiveGetPlayServer {
                     if (server != null) {
                         if (livePlayLog != null) {
                             long time = System.currentTimeMillis() - before;
-                            livePlayLog.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, 0, server.getCipdispatch(), urldns, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {

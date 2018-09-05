@@ -57,6 +57,7 @@ public class LiveBackVideoBll {
 
     public void setVideoEntity(VideoLivePlayBackEntity mVideoEntity) {
         this.mVideoEntity = mVideoEntity;
+        livePlayLog.setChannelname(mVideoEntity.getLiveId());
         try {
             String hostPath = mVideoEntity.getHostPath();
             String videoPathNoHost = mVideoEntity.getVideoPathNoHost();

@@ -101,6 +101,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.Teach
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatHttp;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -1043,7 +1044,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         Loger.i("LiveRemarkBll", "ontopic____onbreak:" + mLiveTopic.getMainRoomstatus().isOnbreak()
                                 + "   mode:" + getMode());
                         if (!liveTopic.getMainRoomstatus().isOnbreak() && (liveTopic.getMode().equals(LiveTopic
-                                .MODE_CLASS)||mGetInfo.getIsSeniorOfHighSchool()==1)) {
+                                .MODE_CLASS) || mGetInfo.getIsSeniorOfHighSchool() == 1)) {
                             mLiveRemarkBll.setClassReady(true);
                         } else {
                             mLiveRemarkBll.setClassReady(false);
@@ -1454,14 +1455,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         Loger.i("LiveRemarkBll", "classBegin____onbreak:" + mLiveTopic.getMainRoomstatus().isOnbreak()
                                 + "   mode:" + getMode());
                         if (!mLiveTopic.getMainRoomstatus().isOnbreak() && (mLiveRemarkBll != null && LiveTopic
-                                .MODE_CLASS.equals(getMode())||mGetInfo.getIsSeniorOfHighSchool()==1)) {
+                                .MODE_CLASS.equals(getMode()) || mGetInfo.getIsSeniorOfHighSchool() == 1)) {
                             mLiveRemarkBll.setClassReady(true);
                         }
                         //正式上课 结束关闭签到相关UI
                         if (mRollCallAction != null) {
                             mRollCallAction.forceCloseRollCall();
                         }
-                        if(mLiveRemarkBll!=null){
+                        if (mLiveRemarkBll != null) {
                             mLiveRemarkBll.showMarkGuide();
                         }
 
@@ -2215,7 +2216,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         break;
                     }
                     case XESCODE.MARK_POINT_TIP:
-                        if(mLiveRemarkBll!=null){
+                        if (mLiveRemarkBll != null) {
                             mLiveRemarkBll.showMarkTip(object.optInt("markType"));
                         }
                         break;
@@ -2970,18 +2971,18 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             mGetPlayServerCancle = null;
         }
         mLogtf.d("liveGetPlayServer:modeTeacher=" + getModeTeacher());
-        final StringBuilder ipsb = new StringBuilder();
-        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(ipsb, serverurl, new CommonRequestCallBack<String>() {
+        final URLDNS urldns = new URLDNS();
+        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(urldns, serverurl, new CommonRequestCallBack<String>() {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                mLogtf.d("liveGetPlayServer:onError:ex=" + ex + ",isOnCallback=" + isOnCallback + "," + ipsb);
+                mLogtf.d("liveGetPlayServer:onError:ex=" + ex + ",isOnCallback=" + isOnCallback + "," + urldns);
                 long time = System.currentTimeMillis() - before;
                 if (ex instanceof HttpException) {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
-                        livePlayLog.liveGetPlayServer(time, 20, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, 20, "", urldns, serverurl);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
                                 mVideoAction.onLiveStart(null, mLiveTopic, modechange);
@@ -2993,10 +2994,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     }
                 } else {
                     if (ex instanceof UnknownHostException) {
-                        livePlayLog.liveGetPlayServer(time, 10, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, 10, "", urldns, serverurl);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            livePlayLog.liveGetPlayServer(time, 15, "", ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, 15, "", urldns, serverurl);
                         }
                     }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);
@@ -3032,7 +3033,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     if (server != null) {
                         if (livePlayLog != null) {
                             long time = System.currentTimeMillis() - before;
-                            livePlayLog.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, 0, server.getCipdispatch(), null, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -4981,7 +4982,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         }
         Loger.i("LiveRemarkBll", "setlivebll____onbreak:" + mLiveTopic.getMainRoomstatus().isOnbreak()
                 + "   stat:" + mGetInfo.getStat() + "   mode:" + getMode());
-        if (!mLiveTopic.getMainRoomstatus().isOnbreak() && LiveTopic.MODE_CLASS.equals(getMode())||mGetInfo.getIsSeniorOfHighSchool()==1) {
+        if (!mLiveTopic.getMainRoomstatus().isOnbreak() && LiveTopic.MODE_CLASS.equals(getMode()) || mGetInfo.getIsSeniorOfHighSchool() == 1) {
             mLiveRemarkBll.setClassReady(true);
         } else {
             mLiveRemarkBll.setClassReady(false);

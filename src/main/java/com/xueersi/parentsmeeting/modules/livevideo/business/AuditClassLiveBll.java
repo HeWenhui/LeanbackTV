@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -739,8 +740,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             mGetPlayServerCancle = null;
         }
         mLogtf.d("liveGetPlayServer:modeTeacher=" + getModeTeacher());
-        final StringBuilder ipsb = new StringBuilder();
-        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(ipsb, serverurl, new CommonRequestCallBack<String>() {
+        final URLDNS urldns = new URLDNS();
+        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(urldns, serverurl, new CommonRequestCallBack<String>() {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
@@ -749,7 +750,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                 if (ex instanceof HttpException) {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
-                        livePlayLog.liveGetPlayServer(time, 20, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, 20, "", urldns, serverurl);
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
@@ -760,10 +761,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                     }
                 } else {
                     if (ex instanceof UnknownHostException) {
-                        livePlayLog.liveGetPlayServer(time, 10, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, 10, "", urldns, serverurl);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            livePlayLog.liveGetPlayServer(time, 15, "", ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, 15, "", urldns, serverurl);
                         }
                     }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);
@@ -799,7 +800,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                     if (server != null) {
                         if (livePlayLog != null) {
                             long time = System.currentTimeMillis() - before;
-                            livePlayLog.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, 0, server.getCipdispatch(), urldns, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
