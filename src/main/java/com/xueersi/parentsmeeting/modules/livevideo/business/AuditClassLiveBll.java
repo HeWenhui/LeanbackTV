@@ -913,7 +913,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         @Override
         public void onOpenFailed(int arg1, int arg2) {
             if (isOpenSuccess) {
-                streamReport(MegId.MEGID_12103, mGetInfo.getChannelname(), -1);
+                MegId megId = MegId.MEGID_12103;
+                megId.msgid = "fail " + TotalFrameStat.getErrorCode(arg2) + " ";
+                streamReport(megId, mGetInfo.getChannelname(), -1);
             }
             long openTime = System.currentTimeMillis() - openStartTime;
             mLogtf.d("onOpenFailed:openTime=" + openTime + "," + getModeTeacher()

@@ -731,7 +731,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     + " obj = " + obj.toString());
 
             mRolePlayerHttpManager.requestResult(mStuCouId, mLiveId, mRolePlayerEntity.getTestId(), roleName, obj
-                    .toString(), new HttpCallBack() {
+                    .toString(), new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 
