@@ -749,7 +749,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                 if (ex instanceof HttpException) {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
-                        livePlayLog.liveGetPlayServer(time, 3, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, 20, "", ipsb, serverurl);
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
@@ -760,10 +760,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                     }
                 } else {
                     if (ex instanceof UnknownHostException) {
-                        livePlayLog.liveGetPlayServer(time, 1, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, 10, "", ipsb, serverurl);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            livePlayLog.liveGetPlayServer(time, 2, "", ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, 15, "", ipsb, serverurl);
                         }
                     }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);

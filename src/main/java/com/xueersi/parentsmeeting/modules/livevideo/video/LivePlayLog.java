@@ -21,6 +21,7 @@ import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
@@ -345,6 +346,20 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
     String oldCipdispatch = "";
 
+    private String getMemRate() {
+        DecimalFormat df = new DecimalFormat("######0.00");
+        int totalRam = HardWareUtil.getTotalRam();
+        long availMemory = HardWareUtil.getAvailMemory(activity) / 1024;
+        double memRate = (double) ((totalRam - availMemory) * 100) / (double) totalRam;
+        return "" + df.format(memRate);
+    }
+
+    private String getCpuRate() {
+        double cpuRate = HardWareUtil.getCPURateDesc();
+        DecimalFormat df = new DecimalFormat("######0.00");
+        return "" + df.format(cpuRate);
+    }
+
     public void liveGetPlayServer(long delay, int code, String cipdispatch, StringBuilder ipsb, String url) {
         Loger.d(TAG, "liveGetPlayServer:delay=" + delay + ",ipsb=" + ipsb.toString());
         HashMap<String, String> defaultKey = new HashMap<>();
@@ -352,29 +367,40 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("serv", "120");
         defaultKey.put("pri", "0");
         defaultKey.put("ts", "" + System.currentTimeMillis());
-        defaultKey.put("serv", "120");
-
-        defaultKey.put("dataType", "0");
-        defaultKey.put("delay", "" + delay);
-        defaultKey.put("code", "" + code);
-        defaultKey.put("traceId", "" + UUID.randomUUID());
-        defaultKey.put("sip", "" + ipsb);
-        defaultKey.put("url", "" + url);
-        JSONObject dataJson = new JSONObject();
+        defaultKey.put("appid", "xes20001");
+        defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
+        defaultKey.put("agent", "m-android_" + versionName);
+        defaultKey.put("os", "" + Build.VERSION.SDK_INT);
+        defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
+        defaultKey.put("arch", "" + cpuName);
+        int totalRam = HardWareUtil.getTotalRam();
+        defaultKey.put("ram", "" + (totalRam / 1024));
+        defaultKey.put("net", "" + getNet());
+        defaultKey.put("cpu", "" + getCpuRate());
+        defaultKey.put("mem", "" + getMemRate());
         if (StringUtils.isEmpty(cipdispatch)) {
             cipdispatch = oldCipdispatch;
         } else {
             oldCipdispatch = cipdispatch;
         }
+        defaultKey.put("cip", "" + cipdispatch);
+        defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
+        defaultKey.put("sip", "" + ipsb);
+        defaultKey.put("tid", "" + UUID.randomUUID());
+
+        JSONObject dataJson = new JSONObject();
         try {
-            if (StringUtils.isEmpty(cipdispatch)) {
-                cipdispatch = IpAddressUtil.USER_IP;
+            dataJson.put("url", url);
+            dataJson.put("code", "" + code);
+            if (code == 0) {
+                dataJson.put("msg", "Success");
+            } else {
+                dataJson.put("msg", "Fail");
             }
-            dataJson.put("cipdispatch", "" + cipdispatch);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        xescdnLogPlay(defaultKey, dataJson);
+        xescdnLog2(defaultKey, dataJson);
     }
 
     private String getRemoteIp() {
@@ -459,6 +485,57 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             requestJson.put("serviceType", "6");
             requestJson.put("uid", "" + userId);
             requestJson.put("agent", "m-android " + versionName);
+            requestJson.put("pridata", dataJson);
+            for (String key : defaultKey.keySet()) {
+                String value = defaultKey.get(key);
+                requestJson.put(key, value);
+            }
+            final HttpRequestParams httpRequestParams = new HttpRequestParams();
+            httpRequestParams.setJson(requestJson.toString());
+            httpRequestParams.setWriteAndreadTimeOut(2);
+            final AtomicInteger retryInt = new AtomicInteger(0);
+            baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, new Callback() {
+                Callback callback = this;
+
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Loger.e(TAG, "xescdnLog:onFailure", e);
+                    if (retryInt.get() < 10) {
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                HttpRequestParams httpRequestParams = new HttpRequestParams();
+                                try {
+                                    JSONObject dataJson = requestJson.getJSONObject("data");
+                                    dataJson.put("retry", retryInt.get());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                httpRequestParams.setJson(requestJson.toString());
+                                httpRequestParams.setWriteAndreadTimeOut(10);
+                                baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, callback);
+                            }
+                        }, retryInt.incrementAndGet() * 1000);
+                    }
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.body() != null) {
+                        Loger.d(TAG, "xescdnLog:onResponse:retry=" + retryInt.get() + ",response=" + response.body().string());
+                    } else {
+                        Loger.d(TAG, "xescdnLog:onResponse:response=null");
+                    }
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void xescdnLog2(HashMap<String, String> defaultKey, JSONObject dataJson) {
+        final JSONObject requestJson = new JSONObject();
+        try {
             requestJson.put("pridata", dataJson);
             for (String key : defaultKey.keySet()) {
                 String value = defaultKey.get(key);
