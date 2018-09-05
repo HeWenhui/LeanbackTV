@@ -41,12 +41,9 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
     protected View errorView;
     private String errorTip;
     private String loadTip;
-    protected LogToFile mLogtf;
 
     public BaseWebviewX5Pager(Context context) {
         super(context);
-        mLogtf = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
-                + ".txt"));
     }
 
     protected void initWebView() {
