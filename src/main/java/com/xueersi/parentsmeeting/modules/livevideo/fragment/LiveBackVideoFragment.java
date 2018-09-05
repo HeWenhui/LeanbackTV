@@ -489,13 +489,18 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (isInitialized() && pausePlay) {
             vPlayer.pause();
         }
-        liveBackVideoBll.onResume();
+        if (liveBackVideoBll != null) {
+            liveBackVideoBll.onResume();
+        }
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        liveBackVideoBll.onPause();
+        if (liveBackVideoBll != null) {
+            liveBackVideoBll.onPause();
+        }
     }
 
     @Override
@@ -811,7 +816,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     /** 重新打开播放器的监听 */
     public void onRestart() {
-        liveBackBll.onRestart();
+        if (liveBackBll != null) {
+            liveBackBll.onRestart();
+        }
     }
 
     @Override
