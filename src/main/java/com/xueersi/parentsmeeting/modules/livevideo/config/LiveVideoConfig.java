@@ -175,8 +175,12 @@ public class LiveVideoConfig {
     /** 直播语音弹幕 */
     public static String LIVE_SPEECH_BULLETSCREEN = "voice_barrage";
 
-    //  体验课互动题提交答案
+    /**体验课互动题提交答案*/
     public static String LIVE_EXPE_SUBMIT = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
+    /** 体验课非h5语音互动题提交答案*/
+    public static String URL_EXPE_SUBMIT_SPEECHEVAL = AppConfig.HTTP_HOST_TEAMPK + "science/AutoLive/submitSpeechEval";
+    /** 体验课h5语音评测提交答案*/
+    public static String URL_EXPE_SUBMIT_TEST_H5_ANSWER = AppConfig.HTTP_HOST_TEAMPK+"science/AutoLive/submitCourseWareH5AnswerUseVoice";
     /** 获取标记点列表 */
     public static String URL_LIVE_GET_MARK_POINTS = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/getMarkpoint";
     /** 保存标记点 */

@@ -137,7 +137,7 @@ public class ExperienceLearnFeedbackPager extends BasePager {
                     e.printStackTrace();
                 }
                 lectureLivePlayBackBll.sendExperienceFeedback(mVideoEntity.getStuCourseId(), mVideoEntity.getLiveId()
-                        , "", "", mVideoEntity.getChapterId(), etSuggest.getText().toString(), jsonOption, new
+                        , mVideoEntity.getSubjectId(), mVideoEntity.getGradId(), mVideoEntity.getChapterId(), etSuggest.getText().toString(), jsonOption, new
                                 HttpCallBack() {
 
                                     @Override

@@ -302,7 +302,10 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
             if (isShow) {
                 mIsShowQuestion = true;
                 MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
-                mediaControllerAction.release();
+                if(mediaControllerAction != null){
+                    mediaControllerAction.release();
+                }
+
             }
         }
 
@@ -320,7 +323,10 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
             }
             mIsShowQuestion = false;
             MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
-            mediaControllerAction.attachMediaController();
+            if(mediaControllerAction != null){
+                mediaControllerAction.attachMediaController();
+            }
+
         }
     }
 
