@@ -105,6 +105,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private String channelname;
     private int heartCount;
     LDNetTraceClient ldNetTraceClient;
+    /** 一个地址5分钟传一次 */
+    HashMap<String, Long> urlTrace = new HashMap<>();
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     private boolean isLive = true;
     private DecimalFormat df = new DecimalFormat("######0.00");
@@ -809,6 +811,14 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
      * @param cip  客户端ip
      */
     private void startTraceRoute(final String url, final String msip, final String cip) {
+        Long time = urlTrace.get(url);
+        long now = System.currentTimeMillis();
+        if (time != null) {
+            if (now - time < 5 * 60 * 1000) {
+                return;
+            }
+        }
+        urlTrace.put(url, now);
         try {
             Bundle bundle = new Bundle();
             final URL finalUri = new URL(url);
