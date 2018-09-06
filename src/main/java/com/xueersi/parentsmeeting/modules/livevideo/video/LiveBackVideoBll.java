@@ -79,15 +79,19 @@ public class LiveBackVideoBll {
     }
 
     public void onResume() {
-
+        livePlayLog.onReplay();
     }
 
     public void onPause() {
-
+        livePlayLog.onPause();
     }
 
     public void onDestroy() {
+        livePlayLog.destory();
+    }
 
+    public void seekTo(long pos) {
+        livePlayLog.seekTo(pos);
     }
 
     public void setLiveBackPlayVideoFragment(LiveBackPlayerFragment liveBackPlayVideoFragment) {
@@ -154,6 +158,12 @@ public class LiveBackVideoBll {
             index--;
             super.onOpenSuccess();
             livePlayLog.onOpenSuccess();
+        }
+
+        @Override
+        public void onSeekComplete() {
+            super.onSeekComplete();
+            livePlayLog.onSeekComplete();
         }
 
         @Override

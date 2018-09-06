@@ -21,13 +21,12 @@ public class DNSUtil {
         return urldns;
     }
 
-    public static URLDNS getDns(URLDNS urldns, String url2) throws MalformedURLException, UnknownHostException {
+    public static void getDns(URLDNS urldns, String url2) throws MalformedURLException, UnknownHostException {
         urldns.url = url2;
         long before = System.currentTimeMillis();
         URL url = new URL(url2);
         InetAddress inetAddress = InetAddress.getByName(url.getHost());
         urldns.ip = inetAddress.getHostAddress();
         urldns.time = System.currentTimeMillis() - before;
-        return urldns;
     }
 }

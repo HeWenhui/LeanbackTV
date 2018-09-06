@@ -24,7 +24,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.HardWareUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
@@ -34,7 +33,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
@@ -57,10 +55,6 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private static String TAG = "LivePlayLog";
     private PlayerService vPlayer;
-    /** 五秒帧数 */
-    private ArrayList<String> frames = new ArrayList<>();
-    /** 每秒帧数-5秒统计 */
-    private ArrayList<Float> framesPs = new ArrayList<Float>();
     /** 每秒帧数-10秒统计 */
     private ArrayList<Float> framesPsTen = new ArrayList<Float>();
     /** 第一次播放的帧数 */
@@ -68,12 +62,16 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     /** 上一次播放的帧数 */
     long lastDisaplyCount = 0;
     float fps = 12.0f;
-    /** 帧数5秒统计,开始时间 */
-    long frameStart;
     /** 帧数10秒统计,开始时间 */
     long frame10Start;
+    long lastTrafficStatisticByteCount;
     /** 视频是不是再缓冲 */
     boolean isBuffer = false;
+    /** 缓冲开始时间 */
+    long bufferTime = 0;
+    /** 缓冲类型 */
+    int bufType = 1;
+    boolean isSeek = false;
     private Activity activity;
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
     private BaseHttpBusiness baseHttpBusiness;
@@ -81,6 +79,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private long openStart;
     /** 视频播放成功时间 */
     private long openSuccess;
+    /** 心跳时间 */
+    private long heartTime;
     private long onNativeInvoke;
     private String logurl = LiveVideoConfig.URL_CDN_LOG;
     private String userId;
@@ -98,6 +98,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     private boolean isLive = true;
     String logVersion = "1";
+    String serv = "120";
 
     public LivePlayLog(final Activity activity, boolean isLive) {
         this.activity = activity;
@@ -176,33 +177,19 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             fps = ijkMediaPlayer.getVideoOutputFramesPerSecond();
                         }
                         long disaplyCount = ijkMediaPlayer.getDisaplyCount();
-                        if (frames.isEmpty()) {
-                            frameStart = System.currentTimeMillis() - 1000;
-                        }
-                        framesPs.add(fps);
                         framesPsTen.add(fps);
-                        if (framesPs.size() == 5) {
-                            float totalfps = 0;
-                            for (int i = 0; i < framesPs.size(); i++) {
-                                Float f = framesPs.get(i);
-                                totalfps += f;
-                            }
-                            framesPs.clear();
-                            frames.add("" + (int) (totalfps));
-                            if (frames.size() == 12) {
-                                send("frames12");
-                            }
-                        }
                         Loger.d(TAG, "handleMessage:fps=" + fps + ",disaplyCount=" + disaplyCount + "," + (disaplyCount - lastDisaplyCount));
-                        if (framesPsTen.size() == 10) {
+                        if (framesPsTen.size() == 15) {
                             ArrayList<Float> framesPsTenTemp = new ArrayList<Float>(framesPsTen);
                             framesPsTen.clear();
                             long bufferduration = 0;
                             float bitrate = 0f;
+                            long trafficStatisticByteCount = 0;
                             try {
                                 if (vPlayer.isInitialized()) {
                                     bufferduration = ijkMediaPlayer.getVideoCachedDuration();
                                     bitrate = ijkMediaPlayer.getTcpSpeed() * 8 / 1000;
+                                    trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -210,9 +197,10 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             long time = System.currentTimeMillis() - frame10Start;
                             Loger.d(TAG, "handleMessage:fps=" + (disaplyCount - fistDisaplyCount) / 10 + ",time=" + time);
                             float averagefps = (float) (((double) (disaplyCount - fistDisaplyCount)) * 1000 / time);
-                            xescdnLogHeart(framesPsTenTemp, averagefps, bufferduration, bitrate);
+                            xescdnLogHeart(framesPsTenTemp, averagefps, bufferduration, bitrate, trafficStatisticByteCount - lastTrafficStatisticByteCount);
                             fistDisaplyCount = disaplyCount;
-                            frame10Start = System.currentTimeMillis();
+                            lastTrafficStatisticByteCount = trafficStatisticByteCount;
+                            heartTime = frame10Start = System.currentTimeMillis();
                         }
                         lastDisaplyCount = disaplyCount;
 //                        if (lastFps != 0) {
@@ -231,34 +219,66 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     };
 
     private void send(String method) {
-        //不是直播，不统计心跳
-        if (!isLive) {
-            return;
+        HashMap<String, String> defaultKey = new HashMap<>();
+        defaultKey.put("ver", logVersion);
+        defaultKey.put("serv", serv);
+        defaultKey.put("pri", "121");
+        defaultKey.put("ts", "" + System.currentTimeMillis());
+        defaultKey.put("appid", "xes20001");
+        defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
+        defaultKey.put("agent", "m-android_" + versionName);
+        defaultKey.put("os", "" + Build.VERSION.SDK_INT);
+        defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
+        defaultKey.put("arch", "" + cpuName);
+        int totalRam = HardWareUtil.getTotalRam();
+        defaultKey.put("ram", "" + (totalRam / 1024));
+        defaultKey.put("net", "" + getNet());
+        defaultKey.put("cpu", "" + getCpuRate());
+        defaultKey.put("mem", "" + getMemRate());
+        String cip = oldCipdispatch;
+        if (StringUtils.isEmpty(cip)) {
+            cip = IpAddressUtil.USER_IP;
         }
-        Loger.d(TAG, "send:method=" + method + ",frames=" + frames.size());
-        if (frames.isEmpty()) {
-            return;
-        }
-        StringBuilder vdownload = new StringBuilder();
-        for (int i = 0; i < frames.size(); i++) {
-            vdownload.append(frames.get(i));
-            if (i != frames.size() - 1) {
-                vdownload.append(",");
+        defaultKey.put("cip", "" + cip);
+        defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
+        defaultKey.put("sip", "" + getRemoteIp());
+        defaultKey.put("tid", "" + UUID.randomUUID());
+
+        JSONObject dataJson = new JSONObject();
+        try {
+            dataJson.put("url", mUri);
+            dataJson.put("uri", channelname);
+            if (lastPlayserverEntity != null) {
+                dataJson.put("node", "" + lastPlayserverEntity.getProvide());
             }
+
+            dataJson.put("code", "0");
+            dataJson.put("msg", "Success");
+            dataJson.put("method", "" + method);
+            long bufferduration = 0;
+            long trafficStatisticByteCount = lastTrafficStatisticByteCount;
+            if (vPlayer.isInitialized()) {
+                IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
+                bufferduration = ijkMediaPlayer.getVideoCachedDuration();
+                trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
+            }
+            if (isBuffer) {
+                dataJson.put("bufType", "" + bufType);
+                dataJson.put("bufDur", "" + (System.currentTimeMillis() - bufferTime));
+            }
+            dataJson.put("latency", "" + bufferduration);
+            long time = System.currentTimeMillis() - frame10Start;
+            float averagefps = (float) (((double) (lastDisaplyCount - fistDisaplyCount)) * 1000 / time);
+            dataJson.put("avgFps", "" + averagefps);
+            dataJson.put("fps", "" + fps);
+            dataJson.put("playBuf", "" + bufferduration);
+            dataJson.put("hbDur", "" + heartTime);
+            dataJson.put("bytes", "" + (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+            dataJson.put("uid", "" + userId);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        frames.clear();
-        framesPs.clear();
-        long time = System.currentTimeMillis() - frameStart;
-        StableLogHashMap stableLogHashMap = new StableLogHashMap("glsbSpeed");
-        stableLogHashMap.put("activity", activity.getClass().getSimpleName());
-        stableLogHashMap.put("method", method);
-        stableLogHashMap.put("time", "" + time);
-        if (lastPlayserverEntity != null) {
-            stableLogHashMap.put("message", "server: " + lastPlayserverEntity.getAddress() + " vdownload:" + vdownload);
-        } else {
-            stableLogHashMap.put("message", "server: null" + " vdownload:" + vdownload);
-        }
-        Loger.e(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
+        xescdnLog2(defaultKey, dataJson);
     }
 
     public void onPause() {
@@ -313,20 +333,18 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                long before = System.currentTimeMillis();
-                String hostIp = sip;
+                URLDNS urldns = new URLDNS();
                 try {
-                    URLDNS urldns = DNSUtil.getDns(mUri.toString());
-                    hostIp = urldns.ip;
+                    DNSUtil.getDns(urldns, mUri.toString());
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
-                long dnsTime = (System.currentTimeMillis() - before);
+
                 HashMap<String, String> defaultKey = new HashMap<>();
                 defaultKey.put("ver", logVersion);
-                defaultKey.put("serv", "120");
+                defaultKey.put("serv", serv);
                 defaultKey.put("pri", "120");
                 defaultKey.put("ts", "" + System.currentTimeMillis());
                 defaultKey.put("appid", "xes20001");
@@ -346,6 +364,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 }
                 defaultKey.put("cip", "" + cip);
                 defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
+                String hostIp = getRemoteIp();
                 defaultKey.put("sip", "" + hostIp);
                 defaultKey.put("tid", "" + UUID.randomUUID());
 
@@ -358,7 +377,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     }
                     dataJson.put("code", "0");
                     dataJson.put("msg", "Success");
-                    dataJson.put("dns", "" + dnsTime);
+                    dataJson.put("dns", "" + urldns.time);
                     dataJson.put("delay", "" + openTime);
                     dataJson.put("uid", "" + userId);
                 } catch (JSONException e) {
@@ -373,6 +392,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     public void onBufferStart() {
         super.onBufferStart();
         isBuffer = true;
+        bufferTime = System.currentTimeMillis();
         Loger.d(TAG, "onBufferStart:isInitialized=" + vPlayer.isInitialized());
     }
 
@@ -403,7 +423,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         Loger.d(TAG, "liveGetPlayServer:delay=" + delay + ",ipsb=" + urldns.ip);
         HashMap<String, String> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
-        defaultKey.put("serv", "120");
+        defaultKey.put("serv", serv);
         defaultKey.put("pri", "0");
         defaultKey.put("ts", "" + System.currentTimeMillis());
         defaultKey.put("appid", "xes20001");
@@ -462,28 +482,73 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         return remoteIp;
     }
 
-    private void xescdnLogHeart(final ArrayList<Float> framesPsTen, final float averagefps, final long bufferduration, final float bitrate) {
+    private void xescdnLogHeart(final ArrayList<Float> framesPsTen, final float averagefps, final long bufferduration, final float bitrate, final long bytes) {
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                final HashMap<String, String> defaultKey = new HashMap<>();
-                double cpuRate = HardWareUtil.getCPURateDesc();
-                DecimalFormat df = new DecimalFormat("######0.00");
-                defaultKey.put("cpu", "" + df.format(cpuRate));
-                long availMemory = HardWareUtil.getAvailMemory(activity) / 1024;
+//                final HashMap<String, String> defaultKey = new HashMap<>();
+//                double cpuRate = HardWareUtil.getCPURateDesc();
+//                DecimalFormat df = new DecimalFormat("######0.00");
+//                defaultKey.put("cpu", "" + df.format(cpuRate));
+//                long availMemory = HardWareUtil.getAvailMemory(activity) / 1024;
+//                int totalRam = HardWareUtil.getTotalRam();
+//                double memRate = (double) ((totalRam - availMemory) * 100) / (double) totalRam;
+//                defaultKey.put("mem", "" + df.format(memRate));
+//                Loger.d(TAG, "xescdnLogHeart:cpuRate=" + cpuRate + ",availMemory=" + availMemory);
+//                float totalfps = 0;
+//                for (int i = 0; i < framesPsTen.size(); i++) {
+//                    Float f = framesPsTen.get(i);
+//                    totalfps += f;
+//                }
+//                defaultKey.put("net", "" + getNet());
+//                float averagefps2 = totalfps / 10f;
+//                Loger.d(TAG, "xescdnLogHeart:averagefps=" + averagefps + "," + averagefps2);
+//                xescdnLogHeart(defaultKey, averagefps, averagefps2, bufferduration, bitrate);
+
+                HashMap<String, String> defaultKey = new HashMap<>();
+                defaultKey.put("ver", logVersion);
+                defaultKey.put("serv", serv);
+                defaultKey.put("pri", "124");
+                defaultKey.put("ts", "" + System.currentTimeMillis());
+                defaultKey.put("appid", "xes20001");
+                defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
+                defaultKey.put("agent", "m-android_" + versionName);
+                defaultKey.put("os", "" + Build.VERSION.SDK_INT);
+                defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
+                defaultKey.put("arch", "" + cpuName);
                 int totalRam = HardWareUtil.getTotalRam();
-                double memRate = (double) ((totalRam - availMemory) * 100) / (double) totalRam;
-                defaultKey.put("mem", "" + df.format(memRate));
-                Loger.d(TAG, "xescdnLogHeart:cpuRate=" + cpuRate + ",availMemory=" + availMemory);
-                float totalfps = 0;
-                for (int i = 0; i < framesPsTen.size(); i++) {
-                    Float f = framesPsTen.get(i);
-                    totalfps += f;
-                }
+                defaultKey.put("ram", "" + (totalRam / 1024));
                 defaultKey.put("net", "" + getNet());
-                float averagefps2 = totalfps / 10f;
-                Loger.d(TAG, "xescdnLogHeart:averagefps=" + averagefps + "," + averagefps2);
-                xescdnLogHeart(defaultKey, averagefps, averagefps2, bufferduration, bitrate);
+                defaultKey.put("cpu", "" + getCpuRate());
+                defaultKey.put("mem", "" + getMemRate());
+                String cip = oldCipdispatch;
+                if (StringUtils.isEmpty(cip)) {
+                    cip = IpAddressUtil.USER_IP;
+                }
+                defaultKey.put("cip", "" + cip);
+                defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
+                String remoteIp = getRemoteIp();
+                defaultKey.put("sip", "" + remoteIp);
+                defaultKey.put("tid", "" + UUID.randomUUID());
+
+                JSONObject dataJson = new JSONObject();
+                try {
+                    dataJson.put("url", mUri);
+                    dataJson.put("uri", channelname);
+                    if (lastPlayserverEntity != null) {
+                        dataJson.put("node", "" + lastPlayserverEntity.getProvide());
+                    }
+                    dataJson.put("latency", "" + bufferduration);
+                    dataJson.put("avgFps", "" + averagefps);
+                    dataJson.put("fps", "" + fps);
+                    dataJson.put("playBuf", "" + bufferduration);
+                    dataJson.put("hbDur", "" + 30000);
+                    dataJson.put("bytes", "" + bytes);
+                    dataJson.put("uid", "" + userId);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                xescdnLog2(defaultKey, dataJson);
             }
         });
     }
@@ -597,7 +662,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             public void run() {
                                 HttpRequestParams httpRequestParams = new HttpRequestParams();
                                 try {
-                                    JSONObject dataJson = requestJson.getJSONObject("data");
+                                    JSONObject dataJson = requestJson.getJSONObject("pridata");
                                     dataJson.put("retry", retryInt.get());
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -629,30 +694,91 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         super.onOpenFailed(arg1, arg2);
         handler.removeMessages(1);
         send("onOpenFailed");
-        long openTime = (System.currentTimeMillis() - openStart);
+        long heartTime = (System.currentTimeMillis() - this.heartTime);
+//        HashMap<String, String> defaultKey = new HashMap<>();
+//        defaultKey.put("dataType", "601");
+//        defaultKey.put("url", "" + mUri);
+//        String remoteIp = getRemoteIp();
+//        defaultKey.put("sip", "" + remoteIp);
+//        JSONObject dataJson = new JSONObject();
+//        try {
+//            dataJson.put("errorcode", "" + getErrorCode(arg2));
+//            AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+//            dataJson.put("errmsg", error == null ? "" : error.getTag());
+//            dataJson.put("channelname", "" + channelname);
+//            if (lastPlayserverEntity != null) {
+//                dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
+//                dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+//            }
+//            dataJson.put("playlatency", "" + openTime);
+//            dataJson.put("cputype", "" + cpuName);
+//            dataJson.put("memsize", "" + memsize);
+//            dataJson.put("playtype", "" + (isLive ? "1" : "2"));
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        xescdnLogPlay(defaultKey, dataJson);
+
         HashMap<String, String> defaultKey = new HashMap<>();
-        defaultKey.put("dataType", "601");
-        defaultKey.put("url", "" + mUri);
-        String remoteIp = getRemoteIp();
-        defaultKey.put("sip", "" + remoteIp);
+        defaultKey.put("ver", logVersion);
+        defaultKey.put("serv", serv);
+        defaultKey.put("pri", "121");
+        defaultKey.put("ts", "" + System.currentTimeMillis());
+        defaultKey.put("appid", "xes20001");
+        defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
+        defaultKey.put("agent", "m-android_" + versionName);
+        defaultKey.put("os", "" + Build.VERSION.SDK_INT);
+        defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
+        defaultKey.put("arch", "" + cpuName);
+        int totalRam = HardWareUtil.getTotalRam();
+        defaultKey.put("ram", "" + (totalRam / 1024));
+        defaultKey.put("net", "" + getNet());
+        defaultKey.put("cpu", "" + getCpuRate());
+        defaultKey.put("mem", "" + getMemRate());
+        String cip = oldCipdispatch;
+        if (StringUtils.isEmpty(cip)) {
+            cip = IpAddressUtil.USER_IP;
+        }
+        defaultKey.put("cip", "" + cip);
+        defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
+        defaultKey.put("sip", "" + getRemoteIp());
+        defaultKey.put("tid", "" + UUID.randomUUID());
+
         JSONObject dataJson = new JSONObject();
         try {
-            dataJson.put("errorcode", "" + getErrorCode(arg2));
-            AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
-            dataJson.put("errmsg", error == null ? "" : error.getTag());
-            dataJson.put("channelname", "" + channelname);
+            dataJson.put("url", mUri);
+            dataJson.put("uri", channelname);
             if (lastPlayserverEntity != null) {
-                dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
-                dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
+                dataJson.put("node", "" + lastPlayserverEntity.getProvide());
             }
-            dataJson.put("playlatency", "" + openTime);
-            dataJson.put("cputype", "" + cpuName);
-            dataJson.put("memsize", "" + memsize);
-            dataJson.put("playtype", "" + (isLive ? "1" : "2"));
+            PlayFailCode playFailCode = getErrorCode(arg2);
+            dataJson.put("code", "" + playFailCode.getCode());
+            dataJson.put("msg", "" + playFailCode.getTip());
+            long bufferduration = 0;
+            long trafficStatisticByteCount = lastTrafficStatisticByteCount;
+            if (vPlayer.isInitialized()) {
+                IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
+                bufferduration = ijkMediaPlayer.getVideoCachedDuration();
+                trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
+            }
+            if (isBuffer) {
+                dataJson.put("bufType", "" + bufType);
+                dataJson.put("bufDur", "" + (System.currentTimeMillis() - bufferTime));
+            }
+            dataJson.put("latency", "" + bufferduration);
+            long time = System.currentTimeMillis() - frame10Start;
+            float averagefps = (float) (((double) (lastDisaplyCount - fistDisaplyCount)) * 1000 / time);
+            dataJson.put("avgFps", "" + averagefps);
+            dataJson.put("fps", "" + fps);
+            dataJson.put("playBuf", "" + bufferduration);
+            dataJson.put("hbDur", "" + heartTime);
+            dataJson.put("bytes", "" + (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+            dataJson.put("uid", "" + userId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        xescdnLogPlay(defaultKey, dataJson);
+        xescdnLog2(defaultKey, dataJson);
+
         sip = "";
     }
 
@@ -688,6 +814,17 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         return versionName;
     }
 
+    public void seekTo(long pos) {
+        isSeek = true;
+        bufType = 2;
+    }
+
+    /** seek完成 */
+    public void onSeekComplete() {
+        isSeek = false;
+        bufType = 1;
+    }
+
     private void getFps() {
         try {
             if (vPlayer.isInitialized() && lastPlayserverEntity != null) {
@@ -716,42 +853,49 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         }
     }
 
-    public static int getErrorCode(int arg2) {
+    public static PlayFailCode getErrorCode(int arg2) {
         AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
         if (error != null) {
             switch (error) {
-                case DECODER_NOT_FOUND:
-                    return 10000;
-                case DEMUXER_NOT_FOUND:
-                    return 10001;
-                case EIO:
-                    return 10002;
-                case STREAM_NOT_FOUND:
-                    return 10003;
-                case INPUT_CHANGED:
-                    return 10004;
-                case INVALIDDATA:
-                    return 10005;
-                case BUFFER_TOO_SMALL:
-                    return 10006;
+                case EHOSTUNREACH:
+                    return new PlayFailCode(10, "Failed to resolve hostname");
                 case ETIMEDOUT:
-                    return 10007;
-                case HTTP_BAD_REQUEST:
-                    return 20002;
+                    return new PlayFailCode(15, "Connection timed out");
+                case ECONNREFUSED:
+                    return new PlayFailCode(16, "Connection refuse");
+                case EIO:
+                    return new PlayFailCode(17, "Io error");
                 case HTTP_UNAUTHORIZED:
-                    return 20003;
+                    return new PlayFailCode(20, "Server Error");
                 case HTTP_FORBIDDEN:
-                    return 20004;
+                    return new PlayFailCode(20, "Server Error");
                 case HTTP_NOT_FOUND:
-                    return 20005;
+                    return new PlayFailCode(20, "Server Error");
                 case HTTP_OTHER_4XX:
-                    return 20006;
+                    return new PlayFailCode(20, "Server Error");
                 case HTTP_SERVER_ERROR:
-                    return 20007;
+                    return new PlayFailCode(20, "Server Error");
+                case HTTP_BAD_REQUEST:
+                    return new PlayFailCode(21, "Client Error");
+                case STREAM_NOT_FOUND:
+                    return new PlayFailCode(60, "Stream not found");
+                case EOF:
+                    return new PlayFailCode(61, "End of file");
+                case INPUT_CHANGED:
+                    return new PlayFailCode(62, "Input changed");
+                case INVALIDDATA:
+                    return new PlayFailCode(63, "Invalid data found");
+                case BUFFER_TOO_SMALL:
+                    return new PlayFailCode(64, "Buffer too small");
+                case DECODER_NOT_FOUND:
+                    return new PlayFailCode(71, "Decoder not found");
+                case DEMUXER_NOT_FOUND:
+                    return new PlayFailCode(72, "Demuxer not found");
                 default:
+                    return new PlayFailCode(arg2, "" + error.getTag());
             }
         }
-        return 0;
+        return new PlayFailCode(arg2, "other");
     }
 
     private int getNet() {

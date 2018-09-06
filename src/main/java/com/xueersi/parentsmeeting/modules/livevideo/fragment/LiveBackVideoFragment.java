@@ -532,6 +532,12 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     @Override
+    protected void seekTo(long pos) {
+        super.seekTo(pos);
+        liveBackVideoBll.seekTo(pos);
+    }
+
+    @Override
     public void setSpeed(float speed) {
         super.setSpeed(speed);
         String key = "null";

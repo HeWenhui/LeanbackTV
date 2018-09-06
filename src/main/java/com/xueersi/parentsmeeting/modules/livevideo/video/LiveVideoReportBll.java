@@ -145,6 +145,14 @@ public class LiveVideoReportBll {
                 livePlayLog.onPlayError();
             }
         }
+
+        @Override
+        public void onSeekComplete() {
+            super.onSeekComplete();
+            if (livePlayLog != null) {
+                livePlayLog.onSeekComplete();
+            }
+        }
     };
 
     public void streamReport(LiveVideoReportBll.MegId msgid, String channelname, long connsec) {
