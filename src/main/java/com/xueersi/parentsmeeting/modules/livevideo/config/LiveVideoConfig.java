@@ -33,7 +33,7 @@ public class LiveVideoConfig {
     public final static String URL_LIVE_LECTURE_SUBMIT_TEST_ANSWER = LiveVideoConfig.HTTP_HOST + "/LiveLecture/submitTestAnswer";
 
     /** 播放器异常日志 */
-    public final static String URL_LIVE_ON_LOAD_LOGS = "http://netlive.xesv5.com/10011.gif";
+    public final static String URL_LIVE_ON_LOAD_LOGS = "https://netlive.xesimg.com/10011.gif";
     /** 视频宽度 */
     public static final float VIDEO_WIDTH = 1280f;
     /** 视频高度 */
@@ -169,6 +169,8 @@ public class LiveVideoConfig {
     public static String LIVE_ENGLISH_TIP = "live_english_speeak_tip";
     /** 英语能量条提示 */
     public static String LEC_LEARN_REPORT = "lec_learn_report";
+    /** 直播日志 */
+    public static String SP_LIVEVIDEO_CLIENT_LOG = "sp_livevideo_clientLog";
     /** 直播网页加载失败 */
     public static String LIVE_WEBVIEW_ERROR = "live_webview_error";
     /** 直播语音弹幕 */
@@ -211,20 +213,20 @@ public class LiveVideoConfig {
     public static String LECTUREADID;
 
     public static Boolean isNewEnglishH5 = false;
-    /** 一题多发发题和收题的标志*/
+    /** 一题多发发题和收题的标志 */
     public static Boolean isSend = false;
     public static String newEnglishH5 = "NewEnglishH5";
-    /** 强制收题的标志*/
+    /** 强制收题的标志 */
     public static EnglishH5Entity englishH5Entity;
-    /** 小学阶段年级的标识*/
+    /** 小学阶段年级的标识 */
     public static Boolean isPrimary = false;
-    /** 一题多发的直播回放的标识*/
+    /** 一题多发的直播回放的标识 */
     public static Boolean isMulLiveBack = false;
-    /** 年级阶段的标识*/
+    /** 年级阶段的标识 */
     public static String educationstage;
-    /** 一发多题的日志*/
+    /** 一发多题的日志 */
     public static String nonce;
-    /** 直播回放一发多题的拼装参数*/
+    /** 直播回放一发多题的拼装参数 */
     // 直播回放的URL
     public static String LIVEPLAYBACKINFOS;
     // 直播回放的stuCouId
@@ -237,13 +239,14 @@ public class LiveVideoConfig {
     public static String LIVEPLAYBACKSTAGE;
     // 直播回放的type
     public static String LIVEPLAYBACKTYPE;
-    /** 一发多题的两个动态接口*/
+    /** 一发多题的两个动态接口 */
     public static String LIVEMULPRELOAD;
     public static String LIVEMULH5URL;
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;
     public static String pSrc;
+
     public static interface SubjectIds {
         /**
          * 学科id，语文
@@ -267,5 +270,5 @@ public class LiveVideoConfig {
 
     /** 直播-roleplay */
     public static String LIVE_ROLE_PLAY = "live_mutiroleplay";
-    public static final String SP_LIVEVIDEO_MARK_POINT_COUNT="sp_livevideo_mark_point_count";
+    public static final String SP_LIVEVIDEO_MARK_POINT_COUNT = "sp_livevideo_mark_point_count";
 }
