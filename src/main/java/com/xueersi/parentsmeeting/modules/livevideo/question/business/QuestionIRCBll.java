@@ -41,7 +41,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
@@ -59,6 +61,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private RolePlayAction rolePlayAction;
 
     private String Tag = "QuestionIRCBll";
+
+    private List<String> questiongtype = new ArrayList<>();;
 
     public QuestionIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -79,6 +83,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             keyboardShowingReg.addKeyboardShowing(mQuestionAction);
         }
         mQuestionAction.setLiveType(mLiveType);
+        questiongtype.add("4");
     }
 
     @Override
@@ -193,7 +198,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             videoQuestionLiveEntity.speechContent = onlineTechObj.optString("answer");
                             videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.getJSONArray("id"))));
                             Loger.e("QuestionIRCBll", "======> onTopic 1111:" + mQuestionAction);
-                            if (mQuestionAction != null) {
+                            if (mQuestionAction != null && (questiongtype.contains(videoQuestionLiveEntity.type))) {
                                 mQuestionAction.showQuestion(videoQuestionLiveEntity);
                                 if (mAnswerRankBll != null) {
                                     mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
@@ -343,6 +348,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 videoQuestionLiveEntity.time = object.optDouble("time");
                 videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay");
                 videoQuestionLiveEntity.isAllow42 = "1";
+                videoQuestionLiveEntity.speechContent = object.optString("answer");
                 videoQuestionLiveEntity.setNewArtsCourseware(true);
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);
