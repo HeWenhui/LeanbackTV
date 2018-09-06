@@ -249,7 +249,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
         defaultKey.put("arch", "" + cpuName);
         int totalRam = HardWareUtil.getTotalRam();
-        defaultKey.put("ram", "" + (totalRam / 1024));
+        defaultKey.put("ram", "" + totalRam);
         defaultKey.put("net", "" + getNet());
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
@@ -372,7 +372,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
                 defaultKey.put("arch", "" + cpuName);
                 int totalRam = HardWareUtil.getTotalRam();
-                defaultKey.put("ram", "" + (totalRam / 1024));
+                defaultKey.put("ram", "" + totalRam);
                 defaultKey.put("net", "" + getNet());
                 defaultKey.put("cpu", "" + getCpuRate());
                 defaultKey.put("mem", "" + getMemRate());
@@ -433,7 +433,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
         defaultKey.put("arch", "" + cpuName);
         int totalRam = HardWareUtil.getTotalRam();
-        defaultKey.put("ram", "" + (totalRam / 1024));
+        defaultKey.put("ram", "" + totalRam);
         defaultKey.put("net", "" + getNet());
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
@@ -481,7 +481,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
         defaultKey.put("arch", "" + cpuName);
         int totalRam = HardWareUtil.getTotalRam();
-        defaultKey.put("ram", "" + (totalRam / 1024));
+        defaultKey.put("ram", "" + totalRam);
         defaultKey.put("net", "" + getNet());
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
@@ -539,7 +539,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
         defaultKey.put("arch", "" + cpuName);
         int totalRam = HardWareUtil.getTotalRam();
-        defaultKey.put("ram", "" + (totalRam / 1024));
+        defaultKey.put("ram", "" + totalRam);
         defaultKey.put("net", "" + getNet());
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
@@ -627,7 +627,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
                 defaultKey.put("arch", "" + cpuName);
                 int totalRam = HardWareUtil.getTotalRam();
-                defaultKey.put("ram", "" + (totalRam / 1024));
+                defaultKey.put("ram", "" + totalRam);
                 defaultKey.put("net", "" + getNet());
                 defaultKey.put("cpu", "" + getCpuRate());
                 defaultKey.put("mem", "" + getMemRate());
@@ -841,7 +841,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
         defaultKey.put("arch", "" + cpuName);
         int totalRam = HardWareUtil.getTotalRam();
-        defaultKey.put("ram", "" + (totalRam / 1024));
+        defaultKey.put("ram", "" + totalRam);
         defaultKey.put("net", "" + getNet());
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
@@ -940,7 +940,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                         defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
                         defaultKey.put("arch", "" + cpuName);
                         int totalRam = HardWareUtil.getTotalRam();
-                        defaultKey.put("ram", "" + (totalRam / 1024));
+                        defaultKey.put("ram", "" + totalRam);
                         defaultKey.put("net", "" + getNet());
                         defaultKey.put("cpu", "" + getCpuRate());
                         defaultKey.put("mem", "" + getMemRate());
