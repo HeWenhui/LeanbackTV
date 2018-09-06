@@ -5,6 +5,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.video;
  * 播放误码
  */
 public class PlayFailCode {
+    public static int TIME_OUT = 15;
     int code;
     String tip;
 

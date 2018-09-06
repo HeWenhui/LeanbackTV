@@ -101,6 +101,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.Teach
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayFailCode;
 import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatHttp;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
@@ -2997,7 +2998,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         livePlayLog.liveGetPlayServer(time, 10, "", urldns, serverurl);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            livePlayLog.liveGetPlayServer(time, 15, "", urldns, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.TIME_OUT, "", urldns, serverurl);
                         }
                     }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);

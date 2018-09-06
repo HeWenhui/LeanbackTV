@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayFailCode;
 import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
 import org.json.JSONArray;
@@ -764,7 +765,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                         livePlayLog.liveGetPlayServer(time, 10, "", urldns, serverurl);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            livePlayLog.liveGetPlayServer(time, 15, "", urldns, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.TIME_OUT, "", urldns, serverurl);
                         }
                     }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);

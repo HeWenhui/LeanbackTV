@@ -164,7 +164,7 @@ public class LiveGetPlayServer {
                         mVideoAction.onPlayError(0, PlayErrorCode.PLAY_SERVER_CODE_101);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            livePlayLog.liveGetPlayServer(time, 15, "", urldns, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.TIME_OUT, "", urldns, serverurl);
                             mVideoAction.onPlayError(0, PlayErrorCode.PLAY_SERVER_CODE_102);
                         }
                     }
