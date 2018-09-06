@@ -553,6 +553,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 vPlayer.releaseSurface();
                 vPlayer.stop();
             }
+            livePlayLog.onBufferTimeOut();
             long openTime = System.currentTimeMillis() - openStartTime;
             if (openTime > 40000) {
                 liveVideoReportBll.streamReport(LiveVideoReportBll.MegId.MEGID_12107, mGetInfo.getChannelname(), openTime);
@@ -578,6 +579,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         mHandler.removeCallbacks(mPlayDuration);
         playTime += (System.currentTimeMillis() - lastPlayTime);
         Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+        livePlayLog.onPause();
     }
 
     /** 播放时长，7分钟统计 */
@@ -782,12 +784,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
         mHandler.postDelayed(r, delayMillis);
     }
 
-    public void onPause() {
-        if (livePlayLog != null) {
-            livePlayLog.onPause();
-        }
-    }
-
     public void onNetWorkChange(int netWorkType) {
         if (liveGetPlayServer != null) {
             liveGetPlayServer.onNetWorkChange(netWorkType);
@@ -800,6 +796,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }
         liveVideoReportBll.onDestory();
         mPlayStatistics.clear();
+        livePlayLog.destory();
     }
 
 }

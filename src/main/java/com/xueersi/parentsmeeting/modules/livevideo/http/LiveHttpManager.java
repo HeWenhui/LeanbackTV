@@ -165,6 +165,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
                         });
                     }
                 } catch (final Exception e) {
+                    Loger.d(TAG, "liveGetPlayServer:disconnect=" + (connection != null));
+                    try {
+                        if (connection != null) {
+                            connection.disconnect();
+                        }
+                    } catch (Exception e2) {
+
+                    }
                     handler.post(new Runnable() {
 
                         @Override
@@ -174,15 +182,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
                             }
                         }
                     });
-                } finally {
-                    Loger.d(TAG, "liveGetPlayServer:disconnect=" + (connection != null));
-                    try {
-                        if (connection != null) {
-                            connection.disconnect();
-                        }
-                    } catch (Exception e) {
-
-                    }
                 }
             }
         });

@@ -272,9 +272,7 @@ public class LiveVideoReportBll {
     }
 
     public void onDestory() {
-        if (livePlayLog != null) {
-            livePlayLog.destory();
-        }
+
     }
 
     public enum MegId {
