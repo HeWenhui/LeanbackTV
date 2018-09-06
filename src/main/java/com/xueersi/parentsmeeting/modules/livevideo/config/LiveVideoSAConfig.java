@@ -178,7 +178,8 @@ public class LiveVideoSAConfig {
          * */
         public String URL_ARTS_H5_URL = "https://static.arts.xueersi.com/kejian/";
 
-
+        /** 文科新课件平台 RolePlay 页面加载地址*/
+        public String URL_NEWARTS_ROALPLAY_URL = "https://static.arts.xueersi.com/art_live/roleplay/";
         /**
          * 直播间 文科差异化参数配置接口 (注：直播间文科差异化配置参数 获取接口)
          */

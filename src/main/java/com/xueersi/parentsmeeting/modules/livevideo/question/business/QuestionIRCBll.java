@@ -62,7 +62,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     private String Tag = "QuestionIRCBll";
 
-    private List<String> questiongtype = new ArrayList<>();;
+    private List<String> questiongtype = new ArrayList<>();
 
     public QuestionIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -84,6 +84,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
         mQuestionAction.setLiveType(mLiveType);
         questiongtype.add("4");
+        questiongtype.add("5");
+        questiongtype.add("8");
     }
 
     @Override
@@ -196,7 +198,12 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             videoQuestionLiveEntity.answer = onlineTechObj.optString("answer");
                             videoQuestionLiveEntity.isAllow42 = "1";
                             videoQuestionLiveEntity.speechContent = onlineTechObj.optString("answer");
-                            videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.getJSONArray("id"))));
+                            if("5".equals(videoQuestionLiveEntity.type)){
+                                videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(onlineTechObj.optJSONArray("id"))));
+                            }else{
+                                videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.optJSONArray("id"))));
+                            }
+//                            videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.getJSONArray("id"))));
                             Loger.e("QuestionIRCBll", "======> onTopic 1111:" + mQuestionAction);
                             if (mQuestionAction != null && (questiongtype.contains(videoQuestionLiveEntity.type))) {
                                 mQuestionAction.showQuestion(videoQuestionLiveEntity);
@@ -353,7 +360,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);
                 //构建 H5 url
-                videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(object.optJSONArray("id"))));
+                if("5".equals(videoQuestionLiveEntity.type)){
+                    videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(object.optJSONArray("id"))));
+                }else{
+                    videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(object.optJSONArray("id"))));
+                }
                 if ("1".equals(isVoice)) {
                     videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
                     videoQuestionLiveEntity.questiontype = object.optString("questionType");
@@ -487,6 +498,19 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 .append("&fontDir=").append(falseStr);
         return sb.toString();
     }
+
+    private String buildRolePlayUrl(String id){
+        String isPlayback = "0";
+        StringBuilder sb = new StringBuilder();
+        String falseStr = Base64.encodeBytes("false".getBytes());
+        sb.append(mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_ROALPLAY_URL).append("?liveId=").append(mLiveId)
+                .append("&testIds=").append(id).append("&isPlayBack=").append(isPlayback)
+                .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
+                .getStuId())
+                .append("&cookie=").append(AppBll.getInstance().getUserToken());
+        return sb.toString();
+    }
+
 
 
     @Override

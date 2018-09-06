@@ -973,13 +973,13 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 JSONArray choices = new JSONArray();
                 if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
                     try {
-                        blanks.put(0,answer);
+                        blanks.put(0,sorce);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 } else {
                     try {
-                        choices.put(0,answer);
+                        choices.put(0,result);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

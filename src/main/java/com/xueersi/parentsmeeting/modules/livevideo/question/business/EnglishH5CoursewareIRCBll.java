@@ -37,7 +37,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -51,6 +53,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private EnglishH5Cache englishH5Cache;
     private String Tag = "EnglishH5CoursewareIRCBll";
+    private List<String> filters = new ArrayList<>();
 
     public EnglishH5CoursewareIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -69,6 +72,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         mAnswerRankBll = getInstance(AnswerRankIRCBll.class);
         mLiveAutoNoticeBll = getInstance(LiveAutoNoticeIRCBll.class);
         mTeamPKBll = getInstance(TeamPkBll.class);
+        filters.add("4");
+        filters.add("5");
     }
 
     @Override
@@ -189,7 +194,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         h5OnlineTechEntity.setTime(onlineTechObj.optString("time"));
                         h5OnlineTechEntity.setId(onlineTechObj.optString("id"));
                         h5OnlineTechEntity.setPtype(onlineTechObj.optString("ptype"));
-                        if("4".equals(onlineTechObj.optString("ptype"))){
+                        if(filters.contains(onlineTechObj.optString("ptype"))){
                             return;
                         }
                         videoQuestionLiveEntity.setIsVoice(onlineTechObj.optString("isVoice"));
@@ -206,6 +211,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         JSONArray ids = onlineTechObj.getJSONArray("id");
                         String detail = ids.getString(0);
                         videoQuestionLiveEntity.id = detail;
+                        videoQuestionLiveEntity.type = onlineTechObj.optString("questiontype");
                         videoQuestionLiveEntity.setOnlineTechEntity(h5OnlineTechEntity);
                     }
                 }
@@ -458,6 +464,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     videoQuestionLiveEntity.setUrl(buildCourseUrl(testIds));
                     String isVoice = object.optString("isVoice");
                     videoQuestionLiveEntity.setIsVoice(isVoice);
+                    videoQuestionLiveEntity.type = object.optString("questiontype");
                     if ("1".equals(isVoice)) {
                         videoQuestionLiveEntity.questiontype = object.optString("questiontype");
                         videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");

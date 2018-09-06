@@ -549,7 +549,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void run() {
                 // 文科选择 填空题
                 if ("0".equals(videoQuestionLiveEntity.type) || "1".equals(videoQuestionLiveEntity.type)
-                        || "2".equals(videoQuestionLiveEntity.type)) {
+                        || "2".equals(videoQuestionLiveEntity.type) || "5".equals(videoQuestionLiveEntity.type)) {
                     mVPlayVideoControlHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -645,6 +645,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     }
                     setHaveSpeech(true);
                     rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
+                } else if(LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity.type)){
+                    showSubjectiveQuestion(videoQuestionLiveEntity);
                 } else if("50".equals(videoQuestionLiveEntity.type)){
                     // fixme  完善语文特有题型相关逻辑
 //                    showVoiceAnswer(videoQuestionLiveEntity);
