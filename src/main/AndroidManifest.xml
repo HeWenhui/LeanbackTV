@@ -86,7 +86,9 @@
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.LivePermissionActivity"
             android:process=":livevideo"
-            android:theme="@style/style_permission_compat" />
+            android:theme="@style/style_permission_compat"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            />
 
         <service
             android:name="com.xueersi.parentsmeeting.modules.livevideo.service.LiveService"

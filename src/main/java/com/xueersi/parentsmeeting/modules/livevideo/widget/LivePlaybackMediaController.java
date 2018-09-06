@@ -249,6 +249,22 @@ public class LivePlaybackMediaController extends MediaController2 {
             } else {
                 textView.setText("互动课件");
             }
+        } else if(LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()){
+            String type = videoQuestionEntity.getvQuestionType();
+            switch (type){
+                case "1":
+                case "6":
+                    textView.setText("互动题");
+                    break;
+                case "2":
+                case "3":
+                case "4":
+                    textView.setText("测试卷");
+                case "5":
+                case "10":
+                    textView.setText("互动游戏");
+                    break;
+            }
         } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == videoQuestionEntity.getvCategory()) {
             textView.setText("购课");
         }

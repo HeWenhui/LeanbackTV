@@ -130,7 +130,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                     liveRemarkBll.setSysTimeOffset(mLiveBll.getSysTimeOffset());
                     mLogtf.i("setlivebll____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()
                             + "   stat:" + mGetInfo.getStat() + "   mode:" + mLiveBll.getLiveTopic().getMode());
-                    if (!mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak() && LiveTopic.MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode())||mGetInfo.getIsSeniorOfHighSchool()==1) {
+                    if (!mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak() && (LiveTopic.MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode())||mGetInfo.getIsSeniorOfHighSchool()==1)) {
                         liveRemarkBll.setClassReady(true);
                     } else {
                         liveRemarkBll.setClassReady(false);
@@ -154,8 +154,8 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                     msg += begin ? "CLASSBEGIN" : "CLASSEND";
                     logger.i("classBegin____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()
                             + "   mode:" + mLiveBll.getLiveTopic().getMode());
-                    if (!mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak() && liveRemarkBll != null && LiveTopic
-                            .MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode())||mGetInfo.getIsSeniorOfHighSchool()==1) {
+                    if (!mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak() && (liveRemarkBll != null && LiveTopic
+                            .MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode())||mGetInfo.getIsSeniorOfHighSchool()==1)) {
                         liveRemarkBll.setClassReady(true);
                     }
                     if(liveRemarkBll!=null){
@@ -192,8 +192,8 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
             //主讲
             logger.i("ontopic____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()
                     + "   mode:" + mLiveBll.getLiveTopic().getMode());
-            if (!liveTopic.getMainRoomstatus().isOnbreak() && liveTopic.getMode().equals(LiveTopic
-                    .MODE_CLASS)||mGetInfo.getIsSeniorOfHighSchool()==1) {
+            if (!liveTopic.getMainRoomstatus().isOnbreak() && (liveTopic.getMode().equals(LiveTopic
+                    .MODE_CLASS)||mGetInfo.getIsSeniorOfHighSchool()==1)) {
                 liveRemarkBll.setClassReady(true);
             } else {
                 liveRemarkBll.setClassReady(false);

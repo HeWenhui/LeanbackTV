@@ -327,7 +327,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        mIsLand.set(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
+        mIsLand.set(activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 
         // 设置当前屏幕是否横屏
         loadLandOrPortView(); // 重新加载界面

@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 
 /**
@@ -203,8 +202,6 @@ public class LiveVideoConfig {
     public static String URL_LEC_AD_CASE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getAdCase";
     /** 获取体验课学习报告 */
     public static String URL_AUTO_LIVE_FEAD_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/learnFeedback";
-    /**提交体验课学习反馈*/
-    public static String URL_AUTO_LIVE_LEARN_FEED_BACK = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/submitFeedback";
     /** 直播云平台日志统计 */
     public static String URL_CDN_LOG = "http://log.xescdn.com/log";
     /** 更多课程数量的记录 */
@@ -238,6 +235,11 @@ public class LiveVideoConfig {
     public static String LIVEPLAYBACKTEAMID;
     // 直播回放的edustage
     public static String LIVEPLAYBACKSTAGE;
+    // 直播回放的type
+    public static String LIVEPLAYBACKTYPE;
+    /** 一发多题的两个动态接口*/
+    public static String LIVEMULPRELOAD;
+    public static String LIVEMULH5URL;
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;

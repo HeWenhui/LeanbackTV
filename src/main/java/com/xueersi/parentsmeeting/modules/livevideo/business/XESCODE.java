@@ -13,6 +13,7 @@ public interface XESCODE {
     int CLASSBEGIN = 105;
     /** 懂了吗老师 */
     int UNDERSTANDT = 106;
+//    int UNDERSTANDT = 133;
     /** 懂了吗学生 */
     int UNDERSTANDS = 107;
     /** 打开弹幕 */

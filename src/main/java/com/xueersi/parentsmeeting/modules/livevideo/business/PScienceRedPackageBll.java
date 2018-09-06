@@ -205,7 +205,7 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
                     rlRedpacketContent.removeAllViews();
                 } else {
                     if (rlRedpacketContent.getChildCount() > 0) {
-                        tvAutoclose.setText(count.get() + "秒自动关闭");
+                        tvAutoclose.setText(count.get() + "秒钟后自动关闭");
                         postDelayedIfNotFinish(this, 1000);
                     }
                 }

@@ -309,7 +309,6 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
 
         @Override
         public void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity) {
-
             logToFile.d("onHide:mQuestionEntity=" + mQuestionEntity + ",baseVideoQuestionEntity=" +
                     baseVideoQuestionEntity);
             if (mQuestionEntity != null && baseVideoQuestionEntity != null) {
@@ -325,8 +324,9 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
                 }
             }
             mIsShowQuestion = false;
-            MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction
-                    .class);
+            MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity,
+                    MediaControllerAction
+                            .class);
             mediaControllerAction.attachMediaController();
         }
     }
@@ -405,7 +405,8 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
                     index = i;
                     break;
                 }
-            } else if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()) {
+            } else if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity
+                    .getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime <= playPosition && playPosition < endTime) {
                     LiveVideoConfig.isMulLiveBack = true;
