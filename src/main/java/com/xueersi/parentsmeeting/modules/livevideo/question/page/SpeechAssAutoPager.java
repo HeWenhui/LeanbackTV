@@ -641,8 +641,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     public void onSpeechEval(Object object) {
                         JSONObject jsonObject = (JSONObject) object;
                         if(LiveVideoConfig.isNewArts){
-                            JSONObject data = jsonObject.optJSONObject("data");
-                            int gold = data.optInt("gold");
+                            int gold = jsonObject.optInt("gold");
                             onSpeechEvalSuccess(resultEntity, gold);
                             speechEvalAction.onSpeechSuccess(id);
                         } else {
