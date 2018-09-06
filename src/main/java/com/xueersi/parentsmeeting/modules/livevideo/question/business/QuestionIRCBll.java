@@ -189,10 +189,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             videoQuestionLiveEntity.roles = onlineTechObj.optString("roles");
                             videoQuestionLiveEntity.totalScore = onlineTechObj.optString("totalScore");
                             videoQuestionLiveEntity.answer = onlineTechObj.optString("answer");
-
+                            videoQuestionLiveEntity.isAllow42 = "1";
+                            videoQuestionLiveEntity.speechContent = onlineTechObj.optString("answer");
                             videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.getJSONArray("id"))));
                             Loger.e("QuestionIRCBll", "======> onTopic 1111:" + mQuestionAction);
-                            if (mQuestionAction != null && !"2".equals(videoQuestionLiveEntity.package_socurce + "")) {
+                            if (mQuestionAction != null) {
                                 mQuestionAction.showQuestion(videoQuestionLiveEntity);
                                 if (mAnswerRankBll != null) {
                                     mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
@@ -283,7 +284,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      * @return
      */
     private boolean isNewArtsH5Courseware(JSONObject jsonObject) {
-        return jsonObject.has("coursewareH5");
+        return jsonObject.has("coursewareH5") || jsonObject.has("coursewareOnlineTech");
     }
 
 
@@ -341,6 +342,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 videoQuestionLiveEntity.package_socurce = object.optInt("package_source");
                 videoQuestionLiveEntity.time = object.optDouble("time");
                 videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay");
+                videoQuestionLiveEntity.isAllow42 = "1";
                 videoQuestionLiveEntity.setNewArtsCourseware(true);
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);
@@ -677,11 +679,34 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void sendSpeechEvalResult2(String id, String stuAnswer, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
+        if(LiveVideoConfig.isNewArts){
+            getHttpManager().sendSpeechEvalResultNewArts(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
 
-            @Override
-            public void onPmSuccess(final ResponseEntity responseEntity) {
-                mLogtf.i("sendSpeechEvalResult2:onPmSuccess=" + responseEntity.getJsonObject());
+                @Override
+                public void onPmSuccess(final ResponseEntity responseEntity) {
+                    mLogtf.i("sendSpeechEvalResult2:onPmSuccess=" + responseEntity.getJsonObject());
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    onSpeechEval.onSpeechEval(jsonObject);
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
+                    onSpeechEval.onPmFailure(error, msg);
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
+                    onSpeechEval.onPmError(responseEntity);
+                }
+            });
+        } else {
+            getHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
+
+                @Override
+                public void onPmSuccess(final ResponseEntity responseEntity) {
+                    mLogtf.i("sendSpeechEvalResult2:onPmSuccess=" + responseEntity.getJsonObject());
 //                Handler handler=new Handler();
 //                handler.postDelayed(new Runnable() {
 //                    @Override
@@ -690,22 +715,23 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                        onSpeechEval.onSpeechEval(jsonObject);
 //                    }
 //                },2000);
-                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                onSpeechEval.onSpeechEval(jsonObject);
-            }
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    onSpeechEval.onSpeechEval(jsonObject);
+                }
 
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
-                onSpeechEval.onPmFailure(error, msg);
-            }
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
+                    onSpeechEval.onPmFailure(error, msg);
+                }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
-                onSpeechEval.onPmError(responseEntity);
-            }
-        });
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
+                    onSpeechEval.onPmError(responseEntity);
+                }
+            });
+        }
     }
 
     @Override
@@ -749,25 +775,48 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(final ResponseEntity responseEntity) {
-                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                mLogtf.i("speechEval42IsAnswered:onPmSuccess=" + jsonObject);
-                boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
-                isAnswered.isAnswer(isAnswer);
-            }
+        if(LiveVideoConfig.isNewArts){
+            getHttpManager().speechNewArtEvaluateIsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(final ResponseEntity responseEntity) {
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    JSONObject detail = jsonObject.optJSONObject("data");
+                    mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmSuccess=" + jsonObject);
+                    boolean isAnswer = detail.optInt("isAnswer") == 1;
+                    isAnswered.isAnswer(isAnswer);
+                }
 
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                mLogtf.i("speechEval42IsAnswered:onPmFailure=" + msg);
-            }
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmFailure=" + msg);
+                }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.i("speechEval42IsAnswered:onPmError=" + responseEntity.getErrorMsg());
-            }
-        });
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmError=" + responseEntity.getErrorMsg());
+                }
+            });
+        } else {
+            getHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(final ResponseEntity responseEntity) {
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    mLogtf.i("speechEval42IsAnswered:onPmSuccess=" + jsonObject);
+                    boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
+                    isAnswered.isAnswer(isAnswer);
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    mLogtf.i("speechEval42IsAnswered:onPmFailure=" + msg);
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    mLogtf.i("speechEval42IsAnswered:onPmError=" + responseEntity.getErrorMsg());
+                }
+            });
+        }
     }
 
     private int test1 = 0;

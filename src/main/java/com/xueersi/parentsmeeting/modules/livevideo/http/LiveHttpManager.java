@@ -602,6 +602,18 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
     }
 
+    public void sendSpeechEvalResultNewArts(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("testId", id);
+        params.addBodyParam("isRejected", "");
+        params.addBodyParam("answers", "" + stuAnswer);
+        params.addBodyParam("type", "1");
+        setDefaultParameter(params);
+        Loger.i(TAG, "sendSpeechEvalResult2:enstuId=" + enstuId + ",liveId=" + liveId);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVALUATEARTS, params, requestCallBack);
+    }
+
     /** 语音评测排行榜 */
     public void getSpeechEvalAnswerTeamRank(String id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
@@ -620,6 +632,16 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         Loger.i(TAG, "speechEval42IsAnswered:enstuId=" + enstuId + ",liveId=" + liveId);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42_ANSWER, params, requestCallBack);
+    }
+
+    /** 文科新课件平台语音评测是否已答过*/
+    public void speechNewArtEvaluateIsAnswered(String enstuId, String liveId, String id, HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("testId", id);
+        setDefaultParameter(params);
+        Loger.i(TAG, "speechNewArtEvaluateIsAnswered:enstuId=" + enstuId + ",liveId=" + liveId);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVALUATENEWARTS_ANSWER, params, requestCallBack);
     }
 
     public void getRoomid(String url, Callback.CacheCallback<String> cacheCallback) {

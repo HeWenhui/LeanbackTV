@@ -55,10 +55,14 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_GET_TEAM_RANK = HTTP_HOST + "/LiveCourse/getStuGroupTeamClassRanking";
         /** 发送语音评测答案-二期 */
         public String URL_LIVE_SEND_SPEECHEVAL42 = HTTP_HOST + "/LiveCourse/submitSpeechEval42";
+        /** 发送语音评测答案-文科新课件 */
+        public String URL_LIVE_SEND_SPEECHEVALUATEARTS = "http://laoshi.xueersi.com/libarts/v2/speechEval42/submitSpeechEval42";
         /** 语音评测排行榜 */
         public String URL_LIVE_SPEECH_TEAM_RAND = HTTP_HOST + "/LiveCourse/getSpeechEvalAnswerTeamRank";
         /** 发送语音评测答案-二期，是否作答 */
         public String URL_LIVE_SEND_SPEECHEVAL42_ANSWER = HTTP_HOST + "/LiveCourse/speechEval42IsAnswered";
+        /** 发送语音评测答案-文科新课件平台，是否作答 */
+        public String URL_LIVE_SEND_SPEECHEVALUATENEWARTS_ANSWER = "http://laoshi.xueersi.com/libarts/v2/speechEval42/speechEval42IsAnswered";
         /** 获取学习报告 */
         public String URL_LIVE_GET_LEARNING_STAT = HTTP_HOST + "/LiveCourse/getLearningStat";
         /** 直播回放提交答案地址 */

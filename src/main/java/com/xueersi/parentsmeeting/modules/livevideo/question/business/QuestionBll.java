@@ -573,7 +573,79 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             activity.getWindow().getDecorView().invalidate();
                         }
                     });
-                } else if("4".equals(videoQuestionLiveEntity.type) || "50".equals(videoQuestionLiveEntity.type)){
+                } else if("4".equals(videoQuestionLiveEntity.type)){
+                    String id = videoQuestionLiveEntity.id;
+                    if (speechAssessmentPager != null && id.equals(speechAssessmentPager.getId())) {
+                        return;
+                    }
+                    if (speechAssessmentPager != null) {
+                        mLogtf.d("showQuestion:examSubmitAll:id=" + speechAssessmentPager.getId());
+                        speechAssessmentPager.onDestroy();
+                        speechAssessmentPager.examSubmitAll();
+                        if (speechAssessmentPager != null) {
+                            rlQuestionContent.removeView(speechAssessmentPager.getRootView());
+                        }
+                    }
+                    AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+                    if (audioRequest != null) {
+                        audioRequest.request(new AudioRequest.OnAudioRequest() {
+                            @Override
+                            public void requestSuccess() {
+                                if (voiceAnswerPager != null) {
+                                    voiceAnswerPager.setAudioRequest();
+                                }
+                            }
+                        });
+                    } else {
+                        if (voiceAnswerPager != null) {
+                            voiceAnswerPager.setAudioRequest();
+                        }
+                    }
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
+                            .MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT);
+                    if ("1".equals(videoQuestionLiveEntity.isAllow42)) {
+                        /** 已经作答 */
+                        boolean haveAnswer = mQueAndBool.contains(videoQuestionLiveEntity.id);
+                        LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
+                        String learning_stage = null;
+                        if (studentLiveInfo != null) {
+                            learning_stage = studentLiveInfo.getLearning_stage();
+                        }
+                        BaseSpeechAssessmentPager speechAssAutoPager = baseSpeechCreat.createSpeech(activity,
+                                liveGetInfo.getId(), videoQuestionLiveEntity.nonce,
+                                videoQuestionLiveEntity,
+                                haveAnswer, QuestionBll.
+                                        this, lp, liveGetInfo, learning_stage);
+                        speechAssessmentPager = speechAssAutoPager;
+                        speechAssessmentPager.setIse(mIse);
+                        speechAssessmentPager.initData();
+
+                    } else {
+                        if ("1".equals(videoQuestionLiveEntity.multiRolePlay)) {
+                            if (rolePlayAction != null) {
+                                mQueAndBool.add(id);
+                                rolePlayAction.teacherPushTest(videoQuestionLiveEntity);
+                                return;
+                            }
+                        }
+                        if (rolePlayAction != null && id.equals(rolePlayAction.getQuestionId())) {
+                            return;
+                        }
+                        if (rolePlayAction != null) {
+                            //走人机也通知多人的关掉WebSocket
+                            rolePlayAction.onGoToRobot();
+                        }
+                        speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo,
+                                videoQuestionLiveEntity,
+                                id, QuestionBll.this, stuCouId);
+                        speechAssessmentPager.setIse(mIse);
+                        speechAssessmentPager.initData();
+                        Loger.i("RolePlayerDemoTest", "走人机");
+                    }
+                    setHaveSpeech(true);
+                    rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
+                } else if("50".equals(videoQuestionLiveEntity.type)){
                     // fixme  完善语文特有题型相关逻辑
 //                    showVoiceAnswer(videoQuestionLiveEntity);
                     try {
