@@ -46,6 +46,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -66,7 +67,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     private String Tag = "QuestionIRCBll";
 
-    private List<String> questiongtype = new ArrayList<>();;
+    private List<String> questiongtype;
 
     public QuestionIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -87,7 +88,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             keyboardShowingReg.addKeyboardShowing(mQuestionAction);
         }
         mQuestionAction.setLiveType(mLiveType);
-        questiongtype.add("4");
+        String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6"};
+        questiongtype = Arrays.asList(ptTypeFilters);
     }
 
     @Override

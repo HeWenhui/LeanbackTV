@@ -401,6 +401,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void showQuestion(final VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        Loger.e("QuestionIRCBll", "======> showQuestion 000000");
         setWebViewCloseByTeacher(false);
         if (videoQuestionLiveEntity == null) {
             mLogtf.d("showQuestion:noQuestion");

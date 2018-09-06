@@ -41,7 +41,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -156,6 +159,13 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         }
     }
 
+
+    String[] filters = {"4", "0", "1", "2", "8", "5", "6"};
+    /**
+     * ptType 过滤器
+     */
+    private List<String> ptTypeFilters = Arrays.asList(filters);
+
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         try {
@@ -195,7 +205,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         h5OnlineTechEntity.setTime(onlineTechObj.optString("time"));
                         h5OnlineTechEntity.setId(onlineTechObj.optString("id"));
                         h5OnlineTechEntity.setPtype(onlineTechObj.optString("ptype"));
-                        if("4".equals(onlineTechObj.optString("ptype"))){
+                        if (ptTypeFilters.contains(onlineTechObj.optString("ptype"))) {
+                            Loger.e("EnglishH5IRC","====> return 0099999999");
                             return;
                         }
                         videoQuestionLiveEntity.setIsVoice(onlineTechObj.optString("isVoice"));
@@ -578,7 +589,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         @Override
         public void liveSubmitTestH5Answer(final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID,
                                            String testAnswer, String courseware_type, String isSubmit, double
-                                                           voiceTime, boolean isRight, final QuestionSwitch
+                                                   voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             mLogtf.d("liveSubmitTestH5Answer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
@@ -590,7 +601,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     userMode = "0";
                 }
             }
-            if(LiveVideoConfig.isNewArts){
+            if (LiveVideoConfig.isNewArts) {
                 Loger.d("Duncan", "onPutQuestionResultNewArts3");
                 getHttpManager().liveSubmitNewArtsH5Answer(videoQuestionLiveEntity.srcType,
                         videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
@@ -634,7 +645,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 }
                             }
                         });
-            }  else {
+            } else {
                 getHttpManager().liveSubmitTestH5Answer(enstuId, videoQuestionLiveEntity.srcType,
                         videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
                         isRight, new
@@ -668,7 +679,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
                                     @Override
                                     public void onPmError(ResponseEntity responseEntity) {
-                                        mLogtf.d("liveSubmitTestH5Answer:onPmError=" + responseEntity.getErrorMsg() + "," +
+                                        mLogtf.d("liveSubmitTestH5Answer:onPmError=" + responseEntity.getErrorMsg() +
+                                                "," +
                                                 "testId=" +
                                                 videoQuestionLiveEntity.id);
                                         if (!responseEntity.isJsonError()) {
@@ -683,10 +695,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     }
 
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void  onArtsResultCmplShow(AnswerResultCplShowEvent event){
-        if(englishH5CoursewareBll != null){
+    public void onArtsResultCmplShow(AnswerResultCplShowEvent event) {
+        if (englishH5CoursewareBll != null) {
             englishH5CoursewareBll.froceClose();
         }
     }
