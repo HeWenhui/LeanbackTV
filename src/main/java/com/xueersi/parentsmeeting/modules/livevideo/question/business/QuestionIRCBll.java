@@ -32,16 +32,21 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -62,7 +67,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     private String Tag = "QuestionIRCBll";
 
-    private List<String> questiongtype = new ArrayList<>();
+
+    private List<String> questiongtype;
 
     public QuestionIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -83,9 +89,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             keyboardShowingReg.addKeyboardShowing(mQuestionAction);
         }
         mQuestionAction.setLiveType(mLiveType);
-        questiongtype.add("4");
-        questiongtype.add("5");
-        questiongtype.add("8");
+        String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6"};
+        questiongtype = Arrays.asList(ptTypeFilters);
     }
 
     @Override
@@ -171,6 +176,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             });
         }
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -413,16 +419,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
                 break;
             }
-
-            case XESCODE.ARTS_REMID_SUBMIT: {
-                mQuestionAction.remindSubmit();
-                break;
-            }
-            case XESCODE.ARTS_TEACHER_PRAISE: {
-                mQuestionAction.teacherPraise();
-                break;
-            }
-
             case XESCODE.EXAM_START:
                 if (mQuestionAction != null) {
                     String num = object.optString("num", "0");
@@ -522,9 +518,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 XESCODE.EXAM_STOP,
                 XESCODE.XCR_ROOM_ROLE_READ,
                 XESCODE.ARTS_SEND_QUESTION,
-                XESCODE.ARTS_STOP_QUESTION,
-                XESCODE.ARTS_REMID_SUBMIT,
-                XESCODE.ARTS_TEACHER_PRAISE
+                XESCODE.ARTS_STOP_QUESTION
         };
     }
 
@@ -957,6 +951,21 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         });
     }
 
+
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void  onArtsResultCmplShow(AnswerResultCplShowEvent event){
+        if(mQuestionAction != null){
+            mQuestionAction.forceClose();
+        }
+
+    }
 }
 
 

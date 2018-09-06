@@ -30,14 +30,19 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,7 +58,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private EnglishH5Cache englishH5Cache;
     private String Tag = "EnglishH5CoursewareIRCBll";
-    private List<String> filters = new ArrayList<>();
 
     public EnglishH5CoursewareIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -72,8 +76,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         mAnswerRankBll = getInstance(AnswerRankIRCBll.class);
         mLiveAutoNoticeBll = getInstance(LiveAutoNoticeIRCBll.class);
         mTeamPKBll = getInstance(TeamPkBll.class);
-        filters.add("4");
-        filters.add("5");
     }
 
     @Override
@@ -128,6 +130,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
             });
         }
+
+        EventBus.getDefault().register(this);
     }
 
     public void setIse(SpeechEvaluatorUtils ise) {
@@ -154,6 +158,13 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             englishH5CoursewareBll.onResume();
         }
     }
+
+
+    String[] filters = {"4", "0", "1", "2", "8", "5", "6"};
+    /**
+     * ptType 过滤器
+     */
+    private List<String> ptTypeFilters = Arrays.asList(filters);
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
@@ -194,7 +205,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         h5OnlineTechEntity.setTime(onlineTechObj.optString("time"));
                         h5OnlineTechEntity.setId(onlineTechObj.optString("id"));
                         h5OnlineTechEntity.setPtype(onlineTechObj.optString("ptype"));
-                        if(filters.contains(onlineTechObj.optString("ptype"))){
+                        if (ptTypeFilters.contains(onlineTechObj.optString("ptype"))) {
+                            Loger.e("EnglishH5IRC","====> return 0099999999");
                             return;
                         }
                         videoQuestionLiveEntity.setIsVoice(onlineTechObj.optString("isVoice"));
@@ -477,12 +489,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
                 break;
             }
-            case XESCODE.ARTS_REMID_SUBMIT:
-                englishH5CoursewareBll.remindSubmit();
-                break;
-            case XESCODE.ARTS_TEACHER_PRAISE:
-                englishH5CoursewareBll.showTeacherPraise();
-                break;
             default:
                 break;
         }
@@ -511,8 +517,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 XESCODE.ENGLISH_H5_COURSEWARE,
                 XESCODE.MULTIPLE_H5_COURSEWARE,
                 XESCODE.ARTS_H5_COURSEWARE,
-                XESCODE.ARTS_REMID_SUBMIT,
-                XESCODE.ARTS_TEACHER_PRAISE
         };
     }
 
@@ -587,7 +591,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         @Override
         public void liveSubmitTestH5Answer(final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID,
                                            String testAnswer, String courseware_type, String isSubmit, double
-                                                           voiceTime, boolean isRight, final QuestionSwitch
+                                                   voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             mLogtf.d("liveSubmitTestH5Answer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
@@ -599,7 +603,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     userMode = "0";
                 }
             }
-            if(LiveVideoConfig.isNewArts){
+            if (LiveVideoConfig.isNewArts) {
                 Loger.d("Duncan", "onPutQuestionResultNewArts3");
                 getHttpManager().liveSubmitNewArtsH5Answer(videoQuestionLiveEntity.srcType,
                         videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
@@ -643,7 +647,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 }
                             }
                         });
-            }  else {
+            } else {
                 getHttpManager().liveSubmitTestH5Answer(enstuId, videoQuestionLiveEntity.srcType,
                         videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
                         isRight, new
@@ -677,7 +681,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
                                     @Override
                                     public void onPmError(ResponseEntity responseEntity) {
-                                        mLogtf.d("liveSubmitTestH5Answer:onPmError=" + responseEntity.getErrorMsg() + "," +
+                                        mLogtf.d("liveSubmitTestH5Answer:onPmError=" + responseEntity.getErrorMsg() +
+                                                "," +
                                                 "testId=" +
                                                 videoQuestionLiveEntity.id);
                                         if (!responseEntity.isJsonError()) {
@@ -691,6 +696,14 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         }
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onArtsResultCmplShow(AnswerResultCplShowEvent event) {
+        if (englishH5CoursewareBll != null) {
+            englishH5CoursewareBll.froceClose();
+        }
+    }
+
     @Override
     public void onDestory() {
         super.onDestory();
@@ -700,5 +713,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         if (englishH5Cache != null) {
             englishH5Cache.stop();
         }
+        EventBus.getDefault().unregister(this);
     }
+
 }
