@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
@@ -213,7 +214,6 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 if (questionBll != null && questionBll instanceof QuestionBll) {
                     event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
-                    ((QuestionBll) questionBll).onWebviewRemove();
                 }
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
@@ -238,9 +238,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     @JavascriptInterface
     public void showAnswerResult_LiveVideo(String data){
          Loger.e("QuestionWebX5Pager","=========>showAnswerResult_LiveVideo:"+data);
-        if(questionBll != null && questionBll instanceof QuestionBll){
-            ((QuestionBll)questionBll).onAnswerResult(data);
-        }
+         EventBus.getDefault().post(new ArtsAnswerResultEvent(data));
     }
 
 

@@ -30,9 +30,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -123,6 +127,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
             });
         }
+
+        EventBus.getDefault().register(this);
     }
 
     public void setIse(SpeechEvaluatorUtils ise) {
@@ -470,12 +476,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
                 break;
             }
-            case XESCODE.ARTS_REMID_SUBMIT:
-                englishH5CoursewareBll.remindSubmit();
-                break;
-            case XESCODE.ARTS_TEACHER_PRAISE:
-                englishH5CoursewareBll.showTeacherPraise();
-                break;
             default:
                 break;
         }
@@ -504,8 +504,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 XESCODE.ENGLISH_H5_COURSEWARE,
                 XESCODE.MULTIPLE_H5_COURSEWARE,
                 XESCODE.ARTS_H5_COURSEWARE,
-                XESCODE.ARTS_REMID_SUBMIT,
-                XESCODE.ARTS_TEACHER_PRAISE
         };
     }
 
@@ -684,6 +682,15 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         }
     }
 
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void  onArtsResultCmplShow(AnswerResultCplShowEvent event){
+        if(englishH5CoursewareBll != null){
+            englishH5CoursewareBll.froceClose();
+        }
+    }
+
     @Override
     public void onDestory() {
         super.onDestory();
@@ -693,5 +700,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         if (englishH5Cache != null) {
             englishH5Cache.stop();
         }
+        EventBus.getDefault().unregister(this);
     }
+
 }

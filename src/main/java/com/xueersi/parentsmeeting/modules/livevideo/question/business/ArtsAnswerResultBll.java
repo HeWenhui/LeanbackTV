@@ -17,13 +17,23 @@ import com.xueersi.common.base.BaseBll;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,9 +48,8 @@ import java.util.List;
  * @version 1.0, 2018/7/27 下午5:36
  */
 
-public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction, AnswerResultStateListener {
-
-    private RelativeLayout rootView;
+public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, AnswerResultStateListener {
+    private static  final String Tag = "ArtsAnswerResultBll";
     private RelativeLayout rlAnswerResultLayout;
     /**
      * 强制收卷 答题结果展示 时间
@@ -50,7 +59,6 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
      * 普通 统计 UI
      */
     private static final int UI_TYPE_NORMAL = 1;
-
     /**
      * 小学英语 统计面板
      */
@@ -68,7 +76,10 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
      */
     private boolean isPse;
     private View remindView;
-    private AnswerResultCloseListener resultCloseListener;
+
+    private ViewGroup decorView;
+    private View praiseRootView;
+    private boolean isPerfectRight;
 
     /**
      * @param context
@@ -76,33 +87,20 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
      * @param rootView
      * @param isPse    是否是小学英语
      */
-    public ArtsAnswerResultBll(Context context, RelativeLayout rootView, boolean isPse, AnswerResultCloseListener
-            listener) {
-        super(context);
-        this.rootView = rootView;
+    public ArtsAnswerResultBll(Activity context, LiveBll2 liveBll) {
+        super(context,liveBll);
         this.isPse = isPse;
-        this.resultCloseListener = listener;
     }
 
 
-    public void setResultCloseListener(AnswerResultCloseListener resultCloseListener) {
-        this.resultCloseListener = resultCloseListener;
-    }
-
-
-    public void attachToView() {
-    /*    rlAnswerResultLayout = new RelativeLayout(mContext);
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
-                (ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT);
-        rootView.addView(rlAnswerResultLayout);*/
-        rlAnswerResultLayout = rootView;
+    private void attachToView() {
+        EventBus.getDefault().register(this);
+        rlAnswerResultLayout = mRootView;
     }
 
     private void addPager() {
         Loger.e("ArtsAnswerResultBll:addPager:" + mDsipalyer);
         if (mDsipalyer != null) {
-            //rlAnswerResultLayout.removeView(mDsipalyer.getRootLayout());
             return;
         }
         if (isPse) {
@@ -123,7 +121,7 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
      * 展示答题结果
      */
     private void showAnswerReulst() {
-        rootView.post(new Runnable() {
+        mRootView.post(new Runnable() {
             @Override
             public void run() {
                 if (remindView != null) {
@@ -135,8 +133,7 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
     }
 
 
-    @Override
-    public void onAnswerResult(String result) {
+     private void onAnswerResult(String result) {
         Loger.e(TAG, "=======>onAnswerResult:" + result);
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -223,15 +220,12 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
 
     private boolean forceSumbmit;
 
-    @Override
     public void closeAnswerResult(boolean forceSumbmit) {
         // 已展示过答题结果
         if (mDsipalyer != null) {
             mDsipalyer.close();
             mDsipalyer = null;
-            if (resultCloseListener != null) {
-                resultCloseListener.onAnswerResultClose();
-            }
+            EventBus.getDefault().post(new AnswerResultCplShowEvent());
         }
         Loger.e("ArtsAnswerBll", "=====>closeAnswerResult:" + forceSumbmit);
         this.forceSumbmit = forceSumbmit;
@@ -250,7 +244,6 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
         }
     };
 
-    @Override
     public void remindSubmit() {
         Loger.e("ArtsAnswerResult","======>remindSubmit:"+mDsipalyer+":"+this);
         //没有答题结果页时才展示
@@ -284,23 +277,17 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
     public void onCompeletShow() {
         Loger.e("ArtsAnswerResultBll", "=======onCompeletShow called:" + forceSumbmit);
         if (forceSumbmit) {
-            if (resultCloseListener != null) {
-                rootView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        resultCloseListener.onAnswerResultClose();
-                        mDsipalyer = null;
-                    }
-                }, AUTO_CLOSE_DELAY);
-            }
+            mRootView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    EventBus.getDefault().post(new AnswerResultCplShowEvent());
+                }
+            },AUTO_CLOSE_DELAY);
         }
     }
 
-    private ViewGroup decorView;
-    private View praiseRootView;
-    private boolean isPerfectRight;
 
-    @Override
+
     public void teacherPraise() {
         if (mAnswerReulst != null && (mAnswerReulst.getIsRight() == 2)) {
             try {
@@ -367,5 +354,67 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Override
+    public void onLiveInited(LiveGetInfo getInfo) {
+        super.onLiveInited(getInfo);
+        isPse = getInfo != null && getInfo.getSmallEnglish();
+        isPse = true;
+        attachToView();
+    }
+
+    @Override
+    public void onNotice(String sourceNick, String target, JSONObject data, int type) {
+      Loger.e(Tag,"=====>onNotice :"+"type=:"+type+":data="+data.toString());
+        switch (type) {
+            case  XESCODE.ARTS_REMID_SUBMIT:
+                remindSubmit();
+                break;
+            case  XESCODE.ARTS_TEACHER_PRAISE:
+                teacherPraise();
+                break;
+            case XESCODE.ARTS_STOP_QUESTION:
+                closeAnswerResult(true);
+                break;
+            case  XESCODE.ARTS_H5_COURSEWARE:
+                String status = data.optString("status", "off");
+                if("off".equals(status)){
+                    closeAnswerResult(true);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWebviewClose(LiveRoomH5CloseEvent event) {
+        closeAnswerResult(false);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAnswerResult(ArtsAnswerResultEvent event) {
+        onAnswerResult(event.getDataStr());
+    }
+
+    int[] notices = {
+            XESCODE.ARTS_REMID_SUBMIT,
+            XESCODE.ARTS_TEACHER_PRAISE,
+            XESCODE.ARTS_STOP_QUESTION,
+            XESCODE.ARTS_H5_COURSEWARE
+    };
+
+    @Override
+    public int[] getNoticeFilter() {
+        return  notices;
+    }
+
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        EventBus.getDefault().unregister(this);
     }
 }

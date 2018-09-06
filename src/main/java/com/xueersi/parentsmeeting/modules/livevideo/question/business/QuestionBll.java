@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
@@ -58,6 +59,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.KeyboardPopWindow;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -527,10 +530,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         Loger.e("QuestionIRCBll", "======> showQuestion 55555:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
         if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
-            initAnswerResultAction();
             doNewArtsAnswerQuetion(videoQuestionLiveEntity);
         } else {
-            mAnswerResultAction = null;
             doArtsAnswerQuestion(videoQuestionLiveEntity);
         }
         mVPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
@@ -997,11 +998,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             });
             delayTime = 3000;
             closePageByTeamPk((BasePager) questionWebPager);
-
-            if (mAnswerResultAction != null) {
-                mAnswerResultAction.closeAnswerResult(true);
-            }
-
         } else if (hasQuestion && !hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
             hasQuestion = false;
@@ -2153,45 +2149,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
-    /**
-     * 文科课件 h5 js回调
-     *
-     * @param data
-     */
-    public void onAnswerResult(String data) {
-        if (mAnswerResultAction != null) {
-            mAnswerResultAction.onAnswerResult(data);
-        }
-    }
-
-    IAnswerResultAction mAnswerResultAction;
-
-    private void initAnswerResultAction() {
-        if (mAnswerResultAction == null) {
-            if(mVPlayVideoControlHandler != null){
-                mVPlayVideoControlHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ArtsAnswerResultBll answerResultBll = new ArtsAnswerResultBll(activity, bottomeContent, liveGetInfo
-                                .getSmallEnglish(), new AnswerResultCloseListener() {
-                            @Override
-                            public void onAnswerResultClose() {
-                                forceClose();
-                            }
-                        });
-                        answerResultBll.attachToView();
-                        mAnswerResultAction = answerResultBll;
-                    }
-                });
-            }
-        }
-    }
-
 
     /**
      * 强制关闭当前 答题页面
      */
-    private void forceClose() {
+    public void forceClose() {
         if (mVPlayVideoControlHandler != null) {
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
@@ -2205,34 +2167,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     }
                 }
             });
-        }
-    }
-
-
-    /**
-     * 提醒学生 提交
-     */
-    public void remindSubmit() {
-        if (mAnswerResultAction != null) {
-            mAnswerResultAction.remindSubmit();
-        }
-    }
-
-    /**
-     * 页面被一场
-     **/
-    public void onWebviewRemove() {
-        if (mAnswerResultAction != null) {
-            mAnswerResultAction.closeAnswerResult(false);
-        }
-    }
-
-    /**
-     * 老师表扬 答题学生
-     */
-    public void teacherPraise(){
-        if(mAnswerResultAction != null){
-            mAnswerResultAction.teacherPraise();
         }
     }
 }

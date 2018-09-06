@@ -32,11 +32,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -169,6 +173,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             });
         }
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -402,16 +407,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
                 break;
             }
-
-            case XESCODE.ARTS_REMID_SUBMIT: {
-                mQuestionAction.remindSubmit();
-                break;
-            }
-            case XESCODE.ARTS_TEACHER_PRAISE: {
-                mQuestionAction.teacherPraise();
-                break;
-            }
-
             case XESCODE.EXAM_START:
                 if (mQuestionAction != null) {
                     String num = object.optString("num", "0");
@@ -498,9 +493,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 XESCODE.EXAM_STOP,
                 XESCODE.XCR_ROOM_ROLE_READ,
                 XESCODE.ARTS_SEND_QUESTION,
-                XESCODE.ARTS_STOP_QUESTION,
-                XESCODE.ARTS_REMID_SUBMIT,
-                XESCODE.ARTS_TEACHER_PRAISE
+                XESCODE.ARTS_STOP_QUESTION
         };
     }
 
@@ -933,6 +926,21 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         });
     }
 
+
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void  onArtsResultCmplShow(AnswerResultCplShowEvent event){
+        if(mQuestionAction != null){
+            mQuestionAction.forceClose();
+        }
+
+    }
 }
 
 

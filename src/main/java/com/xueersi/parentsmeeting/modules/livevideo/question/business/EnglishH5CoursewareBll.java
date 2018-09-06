@@ -390,11 +390,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         hasQuestion = false;
                     }
                     closePageByTeamPk();
-                    com.xueersi.lib.log.Loger.e("EnglishH5CourseWareBll", "===========>onH5Courseware9999:"+mAnswerResultAction);
-                    // 文科答题结果页面
-                    if (mAnswerResultAction != null) {
-                        mAnswerResultAction.closeAnswerResult(true);
-                    }
                 }
             }
         });
@@ -494,36 +489,14 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
 
         if (videoQuestionH5Entity.isNewArtsH5Courseware()) {
-            initAnswerResultAction();
+            //initAnswerResultAction();
         }else{
-            mAnswerResultAction = null;
         }
 
     }
 
-    private IAnswerResultAction mAnswerResultAction;
+   // private IAnswerResultAction mAnswerResultAction;
 
-    private void initAnswerResultAction() {
-        if (mAnswerResultAction == null) {
-            ArtsAnswerResultBll answerResultBll = new ArtsAnswerResultBll(context, bottomContent, mGetInfo
-                    .getSmallEnglish(), new AnswerResultCloseListener() {
-                @Override
-                public void onAnswerResultClose() {
-                    froceClose();
-                }
-            });
-            answerResultBll.attachToView();
-            mAnswerResultAction = answerResultBll;
-        }
-    }
-    /**
-     * 网页移除时回调
-     */
-    public void onWebviewRemove() {
-        if (mAnswerResultAction != null) {
-            mAnswerResultAction.closeAnswerResult(false);
-        }
-    }
 
     public void setBaseVoiceAnswerCreat(BaseVoiceAnswerCreat baseVoiceAnswerCreat) {
         this.baseVoiceAnswerCreat = baseVoiceAnswerCreat;
@@ -1157,31 +1130,4 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
     }
 
-    /**
-     * 文科h5 答题结果页  结果回调
-     */
-    public void onAnswerResult(String data) {
-        if (mAnswerResultAction != null) {
-            mAnswerResultAction.onAnswerResult(data);
-        }
-    }
-
-    /**
-     * 提醒学生 提交
-     */
-    public void remindSubmit(){
-         if(mAnswerResultAction != null){
-             mAnswerResultAction.remindSubmit();
-         }
-    }
-
-    /**
-     * 老师表扬 答题学生
-     */
-    public void showTeacherPraise(){
-        Loger.e("EngliseH5","======>showTeacherPraise:"+mAnswerResultAction);
-        if(mAnswerResultAction != null){
-            mAnswerResultAction.teacherPraise();
-        }
-    }
 }
