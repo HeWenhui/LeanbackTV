@@ -406,6 +406,10 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         });
     }
 
+    public void stopPlay() {
+        send("stopPlay");
+    }
+
     public void onBufferTimeOut() {
         send("onBufferTimeOut");
     }

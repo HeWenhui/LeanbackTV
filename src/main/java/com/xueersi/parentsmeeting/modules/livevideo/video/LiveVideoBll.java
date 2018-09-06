@@ -517,6 +517,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             vPlayer.releaseSurface();
             vPlayer.stop();
         }
+        livePlayLog.stopPlay();
     }
 
     /** 播放器是否已经成功初始化完毕处于可以加载资源随时播放的状态 */

@@ -153,6 +153,11 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     }
 
+    public void stopPlayer() {
+        super.stopPlayer();
+        mLiveVideoBll.stopPlay();
+    }
+
     @Override
     protected void onUserBackPressed() {
         boolean userBackPressed = mLiveBll.onUserBackPressed();
