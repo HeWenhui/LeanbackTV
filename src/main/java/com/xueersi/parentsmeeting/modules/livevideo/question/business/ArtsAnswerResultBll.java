@@ -89,16 +89,19 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
 
 
     public void attachToView() {
-        rlAnswerResultLayout = new RelativeLayout(mContext);
+    /*    rlAnswerResultLayout = new RelativeLayout(mContext);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
                 (ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
-        rootView.addView(rlAnswerResultLayout);
+        rootView.addView(rlAnswerResultLayout);*/
+        rlAnswerResultLayout = rootView;
     }
 
     private void addPager() {
+        Loger.e("ArtsAnswerResultBll:addPager:"+mDsipalyer);
         if (mDsipalyer != null) {
-            rlAnswerResultLayout.removeView(mDsipalyer.getRootLayout());
+            //rlAnswerResultLayout.removeView(mDsipalyer.getRootLayout());
+           return;
         }
         if (isPse) {
             mDsipalyer = new ArtsPSEAnswerResultPager(mContext, mAnswerReulst, this);
@@ -192,8 +195,10 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                         }
                         answer.setBlankList(blankList);
                         rightAnswerArray = answerObject.optJSONArray("rightAnswer");
-                        for (int i1 = 0; i1 < rightAnswerArray.length(); i1++) {
-                            rightAnswerList.add(rightAnswerArray.getString(i1));
+                        if(rightAnswerArray != null){
+                            for (int i1 = 0; i1 < rightAnswerArray.length(); i1++) {
+                                rightAnswerList.add(rightAnswerArray.getString(i1));
+                            }
                         }
                         answer.setRightAnswers(rightAnswerList);
 
@@ -204,7 +209,9 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                 showAnswerReulst();
             } else {
                  String errorMsg = jsonObject.optString("msg");
-                 XESToastUtils.showToast(mContext, errorMsg);
+                 if(!TextUtils.isEmpty(errorMsg)){
+                     XESToastUtils.showToast(mContext, errorMsg);
+                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -276,6 +283,7 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                     @Override
                     public void run() {
                         resultCloseListener.onAnswerResultClose();
+                        mDsipalyer = null;
                     }
                 },AUTO_CLOSE_DELAY);
             }
