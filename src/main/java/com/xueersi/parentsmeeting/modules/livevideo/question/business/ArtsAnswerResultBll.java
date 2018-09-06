@@ -42,7 +42,9 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
 
     private RelativeLayout rootView;
     private RelativeLayout rlAnswerResultLayout;
-    /**强制收卷 答题结果展示 时间**/
+    /**
+     * 强制收卷 答题结果展示 时间
+     **/
     private final long AUTO_CLOSE_DELAY = 2000;
     /**
      * 普通 统计 UI
@@ -98,10 +100,10 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
     }
 
     private void addPager() {
-        Loger.e("ArtsAnswerResultBll:addPager:"+mDsipalyer);
+        Loger.e("ArtsAnswerResultBll:addPager:" + mDsipalyer);
         if (mDsipalyer != null) {
             //rlAnswerResultLayout.removeView(mDsipalyer.getRootLayout());
-           return;
+            return;
         }
         if (isPse) {
             mDsipalyer = new ArtsPSEAnswerResultPager(mContext, mAnswerReulst, this);
@@ -195,7 +197,7 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                         }
                         answer.setBlankList(blankList);
                         rightAnswerArray = answerObject.optJSONArray("rightAnswer");
-                        if(rightAnswerArray != null){
+                        if (rightAnswerArray != null) {
                             for (int i1 = 0; i1 < rightAnswerArray.length(); i1++) {
                                 rightAnswerList.add(rightAnswerArray.getString(i1));
                             }
@@ -208,10 +210,10 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                 }
                 showAnswerReulst();
             } else {
-                 String errorMsg = jsonObject.optString("msg");
-                 if(!TextUtils.isEmpty(errorMsg)){
-                     XESToastUtils.showToast(mContext, errorMsg);
-                 }
+                String errorMsg = jsonObject.optString("msg");
+                if (!TextUtils.isEmpty(errorMsg)) {
+                    XESToastUtils.showToast(mContext, errorMsg);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -250,28 +252,32 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
 
     @Override
     public void remindSubmit() {
-        rlAnswerResultLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                if (remindView == null) {
-                    if (isPse) {
-                        remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_pse, null);
-                    } else {
-                        remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_nor, null);
+        Loger.e("ArtsAnswerResult","======>remindSubmit:"+mDsipalyer+":"+this);
+        //没有答题结果页时才展示
+        if (mDsipalyer == null) {
+            rlAnswerResultLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (remindView == null) {
+                        if (isPse) {
+                            remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_pse, null);
+                        } else {
+                            remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_nor, null);
+                        }
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
+                                .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        rlAnswerResultLayout.addView(remindView, params);
                     }
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
-                            .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    rlAnswerResultLayout.addView(remindView, params);
-                }
-                remindView.setVisibility(View.VISIBLE);
-                AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
-                        .anim_livevido_arts_answer_result_alpha_in);
-                remindView.startAnimation(alphaAnimation);
+                    remindView.setVisibility(View.VISIBLE);
+                    AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
+                            .anim_livevido_arts_answer_result_alpha_in);
+                    remindView.startAnimation(alphaAnimation);
 
-                rlAnswerResultLayout.removeCallbacks(autoCloseTask);
-                rlAnswerResultLayout.postDelayed(autoCloseTask, REMIND_UI_CLOSE_DELAY);
-            }
-        });
+                    rlAnswerResultLayout.removeCallbacks(autoCloseTask);
+                    rlAnswerResultLayout.postDelayed(autoCloseTask, REMIND_UI_CLOSE_DELAY);
+                }
+            });
+        }
     }
 
     @Override
@@ -285,7 +291,7 @@ public class ArtsAnswerResultBll extends BaseBll implements IAnswerResultAction,
                         resultCloseListener.onAnswerResultClose();
                         mDsipalyer = null;
                     }
-                },AUTO_CLOSE_DELAY);
+                }, AUTO_CLOSE_DELAY);
             }
         }
     }
