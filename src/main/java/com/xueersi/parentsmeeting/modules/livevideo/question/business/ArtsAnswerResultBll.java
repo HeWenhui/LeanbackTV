@@ -361,7 +361,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         isPse = getInfo != null && getInfo.getSmallEnglish();
-        isPse = true;
         attachToView();
     }
 
