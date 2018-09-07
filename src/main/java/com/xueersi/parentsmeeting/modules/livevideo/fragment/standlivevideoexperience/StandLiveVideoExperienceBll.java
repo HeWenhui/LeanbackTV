@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
@@ -90,6 +91,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
      */
     private boolean openChat = true;
 
+
     public StandLiveVideoExperienceBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         mHttpManager = new LiveHttpManager(mContext);
@@ -128,6 +130,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         mLiveMessagePager.setIrcState(videoExperiencIRCState);
         mRootView.addView(mLiveMessagePager.getRootView());
         mLiveMessagePager.setGetInfo(liveGetInfo);
+
         connectChatServer();
     }
 

@@ -382,6 +382,17 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         sendPost(LiveVideoConfig.URL_AUTO_LIVE_FEAD_BACK, params, requestCallBack);
     }
 
+    /**
+     *
+     * @param user_id  用户id
+     * @param plan_id  场次ID
+     * @param subject_id 学科ID
+     * @param grade_id 年级ID
+     * @param order_id 订单ID
+     * @param suggest 其它建议
+     * @param jsonOption 选项
+     * @param requestCallBack
+     */
     public void sendExperienceFeedback(String user_id, String plan_id, String subject_id, String grade_id, String
             order_id, String suggest, JSONObject jsonOption, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();

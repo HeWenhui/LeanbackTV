@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.RadioGroup;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.log.Loger;
@@ -24,7 +25,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBack
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.zip.Inflater;
+
+import okhttp3.Call;
 
 /**
  * Created by：WangDe on 2018/8/23 19:40
@@ -39,14 +43,20 @@ public class ExperienceLearnFeedbackPager extends BasePager {
     private EditText etSuggest;
     private ImageButton imgbtnClose;
     private Button btnSubmit;
-    /**选择1 课程难度评价*/
+    /** 选择1 课程难度评价 */
     String mDifficulty = "-1";
-    /**选择2 课程满意度评价*/
+    /** 选择2 课程满意度评价 */
     String mSatisficing = "-1";
     CloseAction closeAction;
 
+    public ExperienceLearnFeedbackPager(Context context, VideoLivePlayBackEntity videoEntity, Window window) {
+        super(context);
+        mVideoEntity = videoEntity;
+        mWindow = window;
+    }
+
     public ExperienceLearnFeedbackPager(Context context, VideoLivePlayBackEntity videoEntity, Window window,
-                                 LectureLivePlayBackBll lectureLivePlayBackBll) {
+                                        LectureLivePlayBackBll lectureLivePlayBackBll) {
         super(context);
         mVideoEntity = videoEntity;
         mWindow = window;
@@ -55,7 +65,7 @@ public class ExperienceLearnFeedbackPager extends BasePager {
 
     @Override
     public View initView() {
-        mView = View.inflate(mContext,R.layout.pop_experience_livevideo_feedback,null);
+        mView = View.inflate(mContext, R.layout.pop_experience_livevideo_feedback, null);
         rgDifficulty = mView.findViewById(R.id.rg_experience_feedback_difficulty);
         rgSatisficing = mView.findViewById(R.id.rg_experience_feedback_satisficing);
         etSuggest = mView.findViewById(R.id.et_experience_feedback_suggest);
@@ -70,10 +80,13 @@ public class ExperienceLearnFeedbackPager extends BasePager {
     public void initData() {
     }
 
-    public void setCloseAction(CloseAction closeAction){
+    public void setCloseAction(CloseAction closeAction) {
         this.closeAction = closeAction;
     }
+
     private void registerListener() {
+        rgDifficulty.clearCheck();
+        rgSatisficing.clearCheck();
         rgDifficulty.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
@@ -81,8 +94,10 @@ public class ExperienceLearnFeedbackPager extends BasePager {
                 if (checkedId == R.id.rbtn_difficulty_1) {
                     mDifficulty = "1";
                 } else if (checkedId == R.id.rbtn_difficulty_2) {
+                    group.check(R.id.rbtn_difficulty_2);
                     mDifficulty = "2";
                 } else if (checkedId == R.id.rbtn_difficulty_3) {
+                    group.check(R.id.rbtn_difficulty_3);
                     mDifficulty = "3";
                 } else {
                     mDifficulty = "-1";
@@ -115,7 +130,7 @@ public class ExperienceLearnFeedbackPager extends BasePager {
         imgbtnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(closeAction != null){
+                if (closeAction != null) {
                     closeAction.onClose();
                 }
                 setBackgroundAlpha(1f);
@@ -132,16 +147,52 @@ public class ExperienceLearnFeedbackPager extends BasePager {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                lectureLivePlayBackBll.sendExperienceFeedback(mVideoEntity.getStuCourseId(), mVideoEntity.getLiveId()
-                        , "", "", mVideoEntity.getChapterId(), etSuggest.getText().toString(), jsonOption, new
-                                HttpCallBack() {
+                if (lectureLivePlayBackBll != null) {
+                    lectureLivePlayBackBll.sendExperienceFeedback(
+                            UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+                            mVideoEntity.getLiveId(),
+                            mVideoEntity.getSubjectId(),
+                            mVideoEntity.getGradId(),
+                            mVideoEntity.getChapterId(),
+                            etSuggest.getText().toString(),
+                            jsonOption,
+                            new HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                    Loger.d(TAG, "sendFeedbackSuccess");
+                                }
+                            });
+                } else {
+                    if (learnFeedBackPagerListener != null) {
+                        learnFeedBackPagerListener.submitClick(UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+                                mVideoEntity.getLiveId(),
+                                mVideoEntity.getSubjectId(),
+                                mVideoEntity.getGradId(),
+                                mVideoEntity.getChapterId(),
+                                etSuggest.getText().toString(),
+                                jsonOption,
+                                new HttpCallBack() {
 
                                     @Override
                                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                        Loger.d(TAG, "sendFeedbackSuccess");
+                                        if (closeAction != null) {
+                                            closeAction.onClose();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call call, IOException e) {
+                                        super.onFailure(call, e);
+                                    }
+
+                                    @Override
+                                    public void onPmFailure(Throwable error, String msg) {
+                                        super.onPmFailure(error, msg);
                                     }
                                 });
-                if(closeAction != null){
+                    }
+                }
+                if (closeAction != null) {
                     closeAction.onClose();
                 }
                 setBackgroundAlpha(1f);
@@ -155,8 +206,25 @@ public class ExperienceLearnFeedbackPager extends BasePager {
         lp.alpha = bgAlpha;
         mWindow.setAttributes(lp);
     }
+
     //关闭该pager接口
-    public interface CloseAction{
+    public interface CloseAction {
         void onClose();
+
+    }
+
+    /**
+     * 目前全身直播体验课专用,提交一系列
+     */
+    public interface LearnFeedBackPagerListener extends CloseAction {
+        void submitClick(String useId, String liveId, String subjectId, String gradId, String chapterId, String
+                suggest, JSONObject jsonObject, HttpCallBack httpCallBack);
+    }
+
+    private LearnFeedBackPagerListener learnFeedBackPagerListener;
+
+    public void setLearnFeedBackPagerListener(LearnFeedBackPagerListener learnFeedBackPagerListener) {
+        this.learnFeedBackPagerListener = learnFeedBackPagerListener;
+        this.closeAction = learnFeedBackPagerListener;
     }
 }

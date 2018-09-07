@@ -159,4 +159,13 @@ public class LiveBackBaseBll extends BaseBll {
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
 
     }
+
+    /**
+     * 视屏结束时的回调
+     *
+     * @return
+     */
+    public void onUserBackPressed() {
+
+    }
 }

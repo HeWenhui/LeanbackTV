@@ -49,6 +49,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.learnfeedback.ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
@@ -132,6 +134,11 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
     /** 预加载 */
     LiveStandFrameAnim liveStandFrameAnim;
+
+    /**
+     * 学习反馈窗口
+     */
+
 
     @Nullable
     @Override
@@ -336,6 +343,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
         //站立直播体验课聊天区的添加
         liveBackBll.addBusinessBll(new StandLiveVideoExperienceBll(activity, liveBackBll));
+        //播放完成后的反馈弹窗
+        liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
     }
 
     @Override
@@ -756,9 +765,21 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         ProxUtil.getProxUtil().clear(activity);
     }
 
+    /**
+     * 视频回放结束
+     */
     @Override
     protected void resultComplete() {
+
+//        for (LiveBackBaseBll liveBackBaseBll : liveBackBll.getLiveBackBaseBlls()) {
+//
+//        }
+//        liveBackBll.onUserBackPressed();
+
+
         onUserBackPressed();
+
+
     }
 
     @Override

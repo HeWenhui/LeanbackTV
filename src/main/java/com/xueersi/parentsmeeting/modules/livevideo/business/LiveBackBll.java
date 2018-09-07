@@ -543,8 +543,19 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
     }
 
     public boolean onUserBackPressed() {
+
+        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+            liveBackBaseBll.onUserBackPressed();
+        }
+
         boolean onUserBackPressed = allLiveBasePagerIml.onUserBackPressed();
         return onUserBackPressed;
+    }
+
+    public void onLiveBackBaseBllUserBackPressed() {
+        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+            liveBackBaseBll.onUserBackPressed();
+        }
     }
 
     public boolean isShowQuestion() {
@@ -635,4 +646,5 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
                 mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, liveLogCallback);
         liveLogCallback.setParams(params);
     }
+
 }

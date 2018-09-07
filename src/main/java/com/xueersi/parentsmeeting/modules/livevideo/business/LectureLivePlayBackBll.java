@@ -32,6 +32,7 @@ import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.XSAsykTask;
 import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -57,6 +58,11 @@ public class LectureLivePlayBackBll extends BaseBll {
 
     private LivePlayBackHttpManager mCourseHttpManager;
     private LivePlayBackHttpResponseParser mCourseHttpResponseParser;
+
+    /**
+     * 体验课的学习反馈窗口
+     */
+    private ExperienceLearnFeedbackPager experienceLearnFeedbackPager;
 
     private List<VideoCourseEntity> mLstCourseEntity = new ArrayList<>();
 
@@ -749,6 +755,17 @@ public class LectureLivePlayBackBll extends BaseBll {
         });
     }
 
+    /**
+     *
+     * @param user_id 用户id
+     * @param plan_id
+     * @param subject_id
+     * @param grade_id
+     * @param order_id
+     * @param suggest
+     * @param jsonOption
+     * @param requestCallBack
+     */
     public void sendExperienceFeedback(String user_id,String plan_id,String subject_id,String grade_id,String order_id,String suggest,JSONObject jsonOption,HttpCallBack requestCallBack){
         mCourseHttpManager.sendExperienceFeedback(user_id, plan_id, subject_id, grade_id, order_id,suggest,jsonOption,requestCallBack);
     }
@@ -824,5 +841,10 @@ public class LectureLivePlayBackBll extends BaseBll {
             }
         });
     }
+    /**
+     * 视频播放完成回调
+     */
+    public void onUserBackPressed() {
 
+    }
 }
