@@ -170,7 +170,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
             }
         }, mDanmakuContext);
         dvSpeechbulDanmaku.showFPS(false);
-        dvSpeechbulDanmaku.enableDanmakuDrawingCache(true);
+        dvSpeechbulDanmaku.enableDanmakuDrawingCache(false);
     }
 
     /**
