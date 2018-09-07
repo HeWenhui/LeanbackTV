@@ -28,7 +28,7 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
     private String mCoinStr;
 
     private static final String TEXTCOLOR = "#FFDB2A";
-    private static final int TEXTSIZE = 25;
+    private static final int TEXTSIZE = 24;
 
     private static final String TITLE_FILE_NAME = "img_15.png";
     private static final String TITLE_BG_FILE_NAME = "img_16.png";
