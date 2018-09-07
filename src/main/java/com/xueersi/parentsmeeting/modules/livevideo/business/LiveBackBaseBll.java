@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -22,9 +23,9 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/17.
+ * Created by linyuqiang on 2018/7/17.
+ * 直播回放总bll
  */
-
 public class LiveBackBaseBll extends BaseBll {
     protected Logger logger = LoggerFactory.getLogger(TAG);
     protected LiveBackBll liveBackBll;
@@ -74,17 +75,17 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
-    /**回放event事件*/
+    /** 回放event事件 */
     public int[] getCategorys() {
         return new int[0];
     }
 
-    /**回放事件开始*/
+    /** 回放事件开始 */
     public void onQuestionEnd(VideoQuestionEntity questionEntity) {
 
     }
 
-    /**回放事件结束*/
+    /** 回放事件结束 */
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
             .ShowQuestion showQuestion) {
 
@@ -96,6 +97,10 @@ public class LiveBackBaseBll extends BaseBll {
 
     public LivePlayBackHttpResponseParser getCourseHttpResponseParser() {
         return liveBackBll.getCourseHttpResponseParser();
+    }
+
+    public LiveHttpManager getmHttpManager() {
+        return liveBackBll.getmHttpManager();
     }
 
     protected void onRestart() {

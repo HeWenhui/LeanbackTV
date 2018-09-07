@@ -22,6 +22,7 @@ dependencies {
     //glide库
     implementation rootProject.ext.thirdlibraries.glide
     implementation(rootProject.ext.xeslibraries.speechrecognizer) { changing = true }
+    implementation(rootProject.ext.xeslibraries.ldnetdiagnoservice) { changing = true }
     //uicomponent
     rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.uicomponent)
     //framework

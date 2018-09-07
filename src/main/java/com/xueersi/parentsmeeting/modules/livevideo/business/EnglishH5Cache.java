@@ -57,7 +57,6 @@ import okhttp3.Call;
 import ren.yale.android.cachewebviewlib.CachePreLoadService;
 import ren.yale.android.cachewebviewlib.CacheWebView;
 import ren.yale.android.cachewebviewlib.WebViewCache;
-import ren.yale.android.cachewebviewlib.config.CacheExtensionConfig;
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
 /**
@@ -69,7 +68,6 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     Logger logger = LoggerFactory.getLogger(TAG);
     String eventId = LiveVideoConfig.LIVE_H5_CACHE;
     Context context;
-    LiveBll liveBll;
     LiveAndBackDebug liveAndBackDebug;
     String liveId;
     File cacheFile;
@@ -94,12 +92,11 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     private int count = 0;
     private Boolean add = true;
 
-    public EnglishH5Cache(Context context, LiveBll liveBll, String liveId) {
+    public EnglishH5Cache(Context context, String liveId) {
         this.context = context;
         Activity activity = (Activity) context;
         liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
         bottomContent = (RelativeLayout) activity.findViewById(R.id.rl_course_video_live_question_content);
-        this.liveBll = liveBll;
         this.liveId = liveId;
         cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
         if (cacheFile == null) {

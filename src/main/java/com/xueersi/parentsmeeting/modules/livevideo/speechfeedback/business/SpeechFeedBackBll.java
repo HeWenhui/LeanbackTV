@@ -107,13 +107,6 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                 mBufferSize);
     }
 
-    public SpeechFeedBackBll(Activity activity, LiveBll liveBll) {
-        this.activity = activity;
-        this.liveBll = liveBll;
-        liveAndBackDebug = liveBll;
-        logToFile = new LogToFile(activity, TAG);
-    }
-
     public SpeechFeedBackBll(Activity activity, SpeechFeedBackHttp liveBll) {
         this.activity = activity;
         this.liveBll = liveBll;

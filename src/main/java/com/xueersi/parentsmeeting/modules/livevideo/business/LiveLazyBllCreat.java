@@ -48,12 +48,6 @@ public class LiveLazyBllCreat {
     }
 
     LiveVoteAction createLiveVoteAction() {
-        if (liveVoteBll == null) {
-            liveVoteBll = new LiveVoteBll(liveVideoActivity);
-            liveVoteBll.initView(bottomContent);
-            liveVoteBll.setLiveBll(liveBll);
-            liveBll.setLiveVoteAction(liveVoteBll);
-        }
         return liveVoteBll;
     }
 

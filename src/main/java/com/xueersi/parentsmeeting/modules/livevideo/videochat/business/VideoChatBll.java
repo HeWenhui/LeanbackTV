@@ -138,13 +138,6 @@ public class VideoChatBll implements VideoChatAction {
         });
     }
 
-    public void setLiveBll(LiveBll liveBll) {
-        this.videoChatHttp = liveBll;
-        if (liveBll instanceof LiveAndBackDebug) {
-            liveAndBackDebug = liveBll;
-        }
-    }
-
     public void setVideoChatHttp(VideoChatHttp videoChatHttp) {
         this.videoChatHttp = videoChatHttp;
     }

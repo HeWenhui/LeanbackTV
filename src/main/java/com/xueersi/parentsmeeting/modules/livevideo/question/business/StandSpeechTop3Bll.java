@@ -25,7 +25,6 @@ import java.util.HashMap;
  */
 public class StandSpeechTop3Bll implements SpeechEndAction {
     String TAG = "StandSpeechTop3Bll";
-    LiveBll liveBll;
     QuestionIRCBll questionIRCBll;
     LiveAndBackDebug liveAndBackDebug;
     StandSpeechTop3Pager standSpeechTop3Pager;
@@ -35,13 +34,6 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
     HashMap<String, GoldTeamStatus> goldTeamStatusHashMap = new HashMap<>();
     HashMap<String, OnTop3End> top3EndHashMap = new HashMap<>();
     LogToFile logToFile;
-
-    @Deprecated
-    public StandSpeechTop3Bll(LiveBll liveBll) {
-        this.liveBll = liveBll;
-        logToFile = new LogToFile(TAG);
-        liveAndBackDebug = liveBll;
-    }
 
     public StandSpeechTop3Bll(Context context, QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
         this.questionIRCBll = questionIRCBll;

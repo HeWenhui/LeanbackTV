@@ -89,10 +89,6 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
         this.mRootView = bottomContent;
     }
 
-    public void setLiveBll(LiveBll liveBll) {
-        // this.liveBll = ircState;
-    }
-
     private void showResult(final LiveTopic.VoteEntity voteEntity) {
         if (contentView != null) {
             mRootView.removeView(contentView);

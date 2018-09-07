@@ -494,6 +494,12 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
 
         @Override
+        public void seekTo(long pos) {
+            super.seekTo(pos);
+            liveBackVideoFragment.seekTo(pos);
+        }
+
+        @Override
         public void onPlayOpenSuccess() {
             super.onPlayOpenSuccess();
             liveBackVideoFragment.onPlayOpenSuccess();
@@ -525,8 +531,8 @@ public class LiveBackVideoFragmentBase extends Fragment {
         protected long getStartPosition() {
             return liveBackVideoFragment.getStartPosition();
         }
-        
-        
+
+
     }
 
     protected void onStartPlayer() {
@@ -707,6 +713,10 @@ public class LiveBackVideoFragmentBase extends Fragment {
 
     protected void setSpeed(float speed) {
         mySpeed = speed;
+    }
+
+    protected void seekTo(long pos) {
+
     }
 
     protected void onPlayOpenStart() {

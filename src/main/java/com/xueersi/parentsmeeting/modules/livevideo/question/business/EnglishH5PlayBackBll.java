@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
@@ -31,6 +32,7 @@ import java.util.HashMap;
  */
 public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     EnglishH5CoursewareBll englishH5CoursewareBll;
+    private EnglishH5Cache englishH5Cache;
 
     public EnglishH5PlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -63,6 +65,11 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
         liveBaseEnglishH5CoursewareCreat.setLivePagerBack(englishH5CoursewareBll);
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+            englishH5Cache = new EnglishH5Cache(activity, liveGetInfo.getId());
+            englishH5Cache.setHttpManager(getmHttpManager());
+            englishH5Cache.getCourseWareUrl();
+        }
     }
 
     @Override
@@ -72,7 +79,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
     @Override
     public int[] getCategorys() {
-        return new int[]{LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE,LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE};
+        return new int[]{LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE, LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE};
     }
 
     @Override
@@ -148,6 +155,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                             mediaPlayerControl.start();
                         }
                         VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
+                        videoQuestionLiveEntity.englishH5Entity.setNewEnglishH5(true);
                         englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                         showQuestion.onShow(true, videoQuestionLiveEntity);
                     }
@@ -244,4 +252,12 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         }
     }
 
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        if (englishH5Cache != null) {
+            englishH5Cache.stop();
+        }
+    }
 }
