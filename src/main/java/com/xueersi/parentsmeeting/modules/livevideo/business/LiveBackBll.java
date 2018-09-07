@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.SparseArray;
 
+import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -14,6 +15,7 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.logerhelper.LogerTag;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
@@ -51,7 +53,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by lyqai on 2018/7/17.
  */
-public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick, LiveOnLineLogs {
+public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick, LiveOnLineLogs {
     private String TAG = "LiveBackBll";
     Logger logger = LoggerFactory.getLogger(TAG);
     Activity activity;
@@ -96,6 +98,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
     LogToFile logToFile;
 
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
+        super(activity);
         logger.setLogMethod(false);
         this.activity = activity;
         this.mVideoEntity = mVideoEntity;
@@ -133,11 +136,14 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, this);
         mCourseHttpManager = new LivePlayBackHttpManager(activity);
         mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
+        mCourseHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
         mCourseHttpResponseParser = new LivePlayBackHttpResponseParser();
         allLiveBasePagerIml = new AllLiveBasePagerIml(activity);
         showQuestion = new LiveShowQuestion();
         liveUidRx = new LiveUidRx(activity, false);
         mHttpManager = new LiveHttpManager(activity);
+        mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
+        mHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
     }
 
     public int getLiveType() {
@@ -163,6 +169,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
     public void setStuCourId(String stuCourId) {
         this.stuCourId = stuCourId;
         mCourseHttpManager.addBodyParam("stuCouId", stuCourId);
+        mHttpManager.addBodyParam("stuCouId", stuCourId);
     }
 
     public void addBusinessBll(LiveBackBaseBll bll) {
@@ -222,6 +229,8 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         } catch (Exception e) {
             logger.e("onCreate", e);
         }
+        String clientLog = mShareDataManager.getString(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, LiveVideoConfig.URL_LIVE_ON_LOAD_LOGS, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        liveGetInfo.setClientLog(clientLog);
         liveUidRx.setLiveGetInfo(liveGetInfo);
         liveUidRx.onCreate();
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
@@ -243,6 +252,10 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
 
     public LivePlayBackHttpResponseParser getCourseHttpResponseParser() {
         return mCourseHttpResponseParser;
+    }
+
+    public LiveHttpManager getmHttpManager() {
+        return mHttpManager;
     }
 
     public LiveVideoSAConfig getLiveVideoSAConfig() {
@@ -397,7 +410,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
                     index = i;
                     break;
                 }
-            } else if(LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()){
+            } else if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime <= playPosition && playPosition < endTime) {
                     LiveVideoConfig.isMulLiveBack = true;

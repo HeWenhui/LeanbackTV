@@ -489,11 +489,20 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (isInitialized() && pausePlay) {
             vPlayer.pause();
         }
+        if (liveBackVideoBll != null) {
+            liveBackVideoBll.onResume();
+        }
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if (!onPauseNotStopVideo.get()) {
+            if (liveBackVideoBll != null) {
+                liveBackVideoBll.onPause();
+            }
+        }
     }
 
     @Override
@@ -522,6 +531,12 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             return 0;
         }
         return liveBackVideoBll.getStartPosition();
+    }
+
+    @Override
+    protected void seekTo(long pos) {
+        super.seekTo(pos);
+        liveBackVideoBll.seekTo(pos);
     }
 
     @Override
@@ -762,6 +777,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (liveBackBll != null) {
             liveBackBll.onDestory();
         }
+        if (liveBackVideoBll != null) {
+            liveBackVideoBll.onDestroy();
+        }
         ProxUtil.getProxUtil().clear(activity);
     }
 
@@ -806,7 +824,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     /** 重新打开播放器的监听 */
     public void onRestart() {
-        liveBackBll.onRestart();
+        if (liveBackBll != null) {
+            liveBackBll.onRestart();
+        }
     }
 
     @Override

@@ -52,7 +52,6 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  */
 public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     private static String TAG = "TotalFrameStat";
-    private LiveBll liveBll;
     private PlayerService vPlayer;
     /** 五秒帧数 */
     private ArrayList<String> frames = new ArrayList<>();
