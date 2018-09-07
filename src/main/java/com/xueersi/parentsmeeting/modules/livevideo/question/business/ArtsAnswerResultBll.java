@@ -82,6 +82,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     /**当前语音题的答题结果*/
     private VoiceAnswerResultEvent mVoiceAnswerResult;
+    /**是否正在展示表扬*/
+    private boolean praiseViewShowing;
 
     /**
      * @param context
@@ -317,10 +319,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     private void showPraise() {
         try {
-            if (mContext != null) {
+            if (mContext != null && !praiseViewShowing) {
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        praiseViewShowing = true;
                         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
                         int layoutId = isPse ? R.layout.arts_pseteacher_praise_layout : R.layout
                                 .arts_teacher_praise_layout;
@@ -335,6 +338,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 });
             }
         } catch (Exception e) {
+            praiseViewShowing = false;
             e.printStackTrace();
         }
     }
@@ -351,17 +355,20 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 .anim_live_artsteahcer__praise);
         animation.setInterpolator(new SpringScaleInterpolator(SCALE_ANIM_FACTOR));
         targetView.startAnimation(animation);
-        mCloseTask = new Runnable() {
-            @Override
-            public void run() {
-                closeTeacherPriase();
-            }
-        };
+        if(mCloseTask == null){
+            mCloseTask = new Runnable() {
+                @Override
+                public void run() {
+                    closeTeacherPriase();
+                }
+            };
+        }
         praiseRootView.postDelayed(mCloseTask, PARISE_UI_DISPLAY_DURATION);
     }
 
     private void closeTeacherPriase() {
         try {
+            praiseViewShowing = false;
             if (decorView != null && praiseRootView != null) {
                 if (mCloseTask != null) {
                     praiseRootView.removeCallbacks(mCloseTask);
@@ -492,6 +499,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     @Override
     public void onDestory() {
         super.onDestory();
+        praiseViewShowing = false;
         EventBus.getDefault().unregister(this);
     }
 }
