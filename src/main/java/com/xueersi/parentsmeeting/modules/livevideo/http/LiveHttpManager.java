@@ -1263,4 +1263,26 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_UPLOAD_VOICE_BARRAGE, params, requestCallBack);
     }
+
+    /**
+     *获取文科直播间 额外信息
+     * @param requestCallBack
+     */
+    public void getArtsExtLiveInfo(String liveId,String stuCouId,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_ARTS_ROOM_INFO, params, requestCallBack);
+    }
+
+
+    /**
+     * 文科获取 排行信息
+     * @param requestCallBack
+     */
+    public void getNewArtsAllRank(String liveId,String stuCouId,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_ARTS_TEAM_CLASS_RANK, params, requestCallBack);
+    }
+
 }

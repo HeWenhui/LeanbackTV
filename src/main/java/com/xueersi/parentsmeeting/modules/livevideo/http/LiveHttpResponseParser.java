@@ -8,6 +8,7 @@ import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
@@ -1678,5 +1679,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         moreChoice.setRows(data.optString("rows"));
         return moreChoice;
 
+    }
+
+
+    public ArtsExtLiveInfo parseArtsExtLiveInfo(ResponseEntity responseEntity){
+        ArtsExtLiveInfo info = new ArtsExtLiveInfo();
+        JSONObject data = (JSONObject) responseEntity.getJsonObject();
+        info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
+        return info;
     }
 }

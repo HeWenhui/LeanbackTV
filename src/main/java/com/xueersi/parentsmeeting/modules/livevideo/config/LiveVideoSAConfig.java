@@ -185,6 +185,8 @@ public class LiveVideoSAConfig {
          */
         public String URL_ARTS_ROOM_INFO = "https://app.arts.xueersi.com/v2/Live/getInfoBaseData";
 
+        /**文科新课件平台 排名接口*/
+        public String URL_ARTS_TEAM_CLASS_RANK="https://app.arts.xueersi.com/v2/LiveRank/getStuGroupTeamClassRanking";
     }
 
 }
