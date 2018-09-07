@@ -135,8 +135,6 @@ public interface XESCODE {
     /** 老师点赞 */
     int TEACHER_PRAISE = 236;
 
-    /**文科 表扬学生（多题作答表扬全对、语音作答按分数区间表扬）*/
-    int ARTS_TEACHER_PRAISE =1160;
 
     /** 分队仪式 */
     int TEAM_PK_TEAM_SELECT = 230;
@@ -188,5 +186,9 @@ public interface XESCODE {
     /**文科教师端提醒交卷**/
     int ARTS_REMID_SUBMIT = 1161;
 
+    /**文科 表扬学生（多题作答表扬全对、语音作答按分数区间表扬）*/
+    int ARTS_PARISE_ANSWER_RIGHT =1160;
 
+    /**文科单题表扬*/
+    int ARTS_PRAISE_ANSWER_RIGHT_SINGLE = 1162;
 }
