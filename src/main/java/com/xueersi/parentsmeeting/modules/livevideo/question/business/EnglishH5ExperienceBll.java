@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -97,7 +98,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        LiveVideoActivityBase mediaPlayerControl = getInstance(LiveVideoActivityBase.class);
                         if (mediaPlayerControl != null) {
                             mediaPlayerControl.start();
                         }
@@ -109,7 +110,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        LiveVideoActivityBase mediaPlayerControl = getInstance(LiveVideoActivityBase.class);
                         mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                         mediaPlayerControl.start();
                         showQuestion.onHide(questionEntity);
@@ -137,7 +138,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        LiveVideoActivityBase mediaPlayerControl = getInstance(LiveVideoActivityBase.class);
                         if (mediaPlayerControl != null) {
                             mediaPlayerControl.start();
                         }
@@ -149,7 +150,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        LiveVideoActivityBase mediaPlayerControl = getInstance(LiveVideoActivityBase.class);
                         mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                         mediaPlayerControl.start();
                         showQuestion.onHide(questionEntity);
@@ -214,44 +215,45 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         @Override
         public void liveSubmitTestH5Answer(final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID,
                                            String testAnswer, String courseware_type, String isSubmit, double
-                                                           voiceTime, boolean isRight, final QuestionSwitch
+                                                   voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
             String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
             String userMode = "1";
+            String isArts = liveBackBll.getIsArts() + "";
             getCourseHttpManager().sumitExperienceCourseWareH5(stuId, mVideoEntity.getLiveId(),
-                    videoQuestionLiveEntity.id, mVideoEntity.getChapterId(), testAnswer, voiceTime, isRight, new
-                            HttpCallBack() {
+                    videoQuestionLiveEntity.id, mVideoEntity.getChapterId(), testAnswer, voiceTime, isRight, isArts,
+                    mVideoEntity.getSubmitCourseWareH5AnswerUseVoiceUrl(), new HttpCallBack() {
 
-                                @Override
-                                public void onPmSuccess(ResponseEntity responseEntity) {
-                                    VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer
-                                            (responseEntity,
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) {
+                            VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer
+                                    (responseEntity,
                                             true);
-                                    entity.setVoice(true);
-                                    if (StringUtils.isSpace(entity.getTestId())) {
-                                        entity.setTestId(videoQuestionLiveEntity.id);
-                                    }
-                                    if (onAnswerReslut != null) {
-                                        onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
-                                    }
-                                }
+                            entity.setVoice(true);
+                            if (StringUtils.isSpace(entity.getTestId())) {
+                                entity.setTestId(videoQuestionLiveEntity.id);
+                            }
+                            if (onAnswerReslut != null) {
+                                onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
+                            }
+                        }
 
-                                @Override
-                                public void onPmFailure(Throwable error, String msg) {
-                                    if (onAnswerReslut != null) {
-                                        onAnswerReslut.onAnswerFailure();
-                                    }
-                                }
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            if (onAnswerReslut != null) {
+                                onAnswerReslut.onAnswerFailure();
+                            }
+                        }
 
-                                @Override
-                                public void onPmError(ResponseEntity responseEntity) {
-                                    if (!responseEntity.isJsonError()) {
-                                        if (onAnswerReslut != null) {
-                                            onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
-                                        }
-                                    }
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            if (!responseEntity.isJsonError()) {
+                                if (onAnswerReslut != null) {
+                                    onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
                                 }
-                            });
+                            }
+                        }
+                    });
         }
     }
 }

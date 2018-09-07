@@ -94,6 +94,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
@@ -154,7 +155,7 @@ import static com.xueersi.ui.dialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY
  * 体验课播放器
  */
 public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implements BaseLiveMediaControllerBottom
-        .MediaChildViewClick {
+        .MediaChildViewClick,MediaControllerAction{
     QuestionBll questionBll;
     LiveBackBll liveBackBll;
     private RelativeLayout rlLiveMessageContent;
@@ -241,7 +242,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     private PopupWindow mFeedbackWindow;
 
-
     // 定时获取聊天记录的任务
     class ScanRunnable implements Runnable {
         HandlerThread handlerThread = new HandlerThread("ScanRunnable");
@@ -271,7 +271,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         }
     }
-
     /**
      * 播放时长，5分钟统计
      */
@@ -870,6 +869,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         for (LiveBackBaseBll businessBll : businessBlls) {
             businessBll.initViewF(null, rlQuestionContent, new AtomicBoolean(mIsLand));
         }
+        ProxUtil.getProxUtil().put(this, MediaControllerAction.class, this);
+        ProxUtil.getProxUtil().put(this, LiveVideoActivityBase.class, this);
         playNewVideo(Uri.parse(mWebPath), mSectionName);
         chatCfgServerList = getIntent().getStringArrayListExtra("roomChatCfgServerList");
         expChatId = getIntent().getStringExtra("expChatId");
@@ -983,6 +984,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 return;
             }
             seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
+//            seekTo(25000);
         }
         // 心跳时间的统计
         mHandler.postDelayed(mPlayDuration, mPlayDurTime);
@@ -1266,6 +1268,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         ivTeacherNotpresent.setVisibility(View.VISIBLE);
 //        ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
         ivTeacherNotpresent.setBackgroundResource(R.drawable.live_free_play_end);
+        lectureLivePlayBackBll.sendRecordInteract(mVideoEntity.getChapterId(),getmChatCount());
         // 获取学生的学习反馈
         lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
                 getDataCallBack);
@@ -1377,6 +1380,27 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     public void onStop() {
         super.onStop();
         liveBackBll.onStop();
+    }
+
+    private int getmChatCount(){
+        int times = 0;
+//        String sender = UserBll.getInstance().getMyUserInfoEntity().getChatName();
+        for (int i = 0; i < mMsgs.size(); i++) {
+            if(mMsgs.get(i).getSender().equals("我")){
+                times++;
+            }
+        }
+        return times;
+    }
+
+    @Override
+    public void attachMediaController() {
+        rlQuestionContent.removeAllViews();
+    }
+
+    @Override
+    public void release() {
+
     }
 
 }

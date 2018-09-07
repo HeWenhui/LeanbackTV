@@ -177,10 +177,12 @@ public class LiveVideoConfig {
 
     /**体验课互动题提交答案*/
     public static String LIVE_EXPE_SUBMIT = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
+    /**体验课主观题提交答案*/
+//    public static String LIVE_EXPE_SUBMIT_SUBJECT = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/subjectiveSubmit";
     /** 体验课非h5语音互动题提交答案*/
-    public static String URL_EXPE_SUBMIT_SPEECHEVAL = AppConfig.HTTP_HOST_TEAMPK + "science/AutoLive/submitSpeechEval";
+//    public static String URL_EXPE_SUBMIT_SPEECHEVAL = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/submitSpeechEval";
     /** 体验课h5语音评测提交答案*/
-    public static String URL_EXPE_SUBMIT_TEST_H5_ANSWER = AppConfig.HTTP_HOST_TEAMPK+"science/AutoLive/submitCourseWareH5AnswerUseVoice";
+//    public static String URL_EXPE_SUBMIT_TEST_H5_ANSWER = AppConfig.HTTP_HOST_TEAMPK+"/science/AutoLive/submitCourseWareH5AnswerUseVoice";
     /** 获取标记点列表 */
     public static String URL_LIVE_GET_MARK_POINTS = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/getMarkpoint";
     /** 保存标记点 */
@@ -203,6 +205,8 @@ public class LiveVideoConfig {
     public static String URL_AUTO_LIVE_RECEIVE_GOLD = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/receiveGold";
     /** 获取体验课聊天记录 */
     public static String URL_AUTO_LIVE_MSGS = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/getLiveCourseMsgs";
+    /** 提交体验课交互记录*/
+    public static String URL_AUTO_LIVE_RECORD_INTERACT = AppConfig.HTTP_HOST_TEAMPK +"/secience/AutoLive/recordInteract";
     /** 获取讲座直播回放中更多课程的广告信息 */
     public static String URL_LEC_AD_CASE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getAdCase";
     /** 获取体验课学习报告 */

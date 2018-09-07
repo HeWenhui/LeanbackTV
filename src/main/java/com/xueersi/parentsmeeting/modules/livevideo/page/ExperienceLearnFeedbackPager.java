@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.RadioGroup;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.log.Loger;
@@ -136,7 +137,7 @@ public class ExperienceLearnFeedbackPager extends BasePager {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                lectureLivePlayBackBll.sendExperienceFeedback(mVideoEntity.getStuCourseId(), mVideoEntity.getLiveId()
+                lectureLivePlayBackBll.sendExperienceFeedback(UserBll.getInstance().getMyUserInfoEntity().getStuId(), mVideoEntity.getLiveId()
                         , mVideoEntity.getSubjectId(), mVideoEntity.getGradId(), mVideoEntity.getChapterId(), etSuggest.getText().toString(), jsonOption, new
                                 HttpCallBack() {
 

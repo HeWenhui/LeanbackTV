@@ -704,7 +704,16 @@ public class LectureLivePlayBackBll extends BaseBll {
                 Log.e("Duncan", "livebackmsgsize:" + livebackmsg.getMsg().size());
             }
         });
+    }
 
+    public void sendRecordInteract(String termId,int times){
+        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+        mCourseHttpManager.sendExpeRecordInteract(stuId, termId, times, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Loger.i(TAG, "sendRecordInteract : Success");
+            }
+        });
     }
 
     // 18.04.11 获取讲座直播回放中的更多课程的广告信息
@@ -758,39 +767,39 @@ public class LectureLivePlayBackBll extends BaseBll {
      * @param dataLoadEntity
      * @param sectionId
      */
-    public void saveQuestionResults(final DataLoadEntity dataLoadEntity, final String srcType, final String sectionId,
-                                    final String result,
-                                    final String testDay, final String liveId, final int livePlayType) {
-        // 从网络更新数据库数据
-        if (!NetWorkHelper.isNetworkAvailable(mContext)) {
-            postDataLoadEvent(dataLoadEntity.webDataError());
-            EventBus.getDefault().post(new PlaybackVideoEvent.OnPlayVideoWebError(result));
-            return;
-        }
-        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        // 网络加载数据
-        mCourseHttpManager.saveTestRecords(myUserInfoEntity.getEnstuId(), srcType, sectionId, result, testDay,
-                liveId, livePlayType, false, false, new HttpCallBack(dataLoadEntity) {
-
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        VideoResultEntity entity = mCourseHttpResponseParser
-                                .parseQuestionAnswer(responseEntity, false);
-                        isEmpty(entity, dataLoadEntity);
-                        EventBus.getDefault().post(new PlaybackVideoEvent.OnAnswerReslut(entity));
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        XESToastUtils.showToast(mContext, msg);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
-                    }
-                });
-    }
+//    public void saveQuestionResults(final DataLoadEntity dataLoadEntity, final String srcType, final String sectionId,
+//                                    final String result,
+//                                    final String testDay, final String liveId, final int livePlayType) {
+//        // 从网络更新数据库数据
+//        if (!NetWorkHelper.isNetworkAvailable(mContext)) {
+//            postDataLoadEvent(dataLoadEntity.webDataError());
+//            EventBus.getDefault().post(new PlaybackVideoEvent.OnPlayVideoWebError(result));
+//            return;
+//        }
+//        MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+//        // 网络加载数据
+//        mCourseHttpManager.saveTestRecords(myUserInfoEntity.getEnstuId(), srcType, sectionId, result, testDay,
+//                liveId, livePlayType, false, false, new HttpCallBack(dataLoadEntity) {
+//
+//                    @Override
+//                    public void onPmSuccess(ResponseEntity responseEntity) {
+//                        VideoResultEntity entity = mCourseHttpResponseParser
+//                                .parseQuestionAnswer(responseEntity, false);
+//                        isEmpty(entity, dataLoadEntity);
+//                        EventBus.getDefault().post(new PlaybackVideoEvent.OnAnswerReslut(entity));
+//                    }
+//
+//                    @Override
+//                    public void onPmFailure(Throwable error, String msg) {
+//                        XESToastUtils.showToast(mContext, msg);
+//                    }
+//
+//                    @Override
+//                    public void onPmError(ResponseEntity responseEntity) {
+//                        XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
+//                    }
+//                });
+//    }
 
     public void sendLiveCourseVisitTime(final String stuCouId, final String liveId, final int hbTime, final Handler handler, final long delayMillis) {
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();

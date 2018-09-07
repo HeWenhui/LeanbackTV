@@ -384,6 +384,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             Loger.e(TAG, "======> mulloadUrlLive:" + reloadurl);
         } else {
             String loadUrl = url + "?t=" + System.currentTimeMillis();
+            if (!url.isEmpty() && url.substring(url.length()-1).equals("&")){
+                loadUrl = url+"t="+ System.currentTimeMillis();
+            }
             if (isPlayBack) {
                 loadUrl += "&isPlayBack=1";
             }
