@@ -41,6 +41,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
@@ -748,6 +749,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         }
     }
 
+    long xescdnLog2Before = 0;
+
     private void xescdnLog2(HashMap<String, String> defaultKey, JSONObject dataJson) {
         final JSONObject requestJson = new JSONObject();
         try {
@@ -782,6 +785,27 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                                 baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, callback);
                             }
                         }, retryInt.incrementAndGet() * 1000);
+                    }
+                    if (e instanceof SocketTimeoutException) {
+                        final long now = System.currentTimeMillis();
+                        if (now - xescdnLog2Before < 5 * 60 * 1000) {
+                            return;
+                        }
+                        liveThreadPoolExecutor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                URLDNS urldns = new URLDNS();
+                                try {
+                                    DNSUtil.getDns(urldns, logurl);
+                                    startTraceRoute(logurl, urldns.ip, oldCipdispatch);
+                                    xescdnLog2Before = now;
+                                } catch (MalformedURLException e1) {
+                                    e1.printStackTrace();
+                                } catch (UnknownHostException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        });
                     }
                 }
 
