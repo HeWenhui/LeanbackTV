@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +29,7 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
     private String mCoinStr;
 
     private static final String TEXTCOLOR = "#FFDB2A";
-    private static final int TEXTSIZE = 24;
+    private static final int TEXTSIZE = 25;
 
     private static final String TITLE_FILE_NAME = "img_15.png";
     private static final String TITLE_BG_FILE_NAME = "img_16.png";
@@ -123,10 +124,11 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
             Rect fontRect = new Rect();
             paint.getTextBounds(mCoinStr, 0, mCoinStr.length(), fontRect);
             int textHeight = fontRect.height();
-            Rect drawRect = null;
-            drawRect = new Rect(0, 0, width, height - textHeight / 2);
+            Loger.e("ArtsLottie","=====>textHeight:"+textHeight+":"+height);
             Paint.FontMetricsInt fontMetricsInt = paint.getFontMetricsInt();
-            int baseLine = (drawRect.bottom + drawRect.bottom - fontMetricsInt.bottom - fontMetricsInt.top) / 2;
+            int baseLine = (height - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
+            Loger.e("ArtsLottie","=====>baseLine:"+baseLine);
+            canvas.drawColor(Color.RED);
             canvas.drawText(mCoinStr, 0, baseLine, paint);
         }
         return resultBitmap;
