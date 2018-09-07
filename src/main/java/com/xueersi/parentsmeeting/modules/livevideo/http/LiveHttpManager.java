@@ -411,6 +411,34 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(url, params, requestCallBack);
     }
 
+    /**
+     * 提交文科新课件平台测试题
+     *
+     * @param type            视频类型
+     * @param enstuId         用户加密ID
+     * @param testId          测试题ID
+     * @param liveId          直播ID
+     * @param testAnswer      测试题答案
+     * @param isRight
+     * @param requestCallBack
+     */
+    public void liveNewArtsSubmitTestAnswer(int type, String enstuId, String srcType, String testId, String liveId, String
+            testAnswer, String userMode, boolean isVoice,
+                                     boolean isRight, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSTEST_ANSWER;
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("answer", testAnswer);
+        params.addBodyParam("isPlayBack", "1");
+        params.addBodyParam("isForce", "1");
+        setDefaultParameter(params);
+        sendPost(url, params, requestCallBack);
+        Loger.e("Duncan", "======> liveNewArtsSubmitTestAnswer:" + url);
+    }
+
+
+
     public void getTestAnswerTeamStatus(String testId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url = liveVideoSAConfigInner.URL_LIVE_ANSWER_TEAM;

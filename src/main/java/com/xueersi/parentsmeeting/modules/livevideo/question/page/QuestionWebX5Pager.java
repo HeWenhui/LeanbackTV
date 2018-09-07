@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
+import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
@@ -39,8 +41,16 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+
+import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
 /**
  * @author linyuqiang
@@ -74,6 +84,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private int mGoldNum;
     private int mEngerNum;
     private boolean allowTeamPk;
+    private File mMorecacheout;
+    private File cacheFile;
     /**
      * 文科新课件平台 试题
      **/
@@ -96,6 +108,19 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         this.stuCouId = stuCouId;
         this.allowTeamPk = allowTeamPk;
         mLogtf.i("QuestionWebX5Pager:liveid=" + liveid + ",testId=" + testId);
+        cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
+        if (cacheFile == null) {
+            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
+        }
+        if (!cacheFile.exists()) {
+            cacheFile.mkdirs();
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        Date date = new Date();
+        final String today = dateFormat.format(date);
+        final File todayCacheDir = new File(cacheFile, today);
+        final File todayLiveCacheDir = new File(todayCacheDir, liveid);
+        mMorecacheout = new File(todayLiveCacheDir, liveid + "artschild");
         initData();
     }
 
@@ -329,6 +354,41 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         public MyWebViewClient() {
             super(TAG);
         }
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
+            File file;
+            int index = s.indexOf("courseware_pages");
+            if (index != -1) {
+                String url2 = s.substring(index + "courseware_pages".length());
+                int index2 = url2.indexOf("?");
+                if (index2 != -1) {
+                    url2 = url2.substring(0, index2);
+                }
+                file = new File(mMorecacheout, url2);
+                Loger.e("mqtt", "shouldInterceptRequest:file=" + file + ",file=" + file.exists());
+            } else {
+                file = new File(mMorecacheout, MD5Utils.getMD5(s));
+                index = s.lastIndexOf("/");
+                String name = s;
+                if (index != -1) {
+                    name = s.substring(index);
+                }
+                Loger.e("mqtt", "shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
+            }
+            if (file.exists()) {
+                FileInputStream inputStream = null;
+                try {
+                    inputStream = new FileInputStream(file);
+                    String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
+                    String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                    WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                    return webResourceResponse;
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            return super.shouldInterceptRequest(view, s);
+        }
 
         @Override
         public void onPageFinished(WebView view, String url) {
@@ -363,10 +423,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             super.onPageStarted(view, url, favicon);
         }
 
-        @Override
-        public WebResourceResponse shouldInterceptRequest(WebView webView, String s) {
-            return super.shouldInterceptRequest(webView, s);
-        }
+//        @Override
+//        public WebResourceResponse shouldInterceptRequest(WebView webView, String s) {
+//            return super.shouldInterceptRequest(webView, s);
+//        }
 
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {

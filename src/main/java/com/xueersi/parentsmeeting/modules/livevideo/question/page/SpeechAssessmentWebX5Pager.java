@@ -32,7 +32,9 @@ import com.xueersi.lib.framework.utils.string.MD5Utils;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayerListening;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
@@ -120,6 +122,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
     String stuCouId;
     boolean IS_SCIENCE;
     private boolean isStandingLive = false;
+    private String mUrl;
+    private String mFinalUrl;
     // private AudioPlayerManager mAudioPlayerManager;
 
     public SpeechAssessmentWebX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String testId, String stuId, boolean isLive,
@@ -182,22 +186,29 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
         //       wvSubjectWeb.loadUrl("http://172.88.1.180:8084/");
-        String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
+        if(LiveVideoConfig.isNewArts){
+            VideoQuestionLiveEntity getInfo = (VideoQuestionLiveEntity)baseVideoQuestionEntity;
+            mUrl = getInfo.getUrl();
+            mFinalUrl = mUrl;
+            Loger.e("SpeechAssessmentWebX5Pager","=======> loadUrl:" + mUrl);
+        } else{
+            String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
 //        String url = "http://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
 //                liveid + "/" + stuCouId + "/" + testId + "/" + stuId;
-        String url = "https://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
-                liveid + "/" + testId + "/" + stuId;
+            mUrl = "https://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
+                    liveid + "/" + testId + "/" + stuId;
 //        String url = "http://172.88.1.180:8082";
-        if (!StringUtils.isEmpty(nonce)) {
-            url += "?nonce=" + nonce;
-            url += "&stuCouId=" + stuCouId;
-        } else {
-            url += "?stuCouId=" + stuCouId;
+            if (!StringUtils.isEmpty(nonce)) {
+                mUrl += "?nonce=" + nonce;
+                mUrl += "&stuCouId=" + stuCouId;
+            } else {
+                mUrl += "?stuCouId=" + stuCouId;
+            }
+            if (isStandingLive) {
+                mUrl += "&isStandingLive=1&isAudio=1";
+            }
+            mFinalUrl = mUrl;
         }
-        if (isStandingLive) {
-            url += "&isStandingLive=1&isAudio=1";
-        }
-        final String finalUrl = url;
         boolean have = XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
 
             @Override
@@ -216,13 +227,14 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                     mLogtf.d("initData:onGuarantee:finish");
                     return;
                 }
-                wvSubjectWeb.loadUrl(finalUrl);
-                mLogtf.d("initData:onGuarantee:url=" + finalUrl);
+                wvSubjectWeb.loadUrl(mFinalUrl);
+                mLogtf.d("initData:onGuarantee:url=" + mFinalUrl);
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
         if (have) {
-            wvSubjectWeb.loadUrl(url);
-            mLogtf.d("initData:url=" + url);
+            wvSubjectWeb.loadUrl(mUrl);
+            Loger.e("SpeechAssessmentWebX5Pager","=======>webloadUrl:" + mUrl);
+            mLogtf.d("initData:url=" + mUrl);
         }
     }
 
@@ -339,11 +351,13 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             ViewGroup group = (ViewGroup) mView.getParent();
             if (group == null) {
                 wvSubjectWeb.destroy();
+                Loger.e("SpeechAssessmentWebX5Pager","=======>shouldOverrideUrlLoading0:" + url);
                 return true;
             }
             try {
                 String deUrl = URLDecoder.decode(url, "UTF-8");
                 mLogtf.d("shouldOverrideUrlLoading:deUrl=" + deUrl);
+                Loger.e("SpeechAssessmentWebX5Pager","=======>shouldOverrideUrlLoading1:" + deUrl);
                 matchBusiness(deUrl);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -372,6 +386,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             if (firstIndex == -1) {
                 command = data;
                 matchCommand(command, null);
+                Loger.e("SpeechAssessmentWebX5Pager","=======>matchBusiness:" + deUrl);
             } else {
                 command = data.substring(0, firstIndex);
                 if (!TextUtils.isEmpty(command)) {
@@ -431,6 +446,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         } else if (command.equals("getAppVersion")) {
             //获取版本号（并告知当前的评测类型）
             Loger.i(TAG, "getAppVersion");
+            Loger.e("SpeechAssessmentWebX5Pager","=======>getAppVersion:");
             getAppVersion(mData);
         } else if (command.equals("readingDone")) {
             //对话完毕指示
@@ -459,6 +475,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                     mSpeechType = speechType;
                 }
             }
+            Loger.e("SpeechAssessmentWebX5Pager","=======>jsAppVersion:");
             jsAppVersion();
         }
     }

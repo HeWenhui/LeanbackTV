@@ -551,7 +551,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void run() {
                 // 文科选择 填空题
                 if ("0".equals(videoQuestionLiveEntity.type) || "1".equals(videoQuestionLiveEntity.type)
-                        || "2".equals(videoQuestionLiveEntity.type) || "5".equals(videoQuestionLiveEntity.type)) {
+                        || "2".equals(videoQuestionLiveEntity.type)) {
                     mVPlayVideoControlHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -575,7 +575,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             activity.getWindow().getDecorView().invalidate();
                         }
                     });
-                } else if("4".equals(videoQuestionLiveEntity.type)){
+                } else if("4".equals(videoQuestionLiveEntity.type) || "5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)){
                     String id = videoQuestionLiveEntity.id;
                     if (speechAssessmentPager != null && id.equals(speechAssessmentPager.getId())) {
                         return;
@@ -624,12 +624,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager.initData();
 
                     } else {
+                        Loger.e("Duncan", "走人机000");
                         if ("1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                             if (rolePlayAction != null) {
                                 mQueAndBool.add(id);
                                 rolePlayAction.teacherPushTest(videoQuestionLiveEntity);
                                 return;
                             }
+                            Loger.e("Duncan", "走人机010");
                         }
                         if (rolePlayAction != null && id.equals(rolePlayAction.getQuestionId())) {
                             return;
@@ -638,6 +640,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             //走人机也通知多人的关掉WebSocket
                             rolePlayAction.onGoToRobot();
                         }
+                        Loger.e("Duncan", "走人机111");
                         speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo,
                                 videoQuestionLiveEntity,
                                 id, QuestionBll.this, stuCouId);

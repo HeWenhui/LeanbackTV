@@ -35,6 +35,8 @@ public class LiveVideoSAConfig {
 
         /** 直播课的直播提交测试题 */
         public String URL_LIVE_SUBMIT_TEST_ANSWER = HTTP_HOST + "/LiveCourse/submitTestAnswer";
+        /** 文科新课件平台提交测试题 */
+        public String URL_LIVE_SUBMIT_NEWARTSTEST_ANSWER = "http://laoshi.xueersi.com/libarts/v2/SubjectiveTest/submitTest";
         /** 直播课的直播提交测试题-语音答题 */
         public String URL_LIVE_SUBMIT_TEST_ANSWER_VOICE = HTTP_HOST + "/LiveCourse/submitTestAnswerUseVoice";
         /** 直播课的语音评测小组排名 */
@@ -180,6 +182,8 @@ public class LiveVideoSAConfig {
 
         /** 文科新课件平台 RolePlay 页面加载地址*/
         public String URL_NEWARTS_ROALPLAY_URL = "https://static.arts.xueersi.com/art_live/roleplay/";
+        /** 文科新课件平台 语文跟读 页面加载地址*/
+        public String URL_NEWARTS_CHINESEREADING_URL = "https://static.arts.xueersi.com/art_live/Chinese-speech-touch/";
         /**
          * 直播间 文科差异化参数配置接口 (注：直播间文科差异化配置参数 获取接口)
          */
