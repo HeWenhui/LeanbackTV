@@ -103,10 +103,10 @@ public class LogToFile {
             liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
         }
         Loger.i(getPrefix + ":" + TAG, message);
-//        if (AppConfig.DEBUG) {
-//            liveThreadPoolExecutor.execute(new WriteThread(message));
-//        }
-        liveThreadPoolExecutor.execute(new WriteThread(message));
+        if (AppConfig.DEBUG) {
+            liveThreadPoolExecutor.execute(new WriteThread(message));
+        }
+//        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
     public void d(String message) {
@@ -116,18 +116,18 @@ public class LogToFile {
             liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
         }
         Loger.i(getPrefix + ":" + TAG, message);
-//        if (AppConfig.DEBUG) {
-//            liveThreadPoolExecutor.execute(new WriteThread(message));
-//        }
-        liveThreadPoolExecutor.execute(new WriteThread(message));
+        if (AppConfig.DEBUG) {
+            liveThreadPoolExecutor.execute(new WriteThread(message));
+        }
+//        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
     public void debugSave(String message) {
         Loger.i(TAG, message);
-//        if (AppConfig.DEBUG) {
-//            liveThreadPoolExecutor.execute(new WriteThread(message));
-//        }
-        liveThreadPoolExecutor.execute(new WriteThread(message));
+        if (AppConfig.DEBUG) {
+            liveThreadPoolExecutor.execute(new WriteThread(message));
+        }
+//        liveThreadPoolExecutor.execute(new WriteThread(message));
     }
 
     public void e(String message, Throwable e) {
@@ -137,7 +137,9 @@ public class LogToFile {
             liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message + "**" + e);
         }
         Loger.i(getPrefix + ":" + TAG, message, e);
-        liveThreadPoolExecutor.execute(new WriteThread(message, e));
+        if (AppConfig.DEBUG) {
+            liveThreadPoolExecutor.execute(new WriteThread(message, e));
+        }
     }
 
     class WriteThread implements Runnable {

@@ -423,6 +423,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void onPlayError() {
+            mLogtf.d("onPlayError");
             isPlay = false;
             mHandler.removeCallbacks(mOpenTimeOutRun);
             mHandler.removeCallbacks(mBufferTimeOutRun);
