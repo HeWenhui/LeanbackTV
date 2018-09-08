@@ -175,6 +175,8 @@ public class LiveVideoConfig {
     public static String LIVE_WEBVIEW_ERROR = "live_webview_error";
     /** 直播语音弹幕 */
     public static String LIVE_SPEECH_BULLETSCREEN = "voice_barrage";
+    /** 直播-错误码 */
+    public static String LIVE_PLAY_ERROR = "live_play_error";
 
     //  体验课互动题提交答案
     public static String LIVE_EXPE_SUBMIT = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
