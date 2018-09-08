@@ -16,6 +16,7 @@ import com.netease.LDNetDiagnoService.LDNetTraceRoute;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.network.IpAddressUtil;
@@ -28,6 +29,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LogErrorEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.FileStringUtil;
@@ -98,10 +100,16 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private long heartTime;
     /** onNativeInvoke时间 */
     private long onNativeInvoke;
+    /** 直播云平台日志统计 */
     private String logurl = LiveVideoConfig.URL_CDN_LOG;
+    /** 直播云平台日志统计-多个的位置 */
+    int logIndex = 0;
+    /** 直播云平台日志统计-多个 */
+    private String[] logurls = {LiveVideoConfig.URL_CDN_LOG, LiveVideoConfig.URL_CDN_LOG1, LiveVideoConfig.URL_CDN_LOG2};
     private String userId;
     /** 当前播放的视频地址 */
     private Uri mUri;
+    private String mUriHost = "";
     static HashMap<Uri, String> sipMap = new HashMap<>();
     private String sip;
     private String versionName;
@@ -335,6 +343,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         handler.removeMessages(1);
         openStart = System.currentTimeMillis();
         mUri = vPlayer.getUri();
+        mUriHost = DNSUtil.getHost(mUri.toString());
         if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
             IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
             ijkMediaPlayer.setOnNativeInvokeListener(new IjkMediaPlayer.OnNativeInvokeListener() {
@@ -373,7 +382,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             public void run() {
                 URLDNS urldns = new URLDNS();
                 try {
-                    DNSUtil.getDns(urldns, mUri.toString());
+                    DNSUtil.getDns(urldns, mUriHost);
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
@@ -479,7 +488,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             e.printStackTrace();
         }
         xescdnLog2(defaultKey, dataJson, false);
-        startTraceRoute("" + mUri, msip, cip, false);
+        startTraceRoute("" + mUriHost, msip, cip, false);
     }
 
     @Override
@@ -681,106 +690,92 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         });
     }
 
-    private void xescdnLogHeart(HashMap<String, String> defaultKey, float averagefps, float averagefps2, long bufferduration, float bitrate) {
-        defaultKey.put("dataType", "603");
-        defaultKey.put("traceId", "" + UUID.randomUUID());
-        String remoteIp = getRemoteIp();
-        defaultKey.put("sip", "" + remoteIp);
-        JSONObject dataJson = new JSONObject();
-        try {
-            dataJson.put("channelname", "" + channelname);
-            if (lastPlayserverEntity != null) {
-                dataJson.put("appname", "" + lastPlayserverEntity.getServer().getAppname());
-                dataJson.put("provide", "" + lastPlayserverEntity.getProvide());
-            }
-            dataJson.put("bufferduration", "" + bufferduration);
-            dataJson.put("averagefps", "" + averagefps);
-            dataJson.put("averagefps2", "" + averagefps2);
-            dataJson.put("fps", "" + fps);
-            dataJson.put("bitrate", "" + bitrate);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        xescdnLog(defaultKey, dataJson);
-    }
-
-    private void xescdnLogPlay(HashMap<String, String> defaultKey, JSONObject dataJson) {
-        defaultKey.put("os", "" + Build.VERSION.SDK_INT);
-        defaultKey.put("device", "" + DeviceInfo.getDeviceName());
-        xescdnLog(defaultKey, dataJson);
-    }
-
-    private void xescdnLog(HashMap<String, String> defaultKey, JSONObject dataJson) {
-        final JSONObject requestJson = new JSONObject();
-        try {
-            requestJson.put("timestamp", "" + System.currentTimeMillis());
-            requestJson.put("appid", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
-            requestJson.put("serviceType", "6");
-            requestJson.put("uid", "" + userId);
-            requestJson.put("agent", "m-android " + versionName);
-            requestJson.put("pridata", dataJson);
-            for (String key : defaultKey.keySet()) {
-                String value = defaultKey.get(key);
-                requestJson.put(key, value);
-            }
-            final HttpRequestParams httpRequestParams = new HttpRequestParams();
-            httpRequestParams.setJson(requestJson.toString());
-            httpRequestParams.setWriteAndreadTimeOut(2);
-            final AtomicInteger retryInt = new AtomicInteger(0);
-            baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, new Callback() {
-                Callback callback = this;
-
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Loger.e(TAG, "xescdnLog:onFailure", e);
-                    if (retryInt.get() < 10) {
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                HttpRequestParams httpRequestParams = new HttpRequestParams();
-                                try {
-                                    JSONObject dataJson = requestJson.getJSONObject("data");
-                                    dataJson.put("retry", retryInt.get());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                httpRequestParams.setJson(requestJson.toString());
-                                httpRequestParams.setWriteAndreadTimeOut(10);
-                                baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, callback);
-                            }
-                        }, retryInt.incrementAndGet() * 1000);
-                    }
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    if (response.body() != null) {
-                        Loger.d(TAG, "xescdnLog:onResponse:retry=" + retryInt.get() + ",response=" + response.body().string());
-                    } else {
-                        Loger.d(TAG, "xescdnLog:onResponse:response=null");
-                    }
-                }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     long xescdnLog2Before = 0;
 
     private void uploadFile() {
         File[] fs = saveLogDir.listFiles();
+        ArrayList<LogErrorEntity> logErrorEntities = new ArrayList<>();
         if (fs != null) {
             for (int i = 0; i < fs.length; i++) {
                 File file = fs[i];
                 String string = FileStringUtil.readFromFile(file);
                 try {
                     JSONObject jsonObject = new JSONObject(string);
-                    jsonObject.put("pri", "920");
-                    xescdnOldLog(file, jsonObject);
-                } catch (JSONException e) {
+                    JSONObject pridata = jsonObject.optJSONObject("pridata");
+                    if (pridata != null) {
+                        LogErrorEntity logErrorEntity = new LogErrorEntity();
+                        logErrorEntity.url = pridata.optString("saveurl");
+                        int index = logErrorEntities.indexOf(logErrorEntity);
+                        long savetime = pridata.optLong("savetime");
+                        if (index != -1) {
+                            logErrorEntity = logErrorEntities.get(index);
+                            logErrorEntity.count++;
+                            if (logErrorEntity.lastTime < savetime) {
+                                logErrorEntity.lastTime = savetime;
+                            }
+                            if (logErrorEntity.firstTime > savetime) {
+                                logErrorEntity.firstTime = savetime;
+                            }
+                        } else {
+                            logErrorEntity.count = 0;
+                            logErrorEntity.firstTime = savetime;
+                            logErrorEntity.lastTime = savetime;
+                            logErrorEntities.add(logErrorEntity);
+                        }
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        }
+        if (!logErrorEntities.isEmpty()) {
+            HashMap<String, String> defaultKey = new HashMap<>();
+            defaultKey.put("ver", logVersion);
+            defaultKey.put("serv", serv);
+            defaultKey.put("pri", "920");
+            defaultKey.put("ts", "" + System.currentTimeMillis());
+            defaultKey.put("appid", "xes20001");
+            defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
+            defaultKey.put("agent", "m-android_" + versionName);
+            defaultKey.put("os", "" + Build.VERSION.SDK_INT);
+            defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
+            defaultKey.put("arch", "" + cpuName);
+            int totalRam = HardWareUtil.getTotalRam();
+            defaultKey.put("ram", "" + totalRam);
+            defaultKey.put("net", "" + getNet());
+            defaultKey.put("cpu", "" + getCpuRate());
+            defaultKey.put("mem", "" + getMemRate());
+            String cip = oldCipdispatch;
+            if (StringUtils.isEmpty(cip)) {
+                cip = IpAddressUtil.USER_IP;
+            }
+            defaultKey.put("cip", "" + cip);
+            defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
+            String msip = getRemoteIp();
+            defaultKey.put("sip", "" + msip);
+            defaultKey.put("tid", "" + UUID.randomUUID());
+
+            JSONArray dataJson = new JSONArray();
+            try {
+                JSONObject requestJson = new JSONObject();
+
+                for (String key : defaultKey.keySet()) {
+                    String value = defaultKey.get(key);
+                    requestJson.put(key, value);
+                }
+                for (int i = 0; i < logErrorEntities.size(); i++) {
+                    LogErrorEntity logErrorEntity = logErrorEntities.get(i);
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("url", "" + logErrorEntity.url);
+                    jsonObject.put("count", logErrorEntity.count);
+                    jsonObject.put("firstTime", logErrorEntity.firstTime);
+                    jsonObject.put("lastTime", logErrorEntity.lastTime);
+                    dataJson.put(jsonObject);
+                }
+                requestJson.put("pridata", dataJson);
+                xescdnLogUrl(requestJson);
+            } catch (JSONException e) {
+                logger.d("uploadFile", e);
             }
         }
     }
@@ -797,34 +792,38 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         String error = "save" + s + ".txt";
         File file = new File(saveLogDir, error);
         FileStringUtil.saveStrToFile(savestr, file);
-        String string = FileStringUtil.readFromFile(file);
-        logger.d("saveStrToFile:equals=" + (string.equals(savestr)));
+//        String string = FileStringUtil.readFromFile(file);
+//        logger.d("saveStrToFile:equals=" + (string.equals(savestr)));
     }
 
-    private void xescdnOldLog(final File file, final JSONObject requestJson) {
+    private void xescdnLogUrl(JSONObject requestJson) {
         final HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.setJson(requestJson.toString());
         httpRequestParams.setWriteAndreadTimeOut(10);
+        final AtomicInteger retryInt = new AtomicInteger(0);
         baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, new Callback() {
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.e(TAG, "xescdnOldLog:onFailure", e);
+                Loger.e(TAG, "xescdnLogUrl:onFailure", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.body() != null) {
-                    Loger.d(TAG, "xescdnOldLog:onResponse:response=" + response.body().string());
+                    Loger.d(TAG, "xescdnLogUrl:onResponse:retry=" + retryInt.get() + ",response=" + response.body().string());
                 } else {
-                    Loger.d(TAG, "xescdnOldLog:onResponse:response=null");
+                    Loger.d(TAG, "xescdnLogUrl:onResponse:response=null");
                 }
-                file.delete();
             }
         });
     }
 
     private void xescdnLog2(HashMap<String, String> defaultKey, final JSONObject dataJson, final boolean saveToFile) {
+//        if (AppConfig.DEBUG) {
+//            logurl = logurls[logIndex++ % logurls.length];
+//        }
+        final String templogurl = logurl;
         final JSONObject requestJson = new JSONObject();
         try {
             requestJson.put("pridata", dataJson);
@@ -842,27 +841,32 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Loger.e(TAG, "xescdnLog:onFailure", e);
-                    if (saveToFile) {
-                        saveStrToFile(requestJson.toString());
-                    } else {
-                        if (retryInt.get() < 10) {
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    HttpRequestParams httpRequestParams = new HttpRequestParams();
-                                    try {
-                                        JSONObject dataJson = requestJson.getJSONObject("pridata");
-                                        dataJson.put("retry", retryInt.get());
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    httpRequestParams.setJson(requestJson.toString());
-                                    httpRequestParams.setWriteAndreadTimeOut(10);
-                                    baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, callback);
-                                }
-                            }, retryInt.incrementAndGet() * 1000);
+                    if (retryInt.get() == 0) {
+                        try {
+                            dataJson.put("saveurl", templogurl);
+                            dataJson.put("savetime", System.currentTimeMillis());
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
                         }
                     }
+                    if (retryInt.get() < 10) {
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                HttpRequestParams httpRequestParams = new HttpRequestParams();
+                                try {
+                                    JSONObject dataJson = requestJson.getJSONObject("pridata");
+                                    dataJson.put("retry", retryInt.get());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                httpRequestParams.setJson(requestJson.toString());
+                                httpRequestParams.setWriteAndreadTimeOut(10);
+                                baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, callback);
+                            }
+                        }, retryInt.incrementAndGet() * 1000);
+                    }
+                    saveStrToFile(requestJson.toString());
                     if (e instanceof SocketTimeoutException) {
                         final long now = System.currentTimeMillis();
                         if (now - xescdnLog2Before < 5 * 60 * 1000) {
@@ -891,11 +895,19 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     } else {
                         Loger.d(TAG, "xescdnLog:onResponse:response=null");
                     }
-//                    saveStrToFile(requestJson.toString());
+//                    if (AppConfig.DEBUG) {
+//                        try {
+//                            dataJson.put("saveurl", templogurl);
+//                            dataJson.put("savetime", System.currentTimeMillis());
+//                        } catch (JSONException e1) {
+//                            e1.printStackTrace();
+//                        }
+//                        saveStrToFile(requestJson.toString());
+//                    }
                 }
             });
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.e("xescdnLog2", e);
         }
     }
 
@@ -986,12 +998,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             dataJson.put("bytes", "" + (trafficStatisticByteCount - lastTrafficStatisticByteCount));
             dataJson.put("uid", "" + userId);
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.e("onOpenFailed", e);
         }
         xescdnLog2(defaultKey, dataJson, false);
 
         if (playFailCode.getCode() == PlayFailCode.TIME_OUT) {
-            startTraceRoute("" + mUri, msip, cip, false);
+            startTraceRoute("" + mUriHost, msip, cip, false);
         }
     }
 
@@ -1082,7 +1094,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 }
             });
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            logger.e("onOpenFailed", e);
         }
     }
 

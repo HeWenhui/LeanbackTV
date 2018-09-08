@@ -208,6 +208,8 @@ public class LiveVideoConfig {
     public static String URL_AUTO_LIVE_FEAD_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/learnFeedback";
     /** 直播云平台日志统计 */
     public static String URL_CDN_LOG = "http://log.xescdn.com/log";
+    public static String URL_CDN_LOG1 = "http://log1.xescdn.com/log";
+    public static String URL_CDN_LOG2 = "http://log2.xescdn.com/log";
     /** 更多课程数量的记录 */
     public static int MORE_COURSE;
     public static Boolean isloading = false;

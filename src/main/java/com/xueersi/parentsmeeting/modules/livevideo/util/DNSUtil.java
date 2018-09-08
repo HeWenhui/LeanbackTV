@@ -22,21 +22,26 @@ public class DNSUtil {
         return urldns;
     }
 
+    public static String getHost(String url2) {
+        int index = url2.indexOf("://");
+        if (index != -1) {
+            url2 = url2.substring(index + 3);
+        }
+        index = url2.indexOf("/");
+        if (index != -1) {
+            url2 = url2.substring(0, index);
+        }
+        index = url2.indexOf(":");
+        if (index != -1) {
+            url2 = url2.substring(0, index);
+        }
+        return url2;
+    }
+
     public static void getDns(URLDNS urldns, String url2) throws UnknownHostException {
         try {
             urldns.url = url2;
-            int index = url2.indexOf("://");
-            if (index != -1) {
-                url2 = url2.substring(index + 3);
-            }
-            index = url2.indexOf("/");
-            if (index != -1) {
-                url2 = url2.substring(0, index);
-            }
-            index = url2.indexOf(":");
-            if (index != -1) {
-                url2 = url2.substring(0, index);
-            }
+            url2 = getHost(url2);
             Loger.d(TAG, "getDns:url2=" + urldns.url + "," + url2);
             long before = System.currentTimeMillis();
             InetAddress inetAddress = InetAddress.getByName(url2);
