@@ -130,8 +130,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
                     DNSUtil.getDns(urldns, url2);
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
                 }
                 HttpURLConnection connection = null;
                 try {

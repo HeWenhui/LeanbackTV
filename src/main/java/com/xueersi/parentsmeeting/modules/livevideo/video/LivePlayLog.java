@@ -20,7 +20,6 @@ import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.DeviceInfo;
-import com.xueersi.lib.framework.utils.BarUtils;
 import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -31,7 +30,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.FileStringUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.HardWareUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
@@ -39,14 +40,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -68,20 +73,20 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     /** 每秒帧数-10秒统计 */
     private ArrayList<Float> framesPsTen = new ArrayList<Float>();
     /** 第一次播放的帧数 */
-    long fistDisaplyCount = 0;
+    private long fistDisaplyCount = 0;
     /** 上一次播放的帧数 */
-    long lastDisaplyCount = 0;
-    float fps = 12.0f;
+    private long lastDisaplyCount = 0;
+    private float fps = 12.0f;
     /** 帧数10秒统计,开始时间 */
-    long frame10Start;
-    long lastTrafficStatisticByteCount;
+    private long frame10Start;
+    private long lastTrafficStatisticByteCount;
     /** 视频是不是再缓冲 */
-    boolean isBuffer = false;
+    private boolean isBuffer = false;
     /** 缓冲开始时间 */
-    long bufferTime = 0;
+    private long bufferTime = 0;
     /** 缓冲类型 */
-    int bufType = 1;
-    boolean isSeek = false;
+    private int bufType = 1;
+    private boolean isSeek = false;
     private Activity activity;
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
     private BaseHttpBusiness baseHttpBusiness;
@@ -106,14 +111,21 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private String memsize;
     private String channelname;
     private int heartCount;
-    LDNetTraceClient ldNetTraceClient;
+    private LDNetTraceClient ldNetTraceClient;
     /** 一个地址5分钟传一次 */
-    HashMap<String, Long> urlTrace = new HashMap<>();
-    LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+    private HashMap<String, Long> urlTrace = new HashMap<>();
+    private LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+    /** 保存日志路径 */
+    private File saveLogDir;
     private boolean isLive = true;
     private DecimalFormat df = new DecimalFormat("######0.00");
-    String logVersion = "1";
-    String serv = "120";
+    private String logVersion = "1";
+    private String serv = "120";
+    private static SimpleDateFormat dateFormat;
+
+    static {
+        dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
+    }
 
     public LivePlayLog(final Activity activity, boolean isLive) {
         logger.setLogMethod(false);
@@ -126,7 +138,14 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         cpuName = HardWareUtil.getCpuName();
         memsize = DeviceUtils.getAvailRams(activity);
         this.isLive = isLive;
-
+        saveLogDir = LiveCacheFile.geCacheFile(activity, "liveplaylog");
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                uploadFile();
+            }
+        }, 20000);
 //        if (AppConfig.DEBUG) {
 //            logurl = "http://10.99.1.251/log";
 //        }
@@ -296,7 +315,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        xescdnLog2(defaultKey, dataJson);
+        xescdnLog2(defaultKey, dataJson, false);
     }
 
     public void onPause() {
@@ -355,8 +374,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 URLDNS urldns = new URLDNS();
                 try {
                     DNSUtil.getDns(urldns, mUri.toString());
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
@@ -402,7 +419,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                xescdnLog2(defaultKey, dataJson);
+                xescdnLog2(defaultKey, dataJson, false);
             }
         });
     }
@@ -461,8 +478,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        xescdnLog2(defaultKey, dataJson);
-        startTraceRoute("" + mUri, msip, cip);
+        xescdnLog2(defaultKey, dataJson, false);
+        startTraceRoute("" + mUri, msip, cip, false);
     }
 
     @Override
@@ -509,7 +526,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        xescdnLog2(defaultKey, dataJson);
+        xescdnLog2(defaultKey, dataJson, false);
     }
 
     String oldCipdispatch = "";
@@ -567,10 +584,10 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        xescdnLog2(defaultKey, dataJson);
+        xescdnLog2(defaultKey, dataJson, false);
 
         if (code == PlayFailCode.TIME_OUT) {
-            startTraceRoute("" + url, urldns.ip, cipdispatch);
+            startTraceRoute("" + url, urldns.ip, cipdispatch, false);
         }
     }
 
@@ -659,7 +676,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                xescdnLog2(defaultKey, dataJson);
+                xescdnLog2(defaultKey, dataJson, false);
             }
         });
     }
@@ -751,7 +768,63 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
     long xescdnLog2Before = 0;
 
-    private void xescdnLog2(HashMap<String, String> defaultKey, JSONObject dataJson) {
+    private void uploadFile() {
+        File[] fs = saveLogDir.listFiles();
+        if (fs != null) {
+            for (int i = 0; i < fs.length; i++) {
+                File file = fs[i];
+                String string = FileStringUtil.readFromFile(file);
+                try {
+                    JSONObject jsonObject = new JSONObject(string);
+                    jsonObject.put("pri", "920");
+                    xescdnOldLog(file, jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void saveStrToFile(String savestr) {
+        if (!saveLogDir.exists()) {
+            saveLogDir.mkdirs();
+        }
+        File[] fs = saveLogDir.listFiles();
+        if (fs != null && fs.length > 9) {
+            fs[0].delete();
+        }
+        String s = dateFormat.format(new Date());
+        String error = "save" + s + ".txt";
+        File file = new File(saveLogDir, error);
+        FileStringUtil.saveStrToFile(savestr, file);
+        String string = FileStringUtil.readFromFile(file);
+        logger.d("saveStrToFile:equals=" + (string.equals(savestr)));
+    }
+
+    private void xescdnOldLog(final File file, final JSONObject requestJson) {
+        final HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.setJson(requestJson.toString());
+        httpRequestParams.setWriteAndreadTimeOut(10);
+        baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Loger.e(TAG, "xescdnOldLog:onFailure", e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.body() != null) {
+                    Loger.d(TAG, "xescdnOldLog:onResponse:response=" + response.body().string());
+                } else {
+                    Loger.d(TAG, "xescdnOldLog:onResponse:response=null");
+                }
+                file.delete();
+            }
+        });
+    }
+
+    private void xescdnLog2(HashMap<String, String> defaultKey, final JSONObject dataJson, final boolean saveToFile) {
         final JSONObject requestJson = new JSONObject();
         try {
             requestJson.put("pridata", dataJson);
@@ -769,22 +842,26 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Loger.e(TAG, "xescdnLog:onFailure", e);
-                    if (retryInt.get() < 10) {
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                HttpRequestParams httpRequestParams = new HttpRequestParams();
-                                try {
-                                    JSONObject dataJson = requestJson.getJSONObject("pridata");
-                                    dataJson.put("retry", retryInt.get());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                    if (saveToFile) {
+                        saveStrToFile(requestJson.toString());
+                    } else {
+                        if (retryInt.get() < 10) {
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    HttpRequestParams httpRequestParams = new HttpRequestParams();
+                                    try {
+                                        JSONObject dataJson = requestJson.getJSONObject("pridata");
+                                        dataJson.put("retry", retryInt.get());
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    httpRequestParams.setJson(requestJson.toString());
+                                    httpRequestParams.setWriteAndreadTimeOut(10);
+                                    baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, callback);
                                 }
-                                httpRequestParams.setJson(requestJson.toString());
-                                httpRequestParams.setWriteAndreadTimeOut(10);
-                                baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, callback);
-                            }
-                        }, retryInt.incrementAndGet() * 1000);
+                            }, retryInt.incrementAndGet() * 1000);
+                        }
                     }
                     if (e instanceof SocketTimeoutException) {
                         final long now = System.currentTimeMillis();
@@ -797,10 +874,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                                 URLDNS urldns = new URLDNS();
                                 try {
                                     DNSUtil.getDns(urldns, logurl);
-                                    startTraceRoute(logurl, urldns.ip, oldCipdispatch);
+                                    startTraceRoute(logurl, urldns.ip, oldCipdispatch, true);
                                     xescdnLog2Before = now;
-                                } catch (MalformedURLException e1) {
-                                    e1.printStackTrace();
                                 } catch (UnknownHostException e1) {
                                     e1.printStackTrace();
                                 }
@@ -816,6 +891,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     } else {
                         Loger.d(TAG, "xescdnLog:onResponse:response=null");
                     }
+//                    saveStrToFile(requestJson.toString());
                 }
             });
         } catch (JSONException e) {
@@ -912,21 +988,22 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        xescdnLog2(defaultKey, dataJson);
+        xescdnLog2(defaultKey, dataJson, false);
 
         if (playFailCode.getCode() == PlayFailCode.TIME_OUT) {
-            startTraceRoute("" + mUri, msip, cip);
+            startTraceRoute("" + mUri, msip, cip, false);
         }
     }
 
     /**
      * TraceRoute 路由
      *
-     * @param url  地址
-     * @param msip 服务端ip
-     * @param cip  客户端ip
+     * @param url        地址
+     * @param msip       服务端ip
+     * @param cip        客户端ip
+     * @param saveToFile
      */
-    private void startTraceRoute(final String url, final String msip, final String cip) {
+    private void startTraceRoute(final String url, final String msip, final String cip, final boolean saveToFile) {
         Long time = urlTrace.get(url);
         long now = System.currentTimeMillis();
         if (time != null) {
@@ -1000,7 +1077,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        xescdnLog2(defaultKey, dataJson);
+                        xescdnLog2(defaultKey, dataJson, saveToFile);
                     }
                 }
             });

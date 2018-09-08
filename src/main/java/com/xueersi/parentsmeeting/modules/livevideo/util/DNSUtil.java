@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
  * 解析dns
  */
 public class DNSUtil {
+    static String TAG = "DNSUtil";
 
     public static URLDNS getDns(String url2) throws MalformedURLException, UnknownHostException {
         URLDNS urldns = new URLDNS();
@@ -21,12 +22,29 @@ public class DNSUtil {
         return urldns;
     }
 
-    public static void getDns(URLDNS urldns, String url2) throws MalformedURLException, UnknownHostException {
-        urldns.url = url2;
-        long before = System.currentTimeMillis();
-        URL url = new URL(url2);
-        InetAddress inetAddress = InetAddress.getByName(url.getHost());
-        urldns.ip = inetAddress.getHostAddress();
-        urldns.time = System.currentTimeMillis() - before;
+    public static void getDns(URLDNS urldns, String url2) throws UnknownHostException {
+        try {
+            urldns.url = url2;
+            int index = url2.indexOf("://");
+            if (index != -1) {
+                url2 = url2.substring(index + 3);
+            }
+            index = url2.indexOf("/");
+            if (index != -1) {
+                url2 = url2.substring(0, index);
+            }
+            index = url2.indexOf(":");
+            if (index != -1) {
+                url2 = url2.substring(0, index);
+            }
+            Loger.d(TAG, "getDns:url2=" + urldns.url + "," + url2);
+            long before = System.currentTimeMillis();
+            InetAddress inetAddress = InetAddress.getByName(url2);
+            urldns.ip = inetAddress.getHostAddress();
+            urldns.time = System.currentTimeMillis() - before;
+        } catch (UnknownHostException e) {
+            Loger.e(TAG, "getDns", e);
+            throw e;
+        }
     }
 }
