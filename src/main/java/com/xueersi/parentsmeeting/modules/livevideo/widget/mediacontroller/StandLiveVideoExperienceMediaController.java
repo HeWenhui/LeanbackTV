@@ -11,27 +11,27 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
  */
 public class StandLiveVideoExperienceMediaController extends MediaController2 {
 
-    public StandLiveVideoExperienceMediaController(Context context, MediaPlayerControl player) {
-        super(context, player);
-        if (mPlayer.isLandSpace()) {
-            try {
-                mControlsLayout.setVisibility(GONE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            mGestures.setTouchListener(standExperienceListener, true);
+//    public StandLiveVideoExperienceMediaController(Context context, MediaPlayerControl player) {
+//        super(context, player);
+//        if (mPlayer.isLandSpace()) {
+//            try {
+//                mControlsLayout.setVisibility(GONE);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            mGestures.setTouchListener(standExperienceListener, true);
 //            setControllerBottom(new ControllerB);
-        }
-    }
+//        }
+//    }
 
     public StandLiveVideoExperienceMediaController(Context context, MediaPlayerControl player, boolean isDrawHeight) {
         super(context, player, isDrawHeight);
         if (mPlayer.isLandSpace()) {
-            try {
+//            try {
 //                mControlsLayout.setVisibility(GONE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 //            mGestures.setTouchListener(standExperienceListener, true);//设置新手势，抵消掉原来的滑动
         }
     }

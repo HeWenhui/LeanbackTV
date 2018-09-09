@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.xueersi.common.business.AppBll;
@@ -32,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveUidRx;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandLiveVideoExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
@@ -217,8 +219,10 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         liveGetInfo.setPattern(pattern);
         try {
             String getInfoStr = mVideoEntity.getGetInfoStr();
-            JSONObject liveInfo = new JSONObject(getInfoStr);
-            liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
+            if (getInfoStr != null) {
+                JSONObject liveInfo = new JSONObject(getInfoStr);
+                liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
+            }
         } catch (Exception e) {
             logger.e("onCreate", e);
         }
@@ -279,6 +283,38 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         }
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
             businessBll.onPositionChanged(playPosition);
+        }
+        scanMessage(position);
+    }
+
+    /**
+     * 扫描聊天区开启或者关闭
+     *
+     * @param position
+     */
+    private void scanMessage(long position) {
+        VideoQuestionEntity oldQuestionEntity = mQuestionEntity;
+        int playPosition = TimeUtils.gennerSecond(position);
+        logger.d("scanQuestion:playPosition=" + playPosition);
+        List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+        if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
+            return;
+        }
+        int startTime;
+        for (VideoQuestionEntity videoQuestionEntity : lstVideoQuestion) {
+            startTime = videoQuestionEntity.getvQuestionInsretTime();
+            if (position == startTime) {
+                if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
+                    //体验课聊天区关闭或者打开，独立于任何题型
+                    array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity,
+                            videoQuestionEntity, showQuestion);
+
+                }
+                if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
+                    array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity,
+                            videoQuestionEntity, showQuestion);
+                }
+            }
         }
     }
 
@@ -425,17 +461,20 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
                     index = i;
                     break;
                 }
-            } else if (LocalCourseConfig.CATEGORY_OPEN_CHAT == videoQuestionEntity.getvCategory()) {//开启聊天
-                if (startTime <= playPosition && playPosition < endTime) {
-                    mQuestionEntity = videoQuestionEntity;
-                    index = i;
-                }
-            } else if (LocalCourseConfig.CATEGORY_CLOSE_CHAT == videoQuestionEntity.getvCategory()) {//关闭聊天
-                if (startTime <= playPosition && playPosition < endTime) {
-                    mQuestionEntity = videoQuestionEntity;
-                    index = i;
-                }
             }
+//            else if (LocalCourseConfig.CATEGORY_OPEN_CHAT == videoQuestionEntity.getvCategory()) {//开启聊天
+//                if (startTime <= playPosition && playPosition < endTime) {
+//                    mQuestionEntity = videoQuestionEntity;
+//                    index = i;
+//                    break;
+//                }
+//            } else if (LocalCourseConfig.CATEGORY_CLOSE_CHAT == videoQuestionEntity.getvCategory()) {//关闭聊天
+//                if (startTime <= playPosition && playPosition < endTime) {
+//                    mQuestionEntity = videoQuestionEntity;
+//                    index = i;
+//                    break;
+//                }
+//            }
         }
         if (mQuestionEntity != null) {
             mQuestionEntity.setIndex(index);
@@ -447,6 +486,20 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         LiveBackBaseBll liveBackBaseBll = array.get(mQuestionEntity.getvCategory());
         if (liveBackBaseBll != null) {
             liveBackBaseBll.showQuestion(oldQuestionEntity, mQuestionEntity, showQuestion);
+            //如果不是StandLiveVideoExperienceBll，即如果是各种题型，需要关闭聊天区
+            if (mQuestionEntity.getvCategory() != LocalCourseConfig.CATEGORY_OPEN_CHAT) {
+                array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity, mQuestionEntity,
+                        showQuestion);
+            }
+
+//            if (!(liveBackBaseBll instanceof StandLiveVideoExperienceBll)) {
+//                for (LiveBackBaseBll mliveBackBaseBll1 : liveBackBaseBlls) {
+//                    if (mliveBackBaseBll1 instanceof StandLiveVideoExperienceBll) {
+//                        mliveBackBaseBll1.showQuestion(oldQuestionEntity, mQuestionEntity, showQuestion);
+//                    }
+//                }
+//            }
+            Log.e(TAG, "" + mQuestionEntity.getCategory());
         }
     }
 
@@ -543,15 +596,13 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
     }
 
     public boolean onUserBackPressed() {
-
-        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
-            liveBackBaseBll.onUserBackPressed();
-        }
-
         boolean onUserBackPressed = allLiveBasePagerIml.onUserBackPressed();
         return onUserBackPressed;
     }
 
+    /**
+     * 视频结束的时候，扫描一遍所有的livebackbasebll是否需要做什么事情
+     */
     public void onLiveBackBaseBllUserBackPressed() {
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             liveBackBaseBll.onUserBackPressed();

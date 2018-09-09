@@ -122,8 +122,8 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
                 baseLiveMediaControllerBottom,
                 liveMessageLandEntities,
                 null);
-        //测试环境开启语音聊天
-//        mLiveMessagePager.onopenchat(true, "", false);
+//        初始化默认看不见这个布局
+//        mLiveMessagePager.onopenchat(openChat, "", false);
         mLiveMessagePager.setIrcState(videoExperiencIRCState);
         mRootView.addView(mLiveMessagePager.getRootView());
         mLiveMessagePager.setGetInfo(liveGetInfo);
@@ -174,16 +174,19 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
     @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
             .ShowQuestion showQuestion) {
-//        super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
+        super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
 
         if (questionEntity.getCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
             openChat = true;
         } else if (questionEntity.getCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
             openChat = false;
+        } else {
+            openChat = false;
         }
 
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onQuestionShow(true);
+            mLiveMessagePager.onopenchat(openChat, "", false);
         }
     }
 
