@@ -89,7 +89,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
     /**
      * 是否打开开关
      */
-    private boolean openChat = true;
+    private boolean openChat = false;
 
 
     public StandLiveVideoExperienceBll(Activity activity, LiveBackBll liveBackBll) {
@@ -105,10 +105,6 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
                          LiveGetInfo liveGetInfo,
                          HashMap<String, Object> businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
-
-//        chatCfgServerList.add("");
-
-
     }
 
     //
@@ -126,7 +122,8 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
                 baseLiveMediaControllerBottom,
                 liveMessageLandEntities,
                 null);
-        mLiveMessagePager.onopenchat(true, "", false);
+        //测试环境开启语音聊天
+//        mLiveMessagePager.onopenchat(true, "", false);
         mLiveMessagePager.setIrcState(videoExperiencIRCState);
         mRootView.addView(mLiveMessagePager.getRootView());
         mLiveMessagePager.setGetInfo(liveGetInfo);
@@ -151,9 +148,10 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         // 获取 聊天服务器地址  的接口地址
         ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
 
-        chatCfgServerList.add("chatgslb.xescdn.com");
-        chatCfgServerList.add("chatgslb.xesimg.com");
-        chatCfgServerList.add("10.99.1.15");
+        chatCfgServerList = mVideoEntity.getRoomChatCfgServerList();
+//        chatCfgServerList.add("chatgslb.xescdn.com");
+//        chatCfgServerList.add("chatgslb.xesimg.com");
+//        chatCfgServerList.add("10.99.1.15");
 
         TalkConfHost confHost = null;
         if (chatCfgServerList != null && chatCfgServerList.size() > 0) {

@@ -28,11 +28,11 @@ public class StandLiveVideoExperienceMediaController extends MediaController2 {
         super(context, player, isDrawHeight);
         if (mPlayer.isLandSpace()) {
             try {
-                mControlsLayout.setVisibility(GONE);
+//                mControlsLayout.setVisibility(GONE);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            mGestures.setTouchListener(standExperienceListener, true);
+//            mGestures.setTouchListener(standExperienceListener, true);//设置新手势，抵消掉原来的滑动
         }
     }
 
