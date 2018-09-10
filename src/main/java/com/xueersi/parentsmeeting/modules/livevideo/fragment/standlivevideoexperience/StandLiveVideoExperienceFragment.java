@@ -771,7 +771,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     @Override
     protected void resultComplete() {
         liveBackBll.onLiveBackBaseBllUserBackPressed();
-        onUserBackPressed();
+//        onUserBackPressed();
     }
 
     @Override

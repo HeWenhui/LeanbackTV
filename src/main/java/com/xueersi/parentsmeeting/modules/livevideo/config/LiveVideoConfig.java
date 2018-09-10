@@ -208,13 +208,14 @@ public class LiveVideoConfig {
     public static String URL_AUTO_LIVE_RECEIVE_GOLD = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/receiveGold";
     /** 获取体验课聊天记录 */
     public static String URL_AUTO_LIVE_MSGS = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/getLiveCourseMsgs";
+    /** 提交体验课交互记录*/
+    public static String URL_AUTO_LIVE_RECORD_INTERACT = AppConfig.HTTP_HOST_TEAMPK +"/secience/AutoLive/recordInteract";
     /** 获取讲座直播回放中更多课程的广告信息 */
     public static String URL_LEC_AD_CASE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getAdCase";
     /** 获取体验课学习报告 */
     public static String URL_AUTO_LIVE_FEAD_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/learnFeedback";
     /** 提交体验课学习反馈 */
-    public static String URL_AUTO_LIVE_LEARN_FEED_BACK = AppConfig.HTTP_HOST_TEAMPK +
-            "/science/AutoLive/submitFeedback";
+    public static String URL_AUTO_LIVE_LEARN_FEED_BACK =LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitFeedback";
     /** 直播云平台日志统计 */
     public static String URL_CDN_LOG = "http://log.xescdn.com/log";
     public static String URL_CDN_LOG1 = "http://log1.xescdn.com/log";

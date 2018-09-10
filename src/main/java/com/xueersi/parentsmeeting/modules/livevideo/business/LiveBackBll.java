@@ -40,6 +40,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 
@@ -48,14 +50,20 @@ import org.xutils.xutils.http.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by lyqai on 2018/7/17.
  */
-public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick, LiveOnLineLogs {
+public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick,
+        LiveOnLineLogs {
     private String TAG = "LiveBackBll";
     Logger logger = LoggerFactory.getLogger(TAG);
     Activity activity;
@@ -146,6 +154,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         mHttpManager = new LiveHttpManager(activity);
         mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         mHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
+
     }
 
     public int getLiveType() {
@@ -233,13 +242,15 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         } catch (Exception e) {
             logger.e("onCreate", e);
         }
-        String clientLog = mShareDataManager.getString(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, LiveVideoConfig.URL_LIVE_ON_LOAD_LOGS, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        String clientLog = mShareDataManager.getString(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, LiveVideoConfig
+                .URL_LIVE_ON_LOAD_LOGS, ShareDataManager.SHAREDATA_NOT_CLEAR);
         liveGetInfo.setClientLog(clientLog);
         liveUidRx.setLiveGetInfo(liveGetInfo);
         liveUidRx.onCreate();
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
+        initLiveMessageQueue();
     }
 
     public ArrayList<LiveBackBaseBll> getLiveBackBaseBlls() {
@@ -268,6 +279,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
+
         VideoQuestionEntity oldQuestionEntity = mQuestionEntity;
         int playPosition = TimeUtils.gennerSecond(position);
         logger.d("scanQuestion:playPosition=" + playPosition);
@@ -286,6 +298,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             if (liveBackBaseBll != null) {
                 logger.d("scanQuestion:onQuestionEnd:id=" + oldQuestionEntity.getvCategory());
                 liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
+                array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).onQuestionEnd(oldQuestionEntity);
             }
             showQuestion.onHide(oldQuestionEntity);
         }
@@ -301,6 +314,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     }
 
     /**
+     * 是否打开聊天区
+     */
+//    private boolean isOpenMessage = false;
+
+    /**
      * 扫描聊天区开启或者关闭
      *
      * @param position
@@ -313,22 +331,57 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
             return;
         }
-        int startTime;
+        //处理聊天区逻辑
         for (VideoQuestionEntity videoQuestionEntity : lstVideoQuestion) {
-            startTime = videoQuestionEntity.getvQuestionInsretTime();
-            if (position == startTime) {
-                if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
-                    //体验课聊天区关闭或者打开，独立于任何题型
-                    array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity,
-                            videoQuestionEntity, showQuestion);
-
-                }
-                if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
-                    array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity,
-                            videoQuestionEntity, showQuestion);
+            //这是使用for循环，仅仅只是为了拿到一个CATEGORY_OPEN_CHAT 或者CATEGORY_CLOSE_CHAT时间
+            if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT ||
+                    videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
+                //体验课聊天区关闭或者打开，独立于任何题型
+                if (openQue.peek() < closeQue.peek()) {
+                    if (playPosition < openQue.peek()) {
+                        array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT).showQuestion(oldQuestionEntity,
+                                videoQuestionEntity, showQuestion);
+                        Log.e(TAG, playPosition + " 1:进去了关闭站立直播聊天区");
+                    } else if (playPosition >= openQue.peek() && playPosition <= closeQue.peek()) {
+                        array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity,
+                                videoQuestionEntity, showQuestion);
+                        Log.e(TAG, playPosition + " :进去了打开站立直播聊天区");
+                    } else {
+                        array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT).showQuestion(oldQuestionEntity,
+                                videoQuestionEntity, showQuestion);
+                        Log.e(TAG, playPosition + " :进去了关闭站立直播聊天区");
+                        openQue.poll();
+                        closeQue.poll();
+                    }
                 }
             }
         }
+    }
+
+    private Queue<Integer> openQue;
+    private Queue<Integer> closeQue;
+
+    /**
+     * 判断开关聊天区是哪些时间段
+     */
+    private void initLiveMessageQueue() {
+        openQue = new PriorityQueue<>();
+        openQue.add(0);
+        closeQue = new PriorityQueue<>();
+        List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+        for (VideoQuestionEntity videoQuestionEntity : lstVideoQuestion) {
+            int openStartTime, closeStartTime;
+            if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
+                //体验课聊天区关闭或者打开，独立于任何题型
+                openStartTime = videoQuestionEntity.getvQuestionInsretTime();
+                openQue.add(openStartTime);
+            }
+            if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
+                closeStartTime = videoQuestionEntity.getvQuestionInsretTime();
+                closeQue.add(closeStartTime);
+            }
+        }
+
     }
 
     @Override
@@ -372,7 +425,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 }
             }
             mIsShowQuestion = false;
-            MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
+            MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction
+                    .class);
             mediaControllerAction.attachMediaController();
         }
     }
@@ -483,10 +537,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         if (liveBackBaseBll != null) {
             liveBackBaseBll.showQuestion(oldQuestionEntity, mQuestionEntity, showQuestion);
             //如果不是StandLiveVideoExperienceBll，即如果是各种题型，需要关闭聊天区
-            if (mQuestionEntity.getvCategory() != LocalCourseConfig.CATEGORY_OPEN_CHAT) {
-                array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity, mQuestionEntity,
-                        showQuestion);
-            }
+//            if (mQuestionEntity.getvCategory() != LocalCourseConfig.CATEGORY_OPEN_CHAT) {
+//                array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity, mQuestionEntity,
+//                        showQuestion);
+//            }
+            //如果题目已经结束，需要打开聊天区
 
 //            if (!(liveBackBaseBll instanceof StandLiveVideoExperienceBll)) {
 //                for (LiveBackBaseBll mliveBackBaseBll1 : liveBackBaseBlls) {
@@ -495,7 +550,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 //                    }
 //                }
 //            }
-            Log.e(TAG, "" + mQuestionEntity.getCategory());
+//            Log.e(TAG, "" + mQuestionEntity.getCategory());
         }
     }
 
@@ -503,6 +558,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         void onShow(boolean isShow, VideoQuestionLiveEntity videoQuestionLiveEntity);
 
         void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity);
+
     }
 
     /**
@@ -688,7 +744,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             return;
         }
         LiveLogCallback liveLogCallback = new LiveLogCallback();
-        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mGetInfo.getId(), mGetInfo.getUname(), enstuId,
+        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mGetInfo.getId()
+                , mGetInfo.getUname(), enstuId,
                 mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, liveLogCallback);
         liveLogCallback.setParams(params);
     }

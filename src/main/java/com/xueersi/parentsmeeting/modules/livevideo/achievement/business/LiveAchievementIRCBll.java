@@ -24,7 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
+//import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
@@ -51,6 +51,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         putInstance(LiveAchievementIRCBll.class, this);
+        initRecognizeDialog();
     }
 
     @Override
@@ -92,50 +93,50 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             });
         }
 
-        SpeakerRecognitionerInterface.checkResoureDownload(mContext, new LoadSoCallBack() {
-            @Override
-            public void start() {
-            }
+//        SpeakerRecognitionerInterface.checkResoureDownload(mContext, new LoadSoCallBack() {
+//            @Override
+//            public void start() {
+//            }
+//
+//            @Override
+//            public void success() {
+//                long interval = System.currentTimeMillis() - sTime;
+//
+//                if (mode != LiveTopic.MODE_TRANING || interval <= 60 * 1000) {
+//                    return;
+//                }
+//
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        SpeakerRecognitionerInterface speakerRecognitionerInterface = SpeakerRecognitionerInterface
+//                                .getInstance();
+//                        int init = speakerRecognitionerInterface.init();
+//                        if (init == 0) {
+//                            handler.post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
+//                                        recognizeDialog.showDialog();
+//                                    }
+//                                }
+//                            });
+//                        }
+//                    }
+//                }).start();
+//            }
 
-            @Override
-            public void success() {
-                long interval = System.currentTimeMillis() - sTime;
-
-                if (mode != LiveTopic.MODE_TRANING || interval <= 60 * 1000) {
-                    return;
-                }
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        SpeakerRecognitionerInterface speakerRecognitionerInterface = new SpeakerRecognitionerInterface();
-                        int init = speakerRecognitionerInterface.init();
-                        if (init == 0) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
-                                        recognizeDialog.showDialog();
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }).start();
-
-            }
-
-            @Override
-            public void progress(float progress, int type) {
-
-            }
-
-            @Override
-            public void fail(int errorCode, String errorMsg) {
-
-            }
-        });
-
+//            @Override
+//            public void progress(float progress, int type) {
+//
+//            }
+//
+//            @Override
+//            public void fail(int errorCode, String errorMsg) {
+//
+//            }
+//        });
+//
     }
 
     private void initRecognizeDialog() {

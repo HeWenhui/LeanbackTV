@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.learnfeedback;
 
 import android.app.Activity;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
@@ -48,6 +50,9 @@ public class ExperienceLearnFeedbackBll extends LiveBackBaseBll {
     public void onUserBackPressed() {
         super.onUserBackPressed();
         if (experienceLearnFeedbackPager != null && experienceLearnFeedbackPager.getRootView().getParent() == null) {
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
+                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
             mRootView.addView(experienceLearnFeedbackPager.getRootView());
         }
     }

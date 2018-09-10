@@ -546,6 +546,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         @Override
         protected void resultComplete() {
             super.resultComplete();
+            liveBackVideoFragment.resultComplete();
             mIsEnd = true;
         }
 
@@ -1027,8 +1028,10 @@ public class LiveBackVideoFragmentBase extends Fragment {
 //        mVideoEntity.setStuCourseId("22");
 //        mVideoEntity.setLiveId("333");
 //        LectureLivePlayBackBll lectureLivePlayBackBll = new LectureLivePlayBackBll(getActivity(), "");
-//        ExperienceLearnFeedbackPager expFeedbackPager = new ExperienceLearnFeedbackPager(getActivity(), mVideoEntity, getActivity().getWindow(), lectureLivePlayBackBll);
-//        mFeedbackWindow = new PopupWindow(expFeedbackPager.getRootView(), RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout
+//        ExperienceLearnFeedbackPager expFeedbackPager = new ExperienceLearnFeedbackPager(getActivity(),
+// mVideoEntity, getActivity().getWindow(), lectureLivePlayBackBll);
+//        mFeedbackWindow = new PopupWindow(expFeedbackPager.getRootView(), RelativeLayout.LayoutParams.MATCH_PARENT,
+// RelativeLayout
 //                .LayoutParams.MATCH_PARENT, false);
 //        mFeedbackWindow.setBackgroundDrawable(activity.getResources().getDrawable(R.color.transparent));
 //        mFeedbackWindow.setOutsideTouchable(true);

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
@@ -31,6 +32,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
@@ -49,7 +52,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
     /**
      * 聊天消失
      */
-    private final String TAG = "StandLiveVideoExperienceBll";
+//    private final String TAG = getClass().getSimpleName();
 
     private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
     /**
@@ -111,6 +114,8 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
     @Override
     public void initView() {
         super.initView();
+
+
         starAction = getInstance(LiveAchievementIRCBll.class);
         videoFragment = new LivePlayerFragment();
         mMediaController = new LiveMediaController(activity, videoFragment);
@@ -127,6 +132,15 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         mLiveMessagePager.setIrcState(videoExperiencIRCState);
         mRootView.addView(mLiveMessagePager.getRootView());
         mLiveMessagePager.setGetInfo(liveGetInfo);
+
+        QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
+        if (questionShowReg != null) {
+            questionShowReg.registQuestionShow(mLiveMessagePager);
+        }
+        EnglishShowReg englishShowReg = getInstance(EnglishShowReg.class);
+        if (englishShowReg != null) {
+            englishShowReg.registQuestionShow(mLiveMessagePager);
+        }
 
         connectChatServer();
     }
@@ -172,20 +186,26 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
     }
 
     @Override
+    public void onQuestionEnd(VideoQuestionEntity questionEntity) {
+        super.onQuestionEnd(questionEntity);
+
+    }
+
+    @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
             .ShowQuestion showQuestion) {
         super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
 
-        if (questionEntity.getCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
+        if (questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
             openChat = true;
-        } else if (questionEntity.getCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
+        } else if (questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
             openChat = false;
         } else {
             openChat = false;
         }
-
+        Log.e(TAG, "openChat = " + openChat);
         if (mLiveMessagePager != null) {
-            mLiveMessagePager.onQuestionShow(true);
+//            mLiveMessagePager.onQuestionShow(true);
             mLiveMessagePager.onopenchat(openChat, "", false);
         }
     }
