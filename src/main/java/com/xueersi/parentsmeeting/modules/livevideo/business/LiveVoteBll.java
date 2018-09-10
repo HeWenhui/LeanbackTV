@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -85,10 +87,6 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
 
     public void initView(final RelativeLayout bottomContent) {
         this.mRootView = bottomContent;
-    }
-
-    public void setLiveBll(LiveBll liveBll) {
-        // this.liveBll = ircState;
     }
 
     private void showResult(final LiveTopic.VoteEntity voteEntity) {
@@ -263,6 +261,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
                     gv1.setLayoutParams(lp1);
                     gv1.setHorizontalSpacing(50);
                     gv1.setVerticalSpacing(-40);
+                    gv1.setSelector(new ColorDrawable(Color.TRANSPARENT));
                     gv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> view, View view1, int position, long l) {
@@ -273,15 +272,15 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
                             if (circle_anim != null) {
                                 progress.startAnimation(circle_anim);  //开始动画
                             }
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ll_statistics.setVisibility(View.GONE);
-                                    mRootView.removeView(contentView);
-                                    contentView = null;
-                                }
-                            }, 20000);
+//                            Handler handler = new Handler();
+//                            handler.postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    ll_statistics.setVisibility(View.GONE);
+//                                    mRootView.removeView(contentView);
+//                                    contentView = null;
+//                                }
+//                            }, 200000);
                             // 未被选中的item变颜色
                             for (int i = 0 ; i < choiceNum ; i++){
                                 if(i == position){
@@ -335,15 +334,15 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
                                 if (circle_anim != null) {
                                     progress.startAnimation(circle_anim);  //开始动画
                                 }
-                                Handler handler = new Handler();
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ll_statistics.setVisibility(View.GONE);
-                                        mRootView.removeView(contentView);
-                                        contentView = null;
-                                    }
-                                }, 20000);
+//                                Handler handler = new Handler();
+//                                handler.postDelayed(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        ll_statistics.setVisibility(View.GONE);
+//                                        mRootView.removeView(contentView);
+//                                        contentView = null;
+//                                    }
+//                                }, 20000);
                                 LiveVoteBll.this.answer = answer;
                                 // 未被选中的选项背景色改变
                                 mIl_livevideo_vote_ps_choice.removeAllViews();

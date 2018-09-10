@@ -58,6 +58,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5P
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
@@ -172,9 +173,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
-        for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.onConfigurationChanged(newConfig);
+        if (liveBackBll != null) {
+            List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
+            for (LiveBackBaseBll businessBll : businessBlls) {
+                businessBll.onConfigurationChanged(newConfig);
+            }
         }
     }
 
@@ -289,6 +292,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             } else {
                 PlayErrorCode playErrorCode = PlayErrorCode.getError(arg2);
                 errorInfo.setText("视频播放失败 [" + playErrorCode.getCode() + "]");
+                //统计日志
+                PlayErrorCodeLog.livePlayError(liveBackBll, playErrorCode);
             }
         }
         rlQuestionContent.setVisibility(View.GONE);
@@ -487,11 +492,20 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (isInitialized() && pausePlay) {
             vPlayer.pause();
         }
+        if (liveBackVideoBll != null) {
+            liveBackVideoBll.onResume();
+        }
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if (!onPauseNotStopVideo.get()) {
+            if (liveBackVideoBll != null) {
+                liveBackVideoBll.onPause();
+            }
+        }
     }
 
     @Override
@@ -523,7 +537,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     @Override
+    protected void seekTo(long pos) {
+        super.seekTo(pos);
+        liveBackVideoBll.seekTo(pos);
+    }
+
+    @Override
     public void setSpeed(float speed) {
+        super.setSpeed(speed);
         String key = "null";
         if (mVideoEntity != null) {
             if ("LivePlayBackActivity".equals(where)) {//直播辅导
@@ -756,7 +777,12 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     public void onDestroy() {
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
-        liveBackBll.onDestory();
+        if (liveBackBll != null) {
+            liveBackBll.onDestory();
+        }
+        if (liveBackVideoBll != null) {
+            liveBackVideoBll.onDestroy();
+        }
         ProxUtil.getProxUtil().clear(activity);
     }
 
@@ -801,13 +827,17 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     /** 重新打开播放器的监听 */
     public void onRestart() {
-        liveBackBll.onRestart();
+        if (liveBackBll != null) {
+            liveBackBll.onRestart();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        liveBackBll.onStop();
+        if (liveBackBll != null) {
+            liveBackBll.onStop();
+        }
     }
 
     @Override
@@ -841,7 +871,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                         if (videoView.getWidth() <= 0) {
                             return;
                         }
-                        boolean isLand = getResources().getConfiguration().orientation == Configuration
+                        boolean isLand = activity.getResources().getConfiguration().orientation == Configuration
                                 .ORIENTATION_LANDSCAPE;
                         if (!isLand) {
                             return;

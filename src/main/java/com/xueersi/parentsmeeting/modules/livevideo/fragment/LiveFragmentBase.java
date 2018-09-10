@@ -153,6 +153,11 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     }
 
+    public void stopPlayer() {
+        super.stopPlayer();
+        mLiveVideoBll.stopPlay();
+    }
+
     @Override
     protected void onUserBackPressed() {
         boolean userBackPressed = mLiveBll.onUserBackPressed();
@@ -172,7 +177,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                         if (videoView.getWidth() <= 0) {
                             return;
                         }
-                        boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+                        boolean isLand = activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
                         if (!isLand) {
                             return;
                         }
@@ -248,6 +253,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         protected void onPlayOpenStart() {
             liveFragmentBase.setFirstBackgroundVisible(View.VISIBLE);
             liveFragmentBase.mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+            liveFragmentBase.openSuccess = false;
         }
 
         @Override
@@ -267,6 +273,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                     });
                 }
             }, 1200);
+            liveFragmentBase.openSuccess = false;
         }
 
         @Override
@@ -275,6 +282,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             if (tvFail != null) {
                 tvFail.setVisibility(View.INVISIBLE);
             }
+            liveFragmentBase.openSuccess = true;
             liveFragmentBase.setFirstBackgroundVisible(View.GONE);
 //            if (mGetInfo != null && mGetInfo.getIsShowMarkPoint().equals("1")) {
 //                if (liveRemarkBll == null) {
@@ -320,6 +328,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                     });
                 }
             }, 200);
+            liveFragmentBase.openSuccess = false;
         }
 
         @Override
@@ -327,6 +336,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             if (liveFragmentBase.liveVideoAction != null) {
                 liveFragmentBase.liveVideoAction.onPlayError();
             }
+            liveFragmentBase.openSuccess = false;
         }
 
         @Override

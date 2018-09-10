@@ -33,7 +33,13 @@ public class LiveThreadPoolExecutor {
 
             @Override
             public Thread newThread(@NonNull Runnable r) {
-                Thread thread = new Thread(r, "" + r);
+                Thread thread = new Thread(r, "Live-Pool-" + r) {
+                    @Override
+                    public synchronized void start() {
+                        Loger.d(TAG, "newThread:start");
+                        super.start();
+                    }
+                };
                 Loger.d(TAG, "newThread:r=" + r);
                 return thread;
             }

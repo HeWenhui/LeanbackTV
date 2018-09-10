@@ -291,7 +291,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             @Override
             public void run() {
                 if ("on".equals(status)) {
-                    if (LiveVideoConfig.isSend) {
+                    if (LiveVideoConfig.isSend || LiveVideoConfig.isMulLiveBack) {
                         if (h5CoursewarePager != null) {
                             if (LiveVideoConfig.englishH5Entity.equals(videoQuestionLiveEntity.englishH5Entity)) {
                                 logToFile.i("onH5Courseware:equals:English=" + h5CoursewarePager.getEnglishH5Entity());

@@ -336,7 +336,9 @@ public class ArtsPraiseListBll extends LiveBaseBll implements NoticeAction, Topi
         if (verifyCancelAlertDialog != null) {
             verifyCancelAlertDialog.cancelDialog();
         }
-        mRootView.removeCallbacks(clickTimeSendTask);
+        if(mRootView != null){
+            mRootView.removeCallbacks(clickTimeSendTask);
+        }
     }
 
 

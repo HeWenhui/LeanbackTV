@@ -33,7 +33,6 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
     private Activity activity;
-    private LiveBll mLiveBll;
     /** 直播id */
     private String mVSectionID;
     private ReceiveGold receiveGold;
@@ -48,10 +47,6 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
         this.activity = activity;
         this.isLive = isLive;
         this.mGetInfo = liveGetInfo;
-    }
-
-    public void setLiveBll(LiveBll mLiveBll) {
-        this.mLiveBll = mLiveBll;
     }
 
     public void setVSectionID(String mVSectionID) {
@@ -205,7 +200,7 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
                     rlRedpacketContent.removeAllViews();
                 } else {
                     if (rlRedpacketContent.getChildCount() > 0) {
-                        tvAutoclose.setText(count.get() + "秒自动关闭");
+                        tvAutoclose.setText(count.get() + "秒钟后自动关闭");
                         postDelayedIfNotFinish(this, 1000);
                     }
                 }

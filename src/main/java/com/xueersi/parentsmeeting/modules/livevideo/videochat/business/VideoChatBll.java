@@ -138,13 +138,6 @@ public class VideoChatBll implements VideoChatAction {
         });
     }
 
-    public void setLiveBll(LiveBll liveBll) {
-        this.videoChatHttp = liveBll;
-        if (liveBll instanceof LiveAndBackDebug) {
-            liveAndBackDebug = liveBll;
-        }
-    }
-
     public void setVideoChatHttp(VideoChatHttp videoChatHttp) {
         this.videoChatHttp = videoChatHttp;
     }
@@ -575,16 +568,7 @@ public class VideoChatBll implements VideoChatAction {
                             } else {
                                 dialog.setFail("你已被移出语音聊天室！耐心等待下次连麦机会！", 3000);
                             }
-//                            dialog.showDialogAutoClose(3000);
                         } else {
-//                            final MicTipDialog micTipDialog = new MicTipDialog(activity);
-//                            if (finalContain) {
-//                                micTipDialog.setSuccess("老师补位选中了你!");
-//                            } else {
-//                                micTipDialog.setFail("你已被移出语音聊天室！\n" +
-//                                        "耐心等待下次连麦机会！");
-//                            }
-//                            micTipDialog.showDialog();
                             if(LiveVideoConfig.isPrimary){
                                 MicTipPsDialog micTipDialogs = new MicTipPsDialog(activity);
                                 if (finalContain) {
@@ -609,10 +593,6 @@ public class VideoChatBll implements VideoChatAction {
                     //老师补位选中
                     if (finalContain) {
                         if (!isSmallEnglish) {
-//                            if (raiseHandDialog != null) {
-//                                raiseHandDialog.cancelDialog();
-//                                raiseHandDialog = null;
-//                            }
                             if(LiveVideoConfig.isPrimary && psraiseHandDialog != null){
                                 psraiseHandDialog.cancelDialog();
                                 psraiseHandDialog = null;
@@ -629,32 +609,16 @@ public class VideoChatBll implements VideoChatAction {
                         btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands_check);
                         startRecord(room, "");
                     } else {
-//                        btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
                         if(LiveVideoConfig.isPrimary){
                             btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_pshands);
                         } else {
                             btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
                         }
                         if (!isSmallEnglish) {
-//                            if (raiseHandDialog != null) {
-//                                boolean set = raiseHandDialog.setFail();
-//                                isFail = true;
-//                                if (set) {
-//                                    final RaiseHandDialog finalRaiseHandDialog = raiseHandDialog;
-//                                    btRaiseHands.postDelayed(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            if (finalRaiseHandDialog == raiseHandDialog) {
-//                                                finalRaiseHandDialog.cancelDialog();
-//                                                raiseHandDialog = null;
-//                                            }
-//                                        }
-//                                    }, 3000);
-//                                }
-//                            }
                             if(LiveVideoConfig.isPrimary  && psraiseHandDialog != null){
                                 isFail = true;
                                 psraiseHandDialog.setFail();
+                                psraiseHandDialog.showDialog();
                                 final PsRaiseHandDialog finalRaiseHandDialog = psraiseHandDialog;
                                 btRaiseHands.postDelayed(new Runnable() {
                                     @Override
@@ -749,12 +713,9 @@ public class VideoChatBll implements VideoChatAction {
                             public void run() {
                                 if (!openhands.equals(oldOpenhandsStatus)) {
                                     if (!isSmallEnglish) {
-//                                        MicTipDialog micTipDialog = new MicTipDialog(activity);
-//                                        micTipDialog.setSuccessTip("老师已开启举手，\n举手有机会与老师语音对话！");
-//                                        micTipDialog.showDialog();
                                         if(LiveVideoConfig.isPrimary){
                                             MicTipPsDialog micTipDialogs = new MicTipPsDialog(activity);
-                                            micTipDialogs.setTips("老师已开启举手， \n 举手有机会与老师语音对话！");
+                                            micTipDialogs.setTips("老师已开启举手， \n 点击举手参与语音互动吧！");
                                             micTipDialogs.showDialog();
                                         } else {
                                             MicTipDialog micTipDialog = new MicTipDialog(activity);
@@ -955,7 +916,7 @@ public class VideoChatBll implements VideoChatAction {
             // 小学理科的改版
             if(LiveVideoConfig.isPrimary){
                 MicTipPsDialog micTipDialogs = new MicTipPsDialog(activity);
-                micTipDialogs.setTips("老师已开启举手， \n 举手有机会与老师语音对话！");
+                micTipDialogs.setTips("老师已开启举手， \n 点击举手参与语音互动吧！");
                 micTipDialogs.showDialog();
             } else {
                 MicTipDialog micTipDialog = new MicTipDialog(activity);
@@ -1024,7 +985,7 @@ public class VideoChatBll implements VideoChatAction {
                     if (!isSmallEnglish) {
                         if(LiveVideoConfig.isPrimary){
                             MicTipPsDialog micTipDialogs = new MicTipPsDialog(activity);
-                            micTipDialogs.setTips("老师已经 \n 结束这次举手!");
+                            micTipDialogs.setTips("老师已经 \n 结束这次举手。");
                             micTipDialogs.showDialog();
                         }else{
                             MicTipDialog micTipDialog = new MicTipDialog(activity);
@@ -1050,15 +1011,6 @@ public class VideoChatBll implements VideoChatAction {
             @Override
             public void run() {
                 if (!isSmallEnglish) {
-//                    if (raiseHandDialog == null && "on".equals(status) && "off".equals(onMic)) {
-//                        headsetPrompt = true;
-//                        raisehand = true;
-//                        BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
-//                        raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
-//                        raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);
-//                        raiseHandDialog.setRaiseHandsCount(raiseHandCount);
-//                        raiseHandDialog.showDialog();
-//                    }
                     if(LiveVideoConfig.isPrimary && psraiseHandDialog == null && "on".equals(status) && "off".equals(onMic)){
                         headsetPrompt = true;
                         raisehand = true;
@@ -1260,6 +1212,7 @@ public class VideoChatBll implements VideoChatAction {
 //                            }
                             if(LiveVideoConfig.isPrimary && psraiseHandDialog != null){
                                 psraiseHandDialog.setFail();
+                                psraiseHandDialog.showDialog();
                                 isFail = true;
                                 final PsRaiseHandDialog finalRaiseHandDialog = psraiseHandDialog;
                                 btRaiseHands.postDelayed(new Runnable() {
@@ -1267,7 +1220,7 @@ public class VideoChatBll implements VideoChatAction {
                                     public void run() {
                                         if (finalRaiseHandDialog == psraiseHandDialog) {
                                             finalRaiseHandDialog.cancelDialog();
-                                            raiseHandDialog = null;
+                                            psraiseHandDialog = null;
                                         }
                                     }
                                 }, 3000);
@@ -1322,9 +1275,9 @@ public class VideoChatBll implements VideoChatAction {
                         if (!isSmallEnglish) {
                             BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
                             if(LiveVideoConfig.isPrimary){
-                                psraiseHandDialog = new PsRaiseHandDialog(activity,baseApplication);
-                                psraiseHandDialog.setRaiseHandsCount(raiseHandCount);
-                                psraiseHandDialog.showDialog();
+//                                psraiseHandDialog = new PsRaiseHandDialog(activity,baseApplication);
+//                                psraiseHandDialog.setRaiseHandsCount(raiseHandCount);
+//                                psraiseHandDialog.showDialog();
                             } else {
                                 raiseHandDialog = new RaiseHandDialog(activity, baseApplication);
                                 raiseHandDialog.setRaiseHandGiveup(raiseHandGiveup);

@@ -345,7 +345,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        mIsLand.set(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
+        mIsLand.set(activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 
         // 设置当前屏幕是否横屏
         loadLandOrPortView(); // 重新加载界面
@@ -512,6 +512,12 @@ public class LiveBackVideoFragmentBase extends Fragment {
         public void setSpeed(float speed) {
             super.setSpeed(speed);
             liveBackVideoFragment.setSpeed(speed);
+        }
+
+        @Override
+        public void seekTo(long pos) {
+            super.seekTo(pos);
+            liveBackVideoFragment.seekTo(pos);
         }
 
         @Override
@@ -728,6 +734,10 @@ public class LiveBackVideoFragmentBase extends Fragment {
 
     protected void setSpeed(float speed) {
         mySpeed = speed;
+    }
+
+    protected void seekTo(long pos) {
+
     }
 
     protected void onPlayOpenStart() {

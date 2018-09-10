@@ -80,6 +80,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveVideoConfig.isPrimary = false;
         }
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
+        LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
+        LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
     }
 
     /**

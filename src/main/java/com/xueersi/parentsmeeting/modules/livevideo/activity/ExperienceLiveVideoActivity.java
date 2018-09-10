@@ -941,6 +941,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         }
         // 心跳时间的统计
+        mHandler.removeCallbacks(mPlayDuration);
         mHandler.postDelayed(mPlayDuration, mPlayDurTime);
     }
 

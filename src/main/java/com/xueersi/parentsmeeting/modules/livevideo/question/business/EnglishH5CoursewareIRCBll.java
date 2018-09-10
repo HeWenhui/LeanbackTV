@@ -94,7 +94,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         englishH5CoursewareBll.setGetInfo(getInfo);
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            englishH5Cache = new EnglishH5Cache(activity, null, mLiveId);
+            englishH5Cache = new EnglishH5Cache(activity, mLiveId);
             englishH5Cache.setHttpManager(mLiveBll.getHttpManager());
             englishH5Cache.getCourseWareUrl();
         }
@@ -221,8 +221,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 e.printStackTrace();
                             }
                         } else {
-                            englishH5Entity.setNewEnglishH5(true);
-                            LiveVideoConfig.isNewEnglishH5 = true;
+//                            englishH5Entity.setNewEnglishH5(true);
+//                            LiveVideoConfig.isNewEnglishH5 = true;
                             LiveVideoConfig.isSend = false;
                         }
                     }
@@ -327,24 +327,18 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    Loger.e("TeamPkBll", "======>888888" +"LiveVideoConfig.isSend:"+LiveVideoConfig.isSend+":"+mTeamPKBll);
                     // 08.07  课件之前的功能添加
                     if (!LiveVideoConfig.isSend) {
                         if (englishH5CoursewareBll instanceof EnglishH5CoursewareBll) {
                             ((EnglishH5CoursewareBll) englishH5CoursewareBll).setWebViewCloseByTeacher(true);
                         }
-                        if (mTeamPKBll != null) {
-                            mTeamPKBll.showCurrentPkResult();
-                            if (mTeamPKBll != null) {
-                                mTeamPKBll.setNonce(object.optString("nonce", ""));
-                                mTeamPKBll.showCurrentPkResult();
-                                Loger.e("TeamPkBll", "======>showCurrentPkResult: called in " +
-                                        "ENGLISH_H5_COURSEWARE");
-                            }
-                        }
                     }
                     englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
                 }
                 break;
+                default:
+                    break;
         }
     }
 

@@ -29,7 +29,6 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
     boolean isStart = false;
     Activity activity;
     RelativeLayout bottomContent;
-    LiveBll liveBll;
     SpeechFeedBackPager speechFeedBackPager;
     /** 每次读取的字节大小 */
     private int mBufferSize;
@@ -63,11 +62,6 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
         mAudioRecord = new AudioRecord(DEFAULT_AUDIO_SOURCE,
                 DEFAULT_SAMPLING_RATE, DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT.getAudioFormat(),
                 mBufferSize);
-    }
-
-    public SpeechFeedBackBllOld(Activity activity, LiveBll liveBll) {
-        this.activity = activity;
-        this.liveBll = liveBll;
     }
 
     public void setBottomContent(RelativeLayout bottomContent) {

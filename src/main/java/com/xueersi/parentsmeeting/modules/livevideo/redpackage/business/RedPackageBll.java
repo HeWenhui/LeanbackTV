@@ -72,10 +72,6 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
         }
     }
 
-    public void setLiveBll(LiveBll mLiveBll) {
-        // this.mLiveBll = mLiveBll;
-    }
-
     public void setReceiveGold(ReceiveGold receiveGold) {
         this.receiveGold = receiveGold;
     }

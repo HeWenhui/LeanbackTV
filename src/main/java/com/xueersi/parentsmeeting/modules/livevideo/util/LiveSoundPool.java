@@ -142,9 +142,13 @@ public class LiveSoundPool {
     }
 
     public static class SoundPlayTask {
+        /** 工程资源id */
         int resId = 0;
+        /** 存储路径 */
         String path;
+        /** 声音 */
         float volume;
+        /** 是否循环 */
         boolean loop;
 
         public SoundPlayTask(int resId, float volume, boolean loop) {
