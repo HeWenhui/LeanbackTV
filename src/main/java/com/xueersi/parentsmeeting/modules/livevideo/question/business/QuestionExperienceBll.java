@@ -306,24 +306,30 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         String termId = mVideoEntity.getChapterId();
         String isArts = questionBll.IS_SCIENCE == false ? "1" : "0";
-        getCourseHttpManager().sendExpSpeechEvalResult(stuId,liveid, id, termId, isArts, mVideoEntity
-                .getSpeechEvalSubmitUrl(), new HttpCallBack(false) {
+        getCourseHttpManager().sendExpSpeechEvalResult(
+                mVideoEntity.getSpeechEvalSubmitUrl(),
+                liveid,
+                id,
+                termId,
+                isArts,
+                stuAnswer,
+                new HttpCallBack(false) {
 
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                onSpeechEval.onSpeechEval(null);
-            }
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        onSpeechEval.onSpeechEval(null);
+                    }
 
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
-            }
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        onSpeechEval.onPmFailure(error, msg);
+                    }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
-            }
-        });
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        onSpeechEval.onPmError(responseEntity);
+                    }
+                });
 
     }
 
@@ -333,8 +339,8 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         String termId = mVideoEntity.getChapterId();
         String isArts = questionBll.IS_SCIENCE == false ? "1" : "0";
-        getCourseHttpManager().sendExpSpeechEvalResult(stuId,liveid, id, termId, isArts, mVideoEntity
-                .getSpeechEvalSubmitUrl(), new HttpCallBack(false) {
+        getCourseHttpManager().sendExpSpeechEvalResult(mVideoEntity
+                .getSpeechEvalSubmitUrl(), liveid, id, termId, isArts, stuAnswer, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

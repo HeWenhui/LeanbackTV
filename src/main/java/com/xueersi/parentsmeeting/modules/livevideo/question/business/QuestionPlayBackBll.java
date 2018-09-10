@@ -319,7 +319,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         if (isStandExperience == 0) {
             getCourseHttpManager().getSpeechEval(enstuId, liveid, id, httpCallBack);
         } else if (isStandExperience == 1) {
-            getCourseHttpManager().getExperienceSpeechEval(mVideoEntity.getSpeechEvalUrl(), enstuId,
+            getCourseHttpManager().getExpeSpeechEval(mVideoEntity.getSpeechEvalUrl(), enstuId,
                     liveid, id, httpCallBack);
         }
     }
@@ -349,8 +349,14 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
                     httpCallBack);
         } else if (isStandExperience == 1) {
-            getCourseHttpManager().sendExperienceSpeechEvalResult(mVideoEntity.getSpeechEvalSubmitUrl(), enstuId,
-                    liveid, id, stuAnswer, times, entranceTime, httpCallBack);
+            getCourseHttpManager().sendExpSpeechEvalResult(
+                    mVideoEntity.getSpeechEvalSubmitUrl(),
+                    liveid,
+                    id,
+                    mVideoEntity.getChapterId(),
+                    questionBll.IS_SCIENCE == false ? "1" : "0",
+                    stuAnswer,
+                    httpCallBack);
         }
     }
 

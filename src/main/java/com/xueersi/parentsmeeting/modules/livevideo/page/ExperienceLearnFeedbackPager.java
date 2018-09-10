@@ -184,10 +184,6 @@ public class ExperienceLearnFeedbackPager extends BasePager {
                                         super.onFailure(call, e);
                                     }
 
-                                    @Override
-                                    public void onPmFailure(Throwable error, String msg) {
-                                        super.onPmFailure(error, msg);
-                                    }
 
                                     @Override
                                     public void onPmFailure(Throwable error, String msg) {

@@ -92,44 +92,6 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         sendPost(liveUrl, params, requestCallBack);
     }
 
-    public void saveExperienceTestRecord(String url, String enStuId, String srcType, String testId, String
-            testResult, String testDay, String classId, int livePlayType, boolean voice, boolean isRight, HttpCallBack
-                                                 requestCallBack) {
-//        String liveUrl;
-//        // 如果是录播直播回放
-//        if (livePlayType == LocalCourseConfig.LIVETYPE_RECORDED) {
-//            liveUrl = LiveVideoConfig.URL_STUDY_SAVE_TEST_RECORD;
-//            // 直播讲座
-//        } else if (livePlayType == LocalCourseConfig.LIVETYPE_LECTURE) {
-//            liveUrl = LiveVideoConfig.URL_PUBLIC_LIVE_COURSE_SUBMIT_QUESTION;
-//        } else {
-//            if (voice) {
-//                liveUrl = liveVideoSAConfigInner.URL_LIVE_SUBMIT_TEST_ANSWER_VOICE;
-//            } else {
-//                liveUrl = liveVideoSAConfigInner.URL_STUDY_SAVE_ANSWER_FOR_PLAYBACK;
-//            }
-//        }
-        HttpRequestParams params = new HttpRequestParams();
-        setDefaultParameter(params);
-        if (!StringUtils.isSpace(srcType)) {
-            params.addBodyParam("srcType", srcType);
-        }
-        params.addBodyParam("classId", classId);
-        params.addBodyParam("liveId", classId);
-        params.addBodyParam("testDay", testDay);
-//        params.addBodyParam("enstuId", enStuId);
-        params.addBodyParam("testId", testId);
-        if (voice) {
-            params.addBodyParam("answer", testResult);
-        } else {
-            params.addBodyParam("testAnswer", testResult);
-        }
-        params.addBodyParam("useVoice", voice ? "1" : "0");
-        params.addBodyParam("isRight", isRight ? "1" : "0");
-        params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
-        sendPost(url, params, requestCallBack);
-    }
-
     /**
      * 提交h5语音答题答案
      *
@@ -357,9 +319,51 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         sendPost(LiveVideoConfig.URL_AUTO_LIVE_LEARN_FEED_BACK, params, requestCallBack);
     }
 
+    public void saveExperienceTestRecord(String url, String enStuId, String srcType, String testId, String
+            testResult, String testDay, String classId, int livePlayType, boolean voice, boolean isRight, HttpCallBack
+                                                 requestCallBack) {
+//        String liveUrl;
+//        // 如果是录播直播回放
+//        if (livePlayType == LocalCourseConfig.LIVETYPE_RECORDED) {
+//            liveUrl = LiveVideoConfig.URL_STUDY_SAVE_TEST_RECORD;
+//            // 直播讲座
+//        } else if (livePlayType == LocalCourseConfig.LIVETYPE_LECTURE) {
+//            liveUrl = LiveVideoConfig.URL_PUBLIC_LIVE_COURSE_SUBMIT_QUESTION;
+//        } else {
+//            if (voice) {
+//                liveUrl = liveVideoSAConfigInner.URL_LIVE_SUBMIT_TEST_ANSWER_VOICE;
+//            } else {
+//                liveUrl = liveVideoSAConfigInner.URL_STUDY_SAVE_ANSWER_FOR_PLAYBACK;
+//            }
+//        }
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        if (!StringUtils.isSpace(srcType)) {
+            params.addBodyParam("srcType", srcType);
+        }
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("liveId", classId);
+        params.addBodyParam("testDay", testDay);
+//        params.addBodyParam("enstuId", enStuId);
+        params.addBodyParam("testId", testId);
+        if (voice) {
+            params.addBodyParam("answer", testResult);
+        } else {
+            params.addBodyParam("testAnswer", testResult);
+        }
+        params.addBodyParam("useVoice", voice ? "1" : "0");
+        params.addBodyParam("isRight", isRight ? "1" : "0");
+        params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
+        sendPost(url, params, requestCallBack);
+    }
+
     //发送体验课语音评测答案
-    public void sendExpSpeechEvalResult(String stuId, String liveId, String testId, String termId, String isArts,
-                                        String url,
+    public void sendExpSpeechEvalResult(String url,
+                                        String liveId,
+                                        String testId,
+                                        String termId,
+                                        String isArts,
+                                        String answers,
                                         HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
@@ -368,6 +372,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", testId);
         params.addBodyParam("termId", termId);
         params.addBodyParam("isArts", isArts);
+        params.addBodyParam("answers", answers);
         sendPost(url, params, requestCallBack);
     }
 
@@ -458,7 +463,6 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 //        sendPost("http://student.xueersi.com/science/AutoLive/submitCourseWareH5AnswerUseVoice", params,
 // requestCallBack);
     }
-
 
     /**
      * 直播回放视频播放访问时长接口
