@@ -320,7 +320,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     }
 
     //发送体验课语音评测答案
-    public void sendExpSpeechEvalResult(String stuId, String liveId, String testId, String termId, String isArts,String url,
+    public void sendExpSpeechEvalResult(String stuId, String liveId, String testId, String termId, String isArts,String answers,String url,
                                         HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
@@ -329,6 +329,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", testId);
         params.addBodyParam("termId", termId);
         params.addBodyParam("isArts", isArts);
+        params.addBodyParam("answers", answers);
         sendPost(url, params, requestCallBack);
     }
 
@@ -397,7 +398,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     }
 
     //提交体验课h5语音答题
-    public void sumitExperienceCourseWareH5(String stuId, String liveId, String testId, String termId, String answer,
+    public void submitExperienceCourseWareH5(String stuId, String liveId, String testId, String termId, String answer,
                                             double voiceTime, boolean isRight, String isArts,String url, HttpCallBack
                                                     requestCallBack) {
 //        String liveUrl = LiveVideoConfig.URL_EXPE_SUBMIT_TEST_H5_ANSWER;
