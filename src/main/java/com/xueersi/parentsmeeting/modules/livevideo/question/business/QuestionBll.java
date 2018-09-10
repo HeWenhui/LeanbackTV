@@ -566,7 +566,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 questionWebPager = null;
                             }
                             QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this,
-                                    videoQuestionLiveEntity);
+                                    videoQuestionLiveEntity,liveGetInfo.getId());
                             questionWebPager.setLivePagerBack(QuestionBll.this);
                             rlQuestionContent.addView(questionWebPager.getRootView());
                             QuestionBll.this.questionWebPager = questionWebPager;

@@ -120,13 +120,14 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
      * @param questionBll
      * @param testInfo    试题信息
      */
-    public QuestionWebX5Pager(Context context, StopWebQuestion questionBll, VideoQuestionLiveEntity testInfo) {
+    public QuestionWebX5Pager(Context context, StopWebQuestion questionBll, VideoQuestionLiveEntity testInfo,String liveid) {
         super(context);
         this.questionBll = questionBll;
         examUrl = testInfo.getUrl();
         isNewArtsTest = testInfo.isNewArtsH5Courseware();
         testId = testInfo.getvQuestionID();
         type = testInfo.type;
+        liveid = liveid;
         mLogtf.i("QuestionWebX5Pager:liveid=" + liveid + ",testId=" + testId);
         cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
         if (cacheFile == null) {
