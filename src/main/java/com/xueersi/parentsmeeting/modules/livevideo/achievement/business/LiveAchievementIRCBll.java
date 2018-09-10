@@ -102,17 +102,16 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             public void success() {
                 long interval = System.currentTimeMillis() - sTime;
 
-                if (mode != LiveTopic.MODE_TRANING || interval <= 60 * 1000) {
+                if (!LiveTopic.MODE_TRANING.equals(mode) || interval <= 60 * 1000) {
                     return;
                 }
-
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         SpeakerRecognitionerInterface speakerRecognitionerInterface = SpeakerRecognitionerInterface
                                 .getInstance();
-                        int init = speakerRecognitionerInterface.init();
-                        if (init == 0) {
+                        boolean result = speakerRecognitionerInterface.init();
+                        if (result) {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -142,7 +141,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
     private void initRecognizeDialog() {
         recognizeDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
-                VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
+                VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
         recognizeDialog.initInfo("为了让开口数据更为准确，请进行声纹认证");
         recognizeDialog.setVerifyBtnListener(new View.OnClickListener() {
             @Override
