@@ -53,7 +53,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
      * 聊天消失
      */
 //    private final String TAG = getClass().getSimpleName();
-
+    private String TAG = getClass().getSimpleName();
     private ArrayList<LiveMessageEntity> liveMessageLandEntities = new ArrayList<>();
     /**
      * 在线直播的聊天区

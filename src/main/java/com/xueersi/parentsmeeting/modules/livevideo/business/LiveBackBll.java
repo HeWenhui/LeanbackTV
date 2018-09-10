@@ -337,25 +337,52 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT ||
                     videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
                 //体验课聊天区关闭或者打开，独立于任何题型
-                if (openQue.peek() < closeQue.peek()) {
-                    if (playPosition < openQue.peek()) {
-                        array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT).showQuestion(oldQuestionEntity,
-                                videoQuestionEntity, showQuestion);
-                        Log.e(TAG, playPosition + " 1:进去了关闭站立直播聊天区");
-                    } else if (playPosition >= openQue.peek() && playPosition <= closeQue.peek()) {
-                        array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity,
-                                videoQuestionEntity, showQuestion);
-                        Log.e(TAG, playPosition + " :进去了打开站立直播聊天区");
+                if (openQue != null && closeQue != null && !openQue.isEmpty() && !closeQue.isEmpty()) {
+                    if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
+                        if (openQue.peek() < closeQue.peek()) {
+                            if (playPosition < openQue.peek()) {
+//                                array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT).showQuestion(oldQuestionEntity,
+//                                        videoQuestionEntity, showQuestion);
+//                                Log.e(TAG, playPosition + " 1:进去了关闭站立直播聊天区");
+                            } else if (playPosition >= openQue.peek() && playPosition <= closeQue.peek()) {
+                                array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity,
+                                        videoQuestionEntity, showQuestion);
+                                Log.e(TAG, playPosition + " 2:进去了打开站立直播聊天区");
+                                break;
+                            } else {
+//                                array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT).showQuestion(oldQuestionEntity,
+//                                        videoQuestionEntity, showQuestion);
+//                                Log.e(TAG, playPosition + " 3:进去了关闭站立直播聊天区");
+//                                openQue.poll();
+//                                closeQue.poll();
+                            }
+                        }
+
                     } else {
-                        array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT).showQuestion(oldQuestionEntity,
-                                videoQuestionEntity, showQuestion);
-                        Log.e(TAG, playPosition + " :进去了关闭站立直播聊天区");
-                        openQue.poll();
-                        closeQue.poll();
+                        if (playPosition < openQue.peek()) {
+                            array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT).showQuestion(oldQuestionEntity,
+                                    videoQuestionEntity, showQuestion);
+                            Log.e(TAG, playPosition + " 1:进去了关闭站立直播聊天区");
+                            break;
+                        } else if (playPosition >= openQue.peek() && playPosition <= closeQue.peek()) {
+//                        array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity,
+//                                videoQuestionEntity, showQuestion);
+//                        Log.e(TAG, playPosition + " 2:进去了打开站立直播聊天区");
+                        } else {
+                            array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT).showQuestion(oldQuestionEntity,
+                                    videoQuestionEntity, showQuestion);
+                            Log.e(TAG, playPosition + " 3:进去了关闭站立直播聊天区");
+                            openQue.poll();
+                            closeQue.poll();
+                            break;
+                        }
+
                     }
                 }
+
             }
         }
+
     }
 
     private Queue<Integer> openQue;
@@ -550,7 +577,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 //                    }
 //                }
 //            }
-//            Log.e(TAG, "" + mQuestionEntity.getCategory());
+            Log.e(TAG, "" + mQuestionEntity.getCategory());
         }
     }
 
