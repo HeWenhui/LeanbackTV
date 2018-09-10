@@ -29,7 +29,6 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LogErrorEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.FileStringUtil;
@@ -148,12 +147,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         this.isLive = isLive;
         saveLogDir = LiveCacheFile.geCacheFile(activity, "liveplaylog");
         Handler handler = new Handler(Looper.getMainLooper());
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                uploadFile();
-//            }
-//        }, 20000);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                uploadOld();
+            }
+        }, 20000);
 //        if (AppConfig.DEBUG) {
 //            logurl = "http://10.99.1.251/log";
 //        }
@@ -690,6 +689,21 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         });
     }
 
+    private void uploadOld() {
+        File[] fs = saveLogDir.listFiles();
+        if (fs != null && fs.length > 0) {
+            File file = fs[0];
+            String string = FileStringUtil.readFromFile(file);
+            try {
+                JSONObject jsonObject = new JSONObject(string);
+                jsonObject.put("pri", "920");
+                xescdnLogUrl(jsonObject, file);
+            } catch (JSONException e) {
+                logger.e("uploadOld", e);
+            }
+        }
+    }
+
 //    private void uploadFile() {
 //        File[] fs = saveLogDir.listFiles();
 //        ArrayList<LogErrorEntity> logErrorEntities = new ArrayList<>();
@@ -783,7 +797,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             saveLogDir.mkdirs();
         }
         File[] fs = saveLogDir.listFiles();
-        if (fs != null && fs.length > 9) {
+        if (fs != null && fs.length > 0) {
             fs[0].delete();
         }
         String s = dateFormat.format(new Date());
@@ -794,7 +808,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //        logger.d("saveStrToFile:equals=" + (string.equals(savestr)));
     }
 
-    private void xescdnLogUrl(JSONObject requestJson) {
+    private void xescdnLogUrl(JSONObject requestJson, final File file) {
         final HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.setJson(requestJson.toString());
         httpRequestParams.setWriteAndreadTimeOut(10);
@@ -808,6 +822,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                file.delete();
                 if (response.body() != null) {
                     Loger.d(TAG, "xescdnLogUrl:onResponse:retry=" + retryInt.get() + ",response=" + response.body().string());
                 } else {
@@ -841,14 +856,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Loger.e(TAG, "xescdnLog:onFailure", e);
-//                    if (retryInt.get() == 0) {
-//                        try {
-//                            dataJson.put("saveurl", templogurl);
-//                            dataJson.put("savetime", System.currentTimeMillis());
-//                        } catch (JSONException e1) {
-//                            e1.printStackTrace();
-//                        }
-//                    }
                     if (retryInt.get() < 2) {
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -865,6 +872,13 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                                 baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, callback);
                             }
                         }, retryInt.incrementAndGet() * 1000);
+                    } else {
+                        try {
+                            dataJson.put("saveurl", templogurl);
+                            dataJson.put("savetime", System.currentTimeMillis());
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                     saveStrToFile(requestJson.toString());
                     if (e instanceof SocketTimeoutException) {
