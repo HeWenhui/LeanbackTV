@@ -148,12 +148,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         this.isLive = isLive;
         saveLogDir = LiveCacheFile.geCacheFile(activity, "liveplaylog");
         Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                uploadFile();
-            }
-        }, 20000);
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                uploadFile();
+//            }
+//        }, 20000);
 //        if (AppConfig.DEBUG) {
 //            logurl = "http://10.99.1.251/log";
 //        }
@@ -690,95 +690,93 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         });
     }
 
-    long xescdnLog2Before = 0;
-
-    private void uploadFile() {
-        File[] fs = saveLogDir.listFiles();
-        ArrayList<LogErrorEntity> logErrorEntities = new ArrayList<>();
-        if (fs != null) {
-            for (int i = 0; i < fs.length; i++) {
-                File file = fs[i];
-                String string = FileStringUtil.readFromFile(file);
-                try {
-                    JSONObject jsonObject = new JSONObject(string);
-                    JSONObject pridata = jsonObject.optJSONObject("pridata");
-                    if (pridata != null) {
-                        LogErrorEntity logErrorEntity = new LogErrorEntity();
-                        logErrorEntity.url = pridata.optString("saveurl");
-                        int index = logErrorEntities.indexOf(logErrorEntity);
-                        long savetime = pridata.optLong("savetime");
-                        if (index != -1) {
-                            logErrorEntity = logErrorEntities.get(index);
-                            logErrorEntity.count++;
-                            if (logErrorEntity.lastTime < savetime) {
-                                logErrorEntity.lastTime = savetime;
-                            }
-                            if (logErrorEntity.firstTime > savetime) {
-                                logErrorEntity.firstTime = savetime;
-                            }
-                        } else {
-                            logErrorEntity.count = 0;
-                            logErrorEntity.firstTime = savetime;
-                            logErrorEntity.lastTime = savetime;
-                            logErrorEntities.add(logErrorEntity);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        if (!logErrorEntities.isEmpty()) {
-            HashMap<String, String> defaultKey = new HashMap<>();
-            defaultKey.put("ver", logVersion);
-            defaultKey.put("serv", serv);
-            defaultKey.put("pri", "920");
-            defaultKey.put("ts", "" + System.currentTimeMillis());
-            defaultKey.put("appid", "xes20001");
-            defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
-            defaultKey.put("agent", "m-android_" + versionName);
-            defaultKey.put("os", "" + Build.VERSION.SDK_INT);
-            defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
-            defaultKey.put("arch", "" + cpuName);
-            int totalRam = HardWareUtil.getTotalRam();
-            defaultKey.put("ram", "" + totalRam);
-            defaultKey.put("net", "" + getNet());
-            defaultKey.put("cpu", "" + getCpuRate());
-            defaultKey.put("mem", "" + getMemRate());
-            String cip = oldCipdispatch;
-            if (StringUtils.isEmpty(cip)) {
-                cip = IpAddressUtil.USER_IP;
-            }
-            defaultKey.put("cip", "" + cip);
-            defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
-            String msip = getRemoteIp();
-            defaultKey.put("sip", "" + msip);
-            defaultKey.put("tid", "" + UUID.randomUUID());
-
-            JSONArray dataJson = new JSONArray();
-            try {
-                JSONObject requestJson = new JSONObject();
-
-                for (String key : defaultKey.keySet()) {
-                    String value = defaultKey.get(key);
-                    requestJson.put(key, value);
-                }
-                for (int i = 0; i < logErrorEntities.size(); i++) {
-                    LogErrorEntity logErrorEntity = logErrorEntities.get(i);
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("url", "" + logErrorEntity.url);
-                    jsonObject.put("count", logErrorEntity.count);
-                    jsonObject.put("firstTime", logErrorEntity.firstTime);
-                    jsonObject.put("lastTime", logErrorEntity.lastTime);
-                    dataJson.put(jsonObject);
-                }
-                requestJson.put("pridata", dataJson);
-                xescdnLogUrl(requestJson);
-            } catch (JSONException e) {
-                logger.d("uploadFile", e);
-            }
-        }
-    }
+//    private void uploadFile() {
+//        File[] fs = saveLogDir.listFiles();
+//        ArrayList<LogErrorEntity> logErrorEntities = new ArrayList<>();
+//        if (fs != null) {
+//            for (int i = 0; i < fs.length; i++) {
+//                File file = fs[i];
+//                String string = FileStringUtil.readFromFile(file);
+//                try {
+//                    JSONObject jsonObject = new JSONObject(string);
+//                    JSONObject pridata = jsonObject.optJSONObject("pridata");
+//                    if (pridata != null) {
+//                        LogErrorEntity logErrorEntity = new LogErrorEntity();
+//                        logErrorEntity.url = pridata.optString("saveurl");
+//                        int index = logErrorEntities.indexOf(logErrorEntity);
+//                        long savetime = pridata.optLong("savetime");
+//                        if (index != -1) {
+//                            logErrorEntity = logErrorEntities.get(index);
+//                            logErrorEntity.count++;
+//                            if (logErrorEntity.lastTime < savetime) {
+//                                logErrorEntity.lastTime = savetime;
+//                            }
+//                            if (logErrorEntity.firstTime > savetime) {
+//                                logErrorEntity.firstTime = savetime;
+//                            }
+//                        } else {
+//                            logErrorEntity.count = 0;
+//                            logErrorEntity.firstTime = savetime;
+//                            logErrorEntity.lastTime = savetime;
+//                            logErrorEntities.add(logErrorEntity);
+//                        }
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        if (!logErrorEntities.isEmpty()) {
+//            HashMap<String, String> defaultKey = new HashMap<>();
+//            defaultKey.put("ver", logVersion);
+//            defaultKey.put("serv", serv);
+//            defaultKey.put("pri", "920");
+//            defaultKey.put("ts", "" + System.currentTimeMillis());
+//            defaultKey.put("appid", "xes20001");
+//            defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
+//            defaultKey.put("agent", "m-android_" + versionName);
+//            defaultKey.put("os", "" + Build.VERSION.SDK_INT);
+//            defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
+//            defaultKey.put("arch", "" + cpuName);
+//            int totalRam = HardWareUtil.getTotalRam();
+//            defaultKey.put("ram", "" + totalRam);
+//            defaultKey.put("net", "" + getNet());
+//            defaultKey.put("cpu", "" + getCpuRate());
+//            defaultKey.put("mem", "" + getMemRate());
+//            String cip = oldCipdispatch;
+//            if (StringUtils.isEmpty(cip)) {
+//                cip = IpAddressUtil.USER_IP;
+//            }
+//            defaultKey.put("cip", "" + cip);
+//            defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
+//            String msip = getRemoteIp();
+//            defaultKey.put("sip", "" + msip);
+//            defaultKey.put("tid", "" + UUID.randomUUID());
+//
+//            JSONArray dataJson = new JSONArray();
+//            try {
+//                JSONObject requestJson = new JSONObject();
+//
+//                for (String key : defaultKey.keySet()) {
+//                    String value = defaultKey.get(key);
+//                    requestJson.put(key, value);
+//                }
+//                for (int i = 0; i < logErrorEntities.size(); i++) {
+//                    LogErrorEntity logErrorEntity = logErrorEntities.get(i);
+//                    JSONObject jsonObject = new JSONObject();
+//                    jsonObject.put("url", "" + logErrorEntity.url);
+//                    jsonObject.put("count", logErrorEntity.count);
+//                    jsonObject.put("firstTime", logErrorEntity.firstTime);
+//                    jsonObject.put("lastTime", logErrorEntity.lastTime);
+//                    dataJson.put(jsonObject);
+//                }
+//                requestJson.put("pridata", dataJson);
+//                xescdnLogUrl(requestJson);
+//            } catch (JSONException e) {
+//                logger.d("uploadFile", e);
+//            }
+//        }
+//    }
 
     private void saveStrToFile(String savestr) {
         if (!saveLogDir.exists()) {
@@ -819,6 +817,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         });
     }
 
+    private long xescdnLog2Before = 0;
+
     private void xescdnLog2(HashMap<String, String> defaultKey, final JSONObject dataJson, final boolean saveToFile) {
 //        if (AppConfig.DEBUG) {
 //            logurl = logurls[logIndex++ % logurls.length];
@@ -841,15 +841,15 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Loger.e(TAG, "xescdnLog:onFailure", e);
-                    if (retryInt.get() == 0) {
-                        try {
-                            dataJson.put("saveurl", templogurl);
-                            dataJson.put("savetime", System.currentTimeMillis());
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                    if (retryInt.get() < 10) {
+//                    if (retryInt.get() == 0) {
+//                        try {
+//                            dataJson.put("saveurl", templogurl);
+//                            dataJson.put("savetime", System.currentTimeMillis());
+//                        } catch (JSONException e1) {
+//                            e1.printStackTrace();
+//                        }
+//                    }
+                    if (retryInt.get() < 2) {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
