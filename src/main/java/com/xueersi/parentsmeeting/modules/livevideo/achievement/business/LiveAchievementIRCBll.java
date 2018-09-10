@@ -51,6 +51,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         putInstance(LiveAchievementIRCBll.class, this);
+        initRecognizeDialog();
     }
 
     @Override
@@ -108,7 +109,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        SpeakerRecognitionerInterface speakerRecognitionerInterface = new SpeakerRecognitionerInterface();
+                        SpeakerRecognitionerInterface speakerRecognitionerInterface = SpeakerRecognitionerInterface
+                                .getInstance();
                         int init = speakerRecognitionerInterface.init();
                         if (init == 0) {
                             handler.post(new Runnable() {
