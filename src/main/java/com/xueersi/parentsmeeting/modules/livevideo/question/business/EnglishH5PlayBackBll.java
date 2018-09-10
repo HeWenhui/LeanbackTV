@@ -94,8 +94,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     }
 
     @Override
-    public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, final
-    LiveBackBll.ShowQuestion showQuestion) {
+    public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, final LiveBackBll.ShowQuestion showQuestion) {
         mRootView.setVisibility(View.VISIBLE);
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
@@ -105,8 +104,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                     mediaPlayerControl.pause();
                 }
                 questionEntity.setAnswered(true);
-                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
-                        .getApplication(), false,
+                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
                 verifyCancelAlertDialog.initInfo("课件提醒", "老师发布了课件，是否参与互动？");
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
@@ -146,8 +144,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 LiveVideoConfig.LIVEPLAYBACKTEAMID = mVideoEntity.getTeamId();
                 LiveVideoConfig.LIVEPLAYBACKSTAGE = mVideoEntity.getEdustage();
                 LiveVideoConfig.LIVEPLAYBACKTYPE = questionEntity.getName();
-                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
-                        .getApplication(), false,
+                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
                 verifyCancelAlertDialog.initInfo("课件提醒", "老师发布了课件，是否参与互动？");
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
@@ -270,18 +267,18 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         isRight,
                         httpCallBack);
             } else if (isStandExperience == 1) {
+                String isArts = String.valueOf(liveBackBll.getIsArts());
                 getCourseHttpManager().submitExperienceCourseWareH5(
                         mVideoEntity.getSubmitCourseWareH5AnswerUseVoiceUrl(),
-                        enstuId,
-                        videoQuestionLiveEntity.srcType,
-                        videoQuestionLiveEntity.id,
-                        testAnswer,
-                        videoQuestionLiveEntity.getAnswerDay(),
                         mVideoEntity.getLiveId(),
-                        videoQuestionLiveEntity.courseware_type,
-                        isSubmit,
+                        videoQuestionLiveEntity.id,
+                        mVideoEntity.getChapterId(),
+                        testAnswer,
                         voiceTime,
                         isRight,
+                        isArts,
+
+
                         httpCallBack);
             }
         }

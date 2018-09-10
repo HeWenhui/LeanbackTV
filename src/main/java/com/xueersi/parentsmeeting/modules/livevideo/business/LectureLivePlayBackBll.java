@@ -707,12 +707,23 @@ public class LectureLivePlayBackBll extends BaseBll {
         });
     }
 
-    public void sendRecordInteract(String termId,int times){
-        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-        mCourseHttpManager.sendExpeRecordInteract(stuId, termId, times, new HttpCallBack() {
+    public void sendRecordInteract(String url,String termId,int times){
+        mCourseHttpManager.sendExpeRecordInteract(url, termId, times, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 Loger.i(TAG, "sendRecordInteract : Success");
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                Loger.i(TAG, "sendRecordInteract : Failure,msg: "+msg);
+                super.onPmFailure(error, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                Loger.i(TAG, "sendRecordInteract : Error");
+                super.onPmError(responseEntity);
             }
         });
     }

@@ -23,10 +23,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.xueersi.lib.framework.utils.SizeUtils;
-
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
-
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenBll;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenHttp;

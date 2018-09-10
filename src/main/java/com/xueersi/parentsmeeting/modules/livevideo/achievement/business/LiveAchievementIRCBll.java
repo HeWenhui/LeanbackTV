@@ -9,7 +9,9 @@ import android.view.View;
 
 import com.tal.speech.language.TalLanguage;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.entity.AppInfoEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.route.XueErSiRouter;
@@ -24,7 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-//import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
+import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
@@ -92,63 +94,72 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 }
             });
         }
+        AppInfoEntity appInfoEntity = AppBll.getInstance().getAppInfoEntity();
+        boolean voiceRecognSwitchOn = appInfoEntity.getAppInitConfigEntity().isVoiceRecognSwitchOn();
+        if (voiceRecognSwitchOn) {
+            SpeakerRecognitionerInterface.checkResoureDownload(mContext, new LoadSoCallBack() {
+                @Override
+                public void start() {
+                }
 
-//        SpeakerRecognitionerInterface.checkResoureDownload(mContext, new LoadSoCallBack() {
-//            @Override
-//            public void start() {
-//            }
-//
-//            @Override
-//            public void success() {
-//                long interval = System.currentTimeMillis() - sTime;
-//
-//                if (mode != LiveTopic.MODE_TRANING || interval <= 60 * 1000) {
-//                    return;
-//                }
-//
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        SpeakerRecognitionerInterface speakerRecognitionerInterface = SpeakerRecognitionerInterface
-//                                .getInstance();
-//                        int init = speakerRecognitionerInterface.init();
-//                        if (init == 0) {
-//                            handler.post(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
-//                                        recognizeDialog.showDialog();
-//                                    }
-//                                }
-//                            });
-//                        }
-//                    }
-//                }).start();
-//            }
+                @Override
+                public void success() {
+                    long interval = System.currentTimeMillis() - sTime;
+                    if (!LiveTopic.MODE_TRANING.equals(mode) || interval <= 60 * 1000) {
+                        return;
+                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SpeakerRecognitionerInterface speakerRecognitionerInterface = SpeakerRecognitionerInterface
+                                    .getInstance();
+                            boolean result = speakerRecognitionerInterface.init();
+                            if (result) {
+                                String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                byte[] pcmdata = new byte[10];
+                                int enrollIvector = speakerRecognitionerInterface.
+                                        enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
+                                if (enrollIvector != 0) {
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
+                                                recognizeDialog.showDialog();
+                                            }
+                                        }
+                                    });
+                                }
 
-//            @Override
-//            public void progress(float progress, int type) {
-//
-//            }
-//
-//            @Override
-//            public void fail(int errorCode, String errorMsg) {
-//
-//            }
-//        });
-//
+                            }
+                        }
+                    }).start();
+
+                }
+
+                @Override
+                public void progress(float progress, int type) {
+
+                }
+
+                @Override
+                public void fail(int errorCode, String errorMsg) {
+
+                }
+            });
+        }
+
     }
 
     private void initRecognizeDialog() {
         recognizeDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
-                VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
+                VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
         recognizeDialog.initInfo("为了让开口数据更为准确，请进行声纹认证");
         recognizeDialog.setVerifyBtnListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString("from", "livevideo");
-                XueErSiRouter.startModule(mContext, "/pager_personals/voicerecognize");
+                XueErSiRouter.startModule(mContext, "/pager_personals/voicerecognize", bundle);
             }
         });
         recognizeDialog.setCancelShowText("取消").setVerifyShowText("去认证");

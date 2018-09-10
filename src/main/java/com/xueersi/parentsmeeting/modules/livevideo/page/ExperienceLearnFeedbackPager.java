@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -187,6 +188,18 @@ public class ExperienceLearnFeedbackPager extends BasePager {
                                     public void onPmFailure(Throwable error, String msg) {
                                         super.onPmFailure(error, msg);
                                     }
+
+                                    @Override
+                                    public void onPmFailure(Throwable error, String msg) {
+                                        Loger.d(TAG, "sendFeedbackFailure:"+msg);
+                                        super.onPmFailure(error, msg);
+                                    }
+
+                                    @Override
+                                    public void onPmError(ResponseEntity responseEntity) {
+                                        Loger.d(TAG, "sendFeedbackError:"+responseEntity.toString());
+                                        super.onPmError(responseEntity);
+                                    }
                                 });
                     }
                 }
@@ -226,4 +239,5 @@ public class ExperienceLearnFeedbackPager extends BasePager {
         this.learnFeedBackPagerListener = learnFeedBackPagerListener;
         this.closeAction = learnFeedBackPagerListener;
     }
+
 }
