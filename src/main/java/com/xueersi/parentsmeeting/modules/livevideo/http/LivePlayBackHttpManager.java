@@ -384,7 +384,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         /** 语文主观题提交*/
         if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(questionType)) {
             liveUrl = url;
-            liveUrl = "http://laoshi.xueersi.com/science/AutoLive/subjectiveSubmit";
+//            liveUrl = "http://laoshi.xueersi.com/science/AutoLive/subjectiveSubmit";
 //            params.addHeaderParam("Host","laoshi.xueersi.com");
 //            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
 //            params.addBodyParam("stuId", stuId);

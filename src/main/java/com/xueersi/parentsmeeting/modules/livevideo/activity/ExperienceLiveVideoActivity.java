@@ -973,19 +973,19 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 firstTime = false;
             }
             if (mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000) {
-                // 03.21 提示直播已结束
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
-                vPlayer.releaseSurface();
-                vPlayer.stop();
-                // 测试体验课播放器的结果页面
-                lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
-                        getDataCallBack);
-                return;
+//                // 03.21 提示直播已结束
+//                ivTeacherNotpresent.setVisibility(View.VISIBLE);
+//                ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
+//                vPlayer.releaseSurface();
+//                vPlayer.stop();
+//                // 测试体验课播放器的结果页面
+//                lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
+//                        getDataCallBack);
+//                return;
 //            showPopupwinFeedback();
             }
-            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
-//            seekTo(3284000);
+//            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
+            seekTo(3284000);
         }
         // 心跳时间的统计
         mHandler.postDelayed(mPlayDuration, mPlayDurTime);
@@ -1388,9 +1388,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private int getmChatCount(){
         int times = 0;
 //        String sender = UserBll.getInstance().getMyUserInfoEntity().getChatName();
-        for (int i = 0; i < mMsgs.size(); i++) {
-            if(mMsgs.get(i).getSender().equals("我")){
-                times++;
+        if (!mMsgs.isEmpty()){
+            for (int i = 0; i < mMsgs.size(); i++) {
+                if(mMsgs.get(i).getSender().equals("我")){
+                    times++;
+                }
             }
         }
         return times;
