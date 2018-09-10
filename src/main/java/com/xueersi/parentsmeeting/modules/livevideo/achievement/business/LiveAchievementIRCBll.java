@@ -9,7 +9,9 @@ import android.view.View;
 
 import com.tal.speech.language.TalLanguage;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.entity.AppInfoEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.route.XueErSiRouter;
@@ -92,56 +94,59 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 }
             });
         }
-
-        SpeakerRecognitionerInterface.checkResoureDownload(mContext, new LoadSoCallBack() {
-            @Override
-            public void start() {
-            }
-
-            @Override
-            public void success() {
-                long interval = System.currentTimeMillis() - sTime;
-                if (!LiveTopic.MODE_TRANING.equals(mode) || interval <= 60 * 1000) {
-                    return;
+        AppInfoEntity appInfoEntity = AppBll.getInstance().getAppInfoEntity();
+        boolean voiceRecognSwitchOn = appInfoEntity.getAppInitConfigEntity().isVoiceRecognSwitchOn();
+        if (voiceRecognSwitchOn) {
+            SpeakerRecognitionerInterface.checkResoureDownload(mContext, new LoadSoCallBack() {
+                @Override
+                public void start() {
                 }
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        SpeakerRecognitionerInterface speakerRecognitionerInterface = SpeakerRecognitionerInterface
-                                .getInstance();
-                        boolean result = speakerRecognitionerInterface.init();
-                        if (result) {
-                            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-                            byte[] pcmdata = new byte[10];
-                            int enrollIvector = speakerRecognitionerInterface.
-                                    enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
-                            if (enrollIvector != 0) {
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
-                                            recognizeDialog.showDialog();
-                                        }
-                                    }
-                                });
-                            }
 
-                        }
+                @Override
+                public void success() {
+                    long interval = System.currentTimeMillis() - sTime;
+                    if (!LiveTopic.MODE_TRANING.equals(mode) || interval <= 60 * 1000) {
+                        return;
                     }
-                }).start();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SpeakerRecognitionerInterface speakerRecognitionerInterface = SpeakerRecognitionerInterface
+                                    .getInstance();
+                            boolean result = speakerRecognitionerInterface.init();
+                            if (result) {
+                                String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                                byte[] pcmdata = new byte[10];
+                                int enrollIvector = speakerRecognitionerInterface.
+                                        enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
+                                if (enrollIvector != 0) {
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
+                                                recognizeDialog.showDialog();
+                                            }
+                                        }
+                                    });
+                                }
 
-            }
+                            }
+                        }
+                    }).start();
 
-            @Override
-            public void progress(float progress, int type) {
+                }
 
-            }
+                @Override
+                public void progress(float progress, int type) {
 
-            @Override
-            public void fail(int errorCode, String errorMsg) {
+                }
 
-            }
-        });
+                @Override
+                public void fail(int errorCode, String errorMsg) {
+
+                }
+            });
+        }
 
     }
 
