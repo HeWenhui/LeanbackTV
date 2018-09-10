@@ -8,6 +8,7 @@ import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -70,8 +71,15 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
                     @Override
                     public void onClick(View v) {
                         MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
-                        mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
-                        mediaPlayerControl.start();
+                        if (mediaPlayerControl == null){
+                            LiveVideoActivityBase expPlayerControl = getInstance(LiveVideoActivityBase.class);
+                            expPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
+                            expPlayerControl.start();
+                        } else {
+                            mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
+                            mediaPlayerControl.start();
+                        }
+
                     }
                 });
                 verifyCancelAlertDialog.showDialog();

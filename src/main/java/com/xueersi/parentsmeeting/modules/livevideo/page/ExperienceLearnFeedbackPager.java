@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -176,4 +177,5 @@ public class ExperienceLearnFeedbackPager extends BasePager {
     public interface CloseAction{
         void onClose();
     }
+
 }

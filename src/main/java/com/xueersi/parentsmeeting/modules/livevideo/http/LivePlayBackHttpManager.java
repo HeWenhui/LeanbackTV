@@ -278,13 +278,12 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
      * @param times
      * @param requestCallBack
      */
-    public void sendExpeRecordInteract(String stuId, String termId, int times, HttpCallBack requestCallBack) {
+    public void sendExpeRecordInteract(String url, String termId, int times, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        setDefaultParameter(params);
-//        params.addBodyParam("stuId", stuId);
+//        setDefaultParameter(params);
         params.addBodyParam("termId", termId);
         params.addBodyParam("times", times + "");
-        sendPost(LiveVideoConfig.URL_AUTO_LIVE_RECORD_INTERACT, params, requestCallBack);
+        sendPost(url, params, requestCallBack);
     }
 
     // 04.11 获取讲座直播回放中更多课程的广告信息

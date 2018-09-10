@@ -216,7 +216,7 @@ public class LiveBackBll implements LiveAndBackDebug, LivePlaybackMediaControlle
         }
         liveGetInfo.setPattern(pattern);
         try {
-            if(mVideoEntity.getGetInfoStr() == null && !mVideoEntity.getGetInfoStr().isEmpty()){
+            if(mVideoEntity.getGetInfoStr() != null && !mVideoEntity.getGetInfoStr().isEmpty()){
                 String getInfoStr = mVideoEntity.getGetInfoStr();
                 JSONObject liveInfo = new JSONObject(getInfoStr);
                 liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));

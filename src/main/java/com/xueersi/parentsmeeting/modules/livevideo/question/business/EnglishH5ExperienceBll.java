@@ -219,7 +219,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 .OnAnswerReslut onAnswerReslut) {
             String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
             String userMode = "1";
-            String isArts = liveBackBll.getIsArts() + "";
+            String isArts = String.valueOf(liveBackBll.getIsArts());
             getCourseHttpManager().sumitExperienceCourseWareH5(stuId, mVideoEntity.getLiveId(),
                     videoQuestionLiveEntity.id, mVideoEntity.getChapterId(), testAnswer, voiceTime, isRight, isArts,
                     mVideoEntity.getSubmitCourseWareH5AnswerUseVoiceUrl(), new HttpCallBack() {

@@ -297,7 +297,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         String termId = mVideoEntity.getChapterId();
         String isArts = questionBll.IS_SCIENCE == false ? "1" : "0";
-        getCourseHttpManager().sendExpSpeechEvalResult(liveid, stuId, id, termId, isArts, mVideoEntity
+        getCourseHttpManager().sendExpSpeechEvalResult(stuId,liveid, id, termId, isArts, mVideoEntity
                 .getSpeechEvalSubmitUrl(), new HttpCallBack(false) {
 
             @Override
@@ -324,7 +324,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         String termId = mVideoEntity.getChapterId();
         String isArts = questionBll.IS_SCIENCE == false ? "1" : "0";
-        getCourseHttpManager().sendExpSpeechEvalResult(liveid, stuId, id, termId, isArts, mVideoEntity
+        getCourseHttpManager().sendExpSpeechEvalResult(stuId,liveid, id, termId, isArts, mVideoEntity
                 .getSpeechEvalSubmitUrl(), new HttpCallBack(false) {
 
             @Override
