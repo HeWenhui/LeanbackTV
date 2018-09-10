@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
@@ -31,14 +32,14 @@ import java.util.HashMap;
  */
 public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     EnglishH5CoursewareBll englishH5CoursewareBll;
+    private EnglishH5Cache englishH5Cache;
 
     public EnglishH5PlayBackBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
     }
 
     @Override
-    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object>
-            businessShareParamMap) {
+    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
         englishH5CoursewareBll = new EnglishH5CoursewareBll(activity);
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(mLiveType);
@@ -48,26 +49,27 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         if (liveBackBll.getPattern() == 2) {
             //语音答题
             LiveAndBackDebug liveAndBackDebug = getInstance(LiveAndBackDebug.class);
-            LiveBackStandVoiceAnswerCreat liveStandVoiceAnswerCreat = new LiveBackStandVoiceAnswerCreat(activity,
-                    englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), liveBackBll);
+            LiveBackStandVoiceAnswerCreat liveStandVoiceAnswerCreat = new LiveBackStandVoiceAnswerCreat(activity, englishH5CoursewareBll.new LiveStandQuestionSwitchImpl(), liveBackBll);
             liveStandVoiceAnswerCreat.setUserName(liveGetInfo.getStandLiveName());
             liveStandVoiceAnswerCreat.setHeadUrl(liveGetInfo.getHeadImgPath());
             liveStandVoiceAnswerCreat.setLivePagerBack(englishH5CoursewareBll);
             englishH5CoursewareBll.setBaseVoiceAnswerCreat(liveStandVoiceAnswerCreat);
         } else {
             //语音答题
-            WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, englishH5CoursewareBll.new
-                    LiveQuestionSwitchImpl());
-            englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(wrapQuestionSwitch,
-                    englishH5CoursewareBll));
+            WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, englishH5CoursewareBll.new LiveQuestionSwitchImpl());
+            englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(wrapQuestionSwitch, englishH5CoursewareBll));
         }
-        LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new
-                LiveBackBaseEnglishH5CoursewareCreat();
+        LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBackBaseEnglishH5CoursewareCreat();
         int isArts = liveBackBll.getIsArts();
         liveBaseEnglishH5CoursewareCreat.setIS_SCIENCE(isArts != 1);
         liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
         liveBaseEnglishH5CoursewareCreat.setLivePagerBack(englishH5CoursewareBll);
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+            englishH5Cache = new EnglishH5Cache(activity, liveGetInfo.getId());
+            englishH5Cache.setHttpManager(getmHttpManager());
+            englishH5Cache.getCourseWareUrl();
+        }
     }
 
     @Override
@@ -77,8 +79,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
     @Override
     public int[] getCategorys() {
-        return new int[]{LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE, LocalCourseConfig
-                .CATEGORY_ENGLISH_MULH5COURSE_WARE};
+        return new int[]{LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE, LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE};
     }
 
     @Override
@@ -157,6 +158,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                             mediaPlayerControl.start();
                         }
                         VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
+                        videoQuestionLiveEntity.englishH5Entity.setNewEnglishH5(true);
                         englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                         showQuestion.onShow(true, videoQuestionLiveEntity);
                     }
@@ -225,26 +227,25 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
                     HttpCallBack() {
 
-                        @Override
-                        public void onPmSuccess(ResponseEntity responseEntity) {
-                            VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer
-                                    (responseEntity,
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) {
+                                    VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer(responseEntity,
                                             true);
-                            entity.setVoice(true);
-                            if (StringUtils.isSpace(entity.getTestId())) {
-                                entity.setTestId(videoQuestionLiveEntity.id);
-                            }
-                            if (onAnswerReslut != null) {
-                                onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
-                            }
-                        }
+                                    entity.setVoice(true);
+                                    if (StringUtils.isSpace(entity.getTestId())) {
+                                        entity.setTestId(videoQuestionLiveEntity.id);
+                                    }
+                                    if (onAnswerReslut != null) {
+                                        onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
+                                    }
+                                }
 
-                        @Override
-                        public void onPmFailure(Throwable error, String msg) {
-                            if (onAnswerReslut != null) {
-                                onAnswerReslut.onAnswerFailure();
-                            }
-                        }
+                                @Override
+                                public void onPmFailure(Throwable error, String msg) {
+                                    if (onAnswerReslut != null) {
+                                        onAnswerReslut.onAnswerFailure();
+                                    }
+                                }
 
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
@@ -286,4 +287,12 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         }
     }
 
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        if (englishH5Cache != null) {
+            englishH5Cache.stop();
+        }
+    }
 }

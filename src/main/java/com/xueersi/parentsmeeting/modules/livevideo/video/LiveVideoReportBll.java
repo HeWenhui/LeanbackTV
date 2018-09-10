@@ -36,7 +36,7 @@ public class LiveVideoReportBll {
     private final String TAG = "LiveVideoReportBll";
     private LiveHttpManager mHttpManager;
     /** 直播帧数统计 */
-    private TotalFrameStat totalFrameStat;
+    private LivePlayLog livePlayLog;
     private AtomicInteger mOpenCount = new AtomicInteger(0);
     private LogToFile mLogtf;
     long openStartTime;
@@ -60,8 +60,8 @@ public class LiveVideoReportBll {
         this.playserverEntity = playserverEntity;
     }
 
-    public void setTotalFrameStat(TotalFrameStat totalFrameStat) {
-        this.totalFrameStat = totalFrameStat;
+    public void setLivePlayLog(LivePlayLog livePlayLog) {
+        this.livePlayLog = livePlayLog;
     }
 
     public void onLiveInit(LiveGetInfo getInfo, LiveTopic liveTopic) {
@@ -86,8 +86,8 @@ public class LiveVideoReportBll {
             mOpenCount.set(mOpenCount.get() + 1);
             openStartTime = System.currentTimeMillis();
             mLogtf.d("onOpenStart");
-            if (totalFrameStat != null) {
-                totalFrameStat.onOpenStart();
+            if (livePlayLog != null) {
+                livePlayLog.onOpenStart();
             }
         }
 
@@ -97,8 +97,8 @@ public class LiveVideoReportBll {
             long openTime = System.currentTimeMillis() - openStartTime;
             mLogtf.d("onOpenSuccess:openTime=" + openTime);
             streamReport(LiveVideoReportBll.MegId.MEGID_12102, mGetInfo.getChannelname(), openTime);
-            if (totalFrameStat != null) {
-                totalFrameStat.onOpenSuccess();
+            if (livePlayLog != null) {
+                livePlayLog.onOpenSuccess();
             }
         }
 
@@ -112,8 +112,8 @@ public class LiveVideoReportBll {
             long openTime = System.currentTimeMillis() - openStartTime;
             mLogtf.d("onOpenFailed:openTime=" + openTime + ",arg2=" + arg2 + ",NetWorkState=" +
                     NetWorkHelper.getNetWorkState(mContext));
-            if (totalFrameStat != null) {
-                totalFrameStat.onOpenFailed(arg1, arg2);
+            if (livePlayLog != null) {
+                livePlayLog.onOpenFailed(arg1, arg2);
             }
         }
 
@@ -135,16 +135,24 @@ public class LiveVideoReportBll {
         public void onPlaybackComplete() {
             mLogtf.d("onPlaybackComplete:completeCount=" + liveBll.getModeTeacher() + "," +
                     "NetWorkState=" + NetWorkHelper.getNetWorkState(mContext));
-            if (totalFrameStat != null) {
-                totalFrameStat.onPlaybackComplete();
+            if (livePlayLog != null) {
+                livePlayLog.onPlaybackComplete();
             }
         }
 
         @Override
         public void onPlayError() {
             super.onPlayError();
-            if (totalFrameStat != null) {
-                totalFrameStat.onPlayError();
+            if (livePlayLog != null) {
+                livePlayLog.onPlayError();
+            }
+        }
+
+        @Override
+        public void onSeekComplete() {
+            super.onSeekComplete();
+            if (livePlayLog != null) {
+                livePlayLog.onSeekComplete();
             }
         }
     };
@@ -160,9 +168,9 @@ public class LiveVideoReportBll {
                 return;
             }
         } else if (LiveVideoReportBll.MegId.MEGID_12102 == msgid) {
-            if (totalFrameStat != null) {
-                String cpuName = totalFrameStat.getCpuName();
-                String memsize = totalFrameStat.getMemsize();
+            if (livePlayLog != null) {
+                String cpuName = livePlayLog.getCpuName();
+                String memsize = livePlayLog.getMemsize();
                 String ua = Build.VERSION.SDK_INT + ";" + cpuName + ";" + memsize;
                 entity.addBodyParam("UA", ua);
             }
@@ -266,9 +274,7 @@ public class LiveVideoReportBll {
     }
 
     public void onDestory() {
-        if (totalFrameStat != null) {
-            totalFrameStat.destory();
-        }
+
     }
 
     public enum MegId {

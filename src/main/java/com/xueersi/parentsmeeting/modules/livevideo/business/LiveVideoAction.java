@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -150,6 +151,8 @@ public class LiveVideoAction implements VideoAction {
                     if (status != null) {
                         mLogtf.d("playComplete:classbegin=" + status.isClassbegin());
                     }
+                    //统计日志
+                    PlayErrorCodeLog.livePlayError(mLiveBll, playErrorCode);
                 }
             }
         });
@@ -167,6 +170,7 @@ public class LiveVideoAction implements VideoAction {
                         tvLoadingHint.setVisibility(View.VISIBLE);
                         int netWorkState = NetWorkHelper.getNetWorkState(activity);
                         if (netWorkState == NetWorkHelper.NO_NETWORK) {
+                            playErrorCode = PlayErrorCode.PLAY_NO_WIFI;
                             tvLoadingHint.setText(PlayErrorCode.PLAY_NO_WIFI.getTip());
                         } else {
                             tvLoadingHint.setText("视频播放失败[" + playErrorCode.getCode() + "]");
@@ -183,6 +187,8 @@ public class LiveVideoAction implements VideoAction {
                     if (status != null) {
                         mLogtf.d("onFail:classbegin=" + status.isClassbegin());
                     }
+                    //统计日志
+                    PlayErrorCodeLog.livePlayError(mLiveBll, playErrorCode);
                 }
             }
         });
@@ -200,9 +206,9 @@ public class LiveVideoAction implements VideoAction {
                 } else {
                     ivTeacherNotpresent.setVisibility(View.VISIBLE);
                     if (dwTeacherNotpresen == null) {
-                        if(LiveVideoConfig.isPrimary){
+                        if (LiveVideoConfig.isPrimary) {
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_psnormal);
-                        }else{
+                        } else {
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_normal);
                         }
                     }
@@ -275,7 +281,7 @@ public class LiveVideoAction implements VideoAction {
         };
         if (Looper.getMainLooper() == Looper.myLooper()) {
             runnable.run();
-        }else {
+        } else {
             mHandler.post(runnable);
         }
     }
@@ -316,6 +322,10 @@ public class LiveVideoAction implements VideoAction {
                 tvLoadingHint.setVisibility(View.VISIBLE);
                 tvLoadingHint.setText(playErrorCode.getTip());
             }
+        }
+        //统计日志
+        if (playErrorCode != null) {
+            PlayErrorCodeLog.livePlayError(mLiveBll, playErrorCode);
         }
     }
 

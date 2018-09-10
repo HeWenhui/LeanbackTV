@@ -33,7 +33,6 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
     private Activity activity;
-    private LiveBll mLiveBll;
     /** 直播id */
     private String mVSectionID;
     private ReceiveGold receiveGold;
@@ -48,10 +47,6 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
         this.activity = activity;
         this.isLive = isLive;
         this.mGetInfo = liveGetInfo;
-    }
-
-    public void setLiveBll(LiveBll mLiveBll) {
-        this.mLiveBll = mLiveBll;
     }
 
     public void setVSectionID(String mVSectionID) {

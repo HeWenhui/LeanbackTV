@@ -716,7 +716,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
             }
         }, mDanmakuContext);
         dvSpeechbulDanmaku.showFPS(false);
-        dvSpeechbulDanmaku.enableDanmakuDrawingCache(true);
+        dvSpeechbulDanmaku.enableDanmakuDrawingCache(false);
     }
 
     /**

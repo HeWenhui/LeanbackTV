@@ -37,7 +37,7 @@ public class LiveVideoConfig {
             "/LiveLecture/submitTestAnswer";
 
     /** 播放器异常日志 */
-    public final static String URL_LIVE_ON_LOAD_LOGS = "http://netlive.xesv5.com/10011.gif";
+    public final static String URL_LIVE_ON_LOAD_LOGS = "https://netlive.xesimg.com/10011.gif";
     /** 视频宽度 */
     public static final float VIDEO_WIDTH = 1280f;
     /** 视频高度 */
@@ -174,10 +174,14 @@ public class LiveVideoConfig {
     public static String LIVE_ENGLISH_TIP = "live_english_speeak_tip";
     /** 英语能量条提示 */
     public static String LEC_LEARN_REPORT = "lec_learn_report";
+    /** 直播日志 */
+    public static String SP_LIVEVIDEO_CLIENT_LOG = "sp_livevideo_clientLog";
     /** 直播网页加载失败 */
     public static String LIVE_WEBVIEW_ERROR = "live_webview_error";
     /** 直播语音弹幕 */
     public static String LIVE_SPEECH_BULLETSCREEN = "voice_barrage";
+    /** 直播-错误码 */
+    public static String LIVE_PLAY_ERROR = "live_play_error";
 
     //  体验课互动题提交答案
     public static String LIVE_EXPE_SUBMIT = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
@@ -213,6 +217,8 @@ public class LiveVideoConfig {
             "/science/AutoLive/submitFeedback";
     /** 直播云平台日志统计 */
     public static String URL_CDN_LOG = "http://log.xescdn.com/log";
+    public static String URL_CDN_LOG1 = "http://log1.xescdn.com/log";
+    public static String URL_CDN_LOG2 = "http://log2.xescdn.com/log";
     /** 更多课程数量的记录 */
     public static int MORE_COURSE;
     public static Boolean isloading = false;

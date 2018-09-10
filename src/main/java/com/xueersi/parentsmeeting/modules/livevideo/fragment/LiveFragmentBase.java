@@ -86,8 +86,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         logger.d("==========>onVideoCreate:");
         long before = System.currentTimeMillis();
-        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
-                .FLAG_FULLSCREEN);
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         liveType = activity.getIntent().getIntExtra("type", 0);
         // 设置不可自动横竖屏
         setAutoOrientation(false);
@@ -154,6 +153,11 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     }
 
+    public void stopPlayer() {
+        super.stopPlayer();
+        mLiveVideoBll.stopPlay();
+    }
+
     @Override
     protected void onUserBackPressed() {
         boolean userBackPressed = mLiveBll.onUserBackPressed();
@@ -167,15 +171,13 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         contentView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
-                        .OnGlobalLayoutListener() {
+                contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
                         if (videoView.getWidth() <= 0) {
                             return;
                         }
-                        boolean isLand = getResources().getConfiguration().orientation == Configuration
-                                .ORIENTATION_LANDSCAPE;
+                        boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
                         if (!isLand) {
                             return;
                         }
@@ -250,8 +252,8 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         @Override
         protected void onPlayOpenStart() {
             liveFragmentBase.setFirstBackgroundVisible(View.VISIBLE);
-            liveFragmentBase.mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility
-                    (View.VISIBLE);
+            liveFragmentBase.mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+            liveFragmentBase.openSuccess = false;
         }
 
         @Override
@@ -271,6 +273,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                     });
                 }
             }, 1200);
+            liveFragmentBase.openSuccess = false;
         }
 
         @Override
@@ -279,6 +282,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             if (tvFail != null) {
                 tvFail.setVisibility(View.INVISIBLE);
             }
+            liveFragmentBase.openSuccess = true;
             liveFragmentBase.setFirstBackgroundVisible(View.GONE);
 //            if (mGetInfo != null && mGetInfo.getIsShowMarkPoint().equals("1")) {
 //                if (liveRemarkBll == null) {
@@ -288,8 +292,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 //                    }
 //                    if (mLiveBll != null && liveMediaControllerBottom != null) {
 //                        if (liveTextureView == null) {
-//                            ViewStub viewStub = (ViewStub) mContentView.findViewById(R.id
-// .vs_course_video_video_texture);
+//                            ViewStub viewStub = (ViewStub) mContentView.findViewById(R.id.vs_course_video_video_texture);
 //                            liveTextureView = (LiveTextureView) viewStub.inflate();
 //                            liveTextureView.vPlayer = vPlayer;
 //                            liveTextureView.setLayoutParams(videoView.getLayoutParams());
@@ -325,6 +328,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                     });
                 }
             }, 200);
+            liveFragmentBase.openSuccess = false;
         }
 
         @Override
@@ -332,6 +336,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             if (liveFragmentBase.liveVideoAction != null) {
                 liveFragmentBase.liveVideoAction.onPlayError();
             }
+            liveFragmentBase.openSuccess = false;
         }
 
         @Override
@@ -488,8 +493,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent.NowMobileEvent event) {
         if (mIsShowMobileAlert) {
-            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(),
-                    false,
+            VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
                     VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
             cancelDialog.setCancelBtnListener(new View.OnClickListener() {
                 @Override
