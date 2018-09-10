@@ -101,7 +101,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             @Override
             public void success() {
                 long interval = System.currentTimeMillis() - sTime;
-
                 if (!LiveTopic.MODE_TRANING.equals(mode) || interval <= 60 * 1000) {
                     return;
                 }
@@ -112,14 +111,21 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                 .getInstance();
                         boolean result = speakerRecognitionerInterface.init();
                         if (result) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
-                                        recognizeDialog.showDialog();
+                            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                            byte[] pcmdata = new byte[10];
+                            int enrollIvector = speakerRecognitionerInterface.
+                                    enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
+                            if (enrollIvector != 0) {
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
+                                            recognizeDialog.showDialog();
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
+
                         }
                     }
                 }).start();
@@ -148,7 +154,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString("from", "livevideo");
-                XueErSiRouter.startModule(mContext, "/pager_personals/voicerecognize");
+                XueErSiRouter.startModule(mContext, "/pager_personals/voicerecognize", bundle);
             }
         });
         recognizeDialog.setCancelShowText("取消").setVerifyShowText("去认证");
