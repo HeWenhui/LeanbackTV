@@ -223,7 +223,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         JSONArray ids = onlineTechObj.getJSONArray("id");
                         String detail = ids.getString(0);
                         videoQuestionLiveEntity.id = detail;
-                        videoQuestionLiveEntity.type = onlineTechObj.optString("questiontype");
+                        if("50".equals(onlineTechObj.optString("ptype"))){
+                            videoQuestionLiveEntity.type = onlineTechObj.optString("questiontype");
+                        }
                         videoQuestionLiveEntity.setOnlineTechEntity(h5OnlineTechEntity);
                     }
                 }
@@ -476,7 +478,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     videoQuestionLiveEntity.setUrl(buildCourseUrl(testIds));
                     String isVoice = object.optString("isVoice");
                     videoQuestionLiveEntity.setIsVoice(isVoice);
-                    videoQuestionLiveEntity.type = object.optString("questiontype");
+                    if("50".equals(object.optString("ptype"))){
+                        videoQuestionLiveEntity.type = object.optString("questiontype");
+                    }
                     if ("1".equals(isVoice)) {
                         videoQuestionLiveEntity.questiontype = object.optString("questiontype");
                         videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
