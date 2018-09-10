@@ -221,8 +221,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
                             }
                         } else {
                             LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(activity,
-                                    LiveBackBll
-                                            .ShowQuestion.class);
+                                    LiveBackBll.ShowQuestion.class);
                             showQuestion.onHide(videoQuestionLiveEntity1);
                         }
                     }

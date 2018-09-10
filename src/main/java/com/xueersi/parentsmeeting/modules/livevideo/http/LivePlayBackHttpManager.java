@@ -281,7 +281,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     public void sendExpeRecordInteract(String stuId, String termId, int times, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        params.addBodyParam("stuId", stuId);
+//        params.addBodyParam("stuId", stuId);
         params.addBodyParam("termId", termId);
         params.addBodyParam("times", times + "");
         sendPost(LiveVideoConfig.URL_AUTO_LIVE_RECORD_INTERACT, params, requestCallBack);
@@ -308,7 +308,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
             order_id, String suggest, JSONObject jsonOption, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        params.addBodyParam("user_id", user_id);
+//        params.addBodyParam("user_id", user_id);
         params.addBodyParam("plan_id", plan_id);
         params.addBodyParam("subject_id", subject_id);
         params.addBodyParam("grade_id", grade_id);
@@ -325,7 +325,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                                         HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        params.addBodyParam("stuId", stuId);
+//        params.addBodyParam("stuId", stuId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", testId);
         params.addBodyParam("termId", termId);
@@ -384,8 +384,10 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         /** 语文主观题提交*/
         if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(questionType)) {
             liveUrl = url;
-            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-            params.addBodyParam("stuId", stuId);
+            liveUrl = "http://laoshi.xueersi.com/science/AutoLive/subjectiveSubmit";
+//            params.addHeaderParam("Host","laoshi.xueersi.com");
+//            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+//            params.addBodyParam("stuId", stuId);
             params.addBodyParam("isArts", isArts);
         }
         params.addBodyParam("liveId", liveId);
@@ -402,7 +404,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 //        String liveUrl = LiveVideoConfig.URL_EXPE_SUBMIT_TEST_H5_ANSWER;
         HttpRequestParams params = new HttpRequestParams();
 //        setDefaultParameter(params);
-        params.addBodyParam("stuId", stuId);
+//        params.addBodyParam("stuId", stuId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", testId);
         params.addBodyParam("termId", termId);

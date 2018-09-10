@@ -155,7 +155,7 @@ import static com.xueersi.ui.dialog.VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY
  * 体验课播放器
  */
 public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implements BaseLiveMediaControllerBottom
-        .MediaChildViewClick,MediaControllerAction{
+        .MediaChildViewClick{
     QuestionBll questionBll;
     LiveBackBll liveBackBll;
     private RelativeLayout rlLiveMessageContent;
@@ -869,7 +869,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         for (LiveBackBaseBll businessBll : businessBlls) {
             businessBll.initViewF(null, rlQuestionContent, new AtomicBoolean(mIsLand));
         }
-        ProxUtil.getProxUtil().put(this, MediaControllerAction.class, this);
+//        ProxUtil.getProxUtil().put(this, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(this, LiveVideoActivityBase.class, this);
         playNewVideo(Uri.parse(mWebPath), mSectionName);
         chatCfgServerList = getIntent().getStringArrayListExtra("roomChatCfgServerList");
@@ -982,9 +982,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
                         getDataCallBack);
                 return;
+//            showPopupwinFeedback();
             }
             seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
-//            seekTo(25000);
+//            seekTo(3284000);
         }
         // 心跳时间的统计
         mHandler.postDelayed(mPlayDuration, mPlayDurTime);
@@ -1085,6 +1086,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             @Override
             public void onClose() {
                 mFeedbackWindow.dismiss();
+                mFeedbackWindow = null;
             }
         });
     }
@@ -1365,9 +1367,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     @Override
     public void onBackPressed() {
         boolean userBackPressed = liveBackBll.onUserBackPressed();
-        if (mWindow == null && mFeedbackWindow == null) {
+        if (mWindow == null && mFeedbackWindow == null && !userBackPressed) {
             super.onBackPressed();
         }
+
     }
 
     @Override
@@ -1393,14 +1396,5 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         return times;
     }
 
-    @Override
-    public void attachMediaController() {
-        rlQuestionContent.removeAllViews();
-    }
-
-    @Override
-    public void release() {
-
-    }
 
 }
