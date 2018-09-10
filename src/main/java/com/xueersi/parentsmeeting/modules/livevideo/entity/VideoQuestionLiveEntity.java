@@ -112,6 +112,12 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
         }
     }
 
+    public void addAnswerEntity(AnswerEntity answerEntity){
+        if(answerEntity != null){
+            mAnswerEntityLst.add(answerEntity);
+        }
+    }
+
     @Override
     public int getvBlankSize() {
         return num;

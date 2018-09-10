@@ -148,23 +148,21 @@ public class ExperienceLearnFeedbackPager extends BasePager {
                     e.printStackTrace();
                 }
                 if (lectureLivePlayBackBll != null) {
-                    lectureLivePlayBackBll.sendExperienceFeedback(
-                            UserBll.getInstance().getMyUserInfoEntity().getStuId(),
-                            mVideoEntity.getLiveId(),
-                            mVideoEntity.getSubjectId(),
-                            mVideoEntity.getGradId(),
-                            mVideoEntity.getChapterId(),
-                            etSuggest.getText().toString(),
-                            jsonOption,
-                            new HttpCallBack() {
-                                @Override
-                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                    Loger.d(TAG, "sendFeedbackSuccess");
-                                }
-                            });
+                    lectureLivePlayBackBll.sendExperienceFeedback(UserBll.getInstance().getMyUserInfoEntity()
+                                    .getStuId(), mVideoEntity.getLiveId()
+                            , mVideoEntity.getSubjectId(), mVideoEntity.getGradId(), mVideoEntity.getChapterId(),
+                            etSuggest.getText().toString(), jsonOption, new
+                                    HttpCallBack() {
+
+                                        @Override
+                                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                            Loger.d(TAG, "sendFeedbackSuccess");
+                                        }
+                                    });
                 } else {
                     if (learnFeedBackPagerListener != null) {
-                        learnFeedBackPagerListener.submitClick(UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+                        learnFeedBackPagerListener.submitClick(UserBll.getInstance().getMyUserInfoEntity()
+                                        .getStuId(),
                                 mVideoEntity.getLiveId(),
                                 mVideoEntity.getSubjectId(),
                                 mVideoEntity.getGradId(),
@@ -196,6 +194,7 @@ public class ExperienceLearnFeedbackPager extends BasePager {
                     closeAction.onClose();
                 }
                 setBackgroundAlpha(1f);
+
             }
         });
     }

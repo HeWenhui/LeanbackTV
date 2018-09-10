@@ -18,18 +18,22 @@
             android:background="#FA4747"/>
         <ImageButton
             android:id="@+id/imgbtn_experience_feedback_close"
-            android:layout_width="11dp"
-            android:layout_height="11dp"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
             android:scaleType="fitCenter"
             android:layout_gravity="right"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/cy_main_guanbi_icon_normal" />
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
+            android:paddingBottom="5dp"
+            android:background="@null"
+            android:src="@drawable/livevideo_alertview_guanbi_icon_normal"
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="22dp"
+            android:layout_marginTop="12dp"
             android:textColor="@color/COLOR_666666"
             android:textSize="13sp"
             android:text="学习反馈"/>
@@ -42,8 +46,8 @@
             android:text="本节课难度合适吗？"/>
         <RadioGroup
             android:id="@+id/rg_experience_feedback_difficulty"
-            android:layout_width="wrap_content"
-            android:layout_height="13dp"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="11dp"
             android:orientation="horizontal">
             <RadioButton
@@ -52,6 +56,10 @@
                 android:layout_height="wrap_content"
                 android:textSize="9sp"
                 android:textColor="@color/COLOR_666666"
+                android:button="@drawable/selector_learn_feedback_item"
+                android:paddingLeft="3dp"
+                android:layout_marginRight="47dp"
+                android:checked="true"
                 android:text="偏难"/>
             <RadioButton
                 android:id="@+id/rbtn_difficulty_2"
@@ -59,6 +67,9 @@
                 android:layout_height="wrap_content"
                 android:textSize="9sp"
                 android:textColor="@color/COLOR_666666"
+                android:button="@drawable/selector_learn_feedback_item"
+                android:paddingLeft="3dp"
+                android:layout_marginRight="40dp"
                 android:text="适中"/>
             <RadioButton
                 android:id="@+id/rbtn_difficulty_3"
@@ -66,6 +77,8 @@
                 android:layout_height="wrap_content"
                 android:textSize="9sp"
                 android:textColor="@color/COLOR_666666"
+                android:button="@drawable/selector_learn_feedback_item"
+                android:paddingLeft="3dp"
                 android:text="容易"/>
         </RadioGroup>
         <TextView
@@ -77,8 +90,8 @@
             android:text="您对本节课满意吗？"/>
         <RadioGroup
             android:id="@+id/rg_experience_feedback_satisficing"
-            android:layout_width="wrap_content"
-            android:layout_height="13dp"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="11dp"
             android:orientation="horizontal">
             <RadioButton
@@ -87,6 +100,10 @@
                 android:layout_height="wrap_content"
                 android:textSize="9sp"
                 android:textColor="@color/COLOR_666666"
+                android:button="@drawable/selector_learn_feedback_item"
+                android:paddingLeft="3dp"
+                android:layout_marginRight="47dp"
+                android:checked="true"
                 android:text="满意"/>
             <RadioButton
                 android:id="@+id/rbtn_satisficing_2"
@@ -94,6 +111,9 @@
                 android:layout_height="wrap_content"
                 android:textSize="9sp"
                 android:textColor="@color/COLOR_666666"
+                android:button="@drawable/selector_learn_feedback_item"
+                android:paddingLeft="3dp"
+                android:layout_marginRight="40dp"
                 android:text="一般"/>
             <RadioButton
                 android:id="@+id/rbtn_satisficing_3"
@@ -101,6 +121,8 @@
                 android:layout_height="wrap_content"
                 android:textSize="9sp"
                 android:textColor="@color/COLOR_666666"
+                android:button="@drawable/selector_learn_feedback_item"
+                android:paddingLeft="3dp"
                 android:text="不满意"/>
         </RadioGroup>
         <TextView
