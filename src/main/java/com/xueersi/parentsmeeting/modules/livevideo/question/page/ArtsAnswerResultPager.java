@@ -167,14 +167,14 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
             if(isSelect(data)){
                 tvStanderAnswer.setVisibility(data.getIsRight() ==2 ?View.GONE:View.VISIBLE);
-                tvStanderAnswer.setText(listToStr(data.getRightAnswers()));
+                tvStanderAnswer.setText(listToStr(data.getRightAnswers(),null));
                 tvStanderAnswerBelow.setVisibility(View.GONE);
-                tvAnswer.setText("你的答案:"+listToStr(data.getChoiceList()));
+                tvAnswer.setText("你的答案:"+listToStr(data.getChoiceList(),null));
             }else{
                 tvStanderAnswer.setVisibility(View.GONE);
-                tvAnswer.setText(listToStr(data.getBlankList()));
+                tvAnswer.setText(listToStr(data.getBlankList(),"、"));
                 tvStanderAnswerBelow.setVisibility(data.getIsRight() ==2?View.GONE:View.VISIBLE);
-                tvStanderAnswerBelow.setText(listToStr(data.getRightAnswers()));
+                tvStanderAnswerBelow.setText(listToStr(data.getRightAnswers(),"、"));
             }
 
             if(iconResId != 0){
@@ -187,12 +187,21 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
             return data.getTestType() == 2;
         }
 
-
-        private String listToStr (List<String> data){
+        /**
+         * 数组转换为 字符串
+         * @param data
+         * @param spiltStr
+         * @return
+         */
+        private String listToStr (List<String> data,String spiltStr){
             StringBuilder stringBuilder = new StringBuilder();
             if(data != null){
                 for (int i = 0; i < data.size(); i++) {
-                    stringBuilder.append(data.get(i));
+                    if(i < (data.size() -1) && spiltStr != null){
+                        stringBuilder.append(data.get(i)).append(spiltStr);
+                    }else{
+                        stringBuilder.append(data.get(i));
+                    }
                 }
             }
             return  stringBuilder.toString();

@@ -128,7 +128,6 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
             Paint.FontMetricsInt fontMetricsInt = paint.getFontMetricsInt();
             int baseLine = (height - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
             Loger.e("ArtsLottie","=====>baseLine:"+baseLine);
-            canvas.drawColor(Color.RED);
             canvas.drawText(mCoinStr, 0, baseLine, paint);
         }
         return resultBitmap;

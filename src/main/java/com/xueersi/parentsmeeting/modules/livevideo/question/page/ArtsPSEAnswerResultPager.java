@@ -391,14 +391,14 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
             if(isSelect(answer)){
                 tvStanderAnswer.setVisibility(answer.getIsRight() == 2?View.GONE:View.VISIBLE);
-                tvStanderAnswer.setText(listToStr(answer.getRightAnswers()));
+                tvStanderAnswer.setText(listToStr(answer.getRightAnswers(),null));
                 tvStanderAnswerBelow.setVisibility(View.GONE);
-                tvAnswer.setText("你的答案:"+listToStr(answer.getChoiceList()));
+                tvAnswer.setText("你的答案:"+listToStr(answer.getChoiceList(),null));
             }else{
                 tvStanderAnswer.setVisibility(View.GONE);
-                tvAnswer.setText(listToStr(answer.getBlankList()));
+                tvAnswer.setText(listToStr(answer.getBlankList(),"、"));
                 tvStanderAnswerBelow.setVisibility(answer.getIsRight() ==2?View.GONE:View.VISIBLE);
-                tvStanderAnswerBelow.setText(listToStr(answer.getRightAnswers()));
+                tvStanderAnswerBelow.setText(listToStr(answer.getRightAnswers(),"、"));
             }
 
             int iconResId = 0;
@@ -422,11 +422,21 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         }
 
 
-        private String listToStr (List<String> data){
+        /**
+         *
+         * @param data
+         * @param splitStr 分割字符串
+         * @return
+         */
+        private String listToStr (List<String> data,String splitStr){
             StringBuilder stringBuilder = new StringBuilder();
             if(data != null){
                 for (int i = 0; i < data.size(); i++) {
-                    stringBuilder.append(data.get(i));
+                    if(i < (data.size()-1) && splitStr != null){
+                        stringBuilder.append(data.get(i)).append(splitStr);
+                    }else{
+                        stringBuilder.append(data.get(i));
+                    }
                 }
             }
             return  stringBuilder.toString();
