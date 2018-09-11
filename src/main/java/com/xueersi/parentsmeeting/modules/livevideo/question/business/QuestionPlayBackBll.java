@@ -271,18 +271,32 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                     isRight,
                     httpCallBack);
         } else {
-            getCourseHttpManager().saveExperienceTestRecord(
-                    mVideoEntity.getSubjectiveSubmitUrl(),
-                    enstuId,
+            getCourseHttpManager().saveTestRecords(
+                    UserBll.getInstance().getMyUserInfoEntity().getEnstuId(),
                     videoQuestionLiveEntity1.srcType,
                     videoQuestionLiveEntity1.id,
                     testAnswer,
-                    videoQuestionLiveEntity1.getAnswerDay(),
-                    mVSectionID,
+                    mVideoEntity.getLiveId(),
+                    mVideoEntity.getChapterId(),
                     mVideoEntity.getvLivePlayBackType(),
                     isVoice,
                     isRight,
+                    questionBll.IS_SCIENCE == false ? "1" : "0",
+                    videoQuestionLiveEntity1.type,
+                    mVideoEntity.getSubjectiveSubmitUrl(),
                     httpCallBack);
+//            getCourseHttpManager().saveExperienceTestRecord(
+//                    mVideoEntity.getSubjectiveSubmitUrl(),
+//                    enstuId,
+//                    videoQuestionLiveEntity1.srcType,
+//                    videoQuestionLiveEntity1.id,
+//                    testAnswer,
+//                    videoQuestionLiveEntity1.getAnswerDay(),
+//                    mVSectionID,
+//                    mVideoEntity.getvLivePlayBackType(),
+//                    isVoice,
+//                    isRight,
+//                    httpCallBack);
         }
     }
 
