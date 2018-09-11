@@ -632,7 +632,17 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         return liveBackVideoBll.getStartPosition();
     }
 
-//    @Override
+    /**
+     * 刚进来时需要跳转到相应的位置
+     *
+     * @param pos
+     */
+    @Override
+    protected void seekTo(long pos) {
+        super.seekTo(pos);
+        liveBackVideoBll.seekTo(pos);
+    }
+    //    @Override
 //    public void setSpeed(float speed) {
 //        String key = "null";
 //        if (mVideoEntity != null) {
