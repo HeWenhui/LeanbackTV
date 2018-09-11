@@ -7,6 +7,8 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
+import java.util.HashMap;
+
 /**
  * RolePlay网络请求
  * Created by zouhao on 2018/4/13.
@@ -14,8 +16,21 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 public class RolePlayerHttpManager extends BaseHttpBusiness {
 
+    HashMap<String, String> defaultKey = new HashMap<>();
+
     public RolePlayerHttpManager(Context context) {
         super(context);
+    }
+
+    public void addBodyParam(String key, String value) {
+        defaultKey.put(key, value);
+    }
+
+    void setDefaultParameter(HttpRequestParams httpRequestParams) {
+        for (String key : defaultKey.keySet()) {
+            String value = defaultKey.get(key);
+            httpRequestParams.addBodyParam(key, value);
+        }
     }
 
 
@@ -40,11 +55,13 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
      * @param liveId
      * @param stuCouId
      * @param testId
+     * @param stuId
      */
-    public void requestNewArtsRolePlayTestInfos(String liveId, String stuCouId, String testId, HttpCallBack requestCallBack) {
+    public void requestNewArtsRolePlayTestInfos(String liveId, String stuCouId, String testId, String stuId,HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("stuId", stuId);
         params.addBodyParam("testId", testId);
         sendPost(LiveVideoConfig.URL_ROLEPLAY_NEWARTS_TESTINFOS, params, requestCallBack);
     }
@@ -86,6 +103,7 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
         params.addBodyParam("roler", roler);
         params.addBodyParam("data", answer);
         params.setWriteAndreadTimeOut(5);
+        setDefaultParameter(params);
         sendPost(LiveVideoConfig.URL_ROLEPLAY_NEWARTS_RESULT, params, requestCallBack);
     }
 }

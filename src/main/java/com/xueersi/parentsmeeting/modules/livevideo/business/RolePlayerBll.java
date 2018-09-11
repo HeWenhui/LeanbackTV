@@ -275,7 +275,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     // 文科新课件平台获取试题信息
     private void requestNewArtsTestInfos() {
         if (mRolePlayerEntity != null) {
-            mRolePlayerHttpManager.requestNewArtsRolePlayTestInfos(mLiveId, mStuCouId, mRolePlayerEntity.getTestId(), new
+            mRolePlayerHttpManager.requestNewArtsRolePlayTestInfos(mLiveId, mStuCouId, mRolePlayerEntity.getTestId(), mLiveGetInfo.getStuId(),new
                     HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
