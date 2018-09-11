@@ -605,11 +605,17 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         }
     }
 
+    private long startTime = -1;
+
     @Override
     protected void onPlayOpenSuccess() {
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
         }
+        if (startTime == -1) {
+            startTime = System.currentTimeMillis();
+        }
+        seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
         attachMediaController();
     }
 

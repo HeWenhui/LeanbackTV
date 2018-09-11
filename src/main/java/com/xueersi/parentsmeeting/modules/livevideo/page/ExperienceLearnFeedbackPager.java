@@ -45,10 +45,10 @@ public class ExperienceLearnFeedbackPager extends BasePager {
     private ImageButton imgbtnClose;
     private Button btnSubmit;
     /** 选择1 课程难度评价 */
-    String mDifficulty = "-1";
+    private String mDifficulty = "-1";
     /** 选择2 课程满意度评价 */
-    String mSatisficing = "-1";
-    CloseAction closeAction;
+    private String mSatisficing = "-1";
+    private CloseAction closeAction;
 
     public ExperienceLearnFeedbackPager(Context context, VideoLivePlayBackEntity videoEntity, Window window) {
         super(context);
@@ -162,8 +162,8 @@ public class ExperienceLearnFeedbackPager extends BasePager {
                                     });
                 } else {
                     if (learnFeedBackPagerListener != null) {
-                        learnFeedBackPagerListener.submitClick(UserBll.getInstance().getMyUserInfoEntity()
-                                        .getStuId(),
+                        learnFeedBackPagerListener.submitClick(
+                                UserBll.getInstance().getMyUserInfoEntity().getStuId(),
                                 mVideoEntity.getLiveId(),
                                 mVideoEntity.getSubjectId(),
                                 mVideoEntity.getGradId(),
@@ -187,13 +187,13 @@ public class ExperienceLearnFeedbackPager extends BasePager {
 
                                     @Override
                                     public void onPmFailure(Throwable error, String msg) {
-                                        Loger.d(TAG, "sendFeedbackFailure:"+msg);
+                                        Loger.d(TAG, "sendFeedbackFailure:" + msg);
                                         super.onPmFailure(error, msg);
                                     }
 
                                     @Override
                                     public void onPmError(ResponseEntity responseEntity) {
-                                        Loger.d(TAG, "sendFeedbackError:"+responseEntity.toString());
+                                        Loger.d(TAG, "sendFeedbackError:" + responseEntity.toString());
                                         super.onPmError(responseEntity);
                                     }
                                 });

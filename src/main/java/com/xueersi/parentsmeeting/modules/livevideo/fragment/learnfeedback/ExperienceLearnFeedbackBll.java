@@ -45,15 +45,16 @@ public class ExperienceLearnFeedbackBll extends LiveBackBaseBll {
 
     /**
      * 视屏播放完成回调
+     * 把学习反馈弹窗放到正中间
      */
     @Override
     public void onUserBackPressed() {
         super.onUserBackPressed();
         if (experienceLearnFeedbackPager != null && experienceLearnFeedbackPager.getRootView().getParent() == null) {
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
-                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                    .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-            mRootView.addView(experienceLearnFeedbackPager.getRootView());
+            mRootView.addView(experienceLearnFeedbackPager.getRootView(), layoutParams);
         }
     }
 }
