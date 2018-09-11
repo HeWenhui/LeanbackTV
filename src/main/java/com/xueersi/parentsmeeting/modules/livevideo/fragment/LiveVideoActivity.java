@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
+import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 
 /**
  * 直播
@@ -38,6 +39,10 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     @Override
     public void onDestroy() {
         AppBll.getInstance().unRegisterAppEvent(this);
+        SpeakerRecognitionerInterface instance = SpeakerRecognitionerInterface.getInstance();
+        if(instance!=null){
+            instance.speakerRecognitionerFree();
+        }
         super.onDestroy();
     }
 
@@ -90,4 +95,5 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
         super.onResume();
         isResume = true;
     }
+
 }

@@ -11,10 +11,12 @@ import com.tal.speech.language.TalLanguage;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.AppInfoEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.route.XueErSiRouter;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.LoadSoCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -87,7 +89,9 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 }
             });
             AppInfoEntity appInfoEntity = AppBll.getInstance().getAppInfoEntity();
-            boolean voiceRecognSwitchOn = appInfoEntity.getAppInitConfigEntity().isVoiceRecognSwitchOn();
+            boolean voiceRecognSwitchOn = mShareDataManager.getBoolean(ShareBusinessConfig.SP_VOICE_RECOGNI_SWITCH,
+                    true,
+                    ShareDataManager.SHAREDATA_USER);
             if (voiceRecognSwitchOn) {
                 SpeakerRecognitionerInterface.checkResoureDownload(mContext, new LoadSoCallBack() {
                     @Override
@@ -99,8 +103,9 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                SpeakerRecognitionerInterface speakerRecognitionerInterface = SpeakerRecognitionerInterface
-                                        .getInstance();
+                                SpeakerRecognitionerInterface speakerRecognitionerInterface =
+                                        SpeakerRecognitionerInterface
+                                                .getInstance();
                                 boolean result = speakerRecognitionerInterface.init();
                                 if (result) {
                                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
@@ -110,7 +115,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                     if (enrollIvector != 0) {
                                         long interval = System.currentTimeMillis() - sTime;
                                         boolean allow = true;
-                                        if (!LiveTopic.MODE_TRANING.equals(mGetInfo.getMode()) || interval <= 60 * 1000) {
+                                        if (!LiveTopic.MODE_TRANING.equals(mGetInfo.getMode()) ||
+                                                interval <= 60 * 1000) {
                                             allow = false;
                                         }
 //                                        handler.post(new Runnable() {
@@ -218,7 +224,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 //                speakerRecognitionerInterface.speakerRecognitionerFree();
                 Bundle bundle = new Bundle();
                 bundle.putString("from", "livevideo");
-                XueErSiRouter.startModule(mContext, "/pager_personals/voicerecognize");
+                XueErSiRouter.startModule(mContext, "/pager_personals/voicerecognize", bundle);
             }
         });
         recognizeDialog.setCancelBtnListener(new View.OnClickListener() {
