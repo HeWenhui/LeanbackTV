@@ -59,6 +59,11 @@ public class RolePlayerEntity {
     private boolean isResult;
 
     /**
+     * 是否是文科新课件平台
+     **/
+    private boolean isNewArts;
+
+    /**
      * 所有的角色信息
      */
     private List<RolePlayerHead> lstRoleInfo = new ArrayList<>();
@@ -155,6 +160,14 @@ public class RolePlayerEntity {
 
     public void setResult(boolean result) {
         isResult = result;
+    }
+
+    public boolean isNewArts() {
+        return isNewArts;
+    }
+
+    public void setNewArts(boolean newArts) {
+        isNewArts = newArts;
     }
 
     /**

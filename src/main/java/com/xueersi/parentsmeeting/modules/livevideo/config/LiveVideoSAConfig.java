@@ -48,7 +48,7 @@ public class LiveVideoSAConfig {
         /** 直播课的直播提交测试题-h5课件 */
         public String URL_LIVE_SUBMIT_TEST_H5_ANSWER = HTTP_HOST + "/LiveCourse/sumitCourseWareH5AnswerUseVoice";
         /** 直播课的文科新版课件对接新提交接口-*/
-        public String URL_LIVE_SUBMIT_NEWARTS_ANSWER = "http://live.xueersi.com/libarts/v2/commonTest/submitMultiTest";
+        public String URL_LIVE_SUBMIT_NEWARTS_ANSWER = "https://app.arts.xueersi.com/v2/commonTest/submitMultiTest";
         /** 直播献花 */
         public String URL_LIVE_PRAISE_TEACHER = HTTP_HOST + "/LiveCourse/praiseTeacher";
         /** 学生答题排名信息接口 */
@@ -58,7 +58,7 @@ public class LiveVideoSAConfig {
         /** 发送语音评测答案-二期 */
         public String URL_LIVE_SEND_SPEECHEVAL42 = HTTP_HOST + "/LiveCourse/submitSpeechEval42";
         /** 发送语音评测答案-文科新课件 */
-        public String URL_LIVE_SEND_SPEECHEVALUATEARTS = "http://laoshi.xueersi.com/libarts/v2/speechEval42/submitSpeechEval42";
+        public String URL_LIVE_SEND_SPEECHEVALUATEARTS = "https://app.arts.xueersi.com/v2/speechEval42/submitSpeechEval42";
         /** 语音评测排行榜 */
         public String URL_LIVE_SPEECH_TEAM_RAND = HTTP_HOST + "/LiveCourse/getSpeechEvalAnswerTeamRank";
         /** 发送语音评测答案-二期，是否作答 */

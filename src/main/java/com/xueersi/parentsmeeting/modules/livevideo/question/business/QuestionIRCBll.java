@@ -197,7 +197,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             videoQuestionLiveEntity.package_socurce = onlineTechObj.optInt("package_source");
                             videoQuestionLiveEntity.gold = onlineTechObj.optDouble("gold");
                             videoQuestionLiveEntity.time = onlineTechObj.optDouble("time");
-                            videoQuestionLiveEntity.id = onlineTechObj.optString("id");
+                            videoQuestionLiveEntity.id = getIdStr(onlineTechObj.optJSONArray("id"));
                             videoQuestionLiveEntity.type = onlineTechObj.optString("ptype");
                             videoQuestionLiveEntity.multiRolePlay = onlineTechObj.optString("multiRolePlay");
                             videoQuestionLiveEntity.roles = onlineTechObj.optString("roles");
@@ -356,7 +356,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             case XESCODE.ARTS_SEND_QUESTION: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.gold = object.optDouble("gold");
-                videoQuestionLiveEntity.id = object.optString("id");
+                videoQuestionLiveEntity.id = getIdStr(object.optJSONArray("id"));
                 videoQuestionLiveEntity.nonce = object.optString("nonce");
                 videoQuestionLiveEntity.roles = object.optString("roles");
                 videoQuestionLiveEntity.type = object.optString("ptype");
