@@ -81,7 +81,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         mLayoutVideo = R.layout.frag_live_back_video;
     }
 
-    private String TAG = "StandLiveVideoExperienceFragment";
+    private String TAG = getClass().getSimpleName();
     private RelativeLayout rl_course_video_live_controller_content;
     /** 互动题的布局下层（垂直方向的下层） */
     private RelativeLayout rlQuestionContentBottom;
@@ -134,16 +134,32 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
     /** 预加载 */
     LiveStandFrameAnim liveStandFrameAnim;
+    /**
+     * 存放
+     */
+//    private static final String experience = "experience";
+//    /**
+//     *
+//     */
+//    private Boolean isExperience;
 
     /**
      * 学习反馈窗口
      */
-
+    public static StandLiveVideoExperienceFragment newInstance(boolean isExperience) {
+//        Bundle arguments = new Bundle();
+//        arguments.putBoolean(experience, isExperience);
+//        StandLiveVideoExperienceFragment standLiveVideoExperienceFragment = ;
+//        standLiveVideoExperienceFragment.setArguments(arguments);
+        return new StandLiveVideoExperienceFragment();
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         mContentView = (RelativeLayout) super.onCreateView(inflater, container, savedInstanceState);
+//        Bundle bundle = getArguments();
+//        isExperience = bundle.getBoolean(experience, true);
         initView();
         return mContentView;
     }
@@ -261,6 +277,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         liveBackBll = new LiveBackBll(activity, mVideoEntity);
         liveBackBll.setStuCourId(stuCourId);
         liveBackBll.setvPlayer(vPlayer);
+
     }
 
 

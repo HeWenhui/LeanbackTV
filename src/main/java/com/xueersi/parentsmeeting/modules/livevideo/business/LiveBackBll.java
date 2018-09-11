@@ -62,7 +62,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by lyqai on 2018/7/17.
  */
-public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick, LiveOnLineLogs {
+public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick,
+        LiveOnLineLogs {
     private String TAG = "LiveBackBll";
     Logger logger = LoggerFactory.getLogger(TAG);
     Activity activity;
@@ -101,6 +102,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     private LivePlayBackHttpResponseParser mCourseHttpResponseParser;
     /** 本地视频 */
     boolean islocal;
+    /**
+     * 2 代表全身直播体验课
+     */
     private int pattern = 1;
     ShowQuestion showQuestion;
     private LiveUidRx liveUidRx;
@@ -248,7 +252,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
-        initLiveMessageQueue();
+        if (pattern == 2) {//全身直播准备开关聊天区的queue
+            initLiveMessageQueue();
+        }
     }
 
     public ArrayList<LiveBackBaseBll> getLiveBackBaseBlls() {
@@ -296,7 +302,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             if (liveBackBaseBll != null) {
                 logger.d("scanQuestion:onQuestionEnd:id=" + oldQuestionEntity.getvCategory());
                 liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
-                array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).onQuestionEnd(oldQuestionEntity);
+                if (pattern == 2 && array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT) != null) {
+                    array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).onQuestionEnd(oldQuestionEntity);
+                }
             }
             showQuestion.onHide(oldQuestionEntity);
         }
@@ -308,7 +316,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
             businessBll.onPositionChanged(playPosition);
         }
-        scanMessage(position);
+        if (pattern == 2) {//全身直播体验课扫描开关聊天区，三分屏不走这里，有自己的逻辑
+            scanMessage(position);
+        }
     }
 
     /**
@@ -339,20 +349,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
                         if (openQue.peek() < closeQue.peek()) {
                             if (playPosition < openQue.peek()) {
-//                                array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT).showQuestion(oldQuestionEntity,
-//                                        videoQuestionEntity, showQuestion);
-//                                Log.e(TAG, playPosition + " 1:进去了关闭站立直播聊天区");
                             } else if (playPosition >= openQue.peek() && playPosition <= closeQue.peek()) {
                                 array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity,
                                         videoQuestionEntity, showQuestion);
                                 Log.e(TAG, playPosition + " 2:进去了打开站立直播聊天区");
                                 break;
                             } else {
-//                                array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT).showQuestion(oldQuestionEntity,
-//                                        videoQuestionEntity, showQuestion);
-//                                Log.e(TAG, playPosition + " 3:进去了关闭站立直播聊天区");
-//                                openQue.poll();
-//                                closeQue.poll();
                             }
                         }
 
@@ -363,9 +365,6 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                             Log.e(TAG, playPosition + " 1:进去了关闭站立直播聊天区");
                             break;
                         } else if (playPosition >= openQue.peek() && playPosition <= closeQue.peek()) {
-//                        array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity,
-//                                videoQuestionEntity, showQuestion);
-//                        Log.e(TAG, playPosition + " 2:进去了打开站立直播聊天区");
                         } else {
                             array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT).showQuestion(oldQuestionEntity,
                                     videoQuestionEntity, showQuestion);
@@ -406,7 +405,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 closeQue.add(closeStartTime);
             }
         }
-
+        if (closeQue.isEmpty()) {//如果没有禁言，说明全程都是打开聊天区的状态。
+            openQue.remove();
+        }
     }
 
     @Override
@@ -428,8 +429,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             liveEntityHashMap.put(mQuestionEntity, videoQuestionLiveEntity);
             if (isShow) {
                 mIsShowQuestion = true;
-                MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
-                if(mediaControllerAction != null){
+                MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity,
+                        MediaControllerAction.class);
+                if (mediaControllerAction != null) {
                     mediaControllerAction.release();
                 }
 
@@ -438,19 +440,23 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
         @Override
         public void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity) {
-            logToFile.d("onHide:mQuestionEntity=" + mQuestionEntity + ",baseVideoQuestionEntity=" + baseVideoQuestionEntity);
+            logToFile.d("onHide:mQuestionEntity=" + mQuestionEntity + ",baseVideoQuestionEntity=" +
+                    baseVideoQuestionEntity);
             if (mQuestionEntity != null && baseVideoQuestionEntity != null) {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = liveEntityHashMap.get(mQuestionEntity);
                 if (videoQuestionLiveEntity != null) {
-                    logToFile.d("onHide:vCategory=" + mQuestionEntity.getvCategory() + ",id=" + videoQuestionLiveEntity.getvQuestionID() + ",id2=" + baseVideoQuestionEntity.getvQuestionID());
+                    logToFile.d("onHide:vCategory=" + mQuestionEntity.getvCategory() + ",id=" +
+                            videoQuestionLiveEntity.getvQuestionID() + ",id2=" + baseVideoQuestionEntity
+                            .getvQuestionID());
                     if (videoQuestionLiveEntity != baseVideoQuestionEntity) {
                         return;
                     }
                 }
             }
             mIsShowQuestion = false;
-            MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
-            if(mediaControllerAction != null){
+            MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction
+                    .class);
+            if (mediaControllerAction != null) {
                 mediaControllerAction.attachMediaController();
             }
 
@@ -484,7 +490,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     break;
                 }
             } else if (LocalCourseConfig.CATEGORY_QUESTION == videoQuestionEntity.getvCategory()) {
-                if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionEntity.getvQuestionType())) {//语音评测。在那个点弹出
+                if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionEntity.getvQuestionType()))
+                {//语音评测。在那个点弹出
                     // 在开始时间和结束时间之间
                     if (startTime <= playPosition && playPosition < endTime) {
 //                    if (startTime == playPosition) {
@@ -530,7 +537,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     index = i;
                     break;
                 }
-            } else if(LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()){
+            } else if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime <= playPosition && playPosition < endTime) {
                     LiveVideoConfig.isMulLiveBack = true;
@@ -753,7 +760,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             return;
         }
         LiveLogCallback liveLogCallback = new LiveLogCallback();
-        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mGetInfo.getId(), mGetInfo.getUname(), enstuId,
+        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mGetInfo.getId()
+                , mGetInfo.getUname(), enstuId,
                 mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, liveLogCallback);
         liveLogCallback.setParams(params);
     }

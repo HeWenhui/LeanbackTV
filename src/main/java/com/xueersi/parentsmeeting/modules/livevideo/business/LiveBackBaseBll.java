@@ -43,7 +43,7 @@ public class LiveBackBaseBll extends BaseBll {
      * 0 liveback
      * 1 experience
      */
-    protected int isStandExperience = 0;
+
 
     public LiveBackBaseBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity);
@@ -59,9 +59,6 @@ public class LiveBackBaseBll extends BaseBll {
         onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
     }
 
-    public void setIsStandExperience(int isStandExperience) {
-        this.isStandExperience = isStandExperience;
-    }
 
     public final void initViewF(RelativeLayout rlQuestionContentBottom, RelativeLayout bottomContent, AtomicBoolean
             mIsLand) {

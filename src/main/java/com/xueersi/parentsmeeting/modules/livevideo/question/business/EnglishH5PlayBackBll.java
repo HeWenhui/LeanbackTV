@@ -253,7 +253,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                             }
                         }
                     };
-            if (isStandExperience == 0) {
+            if (liveBackBll.getPattern() != 2) {
                 getCourseHttpManager().sumitCourseWareH5(
                         enstuId,
                         videoQuestionLiveEntity.srcType,
@@ -266,7 +266,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         voiceTime,
                         isRight,
                         httpCallBack);
-            } else if (isStandExperience == 1) {
+            } else {
                 String isArts = String.valueOf(liveBackBll.getIsArts());
                 getCourseHttpManager().submitExperienceCourseWareH5(
                         mVideoEntity.getSubmitCourseWareH5AnswerUseVoiceUrl(),

@@ -32,7 +32,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             }
             return new LiveBackVideoFragment();
         }
-        return new StandLiveVideoExperienceFragment();
+        return StandLiveVideoExperienceFragment.newInstance(isExperience);
     }
 
     @Override
