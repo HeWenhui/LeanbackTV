@@ -703,6 +703,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onArtsResultCmplShow(AnswerResultCplShowEvent event) {
+        Loger.e("EnglishH5CoursewareIRCBll:onArtsResultCmplShow "+englishH5CoursewareBll);
         if (englishH5CoursewareBll != null) {
             englishH5CoursewareBll.froceClose();
         }

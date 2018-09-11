@@ -107,6 +107,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         if (mDsipalyer != null) {
             return;
         }
+
         if (isPse) {
             mDsipalyer = new ArtsPSEAnswerResultPager(mContext, mAnswerReulst, this);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
@@ -225,14 +226,16 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private boolean forceSumbmit;
 
     public void closeAnswerResult(boolean forceSumbmit) {
+        Loger.e("ArtsAnswerBll", "=====>closeAnswerResult:" + forceSumbmit+":"+mDsipalyer);
         // 已展示过答题结果
         if (mDsipalyer != null) {
             mDsipalyer.close();
             mDsipalyer = null;
             EventBus.getDefault().post(new AnswerResultCplShowEvent());
+        }else{
+            Loger.e("ArtsAnswerBll", "=====>closeAnswerResult:" + forceSumbmit);
+            this.forceSumbmit = forceSumbmit;
         }
-        Loger.e("ArtsAnswerBll", "=====>closeAnswerResult:" + forceSumbmit);
-        this.forceSumbmit = forceSumbmit;
     }
 
 

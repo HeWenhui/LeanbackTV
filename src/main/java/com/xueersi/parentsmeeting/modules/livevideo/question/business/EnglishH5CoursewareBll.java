@@ -404,6 +404,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
+                 Loger.e("EnglishH5CoursewareCBll:froceClose "+h5CoursewarePager +":"+(h5CoursewarePager == curPager));
                 if (h5CoursewarePager != null && h5CoursewarePager == curPager) {
                     h5CoursewarePager.destroy();
                     bottomContent.removeView(h5CoursewarePager.getRootView());
