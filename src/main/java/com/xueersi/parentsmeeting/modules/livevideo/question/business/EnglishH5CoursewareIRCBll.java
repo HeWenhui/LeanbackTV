@@ -183,9 +183,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.type = coursewareH5.optString("ptype");
                 String status = coursewareH5.optString("status", "off");
                 if ("on".equals(status)) {
-                    videoQuestionLiveEntity.id = coursewareH5.optString("id");
-                    JSONArray idObject = coursewareH5.getJSONArray("id");
+                    JSONArray idObject = coursewareH5.optJSONArray("id");
                     String idStr = getIdStr(idObject);
+                    videoQuestionLiveEntity.id = idStr;
                     videoQuestionLiveEntity.setUrl(buildCourseUrl(idStr));
                     if ("1".equals(videoQuestionLiveEntity.getIsVoice())) {
                         videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = coursewareH5
@@ -219,10 +219,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         JSONArray jsonArray = onlineTechObj.optJSONArray("id");
                         String testIds = getIdStr(jsonArray);
                         videoQuestionLiveEntity.setUrl(buildCourseUrl(testIds));
-//                        videoQuestionLiveEntity.setUrl("123");
-                        JSONArray ids = onlineTechObj.getJSONArray("id");
-                        String detail = ids.getString(0);
-                        videoQuestionLiveEntity.id = detail;
+                        videoQuestionLiveEntity.id = testIds;
                         if("50".equals(onlineTechObj.optString("ptype"))){
                             videoQuestionLiveEntity.type = onlineTechObj.optString("questiontype");
                         }
@@ -470,8 +467,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     videoQuestionLiveEntity.gold = object.optDouble("gold");
                     videoQuestionLiveEntity.type = object.optString("ptype");
                     videoQuestionLiveEntity.package_socurce = object.optInt("package_socurce");
-                    String id = object.optString("id", "");
-                    videoQuestionLiveEntity.id = id;
+//                    String id = object.optString("id", "");
+                    JSONArray ids = object.optJSONArray("id");
+                    String detail = getIdStr(ids);
+                    videoQuestionLiveEntity.id = detail;
                     videoQuestionLiveEntity.nonce = object.optString("nonce");
                     JSONArray jsonArray = object.optJSONArray("id");
                     String testIds = getIdStr(jsonArray);

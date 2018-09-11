@@ -256,7 +256,11 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     public void teacherPushTest(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         //拉取试题a
-        requestTestInfos();
+        if(videoQuestionLiveEntity.isNewArtsH5Courseware()){
+            requestNewArtsTestInfos();
+        }else{
+            requestTestInfos();
+        }
         mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo);
         mRolePlayerPager.initData();
         if (bottomContent != null) {
@@ -266,6 +270,36 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         Loger.i("RolePlayerDemoTestlog", "用户弹出答题框,记录日志");
         RolePlayLog.sno4(mLiveBll, videoQuestionLiveEntity, mContext);
 
+    }
+
+    // 文科新课件平台获取试题信息
+    private void requestNewArtsTestInfos() {
+        if (mRolePlayerEntity != null) {
+            mRolePlayerHttpManager.requestNewArtsRolePlayTestInfos(mLiveId, mStuCouId, mRolePlayerEntity.getTestId(), new
+                    HttpCallBack(false) {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            mRolePlayerHttpResponseParser.parserNewArtsRolePlayTestInfos(responseEntity, mRolePlayerEntity);
+                            Loger.i("RolePlayerDemoTest", "服务器试题信息返回 " + responseEntity.getJsonObject().toString());
+                            Loger.i("RolePlayerDemoTest", "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
+                                    ".getLstRolePlayerMessage()" +
+                                    ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
+                                    mRolePlayerEntity.toString());
+                        }
+
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            super.onPmError(responseEntity);
+                            Loger.i("RolePlayerDemoTest", "onPmError:" + responseEntity.getErrorMsg());
+                        }
+
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            super.onPmFailure(error, msg);
+                            Loger.i("RolePlayerDemoTest", "onPmFailure:" + msg);
+                        }
+                    });
+        }
     }
 
     @Override
@@ -731,6 +765,86 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     + " obj = " + obj.toString());
 
             mRolePlayerHttpManager.requestResult(mStuCouId, mLiveId, mRolePlayerEntity.getTestId(), roleName, obj
+                    .toString(), new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    int gold = jsonObject.optInt("gold");
+                    mRolePlayerEntity.setGoldCount(gold);
+                    Loger.i("RolePlayerDemoTest", "onPmSuccess: gold  =" + gold);
+                }
+
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    super.onFailure(call, e);
+                    Loger.i("RolePlayerDemoTest", "onFailure: e.getMessage()  =" + e.getMessage() + "取消点赞");
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    Loger.i("RolePlayerDemoTest", "onPmError: responseEntity.toString()  =" + responseEntity.toString
+                            () + "提交结果失败，但是要释放资源");
+                    super.onPmError(responseEntity);
+                    if (mRolePlayerPager != null) {
+                        mRolePlayerPager.recoverListScrollAndCancelDZ();
+                        mRolePlayerPager.leaveChannel();
+                    }
+
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 文科新课件平台提交结果
+     */
+    public synchronized void requestNewArtsResult() {
+        Loger.i("RolePlayerDemoTest", "提交结果");
+        Loger.i("RolePlayerDemoTestlog", "用户提交结果,记录日志");
+        //提交结果的时候，记录日志信息
+        RolePlayLog.sno6(mLiveBll, mRolePlayerEntity, mContext);
+        mRolePlayerEntity.setResult(true);
+        JSONObject obj = new JSONObject();
+        try {
+            RolePlayerEntity.RolePlayerHead rolePlayerHead = mRolePlayerEntity.getSelfRoleHead();
+            String roleName = null;
+            if (rolePlayerHead != null) {
+                roleName = rolePlayerHead.getRoleName();
+            }
+            obj.put("type", 1);
+            obj.put("roler", roleName);
+            JSONArray arrAnswer = new JSONArray();
+            //TODO:
+            int i = 1;
+            for (RolePlayerEntity.RolePlayerMessage message : mRolePlayerEntity.getLstRolePlayerMessage()) {
+                JSONObject objAn = new JSONObject();
+                objAn.put("sentenceNum", i);
+                objAn.put("entranceTime", message.getMaxReadTime());
+                objAn.put("score", message.getSpeechScore());
+
+                if (message.getRolePlayer().isSelfRole() && message.getRolePlayer().getSpeechScore() > 1) {
+                    JSONObject objData = new JSONObject();
+                    objData.put("cont_score", message.getFluency());
+                    objData.put("pron_score", message.getAccuracy());
+                    objData.put("total_score", message.getSpeechScore());
+                    objData.put("level", message.getLevel());
+                    objAn.put("alldata", objData);
+                } else {
+                    objAn.put("alldata", "");
+                }
+                arrAnswer.put(objAn);
+                i++;
+            }
+            obj.put("answers", arrAnswer);
+            Loger.i("RolePlayerDemoTest", "mStuCouId = " + mStuCouId + " mLiveId = " + mLiveId + " mRolePlayerEntity" +
+                    ".getTestId() = " + mRolePlayerEntity.getTestId()
+                    + " obj = " + obj.toString());
+
+            mRolePlayerHttpManager.requestNewArtsResult(mStuCouId, mLiveId, mRolePlayerEntity.getTestId(), roleName, obj
                     .toString(), new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

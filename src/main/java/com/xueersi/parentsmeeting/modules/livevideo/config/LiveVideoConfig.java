@@ -190,8 +190,12 @@ public class LiveVideoConfig {
     public static String URL_PLAYBACKPLAYTIME = LiveVideoConfig.HTTP_HOST + "/ExpPlayback/visitTime";
     /** RolePlay请求对话信息 */
     public static String URL_ROLEPLAY_TESTINFOS = LiveVideoConfig.HTTP_HOST + "/libarts/LiveCourse/getRolePlay";
+    /** 文科新课件平台RolePlay获取题目信息 */
+    public static String URL_ROLEPLAY_NEWARTS_TESTINFOS = "https://app.arts.xueersi.com/v2/MultiRolePlay/getRolePlay";
     /** 提交接口 */
     public static String URL_ROLEPLAY_RESULT = LiveVideoConfig.HTTP_HOST + "/libarts/LiveCourse/submitRolePlay";
+    /** 文科新课件平台提交接口 */
+    public static String URL_ROLEPLAY_NEWARTS_RESULT = "https://app.arts.xueersi.com/v2/MultiRolePlay/submitRolePlay";
     /** 讲座直播获取更多课程 */
     public static String URL_LECTURELIVE_MORE_COURSE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getAdCase";
     /** 获取时时间戳 */
