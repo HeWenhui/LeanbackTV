@@ -49,6 +49,7 @@ import java.util.List;
 public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, AnswerResultStateListener {
     private static  final String Tag = "ArtsAnswerResultBll";
     private RelativeLayout rlAnswerResultLayout;
+
     /**
      * 强制收卷 答题结果展示 时间
      **/
