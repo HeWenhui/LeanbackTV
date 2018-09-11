@@ -49,6 +49,7 @@ public class SpeakerRecognitioner {
     boolean isStart = false;
     Context context;
     private SpeakerPredict speakerPredict;
+    SpeakerRecognitionerInterface speakerRecognitionerInterface;
 
     SpeakerRecognitioner(Context context) {
         logger.setLogMethod(false);
@@ -108,7 +109,7 @@ public class SpeakerRecognitioner {
         pingPool.execute(new Runnable() {
             @Override
             public void run() {
-                SpeakerRecognitionerInterface speakerRecognitionerInterface = SpeakerRecognitionerInterface
+                speakerRecognitionerInterface = SpeakerRecognitionerInterface
                         .getInstance();
                 MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                 String stuId = userInfoEntity.getStuId();
@@ -146,6 +147,11 @@ public class SpeakerRecognitioner {
         }
     }
 
+    public void destory() {
+        if (speakerRecognitionerInterface != null) {
+            speakerRecognitionerInterface.speakerRecognitionerFree();
+        }
+    }
 
     public interface SpeakerPredict {
         void onPredict(String predict);

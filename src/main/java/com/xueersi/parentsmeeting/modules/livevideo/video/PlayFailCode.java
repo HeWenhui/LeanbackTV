@@ -6,6 +6,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.video;
  */
 public class PlayFailCode {
     public static int TIME_OUT = 15;
+    public static PlayFailCode PlayFailCode0 = new PlayFailCode(0, "success");
+    public static PlayFailCode PlayFailCode10 = new PlayFailCode(10, "Failed to resolve hostname");
+    public static PlayFailCode PlayFailCode15 = new PlayFailCode(15, "Connection timed out");
+    public static PlayFailCode PlayFailCode20 = new PlayFailCode(20, "Server Error");
     int code;
     String tip;
 

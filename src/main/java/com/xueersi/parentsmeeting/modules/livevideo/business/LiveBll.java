@@ -2983,7 +2983,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
-                        livePlayLog.liveGetPlayServer(time, 20, "", urldns, serverurl);
+                        livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode20, 20, "", urldns, serverurl);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
                                 mVideoAction.onLiveStart(null, mLiveTopic, modechange);
@@ -2995,10 +2995,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     }
                 } else {
                     if (ex instanceof UnknownHostException) {
-                        livePlayLog.liveGetPlayServer(time, 10, "", urldns, serverurl);
+                        livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode10, 10, "", urldns, serverurl);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            livePlayLog.liveGetPlayServer(time, PlayFailCode.TIME_OUT, "", urldns, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode15, PlayFailCode.TIME_OUT, "", urldns, serverurl);
                         }
                     }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);
@@ -3034,7 +3034,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     if (server != null) {
                         if (livePlayLog != null) {
                             long time = System.currentTimeMillis() - before;
-                            livePlayLog.liveGetPlayServer(time, 0, server.getCipdispatch(), null, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode0, 0, server.getCipdispatch(), null, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {

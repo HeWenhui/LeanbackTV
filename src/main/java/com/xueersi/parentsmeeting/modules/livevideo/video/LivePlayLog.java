@@ -16,7 +16,6 @@ import com.netease.LDNetDiagnoService.LDNetTraceRoute;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.network.IpAddressUtil;
@@ -268,16 +267,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
         defaultKey.put("pri", "121");
-        defaultKey.put("ts", "" + System.currentTimeMillis());
-        defaultKey.put("appid", "xes20001");
-        defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
-        defaultKey.put("agent", "m-android_" + versionName);
-        defaultKey.put("os", "" + Build.VERSION.SDK_INT);
-        defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
-        defaultKey.put("arch", "" + cpuName);
+        addDefault(defaultKey);
         int totalRam = HardWareUtil.getTotalRam();
         defaultKey.put("ram", "" + totalRam);
-        defaultKey.put("net", "" + getNet());
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
         String cip = oldCipdispatch;
@@ -390,16 +382,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 defaultKey.put("ver", logVersion);
                 defaultKey.put("serv", serv);
                 defaultKey.put("pri", "120");
-                defaultKey.put("ts", "" + System.currentTimeMillis());
-                defaultKey.put("appid", "xes20001");
-                defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
-                defaultKey.put("agent", "m-android_" + versionName);
-                defaultKey.put("os", "" + Build.VERSION.SDK_INT);
-                defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
-                defaultKey.put("arch", "" + cpuName);
+                addDefault(defaultKey);
                 int totalRam = HardWareUtil.getTotalRam();
                 defaultKey.put("ram", "" + totalRam);
-                defaultKey.put("net", "" + getNet());
                 defaultKey.put("cpu", "" + getCpuRate());
                 defaultKey.put("mem", "" + getMemRate());
                 String cip = oldCipdispatch;
@@ -451,16 +436,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
         defaultKey.put("pri", "122");
-        defaultKey.put("ts", "" + System.currentTimeMillis());
-        defaultKey.put("appid", "xes20001");
-        defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
-        defaultKey.put("agent", "m-android_" + versionName);
-        defaultKey.put("os", "" + Build.VERSION.SDK_INT);
-        defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
-        defaultKey.put("arch", "" + cpuName);
+        addDefault(defaultKey);
         int totalRam = HardWareUtil.getTotalRam();
         defaultKey.put("ram", "" + totalRam);
-        defaultKey.put("net", "" + getNet());
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
         String cip = oldCipdispatch;
@@ -499,16 +477,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
         defaultKey.put("pri", "123");
-        defaultKey.put("ts", "" + System.currentTimeMillis());
-        defaultKey.put("appid", "xes20001");
-        defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
-        defaultKey.put("agent", "m-android_" + versionName);
-        defaultKey.put("os", "" + Build.VERSION.SDK_INT);
-        defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
-        defaultKey.put("arch", "" + cpuName);
+        addDefault(defaultKey);
         int totalRam = HardWareUtil.getTotalRam();
         defaultKey.put("ram", "" + totalRam);
-        defaultKey.put("net", "" + getNet());
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
         String cip = oldCipdispatch;
@@ -551,22 +522,31 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         return "" + df.format(cpuRate);
     }
 
-    public void liveGetPlayServer(final long delay, int code, String cipdispatch, final URLDNS urldns, final String url) {
+    /**
+     * 设置默认参数
+     *
+     * @param defaultKey
+     */
+    private void addDefault(HashMap<String, String> defaultKey) {
+        defaultKey.put("ts", "" + System.currentTimeMillis());
+        defaultKey.put("appid", "" + UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
+        defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsimId());
+        defaultKey.put("agent", "m-android_" + versionName);
+        defaultKey.put("os", "" + Build.VERSION.SDK_INT);
+        defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
+        defaultKey.put("arch", "" + cpuName);
+        defaultKey.put("net", "" + getNet());
+    }
+
+    public void liveGetPlayServer(final long delay, PlayFailCode playFailCode, int code, String cipdispatch, URLDNS urldns, final String url) {
         Loger.d(TAG, "liveGetPlayServer:delay=" + delay + ",ipsb=" + urldns.ip);
         HashMap<String, String> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
         defaultKey.put("pri", "0");
-        defaultKey.put("ts", "" + System.currentTimeMillis());
-        defaultKey.put("appid", "xes20001");
-        defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
-        defaultKey.put("agent", "m-android_" + versionName);
-        defaultKey.put("os", "" + Build.VERSION.SDK_INT);
-        defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
-        defaultKey.put("arch", "" + cpuName);
+        addDefault(defaultKey);
         int totalRam = HardWareUtil.getTotalRam();
         defaultKey.put("ram", "" + totalRam);
-        defaultKey.put("net", "" + getNet());
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
         if (StringUtils.isEmpty(cipdispatch)) {
@@ -585,7 +565,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             if (code == 0) {
                 dataJson.put("msg", "Success");
             } else {
-                dataJson.put("msg", "Fail");
+                dataJson.put("msg", playFailCode.getTip());
             }
             dataJson.put("dns", "" + urldns.time);
             dataJson.put("delay", "" + delay);
@@ -645,16 +625,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 defaultKey.put("ver", logVersion);
                 defaultKey.put("serv", serv);
                 defaultKey.put("pri", "124");
-                defaultKey.put("ts", "" + System.currentTimeMillis());
-                defaultKey.put("appid", "xes20001");
-                defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
-                defaultKey.put("agent", "m-android_" + versionName);
-                defaultKey.put("os", "" + Build.VERSION.SDK_INT);
-                defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
-                defaultKey.put("arch", "" + cpuName);
+                addDefault(defaultKey);
                 int totalRam = HardWareUtil.getTotalRam();
                 defaultKey.put("ram", "" + totalRam);
-                defaultKey.put("net", "" + getNet());
                 defaultKey.put("cpu", "" + getCpuRate());
                 defaultKey.put("mem", "" + getMemRate());
                 String cip = oldCipdispatch;
@@ -746,7 +719,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //            defaultKey.put("serv", serv);
 //            defaultKey.put("pri", "920");
 //            defaultKey.put("ts", "" + System.currentTimeMillis());
-//            defaultKey.put("appid", "xes20001");
+//            defaultKey.put("appid", "" + UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
 //            defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
 //            defaultKey.put("agent", "m-android_" + versionName);
 //            defaultKey.put("os", "" + Build.VERSION.SDK_INT);
@@ -959,16 +932,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
         defaultKey.put("pri", "121");
-        defaultKey.put("ts", "" + System.currentTimeMillis());
-        defaultKey.put("appid", "xes20001");
-        defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
-        defaultKey.put("agent", "m-android_" + versionName);
-        defaultKey.put("os", "" + Build.VERSION.SDK_INT);
-        defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
-        defaultKey.put("arch", "" + cpuName);
+        addDefault(defaultKey);
         int totalRam = HardWareUtil.getTotalRam();
         defaultKey.put("ram", "" + totalRam);
-        defaultKey.put("net", "" + getNet());
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
         String cip = oldCipdispatch;
@@ -1059,16 +1025,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                         defaultKey.put("ver", logVersion);
                         defaultKey.put("serv", serv);
                         defaultKey.put("pri", "1");
-                        defaultKey.put("ts", "" + System.currentTimeMillis());
-                        defaultKey.put("appid", "xes20001");
-                        defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
-                        defaultKey.put("agent", "m-android_" + versionName);
-                        defaultKey.put("os", "" + Build.VERSION.SDK_INT);
-                        defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
-                        defaultKey.put("arch", "" + cpuName);
+                        addDefault(defaultKey);
                         int totalRam = HardWareUtil.getTotalRam();
                         defaultKey.put("ram", "" + totalRam);
-                        defaultKey.put("net", "" + getNet());
                         defaultKey.put("cpu", "" + getCpuRate());
                         defaultKey.put("mem", "" + getMemRate());
                         defaultKey.put("cip", "" + cip);
@@ -1189,23 +1148,23 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         if (error != null) {
             switch (error) {
                 case EHOSTUNREACH:
-                    return new PlayFailCode(10, "Failed to resolve hostname");
+                    return PlayFailCode.PlayFailCode10;
                 case ETIMEDOUT:
-                    return new PlayFailCode(PlayFailCode.TIME_OUT, "Connection timed out");
+                    return PlayFailCode.PlayFailCode15;
                 case ECONNREFUSED:
                     return new PlayFailCode(16, "Connection refuse");
                 case EIO:
                     return new PlayFailCode(17, "Io error");
                 case HTTP_UNAUTHORIZED:
-                    return new PlayFailCode(20, "Server Error");
+                    return PlayFailCode.PlayFailCode20;
                 case HTTP_FORBIDDEN:
-                    return new PlayFailCode(20, "Server Error");
+                    return PlayFailCode.PlayFailCode20;
                 case HTTP_NOT_FOUND:
-                    return new PlayFailCode(20, "Server Error");
+                    return PlayFailCode.PlayFailCode20;
                 case HTTP_OTHER_4XX:
-                    return new PlayFailCode(20, "Server Error");
+                    return PlayFailCode.PlayFailCode20;
                 case HTTP_SERVER_ERROR:
-                    return new PlayFailCode(20, "Server Error");
+                    return PlayFailCode.PlayFailCode20;
                 case HTTP_BAD_REQUEST:
                     return new PlayFailCode(21, "Client Error");
                 case STREAM_NOT_FOUND:

@@ -39,17 +39,21 @@ public class DNSUtil {
     }
 
     public static void getDns(URLDNS urldns, String url2) throws UnknownHostException {
+        UnknownHostException exception = null;
+        long before = System.currentTimeMillis();
         try {
             urldns.url = url2;
             url2 = getHost(url2);
             Loger.d(TAG, "getDns:url2=" + urldns.url + "," + url2);
-            long before = System.currentTimeMillis();
             InetAddress inetAddress = InetAddress.getByName(url2);
             urldns.ip = inetAddress.getHostAddress();
-            urldns.time = System.currentTimeMillis() - before;
         } catch (UnknownHostException e) {
             Loger.e(TAG, "getDns", e);
-            throw e;
+            exception = e;
+        }
+        urldns.time = System.currentTimeMillis() - before;
+        if (exception != null) {
+            throw exception;
         }
     }
 }
