@@ -358,6 +358,9 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         if (englishSpeekAction != null) {
             englishSpeekAction.destory();
         }
+        if (speakerRecognitioner != null) {
+            speakerRecognitioner.destory();
+        }
     }
 
     @Override
@@ -646,4 +649,5 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             handler.sendEmptyMessageDelayed(1, 2000);
         }
     }
+
 }
