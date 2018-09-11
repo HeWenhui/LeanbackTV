@@ -18,6 +18,8 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.LoadSoCallBack;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -132,6 +134,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                                 @Override
                                                 public void run() {
                                                     if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
+                                                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext
+                                                                .getResources().getString(R.string.personal_1701001));
                                                         recognizeDialog.showDialog();
                                                     }
                                                 }
@@ -218,6 +222,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         recognizeDialog.setVerifyBtnListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                        .personal_1701002));
                 isGotoRecogniz = true;
 //                SpeakerRecognitionerInterface speakerRecognitionerInterface = SpeakerRecognitionerInterface
 //                        .getInstance();
@@ -230,6 +236,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         recognizeDialog.setCancelBtnListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                        .personal_1701003));
                 startAchievement();
             }
         });
