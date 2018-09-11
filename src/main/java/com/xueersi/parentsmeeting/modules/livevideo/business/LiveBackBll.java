@@ -35,13 +35,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveUidRx;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandLiveVideoExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 
@@ -50,13 +47,10 @@ import org.xutils.xutils.http.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -302,9 +296,6 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             if (liveBackBaseBll != null) {
                 logger.d("scanQuestion:onQuestionEnd:id=" + oldQuestionEntity.getvCategory());
                 liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
-                if (pattern == 2 && array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT) != null) {
-                    array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).onQuestionEnd(oldQuestionEntity);
-                }
             }
             showQuestion.onHide(oldQuestionEntity);
         }
@@ -321,15 +312,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         }
     }
 
-    /**
-     * 是否打开聊天区
-     */
-//    private boolean isOpenMessage = false;
 
     /**
-     * 扫描聊天区开启或者关闭
+     * zyy:扫描聊天区开启或者关闭
      *
-     * @param position
+     * @param position ms
+     *                 playPosition s
      */
     private void scanMessage(long position) {
         VideoQuestionEntity oldQuestionEntity = mQuestionEntity;
@@ -348,13 +336,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 if (openQue != null && closeQue != null && !openQue.isEmpty() && !closeQue.isEmpty()) {
                     if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
                         if (openQue.peek() < closeQue.peek()) {
-                            if (playPosition < openQue.peek()) {
-                            } else if (playPosition >= openQue.peek() && playPosition <= closeQue.peek()) {
+                            if (playPosition >= openQue.peek() && playPosition <= closeQue.peek()) {
                                 array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT).showQuestion(oldQuestionEntity,
                                         videoQuestionEntity, showQuestion);
                                 Log.e(TAG, playPosition + " 2:进去了打开站立直播聊天区");
                                 break;
-                            } else {
                             }
                         }
 
@@ -382,31 +368,39 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     }
 
+    /**
+     * 存储打开聊天区的Event的所有Open-startTime，优先队列
+     */
     private Queue<Integer> openQue;
+    /**
+     * 存储关闭聊天区的Event的所有Close-startTime，优先队列
+     */
     private Queue<Integer> closeQue;
 
     /**
-     * 判断开关聊天区是哪些时间段
+     * zyy:筛选出开关聊天区是哪些时间段，采用优先队列排序
      */
     private void initLiveMessageQueue() {
         openQue = new PriorityQueue<>();
-        openQue.add(0);
+        openQue.add(0);//聊天区默认是开启的，所以默认开启时间是0
         closeQue = new PriorityQueue<>();
-        List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
-        for (VideoQuestionEntity videoQuestionEntity : lstVideoQuestion) {
+
+        for (VideoQuestionEntity videoQuestionEntity : mVideoEntity.getLstVideoQuestion()) {
             int openStartTime, closeStartTime;
-            if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {
-                //体验课聊天区关闭或者打开，独立于任何题型
+            if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_OPEN_CHAT) {//打开聊天
                 openStartTime = videoQuestionEntity.getvQuestionInsretTime();
                 openQue.add(openStartTime);
             }
-            if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {
+            if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_CLOSE_CHAT) {//关闭聊天
                 closeStartTime = videoQuestionEntity.getvQuestionInsretTime();
                 closeQue.add(closeStartTime);
             }
         }
-        if (closeQue.isEmpty()) {//如果没有禁言，说明全程都是打开聊天区的状态。
-            openQue.remove();
+        //1.如果打开聊天区的Event (包括刚刚加入的在 0 时刻开始的聊天事件) 比关闭聊天区的Event多一个(多两个以上是数据有问题)，
+        //  那么视屏结束的时间就是关闭聊天区的时间，在关闭队列末尾加上一个无穷大的数来模拟视频结束时间
+        //2.如果两个Event数量一样多，说明视频结束时间不是关闭聊天区的时间，即在视频结束之前老师就已经关闭了聊天区
+        if (openQue.size() > closeQue.size()) {
+            closeQue.add(Integer.MAX_VALUE);
         }
     }
 

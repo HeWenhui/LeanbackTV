@@ -7,28 +7,15 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 
 /**
- * 站立直播体验课的控制器，要求没有底部控制栏，不可条进度。
+ * 张月毅：站立直播体验课的控制器，要求没有底部控制栏，不可调节进度。
  */
 public class StandLiveVideoExperienceMediaController extends MediaController2 {
-
-//    public StandLiveVideoExperienceMediaController(Context context, MediaPlayerControl player) {
-//        super(context, player);
-//        if (mPlayer.isLandSpace()) {
-//            try {
-//                mControlsLayout.setVisibility(GONE);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            mGestures.setTouchListener(standExperienceListener, true);
-//            setControllerBottom(new ControllerB);
-//        }
-//    }
 
     public StandLiveVideoExperienceMediaController(Context context, MediaPlayerControl player, boolean isDrawHeight) {
         super(context, player, isDrawHeight);
         if (mPlayer.isLandSpace()) {
             try {
-                mControlsLayout.setVisibility(GONE);
+                mControlsLayout.setVisibility(GONE);//设置底部控制栏不可见
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -47,7 +47,7 @@ import java.util.List;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
-//仿照三分屏的体验课聊天
+//zyy:仿照全身直播的体验课聊天
 public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements KeyboardUtil.OnKeyboardShowingListener {
     /**
      * 聊天消失
@@ -90,9 +90,9 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
      */
     LogToFile logToFile;
     /**
-     * 是否打开开关
+     * 是否打开聊天开关，默认开启
      */
-    private boolean openChat = false;
+    private boolean openChat = true;
 
 
     public StandLiveVideoExperienceBll(Activity activity, LiveBackBll liveBackBll) {
@@ -128,10 +128,12 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
                 liveMessageLandEntities,
                 null);
 //        初始化默认看不见这个布局
-//        mLiveMessagePager.onopenchat(openChat, "", false);
+
         mLiveMessagePager.setIrcState(videoExperiencIRCState);
         mRootView.addView(mLiveMessagePager.getRootView());
         mLiveMessagePager.setGetInfo(liveGetInfo);
+        //默认打开聊天区
+        mLiveMessagePager.onopenchat(openChat, "", false);
 
         QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
         if (questionShowReg != null) {
@@ -163,6 +165,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
 
         chatCfgServerList = mVideoEntity.getRoomChatCfgServerList();
+        //后台没有数据时自己测试用的接口
 //        chatCfgServerList.add("chatgslb.xescdn.com");
 //        chatCfgServerList.add("chatgslb.xesimg.com");
 //        chatCfgServerList.add("10.99.1.15");

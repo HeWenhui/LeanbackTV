@@ -313,7 +313,103 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
     protected void initBll() {
         ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
-        ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, liveBackPlayVideoFragment);
+        //发布题目的时候，如果点击取消题目，不会跳过这段做题目的时间
+        ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, new MediaPlayerControl() {//zyy:
+            @Override
+            public void start() {
+                liveBackPlayVideoFragment.start();
+            }
+
+            @Override
+            public void pause() {
+                liveBackPlayVideoFragment.pause();
+            }
+
+            @Override
+            public void stop() {
+                liveBackPlayVideoFragment.stop();
+            }
+
+            @Override
+            public void seekTo(long pos) {
+
+            }
+
+            @Override
+            public void setSpeed(float speed) {
+
+            }
+
+            @Override
+            public float getSpeed() {
+                return liveBackPlayVideoFragment.getSpeed();
+            }
+
+            @Override
+            public void next() {
+                liveBackPlayVideoFragment.next();
+            }
+
+            @Override
+            public boolean isPlaying() {
+                return liveBackPlayVideoFragment.isPlaying();
+            }
+
+            @Override
+            public boolean isLandSpace() {
+                return liveBackPlayVideoFragment.isLandSpace();
+            }
+
+            @Override
+            public boolean isPlayInitialized() {
+                return liveBackPlayVideoFragment.isPlayInitialized();
+            }
+
+            @Override
+            public void changeLOrP() {
+                liveBackPlayVideoFragment.changeLOrP();
+            }
+
+            @Override
+            public long getCurrentPosition() {
+                return liveBackPlayVideoFragment.getCurrentPosition();
+            }
+
+            @Override
+            public long getDuration() {
+                return liveBackPlayVideoFragment.getDuration();
+            }
+
+            @Override
+            public int getBufferPercentage() {
+                return liveBackPlayVideoFragment.getBufferPercentage();
+            }
+
+            @Override
+            public void toggleVideoMode(int mode) {
+                liveBackPlayVideoFragment.toggleVideoMode(mode);
+            }
+
+            @Override
+            public void removeLoadingView() {
+                liveBackPlayVideoFragment.removeLoadingView();
+            }
+
+            @Override
+            public float scale(float scale) {
+                return liveBackPlayVideoFragment.scale(scale);
+            }
+
+            @Override
+            public int getVideoHeight() {
+                return liveBackPlayVideoFragment.getVideoHeight();
+            }
+
+            @Override
+            public void onShare() {
+                liveBackPlayVideoFragment.onShare();
+            }
+        });
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
         initBusiness();
         if (islocal) {
