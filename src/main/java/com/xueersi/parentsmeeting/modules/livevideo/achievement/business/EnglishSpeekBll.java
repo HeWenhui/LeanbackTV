@@ -400,6 +400,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             }
         }
         if (speakerRecognitioner != null) {
+            speakerRecognitioner.setSpeakerPredict(null);
             speakerRecognitioner.stop();
             if (onAudioRequest != null) {
                 onAudioRequest.requestSuccess();
@@ -456,6 +457,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         @Override
         public void onProcessData(final String out) {
             mLogtf.debugSave("onProcessData:out=" + out);
+            if (totalOpeningLength == null) {
+                return;
+            }
             tv_livevideo_english_time.post(new Runnable() {
 
                 @Override
@@ -576,6 +580,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     @Override
     public void onPredict(String predict) {
         Loger.d(TAG, "onPredict:predict=" + predict);
+        if (totalOpeningLength == null) {
+            return;
+        }
         super.onPredict(predict);
         try {
             JSONObject jsonObject = new JSONObject(predict);

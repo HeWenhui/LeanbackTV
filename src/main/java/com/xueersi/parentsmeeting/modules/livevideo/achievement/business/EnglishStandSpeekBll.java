@@ -302,6 +302,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
             }
         }
         if (speakerRecognitioner != null) {
+            speakerRecognitioner.setSpeakerPredict(null);
             speakerRecognitioner.stop();
             if (onAudioRequest != null) {
                 onAudioRequest.requestSuccess();
@@ -354,6 +355,9 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
         @Override
         public void onProcessData(final String out) {
             mLogtf.debugSave("onProcessData:out=" + out);
+            if (totalOpeningLength == null) {
+                return;
+            }
             myView.post(new Runnable() {
 
                 @Override
@@ -453,6 +457,9 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
     @Override
     public void onPredict(String predict) {
         super.onPredict(predict);
+        if (totalOpeningLength == null) {
+            return;
+        }
         try {
             JSONObject jsonObject = new JSONObject(predict);
             int en_seg_num = 0;
