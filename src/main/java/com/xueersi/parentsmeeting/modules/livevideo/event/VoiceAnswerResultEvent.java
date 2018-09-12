@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.event;
 
 /**
-*语音题 答题结果 时间
+*语音题 答题结果 事件
 *@author chekun
 *created  at 2018/9/7 10:23
 */

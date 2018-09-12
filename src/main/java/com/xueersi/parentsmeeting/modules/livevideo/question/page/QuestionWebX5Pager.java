@@ -266,7 +266,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     @JavascriptInterface
     public void showAnswerResult_LiveVideo(String data){
          Loger.e("QuestionWebX5Pager","=========>showAnswerResult_LiveVideo:"+data);
-         EventBus.getDefault().post(new ArtsAnswerResultEvent(data));
+         EventBus.getDefault().post(new ArtsAnswerResultEvent(data,ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
 
 

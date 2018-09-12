@@ -85,6 +85,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private VoiceAnswerResultEvent mVoiceAnswerResult;
     /**是否正在展示表扬*/
     private boolean praiseViewShowing;
+    private ArtsAnswerResultEvent mArtsAnswerResultEvent;
 
     /**
      * @param context
@@ -254,7 +255,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     public void remindSubmit() {
         Loger.e("ArtsAnswerResult","======>remindSubmit:"+mDsipalyer+":"+this);
         //没有答题结果页时才展示
-        if (mDsipalyer == null) {
+        if (mArtsAnswerResultEvent == null) {
             rlAnswerResultLayout.post(new Runnable() {
                 @Override
                 public void run() {
@@ -428,11 +429,13 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                  pariseSingleAnswerRight(testId);
                 break;
             case XESCODE.ARTS_STOP_QUESTION:
+                mArtsAnswerResultEvent = null;
                 closeAnswerResult(true);
                 break;
             case  XESCODE.ARTS_H5_COURSEWARE:
                 String status = data.optString("status", "off");
                 if("off".equals(status)){
+                    mArtsAnswerResultEvent = null;
                     closeAnswerResult(true);
                 }
                 break;
@@ -477,7 +480,13 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAnswerResult(ArtsAnswerResultEvent event) {
-        onAnswerResult(event.getDataStr());
+
+        if(event != null && !event.equals(mArtsAnswerResultEvent)){
+            mArtsAnswerResultEvent = event;
+            if(ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()){
+                onAnswerResult(event.getDataStr());
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -506,6 +515,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     public void onDestory() {
         super.onDestory();
         praiseViewShowing = false;
+        mArtsAnswerResultEvent = null;
         EventBus.getDefault().unregister(this);
     }
 }
