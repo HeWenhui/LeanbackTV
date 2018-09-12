@@ -42,4 +42,12 @@ public class VoiceAnswerResultEvent {
         }
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "VoiceAnswerResultEvent{" +
+                "testId='" + testId + '\'' +
+                ", score=" + score +
+                '}';
+    }
 }
