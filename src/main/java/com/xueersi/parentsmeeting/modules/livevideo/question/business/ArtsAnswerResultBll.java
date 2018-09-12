@@ -483,6 +483,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVoiceAnswerReuslt(VoiceAnswerResultEvent event) {
+        Loger.e(Tag,"====>onVoiceAnswerReuslt:"+event);
         if(event != null && !event.equals(mVoiceAnswerResult)){
             mVoiceAnswerResult = event;
         }
