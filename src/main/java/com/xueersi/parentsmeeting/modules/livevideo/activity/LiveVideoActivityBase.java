@@ -639,7 +639,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             }
         }
         if (livePlayLog != null) {
-            livePlayLog.onPause();
+            livePlayLog.onPause(0);
         }
     }
 

@@ -333,6 +333,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                             }
                             vPlayer.releaseSurface();
                             vPlayer.stop();
+                        } else {
+                            Loger.d(TAG, "onPause:isInitialized=false");
                         }
                         isPlay = false;
                     }

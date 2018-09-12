@@ -82,12 +82,12 @@ public class LiveBackVideoBll {
         livePlayLog.onReplay();
     }
 
-    public void onPause() {
-        livePlayLog.onPause();
+    public void onPause(long dur) {
+        livePlayLog.onPause(dur);
     }
 
     public void onDestroy() {
-        livePlayLog.destory();
+
     }
 
     public void seekTo(long pos) {
@@ -96,6 +96,7 @@ public class LiveBackVideoBll {
 
     public void setLiveBackPlayVideoFragment(LiveBackPlayerFragment liveBackPlayVideoFragment) {
         this.liveBackPlayVideoFragment = liveBackPlayVideoFragment;
+        liveBackPlayVideoFragment.setLivePlayLog(livePlayLog);
     }
 
     public void playNewVideo() {

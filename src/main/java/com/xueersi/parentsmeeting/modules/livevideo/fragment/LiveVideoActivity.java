@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.http.HttpCall;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 
@@ -56,6 +57,11 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
             LiveFragmentBase liveVideoFragment = (LiveFragmentBase) liveVideoFragmentBase;
             liveVideoFragment.updateIcon();
         }
+    }
+
+    @Override
+    public void addHttpRequest(HttpCall httpCall) {
+        //去掉
     }
 
     /**

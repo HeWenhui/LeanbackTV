@@ -42,9 +42,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -83,6 +81,10 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private long lastTrafficStatisticByteCount;
     /** 视频是不是再缓冲 */
     private boolean isBuffer = false;
+    /** 视频是不是暂停 */
+    private boolean isPause = false;
+    /** 视频是不是销毁 */
+    private boolean isDestory = false;
     /** 缓冲开始时间 */
     private long bufferTime = 0;
     /** 缓冲类型 */
@@ -265,7 +267,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         }
     };
 
-    private void send(String method) {
+    private void send(String method, long dur) {
+        logger.d("send:method=" + method);
         framesPsTen.clear();
         HashMap<String, String> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
@@ -295,12 +298,13 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             dataJson.put("code", "0");
             dataJson.put("msg", "Success");
             dataJson.put("method", "" + method);
-            long bufferduration = 0;
+            long bufferduration = dur;
             long trafficStatisticByteCount = lastTrafficStatisticByteCount;
             if (vPlayer.isInitialized()) {
                 IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                 bufferduration = ijkMediaPlayer.getVideoCachedDuration();
                 trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
+                logger.d("send:method=" + method + ",bufferduration=" + bufferduration);
             }
             dataJson.put("bufType", "" + bufType);
             if (isBuffer) {
@@ -329,12 +333,17 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         xescdnLog2(defaultKey, dataJson, false);
     }
 
-    public void onPause() {
+    public void onPause(long dur) {
+        logger.d("onPause:isDestory=" + isDestory);
+        isPause = true;
         handler.removeMessages(1);
-        send("onPause");
+        if (!isDestory) {
+            send("onPause", dur);
+        }
     }
 
     public void onReplay() {
+        isPause = false;
         handler.removeMessages(1);
 //        send("onReplay");
     }
@@ -444,11 +453,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     }
 
     public void stopPlay() {
-        send("stopPlay");
+        send("stopPlay", 0);
     }
 
     public void onBufferTimeOut() {
-        send("onBufferTimeOut");
+        send("onBufferTimeOut", 0);
     }
 
     @Override
@@ -1042,78 +1051,74 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             }
         }
         urlTrace.put(url, now);
-        try {
-            Bundle bundle = new Bundle();
-            final URL finalUri = new URL(url);
-            ldNetTraceClient.startTraceRoute(finalUri.getHost(), bundle, new LDNetTraceRoute.LDNetTraceRouteListener() {
-                @Override
-                public void OnNetTraceUpdated(String log) {
-                    logger.d("OnNetTraceUpdated:log=" + log);
-                }
+        Bundle bundle = new Bundle();
+        String host = DNSUtil.getHost(url);
+        ldNetTraceClient.startTraceRoute(host, bundle, new LDNetTraceRoute.LDNetTraceRouteListener() {
+            @Override
+            public void OnNetTraceUpdated(String log) {
+                logger.d("OnNetTraceUpdated:log=" + log);
+            }
 
-                @Override
-                public void OnNetTraceFinished() {
+            @Override
+            public void OnNetTraceFinished() {
 
-                }
+            }
 
-                @Override
-                public void onTraceRouteEnd(JavaTraceResult[] javaTraceResults) {
-                    if (javaTraceResults.length > 0) {
-                        HashMap<String, String> defaultKey = new HashMap<>();
-                        defaultKey.put("ver", logVersion);
-                        defaultKey.put("serv", serv);
-                        defaultKey.put("pri", "1");
-                        addDefault(defaultKey);
-                        int totalRam = HardWareUtil.getTotalRam();
-                        defaultKey.put("ram", "" + totalRam);
-                        defaultKey.put("cpu", "" + getCpuRate());
-                        defaultKey.put("mem", "" + getMemRate());
-                        defaultKey.put("cip", "" + cip);
-                        defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
-                        defaultKey.put("sip", "" + msip);
-                        defaultKey.put("tid", "" + UUID.randomUUID());
+            @Override
+            public void onTraceRouteEnd(JavaTraceResult[] javaTraceResults) {
+                if (javaTraceResults.length > 0) {
+                    HashMap<String, String> defaultKey = new HashMap<>();
+                    defaultKey.put("ver", logVersion);
+                    defaultKey.put("serv", serv);
+                    defaultKey.put("pri", "1");
+                    addDefault(defaultKey);
+                    int totalRam = HardWareUtil.getTotalRam();
+                    defaultKey.put("ram", "" + totalRam);
+                    defaultKey.put("cpu", "" + getCpuRate());
+                    defaultKey.put("mem", "" + getMemRate());
+                    defaultKey.put("cip", "" + cip);
+                    defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
+                    defaultKey.put("sip", "" + msip);
+                    defaultKey.put("tid", "" + UUID.randomUUID());
 
-                        JSONObject dataJson = new JSONObject();
-                        try {
-                            dataJson.put("url", url);
-                            JSONArray traceArray = new JSONArray();
-                            for (int i = 0; i < javaTraceResults.length; i++) {
-                                JavaTraceResult javaTraceResult = javaTraceResults[i];
-                                JSONObject traceObj = new JSONObject();
-                                traceObj.put("ttl", javaTraceResult.ttl);
-                                traceObj.put("send", 4);
-                                traceObj.put("best", "" + javaTraceResult.rttMin);
-                                ArrayList<String> times = javaTraceResult.getTimes();
-                                if (times.size() > 0) {
-                                    traceObj.put("last", "" + times.get(times.size() - 1));
-                                } else {
-                                    traceObj.put("last", "0");
-                                }
-                                traceObj.put("worst", "" + javaTraceResult.rttMax);
-                                traceObj.put("avrg", "" + javaTraceResult.rttAvg);
-                                traceObj.put("loss", 4 - javaTraceResult.receivedpackets);
-                                traceObj.put("recv", javaTraceResult.receivedpackets);
-                                traceObj.put("sip", javaTraceResult.bothHost);
-                                traceArray.put(traceObj);
+                    JSONObject dataJson = new JSONObject();
+                    try {
+                        dataJson.put("url", url);
+                        JSONArray traceArray = new JSONArray();
+                        for (int i = 0; i < javaTraceResults.length; i++) {
+                            JavaTraceResult javaTraceResult = javaTraceResults[i];
+                            JSONObject traceObj = new JSONObject();
+                            traceObj.put("ttl", javaTraceResult.ttl);
+                            traceObj.put("send", 4);
+                            traceObj.put("best", "" + javaTraceResult.rttMin);
+                            ArrayList<String> times = javaTraceResult.getTimes();
+                            if (times.size() > 0) {
+                                traceObj.put("last", "" + times.get(times.size() - 1));
+                            } else {
+                                traceObj.put("last", "0");
                             }
-                            dataJson.put("trace", traceArray);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            traceObj.put("worst", "" + javaTraceResult.rttMax);
+                            traceObj.put("avrg", "" + javaTraceResult.rttAvg);
+                            traceObj.put("loss", "" + javaTraceResult.lostpackets);
+                            traceObj.put("recv", javaTraceResult.receivedpackets);
+                            traceObj.put("sip", javaTraceResult.bothHost);
+                            traceArray.put(traceObj);
                         }
-                        xescdnLog2(defaultKey, dataJson, saveToFile);
+                        dataJson.put("trace", traceArray);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+                    xescdnLog2(defaultKey, dataJson, saveToFile);
                 }
-            });
-        } catch (MalformedURLException e) {
-            logger.e("onOpenFailed", e);
-        }
+            }
+        });
     }
 
     @Override
     public void onPlaybackComplete() {
         super.onPlaybackComplete();
         handler.removeMessages(1);
-        send("onPlaybackComplete");
+        send("onPlaybackComplete", 0);
         sip = "";
     }
 
@@ -1121,12 +1126,16 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     public void onPlayError() {
         super.onPlayError();
         handler.removeMessages(1);
-        send("onPlayError");
+        send("onPlayError", 0);
     }
 
     public void destory() {
+        isDestory = true;
+        logger.d("destory:isPause=" + isPause);
         handler.removeMessages(1);
-        send("destory");
+        if (!isPause) {
+            send("destory", 0);
+        }
         ldNetTraceClient.destory();
     }
 
