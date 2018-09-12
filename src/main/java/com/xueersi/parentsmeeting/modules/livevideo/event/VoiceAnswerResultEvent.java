@@ -30,4 +30,16 @@ public class VoiceAnswerResultEvent {
     public void setScore(int score) {
         this.score = score;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = false;
+        if( obj != null && obj instanceof  VoiceAnswerResultEvent){
+            VoiceAnswerResultEvent targetObj = (VoiceAnswerResultEvent)obj;
+            if(targetObj.testId != null && targetObj.testId.equals(this.testId) && targetObj.score == this.score){
+                result = true;
+            }
+        }
+        return result;
+    }
 }
