@@ -483,7 +483,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVoiceAnswerReuslt(VoiceAnswerResultEvent event) {
-        mVoiceAnswerResult = event;
+        if(event != null && !event.equals(mVoiceAnswerResult)){
+            mVoiceAnswerResult = event;
+        }
     }
 
     int[] notices = {
