@@ -607,17 +607,17 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                     Loger.d(TAG, "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
                 }
             }
-            if (totalOpeningLength.duration == 0) {
-                setEnglishTime(totalSecond / 60, totalSecond % 60);
-            } else {
-                int d = (int) totalOpeningLength.duration;
-                setEnglishTime((totalSecond + d) / 60, (totalSecond + d) % 60);
-            }
             second15 += totalSecond - lastSecond;
             final int oldProgress = tv_livevideo_english_prog.getProgress();
             tv_livevideo_english_time.post(new Runnable() {
                 @Override
                 public void run() {
+                    if (totalOpeningLength.duration == 0) {
+                        setEnglishTime(totalSecond / 60, totalSecond % 60);
+                    } else {
+                        int d = (int) totalOpeningLength.duration;
+                        setEnglishTime((totalSecond + d) / 60, (totalSecond + d) % 60);
+                    }
                     if (second15 * 3 != oldProgress) {
                         int second = MAX_SECOND - second15;
                         float startProgress = oldProgress;
