@@ -233,10 +233,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mDsipalyer.close();
             mDsipalyer = null;
             EventBus.getDefault().post(new AnswerResultCplShowEvent());
-        }else{
-            Loger.e("ArtsAnswerBll", "=====>closeAnswerResult:" + forceSumbmit);
-            this.forceSumbmit = forceSumbmit;
         }
+        Loger.e("ArtsAnswerBll", "=====>closeAnswerResult:" + forceSumbmit);
+        this.forceSumbmit = forceSumbmit;
     }
 
 
