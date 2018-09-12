@@ -35,8 +35,8 @@ public class LiveVideoSAConfig {
 
         /** 直播课的直播提交测试题 */
         public String URL_LIVE_SUBMIT_TEST_ANSWER = HTTP_HOST + "/LiveCourse/submitTestAnswer";
-        /** 文科新课件平台提交测试题 */
-        public String URL_LIVE_SUBMIT_NEWARTSTEST_ANSWER = "http://laoshi.xueersi.com/libarts/v2/SubjectiveTest/submitTest";
+        /** 文科新课件平台语文主观题提交测试题 */
+        public String URL_LIVE_SUBMIT_NEWARTSTEST_ANSWER = "https://app.arts.xueersi.com/v2/SubjectiveTest/submitTest";
         /** 直播课的直播提交测试题-语音答题 */
         public String URL_LIVE_SUBMIT_TEST_ANSWER_VOICE = HTTP_HOST + "/LiveCourse/submitTestAnswerUseVoice";
         /** 直播课的语音评测小组排名 */
