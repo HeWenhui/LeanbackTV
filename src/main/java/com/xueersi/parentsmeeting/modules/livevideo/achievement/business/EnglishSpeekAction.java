@@ -28,5 +28,7 @@ public interface EnglishSpeekAction {
 
     void stop(AudioRequest.OnAudioRequest onAudioRequest);
 
+    void setSpeakerRecognitioner(SpeakerRecognitioner speakerRecognitioner);
+
     void destory();
 }

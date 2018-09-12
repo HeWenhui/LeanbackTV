@@ -20,7 +20,6 @@ import java.io.File;
 public class LecLearnReportPager extends LiveBasePager {
     String TAG = "LecLearnReportPager";
     LearnReportEntity reportEntity;
-    LiveBll liveBll;
     LecLearnReportBll learnReportBll;
     TextView tv_livelec_dialog_xxsc_text;
     TextView tv_livelec_dialog_zhengquelv_text;

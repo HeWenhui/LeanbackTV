@@ -131,7 +131,7 @@ public abstract class BasePrimaryScienceMessagePager extends BaseLiveMessagePage
             }
         }, mDanmakuContext);
         dvMessageDanmaku.showFPS(false);
-        dvMessageDanmaku.enableDanmakuDrawingCache(true);
+        dvMessageDanmaku.enableDanmakuDrawingCache(false);
     }
 
     protected BaseCacheStuffer.Proxy mCacheStufferAdapter = new BaseCacheStuffer.Proxy() {

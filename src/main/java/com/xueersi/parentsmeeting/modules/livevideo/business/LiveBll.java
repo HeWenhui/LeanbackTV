@@ -100,7 +100,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.parentsmeeting.modules.livevideo.video.TotalFrameStat;
+import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayFailCode;
+import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatHttp;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -223,7 +225,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle;
     /** 直播帧数统计 */
-    private TotalFrameStat totalFrameStat;
+    private LivePlayLog livePlayLog;
     /**
      * 学习记录提交时间间隔
      */
@@ -395,8 +397,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         }
     }
 
-    public void setTotalFrameStat(TotalFrameStat totalFrameStat) {
-        this.totalFrameStat = totalFrameStat;
+    public void setLivePlayLog(LivePlayLog livePlayLog) {
+        this.livePlayLog = livePlayLog;
     }
 
     @Override
@@ -1043,7 +1045,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         Loger.i("LiveRemarkBll", "ontopic____onbreak:" + mLiveTopic.getMainRoomstatus().isOnbreak()
                                 + "   mode:" + getMode());
                         if (!liveTopic.getMainRoomstatus().isOnbreak() && (liveTopic.getMode().equals(LiveTopic
-                                .MODE_CLASS)||mGetInfo.getIsSeniorOfHighSchool()==1)) {
+                                .MODE_CLASS) || mGetInfo.getIsSeniorOfHighSchool() == 1)) {
                             mLiveRemarkBll.setClassReady(true);
                         } else {
                             mLiveRemarkBll.setClassReady(false);
@@ -1454,14 +1456,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         Loger.i("LiveRemarkBll", "classBegin____onbreak:" + mLiveTopic.getMainRoomstatus().isOnbreak()
                                 + "   mode:" + getMode());
                         if (!mLiveTopic.getMainRoomstatus().isOnbreak() && (mLiveRemarkBll != null && LiveTopic
-                                .MODE_CLASS.equals(getMode())||mGetInfo.getIsSeniorOfHighSchool()==1)) {
+                                .MODE_CLASS.equals(getMode()) || mGetInfo.getIsSeniorOfHighSchool() == 1)) {
                             mLiveRemarkBll.setClassReady(true);
                         }
                         //正式上课 结束关闭签到相关UI
                         if (mRollCallAction != null) {
                             mRollCallAction.forceCloseRollCall();
                         }
-                        if(mLiveRemarkBll!=null){
+                        if (mLiveRemarkBll != null) {
                             mLiveRemarkBll.showMarkGuide();
                         }
 
@@ -2215,7 +2217,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         break;
                     }
                     case XESCODE.MARK_POINT_TIP:
-                        if(mLiveRemarkBll!=null){
+                        if (mLiveRemarkBll != null) {
                             mLiveRemarkBll.showMarkTip(object.optInt("markType"));
                         }
                         break;
@@ -2959,8 +2961,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
                     + mGetInfo.getTeacherId());
         }
-        if (totalFrameStat != null) {
-            totalFrameStat.setChannelname(mGetInfo.getChannelname());
+        if (livePlayLog != null) {
+            livePlayLog.setChannelname(mGetInfo.getChannelname());
         }
         final String serverurl = mGetInfo.getGslbServerUrl() + "?cmd=live_get_playserver&userid=" + mGetInfo.getStuId()
                 + "&username=" + mGetInfo.getUname() + "&channelname=" + mGetInfo.getChannelname();
@@ -2970,18 +2972,18 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             mGetPlayServerCancle = null;
         }
         mLogtf.d("liveGetPlayServer:modeTeacher=" + getModeTeacher());
-        final StringBuilder ipsb = new StringBuilder();
-        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(ipsb, serverurl, new CommonRequestCallBack<String>() {
+        final URLDNS urldns = new URLDNS();
+        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(urldns, serverurl, new CommonRequestCallBack<String>() {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                mLogtf.d("liveGetPlayServer:onError:ex=" + ex + ",isOnCallback=" + isOnCallback + "," + ipsb);
+                mLogtf.d("liveGetPlayServer:onError:ex=" + ex + ",isOnCallback=" + isOnCallback + "," + urldns);
                 long time = System.currentTimeMillis() - before;
                 if (ex instanceof HttpException) {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
-                        totalFrameStat.liveGetPlayServer(time, 3, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode20, 20, "", urldns, serverurl);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
                                 mVideoAction.onLiveStart(null, mLiveTopic, modechange);
@@ -2993,10 +2995,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     }
                 } else {
                     if (ex instanceof UnknownHostException) {
-                        totalFrameStat.liveGetPlayServer(time, 1, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode10, 10, "", urldns, serverurl);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            totalFrameStat.liveGetPlayServer(time, 2, "", ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode15, PlayFailCode.TIME_OUT, "", urldns, serverurl);
                         }
                     }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);
@@ -3030,9 +3032,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     JSONObject object = new JSONObject(result);
                     PlayServerEntity server = mHttpResponseParser.parsePlayerServer(object);
                     if (server != null) {
-                        if (totalFrameStat != null) {
+                        if (livePlayLog != null) {
                             long time = System.currentTimeMillis() - before;
-                            totalFrameStat.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode0, 0, server.getCipdispatch(), null, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -3193,7 +3195,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         @Override
         public void onOpenFailed(int arg1, int arg2) {
             if (isOpenSuccess) {
-                streamReport(MegId.MEGID_12103, mGetInfo.getChannelname(), -1);
+                MegId megId = MegId.MEGID_12103;
+                megId.msgid = "fail " + TotalFrameStat.getErrorCode(arg2) + " ";
+                streamReport(megId, mGetInfo.getChannelname(), -1);
             }
             mFailCount.set(mFailCount.get() + 1);
             long openTime = System.currentTimeMillis() - openStartTime;
@@ -4547,9 +4551,9 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 return;
             }
         } else if (MegId.MEGID_12102 == msgid) {
-            if (totalFrameStat != null) {
-                String cpuName = totalFrameStat.getCpuName();
-                String memsize = totalFrameStat.getMemsize();
+            if (livePlayLog != null) {
+                String cpuName = livePlayLog.getCpuName();
+                String memsize = livePlayLog.getMemsize();
                 String ua = Build.VERSION.SDK_INT + ";" + cpuName + ";" + memsize;
                 entity.addBodyParam("UA", ua);
             }
@@ -4981,7 +4985,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         }
         Loger.i("LiveRemarkBll", "setlivebll____onbreak:" + mLiveTopic.getMainRoomstatus().isOnbreak()
                 + "   stat:" + mGetInfo.getStat() + "   mode:" + getMode());
-        if (!mLiveTopic.getMainRoomstatus().isOnbreak() && LiveTopic.MODE_CLASS.equals(getMode())||mGetInfo.getIsSeniorOfHighSchool()==1) {
+        if (!mLiveTopic.getMainRoomstatus().isOnbreak() && LiveTopic.MODE_CLASS.equals(getMode()) || mGetInfo.getIsSeniorOfHighSchool() == 1) {
             mLiveRemarkBll.setClassReady(true);
         } else {
             mLiveRemarkBll.setClassReady(false);

@@ -3,9 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.videochat;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/6/23.
+ * Created by linyuqiang on 2018/6/23.
+ * 接麦的一些事件
  */
-
 public interface VideoChatEvent {
     void setVolume(float i, float i1);
 

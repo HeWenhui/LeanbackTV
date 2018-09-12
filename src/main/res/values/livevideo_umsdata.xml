@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-->说明: 文科直播-弹出声纹认证-弹窗UV/PV</!-->
+    <string name="personal_1701001">{"levelone":\"17\","leveltwo":\"01\","levelthree":\"001\","businessinfo$json":{}}</string>
+    <!-->说明: 文科直播-弹出声纹认证-去认证</!-->
+    <string name="personal_1701002">{"levelone":\"17\","leveltwo":\"01\","levelthree":\"002\","businessinfo$json":{}}</string>
+    <!-->说明: 文科直播-弹出声纹认证-取消</!-->
+    <string name="personal_1701003">{"levelone":\"17\","leveltwo":\"01\","levelthree":\"003\","businessinfo$json":{}}</string>
+</resources>
