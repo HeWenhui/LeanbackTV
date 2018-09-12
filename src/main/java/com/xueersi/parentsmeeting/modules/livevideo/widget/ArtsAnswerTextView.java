@@ -106,7 +106,6 @@ public class ArtsAnswerTextView extends TextView {
             if(characterIndex > 0){
                 left = (int) getLayout().getSecondaryHorizontal(characterIndex) + drawableLeftMargin;
             }
-            Loger.e("ArtsAnswerTextView","======>drawIcon:"+left);
             canvas.drawBitmap(icon, left, top, iconPaint);
         }
     }
