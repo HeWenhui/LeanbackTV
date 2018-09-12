@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.TextView;
@@ -58,7 +59,20 @@ public class ArtsAnswerTextView extends TextView {
             iconPaint.setFilterBitmap(true);
             iconPaint.setAntiAlias(true);
         }
-
+    }
+    /**
+     *设置显示内容
+     * @param textStr
+     */
+    public final void setTextWithIcon(CharSequence textStr){
+         if(!TextUtils.isEmpty(textStr)){
+             setText(textStr);
+         }else{
+             if(icon != null){
+                 setWidth(icon.getWidth());
+             }
+             setText(textStr);
+         }
     }
 
 
@@ -67,14 +81,15 @@ public class ArtsAnswerTextView extends TextView {
         invalidate();
     }
 
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawIcon(canvas);
-
         Loger.e("ArtsAnswerTextView","========> padding:"+this.getPaddingRight());
 
     }
+
 
     private void drawIcon(Canvas canvas) {
 
@@ -87,7 +102,11 @@ public class ArtsAnswerTextView extends TextView {
             getLayout().getLineBounds(lindeIndex, lastLineBound);
             int characterIndex = getText().length();
             int top = lastLineBound.top + drawableTopMargin;
-            int left = (int) getLayout().getSecondaryHorizontal(characterIndex) + drawableLeftMargin;
+            int left = 0;
+            if(characterIndex > 0){
+                left = (int) getLayout().getSecondaryHorizontal(characterIndex) + drawableLeftMargin;
+            }
+            Loger.e("ArtsAnswerTextView","======>drawIcon:"+left);
             canvas.drawBitmap(icon, left, top, iconPaint);
         }
     }
