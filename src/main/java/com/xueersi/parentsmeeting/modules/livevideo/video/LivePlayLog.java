@@ -127,8 +127,10 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     /** 保存日志路径 */
     private File saveLogDir;
     private boolean isLive = true;
+    /** 下载完成 */
+    private boolean isDownCom = false;
     private DecimalFormat df = new DecimalFormat("######0.00");
-    private String logVersion = "1";
+    private int logVersion = 1;
     private String serv = "";
     private static SimpleDateFormat dateFormat;
     private HashMap<String, String> priMap = new HashMap<>();
@@ -234,7 +236,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //                return;
 //            }
             try {
-                if (vPlayer.isInitialized() && lastPlayserverEntity != null) {
+                if (vPlayer.isInitialized()) {
                     if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
                         IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                         float fps;
@@ -275,6 +277,19 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             lastHeartTime = frame10Start = System.currentTimeMillis();
                         }
                         lastDisaplyCount = disaplyCount;
+                        if (!isLive) {
+                            if (!isDownCom) {
+                                long currentPosition = ijkMediaPlayer.getCurrentPosition();
+                                long duration = ijkMediaPlayer.getDuration();
+                                if (currentPosition > duration / 2) {
+                                    long bufferduration = ijkMediaPlayer.getVideoCachedDuration();
+                                    if (currentPosition + bufferduration + 500 > duration) {
+                                        isDownCom = true;
+                                        downCom();
+                                    }
+                                }
+                            }
+                        }
 //                        if (lastFps != 0) {
 //                            frames.add("" + ((int) ((lastFps + fps) * 5 / 2)));
 //                        } else {
@@ -290,10 +305,64 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         }
     };
 
+    private void downCom() {
+        logger.d("downCom");
+        HashMap<String, Object> defaultKey = new HashMap<>();
+        defaultKey.put("ver", logVersion);
+        defaultKey.put("serv", serv);
+        defaultKey.put("pri", "225");
+        addDefault(defaultKey);
+        int totalRam = HardWareUtil.getTotalRam();
+        defaultKey.put("ram", "" + totalRam);
+        defaultKey.put("cpu", "" + getCpuRate());
+        defaultKey.put("mem", "" + getMemRate());
+        String cip = oldCipdispatch;
+        if (StringUtils.isEmpty(cip)) {
+            cip = IpAddressUtil.USER_IP;
+        }
+        defaultKey.put("cip", "" + cip);
+        defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
+        defaultKey.put("sip", "" + getRemoteIp());
+        defaultKey.put("tid", "" + UUID.randomUUID());
+
+        JSONObject dataJson = new JSONObject();
+        try {
+            dataJson.put("url", mUri);
+            dataJson.put("uri", channelname);
+            if (lastPlayserverEntity != null) {
+                dataJson.put("node", "" + lastPlayserverEntity.getProvide());
+            }
+
+            long trafficStatisticByteCount = lastTrafficStatisticByteCount;
+            if (vPlayer.isInitialized()) {
+                IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
+                trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
+                logger.d("downCom:trafficStatisticByteCount=" + trafficStatisticByteCount);
+            }
+
+            long heartTime;
+            if (lastHeartTime == 0) {
+                heartTime = 0;
+            } else {
+                heartTime = (System.currentTimeMillis() - this.lastHeartTime);
+            }
+            dataJson.put("hbDur", "" + heartTime);
+            dataJson.put("dnDur", "" + heartTime);
+            dataJson.put("bytes", "" + (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+            dataJson.put("uid", "" + userId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        xescdnLog2(defaultKey, dataJson, false);
+    }
+
     private void send(String method, long dur) {
-        logger.d("send:method=" + method);
+        logger.d("send:method=" + method + ",framesPsTen=" + framesPsTen.size());
+        if (framesPsTen.isEmpty()) {
+            return;
+        }
         framesPsTen.clear();
-        HashMap<String, String> defaultKey = new HashMap<>();
+        HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
         defaultKey.put("pri", priMap.get(PRI_KEY_onOpenFailed));
@@ -419,7 +488,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                                     e.printStackTrace();
                                 }
 
-                                HashMap<String, String> defaultKey = new HashMap<>();
+                                HashMap<String, Object> defaultKey = new HashMap<>();
                                 defaultKey.put("ver", logVersion);
                                 defaultKey.put("serv", serv);
                                 defaultKey.put("pri", priMap.get(PRI_KEY_RENDERING));
@@ -497,7 +566,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         bufferTime = System.currentTimeMillis();
         Loger.d(TAG, "onBufferStart:isInitialized=" + vPlayer.isInitialized());
 
-        HashMap<String, String> defaultKey = new HashMap<>();
+        HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
         defaultKey.put("pri", priMap.get(PRI_KEY_onBufferStart));
@@ -539,7 +608,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         isBuffer = false;
         bufType = 0;
         Loger.d(TAG, "onBufferComplete:isInitialized=" + vPlayer.isInitialized());
-        HashMap<String, String> defaultKey = new HashMap<>();
+        HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
         defaultKey.put("pri", priMap.get(PRI_KEY_onBufferComplete));
@@ -593,7 +662,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
      *
      * @param defaultKey
      */
-    private void addDefault(HashMap<String, String> defaultKey) {
+    private void addDefault(HashMap<String, Object> defaultKey) {
         defaultKey.put("ts", "" + System.currentTimeMillis());
         defaultKey.put("appid", "" + UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
         defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsimId());
@@ -606,7 +675,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
     public void liveGetPlayServer(final long delay, PlayFailCode playFailCode, int code, String cipdispatch, URLDNS urldns, final String url) {
         Loger.d(TAG, "liveGetPlayServer:delay=" + delay + ",ipsb=" + urldns.ip);
-        HashMap<String, String> defaultKey = new HashMap<>();
+        HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
         defaultKey.put("pri", "0");
@@ -687,7 +756,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //                Loger.d(TAG, "xescdnLogHeart:averagefps=" + averagefps + "," + averagefps2);
 //                xescdnLogHeart(defaultKey, averagefps, averagefps2, bufferduration, bitrate);
 
-                HashMap<String, String> defaultKey = new HashMap<>();
+                HashMap<String, Object> defaultKey = new HashMap<>();
                 defaultKey.put("ver", logVersion);
                 defaultKey.put("serv", serv);
                 defaultKey.put("pri", priMap.get(PRI_KEY_HEART));
@@ -873,7 +942,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
     private long xescdnLog2Before = 0;
 
-    private void xescdnLog2(HashMap<String, String> defaultKey, final JSONObject dataJson, final boolean saveToFile) {
+    private void xescdnLog2(HashMap<String, Object> defaultKey, final JSONObject dataJson, final boolean saveToFile) {
 //        if (AppConfig.DEBUG) {
 //            logurl = logurls[logIndex++ % logurls.length];
 //        }
@@ -882,7 +951,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         try {
             requestJson.put("pridata", dataJson);
             for (String key : defaultKey.keySet()) {
-                String value = defaultKey.get(key);
+                Object value = defaultKey.get(key);
                 requestJson.put(key, value);
             }
             final HttpRequestParams httpRequestParams = new HttpRequestParams();
@@ -1002,7 +1071,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                HashMap<String, String> defaultKey = new HashMap<>();
+                HashMap<String, Object> defaultKey = new HashMap<>();
                 defaultKey.put("ver", logVersion);
                 defaultKey.put("serv", serv);
                 if (isOpenSuccessfinal) {
@@ -1113,7 +1182,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             @Override
             public void onTraceRouteEnd(JavaTraceResult[] javaTraceResults) {
                 if (javaTraceResults.length > 0) {
-                    HashMap<String, String> defaultKey = new HashMap<>();
+                    HashMap<String, Object> defaultKey = new HashMap<>();
                     defaultKey.put("ver", logVersion);
                     defaultKey.put("serv", serv);
                     defaultKey.put("pri", "1");
