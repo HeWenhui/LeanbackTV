@@ -104,6 +104,8 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         }
         initListener();
         initData();
+        Loger.e("Duncan", "普通互动题展示了！！！");
+        Loger.e("Duncan", "type:" + type);
     }
 
     @Override
