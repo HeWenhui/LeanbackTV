@@ -152,14 +152,14 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             priMap.put(PRI_KEY_onOpenFailed, 121);
             priMap.put(PRI_KEY_onBufferStart, 122);
             priMap.put(PRI_KEY_onBufferComplete, 123);
-            priMap.put(PRI_KEY_onBufferComplete, 124);
+            priMap.put(PRI_KEY_HEART, 124);
         } else {
             serv = 220;
             priMap.put(PRI_KEY_RENDERING, 220);
             priMap.put(PRI_KEY_onOpenFailed, 221);
             priMap.put(PRI_KEY_onBufferStart, 222);
             priMap.put(PRI_KEY_onBufferComplete, 223);
-            priMap.put(PRI_KEY_onBufferComplete, 224);
+            priMap.put(PRI_KEY_HEART, 224);
         }
         this.activity = activity;
         baseHttpBusiness = new BaseHttpBusiness(activity);
