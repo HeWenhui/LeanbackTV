@@ -47,7 +47,7 @@ import java.util.List;
  */
 
 public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, AnswerResultStateListener {
-    private static  final String Tag = "ArtsAnswerResultBll";
+    private static final String Tag = "ArtsAnswerResultBll";
     private RelativeLayout rlAnswerResultLayout;
 
     /**
@@ -81,9 +81,13 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private boolean isPerfectRight;
     private HashMap<Integer, ScoreRange> mScoreRangeMap;
 
-    /**当前语音题的答题结果*/
+    /**
+     * 当前语音题的答题结果
+     */
     private VoiceAnswerResultEvent mVoiceAnswerResult;
-    /**是否正在展示表扬*/
+    /**
+     * 是否正在展示表扬
+     */
     private boolean praiseViewShowing;
     private ArtsAnswerResultEvent mArtsAnswerResultEvent;
 
@@ -94,7 +98,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * @param isPse    是否是小学英语
      */
     public ArtsAnswerResultBll(Activity context, LiveBll2 liveBll) {
-        super(context,liveBll);
+        super(context, liveBll);
         this.isPse = isPse;
     }
 
@@ -140,7 +144,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     }
 
 
-     private void onAnswerResult(String result) {
+    private void onAnswerResult(String result) {
         Loger.e(TAG, "=======>onAnswerResult:" + result);
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -228,14 +232,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private boolean forceSumbmit;
 
     public void closeAnswerResult(boolean forceSumbmit) {
-        Loger.e("ArtsAnswerBll", "=====>closeAnswerResult:" + forceSumbmit+":"+mDsipalyer);
+        Loger.e("ArtsAnswerBll", "=====>closeAnswerResult:" + forceSumbmit + ":" + mDsipalyer);
         // 已展示过答题结果
         if (mDsipalyer != null) {
             mDsipalyer.close();
             mDsipalyer = null;
             EventBus.getDefault().post(new AnswerResultCplShowEvent());
         }
-        Loger.e("ArtsAnswerBll", "=====>closeAnswerResult:" + forceSumbmit);
+        Loger.e("ArtsAnswerBll", "=====>closeAnswerResult:" + forceSumbmit + ":" + this);
         this.forceSumbmit = forceSumbmit;
     }
 
@@ -253,7 +257,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     };
 
     public void remindSubmit() {
-        Loger.e("ArtsAnswerResult","======>remindSubmit:"+mDsipalyer+":"+this);
+        Loger.e("ArtsAnswerResult", "======>remindSubmit:" + mDsipalyer + ":" + this);
         //没有答题结果页时才展示
         if (mArtsAnswerResultEvent == null) {
             rlAnswerResultLayout.post(new Runnable() {
@@ -283,14 +287,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Override
     public void onCompeletShow() {
-        Loger.e("ArtsAnswerResultBll", "=======onCompeletShow called:" + forceSumbmit);
+        Loger.e("ArtsAnswerResultBll", "=======onCompeletShow called:" + forceSumbmit + ":" + this);
         if (forceSumbmit) {
             mRootView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     EventBus.getDefault().post(new AnswerResultCplShowEvent());
                 }
-            },AUTO_CLOSE_DELAY);
+            }, AUTO_CLOSE_DELAY);
         }
     }
 
@@ -306,6 +310,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     /**
      * 表扬单题答对
+     *
      * @param testId
      */
     private void pariseSingleAnswerRight(String testId) {
@@ -313,8 +318,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             AnswerResultEntity.Answer answer = null;
             for (int i = 0; i < mAnswerReulst.getAnswerList().size(); i++) {
                 answer = mAnswerReulst.getAnswerList().get(i);
-                if(testId.equals(answer.getTestId()) && answer.getIsRight() == 2){
-                      showPraise();
+                if (testId.equals(answer.getTestId()) && answer.getIsRight() == 2) {
+                    showPraise();
                     break;
                 }
             }
@@ -359,7 +364,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 .anim_live_artsteahcer__praise);
         animation.setInterpolator(new SpringScaleInterpolator(SCALE_ANIM_FACTOR));
         targetView.startAnimation(animation);
-        if(mCloseTask == null){
+        if (mCloseTask == null) {
             mCloseTask = new Runnable() {
                 @Override
                 public void run() {
@@ -402,41 +407,47 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-      Loger.e(Tag,"=====>onNotice :"+"type=:"+type+":data="+data.toString());
+        Loger.e(Tag, "=====>onNotice :" + "type=:" + type + ":data=" + data.toString());
         switch (type) {
-            case  XESCODE.ARTS_REMID_SUBMIT:
+            case XESCODE.ARTS_REMID_SUBMIT:
                 remindSubmit();
                 break;
-            case  XESCODE.ARTS_PARISE_ANSWER_RIGHT:
+            case XESCODE.ARTS_PARISE_ANSWER_RIGHT:
                 String praiseType = data.optString("praiseType");
-                if("0".equals(praiseType)){
+                if ("0".equals(praiseType)) {
                     praiseAnswerAllRight();
-                }else if("1".equals(praiseType)){
+                } else if ("1".equals(praiseType)) {
                     int scoreRangeIndex = data.optInt("scoreRange");
                     JSONArray jsonArray = data.optJSONArray("id");
-                    if(jsonArray != null){
+                    if (jsonArray != null) {
                         try {
                             String testId = jsonArray.optString(0);
-                            praiseVoiceAnswer(scoreRangeIndex,testId);
-                        }catch (Exception e){
+                            praiseVoiceAnswer(scoreRangeIndex, testId);
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 }
                 break;
             case XESCODE.ARTS_PRAISE_ANSWER_RIGHT_SINGLE:
-                 String testId = data.optString("id");
-                 pariseSingleAnswerRight(testId);
+                String testId = data.optString("id");
+                pariseSingleAnswerRight(testId);
+                break;
+
+            case XESCODE.ARTS_SEND_QUESTION:
+                forceSumbmit = false;
                 break;
             case XESCODE.ARTS_STOP_QUESTION:
                 mArtsAnswerResultEvent = null;
                 closeAnswerResult(true);
                 break;
-            case  XESCODE.ARTS_H5_COURSEWARE:
+            case XESCODE.ARTS_H5_COURSEWARE:
                 String status = data.optString("status", "off");
-                if("off".equals(status)){
+                if ("off".equals(status)) {
                     mArtsAnswerResultEvent = null;
                     closeAnswerResult(true);
+                } else if ("on".equals(status)) {
+                    forceSumbmit = false;
                 }
                 break;
             default:
@@ -445,28 +456,28 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     }
 
 
-
     /**
      * 分数区间索引：分别为2(0<=n<=40)、3(40<=n<60)、4(60<=n<80)、5(80<=n<90)、6(90<=n<=100)
+     *
      * @param scoreRange
      */
-    private void praiseVoiceAnswer(int scoreRange,String testId) {
-        if(mScoreRangeMap == null){
-            mScoreRangeMap = new HashMap<Integer,ScoreRange>();
-            mScoreRangeMap.put(2,new ScoreRange(0,39));
-            mScoreRangeMap.put(3,new ScoreRange(40,59));
-            mScoreRangeMap.put(4,new ScoreRange(60,79));
-            mScoreRangeMap.put(5,new ScoreRange(80,89));
-            mScoreRangeMap.put(6,new ScoreRange(90,100));
+    private void praiseVoiceAnswer(int scoreRange, String testId) {
+        if (mScoreRangeMap == null) {
+            mScoreRangeMap = new HashMap<Integer, ScoreRange>();
+            mScoreRangeMap.put(2, new ScoreRange(0, 39));
+            mScoreRangeMap.put(3, new ScoreRange(40, 59));
+            mScoreRangeMap.put(4, new ScoreRange(60, 79));
+            mScoreRangeMap.put(5, new ScoreRange(80, 89));
+            mScoreRangeMap.put(6, new ScoreRange(90, 100));
         }
-        ScoreRange range =  mScoreRangeMap.get(scoreRange);
-        Loger.e(Tag,"====>praiseVoiceAnswer:"+range+":"+mVoiceAnswerResult);
-        if(range != null && mVoiceAnswerResult != null){
-            Loger.e(Tag,"====>praiseVoiceAnswer:"+scoreRange+":"+testId+":"
-                    +mVoiceAnswerResult.getTestId()+":"+mVoiceAnswerResult.getScore());
-            if(testId.equals(mVoiceAnswerResult.getTestId()))
-            {
-                if(mVoiceAnswerResult.getScore() >= range.getLow() && mVoiceAnswerResult.getScore() <= range.getHigh()){
+        ScoreRange range = mScoreRangeMap.get(scoreRange);
+        Loger.e(Tag, "====>praiseVoiceAnswer:" + range + ":" + mVoiceAnswerResult);
+        if (range != null && mVoiceAnswerResult != null) {
+            Loger.e(Tag, "====>praiseVoiceAnswer:" + scoreRange + ":" + testId + ":"
+                    + mVoiceAnswerResult.getTestId() + ":" + mVoiceAnswerResult.getScore());
+            if (testId.equals(mVoiceAnswerResult.getTestId())) {
+                if (mVoiceAnswerResult.getScore() >= range.getLow() && mVoiceAnswerResult.getScore() <= range.getHigh
+                        ()) {
                     showPraise();
                 }
             }
@@ -475,15 +486,16 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWebviewClose(LiveRoomH5CloseEvent event) {
+        Loger.e(Tag, "=======>onWebviewClose called");
         closeAnswerResult(false);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAnswerResult(ArtsAnswerResultEvent event) {
 
-        if(event != null && !event.equals(mArtsAnswerResultEvent)){
+        if (event != null && !event.equals(mArtsAnswerResultEvent)) {
             mArtsAnswerResultEvent = event;
-            if(ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()){
+            if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()) {
                 onAnswerResult(event.getDataStr());
             }
         }
@@ -491,8 +503,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVoiceAnswerReuslt(VoiceAnswerResultEvent event) {
-        Loger.e(Tag,"====>onVoiceAnswerReuslt:"+event);
-        if(event != null && !event.equals(mVoiceAnswerResult)){
+        Loger.e(Tag, "====>onVoiceAnswerReuslt:" + event);
+        if (event != null && !event.equals(mVoiceAnswerResult)) {
             mVoiceAnswerResult = event;
         }
     }
@@ -502,12 +514,13 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             XESCODE.ARTS_PARISE_ANSWER_RIGHT,
             XESCODE.ARTS_STOP_QUESTION,
             XESCODE.ARTS_H5_COURSEWARE,
-            XESCODE.ARTS_PRAISE_ANSWER_RIGHT_SINGLE
+            XESCODE.ARTS_PRAISE_ANSWER_RIGHT_SINGLE,
+            XESCODE.ARTS_SEND_QUESTION
     };
 
     @Override
     public int[] getNoticeFilter() {
-        return  notices;
+        return notices;
     }
 
 
