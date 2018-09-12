@@ -43,7 +43,7 @@ public class LiveBackVideoBll {
     public LiveBackVideoBll(Activity activity) {
         this.activity = activity;
         logger = LoggerFactory.getLogger("LiveBackVideoBll");
-        livePlayLog = new LivePlayLog(activity, true);
+        livePlayLog = new LivePlayLog(activity, false);
     }
 
     public void setSectionName(String mSectionName) {

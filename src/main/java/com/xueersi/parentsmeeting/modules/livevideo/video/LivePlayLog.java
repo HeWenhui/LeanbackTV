@@ -129,8 +129,14 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private boolean isLive = true;
     private DecimalFormat df = new DecimalFormat("######0.00");
     private String logVersion = "1";
-    private String serv = "120";
+    private String serv = "";
     private static SimpleDateFormat dateFormat;
+    private HashMap<String, String> priMap = new HashMap<>();
+    private String PRI_KEY_RENDERING = "MEDIA_INFO_VIDEO_RENDERING_START";
+    private String PRI_KEY_onOpenFailed = "onOpenFailed";
+    private String PRI_KEY_onBufferStart = "onBufferStart";
+    private String PRI_KEY_onBufferComplete = "onBufferComplete";
+    private String PRI_KEY_HEART = "HEART";
 
     static {
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
@@ -138,6 +144,21 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
     public LivePlayLog(final Activity activity, boolean isLive) {
         logger.setLogMethod(false);
+        if (isLive) {
+            serv = "120";
+            priMap.put(PRI_KEY_RENDERING, "120");
+            priMap.put(PRI_KEY_onOpenFailed, "121");
+            priMap.put(PRI_KEY_onBufferStart, "122");
+            priMap.put(PRI_KEY_onBufferComplete, "123");
+            priMap.put(PRI_KEY_onBufferComplete, "124");
+        } else {
+            serv = "220";
+            priMap.put(PRI_KEY_RENDERING, "220");
+            priMap.put(PRI_KEY_onOpenFailed, "221");
+            priMap.put(PRI_KEY_onBufferStart, "222");
+            priMap.put(PRI_KEY_onBufferComplete, "223");
+            priMap.put(PRI_KEY_onBufferComplete, "224");
+        }
         this.activity = activity;
         baseHttpBusiness = new BaseHttpBusiness(activity);
         ldNetTraceClient = new LDNetTraceClient(activity);
@@ -209,9 +230,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         @Override
         public void handleMessage(Message msg) {
             //不是直播，不统计心跳
-            if (!isLive) {
-                return;
-            }
+//            if (!isLive) {
+//                return;
+//            }
             try {
                 if (vPlayer.isInitialized() && lastPlayserverEntity != null) {
                     if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
@@ -275,7 +296,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         HashMap<String, String> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
-        defaultKey.put("pri", "121");
+        defaultKey.put("pri", priMap.get(PRI_KEY_onOpenFailed));
         addDefault(defaultKey);
         int totalRam = HardWareUtil.getTotalRam();
         defaultKey.put("ram", "" + totalRam);
@@ -401,7 +422,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                                 HashMap<String, String> defaultKey = new HashMap<>();
                                 defaultKey.put("ver", logVersion);
                                 defaultKey.put("serv", serv);
-                                defaultKey.put("pri", "120");
+                                defaultKey.put("pri", priMap.get(PRI_KEY_RENDERING));
                                 addDefault(defaultKey);
                                 int totalRam = HardWareUtil.getTotalRam();
                                 defaultKey.put("ram", "" + totalRam);
@@ -479,7 +500,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         HashMap<String, String> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
-        defaultKey.put("pri", "122");
+        defaultKey.put("pri", priMap.get(PRI_KEY_onBufferStart));
         addDefault(defaultKey);
         int totalRam = HardWareUtil.getTotalRam();
         defaultKey.put("ram", "" + totalRam);
@@ -521,7 +542,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         HashMap<String, String> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
-        defaultKey.put("pri", "123");
+        defaultKey.put("pri", priMap.get(PRI_KEY_onBufferComplete));
         addDefault(defaultKey);
         int totalRam = HardWareUtil.getTotalRam();
         defaultKey.put("ram", "" + totalRam);
@@ -669,7 +690,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 HashMap<String, String> defaultKey = new HashMap<>();
                 defaultKey.put("ver", logVersion);
                 defaultKey.put("serv", serv);
-                defaultKey.put("pri", "124");
+                defaultKey.put("pri", priMap.get(PRI_KEY_HEART));
                 addDefault(defaultKey);
                 int totalRam = HardWareUtil.getTotalRam();
                 defaultKey.put("ram", "" + totalRam);
@@ -985,9 +1006,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 defaultKey.put("ver", logVersion);
                 defaultKey.put("serv", serv);
                 if (isOpenSuccessfinal) {
-                    defaultKey.put("pri", "121");
+                    defaultKey.put("pri", priMap.get(PRI_KEY_onOpenFailed));
                 } else {
-                    defaultKey.put("pri", "120");
+                    defaultKey.put("pri", priMap.get(PRI_KEY_RENDERING));
                 }
                 addDefault(defaultKey);
                 int totalRam = HardWareUtil.getTotalRam();
