@@ -139,6 +139,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private String PRI_KEY_onBufferStart = "onBufferStart";
     private String PRI_KEY_onBufferComplete = "onBufferComplete";
     private String PRI_KEY_HEART = "HEART";
+    private String tid = "";
 
     static {
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
@@ -322,7 +323,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
         defaultKey.put("sip", "" + getRemoteIp());
-        defaultKey.put("tid", "" + UUID.randomUUID());
+        defaultKey.put("tid", "" + tid);
 
         JSONObject dataJson = new JSONObject();
         try {
@@ -372,7 +373,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
         defaultKey.put("sip", "" + getRemoteIp());
-        defaultKey.put("tid", "" + UUID.randomUUID());
+        defaultKey.put("tid", "" + tid);
 
         JSONObject dataJson = new JSONObject();
         try {
@@ -440,6 +441,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         isOpenSuccess = false;
         framesPsTen.clear();
         handler.removeMessages(1);
+        lastHeartTime = 0;
         openStart = System.currentTimeMillis();
         mUri = vPlayer.getUri();
         mUriHost = DNSUtil.getHost(mUri.toString());
@@ -472,6 +474,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                         final long openTime = (System.currentTimeMillis() - openStart);
                         Loger.d(TAG, "onInfo:what=3," + (System.currentTimeMillis() - openSuccess));
                         getFps();
+                        final String finalTid = tid;
                         liveThreadPoolExecutor.execute(new Runnable() {
                             @Override
                             public void run() {
@@ -497,7 +500,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                                 defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
                                 String hostIp = getRemoteIp();
                                 defaultKey.put("sip", "" + hostIp);
-                                defaultKey.put("tid", "" + UUID.randomUUID());
+                                defaultKey.put("tid", "" + finalTid);
 
                                 JSONObject dataJson = new JSONObject();
                                 try {
@@ -573,7 +576,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
         String msip = getRemoteIp();
         defaultKey.put("sip", "" + msip);
-        defaultKey.put("tid", "" + UUID.randomUUID());
+        defaultKey.put("tid", "" + tid);
 
         JSONObject dataJson = new JSONObject();
         try {
@@ -613,7 +616,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
         String msip = getRemoteIp();
         defaultKey.put("sip", "" + msip);
-        defaultKey.put("tid", "" + UUID.randomUUID());
+        defaultKey.put("tid", "" + tid);
 
         JSONObject dataJson = new JSONObject();
         try {
@@ -664,6 +667,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     }
 
     public void liveGetPlayServer(final long delay, PlayFailCode playFailCode, int code, String cipdispatch, URLDNS urldns, final String url) {
+        tid = "" + UUID.randomUUID();
         Loger.d(TAG, "liveGetPlayServer:delay=" + delay + ",ipsb=" + urldns.ip);
         HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
@@ -679,7 +683,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("cip", "" + cipdispatch);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
         defaultKey.put("sip", "" + urldns.ip);
-        defaultKey.put("tid", "" + UUID.randomUUID());
+        defaultKey.put("tid", "" + tid);
 
         JSONObject dataJson = new JSONObject();
         try {
@@ -722,6 +726,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     }
 
     private void xescdnLogHeart(final ArrayList<Float> framesPsTen, final float averagefps, final long bufferduration, final float bitrate, final long bytes, final long time) {
+        final String finalTid = tid;
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -759,7 +764,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
                 String remoteIp = getRemoteIp();
                 defaultKey.put("sip", "" + remoteIp);
-                defaultKey.put("tid", "" + UUID.randomUUID());
+                defaultKey.put("tid", "" + finalTid);
 
                 JSONObject dataJson = new JSONObject();
                 try {
@@ -859,7 +864,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //            defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
 //            String msip = getRemoteIp();
 //            defaultKey.put("sip", "" + msip);
-//            defaultKey.put("tid", "" + UUID.randomUUID());
+//            defaultKey.put("tid", "" + tid);
 //
 //            JSONArray dataJson = new JSONArray();
 //            try {
@@ -1054,6 +1059,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //        }
 //        xescdnLogPlay(defaultKey, dataJson);
         final boolean isOpenSuccessfinal = isOpenSuccess;
+        final String finalTid = tid;
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -1076,7 +1082,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
                 String msip = getRemoteIp();
                 defaultKey.put("sip", "" + msip);
-                defaultKey.put("tid", "" + UUID.randomUUID());
+                defaultKey.put("tid", "" + finalTid);
 
                 JSONObject dataJson = new JSONObject();
                 PlayFailCode playFailCode = getErrorCode(arg2);
@@ -1152,6 +1158,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         urlTrace.put(url, now);
         Bundle bundle = new Bundle();
         String host = DNSUtil.getHost(url);
+        final String finalTid = tid;
         ldNetTraceClient.startTraceRoute(host, bundle, new LDNetTraceRoute.LDNetTraceRouteListener() {
             @Override
             public void OnNetTraceUpdated(String log) {
@@ -1176,7 +1183,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     defaultKey.put("cip", "" + cip);
                     defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
                     defaultKey.put("sip", "" + msip);
-                    defaultKey.put("tid", "" + UUID.randomUUID());
+                    defaultKey.put("tid", "" + finalTid);
 
                     JSONObject dataJson = new JSONObject();
                     try {
