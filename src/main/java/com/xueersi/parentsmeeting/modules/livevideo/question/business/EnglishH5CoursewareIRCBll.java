@@ -160,7 +160,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     }
 
 
-    String[] filters = {"4", "0", "1", "2", "8", "5", "6","18","19"};
+    String[] filters = {"4", "0", "1", "2", "8", "5", "6"};
     /**
      * ptType 过滤器
      */

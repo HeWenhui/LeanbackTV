@@ -918,6 +918,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
         @Override
         public BasePager questionSwitch(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseQuestionEntity) {
+            Loger.e("Duncan", "questionSwitch:" + "EnglishH5Bll");
             VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) baseQuestionEntity;
             switchVoiceAnswerPager(baseVoiceAnswerPager);
             showH5Paper(videoQuestionLiveEntity1);

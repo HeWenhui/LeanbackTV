@@ -384,7 +384,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if ("1".equals(isVoice)) {
                     videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
                     videoQuestionLiveEntity.questiontype = object.optString("questionType");
-                    videoQuestionLiveEntity.type = object.optString("questionType");
                     videoQuestionLiveEntity.setIsVoice(isVoice);
                 }
                 if (mQuestionAction != null) {

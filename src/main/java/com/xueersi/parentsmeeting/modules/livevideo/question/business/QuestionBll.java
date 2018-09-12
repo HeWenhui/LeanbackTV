@@ -565,6 +565,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 rlQuestionContent.removeView(questionWebPager.getRootView());
                                 questionWebPager = null;
                             }
+                            Loger.e("Duncan","====>" + "type:" + videoQuestionLiveEntity.type);
                             QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this,
                                     videoQuestionLiveEntity,liveGetInfo.getId());
                             questionWebPager.setLivePagerBack(QuestionBll.this);
@@ -652,20 +653,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
                 } else if(LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity.type)){
                     showSubjectiveQuestion(videoQuestionLiveEntity);
-                } else if("18".equals(videoQuestionLiveEntity.type) || "19".equals(videoQuestionLiveEntity.type)){
-                    Loger.e("Duncan", "普通互动题");
-                    // fixme  完善语文特有题型相关逻辑
-                    try {
-                        showVoiceAnswer(videoQuestionLiveEntity);
-                        Loger.e("Duncan", "普通互动题展示了");
-                        Loger.e("QuestionIRCBll", "======> showVoiceAnswer Success:");
-                    } catch (Exception e) {
-                        mLogtf.d("showQuestion:showVoiceAnswer.error1=" + e.getMessage());
-                        mErrorVoiceQue.add(videoQuestionLiveEntity.id);
-                        showQuestion(videoQuestionLiveEntity);
-                        Loger.e("QuestionIRCBll", "======> showVoiceAnswer Failed:");
-                        return;
-                    }
                 }
             }
         });
@@ -2081,6 +2068,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         @Override
         public BasePager questionSwitch(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseQuestionEntity) {
             VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) baseQuestionEntity;
+            Loger.e("Duncan", "questionSwitch:" + "QuestionBll" + "type:"+ videoQuestionLiveEntity1.type);
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity1.type)) {
                 if ("1".equals(videoQuestionLiveEntity1.choiceType)) {
                     showSelectQuestion(videoQuestionLiveEntity1);
