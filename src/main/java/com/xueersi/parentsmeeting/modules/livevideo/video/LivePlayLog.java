@@ -97,6 +97,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private long openStart;
     /** 视频播放成功时间 */
     private long openSuccess;
+    /** 视频播放成功时间 */
+    private boolean isOpenSuccess;
     /** 心跳时间 */
     private long lastHeartTime = 0;
     /** 直播云平台日志统计 */
@@ -351,6 +353,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     @Override
     public void onOpenStart() {
         super.onOpenStart();
+        isOpenSuccess = false;
         framesPsTen.clear();
         handler.removeMessages(1);
         openStart = System.currentTimeMillis();
@@ -450,6 +453,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         handler.sendEmptyMessageDelayed(1, 1000);
         long openTime = (System.currentTimeMillis() - openStart);
         Loger.d(TAG, "onOpenSuccess:openTime=" + openTime + ",sipMap=" + sipMap.size() + ",sip=" + sip);
+        isOpenSuccess = true;
     }
 
     public void stopPlay() {
@@ -940,15 +944,16 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     }
 
     @Override
-    public void onOpenFailed(int arg1, int arg2) {
+    public void onOpenFailed(int arg1, final int arg2) {
         super.onOpenFailed(arg1, arg2);
         handler.removeMessages(1);
-        long heartTime;
+        final long heartTime;
         if (lastHeartTime == 0) {
             heartTime = 0;
         } else {
             heartTime = (System.currentTimeMillis() - this.lastHeartTime);
         }
+        final long delay = System.currentTimeMillis() - openStart;
 //        HashMap<String, String> defaultKey = new HashMap<>();
 //        defaultKey.put("dataType", "601");
 //        defaultKey.put("url", "" + mUri);
@@ -972,66 +977,86 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //            e.printStackTrace();
 //        }
 //        xescdnLogPlay(defaultKey, dataJson);
+        final boolean isOpenSuccessfinal = isOpenSuccess;
+        liveThreadPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                HashMap<String, String> defaultKey = new HashMap<>();
+                defaultKey.put("ver", logVersion);
+                defaultKey.put("serv", serv);
+                if (isOpenSuccessfinal) {
+                    defaultKey.put("pri", "121");
+                } else {
+                    defaultKey.put("pri", "120");
+                }
+                addDefault(defaultKey);
+                int totalRam = HardWareUtil.getTotalRam();
+                defaultKey.put("ram", "" + totalRam);
+                defaultKey.put("cpu", "" + getCpuRate());
+                defaultKey.put("mem", "" + getMemRate());
+                String cip = oldCipdispatch;
+                if (StringUtils.isEmpty(cip)) {
+                    cip = IpAddressUtil.USER_IP;
+                }
+                defaultKey.put("cip", "" + cip);
+                defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
+                String msip = getRemoteIp();
+                defaultKey.put("sip", "" + msip);
+                defaultKey.put("tid", "" + UUID.randomUUID());
 
-        HashMap<String, String> defaultKey = new HashMap<>();
-        defaultKey.put("ver", logVersion);
-        defaultKey.put("serv", serv);
-        defaultKey.put("pri", "121");
-        addDefault(defaultKey);
-        int totalRam = HardWareUtil.getTotalRam();
-        defaultKey.put("ram", "" + totalRam);
-        defaultKey.put("cpu", "" + getCpuRate());
-        defaultKey.put("mem", "" + getMemRate());
-        String cip = oldCipdispatch;
-        if (StringUtils.isEmpty(cip)) {
-            cip = IpAddressUtil.USER_IP;
-        }
-        defaultKey.put("cip", "" + cip);
-        defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
-        String msip = getRemoteIp();
-        defaultKey.put("sip", "" + msip);
-        defaultKey.put("tid", "" + UUID.randomUUID());
+                JSONObject dataJson = new JSONObject();
+                PlayFailCode playFailCode = getErrorCode(arg2);
+                try {
+                    dataJson.put("url", mUri);
+                    dataJson.put("uri", channelname);
+                    if (lastPlayserverEntity != null) {
+                        dataJson.put("node", "" + lastPlayserverEntity.getProvide());
+                    }
+                    dataJson.put("code", "" + playFailCode.getCode());
+                    dataJson.put("msg", "" + playFailCode.getTip());
+                    if (isOpenSuccessfinal) {
+                        long bufferduration = 0;
+                        long trafficStatisticByteCount = lastTrafficStatisticByteCount;
+                        if (vPlayer.isInitialized()) {
+                            IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
+                            bufferduration = ijkMediaPlayer.getVideoCachedDuration();
+                            trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
+                        }
+                        dataJson.put("bufType", "" + bufType);
+                        if (isBuffer) {
+                            dataJson.put("bufDur", "" + (System.currentTimeMillis() - bufferTime));
+                        } else {
+                            dataJson.put("bufDur", "0");
+                        }
+                        dataJson.put("latency", "" + bufferduration);
+                        long time = System.currentTimeMillis() - frame10Start;
+                        float averagefps = (float) (((double) (lastDisaplyCount - fistDisaplyCount)) * 1000 / time);
+                        dataJson.put("avgFps", "" + averagefps);
+                        dataJson.put("fps", "" + fps);
+                        dataJson.put("playBuf", "" + bufferduration);
+                        dataJson.put("hbDur", "" + heartTime);
+                        dataJson.put("bytes", "" + (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+                    } else {
+                        URLDNS urldns = new URLDNS();
+                        try {
+                            DNSUtil.getDns(urldns, mUriHost);
+                        } catch (UnknownHostException e1) {
+                            e1.printStackTrace();
+                        }
+                        dataJson.put("dns", "" + urldns.time);
+                        dataJson.put("delay", "" + delay);
+                    }
+                    dataJson.put("uid", "" + userId);
+                } catch (JSONException e) {
+                    logger.e("onOpenFailed", e);
+                }
+                xescdnLog2(defaultKey, dataJson, false);
 
-        JSONObject dataJson = new JSONObject();
-        PlayFailCode playFailCode = getErrorCode(arg2);
-        try {
-            dataJson.put("url", mUri);
-            dataJson.put("uri", channelname);
-            if (lastPlayserverEntity != null) {
-                dataJson.put("node", "" + lastPlayserverEntity.getProvide());
+                if (playFailCode.getCode() == PlayFailCode.TIME_OUT) {
+                    startTraceRoute("" + mUriHost, msip, cip, false);
+                }
             }
-            dataJson.put("code", "" + playFailCode.getCode());
-            dataJson.put("msg", "" + playFailCode.getTip());
-            long bufferduration = 0;
-            long trafficStatisticByteCount = lastTrafficStatisticByteCount;
-            if (vPlayer.isInitialized()) {
-                IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-                bufferduration = ijkMediaPlayer.getVideoCachedDuration();
-                trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
-            }
-            dataJson.put("bufType", "" + bufType);
-            if (isBuffer) {
-                dataJson.put("bufDur", "" + (System.currentTimeMillis() - bufferTime));
-            } else {
-                dataJson.put("bufDur", "0");
-            }
-            dataJson.put("latency", "" + bufferduration);
-            long time = System.currentTimeMillis() - frame10Start;
-            float averagefps = (float) (((double) (lastDisaplyCount - fistDisaplyCount)) * 1000 / time);
-            dataJson.put("avgFps", "" + averagefps);
-            dataJson.put("fps", "" + fps);
-            dataJson.put("playBuf", "" + bufferduration);
-            dataJson.put("hbDur", "" + heartTime);
-            dataJson.put("bytes", "" + (trafficStatisticByteCount - lastTrafficStatisticByteCount));
-            dataJson.put("uid", "" + userId);
-        } catch (JSONException e) {
-            logger.e("onOpenFailed", e);
-        }
-        xescdnLog2(defaultKey, dataJson, false);
-
-        if (playFailCode.getCode() == PlayFailCode.TIME_OUT) {
-            startTraceRoute("" + mUriHost, msip, cip, false);
-        }
+        });
     }
 
     /**
