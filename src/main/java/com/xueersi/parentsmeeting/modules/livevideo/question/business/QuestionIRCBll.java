@@ -90,7 +90,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             keyboardShowingReg.addKeyboardShowing(mQuestionAction);
         }
         mQuestionAction.setLiveType(mLiveType);
-        String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6"};
+        String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6","18","19"};
         questiongtype = Arrays.asList(ptTypeFilters);
     }
 
@@ -198,12 +198,12 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             videoQuestionLiveEntity.gold = onlineTechObj.optDouble("gold");
                             videoQuestionLiveEntity.time = onlineTechObj.optDouble("time");
                             videoQuestionLiveEntity.id = getIdStr(onlineTechObj.optJSONArray("id"));
-                            videoQuestionLiveEntity.type = onlineTechObj.optString("ptype");
                             videoQuestionLiveEntity.multiRolePlay = onlineTechObj.optString("multiRolePlay");
                             videoQuestionLiveEntity.roles = onlineTechObj.optString("roles");
                             videoQuestionLiveEntity.totalScore = onlineTechObj.optString("totalScore");
                             videoQuestionLiveEntity.answer = onlineTechObj.optString("answer");
                             videoQuestionLiveEntity.speechContent = onlineTechObj.optString("answer");
+                            videoQuestionLiveEntity.type = onlineTechObj.optString("ptype");
                             if("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)){
                                 videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(onlineTechObj.optJSONArray("id")),videoQuestionLiveEntity.type));
                                 videoQuestionLiveEntity.isAllow42 = "0";
@@ -211,9 +211,15 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                 videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.optJSONArray("id"))));
                                 videoQuestionLiveEntity.isAllow42 = "1";
                             }
+                            if ("1".equals(onlineTechObj.optString("isVoice"))) {
+                                videoQuestionLiveEntity.assess_ref = onlineTechObj.optString("assess_ref");
+                                videoQuestionLiveEntity.questiontype = onlineTechObj.optString("questiontype");
+                                videoQuestionLiveEntity.setIsVoice(onlineTechObj.optString("isVoice"));
+                            }
 //                            videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.getJSONArray("id"))));
                             Loger.e("QuestionIRCBll", "======> onTopic 1111:" + mQuestionAction);
                             if (mQuestionAction != null && (questiongtype.contains(videoQuestionLiveEntity.type))) {
+                                Loger.e("QuestionIRCBll", "======> showQuestionType:"+ videoQuestionLiveEntity.questiontype);
                                 mQuestionAction.showQuestion(videoQuestionLiveEntity);
                                 if (mAnswerRankBll != null) {
                                     mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
@@ -378,9 +384,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if ("1".equals(isVoice)) {
                     videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
                     videoQuestionLiveEntity.questiontype = object.optString("questionType");
+                    videoQuestionLiveEntity.type = object.optString("questionType");
                     videoQuestionLiveEntity.setIsVoice(isVoice);
                 }
-
                 if (mQuestionAction != null) {
                     mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(videoQuestionLiveEntity);
                     mQuestionAction.showQuestion(videoQuestionLiveEntity);

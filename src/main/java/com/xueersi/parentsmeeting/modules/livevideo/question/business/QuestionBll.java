@@ -652,11 +652,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
                 } else if(LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity.type)){
                     showSubjectiveQuestion(videoQuestionLiveEntity);
-                } else if("50".equals(videoQuestionLiveEntity.type)){
+                } else if("18".equals(videoQuestionLiveEntity.type) || "19".equals(videoQuestionLiveEntity.type)){
+                    Loger.e("Duncan", "普通互动题");
                     // fixme  完善语文特有题型相关逻辑
-//                    showVoiceAnswer(videoQuestionLiveEntity);
                     try {
                         showVoiceAnswer(videoQuestionLiveEntity);
+                        Loger.e("Duncan", "普通互动题展示了");
                         Loger.e("QuestionIRCBll", "======> showVoiceAnswer Success:");
                     } catch (Exception e) {
                         mLogtf.d("showQuestion:showVoiceAnswer.error1=" + e.getMessage());
@@ -1456,6 +1457,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 rlQuestionContent.removeView(voiceAnswerPager.getRootView());
                 voiceAnswerPager = null;
             }
+            Loger.e("Duncan", "普通互动题展示了0");
         }
         JSONObject assess_ref = null;
         try {
