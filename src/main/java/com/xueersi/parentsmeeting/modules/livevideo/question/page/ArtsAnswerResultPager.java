@@ -211,8 +211,8 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
     private static class AnswerResultAdapter extends RecyclerView.Adapter {
 
-        int ITEM_TYPE_SINGLE = 1;
-        int ITEM_TYPE_MULTI = 2;
+        final int ITEM_TYPE_SINGLE = 1;
+        final int ITEM_TYPE_MULTI = 2;
         List<AnswerResultEntity.Answer> data;
         public AnswerResultAdapter(List<AnswerResultEntity.Answer> data){
            this.data = data;

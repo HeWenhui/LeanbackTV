@@ -493,21 +493,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 @Override
                 public void onPmFailure(Throwable error, String msg) {
                     super.onPmFailure(error, msg);
+                    Loger.e("ArtsExtInfo","======>onPmFailure run:");
                     retry();
                 }
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
                     super.onPmError(responseEntity);
+                    Loger.e("ArtsExtInfo","======>onPmError run:");
                     retry();
                 }
-
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    super.onFailure(call, e);
-                    retry();
-                }
-
             });
         }
 

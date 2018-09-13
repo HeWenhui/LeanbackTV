@@ -47,4 +47,13 @@ public class ArtsAnswerResultEvent {
         }
         return false;
     }
+
+
+    @Override
+    public String toString() {
+        return "ArtsAnswerResultEvent{" +
+                "dataStr='" + dataStr + '\'' +
+                ", mType=" + mType +
+                '}';
+    }
 }

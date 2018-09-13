@@ -51,7 +51,7 @@ import java.util.List;
 public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRsultDisplayer, View.OnClickListener {
 
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result/";
-    private String TAG = "ArtsPSEAnswerResultPager";
+    private final String TAG = "ArtsPSEAnswerResultPager";
 
     /**强制提交 展示答题结果 延时自动关闭**/
     private final long AUTO_CLOSE_DELAY = 2000;
@@ -374,6 +374,10 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         private TextView tvStanderAnswerBelow;
         private TextView tvIndex;
 
+        private final int STATE_CODE_RIGHT = 2;
+        private final int STATE_CODE_PARTRIGHT = 1;
+        private final int STATE_CODE_WRONG = 0;
+
 
         public ItemHolder(View itemView) {
             super(itemView);
@@ -390,23 +394,23 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             }
 
             if(isSelect(answer)){
-                tvStanderAnswer.setVisibility(answer.getIsRight() == 2?View.GONE:View.VISIBLE);
+                tvStanderAnswer.setVisibility(answer.getIsRight() == STATE_CODE_RIGHT?View.GONE:View.VISIBLE);
                 tvStanderAnswer.setText(listToStr(answer.getRightAnswers(),null));
                 tvStanderAnswerBelow.setVisibility(View.GONE);
                 tvAnswer.setTextWithIcon("你的答案:"+listToStr(answer.getChoiceList(),null));
             }else{
                 tvStanderAnswer.setVisibility(View.GONE);
                 tvAnswer.setTextWithIcon(listToStr(answer.getBlankList(),"、"));
-                tvStanderAnswerBelow.setVisibility(answer.getIsRight() ==2?View.GONE:View.VISIBLE);
+                tvStanderAnswerBelow.setVisibility(answer.getIsRight() == STATE_CODE_RIGHT?View.GONE:View.VISIBLE);
                 tvStanderAnswerBelow.setText(listToStr(answer.getRightAnswers(),"、"));
             }
 
             int iconResId = 0;
-            if(answer.getIsRight() == 2){
+            if(answer.getIsRight() == STATE_CODE_RIGHT){
                 iconResId = R.drawable.livevideo_pse_answer_correct;
-            }else if(answer.getIsRight() == 1){
+            }else if(answer.getIsRight() == STATE_CODE_PARTRIGHT){
                 iconResId = R.drawable.livevideo_pse_answer_partcorrect;
-            }else if(answer.getIsRight() == 0){
+            }else if(answer.getIsRight() == STATE_CODE_WRONG){
                 iconResId = R.drawable.livevideo_pse_answer_error;
             }
 
@@ -446,8 +450,8 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
     private static class AnswerResultAdapter extends RecyclerView.Adapter {
 
-        int ITEM_TYPE_SINGLE = 1;
-        int ITEM_TYPE_MULTI = 2;
+        final int ITEM_TYPE_SINGLE = 1;
+        final int ITEM_TYPE_MULTI = 2;
         List<AnswerResultEntity.Answer> answerList;
 
         public AnswerResultAdapter(List<AnswerResultEntity.Answer> data) {
