@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -627,6 +628,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             if (mQuestionAction != null) {
                                 mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, entity);
                             }
+                            // 发送已答过这道题的标识
+//                            EventBus.getDefault().post(new ArtsAnswerResultEvent());
                         }
 
                         @Override
