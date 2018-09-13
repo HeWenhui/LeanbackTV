@@ -28,21 +28,22 @@ import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.AppUtils;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.MD5Utils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayerListening;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
-import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.lib.framework.utils.AppUtils;
-import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
-import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import java.io.File;
@@ -193,22 +194,37 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
         //       wvSubjectWeb.loadUrl("http://172.88.1.180:8084/");
-        String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
+        String url = "";
+        if (mContext != null && mContext instanceof ExperienceLiveVideoActivity) {
+            String termId = "";
+            if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
+                VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
+                termId = videoQuestionLiveEntity.getTermId();
+            }
+            String isArts = IS_SCIENCE == false ? "1" : "0";
+            url = "https://student.xueersi.com/science/AutoLive/SpeechEval";
+            url += "?isArts=" + isArts + "&liveId=" + liveid + "&testId=" + testId +
+                    "&stuId=" + stuId + "&termId=" + termId;
+        } else {
+            String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
 //        String url = "http://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
 //                liveid + "/" + stuCouId + "/" + testId + "/" + stuId;
-        String url = "https://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
-                liveid + "/" + testId + "/" + stuId;
+            url = "https://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") +
+                    "/speechEval/" +
+                    liveid + "/" + testId + "/" + stuId;
 //        String url = "http://172.88.1.180:8082";
-        if (!StringUtils.isEmpty(nonce)) {
-            url += "?nonce=" + nonce;
-            url += "&stuCouId=" + stuCouId;
-        } else {
-            url += "?stuCouId=" + stuCouId;
-        }
-        if (isStandingLive) {
-            url += "&isStandingLive=1&isAudio=1";
+            if (!StringUtils.isEmpty(nonce)) {
+                url += "?nonce=" + nonce;
+                url += "&stuCouId=" + stuCouId;
+            } else {
+                url += "?stuCouId=" + stuCouId;
+            }
+            if (isStandingLive) {
+                url += "&isStandingLive=1&isAudio=1";
+            }
         }
         final String finalUrl = url;
+
         boolean have = XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
 
             @Override
