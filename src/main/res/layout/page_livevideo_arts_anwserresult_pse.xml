@@ -52,12 +52,12 @@
 
     <ImageView
         android:id="@id/iv_arts_answer_result_answer_btn"
-        android:layout_width="115dp"
-        android:layout_height="50dp"
+        android:layout_width="103dp"
+        android:layout_height="38dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="18dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginBottom="58dp"
+        android:layout_marginRight="30dp"
         android:scaleType="centerCrop"
         android:src="@drawable/selector_live_artspse_answer_result"
         android:visibility="gone"
