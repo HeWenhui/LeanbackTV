@@ -97,12 +97,16 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     /** 本地视频 */
     boolean islocal;
     /**
-     * 2 代表全身直播体验课
+     * 2 代表全身直播
      */
     private int pattern = 1;
     ShowQuestion showQuestion;
     private LiveUidRx liveUidRx;
     LogToFile logToFile;
+    /**
+     * 是否是体验课
+     */
+    private Boolean isExperience;
 
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         super(activity);
@@ -114,6 +118,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         isArts = intent.getIntExtra("isArts", 0);
         islocal = intent.getBooleanExtra("islocal", false);
         pattern = intent.getIntExtra("pattern", 0);
+        isExperience = intent.getBooleanExtra("isExperience", false);
         if ("LivePlayBackActivity".equals(where)) {//直播辅导
             mLiveType = LiveVideoConfig.LIVE_TYPE_TUTORIAL;
         } else if ("PublicLiveDetailActivity".equals(where)) {//公开直播
@@ -151,6 +156,10 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         mHttpManager = new LiveHttpManager(activity);
         mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         mHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
+    }
+
+    public Boolean getExperience() {
+        return isExperience;
     }
 
     public int getLiveType() {
@@ -246,7 +255,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
-        if (pattern == 2) {//全身直播准备开关聊天区的queue
+        if (isExperience) {//全身直播准备开关聊天区的queue
             initLiveMessageQueue();
         }
     }
@@ -307,7 +316,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
             businessBll.onPositionChanged(playPosition);
         }
-        if (pattern == 2) {//全身直播体验课扫描开关聊天区，三分屏不走这里，有自己的逻辑
+        if (isExperience) {//全身直播体验课扫描开关聊天区，三分屏不走这里，有自己的逻辑
             scanMessage(position);
         }
     }

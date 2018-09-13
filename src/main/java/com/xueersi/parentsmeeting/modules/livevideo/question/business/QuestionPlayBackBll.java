@@ -62,6 +62,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             //语音评测
             LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(this, liveBackBll,
                     questionBll);
+            liveBackStandSpeechCreat.setIsExperience(liveBackBll.getExperience());
             liveBackStandSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
             questionBll.setBaseSpeechCreat(liveBackStandSpeechCreat);
         } else {
@@ -71,6 +72,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
             //语音评测
             LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
+            liveBackSpeechCreat.setIsExperience(liveBackBll.getExperience());
             liveBackSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
             questionBll.setBaseSpeechCreat(liveBackSpeechCreat);
         }
@@ -148,7 +150,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
-                if (liveBackBll.getPattern() == 2) {//如果是全身直播
+                if (liveBackBll.getExperience()) {//如果是全身直播体验课
                     VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                     videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
                     videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());

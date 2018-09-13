@@ -121,10 +121,20 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
     boolean IS_SCIENCE;
     private boolean isStandingLive = false;
     // private AudioPlayerManager mAudioPlayerManager;
+    /**
+     * 是否是体验课
+     */
+    private boolean isExperience;
 
-    public SpeechAssessmentWebX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String testId, String stuId, boolean isLive,
+    public void setIsExperience(boolean experience) {
+        this.isExperience = experience;
+    }
+
+    public SpeechAssessmentWebX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String
+            liveid, String testId, String stuId, boolean isLive,
                                       String nonce,
-                                      SpeechEvalAction speechEvalAction, String stuCouId, boolean IS_SCIENCE, LivePagerBack livePagerBack) {
+                                      SpeechEvalAction speechEvalAction, String stuCouId, boolean IS_SCIENCE,
+                                      LivePagerBack livePagerBack) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.stuId = stuId;
@@ -140,7 +150,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        mLogtf.d("SpeechAssess:isLive=" + isLive + ",stuId=" + stuId + ",liveid=" + liveid + ",testId=" + testId + ",stuCouId=" + stuCouId);
+        mLogtf.d("SpeechAssess:isLive=" + isLive + ",stuId=" + stuId + ",liveid=" + liveid + ",testId=" + testId + "," +
+                "stuCouId=" + stuCouId);
     }
 
 
@@ -286,7 +297,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                 isRequst = true;
             }
             UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
-            Loger.d(TAG, "onConsoleMessage:console=" + consoleMessage.sourceId() + "," + consoleMessage.lineNumber() + "," + consoleMessage.message());
+            Loger.d(TAG, "onConsoleMessage:console=" + consoleMessage.sourceId() + "," + consoleMessage.lineNumber()
+                    + "," + consoleMessage.message());
             return super.onConsoleMessage(consoleMessage);
         }
 
@@ -510,7 +522,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                     mIse = new SpeechEvaluatorUtils(true);
                 }
                 if (isEnglish) {
-                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(assessRef, saveVideoFile.getAbsolutePath(), false,
+                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(assessRef, saveVideoFile.getAbsolutePath
+                                    (), false,
                             new EvaluatorListener() {
                                 @Override
                                 public void onBeginOfSpeech() {
@@ -533,7 +546,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                                     } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                                         jsRecordCurrentResult(resultEntity);
                                     }
-                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus() == ResultEntity.ERROR) {
+                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus()
+                                            == ResultEntity.ERROR) {
                                         mHandler.removeMessages(RECORD_WITE);
                                         if (!mIsFinishCurrentSpeech) {
                                             mIsFinishCurrentSpeech = true;
@@ -574,7 +588,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                                     } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                                         jsRecordCurrentResult(resultEntity);
                                     }
-                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus() == ResultEntity.ERROR) {
+                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus()
+                                            == ResultEntity.ERROR) {
                                         mHandler.removeMessages(RECORD_WITE);
                                         if (!mIsFinishCurrentSpeech) {
                                             mIsFinishCurrentSpeech = true;
@@ -593,7 +608,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                             }, false, liveId);
                 }
             } else {
-                mLogtf.d("startRecordEvaluator:assessRef=" + assessRef + ",liveId=" + liveId + ",language=" + language + ",mStopPrefix=" + mStopPrefix);
+                mLogtf.d("startRecordEvaluator:assessRef=" + assessRef + ",liveId=" + liveId + ",language=" +
+                        language + ",mStopPrefix=" + mStopPrefix);
             }
         }
     }
@@ -719,7 +735,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                                 return;
                             }
                         } else {
-//                            if (mAudioPlayerManager != null && mAudioPlayerManager.getState() == AudioPlayerManager.State.playing) {
+//                            if (mAudioPlayerManager != null && mAudioPlayerManager.getState() == AudioPlayerManager
+// .State.playing) {
 //                                mIsStop = false;
 //                            }
                             if (AudioPlayer.isPlaying()) {
@@ -805,7 +822,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         if (saveFile.exists()) {
             newPlayUrl = saveFile.getPath();
         }
-        final boolean result = AudioPlayer.audioPlayerAsyncControl(newPlayUrl, mContext, 1000, remoteAudioPlayerListening, false, 0, true);
+        final boolean result = AudioPlayer.audioPlayerAsyncControl(newPlayUrl, mContext, 1000,
+                remoteAudioPlayerListening, false, 0, true);
         mLogtf.i("remoteAudioPlayerControl:result=" + result + ",playUrl=" + newPlayUrl);
         if (!result) {
             mHandler.removeCallbacks(remotePlayTimeOut);
@@ -836,7 +854,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         localAudioPlayerListening = new LocalAudioPlayerListening();
         mHandler.removeCallbacks(localPlayTimeOut);
         mHandler.postDelayed(localPlayTimeOut, 5000);
-        boolean result = AudioPlayer.audioPlayerControl(saveVideoFile.getPath(), mContext, 1000, localAudioPlayerListening, false, 0, true);
+        boolean result = AudioPlayer.audioPlayerControl(saveVideoFile.getPath(), mContext, 1000,
+                localAudioPlayerListening, false, 0, true);
         mLogtf.i("localAudioPlayerControl:result=" + result);
         if (!result) {
             mHandler.removeCallbacks(localPlayTimeOut);
@@ -862,9 +881,11 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             remoteAudioPlayerListening = null;
             mHandler.removeCallbacks(remotePlayTimeOut);
             if (where == 0) {
-                mLogtf.e("remoteplayComplete:where=" + where + ",tip=" + tip + ",mIsStop=" + mIsStop + ",voiceurl=" + mVoiceUrl, new Exception());
+                mLogtf.e("remoteplayComplete:where=" + where + ",tip=" + tip + ",mIsStop=" + mIsStop + ",voiceurl=" +
+                        mVoiceUrl, new Exception());
             } else {
-                mLogtf.i("remoteplayComplete:where=" + where + ",tip=" + tip + ",mIsStop=" + mIsStop + ",voiceurl=" + mVoiceUrl);
+                mLogtf.i("remoteplayComplete:where=" + where + ",tip=" + tip + ",mIsStop=" + mIsStop + ",voiceurl=" +
+                        mVoiceUrl);
             }
             try {
                 AudioPlayer.stop();
@@ -1147,7 +1168,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                 public void run() {
                     if (mSpeechType.equals(SPEECH_FOLLOW)) {
                         try {
-                            String command = "javascript:" + getCurrentJsPrefix() + ".showResult(" + entity.getCurStatus()
+                            String command = "javascript:" + getCurrentJsPrefix() + ".showResult(" + entity
+                                    .getCurStatus()
                                     + "," + entity.getCurString() + ")";
                             wvSubjectWeb.loadUrl(command);
                             mLogtf.i("jsRecordCurrentResult:command=" + command);
