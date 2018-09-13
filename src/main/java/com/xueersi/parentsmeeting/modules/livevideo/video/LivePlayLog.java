@@ -16,6 +16,7 @@ import com.netease.LDNetDiagnoService.LDNetTraceRoute;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.network.IpAddressUtil;
@@ -126,6 +127,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     /** 保存日志路径 */
     private File saveLogDir;
+    private File saveLogDirDebug;
     private boolean isLive = true;
     /** 下载完成 */
     private boolean isDownCom = false;
@@ -139,9 +141,10 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private String PRI_KEY_onBufferStart = "onBufferStart";
     private String PRI_KEY_onBufferComplete = "onBufferComplete";
     private String PRI_KEY_HEART = "HEART";
+    private String tid = "";
 
     static {
-        dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
+        dateFormat = new SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.getDefault());
     }
 
     public LivePlayLog(final Activity activity, boolean isLive) {
@@ -171,6 +174,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         memsize = DeviceUtils.getAvailRams(activity);
         this.isLive = isLive;
         saveLogDir = LiveCacheFile.geCacheFile(activity, "liveplaylog");
+        saveLogDirDebug = LiveCacheFile.geCacheFile(activity, "liveplaylogdebug");
         Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
@@ -316,13 +320,10 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
         String cip = oldCipdispatch;
-        if (StringUtils.isEmpty(cip)) {
-            cip = IpAddressUtil.USER_IP;
-        }
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
         defaultKey.put("sip", "" + getRemoteIp());
-        defaultKey.put("tid", "" + UUID.randomUUID());
+        defaultKey.put("tid", "" + tid);
 
         JSONObject dataJson = new JSONObject();
         try {
@@ -366,13 +367,10 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
         String cip = oldCipdispatch;
-        if (StringUtils.isEmpty(cip)) {
-            cip = IpAddressUtil.USER_IP;
-        }
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
         defaultKey.put("sip", "" + getRemoteIp());
-        defaultKey.put("tid", "" + UUID.randomUUID());
+        defaultKey.put("tid", "" + tid);
 
         JSONObject dataJson = new JSONObject();
         try {
@@ -403,7 +401,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             float averagefps = (float) (((double) (lastDisaplyCount - fistDisaplyCount)) * 1000 / time);
             dataJson.put("avgFps", "" + averagefps);
             dataJson.put("fps", "" + fps);
-            dataJson.put("playBuf", "" + bufferduration);
+            dataJson.put("playBuf", bufferduration);
             long heartTime;
             if (lastHeartTime == 0) {
                 heartTime = 0;
@@ -440,6 +438,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         isOpenSuccess = false;
         framesPsTen.clear();
         handler.removeMessages(1);
+        lastHeartTime = 0;
         openStart = System.currentTimeMillis();
         mUri = vPlayer.getUri();
         mUriHost = DNSUtil.getHost(mUri.toString());
@@ -472,6 +471,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                         final long openTime = (System.currentTimeMillis() - openStart);
                         Loger.d(TAG, "onInfo:what=3," + (System.currentTimeMillis() - openSuccess));
                         getFps();
+                        final String finalTid = tid;
                         liveThreadPoolExecutor.execute(new Runnable() {
                             @Override
                             public void run() {
@@ -490,14 +490,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                                 defaultKey.put("cpu", "" + getCpuRate());
                                 defaultKey.put("mem", "" + getMemRate());
                                 String cip = oldCipdispatch;
-                                if (StringUtils.isEmpty(cip)) {
-                                    cip = IpAddressUtil.USER_IP;
-                                }
                                 defaultKey.put("cip", "" + cip);
                                 defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
                                 String hostIp = getRemoteIp();
                                 defaultKey.put("sip", "" + hostIp);
-                                defaultKey.put("tid", "" + UUID.randomUUID());
+                                defaultKey.put("tid", "" + finalTid);
 
                                 JSONObject dataJson = new JSONObject();
                                 try {
@@ -566,14 +563,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
         String cip = oldCipdispatch;
-        if (StringUtils.isEmpty(cip)) {
-            cip = IpAddressUtil.USER_IP;
-        }
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
         String msip = getRemoteIp();
         defaultKey.put("sip", "" + msip);
-        defaultKey.put("tid", "" + UUID.randomUUID());
+        defaultKey.put("tid", "" + tid);
 
         JSONObject dataJson = new JSONObject();
         try {
@@ -606,14 +600,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("cpu", "" + getCpuRate());
         defaultKey.put("mem", "" + getMemRate());
         String cip = oldCipdispatch;
-        if (StringUtils.isEmpty(cip)) {
-            cip = IpAddressUtil.USER_IP;
-        }
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
         String msip = getRemoteIp();
         defaultKey.put("sip", "" + msip);
-        defaultKey.put("tid", "" + UUID.randomUUID());
+        defaultKey.put("tid", "" + tid);
 
         JSONObject dataJson = new JSONObject();
         try {
@@ -661,9 +652,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("net", getNet());
         int totalRam = HardWareUtil.getTotalRam();
         defaultKey.put("ram", totalRam);
+        defaultKey.put("ip138", IpAddressUtil.USER_IP);
     }
 
     public void liveGetPlayServer(final long delay, PlayFailCode playFailCode, int code, String cipdispatch, URLDNS urldns, final String url) {
+        tid = "" + UUID.randomUUID();
         Loger.d(TAG, "liveGetPlayServer:delay=" + delay + ",ipsb=" + urldns.ip);
         HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
@@ -679,7 +672,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("cip", "" + cipdispatch);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
         defaultKey.put("sip", "" + urldns.ip);
-        defaultKey.put("tid", "" + UUID.randomUUID());
+        defaultKey.put("tid", "" + tid);
 
         JSONObject dataJson = new JSONObject();
         try {
@@ -722,6 +715,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     }
 
     private void xescdnLogHeart(final ArrayList<Float> framesPsTen, final float averagefps, final long bufferduration, final float bitrate, final long bytes, final long time) {
+        final String finalTid = tid;
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -752,14 +746,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 defaultKey.put("cpu", "" + getCpuRate());
                 defaultKey.put("mem", "" + getMemRate());
                 String cip = oldCipdispatch;
-                if (StringUtils.isEmpty(cip)) {
-                    cip = IpAddressUtil.USER_IP;
-                }
                 defaultKey.put("cip", "" + cip);
                 defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
                 String remoteIp = getRemoteIp();
                 defaultKey.put("sip", "" + remoteIp);
-                defaultKey.put("tid", "" + UUID.randomUUID());
+                defaultKey.put("tid", "" + finalTid);
 
                 JSONObject dataJson = new JSONObject();
                 try {
@@ -771,7 +762,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     dataJson.put("latency", "" + bufferduration);
                     dataJson.put("avgFps", "" + averagefps);
                     dataJson.put("fps", "" + fps);
-                    dataJson.put("playBuf", "" + bufferduration);
+                    dataJson.put("playBuf", bufferduration);
                     dataJson.put("hbDur", time);
                     dataJson.put("bytes", "" + bytes);
                     dataJson.put("uid", "" + userId);
@@ -852,14 +843,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //            defaultKey.put("cpu", "" + getCpuRate());
 //            defaultKey.put("mem", "" + getMemRate());
 //            String cip = oldCipdispatch;
-//            if (StringUtils.isEmpty(cip)) {
-//                cip = IpAddressUtil.USER_IP;
-//            }
 //            defaultKey.put("cip", "" + cip);
 //            defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
 //            String msip = getRemoteIp();
 //            defaultKey.put("sip", "" + msip);
-//            defaultKey.put("tid", "" + UUID.randomUUID());
+//            defaultKey.put("tid", "" + tid);
 //
 //            JSONArray dataJson = new JSONArray();
 //            try {
@@ -897,7 +885,17 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         String s = dateFormat.format(new Date());
         String error = "save" + s + ".txt";
         File file = new File(saveLogDir, error);
-        FileStringUtil.saveStrToFile(savestr, file);
+        FileStringUtil.saveStrToFile(savestr, file, false);
+//        String string = FileStringUtil.readFromFile(file);
+//        logger.d("saveStrToFile:equals=" + (string.equals(savestr)));
+    }
+
+    private void saveLogToFile(String tid, String savestr) {
+        if (!saveLogDirDebug.exists()) {
+            saveLogDirDebug.mkdirs();
+        }
+        File file = new File(saveLogDirDebug, tid + ".txt");
+        FileStringUtil.saveStrToFile(savestr + "\n", file, true);
 //        String string = FileStringUtil.readFromFile(file);
 //        logger.d("saveStrToFile:equals=" + (string.equals(savestr)));
     }
@@ -929,6 +927,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private long xescdnLog2Before = 0;
 
     private void xescdnLog2(HashMap<String, Object> defaultKey, final JSONObject dataJson, final boolean saveToFile) {
+        logger.d("xescdnLog2:pri=" + defaultKey.get("pri"));
 //        if (AppConfig.DEBUG) {
 //            logurl = logurls[logIndex++ % logurls.length];
 //        }
@@ -944,6 +943,15 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             httpRequestParams.setJson(requestJson.toString());
             httpRequestParams.setWriteAndreadTimeOut(10);
             final AtomicInteger retryInt = new AtomicInteger(0);
+            if (AppConfig.DEBUG) {
+                final String tidfinal = (String) defaultKey.get("tid");
+                liveThreadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        saveLogToFile(tidfinal, requestJson.toString());
+                    }
+                });
+            }
             baseHttpBusiness.baseSendPostNoBusinessJson(logurl, httpRequestParams, new Callback() {
                 Callback callback = this;
 
@@ -1054,6 +1062,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //        }
 //        xescdnLogPlay(defaultKey, dataJson);
         final boolean isOpenSuccessfinal = isOpenSuccess;
+        final String finalTid = tid;
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -1069,14 +1078,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 defaultKey.put("cpu", "" + getCpuRate());
                 defaultKey.put("mem", "" + getMemRate());
                 String cip = oldCipdispatch;
-                if (StringUtils.isEmpty(cip)) {
-                    cip = IpAddressUtil.USER_IP;
-                }
                 defaultKey.put("cip", "" + cip);
                 defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
                 String msip = getRemoteIp();
                 defaultKey.put("sip", "" + msip);
-                defaultKey.put("tid", "" + UUID.randomUUID());
+                defaultKey.put("tid", "" + finalTid);
 
                 JSONObject dataJson = new JSONObject();
                 PlayFailCode playFailCode = getErrorCode(arg2);
@@ -1107,7 +1113,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                         float averagefps = (float) (((double) (lastDisaplyCount - fistDisaplyCount)) * 1000 / time);
                         dataJson.put("avgFps", "" + averagefps);
                         dataJson.put("fps", "" + fps);
-                        dataJson.put("playBuf", "" + bufferduration);
+                        dataJson.put("playBuf", bufferduration);
                         dataJson.put("hbDur", heartTime);
                         dataJson.put("bytes", "" + (trafficStatisticByteCount - lastTrafficStatisticByteCount));
                     } else {
@@ -1152,6 +1158,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         urlTrace.put(url, now);
         Bundle bundle = new Bundle();
         String host = DNSUtil.getHost(url);
+        final String finalTid = tid;
         ldNetTraceClient.startTraceRoute(host, bundle, new LDNetTraceRoute.LDNetTraceRouteListener() {
             @Override
             public void OnNetTraceUpdated(String log) {
@@ -1176,7 +1183,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     defaultKey.put("cip", "" + cip);
                     defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
                     defaultKey.put("sip", "" + msip);
-                    defaultKey.put("tid", "" + UUID.randomUUID());
+                    defaultKey.put("tid", "" + finalTid);
 
                     JSONObject dataJson = new JSONObject();
                     try {
