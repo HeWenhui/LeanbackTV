@@ -196,7 +196,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         ((AnimationDrawable) ivLoading.getBackground()).start();
         //       wvSubjectWeb.loadUrl("http://172.88.1.180:8084/");
         String url = "";
-        if (mContext != null && mContext instanceof ExperienceLiveVideoActivity) {
+        if (isExperience) {
             String termId = "";
             if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;

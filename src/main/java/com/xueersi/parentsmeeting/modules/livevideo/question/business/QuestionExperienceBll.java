@@ -15,7 +15,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
@@ -26,7 +25,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dataload.DataLoadEntity;
-import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONObject;
 
@@ -61,6 +59,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
         //语音评测
         LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
         liveBackSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
+        liveBackSpeechCreat.setIsExperience(liveBackBll.getExperience());
         questionBll.setBaseSpeechCreat(liveBackSpeechCreat);
         //测试卷
         LiveBackExamQuestionCreat liveBackExamQuestionCreat = new LiveBackExamQuestionCreat();
@@ -138,31 +137,12 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
-                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
-                        .getApplication(), false,
-                        VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
-                verifyCancelAlertDialog.initInfo("测试提醒", "老师发布了一套测试题，是否现在开始答题？");
-                verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                        videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
-                        videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
-                        videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
-                        questionBll.onExamStart(mVideoEntity.getLiveId(), videoQuestionLiveEntity);
-                        showQuestion.onShow(true, videoQuestionLiveEntity);
-                    }
-                });
-                verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LiveVideoActivityBase mediaPlayerControl = getInstance(LiveVideoActivityBase.class);
-                        mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
-                        mediaPlayerControl.start();
-                        showQuestion.onHide(questionEntity);
-                    }
-                });
-                verifyCancelAlertDialog.showDialog();
+                VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
+                videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
+                videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
+                questionBll.onExamStart(mVideoEntity.getLiveId(), videoQuestionLiveEntity);
+                showQuestion.onShow(true, videoQuestionLiveEntity);
             }
             break;
             default:
@@ -310,21 +290,21 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
         getCourseHttpManager().sendExpSpeechEvalResult(mVideoEntity.getSpeechEvalSubmitUrl(), liveid, id, termId,
                 isArts, stuAnswer, new HttpCallBack(false) {
 
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                onSpeechEval.onSpeechEval(null);
-            }
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        onSpeechEval.onSpeechEval(null);
+                    }
 
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
-            }
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        onSpeechEval.onPmFailure(error, msg);
+                    }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
-            }
-        });
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        onSpeechEval.onPmError(responseEntity);
+                    }
+                });
 
     }
 

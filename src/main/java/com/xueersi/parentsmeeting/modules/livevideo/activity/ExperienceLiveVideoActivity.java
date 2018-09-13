@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -74,6 +75,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -416,6 +418,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
         }
         loadData();
+//        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+//        LiveVideoPoint.initLiveVideoPoint(this,LiveVideoPoint.getInstance(),lp);
         return true;
     }
 
@@ -714,8 +718,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         bottomContent.addView(liveMediaControllerBottom);
-        final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-        setFirstParam(lp);
+//        final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+//        setFirstParam(lp);
         final View contentView = findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
             @Override
@@ -733,8 +737,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
                                 (int) VIDEO_HEIGHT, VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                        setFirstParam(lp);
-                        mLiveMessagePager.setVideoWidthAndHeight(lp.width, lp.height);
+                        LiveVideoPoint.initLiveVideoPoint((Activity) mContext,LiveVideoPoint.getInstance(),lp);
+//                        setFirstParam(lp);
+                        mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
+
+//                        mLiveMessagePager.setVideoWidthAndHeight(lp.width, lp.height);
                     }
                 });
             }
@@ -765,7 +772,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlLiveMessageContent, params);
-
         long before = System.currentTimeMillis();
         mLiveMessagePager = new LiveMessagePager(this, questionBll, ums, liveMediaControllerBottom,
                 liveMessageLandEntities, null);
@@ -938,7 +944,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //                return;
             }
 //            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
-//            seekTo(2630000);
+//            seekTo(3200000);
 
         }
         // 心跳时间的统计

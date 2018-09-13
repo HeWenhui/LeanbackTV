@@ -13,13 +13,11 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import java.util.HashMap;
 
@@ -87,43 +85,14 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE: {
                 MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
-                if (mediaPlayerControl != null) {
-                    mediaPlayerControl.pause();
-                }
                 questionEntity.setAnswered(true);
-                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
-                        .getApplication(), false,
-                        VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
-                verifyCancelAlertDialog.initInfo("课件提醒", "老师发布了课件，是否参与互动？");
-                verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LiveVideoActivityBase mediaPlayerControl = getInstance(LiveVideoActivityBase.class);
-                        if (mediaPlayerControl != null) {
-                            mediaPlayerControl.start();
-                        }
-                        VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
-                        englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
-                        showQuestion.onShow(true, videoQuestionLiveEntity);
-                    }
-                });
-                verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LiveVideoActivityBase mediaPlayerControl = getInstance(LiveVideoActivityBase.class);
-                        mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
-                        mediaPlayerControl.start();
-                        showQuestion.onHide(questionEntity);
-                    }
-                });
-                verifyCancelAlertDialog.showDialog();
+                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
+                englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
+                showQuestion.onShow(true, videoQuestionLiveEntity);
             }
             break;
             case LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE: {
                 MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
-                if (mediaPlayerControl != null) {
-                    mediaPlayerControl.pause();
-                }
                 questionEntity.setAnswered(true);
                 // 获取拼装一题多发的字段
                 LiveVideoConfig.LIVEPLAYBACKINFOS = questionEntity.getUrl();
@@ -131,32 +100,9 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
                 LiveVideoConfig.LIVEPLAYBACKCLASSID = mVideoEntity.getClassId();
                 LiveVideoConfig.LIVEPLAYBACKTEAMID = mVideoEntity.getTeamId();
                 LiveVideoConfig.LIVEPLAYBACKSTAGE = mVideoEntity.getEdustage();
-                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
-                        .getApplication(), false,
-                        VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
-                verifyCancelAlertDialog.initInfo("课件提醒", "老师发布了课件，是否参与互动？");
-                verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LiveVideoActivityBase mediaPlayerControl = getInstance(LiveVideoActivityBase.class);
-                        if (mediaPlayerControl != null) {
-                            mediaPlayerControl.start();
-                        }
-                        VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
-                        englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
-                        showQuestion.onShow(true, videoQuestionLiveEntity);
-                    }
-                });
-                verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LiveVideoActivityBase mediaPlayerControl = getInstance(LiveVideoActivityBase.class);
-                        mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
-                        mediaPlayerControl.start();
-                        showQuestion.onHide(questionEntity);
-                    }
-                });
-                verifyCancelAlertDialog.showDialog();
+                VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
+                englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
+                showQuestion.onShow(true, videoQuestionLiveEntity);
             }
             break;
             default:
