@@ -985,8 +985,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         if (entity != null) {
                             if (entity.getIsAnswer() == 1) {
                                 XESToastUtils.showToast(context, "您已经答过此题");
-                                // 发送已答过这题的标识
-                                EventBus.getDefault().post(new ArtsAnswerResultEvent(videoQuestionLiveEntity1.id,2));
                             } else {
                                 baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
                             }
