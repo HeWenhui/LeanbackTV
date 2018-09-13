@@ -122,7 +122,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                                 interval <= 60 * 1000) {
                                             allow = false;
                                         }
-                                        allow=true;
 //                                        handler.post(new Runnable() {
 //                                            @Override
 //                                            public void run() {
