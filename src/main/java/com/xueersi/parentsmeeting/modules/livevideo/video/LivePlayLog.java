@@ -435,6 +435,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     @Override
     public void onOpenStart() {
         super.onOpenStart();
+        if (!isLive) {
+            tid = "" + UUID.randomUUID();
+        }
         isOpenSuccess = false;
         framesPsTen.clear();
         handler.removeMessages(1);
@@ -457,7 +460,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     return false;
                 }
             });
-            ijkMediaPlayer.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
+            ijkMediaPlayer.setOnInfoListener2(new IMediaPlayer.OnInfoListener() {
                 boolean haveStart = false;
 
                 @Override
@@ -927,7 +930,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private long xescdnLog2Before = 0;
 
     private void xescdnLog2(HashMap<String, Object> defaultKey, final JSONObject dataJson, final boolean saveToFile) {
-        logger.d("xescdnLog2:pri=" + defaultKey.get("pri"));
+        logger.d("xescdnLog2:tid=" + defaultKey.get("tid") + ",pri=" + defaultKey.get("pri"));
 //        if (AppConfig.DEBUG) {
 //            logurl = logurls[logIndex++ % logurls.length];
 //        }
