@@ -47,7 +47,7 @@ import java.util.List;
  */
 
 public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, AnswerResultStateListener {
-    private static final String Tag = "ArtsAnswerResultBll";
+    private static final String TAG = "ArtsAnswerResultBll";
     private RelativeLayout rlAnswerResultLayout;
 
     /**
@@ -63,13 +63,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      */
     private static final int UI_TYPE_PSE = 2;
 
-    private static final String TAG = "ArtsAnswerResultBll";
     private IArtsAnswerRsultDisplayer mDsipalyer;
     private AnswerResultEntity mAnswerReulst;
     /**
      * 提示提交展示时间
      */
-    private long REMIND_UI_CLOSE_DELAY = 3000;
+    private final long REMIND_UI_CLOSE_DELAY = 3000;
     /**
      * 是否是小学英语
      */
@@ -407,7 +406,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        Loger.e(Tag, "=====>onNotice :" + "type=:" + type + ":data=" + data.toString());
+        Loger.e(TAG, "=====>onNotice :" + "type=:" + type + ":data=" + data.toString());
         switch (type) {
             case XESCODE.ARTS_REMID_SUBMIT:
                 remindSubmit();
@@ -463,7 +462,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      */
     private void praiseVoiceAnswer(int scoreRange, String testId) {
         if (mScoreRangeMap == null) {
-            mScoreRangeMap = new HashMap<Integer, ScoreRange>();
+            mScoreRangeMap = new HashMap<Integer, ScoreRange>(5);
             mScoreRangeMap.put(2, new ScoreRange(0, 39));
             mScoreRangeMap.put(3, new ScoreRange(40, 59));
             mScoreRangeMap.put(4, new ScoreRange(60, 79));
@@ -471,9 +470,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mScoreRangeMap.put(6, new ScoreRange(90, 100));
         }
         ScoreRange range = mScoreRangeMap.get(scoreRange);
-        Loger.e(Tag, "====>praiseVoiceAnswer:" + range + ":" + mVoiceAnswerResult);
+        Loger.e(TAG, "====>praiseVoiceAnswer:" + range + ":" + mVoiceAnswerResult);
         if (range != null && mVoiceAnswerResult != null) {
-            Loger.e(Tag, "====>praiseVoiceAnswer:" + scoreRange + ":" + testId + ":"
+            Loger.e(TAG, "====>praiseVoiceAnswer:" + scoreRange + ":" + testId + ":"
                     + mVoiceAnswerResult.getTestId() + ":" + mVoiceAnswerResult.getScore());
             if (testId.equals(mVoiceAnswerResult.getTestId())) {
                 if (mVoiceAnswerResult.getScore() >= range.getLow() && mVoiceAnswerResult.getScore() <= range.getHigh
@@ -486,13 +485,13 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWebviewClose(LiveRoomH5CloseEvent event) {
-        Loger.e(Tag, "=======>onWebviewClose called");
+        Loger.e(TAG, "=======>onWebviewClose called");
         closeAnswerResult(false);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAnswerResult(ArtsAnswerResultEvent event) {
-
+        Loger.e(TAG, "====>ArtsAnswerResultEvent:" + event);
         if (event != null && !event.equals(mArtsAnswerResultEvent)) {
             mArtsAnswerResultEvent = event;
             if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()) {
@@ -503,7 +502,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVoiceAnswerReuslt(VoiceAnswerResultEvent event) {
-        Loger.e(Tag, "====>onVoiceAnswerReuslt:" + event);
+        Loger.e(TAG, "====>onVoiceAnswerReuslt:" + event);
         if (event != null && !event.equals(mVoiceAnswerResult)) {
             mVoiceAnswerResult = event;
         }
