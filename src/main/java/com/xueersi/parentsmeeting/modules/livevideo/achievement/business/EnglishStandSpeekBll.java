@@ -149,7 +149,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 //        lastSecond = (int) totalOpeningLength.duration;
     }
 
-    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage) {
+    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, AtomicBoolean audioRequest) {
         if (speakerRecognitioner != null) {
 
         } else {
@@ -204,7 +204,9 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 
         } else {
 //            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
-            start();
+            if (!audioRequest.get()) {
+                start();
+            }
         }
         initlottieAnim();
         return true;

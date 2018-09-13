@@ -556,11 +556,11 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void run() {
+            livePlayLog.onBufferTimeOut();
             if (isInitialized()) {
                 vPlayer.releaseSurface();
                 vPlayer.stop();
             }
-            livePlayLog.onBufferTimeOut();
             long openTime = System.currentTimeMillis() - openStartTime;
             if (openTime > 40000) {
                 liveVideoReportBll.streamReport(LiveVideoReportBll.MegId.MEGID_12107, mGetInfo.getChannelname(), openTime);
