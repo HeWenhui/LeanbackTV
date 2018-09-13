@@ -524,7 +524,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
          if(getInfo != null && getInfo.getIsArts() == 1 && !exInfoInited.get()){
              Loger.e("ArtsExtInfo","======>initExtInfo called:");
              exInfoInited.set(true);
-             postDelayedIfNotFinish(initArtsExtLiveInfoTask,10000);
+             postDelayedIfNotFinish(initArtsExtLiveInfoTask,0);
          }
     }
 
