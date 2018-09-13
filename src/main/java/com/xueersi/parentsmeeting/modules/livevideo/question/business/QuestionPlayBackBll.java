@@ -71,6 +71,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
             //语音评测
             LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
+
             liveBackSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
             questionBll.setBaseSpeechCreat(liveBackSpeechCreat);
         }

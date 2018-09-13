@@ -928,16 +928,17 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
             if (mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000) {
                 // 03.21 提示直播已结束
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
-                vPlayer.releaseSurface();
-                vPlayer.stop();
-                // 测试体验课播放器的结果页面
-                lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
-                        getDataCallBack);
-                return;
+//                ivTeacherNotpresent.setVisibility(View.VISIBLE);
+//                ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
+//                vPlayer.releaseSurface();
+//                vPlayer.stop();
+//                // 测试体验课播放器的结果页面
+//                lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
+//                        getDataCallBack);
+//                return;
             }
-            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
+//            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
+//            seekTo(2630000);
 
         }
         // 心跳时间的统计
@@ -1025,13 +1026,13 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     }
 
     private void showPopupwinFeedback() {
-        ExperienceLearnFeedbackPager expFeedbackPager = new ExperienceLearnFeedbackPager(this, mVideoEntity,
+        final ExperienceLearnFeedbackPager expFeedbackPager = new ExperienceLearnFeedbackPager(this, mVideoEntity,
                 getWindow(), lectureLivePlayBackBll);
         mFeedbackWindow = new PopupWindow(expFeedbackPager.getRootView(), RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout
                         .LayoutParams.MATCH_PARENT, false);
         mFeedbackWindow.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
-        mFeedbackWindow.setOutsideTouchable(true);
+        mFeedbackWindow.setOutsideTouchable(false);
         mFeedbackWindow.setFocusable(true);
         mFeedbackWindow.setSoftInputMode(PopupWindow.INPUT_METHOD_NEEDED);
         mFeedbackWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
@@ -1040,11 +1041,13 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             @Override
             public void onDismiss() {
                 mFeedbackWindow = null;
+                setBackgroundAlpha(1.0f);
             }
         });
         expFeedbackPager.setCloseAction(new ExperienceLearnFeedbackPager.CloseAction() {
             @Override
             public void onClose() {
+                bottomContent.removeView(expFeedbackPager.getRootView());
                 mFeedbackWindow.dismiss();
                 mFeedbackWindow = null;
             }

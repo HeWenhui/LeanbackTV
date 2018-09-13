@@ -127,6 +127,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
                 videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                 videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
+                videoQuestionLiveEntity.setTermId(mVideoEntity.getChapterId());
                 if (!questionEntity.getAnswerEntityLst().isEmpty()) {
                     for (AnswerEntity answerEntity : questionEntity.getAnswerEntityLst()) {
                         videoQuestionLiveEntity.addAnswerEntity(answerEntity);
@@ -306,30 +307,24 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         String termId = mVideoEntity.getChapterId();
         String isArts = questionBll.IS_SCIENCE == false ? "1" : "0";
-        getCourseHttpManager().sendExpSpeechEvalResult(
-                mVideoEntity.getSpeechEvalSubmitUrl(),
-                liveid,
-                id,
-                termId,
-                isArts,
-                stuAnswer,
-                new HttpCallBack(false) {
+        getCourseHttpManager().sendExpSpeechEvalResult(mVideoEntity.getSpeechEvalSubmitUrl(), liveid, id, termId,
+                isArts, stuAnswer, new HttpCallBack(false) {
 
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        onSpeechEval.onSpeechEval(null);
-                    }
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                onSpeechEval.onSpeechEval(null);
+            }
 
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        onSpeechEval.onPmFailure(error, msg);
-                    }
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                onSpeechEval.onPmFailure(error, msg);
+            }
 
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        onSpeechEval.onPmError(responseEntity);
-                    }
-                });
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                onSpeechEval.onPmError(responseEntity);
+            }
+        });
 
     }
 
@@ -367,7 +362,24 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
     }
 
     @Override
-    public void speechEval42IsAnswered(String mVSectionID, String num, SpeechEvalAction.SpeechIsAnswered isAnswered) {
+    public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered
+            isAnswered) {
+        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+        getCourseHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(final ResponseEntity responseEntity) {
+                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
+                isAnswered.isAnswer(isAnswer);
+            }
 
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+            }
+        });
     }
 }
