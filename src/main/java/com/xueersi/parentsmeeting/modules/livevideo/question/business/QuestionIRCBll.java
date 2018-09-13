@@ -629,7 +629,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                 mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, entity);
                             }
                             // 发送已答过这道题的标识
-//                            EventBus.getDefault().post(new ArtsAnswerResultEvent());
+                            EventBus.getDefault().post(new ArtsAnswerResultEvent(videoQuestionLiveEntity.id,2));
                         }
 
                         @Override
