@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateA
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPager;
@@ -36,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionC
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -852,6 +854,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     int gold = jsonObject.optInt("gold");
                     mRolePlayerEntity.setGoldCount(gold);
+                    // 发送已答过的状态
+                    EventBus.getDefault().post(new ArtsAnswerResultEvent(mRolePlayerEntity.getTestId(),2));
                     Loger.i("RolePlayerDemoTest", "onPmSuccess: gold  =" + gold);
                 }
 
