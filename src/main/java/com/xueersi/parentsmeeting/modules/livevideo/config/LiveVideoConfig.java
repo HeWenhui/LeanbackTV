@@ -208,6 +208,8 @@ public class LiveVideoConfig {
     public static String URL_LEC_AD_CASE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getAdCase";
     /** 获取体验课学习报告 */
     public static String URL_AUTO_LIVE_FEAD_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/learnFeedback";
+    /** 语文主观题获取答案的地址 */
+    public static String URL_NEWARTS_SUBMITRESULT_H5 = "https://app.arts.xueersi.com/v2/SubjectiveTest/subjectiveTestAnswerResult";
     /** 直播云平台日志统计 */
     public static String URL_CDN_LOG = "http://log.xescdn.com/log";
     /** 更多课程数量的记录 */
