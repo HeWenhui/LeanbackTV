@@ -144,7 +144,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private String tid = "";
 
     static {
-        dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
+        dateFormat = new SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.getDefault());
     }
 
     public LivePlayLog(final Activity activity, boolean isLive) {
