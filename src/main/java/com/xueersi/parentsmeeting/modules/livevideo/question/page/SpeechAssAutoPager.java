@@ -33,6 +33,7 @@ import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
@@ -639,7 +640,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 // 发送分数和TestId
                 EventBus.getDefault().post(new VoiceAnswerResultEvent(id,score));
                 // 发送已答过的状态
-                EventBus.getDefault().post(new VoiceAnswerResultEvent(id,2));
+                EventBus.getDefault().post(new ArtsAnswerResultEvent(id,2));
                 speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), new OnSpeechEval() {
                     OnSpeechEval onSpeechEval = this;
 
