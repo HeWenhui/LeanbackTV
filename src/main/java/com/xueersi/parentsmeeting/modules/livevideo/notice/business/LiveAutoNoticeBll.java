@@ -170,11 +170,11 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             }
             String content = null;
             int i = ShareDataManager.getInstance().getInt("LiveAutoNotice_" + liveId, -1, ShareDataManager.SHAREDATA_USER);
-            if (grade >= 2 && grade <= 3) {
+            /*if (grade >= 2 && grade <= 3) {
                 content = noticeLowLevel[(i + 1) % 4];
             } else if (grade >= 4 && grade <= 7) {
                 content = noticeHighLevel[(i + 1) % 4];
-            } else if (grade == 13) {
+            } else*/ if (grade == 13) {
                 content = noticeGaosan[(i + 1) % 3];
             } else {
                 return;
