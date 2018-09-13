@@ -9,8 +9,10 @@ import android.support.annotation.NonNull;
 import com.tal.speech.speechrecognizer.PCMFormat;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.MyUserInfoEntity;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 
@@ -26,6 +28,7 @@ import java.util.concurrent.TimeUnit;
  * 新的声纹注册
  */
 public class SpeakerRecognitioner {
+    String TAG = "SpeakerRecognitioner";
     private final Object lock = new Object();
     Logger logger = LoggerFactory.getLogger("SpeakerRecognitioner");
     /** 和服务器的ping，线程池 */
@@ -51,10 +54,12 @@ public class SpeakerRecognitioner {
     Context context;
     private SpeakerPredict speakerPredict;
     SpeakerRecognitionerInterface speakerRecognitionerInterface;
+    LogToFile logToFile;
 
     SpeakerRecognitioner(Context context) {
         logger.setLogMethod(false);
         this.context = context;
+        logToFile = new LogToFile(context, TAG);
         pingPool = new ThreadPoolExecutor(1, 1,
                 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
@@ -118,11 +123,16 @@ public class SpeakerRecognitioner {
                     try {
                         initAudioRecorder();
                     } catch (Exception e) {
-                        logger.e("start:initAudioRecorder", e);
+                        logToFile.e("start:initAudioRecorder", e);
                         return;
                     }
                 }
-                mAudioRecord.startRecording();
+                try {
+                    mAudioRecord.startRecording();
+                } catch (Exception e) {
+                    logToFile.e("start:startRecording", e);
+                    return;
+                }
                 int index = 1;
                 while (isStart) {
                     if (mAudioRecord != null) {
@@ -135,9 +145,11 @@ public class SpeakerRecognitioner {
                                 return;
                             }
                             String predict = speakerRecognitionerInterface.predict(mPCMBuffer, readSize, index++, stuId, false);
-                            logger.d("start:predict=" + predict);
-                            if (speakerPredict != null) {
-                                speakerPredict.onPredict(predict);
+                            if (!StringUtils.isEmpty(predict)) {
+                                logger.d("start:predict=" + predict);
+                                if (speakerPredict != null) {
+                                    speakerPredict.onPredict(predict);
+                                }
                             }
                         }
                     }
@@ -152,6 +164,7 @@ public class SpeakerRecognitioner {
         if (mAudioRecord != null) {
             mAudioRecord.stop();
             mAudioRecord.release();
+            mAudioRecord = null;
         }
     }
 

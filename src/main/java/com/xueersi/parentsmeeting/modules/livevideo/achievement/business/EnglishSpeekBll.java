@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by linyuqiang on 2017/10/31.
@@ -164,7 +165,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //        lastSecond = (int) totalOpeningLength.duration;
     }
 
-    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage) {
+    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest) {
         if (speakerRecognitioner != null) {
 
         } else {
@@ -238,7 +239,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         rl_livevideo_english_speak_error.setVisibility(View.GONE);
                         isDestory = false;
                         isDestory2 = false;
-                        start();
+                        if (!audioRequest.get()) {
+                            start();
+                        }
                     }
                 }, PermissionConfig.PERMISSION_CODE_AUDIO);
                 if (have) {
@@ -252,7 +255,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                     rl_livevideo_english_speak_error.setVisibility(View.GONE);
                     isDestory = false;
                     isDestory2 = false;
-                    start();
+                    if (!audioRequest.get()) {
+                        start();
+                    }
                 }
 //                Intent intent = new Intent();
 //                intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
@@ -287,8 +292,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //            tv_livevideo_english_time.setVisibility(View.VISIBLE);
 //            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
 //            rl_livevideo_english_stat.setVisibility(View.VISIBLE);
-
-            start();
+            if (!audioRequest.get()) {
+                start();
+            }
         }
         //view或者gone之后需要刷新下界面，因为布局中可能存在相对位置
         activity.getWindow().getDecorView().invalidate();
