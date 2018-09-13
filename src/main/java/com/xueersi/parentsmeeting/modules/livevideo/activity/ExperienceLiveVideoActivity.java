@@ -965,7 +965,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 firstTime = false;
             }
             if (mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000) {
-                // 03.21 提示直播已结束
+                // 提示直播已结束
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
                 ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
                 vPlayer.releaseSurface();
@@ -973,6 +973,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 // 测试体验课播放器的结果页面
                 lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
                         getDataCallBack);
+                // 停止心跳时间的统计
+                isPlay = false;
+                mHandler.removeCallbacks(mPlayDuration);
                 return;
             }
             seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
