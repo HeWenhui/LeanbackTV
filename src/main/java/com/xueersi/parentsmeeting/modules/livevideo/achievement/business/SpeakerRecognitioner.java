@@ -9,8 +9,10 @@ import android.support.annotation.NonNull;
 import com.tal.speech.speechrecognizer.PCMFormat;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.MyUserInfoEntity;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 
@@ -27,7 +29,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class SpeakerRecognitioner {
     String TAG = "SpeakerRecognitioner";
-    Logger logger = LoggerFactory.getLogger(TAG);
+    private final Object lock = new Object();
+    Logger logger = LoggerFactory.getLogger("SpeakerRecognitioner");
     /** 和服务器的ping，线程池 */
     private ThreadPoolExecutor pingPool;
     /** 每次读取的字节大小 */
@@ -47,13 +50,16 @@ public class SpeakerRecognitioner {
     /** 原始录音数据 */
     private byte[] mPCMBuffer;
     boolean isStart = false;
+    boolean destory = false;
     Context context;
     private SpeakerPredict speakerPredict;
     SpeakerRecognitionerInterface speakerRecognitionerInterface;
+    LogToFile logToFile;
 
     SpeakerRecognitioner(Context context) {
         logger.setLogMethod(false);
         this.context = context;
+        logToFile = new LogToFile(context, TAG);
         pingPool = new ThreadPoolExecutor(1, 1,
                 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
@@ -63,11 +69,11 @@ public class SpeakerRecognitioner {
                 Thread thread = new Thread(r, "SpeakerRecognitioner-" + r) {
                     @Override
                     public synchronized void start() {
-                        Loger.d(TAG, "newThread:start");
+                        logger.d("newThread:start");
                         super.start();
                     }
                 };
-                Loger.d(TAG, "newThread:r=" + r);
+                logger.d("newThread:r=" + r);
                 return thread;
             }
         }, new RejectedExecutionHandler() {
@@ -117,21 +123,34 @@ public class SpeakerRecognitioner {
                     try {
                         initAudioRecorder();
                     } catch (Exception e) {
-                        logger.e("start:initAudioRecorder", e);
+                        logToFile.e("start:initAudioRecorder", e);
                         return;
                     }
                 }
-                mAudioRecord.startRecording();
+                try {
+                    mAudioRecord.startRecording();
+                } catch (Exception e) {
+                    logToFile.e("start:startRecording", e);
+                    return;
+                }
                 int index = 1;
                 while (isStart) {
                     if (mAudioRecord != null) {
                         int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
 //                                byte[] pcm_data = toByteArray(mPCMBuffer, readSize);
 //                            logger.d("start:predict=" + readSize + ",pcm_data=" + pcm_data.length);
-                        String predict = speakerRecognitionerInterface.predict(mPCMBuffer, readSize, index++, stuId, false);
-                        logger.d("start:predict=" + predict);
-                        if (speakerPredict != null) {
-                            speakerPredict.onPredict(predict);
+                        synchronized (lock) {
+                            if (destory) {
+                                logger.d("start:predict=destory");
+                                return;
+                            }
+                            String predict = speakerRecognitionerInterface.predict(mPCMBuffer, readSize, index++, stuId, false);
+                            if (!StringUtils.isEmpty(predict)) {
+                                logger.d("start:predict=" + predict);
+                                if (speakerPredict != null) {
+                                    speakerPredict.onPredict(predict);
+                                }
+                            }
                         }
                     }
                 }
@@ -140,16 +159,22 @@ public class SpeakerRecognitioner {
     }
 
     public void stop() {
+        logger.d("stop:isStart=" + isStart);
         isStart = false;
         if (mAudioRecord != null) {
             mAudioRecord.stop();
             mAudioRecord.release();
+            mAudioRecord = null;
         }
     }
 
     public void destory() {
-        if (speakerRecognitionerInterface != null) {
-            speakerRecognitionerInterface.speakerRecognitionerFree();
+        logger.d("destory:isStart=" + isStart);
+        synchronized (lock) {
+            destory = true;
+            if (speakerRecognitionerInterface != null) {
+                speakerRecognitionerInterface.speakerRecognitionerFree();
+            }
         }
     }
 

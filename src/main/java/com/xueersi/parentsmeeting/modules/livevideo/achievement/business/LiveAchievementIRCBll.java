@@ -38,6 +38,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
 
@@ -49,7 +50,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         EnglishSpeekHttp, AudioRequest {
     StarInteractAction starAction;
     EnglishSpeekAction englishSpeekAction;
-    boolean audioRequest = false;
+    AtomicBoolean audioRequest = new AtomicBoolean(false);
     EnglishSpeekMode englishSpeekMode;
     SpeakerRecognitioner speakerRecognitioner;
     private VerifyCancelAlertDialog recognizeDialog;
@@ -265,7 +266,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 if (speakerRecognitioner != null) {
                     englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                 }
-                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), null);
+                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), null, audioRequest);
                 if (initView) {
                     englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                     englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -275,7 +276,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 }
             }
             if (LiveAchievementIRCBll.this.englishSpeekAction != null) {
-                LiveAchievementIRCBll.this.englishSpeekAction.onModeChange(mode, audioRequest);
+                LiveAchievementIRCBll.this.englishSpeekAction.onModeChange(mode, audioRequest.get());
             }
         }
     }
@@ -305,7 +306,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 if (speakerRecognitioner != null) {
                     englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                 }
-                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage);
+                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage, audioRequest);
                 if (initView) {
                     englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                     englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -328,7 +329,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 if (speakerRecognitioner != null) {
                     englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                 }
-                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage);
+                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage, audioRequest);
                 if (initView) {
                     englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
                     englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
@@ -638,7 +639,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
     @Override
     public void request(OnAudioRequest onAudioRequest) {
-        audioRequest = true;
+        audioRequest.set(true);
         Loger.d(TAG, "request:englishSpeekBll=" + (englishSpeekAction == null));
         if (englishSpeekAction != null) {
             handler.removeMessages(1);
@@ -652,7 +653,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
     @Override
     public void release() {
-        audioRequest = false;
+        audioRequest.set(false);
         Loger.d(TAG, "release:englishSpeekBll=" + (englishSpeekAction == null));
         if (englishSpeekAction != null) {
             handler.sendEmptyMessageDelayed(1, 2000);

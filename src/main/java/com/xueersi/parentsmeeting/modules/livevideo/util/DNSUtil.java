@@ -52,6 +52,7 @@ public class DNSUtil {
             exception = e;
         }
         urldns.time = System.currentTimeMillis() - before;
+        Loger.d(TAG, "getDns:url2=" + urldns.url + ",time=" + urldns.time);
         if (exception != null) {
             throw exception;
         }
