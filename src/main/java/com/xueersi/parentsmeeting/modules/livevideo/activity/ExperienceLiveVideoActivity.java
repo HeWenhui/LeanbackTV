@@ -718,8 +718,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         bottomContent.addView(liveMediaControllerBottom);
-//        final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-//        setFirstParam(lp);
+        final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+        setFirstParam(lp);
         final View contentView = findViewById(android.R.id.content);
         contentView.postDelayed(new Runnable() {
             @Override
@@ -738,7 +738,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                                 (int) VIDEO_HEIGHT, VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         LiveVideoPoint.initLiveVideoPoint((Activity) mContext,LiveVideoPoint.getInstance(),lp);
-//                        setFirstParam(lp);
+                        setFirstParam(lp);
                         mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
 
 //                        mLiveMessagePager.setVideoWidthAndHeight(lp.width, lp.height);
