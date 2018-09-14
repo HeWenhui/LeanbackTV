@@ -206,6 +206,9 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             url = "https://student.xueersi.com/science/AutoLive/SpeechEval";
             url += "?isArts=" + isArts + "&liveId=" + liveid + "&testId=" + testId +
                     "&stuId=" + stuId + "&termId=" + termId;
+            if (isStandingLive) {
+                url += "&isStandingLive=1&isAudio=1";
+            }
         } else {
             String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
 //        String url = "http://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +

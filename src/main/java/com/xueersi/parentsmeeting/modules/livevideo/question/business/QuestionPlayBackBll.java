@@ -62,7 +62,6 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             //语音评测
             LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(this, liveBackBll,
                     questionBll);
-            liveBackStandSpeechCreat.setIsExperience(liveBackBll.getExperience());
             liveBackStandSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
             questionBll.setBaseSpeechCreat(liveBackStandSpeechCreat);
         } else {
@@ -72,7 +71,6 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
             //语音评测
             LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
-            liveBackSpeechCreat.setIsExperience(liveBackBll.getExperience());
             liveBackSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
             questionBll.setBaseSpeechCreat(liveBackSpeechCreat);
         }
@@ -150,44 +148,44 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
-                if (liveBackBll.getExperience()) {//如果是全身直播体验课
-                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                    videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
-                    videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
-                    videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
-                    questionBll.onExamStart(mVideoEntity.getLiveId(), videoQuestionLiveEntity);
-                    showQuestion.onShow(true, videoQuestionLiveEntity);
-                } else {
+//                if (liveBackBll.getExperience()) {//如果是全身直播体验课
+//                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+//                    videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
+//                    videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
+//                    videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
+//                    questionBll.onExamStart(mVideoEntity.getLiveId(), videoQuestionLiveEntity);
+//                    showQuestion.onShow(true, videoQuestionLiveEntity);
+//                } else {
 
-                    VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
-                            .getApplication(), false,
-                            VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
-                    verifyCancelAlertDialog.initInfo("测试提醒", "老师发布了一套测试题，是否现在开始答题？");
-                    verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+                VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
+                        .getApplication(), false,
+                        VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
+                verifyCancelAlertDialog.initInfo("测试提醒", "老师发布了一套测试题，是否现在开始答题？");
+                verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 //                        if (vPlayer != null) {
 //                            vPlayer.start();
 //                        }
-                            VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                            videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
-                            videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
-                            videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
-                            questionBll.onExamStart(mVideoEntity.getLiveId(), videoQuestionLiveEntity);
-                            showQuestion.onShow(true, videoQuestionLiveEntity);
-                        }
-                    });
-                    verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
-                            mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
-                            mediaPlayerControl.start();
-                            showQuestion.onHide(questionEntity);
-                        }
-                    });
-                    verifyCancelAlertDialog.showDialog();
-                }
+                        VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                        videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
+                        videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
+                        videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
+                        questionBll.onExamStart(mVideoEntity.getLiveId(), videoQuestionLiveEntity);
+                        showQuestion.onShow(true, videoQuestionLiveEntity);
+                    }
+                });
+                verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
+                        mediaPlayerControl.start();
+                        showQuestion.onHide(questionEntity);
+                    }
+                });
+                verifyCancelAlertDialog.showDialog();
+//                }
             }
             break;
             default:
@@ -269,33 +267,33 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 }
             }
         };
-        if (!videoQuestionLiveEntity1.type.equals("8")) {
-            getCourseHttpManager().saveTestRecord(
-                    enstuId,
-                    videoQuestionLiveEntity1.srcType,
-                    videoQuestionLiveEntity1.id,
-                    testAnswer,
-                    videoQuestionLiveEntity1.getAnswerDay(),
-                    mVSectionID,
-                    mVideoEntity.getvLivePlayBackType(),
-                    isVoice,
-                    isRight,
-                    httpCallBack);
-        } else {
-            getCourseHttpManager().saveTestRecords(
-                    UserBll.getInstance().getMyUserInfoEntity().getEnstuId(),
-                    videoQuestionLiveEntity1.srcType,
-                    videoQuestionLiveEntity1.id,
-                    testAnswer,
-                    mVideoEntity.getLiveId(),
-                    mVideoEntity.getChapterId(),
-                    mVideoEntity.getvLivePlayBackType(),
-                    isVoice,
-                    isRight,
-                    questionBll.IS_SCIENCE == false ? "1" : "0",
-                    videoQuestionLiveEntity1.type,
-                    mVideoEntity.getSubjectiveSubmitUrl(),
-                    httpCallBack);
+//        if (!videoQuestionLiveEntity1.type.equals("8")) {
+        getCourseHttpManager().saveTestRecord(
+                enstuId,
+                videoQuestionLiveEntity1.srcType,
+                videoQuestionLiveEntity1.id,
+                testAnswer,
+                videoQuestionLiveEntity1.getAnswerDay(),
+                mVSectionID,
+                mVideoEntity.getvLivePlayBackType(),
+                isVoice,
+                isRight,
+                httpCallBack);
+//        } else {
+//            getCourseHttpManager().saveTestRecords(
+//                    UserBll.getInstance().getMyUserInfoEntity().getEnstuId(),
+//                    videoQuestionLiveEntity1.srcType,
+//                    videoQuestionLiveEntity1.id,
+//                    testAnswer,
+//                    mVideoEntity.getLiveId(),
+//                    mVideoEntity.getChapterId(),
+//                    mVideoEntity.getvLivePlayBackType(),
+//                    isVoice,
+//                    isRight,
+//                    questionBll.IS_SCIENCE == false ? "1" : "0",
+//                    videoQuestionLiveEntity1.type,
+//                    mVideoEntity.getSubjectiveSubmitUrl(),
+//                    httpCallBack);
 //            getCourseHttpManager().saveExperienceTestRecord(
 //                    mVideoEntity.getSubjectiveSubmitUrl(),
 //                    enstuId,
@@ -308,7 +306,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 //                    isVoice,
 //                    isRight,
 //                    httpCallBack);
-        }
+//        }
     }
 
     @Override
@@ -341,12 +339,12 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 onSpeechEval.onPmError(responseEntity);
             }
         };
-        if (!liveBackBll.getExperience()) {
-            getCourseHttpManager().getSpeechEval(enstuId, liveid, id, httpCallBack);
-        } else {
-            getCourseHttpManager().getExpeSpeechEval(mVideoEntity.getSpeechEvalUrl(), enstuId,
-                    liveid, id, httpCallBack);
-        }
+//        if (!liveBackBll.getExperience()) {
+        getCourseHttpManager().getSpeechEval(enstuId, liveid, id, httpCallBack);
+//        } else {
+//            getCourseHttpManager().getExpeSpeechEval(mVideoEntity.getSpeechEvalUrl(), enstuId,
+//                    liveid, id, httpCallBack);
+//        }
     }
 
     @Override
@@ -370,19 +368,19 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 onSpeechEval.onPmError(responseEntity);
             }
         };
-        if (!liveBackBll.getExperience()) {
-            getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
-                    httpCallBack);
-        } else {
-            getCourseHttpManager().sendExpSpeechEvalResult(
-                    mVideoEntity.getSpeechEvalSubmitUrl(),
-                    liveid,
-                    id,
-                    mVideoEntity.getChapterId(),
-                    questionBll.IS_SCIENCE == false ? "1" : "0",
-                    stuAnswer,
-                    httpCallBack);
-        }
+//        if (!liveBackBll.getExperience()) {
+        getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
+                httpCallBack);
+//        } else {
+//            getCourseHttpManager().sendExpSpeechEvalResult(
+//                    mVideoEntity.getSpeechEvalSubmitUrl(),
+//                    liveid,
+//                    id,
+//                    mVideoEntity.getChapterId(),
+//                    questionBll.IS_SCIENCE == false ? "1" : "0",
+//                    stuAnswer,
+//                    httpCallBack);
+//        }
     }
 
     /**
@@ -423,20 +421,23 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             }
         };
 
-        if (!liveBackBll.getExperience()) {
+//        if (!liveBackBll.getExperience()) {
 //            getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
 //                    httpCallBack);
-            getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, httpCallBack);
-        } else {
-            getCourseHttpManager().sendExpSpeechEvalResult(
-                    mVideoEntity.getSpeechEvalSubmitUrl(),
-                    liveid,
-                    id,
-                    mVideoEntity.getChapterId(),
-                    questionBll.IS_SCIENCE == false ? "1" : "0",
-                    stuAnswer,
-                    httpCallBack);
-        }
+        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, httpCallBack);
+//    } else
+
+//    {
+//        getCourseHttpManager().sendExpSpeechEvalResult(
+//                mVideoEntity.getSpeechEvalSubmitUrl(),
+//                liveid,
+//                id,
+//                mVideoEntity.getChapterId(),
+//                questionBll.IS_SCIENCE == false ? "1" : "0",
+//                stuAnswer,
+//                httpCallBack);
+//    }
+
     }
 
     @Override

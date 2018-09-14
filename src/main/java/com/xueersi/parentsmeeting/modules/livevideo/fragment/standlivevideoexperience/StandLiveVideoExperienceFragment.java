@@ -8,6 +8,7 @@ import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
@@ -52,6 +54,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerActi
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.learnfeedback.ExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5PlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.ExperienceEnglishH5PlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.ExperienceQuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -128,7 +132,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     private PopupWindow mPopupWindows;
     private Handler mHandler;
     private int progress = 0;
-    protected LiveBackBll liveBackBll;
+    protected ExperienceLiveBackBll liveBackBll;
     protected LiveBackVideoBll liveBackVideoBll;
     /*** 全屏显示*/
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
@@ -274,7 +278,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
         mDisplayName = mVideoEntity.getPlayVideoName();
-        liveBackBll = new LiveBackBll(activity, mVideoEntity);
+        liveBackBll = new ExperienceLiveBackBll(activity, mVideoEntity);
         liveBackBll.setStuCourId(stuCourId);
         liveBackBll.setvPlayer(vPlayer);
 
@@ -450,12 +454,12 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
     //添加功能模块
     protected void addBusiness(Activity activity) {
-        liveBackBll.addBusinessBll(new QuestionPlayBackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new ExperienceQuestionPlayBackBll(activity, liveBackBll));
         RedPackagePlayBackBll redPackagePlayBackBll = new RedPackagePlayBackBll(activity, liveBackBll);
         liveBackBll.addBusinessBll(redPackagePlayBackBll);
-        liveBackBll.addBusinessBll(new EnglishH5PlayBackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new ExperienceEnglishH5PlayBackBll(activity, liveBackBll));
         //站立直播体验课聊天区的添加
-        liveBackBll.addBusinessBll(new StandLiveVideoExperienceBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new StandLiveVideoExperienceBll(activity, liveBackBll, lectureLivePlayBackBll));
         //播放完成后的反馈弹窗
         liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
     }
@@ -616,6 +620,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             startTime = System.currentTimeMillis();
         }
         seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
+        Log.e(TAG, "" + Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
+                startTime));
         attachMediaController();
     }
 

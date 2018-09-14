@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -94,10 +95,13 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
      */
     private boolean openChat = true;
 
+    LectureLivePlayBackBll lectureLivePlayBackBll;
 
-    public StandLiveVideoExperienceBll(Activity activity, LiveBackBll liveBackBll) {
+    public StandLiveVideoExperienceBll(Activity activity, LiveBackBll liveBackBll, LectureLivePlayBackBll
+            lectureLivePlayBackBll) {
         super(activity, liveBackBll);
         mHttpManager = new LiveHttpManager(mContext);
+        this.lectureLivePlayBackBll = lectureLivePlayBackBll;
     }
 
     private IRCMessage mIRCMessage;
@@ -381,6 +385,9 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 //                        jsonObject.put("from", "android_" + teamId);
 //                        jsonObject.put("to", teamId);
 //                    }
+                    lectureLivePlayBackBll.sendRecordInteract(mVideoEntity.getInteractUrl(), mVideoEntity
+                                    .getChapterId(),
+                            1);
                     mIRCMessage.sendMessage(jsonObject.toString());
                     sendMessage = true;
                     if (starAction != null) {
