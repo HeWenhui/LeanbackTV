@@ -79,7 +79,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
     /** 互动题 */
-    private VideoQuestionEntity mQuestionEntity;
+    protected VideoQuestionEntity mQuestionEntity;
     private HashMap<VideoQuestionEntity, VideoQuestionLiveEntity> liveEntityHashMap = new HashMap<>();
     /** 显示互动题 */
     private static final int SHOW_QUESTION = 0;

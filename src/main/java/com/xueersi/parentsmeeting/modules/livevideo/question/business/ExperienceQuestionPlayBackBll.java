@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 
 import com.xueersi.common.base.BaseBll;
@@ -31,6 +32,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 public class ExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
+
+    private String TAG = getClass().getSimpleName();
 
     public ExperienceQuestionPlayBackBll(Activity activity, ExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -217,6 +220,7 @@ public class ExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
             public void onPmSuccess(final ResponseEntity responseEntity) {
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                 onSpeechEval.onSpeechEval(jsonObject);
+                Log.e(TAG, "" + jsonObject.toString());
             }
 
             @Override
