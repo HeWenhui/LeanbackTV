@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
@@ -59,6 +60,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.KeyboardPopWindow;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
@@ -815,6 +817,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         boolean isSuccess = false;
         int type = 0;
         if (entity != null) {// 提交成功，否则是已经答过题了
+            // 发送已答过这道题的标识
+            EventBus.getDefault().post(new ArtsAnswerResultEvent(videoQuestionLiveEntity.id,2));
             boolean isVoice = entity.isVoice();
             if (!isVoice && LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity.type)) {
                 String url = liveGetInfo.getSubjectiveTestAnswerResult() + "?stuId=" + liveGetInfo.getStuId() +
