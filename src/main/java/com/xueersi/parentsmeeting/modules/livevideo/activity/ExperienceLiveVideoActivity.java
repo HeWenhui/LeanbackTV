@@ -420,8 +420,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
         }
         loadData();
-//        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-//        LiveVideoPoint.initLiveVideoPoint(this,LiveVideoPoint.getInstance(),lp);
+
         return true;
     }
 
