@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.netease.LDNetDiagnoClient.LDNetTraceClient;
 import com.netease.LDNetDiagnoService.JavaTraceResult;
@@ -76,7 +77,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private long fistDisaplyCount = 0;
     /** 上一次播放的帧数 */
     private long lastDisaplyCount = 0;
-    private float fps = 12.0f;
+    private float videofps = 12.0f;
     /** 帧数10秒统计,开始时间 */
     private long frame10Start;
     private long lastTrafficStatisticByteCount;
@@ -142,6 +143,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private String PRI_KEY_onBufferComplete = "onBufferComplete";
     private String PRI_KEY_HEART = "HEART";
     private String tid = "";
+    private HashMap<String, String> tidAndPri = new HashMap<>();
+    private PlayBufferEntity bufferStartEntity = new PlayBufferEntity();
 
     static {
         dateFormat = new SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.getDefault());
@@ -251,7 +254,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                         }
                         long disaplyCount = ijkMediaPlayer.getDisaplyCount();
                         framesPsTen.add(fps);
-                        Loger.d(TAG, "handleMessage:fps=" + fps + ",disaplyCount=" + disaplyCount + "," + (disaplyCount - lastDisaplyCount));
+                        logger.d("handleHeartMessage:fps=" + fps + ",disaplyCount=" + disaplyCount + "," + (disaplyCount - lastDisaplyCount));
                         if (framesPsTen.size() == 15) {
                             ArrayList<Float> framesPsTenTemp = new ArrayList<Float>(framesPsTen);
                             framesPsTen.clear();
@@ -268,14 +271,21 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                                 e.printStackTrace();
                             }
                             long time = System.currentTimeMillis() - frame10Start;
-                            Loger.d(TAG, "handleMessage:fps=" + (disaplyCount - fistDisaplyCount) / 10 + ",time=" + time);
                             float averagefps = (float) (((double) (disaplyCount - fistDisaplyCount)) * 1000 / time);
+                            logger.d("handleHeartMessage:fps=" + (disaplyCount - fistDisaplyCount) / 15 + ",averagefps=" + averagefps + ",time=" + time);
                             if (lastHeartTime == 0) {
                                 time = 15000;
                             } else {
                                 time = System.currentTimeMillis() - lastHeartTime;
                             }
                             xescdnLogHeart(framesPsTenTemp, averagefps, bufferduration, bitrate, trafficStatisticByteCount - lastTrafficStatisticByteCount, time);
+                            if (TextUtils.equals(bufferStartEntity.getTip(), tid)) {
+                                if (bufferStartEntity.getStartTime() >= frame10Start && bufferStartEntity.getEndTime() < System.currentTimeMillis()) {
+                                    float bufferTime = (videofps - averagefps) * time / videofps;
+                                    float bufferTime2 = bufferStartEntity.getEndTime() - bufferStartEntity.getStartTime();
+                                    logger.d("handleHeartMessage:bufferTime=" + bufferTime + ",bufferTime2=" + bufferTime2 + ",time=" + time);
+                                }
+                            }
                             fistDisaplyCount = disaplyCount;
                             lastTrafficStatisticByteCount = trafficStatisticByteCount;
                             lastHeartTime = frame10Start = System.currentTimeMillis();
@@ -301,9 +311,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //                        }
 //                        lastFps = fps;
                     }
+                } else {
+                    framesPsTen.add(0.0f);
+                    logger.d("handleHeartMessage:isInitialized=false");
                 }
             } catch (Exception e) {
-                Loger.e(BaseApplication.getContext(), TAG, "handleMessage", e, true);
+                Loger.e(BaseApplication.getContext(), TAG, "handleHeartMessage", e, true);
             }
             handler.sendEmptyMessageDelayed(1, 1000);
         }
@@ -317,8 +330,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("pri", "225");
         addDefault(defaultKey);
 
-        defaultKey.put("cpu", "" + getCpuRate());
-        defaultKey.put("mem", "" + getMemRate());
+        defaultKey.put("cpu", getCpuRate());
+        defaultKey.put("mem", getMemRate());
         String cip = oldCipdispatch;
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
@@ -348,7 +361,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             }
             dataJson.put("hbDur", heartTime);
             dataJson.put("dnDur", heartTime);
-            dataJson.put("bytes", "" + (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+            dataJson.put("bytes", (trafficStatisticByteCount - lastTrafficStatisticByteCount));
             dataJson.put("uid", "" + userId);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -364,8 +377,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("serv", serv);
         defaultKey.put("pri", priMap.get(PRI_KEY_onOpenFailed));
         addDefault(defaultKey);
-        defaultKey.put("cpu", "" + getCpuRate());
-        defaultKey.put("mem", "" + getMemRate());
+        defaultKey.put("cpu", getCpuRate());
+        defaultKey.put("mem", getMemRate());
         String cip = oldCipdispatch;
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
@@ -390,17 +403,17 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
                 logger.d("send:method=" + method + ",bufferduration=" + bufferduration);
             }
-            dataJson.put("bufType", "" + bufType);
+            dataJson.put("bufType", bufType);
             if (isBuffer) {
-                dataJson.put("bufDur", "" + (System.currentTimeMillis() - bufferTime));
+                dataJson.put("bufDur", (System.currentTimeMillis() - bufferTime));
             } else {
-                dataJson.put("bufDur", "0");
+                dataJson.put("bufDur", 0);
             }
-            dataJson.put("latency", "" + bufferduration);
+            dataJson.put("latency", bufferduration);
             long time = System.currentTimeMillis() - frame10Start;
             float averagefps = (float) (((double) (lastDisaplyCount - fistDisaplyCount)) * 1000 / time);
-            dataJson.put("avgFps", "" + averagefps);
-            dataJson.put("fps", "" + fps);
+            dataJson.put("avgFps", averagefps);
+            dataJson.put("fps", videofps);
             dataJson.put("playBuf", bufferduration);
             long heartTime;
             if (lastHeartTime == 0) {
@@ -409,7 +422,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 heartTime = (System.currentTimeMillis() - this.lastHeartTime);
             }
             dataJson.put("hbDur", heartTime);
-            dataJson.put("bytes", "" + (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+            dataJson.put("bytes", (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+            dataJson.put("allpri", "" + tidAndPri.get(tid));
             dataJson.put("uid", "" + userId);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -490,8 +504,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                                 defaultKey.put("serv", serv);
                                 defaultKey.put("pri", priMap.get(PRI_KEY_RENDERING));
                                 addDefault(defaultKey);
-                                defaultKey.put("cpu", "" + getCpuRate());
-                                defaultKey.put("mem", "" + getMemRate());
+                                defaultKey.put("cpu", getCpuRate());
+                                defaultKey.put("mem", getMemRate());
                                 String cip = oldCipdispatch;
                                 defaultKey.put("cip", "" + cip);
                                 defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
@@ -557,14 +571,15 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         }
         bufferTime = System.currentTimeMillis();
         Loger.d(TAG, "onBufferStart:isInitialized=" + vPlayer.isInitialized());
-
+        bufferStartEntity.setTip(tid);
+        bufferStartEntity.setStartTime(bufferTime);
         HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
         defaultKey.put("pri", priMap.get(PRI_KEY_onBufferStart));
         addDefault(defaultKey);
-        defaultKey.put("cpu", "" + getCpuRate());
-        defaultKey.put("mem", "" + getMemRate());
+        defaultKey.put("cpu", getCpuRate());
+        defaultKey.put("mem", getMemRate());
         String cip = oldCipdispatch;
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
@@ -580,7 +595,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             if (lastPlayserverEntity != null) {
                 dataJson.put("node", "" + lastPlayserverEntity.getProvide());
             }
-            dataJson.put("bufType", "" + bufType);
+            dataJson.put("bufType", bufType);
             dataJson.put("uid", "" + userId);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -594,14 +609,15 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         super.onBufferComplete();
         isBuffer = false;
         bufType = 0;
+        bufferStartEntity.setEndTime(System.currentTimeMillis());
         Loger.d(TAG, "onBufferComplete:isInitialized=" + vPlayer.isInitialized());
         HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
         defaultKey.put("pri", priMap.get(PRI_KEY_onBufferComplete));
         addDefault(defaultKey);
-        defaultKey.put("cpu", "" + getCpuRate());
-        defaultKey.put("mem", "" + getMemRate());
+        defaultKey.put("cpu", getCpuRate());
+        defaultKey.put("mem", getMemRate());
         String cip = oldCipdispatch;
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
@@ -616,8 +632,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             if (lastPlayserverEntity != null) {
                 dataJson.put("node", "" + lastPlayserverEntity.getProvide());
             }
-            dataJson.put("bufType", "" + bufType);
-            dataJson.put("bufDur", "" + (System.currentTimeMillis() - bufferTime));
+            dataJson.put("bufType", bufType);
+            dataJson.put("bufDur", (System.currentTimeMillis() - bufferTime));
             dataJson.put("uid", "" + userId);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -627,17 +643,29 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
     String oldCipdispatch = "";
 
-    private String getMemRate() {
+//    private String getMemRate() {
+//        int totalRam = HardWareUtil.getTotalRam();
+//        long availMemory = HardWareUtil.getAvailMemory(activity) / 1024;
+//        double memRate = (double) ((totalRam - availMemory) * 100) / (double) totalRam;
+//        return "" + df.format(memRate);
+//    }
+
+    private double getMemRate() {
         int totalRam = HardWareUtil.getTotalRam();
         long availMemory = HardWareUtil.getAvailMemory(activity) / 1024;
         double memRate = (double) ((totalRam - availMemory) * 100) / (double) totalRam;
-        return "" + df.format(memRate);
+        return memRate;
     }
 
-    private String getCpuRate() {
+    private double getCpuRate() {
         double cpuRate = HardWareUtil.getCPURateDesc();
-        return "" + df.format(cpuRate);
+        return cpuRate;
     }
+
+//    private String getCpuRate() {
+//        double cpuRate = HardWareUtil.getCPURateDesc();
+//        return "" + df.format(cpuRate);
+//    }
 
     /**
      * 设置默认参数
@@ -655,7 +683,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("net", getNet());
         int totalRam = HardWareUtil.getTotalRam();
         defaultKey.put("ram", totalRam);
-        defaultKey.put("ip138", IpAddressUtil.USER_IP);
+        defaultKey.put("ip138ip", IpAddressUtil.USER_IP);
+        defaultKey.put("ip138oper", IpAddressUtil.USER_OPERATE);
     }
 
     public void liveGetPlayServer(final long delay, PlayFailCode playFailCode, int code, String cipdispatch, URLDNS urldns, final String url) {
@@ -666,8 +695,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("serv", serv);
         defaultKey.put("pri", "0");
         addDefault(defaultKey);
-        defaultKey.put("cpu", "" + getCpuRate());
-        defaultKey.put("mem", "" + getMemRate());
+        defaultKey.put("cpu", getCpuRate());
+        defaultKey.put("mem", getMemRate());
         if (StringUtils.isEmpty(cipdispatch)) {
             cipdispatch = oldCipdispatch;
         }
@@ -746,8 +775,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 defaultKey.put("serv", serv);
                 defaultKey.put("pri", priMap.get(PRI_KEY_HEART));
                 addDefault(defaultKey);
-                defaultKey.put("cpu", "" + getCpuRate());
-                defaultKey.put("mem", "" + getMemRate());
+                defaultKey.put("cpu", getCpuRate());
+                defaultKey.put("mem", getMemRate());
                 String cip = oldCipdispatch;
                 defaultKey.put("cip", "" + cip);
                 defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
@@ -762,12 +791,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     if (lastPlayserverEntity != null) {
                         dataJson.put("node", "" + lastPlayserverEntity.getProvide());
                     }
-                    dataJson.put("latency", "" + bufferduration);
-                    dataJson.put("avgFps", "" + averagefps);
-                    dataJson.put("fps", "" + fps);
+                    dataJson.put("latency", bufferduration);
+                    dataJson.put("avgFps", averagefps);
+                    dataJson.put("fps", videofps);
                     dataJson.put("playBuf", bufferduration);
                     dataJson.put("hbDur", time);
-                    dataJson.put("bytes", "" + bytes);
+                    dataJson.put("bytes", bytes);
                     dataJson.put("uid", "" + userId);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -930,10 +959,19 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private long xescdnLog2Before = 0;
 
     private void xescdnLog2(HashMap<String, Object> defaultKey, final JSONObject dataJson, final boolean saveToFile) {
-        logger.d("xescdnLog2:tid=" + defaultKey.get("tid") + ",pri=" + defaultKey.get("pri"));
+        String tid = "" + defaultKey.get("tid");
+        String pri = "" + defaultKey.get("pri");
+        logger.d("xescdnLog2:tid=" + tid + ",pri=" + pri);
 //        if (AppConfig.DEBUG) {
 //            logurl = logurls[logIndex++ % logurls.length];
 //        }
+        String priStr = tidAndPri.get(tid);
+        if (priStr == null) {
+            priStr = "" + pri;
+        } else {
+            priStr += "," + pri;
+        }
+        tidAndPri.put(tid, priStr);
         final String templogurl = logurl;
         final JSONObject requestJson = new JSONObject();
         try {
@@ -1078,8 +1116,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     defaultKey.put("pri", priMap.get(PRI_KEY_RENDERING));
                 }
                 addDefault(defaultKey);
-                defaultKey.put("cpu", "" + getCpuRate());
-                defaultKey.put("mem", "" + getMemRate());
+                defaultKey.put("cpu", getCpuRate());
+                defaultKey.put("mem", getMemRate());
                 String cip = oldCipdispatch;
                 defaultKey.put("cip", "" + cip);
                 defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
@@ -1105,20 +1143,20 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             bufferduration = ijkMediaPlayer.getVideoCachedDuration();
                             trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
                         }
-                        dataJson.put("bufType", "" + bufType);
+                        dataJson.put("bufType", bufType);
                         if (isBuffer) {
-                            dataJson.put("bufDur", "" + (System.currentTimeMillis() - bufferTime));
+                            dataJson.put("bufDur", (System.currentTimeMillis() - bufferTime));
                         } else {
-                            dataJson.put("bufDur", "0");
+                            dataJson.put("bufDur", 0);
                         }
-                        dataJson.put("latency", "" + bufferduration);
+                        dataJson.put("latency", bufferduration);
                         long time = System.currentTimeMillis() - frame10Start;
                         float averagefps = (float) (((double) (lastDisaplyCount - fistDisaplyCount)) * 1000 / time);
-                        dataJson.put("avgFps", "" + averagefps);
-                        dataJson.put("fps", "" + fps);
+                        dataJson.put("avgFps", averagefps);
+                        dataJson.put("fps", videofps);
                         dataJson.put("playBuf", bufferduration);
                         dataJson.put("hbDur", heartTime);
-                        dataJson.put("bytes", "" + (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+                        dataJson.put("bytes", (trafficStatisticByteCount - lastTrafficStatisticByteCount));
                     } else {
                         URLDNS urldns = new URLDNS();
                         try {
@@ -1165,7 +1203,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         ldNetTraceClient.startTraceRoute(host, bundle, new LDNetTraceRoute.LDNetTraceRouteListener() {
             @Override
             public void OnNetTraceUpdated(String log) {
-                logger.d("OnNetTraceUpdated:log=" + log);
+//                logger.d("OnNetTraceUpdated:log=" + log);
             }
 
             @Override
@@ -1181,8 +1219,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     defaultKey.put("serv", serv);
                     defaultKey.put("pri", "1");
                     addDefault(defaultKey);
-                    defaultKey.put("cpu", "" + getCpuRate());
-                    defaultKey.put("mem", "" + getMemRate());
+                    defaultKey.put("cpu", getCpuRate());
+                    defaultKey.put("mem", getMemRate());
                     defaultKey.put("cip", "" + cip);
                     defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
                     defaultKey.put("sip", "" + msip);
@@ -1197,16 +1235,20 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             JSONObject traceObj = new JSONObject();
                             traceObj.put("ttl", javaTraceResult.ttl);
                             traceObj.put("send", 4);
-                            traceObj.put("best", "" + javaTraceResult.rttMin);
+                            traceObj.put("best", javaTraceResult.rttMin);
                             ArrayList<String> times = javaTraceResult.getTimes();
                             if (times.size() > 0) {
-                                traceObj.put("last", "" + times.get(times.size() - 1));
+                                try {
+                                    traceObj.put("last", Float.parseFloat(times.get(times.size() - 1)));
+                                } catch (Exception e) {
+
+                                }
                             } else {
-                                traceObj.put("last", "0");
+                                traceObj.put("last", 0);
                             }
-                            traceObj.put("worst", "" + javaTraceResult.rttMax);
-                            traceObj.put("avrg", "" + javaTraceResult.rttAvg);
-                            traceObj.put("loss", "" + javaTraceResult.lostpackets);
+                            traceObj.put("worst", javaTraceResult.rttMax);
+                            traceObj.put("avrg", javaTraceResult.rttAvg);
+                            traceObj.put("loss", javaTraceResult.lost);
                             traceObj.put("recv", javaTraceResult.receivedpackets);
                             traceObj.put("sip", javaTraceResult.bothHost);
                             traceArray.put(traceObj);
@@ -1282,8 +1324,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             if (bundle1.containsKey("fps_num") && bundle1.containsKey("fps_den")) {
                                 int fps_num = Integer.parseInt(bundle1.getString("fps_num"));
                                 int fps_den = Integer.parseInt(bundle1.getString("fps_den"));
-                                fps = (float) fps_num / (float) fps_den;
-                                Loger.d(TAG, "getFps:fps_num=" + fps_num + ",fps_den=" + fps_den + ",fps=" + fps);
+                                videofps = (float) fps_num / (float) fps_den;
+                                Loger.d(TAG, "getFps:fps_num=" + fps_num + ",fps_den=" + fps_den + ",fps=" + videofps);
                             }
                             break;
                         }
