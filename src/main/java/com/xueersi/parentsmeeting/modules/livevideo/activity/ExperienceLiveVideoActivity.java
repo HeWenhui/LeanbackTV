@@ -949,8 +949,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         getDataCallBack);
                 return;
             }
-//            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
-//            seekTo(2400000);
+            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
+//            seekTo(590000);
 //            if (vPlayer != null) {
 //                long pos = (long)SharedPrefUtil.getSharedPrefUtil(mContext).getValue(mVideoEntity.getLiveId(),(long)0);
 //                if (pos < getDuration()){

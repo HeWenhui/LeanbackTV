@@ -54,7 +54,7 @@ public class NBH5ExperienceBll extends LiveBackBaseBll {
                     h5CoursewareBll = new H5CoursewareBll(mContext);
                     h5CoursewareBll.initView(mRootView);
                 }
-                if (!oldQuestionEntity.getvQuestionID().equals(questionEntity.getvQuestionID())) {
+                if (oldQuestionEntity == null || questionEntity == null || !oldQuestionEntity.getvQuestionID().equals(questionEntity.getvQuestionID())) {
                     getCourseHttpManager().sendExpSpeechEvalResult(mVideoEntity.getSpeechEvalSubmitUrl(),
                             mVideoEntity.getLiveId(), questionEntity.getvQuestionID(), mVideoEntity.getChapterId(),
                             "0", "", new HttpCallBack() {
