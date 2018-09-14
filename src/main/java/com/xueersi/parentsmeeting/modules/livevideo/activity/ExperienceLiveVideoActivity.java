@@ -388,6 +388,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private PopupWindow mWindow;
     private ExperienceResult mData;
 
+    private boolean isFirstGetResult = true;
+
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -948,7 +950,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //                return;
             }
 //            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
-//            seekTo(3200000);
+//            seekTo(2400000);
             if (vPlayer != null) {
                 long pos = (long)SharedPrefUtil.getSharedPrefUtil(mContext).getValue(mVideoEntity.getLiveId(),(long)0);
                 if (pos < getDuration()){
@@ -970,8 +972,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             if (objData.length > 0) {
                 mData = (ExperienceResult) objData[0];
                 // 测试体验课播放器的结果页面
-                if (mData != null) {
+                if (mData != null && isFirstGetResult) {
                     showPopupwinResult();
+                    isFirstGetResult = false;
                     setBackgroundAlpha(0.4f);
                 }
             }
@@ -1373,18 +1376,4 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         super.onStop();
         liveBackBll.onStop();
     }
-
-    private int getmChatCount() {
-        int times = 0;
-//        String sender = UserBll.getInstance().getMyUserInfoEntity().getChatName();
-        if (mMsgs != null && !mMsgs.isEmpty()) {
-            for (int i = 0; i < mMsgs.size(); i++) {
-                if (mMsgs.get(i).getSender().equals("我")) {
-                    times++;
-                }
-            }
-        }
-        return times;
     }
-
-}
