@@ -149,7 +149,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 //        lastSecond = (int) totalOpeningLength.duration;
     }
 
-    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, AtomicBoolean audioRequest) {
+    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, AtomicBoolean audioRequest, RelativeLayout mContentView) {
         if (speakerRecognitioner != null) {
 
         } else {
@@ -175,6 +175,9 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
         }
         this.bottomContent = bottomContent;
         myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_english_content);
+        if (myView == null) {
+            myView = mContentView.findViewById(R.id.rl_livevideo_english_content);
+        }
         myView.setVisibility(View.VISIBLE);
         final View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_stand_english_speek, myView, false);
         myView.addView(layout_livevideo_stat_gold);
