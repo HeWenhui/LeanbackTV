@@ -143,7 +143,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private String PRI_KEY_onBufferComplete = "onBufferComplete";
     private String PRI_KEY_HEART = "HEART";
     private String tid = "";
-    private HashMap<String, String> tidAndPri = new HashMap<>();
+//    private HashMap<String, String> tidAndPri = new HashMap<>();
     private PlayBufferEntity bufferStartEntity = new PlayBufferEntity();
 
     static {
@@ -977,13 +977,13 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //        if (AppConfig.DEBUG) {
 //            logurl = logurls[logIndex++ % logurls.length];
 //        }
-        String priStr = tidAndPri.get(tid);
-        if (priStr == null) {
-            priStr = "" + pri;
-        } else {
-            priStr += "," + pri;
-        }
-        tidAndPri.put(tid, priStr);
+//        String priStr = tidAndPri.get(tid);
+//        if (priStr == null) {
+//            priStr = "" + pri;
+//        } else {
+//            priStr += "," + pri;
+//        }
+//        tidAndPri.put(tid, priStr);
         final String templogurl = logurl;
         final JSONObject requestJson = new JSONObject();
         try {
