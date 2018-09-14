@@ -344,8 +344,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             dataJson.put("uri", channelname);
             if (lastPlayserverEntity != null) {
                 dataJson.put("node", "" + lastPlayserverEntity.getProvide());
+            } else {
+                dataJson.put("node", "xrs_back");
             }
-
             long trafficStatisticByteCount = lastTrafficStatisticByteCount;
             if (vPlayer.isInitialized()) {
                 IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
@@ -391,6 +392,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             dataJson.put("uri", channelname);
             if (lastPlayserverEntity != null) {
                 dataJson.put("node", "" + lastPlayserverEntity.getProvide());
+            } else {
+                dataJson.put("node", "xrs_back");
             }
             dataJson.put("code", 0);
             dataJson.put("msg", "Success");
@@ -519,6 +522,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                                     dataJson.put("uri", channelname);
                                     if (lastPlayserverEntity != null) {
                                         dataJson.put("node", "" + lastPlayserverEntity.getProvide());
+                                    } else {
+                                        dataJson.put("node", "xrs_back");
                                     }
                                     dataJson.put("code", 0);
                                     dataJson.put("msg", "Success");
@@ -594,6 +599,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             ;
             if (lastPlayserverEntity != null) {
                 dataJson.put("node", "" + lastPlayserverEntity.getProvide());
+            } else {
+                dataJson.put("node", "xrs_back");
             }
             dataJson.put("bufType", bufType);
             dataJson.put("uid", "" + userId);
@@ -631,6 +638,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             dataJson.put("uri", channelname);
             if (lastPlayserverEntity != null) {
                 dataJson.put("node", "" + lastPlayserverEntity.getProvide());
+            } else {
+                dataJson.put("node", "xrs_back");
             }
             dataJson.put("bufType", bufType);
             dataJson.put("bufDur", (System.currentTimeMillis() - bufferTime));
@@ -683,8 +692,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         defaultKey.put("net", getNet());
         int totalRam = HardWareUtil.getTotalRam();
         defaultKey.put("ram", totalRam);
-        defaultKey.put("ip138ip", IpAddressUtil.USER_IP);
-        defaultKey.put("ip138oper", IpAddressUtil.USER_OPERATE);
     }
 
     public void liveGetPlayServer(final long delay, PlayFailCode playFailCode, int code, String cipdispatch, URLDNS urldns, final String url) {
@@ -790,6 +797,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     dataJson.put("uri", channelname);
                     if (lastPlayserverEntity != null) {
                         dataJson.put("node", "" + lastPlayserverEntity.getProvide());
+                    } else {
+                        dataJson.put("node", "xrs_back");
                     }
                     dataJson.put("latency", bufferduration);
                     dataJson.put("avgFps", averagefps);
@@ -1132,6 +1141,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     dataJson.put("uri", channelname);
                     if (lastPlayserverEntity != null) {
                         dataJson.put("node", "" + lastPlayserverEntity.getProvide());
+                    } else {
+                        dataJson.put("node", "xrs_back");
                     }
                     dataJson.put("code", playFailCode.getCode());
                     dataJson.put("msg", "" + playFailCode.getTip());
@@ -1174,6 +1185,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 xescdnLog2(defaultKey, dataJson, false);
 
                 if (playFailCode.getCode() == PlayFailCode.TIME_OUT) {
+                    if (msip != null) {
+                        msip = DNSUtil.getHost(msip);
+                    }
                     startTraceRoute("" + mUriHost, msip, cip, false);
                 }
             }
