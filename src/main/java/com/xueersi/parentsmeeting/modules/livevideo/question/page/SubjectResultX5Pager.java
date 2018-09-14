@@ -13,6 +13,7 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
@@ -106,7 +107,7 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
 //        examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
 //                + "&stuId=" + stuId + "&stuName=" + stuName;
         if(LiveVideoConfig.isNewArts){
-            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId;
+            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId + "&token=" + AppBll.getInstance().getUserToken();
         } else {
             examUrl = testPaperUrl + "/" + liveid + "?testId=" + testId
                     + "&stuId=" + stuId + "&stuName=" + stuName + "&stuCouId=" + stuCouId;

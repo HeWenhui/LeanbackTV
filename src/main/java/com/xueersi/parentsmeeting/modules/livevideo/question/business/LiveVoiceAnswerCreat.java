@@ -48,7 +48,7 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             WrapQuestionSwitch wrapQuestionSwitch = (WrapQuestionSwitch) questionSwitch;
             wrapQuestionSwitch.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         }
-        VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.questiontype, questionSwitch);
+        VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch);
         voiceAnswerPager2.setIse(mIse);
         voiceAnswerPager2.setLivePagerBack(livePagerBack);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -82,21 +82,40 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     public boolean onAnswerReslut(Context context, AnswerRightResultVoice questionBll, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
         boolean isSuccess = false;
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-        if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
-            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
-                questionBll.initSelectAnswerRightResultVoice(entity);
-            } else {
-                questionBll.initFillinAnswerRightResultVoice(entity);
+        if(LiveVideoConfig.isNewArts){
+            if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE2) {
+                if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
+                    questionBll.initSelectAnswerRightResultVoice(entity);
+                } else {
+                    questionBll.initFillinAnswerRightResultVoice(entity);
+                }
+                isSuccess = true;
+                // 回答错误提示
+            } else if (entity.getResultType() == 0) {
+                if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
+                    questionBll.initSelectAnswerWrongResultVoice(entity);
+                } else {
+                    questionBll.initFillAnswerWrongResultVoice(entity);
+                }
+                // 填空题部分正确提示
             }
-            isSuccess = true;
-            // 回答错误提示
-        } else if (entity.getResultType() == QUE_RES_TYPE2) {
-            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
-                questionBll.initSelectAnswerWrongResultVoice(entity);
-            } else {
-                questionBll.initFillAnswerWrongResultVoice(entity);
+        }else{
+            if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
+                if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
+                    questionBll.initSelectAnswerRightResultVoice(entity);
+                } else {
+                    questionBll.initFillinAnswerRightResultVoice(entity);
+                }
+                isSuccess = true;
+                // 回答错误提示
+            } else if (entity.getResultType() == QUE_RES_TYPE2) {
+                if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
+                    questionBll.initSelectAnswerWrongResultVoice(entity);
+                } else {
+                    questionBll.initFillAnswerWrongResultVoice(entity);
+                }
+                // 填空题部分正确提示
             }
-            // 填空题部分正确提示
         }
         return isSuccess;
     }

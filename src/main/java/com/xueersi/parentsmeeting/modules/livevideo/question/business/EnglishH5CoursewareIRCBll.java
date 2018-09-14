@@ -212,15 +212,21 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         h5OnlineTechEntity.setTotalScore(onlineTechObj.optString("totalScore"));
                         h5OnlineTechEntity.setAnswer(onlineTechObj.optString("answer"));
                         videoQuestionLiveEntity.assess_ref = onlineTechObj.optString("assess_ref");
+                        videoQuestionLiveEntity.setIsVoice(onlineTechObj.optString("isVoice"));
                         // 09.03 拼接和前端交互的URL
                         JSONArray jsonArray = onlineTechObj.optJSONArray("id");
                         String testIds = getIdStr(jsonArray);
                         videoQuestionLiveEntity.setUrl(buildCourseUrl(testIds));
                         videoQuestionLiveEntity.id = testIds;
                         videoQuestionLiveEntity.setOnlineTechEntity(h5OnlineTechEntity);
+                        if ("1".equals(videoQuestionLiveEntity.getIsVoice())) {
+                            videoQuestionLiveEntity.type  = onlineTechObj
+                                    .optString("questiontype");
+                            videoQuestionLiveEntity.assess_ref = onlineTechObj.optString("assess_ref");
+                        }
                     }
                 }
-                if (ptTypeFilters.contains(videoQuestionLiveEntity.type)) {
+                if (ptTypeFilters.contains(videoQuestionLiveEntity.type) && !"1".equals(videoQuestionLiveEntity.getIsVoice())){
                     Loger.e("EnglishH5IRC","====> return 0099999999");
                     return;
                 }else {
@@ -476,9 +482,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     videoQuestionLiveEntity.setUrl(buildCourseUrl(testIds));
                     String isVoice = object.optString("isVoice");
                     videoQuestionLiveEntity.setIsVoice(isVoice);
-                    if("18".equals(object.optString("ptype")) || "19".equals(object.optString("ptype")) || "50".equals(object.optString("ptype"))){
-                        videoQuestionLiveEntity.type = object.optString("questiontype");
-                    }
                     if ("1".equals(isVoice)) {
                         videoQuestionLiveEntity.questiontype = object.optString("questiontype");
                         videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
