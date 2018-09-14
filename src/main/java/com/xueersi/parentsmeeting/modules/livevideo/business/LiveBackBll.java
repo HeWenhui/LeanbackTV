@@ -255,7 +255,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
-        if (isExperience) {//全身直播准备开关聊天区的queue
+        if (isExperience && mVideoEntity.getPattern() == 2) {//全身直播准备开关聊天区的queue
             initLiveMessageQueue();
         }
     }
@@ -316,7 +316,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
             businessBll.onPositionChanged(playPosition);
         }
-        if (isExperience) {//全身直播体验课扫描开关聊天区，三分屏不走这里，有自己的逻辑
+        if (isExperience && mVideoEntity.getPattern() == 2) {//全身直播体验课扫描开关聊天区，三分屏不走这里，有自己的逻辑
             scanMessage(position);
         }
     }

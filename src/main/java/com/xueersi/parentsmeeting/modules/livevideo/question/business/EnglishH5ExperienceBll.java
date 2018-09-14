@@ -84,7 +84,6 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE: {
-                MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
                 questionEntity.setAnswered(true);
                 VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
                 englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
