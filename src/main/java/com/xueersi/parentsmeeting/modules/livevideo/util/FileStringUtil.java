@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -13,10 +12,10 @@ import java.io.IOException;
  */
 
 public class FileStringUtil {
-    public static void saveStrToFile(String string, File file) {
+    public static void saveStrToFile(String string, File file, boolean append) {
         FileOutputStream outputStream = null;
         try {
-            outputStream = new FileOutputStream(file);
+            outputStream = new FileOutputStream(file, append);
             outputStream.write(string.getBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();

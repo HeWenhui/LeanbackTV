@@ -212,8 +212,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     public void close() {
         onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
         onBack();
-        LiveVideoConfig.isNewEnglishH5 = false;
-        LiveVideoConfig.isMulLiveBack = false;
+//        LiveVideoConfig.isNewEnglishH5 = false;
+//        LiveVideoConfig.isMulLiveBack = false;
     }
 
     @Override
@@ -464,6 +464,11 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEnergyNum = -1;
+                if(englishH5Entity.getNewEnglishH5()){
+                    LiveVideoConfig.isNewEnglishH5 = true;
+                }else {
+                    LiveVideoConfig.isNewEnglishH5 = false;
+                }
             }
         });
 

@@ -42,11 +42,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
-import com.xueersi.parentsmeeting.modules.livevideo.business.KeyboardObserverReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -500,12 +498,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     public void onPause() {
-        super.onPause();
-        if (!onPauseNotStopVideo.get()) {
-            if (liveBackVideoBll != null) {
-                liveBackVideoBll.onPause();
+        if (isInitialized()) {
+            if (!onPauseNotStopVideo.get()) {
+                if (liveBackVideoBll != null) {
+                    liveBackVideoBll.onPause(0);
+                }
             }
         }
+        super.onPause();
     }
 
     @Override

@@ -150,7 +150,7 @@ public class LiveGetPlayServer {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
-                        livePlayLog.liveGetPlayServer(time, 20, "", urldns, serverurl);
+                        livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode20, 20, "", urldns, serverurl);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
                                 mVideoAction.onLiveStart(null, mLiveTopic, modechange);
@@ -160,11 +160,11 @@ public class LiveGetPlayServer {
                     }
                 } else {
                     if (ex instanceof UnknownHostException) {
-                        livePlayLog.liveGetPlayServer(time, 10, "", urldns, serverurl);
+                        livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode10, 10, "", urldns, serverurl);
                         mVideoAction.onPlayError(0, PlayErrorCode.PLAY_SERVER_CODE_101);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            livePlayLog.liveGetPlayServer(time, PlayFailCode.TIME_OUT, "", urldns, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode15, PlayFailCode.TIME_OUT, "", urldns, serverurl);
                             mVideoAction.onPlayError(0, PlayErrorCode.PLAY_SERVER_CODE_102);
                         }
                     }
@@ -201,7 +201,7 @@ public class LiveGetPlayServer {
                     if (server != null) {
                         if (livePlayLog != null) {
                             long time = System.currentTimeMillis() - before;
-                            livePlayLog.liveGetPlayServer(time, 0, server.getCipdispatch(), urldns, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode0, 0, server.getCipdispatch(), urldns, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -214,7 +214,7 @@ public class LiveGetPlayServer {
                             mVideoAction.onLiveStart(server, mLiveTopic, modechange);
                         }
                     } else {
-                        s += ",server=null";
+                        s += ",server=null,result=" + result;
                         onLiveFailure("直播调度失败", new Runnable() {
 
                             @Override

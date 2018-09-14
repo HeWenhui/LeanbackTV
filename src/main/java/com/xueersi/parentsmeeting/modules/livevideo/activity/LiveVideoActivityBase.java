@@ -639,7 +639,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             }
         }
         if (livePlayLog != null) {
-            livePlayLog.onPause();
+            livePlayLog.onPause(0);
         }
     }
 
@@ -705,7 +705,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     }
 
     @Override
-    public void onBackPressed() {
+    public final void onBackPressed() {
         // 这里需要写代码，如果是横屏则转换竖屏
         if (mIsLand) {
             // 如果是横屏则切换为竖屏

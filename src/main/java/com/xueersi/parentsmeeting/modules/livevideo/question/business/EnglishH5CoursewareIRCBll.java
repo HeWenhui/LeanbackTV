@@ -194,7 +194,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
                             String teamId = studentLiveInfo.getTeamId();
                             String classId = studentLiveInfo.getClassId();
-//                            EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
                             englishH5Entity.setNewEnglishH5(true);
                             try {
                                 JSONObject objects = new JSONObject();
