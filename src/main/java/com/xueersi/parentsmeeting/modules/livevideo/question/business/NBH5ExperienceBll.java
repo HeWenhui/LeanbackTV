@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.view.View;
 
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
@@ -51,6 +53,17 @@ public class NBH5ExperienceBll extends LiveBackBaseBll {
                 if (h5CoursewareBll == null) {
                     h5CoursewareBll = new H5CoursewareBll(mContext);
                     h5CoursewareBll.initView(mRootView);
+                }
+                if (!oldQuestionEntity.getvQuestionID().equals(questionEntity.getvQuestionID())) {
+                    getCourseHttpManager().sendExpSpeechEvalResult(mVideoEntity.getSpeechEvalSubmitUrl(),
+                            mVideoEntity.getLiveId(), questionEntity.getvQuestionID(), mVideoEntity.getChapterId(),
+                            "0", "", new HttpCallBack() {
+
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
+                        }
+                    });
                 }
                 h5CoursewareBll.onH5Courseware(questionEntity.getH5Play_url(), "on");
                 break;

@@ -79,7 +79,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
     /** 互动题 */
-    protected VideoQuestionEntity mQuestionEntity;
+    private VideoQuestionEntity mQuestionEntity;
     private HashMap<VideoQuestionEntity, VideoQuestionLiveEntity> liveEntityHashMap = new HashMap<>();
     /** 显示互动题 */
     private static final int SHOW_QUESTION = 0;
@@ -108,7 +108,6 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
      */
     private Boolean isExperience;
 
-
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         super(activity);
         logger.setLogMethod(false);
@@ -119,7 +118,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         isArts = intent.getIntExtra("isArts", 0);
         islocal = intent.getBooleanExtra("islocal", false);
         pattern = intent.getIntExtra("pattern", 0);
-        isExperience = activity.getIntent().getBooleanExtra("isExperience", false);
+        isExperience = intent.getBooleanExtra("isExperience", false);
         if ("LivePlayBackActivity".equals(where)) {//直播辅导
             mLiveType = LiveVideoConfig.LIVE_TYPE_TUTORIAL;
         } else if ("PublicLiveDetailActivity".equals(where)) {//公开直播
@@ -159,10 +158,10 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         mHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
     }
 
-
     public Boolean getExperience() {
         return isExperience;
     }
+
     public int getLiveType() {
         return mLiveType;
     }

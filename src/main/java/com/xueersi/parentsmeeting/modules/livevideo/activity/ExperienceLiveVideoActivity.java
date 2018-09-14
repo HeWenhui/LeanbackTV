@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -42,6 +41,7 @@ import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.SharedPrefUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -81,7 +81,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll;
@@ -659,7 +658,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     jsonObject.put("from", "android_" + teamId);
                     jsonObject.put("to", teamId);
                 }
+                lectureLivePlayBackBll.sendRecordInteract(mVideoEntity.getInteractUrl(), mVideoEntity.getChapterId(),
+                        1);
                 mIRCMessage.sendMessage(jsonObject.toString());
+
+
             } catch (Exception e) {
                 UmsAgentManager.umsAgentException(BaseApplication.getContext(), "ExperienceLiveVideoActivity " +
                         "sendMessage", e);
@@ -685,7 +688,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         questionBll = new QuestionBll(this, mVideoEntity.getStuCourseId());
         mLiveBll = new LiveBll(this, mVideoEntity.getSectionId(), mVideoEntity.getChapterId(), EXP_LIVE_TYPE, 0);
 
-//        mLiveBll.setSendMsgListener(new MsgSendListener());
+        mLiveBll.setSendMsgListener(new MsgSendListener());
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", mVideoEntity.getSectionId());
 
@@ -738,7 +741,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
                                 (int) VIDEO_HEIGHT, VIDEO_RATIO);
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                        LiveVideoPoint.initLiveVideoPoint((Activity) mContext,LiveVideoPoint.getInstance(),lp);
+                        LiveVideoPoint.initLiveVideoPoint((Activity) mContext, LiveVideoPoint.getInstance(), lp);
                         setFirstParam(lp);
                         mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
 
@@ -946,7 +949,14 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
 //            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
 //            seekTo(3200000);
-
+            if (vPlayer != null) {
+                long pos = (long)SharedPrefUtil.getSharedPrefUtil(mContext).getValue(mVideoEntity.getLiveId(),(long)0);
+                if (pos < getDuration()){
+                    seekTo(pos);
+                } else {
+                    seekTo(0);
+                }
+            }
         }
         // 心跳时间的统计
         mHandler.removeCallbacks(mPlayDuration);
@@ -1249,9 +1259,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         ivTeacherNotpresent.setVisibility(View.VISIBLE);
 //        ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
         ivTeacherNotpresent.setBackgroundResource(R.drawable.live_free_play_end);
-        //发送交互数据
-        lectureLivePlayBackBll.sendRecordInteract(mVideoEntity.getInteractUrl(), mVideoEntity.getChapterId(),
-                getmChatCount());
+
         // 获取学生的学习反馈
         lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
                 getDataCallBack);
@@ -1308,6 +1316,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     @Override
     public void onPause() {
         super.onPause();
+        SharedPrefUtil.getSharedPrefUtil(mContext).setValue(mVideoEntity.getLiveId(),vPlayer.getCurrentPosition());
         isPlay = false;
         pause = true;
         vPlayer.releaseSurface();
