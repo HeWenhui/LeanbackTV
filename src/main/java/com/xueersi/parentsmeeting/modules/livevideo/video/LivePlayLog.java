@@ -371,8 +371,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     }
 
     private void send(String method, long dur) {
-        logger.d("send:method=" + method + ",framesPsTen=" + framesPsTen.size());
+        logger.d("send:method=" + method + ",framesPsTen=" + framesPsTen.size() + ",tid=" + tid);
         framesPsTen.clear();
+//        if (StringUtils.isEmpty(tid)) {
+//            return;
+//        }
         HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
@@ -426,7 +429,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             }
             dataJson.put("hbDur", heartTime);
             dataJson.put("bytes", (trafficStatisticByteCount - lastTrafficStatisticByteCount));
-            dataJson.put("allpri", "" + tidAndPri.get(tid));
+//            dataJson.put("allpri", "" + tidAndPri.get(tid));
             dataJson.put("uid", "" + userId);
         } catch (JSONException e) {
             e.printStackTrace();

@@ -342,7 +342,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         where = intent.getStringExtra("where");
         isArts = intent.getIntExtra("isArts", 0);
 
-        liveBackVideoBll = new LiveBackVideoBll(activity);
+        liveBackVideoBll = new LiveBackVideoBll(activity, islocal);
         liveBackVideoBll.setVideoEntity(mVideoEntity);
         liveBackVideoBll.setLiveBackPlayVideoFragment(liveBackPlayVideoFragment);
         liveBackVideoBll.setvPlayer(vPlayer);
