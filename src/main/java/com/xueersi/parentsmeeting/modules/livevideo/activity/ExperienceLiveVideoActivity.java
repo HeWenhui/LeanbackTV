@@ -84,6 +84,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePag
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
@@ -854,7 +855,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         liveBackBll.addBusinessBll(new QuestionExperienceBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId()));
         liveBackBll.addBusinessBll(new EnglishH5ExperienceBll(activity, liveBackBll));
-        liveBackBll.addBusinessBll(new NBH5PlayBackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new NBH5ExperienceBll(activity, liveBackBll));
         liveBackBll.onCreate();
     }
 
@@ -1248,6 +1249,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         ivTeacherNotpresent.setVisibility(View.VISIBLE);
 //        ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
         ivTeacherNotpresent.setBackgroundResource(R.drawable.live_free_play_end);
+        //发送交互数据
         lectureLivePlayBackBll.sendRecordInteract(mVideoEntity.getInteractUrl(), mVideoEntity.getChapterId(),
                 getmChatCount());
         // 获取学生的学习反馈
