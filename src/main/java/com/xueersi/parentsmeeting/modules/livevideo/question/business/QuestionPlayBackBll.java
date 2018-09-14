@@ -220,7 +220,6 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         HttpCallBack httpCallBack = new HttpCallBack(loadEntity) {
-
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 Loger.d(TAG, "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity
@@ -342,7 +341,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 onSpeechEval.onPmError(responseEntity);
             }
         };
-        if (liveBackBll.getPattern() != 2) {
+        if (!liveBackBll.getExperience()) {
             getCourseHttpManager().getSpeechEval(enstuId, liveid, id, httpCallBack);
         } else {
             getCourseHttpManager().getExpeSpeechEval(mVideoEntity.getSpeechEvalUrl(), enstuId,
@@ -371,7 +370,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 onSpeechEval.onPmError(responseEntity);
             }
         };
-        if (liveBackBll.getPattern() != 2) {
+        if (!liveBackBll.getExperience()) {
             getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
                     httpCallBack);
         } else {
@@ -386,11 +385,18 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         }
     }
 
+    /**
+     * 发送语音评测
+     *
+     * @param id
+     * @param stuAnswer
+     * @param onSpeechEval
+     */
     @Override
     public void sendSpeechEvalResult2(String id, String stuAnswer, final OnSpeechEval onSpeechEval) {
         String liveid = mVideoEntity.getLiveId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
+        HttpCallBack httpCallBack = new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(final ResponseEntity responseEntity) {
@@ -415,7 +421,22 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             public void onPmError(ResponseEntity responseEntity) {
                 onSpeechEval.onPmError(responseEntity);
             }
-        });
+        };
+
+        if (!liveBackBll.getExperience()) {
+//            getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
+//                    httpCallBack);
+            getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, httpCallBack);
+        } else {
+            getCourseHttpManager().sendExpSpeechEvalResult(
+                    mVideoEntity.getSpeechEvalSubmitUrl(),
+                    liveid,
+                    id,
+                    mVideoEntity.getChapterId(),
+                    questionBll.IS_SCIENCE == false ? "1" : "0",
+                    stuAnswer,
+                    httpCallBack);
+        }
     }
 
     @Override
