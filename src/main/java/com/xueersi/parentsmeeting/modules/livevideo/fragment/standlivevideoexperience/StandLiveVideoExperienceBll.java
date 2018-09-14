@@ -386,8 +386,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 //                        jsonObject.put("to", teamId);
 //                    }
                     lectureLivePlayBackBll.sendRecordInteract(mVideoEntity.getInteractUrl(), mVideoEntity
-                                    .getChapterId(),
-                            1);
+                            .getChapterId(), 1);
                     mIRCMessage.sendMessage(jsonObject.toString());
                     sendMessage = true;
                     if (starAction != null) {

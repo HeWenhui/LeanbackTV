@@ -705,7 +705,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     }
 
     @Override
-    public final void onBackPressed() {
+    public void onBackPressed() {
         // 这里需要写代码，如果是横屏则转换竖屏
         if (mIsLand) {
             // 如果是横屏则切换为竖屏

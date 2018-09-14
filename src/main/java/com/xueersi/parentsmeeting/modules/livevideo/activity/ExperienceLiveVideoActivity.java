@@ -940,25 +940,25 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
             if (mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000) {
                 // 03.21 提示直播已结束
-//                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-//                ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
-//                vPlayer.releaseSurface();
-//                vPlayer.stop();
-//                // 测试体验课播放器的结果页面
-//                lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
-//                        getDataCallBack);
-//                return;
+                ivTeacherNotpresent.setVisibility(View.VISIBLE);
+                ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
+                vPlayer.releaseSurface();
+                vPlayer.stop();
+                // 测试体验课播放器的结果页面
+                lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
+                        getDataCallBack);
+                return;
             }
 //            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
 //            seekTo(2400000);
-            if (vPlayer != null) {
-                long pos = (long)SharedPrefUtil.getSharedPrefUtil(mContext).getValue(mVideoEntity.getLiveId(),(long)0);
-                if (pos < getDuration()){
-                    seekTo(pos);
-                } else {
-                    seekTo(0);
-                }
-            }
+//            if (vPlayer != null) {
+//                long pos = (long)SharedPrefUtil.getSharedPrefUtil(mContext).getValue(mVideoEntity.getLiveId(),(long)0);
+//                if (pos < getDuration()){
+//                    seekTo(pos);
+//                } else {
+//                    seekTo(0);
+//                }
+//            }
         }
         // 心跳时间的统计
         mHandler.removeCallbacks(mPlayDuration);
@@ -1319,7 +1319,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     @Override
     public void onPause() {
         super.onPause();
-        SharedPrefUtil.getSharedPrefUtil(mContext).setValue(mVideoEntity.getLiveId(),vPlayer.getCurrentPosition());
+//        SharedPrefUtil.getSharedPrefUtil(mContext).setValue(mVideoEntity.getLiveId(),vPlayer.getCurrentPosition());
         isPlay = false;
         pause = true;
         vPlayer.releaseSurface();
