@@ -410,6 +410,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
             Loger.d(TAG, "onResult(SUCCESS):phoneScores.isEmpty");
         } else {
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
+                Loger.e("Duncan", "选择题！！！" + "type:" + type);
                 int rightIndex = -1;
                 int rightCount = 0;
                 String sss = "";
@@ -532,6 +533,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                     }
                 }
             } else {
+                Loger.e("Duncan", "  填空题！！！" + "type:" + type);
                 int score = phoneScores.get(0).getScore();
                 boolean isRight = score > 0;
                 Loger.d(TAG, "onResult(SUCCESS):score=" + score);

@@ -836,7 +836,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         for(int i = 0 ; i < split.length() ; i++){
             JSONObject obj = split.optJSONObject(i);
             entity.setTestId(obj.optString("testId"));
-            entity.setResultType(Integer.parseInt(obj.optString("testType")));
+            entity.setResultType(Integer.parseInt(obj.optString("isRight")));
             if (isVoice) {
                 JSONArray standeranswer = obj.optJSONArray("rightAnswer");
                 JSONArray youranswer = obj.optJSONArray("choice");
