@@ -199,20 +199,20 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
                                 (responseEntity,
                                         isVoice);
                         entity.setVoice(isVoice);
-                        if (answerReslut != null) {
-                            answerReslut.onAnswerReslut(videoQuestionLiveEntity1, entity);
-                        }
-                        if (questionBll != null) {
-                            questionBll.onAnswerReslut(liveBasePager, videoQuestionLiveEntity1, entity);
-                        }
                         if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity1.type)) {
-                            if (liveBackBll.getvPlayer() != null) {
-                                liveBackBll.getvPlayer().pause();
+                            if (answerReslut != null) {
+                                answerReslut.onAnswerReslut(videoQuestionLiveEntity1, entity);
                             }
-                        } else {
+                            if (questionBll != null) {
+                                questionBll.onAnswerReslut(liveBasePager, videoQuestionLiveEntity1, entity);
+                            }
                             LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(activity,
                                     LiveBackBll.ShowQuestion.class);
                             showQuestion.onHide(videoQuestionLiveEntity1);
+
+                        } else {
+                            //语文主观题答完直接隐藏答题框
+                            questionBll.questionViewGone(true);
                         }
                     }
 

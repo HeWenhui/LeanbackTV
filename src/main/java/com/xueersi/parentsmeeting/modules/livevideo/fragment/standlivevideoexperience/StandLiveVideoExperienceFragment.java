@@ -151,7 +151,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     /*** 全屏显示*/
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
     /** 预加载 */
-    LiveStandFrameAnim liveStandFrameAnim;
+    private LiveStandFrameAnim liveStandFrameAnim;
+
     /**
      * 存放
      */
@@ -619,6 +620,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         super.onPause();
     }
 
+    /**
+     * 设置播放地址的时候调用
+     */
     @Override
     protected void onPlayOpenStart() {
         if (rlFirstBackgroundView != null) {
@@ -626,8 +630,18 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         }
     }
 
+    /**
+     * 第一次进入直播间的时间
+     */
     private long startTime = -1;
-
+    /**
+     * 每次进入直播时的时间
+     */
+    private long everyTime = 0L;
+    /**
+     * 每次出错的时间
+     */
+    private long errorTime = 0L;
     LiveHttpManager liveHttpManager;
 
     private boolean isPlay = false;
@@ -641,10 +655,20 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         if (startTime == -1) {
             startTime = System.currentTimeMillis();
         }
+
+
         seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
         Log.e(TAG, "" + Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
                 startTime));
         attachMediaController();
+        long errorContinuedmTime = System.currentTimeMillis() - errorTime;//得到错误持续的时间
+
+
+        if (errorContinuedmTime > mPlayDurTime) {//如果错误时间大于5分钟
+
+        }
+
+        everyTime = System.currentTimeMillis();
         mHandler.postDelayed(mPlayDuration, mPlayDurTime);
 
     }
@@ -654,6 +678,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      */
     private boolean isFinishing = false;
 
+
+    private long lastSendmTime = 0L;
     /**
      * 播放时长，5分钟统计
      */
@@ -663,8 +689,12 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         public void run() {
             if (isPlay && !isFinishing) {
                 // 上传心跳时间
-//                lastPlayTime = System.currentTimeMillis();
-//                playTime += mPlayDurTime;
+
+//                long delaymTime = ;
+                if (errorTime != 0L) {
+//                    delaymTime = delaymTime - ;
+
+                }
                 //发送心跳
                 liveHttpManager.uploadExperiencePlayingTime(mVideoEntity.getLiveId(), mVideoEntity.getChapterId
                         (), 300L, new HttpCallBack(false) {
