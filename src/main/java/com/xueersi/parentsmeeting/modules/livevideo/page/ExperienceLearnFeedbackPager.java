@@ -140,7 +140,6 @@ public class ExperienceLearnFeedbackPager extends BasePager {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 JSONObject jsonOption = new JSONObject();
                 try {
                     jsonOption.put("1", mDifficulty);

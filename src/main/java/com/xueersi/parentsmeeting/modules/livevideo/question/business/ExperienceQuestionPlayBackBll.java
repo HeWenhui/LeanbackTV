@@ -109,6 +109,7 @@ public class ExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
                 videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                 videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
+                videoQuestionLiveEntity.setTermId(mVideoEntity.getChapterId());
                 questionBll.showQuestion(videoQuestionLiveEntity);
                 showQuestion.onShow(true, videoQuestionLiveEntity);
             }

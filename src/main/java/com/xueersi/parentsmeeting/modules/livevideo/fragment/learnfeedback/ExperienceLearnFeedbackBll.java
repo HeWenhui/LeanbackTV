@@ -1,10 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.learnfeedback;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
@@ -37,6 +39,7 @@ public class ExperienceLearnFeedbackBll extends LiveBackBaseBll {
                 if (experienceLearnFeedbackPager != null && experienceLearnFeedbackPager.getRootView().getParent() ==
                         mRootView) {
                     mRootView.removeView(experienceLearnFeedbackPager.getRootView());
+                    mRootView.setBackgroundColor(0);
                 }
             }
         });
@@ -55,6 +58,7 @@ public class ExperienceLearnFeedbackBll extends LiveBackBaseBll {
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
             mRootView.addView(experienceLearnFeedbackPager.getRootView(), layoutParams);
+            mRootView.setBackgroundColor(activity.getResources().getColor(R.color.COLOR_CC000000));
         }
     }
 }
