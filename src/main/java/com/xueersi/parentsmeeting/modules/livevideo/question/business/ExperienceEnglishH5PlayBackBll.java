@@ -142,10 +142,10 @@ public class ExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
 
     @Override
     protected EnglishH5CoursewareHttp getHttp() {
-        return new EnglishH5CoursewareImpl();
+        return new ExperienceEnglishH5CoursewareImpl();
     }
 
-    class EnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {
+    class ExperienceEnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {
 
         @Override
         public void getStuGoldCount() {

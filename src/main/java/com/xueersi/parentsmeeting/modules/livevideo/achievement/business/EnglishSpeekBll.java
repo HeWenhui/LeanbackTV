@@ -191,6 +191,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         }
         this.bottomContent = bottomContent;
         myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_english_content);
+        //使用Fragment以后 ，这可能为空
         if (myView == null) {
             myView = mContentView.findViewById(R.id.rl_livevideo_english_content);
         }
