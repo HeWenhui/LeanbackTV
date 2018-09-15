@@ -5,7 +5,9 @@ import android.net.TrafficStats;
 import android.os.Build;
 import android.os.Process;
 
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -46,6 +48,7 @@ public class LiveUidRx {
             StableLogHashMap logHashMap = new StableLogHashMap();
             logHashMap.put("time", "" + (System.currentTimeMillis() - timeAndUidRxBytes[0]));
             logHashMap.put("islive", "" + isLive);
+            logHashMap.put("network", "" + NetWorkHelper.getNetWorkState(BaseApplication.getContext()));
             int sdk = Build.VERSION.SDK_INT;
             boolean isJellyBean = sdk >= Build.VERSION_CODES.JELLY_BEAN_MR2;
             if (isJellyBean) {
