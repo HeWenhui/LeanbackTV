@@ -260,7 +260,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         where = intent.getStringExtra("where");
         isArts = intent.getIntExtra("isArts", 0);
 
-        liveBackVideoBll = new LiveBackVideoBll(activity);
+        liveBackVideoBll = new LiveBackVideoBll(activity, false);
         liveBackVideoBll.setVideoEntity(mVideoEntity);
         liveBackVideoBll.setLiveBackPlayVideoFragment(liveBackPlayVideoFragment);
         liveBackVideoBll.setvPlayer(vPlayer);
