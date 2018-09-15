@@ -388,8 +388,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             Loger.e(TAG, "======> mulloadUrlLive:" + reloadurl);
         } else {
             String loadUrl = url + "?t=" + System.currentTimeMillis();
-            if (!url.isEmpty() && url.substring(url.length()-1).equals("&")){
-                loadUrl = url+"t="+ System.currentTimeMillis();
+            if (!url.isEmpty() && url.substring(url.length() - 1).equals("&")) {
+                loadUrl = url + "t=" + System.currentTimeMillis();
             }
             if (isPlayBack) {
                 loadUrl += "&isPlayBack=1";
@@ -405,6 +405,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             Loger.e(TAG, "======> loadUrl:" + loadUrl);
             reloadurl = loadUrl;
             Loger.e(TAG, "======> loadUrlLive:" + reloadurl);
+        }
+        if (mLogtf != null) {
+            mLogtf.d("initData:reloadurl=" + reloadurl);
         }
         mGoldNum = -1;
         mEnergyNum = -1;
@@ -449,13 +452,21 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         });
 
         mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            long before;
+
             @Override
             public void onViewAttachedToWindow(View v) {
-
+                before = System.currentTimeMillis();
+                if (mLogtf != null) {
+                    mLogtf.d("onViewAttachedToWindow:reloadurl=" + reloadurl);
+                }
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
+                if (mLogtf != null) {
+                    mLogtf.d("onViewDetachedFromWindow:reloadurl=" + reloadurl + ",,time=" + (System.currentTimeMillis() - before));
+                }
                 LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent.H5_TYPE_COURSE, id);
                 if (mEnglishH5CoursewareBll != null) {
                     event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
@@ -464,9 +475,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEnergyNum = -1;
-                if(englishH5Entity.getNewEnglishH5()){
+                if (englishH5Entity.getNewEnglishH5()) {
                     LiveVideoConfig.isNewEnglishH5 = true;
-                }else {
+                } else {
                     LiveVideoConfig.isNewEnglishH5 = false;
                 }
             }
