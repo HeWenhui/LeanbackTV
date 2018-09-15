@@ -32,6 +32,8 @@ import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -62,6 +64,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.learnfeedback.ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.ExperienceEnglishH5PlayBackBll;
@@ -205,6 +208,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         rlQuestionContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         // 加载竖屏时显示更多课程广告的布局
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
+
+
     }
 
     protected void updateLoadingImage() {
@@ -239,6 +244,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         mVideoEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
         islocal = intent.getBooleanExtra("islocal", false);
         mHandler = new Handler();
+        liveHttpManager = new LiveHttpManager(activity);
         // 请求相应数据
         initData();
         preLoadView();
@@ -622,8 +628,13 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
     private long startTime = -1;
 
+    LiveHttpManager liveHttpManager;
+
+    private boolean isPlay = false;
+
     @Override
     protected void onPlayOpenSuccess() {
+        isPlay = true;
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
         }
@@ -634,7 +645,38 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         Log.e(TAG, "" + Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
                 startTime));
         attachMediaController();
+        mHandler.postDelayed(mPlayDuration, mPlayDurTime);
+
     }
+
+    /**
+     * 视频是否结束观看
+     */
+    private boolean isFinishing = false;
+
+    /**
+     * 播放时长，5分钟统计
+     */
+    private final int mPlayDurTime = 300000;
+    private Runnable mPlayDuration = new Runnable() {
+        @Override
+        public void run() {
+            if (isPlay && !isFinishing) {
+                // 上传心跳时间
+//                lastPlayTime = System.currentTimeMillis();
+//                playTime += mPlayDurTime;
+                //发送心跳
+                liveHttpManager.uploadExperiencePlayingTime(mVideoEntity.getLiveId(), mVideoEntity.getChapterId
+                        (), 300L, new HttpCallBack(false) {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        Loger.e("Duncan", "uploadexperiencetime:" + responseEntity.getJsonObject());
+                    }
+                });
+                mHandler.postDelayed(this, mPlayDurTime);
+            }
+        }
+    };
 
     @Override
     protected void savePosition(long fromStart) {
@@ -695,6 +737,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     @Override
     protected void resultFailed(int arg1, int arg2) {
         super.resultFailed(arg1, arg2);
+        isPlay = false;
         resultFailed = true;
         Loger.d(TAG, "resultFailed:arg2=" + arg2);
         if (arg2 != 0 && mVideoEntity != null) {
@@ -735,6 +778,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         return super.getVideoKey();
     }
 
+    /** 发送统计观看视频时长 */
     @Override
     protected void sendPlayVideo() {
         if (isArts == 1) {
@@ -907,6 +951,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     public void onDestroy() {
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
+        isPlay = false;
         liveBackBll.onDestory();
         ProxUtil.getProxUtil().clear(activity);
         if (liveStandFrameAnim != null) {
@@ -1020,7 +1065,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      */
     @Override
     protected void resultComplete() {
-
+        isPlay = false;
+        isFinishing = true;
         lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
                 getDataCallBack);
 //        onUserBackPressed();
@@ -1029,6 +1075,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     @Override
     protected void onRefresh() {
         resultFailed = false;
+        isPlay = true;
         if (AppBll.getInstance(activity).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
             Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
