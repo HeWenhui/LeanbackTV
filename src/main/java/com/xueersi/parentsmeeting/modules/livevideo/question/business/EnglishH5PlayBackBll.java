@@ -45,7 +45,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(mLiveType);
         englishH5CoursewareBll.setVSectionID(mVideoEntity.getLiveId());
-        englishH5CoursewareBll.setLiveBll(new EnglishH5CoursewareImpl());
+        englishH5CoursewareBll.setLiveBll(getHttp());
         englishH5CoursewareBll.setGetInfo(liveGetInfo);
         if (liveBackBll.getPattern() == 2) {
             //语音答题
@@ -231,6 +231,10 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
         videoQuestionLiveEntity.setAnswerDay(questionEntity.getAnswerDay());
         return videoQuestionLiveEntity;
+    }
+
+    protected EnglishH5CoursewareHttp getHttp() {
+        return new EnglishH5CoursewareImpl();
     }
 
     class EnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {

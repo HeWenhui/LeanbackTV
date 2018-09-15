@@ -541,6 +541,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         if (audioRequest != null) {
             audioRequest.release();
         }
+        logToFile.d("stopVoiceAnswerPager:isAnaswer=" + isAnaswer);
         if (isEnd) {
             onQuestionShow(false);
         }
