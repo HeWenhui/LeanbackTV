@@ -689,9 +689,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         }
 
 //        continuedMTime =
-        seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
-        Log.e(TAG, "" + Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
-                startTime));
+        long pos = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime);
+        seekTo(pos);
+        Log.d(TAG, "onPlayOpenSuccess:VisitTimeKey=" + mVideoEntity.getVisitTimeKey() + ",pos=" + pos);
         attachMediaController();
         long errorContinuedmTime = System.currentTimeMillis() - errorTime;//得到错误持续的时间
         everyTime = System.currentTimeMillis();
@@ -766,6 +766,14 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             return 0;
         }
         return liveBackVideoBll.getStartPosition();
+    }
+
+    @Override
+    protected void startPlayer() {
+        Loger.d(TAG, "startPlayer:isFinishing=" + isFinishing);
+        if (!isFinishing) {
+            super.startPlayer();
+        }
     }
 
     /**
@@ -1115,6 +1123,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      */
     @Override
     protected void resultComplete() {
+        Loger.d(TAG, "resultComplete");
         isPlay = false;
         isFinishing = true;
         lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
