@@ -339,7 +339,10 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, new MediaPlayerControl() {//zyy:
             @Override
             public void start() {
-                liveBackPlayVideoFragment.start();
+                Loger.d(TAG, "initBll:start:isFinishing="+isFinishing);
+                if (!isFinishing) {
+                    liveBackPlayVideoFragment.start();
+                }
             }
 
             @Override
