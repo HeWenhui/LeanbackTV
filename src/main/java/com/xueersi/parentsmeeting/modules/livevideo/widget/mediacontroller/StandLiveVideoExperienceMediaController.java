@@ -77,7 +77,7 @@ public class StandLiveVideoExperienceMediaController extends MediaController2 {
 
         @Override
         public void onDoubleTap() {
-            mTouchListener.onDoubleTap();
+//            mTouchListener.onDoubleTap();
         }
 
         @Override
