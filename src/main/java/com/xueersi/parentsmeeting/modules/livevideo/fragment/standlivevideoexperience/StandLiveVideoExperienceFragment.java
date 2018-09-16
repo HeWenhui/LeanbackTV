@@ -696,7 +696,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         long errorContinuedmTime = System.currentTimeMillis() - errorTime;//得到错误持续的时间
         everyTime = System.currentTimeMillis();
 
-
+//        showPopupwinResult();
     }
 
     /**
@@ -829,19 +829,19 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     /** 发送统计观看视频时长 */
     @Override
     protected void sendPlayVideo() {
-        if (isArts == 1) {
-            // 如果观看视频时间等于或大于统计数则发送
-            if (mPlayVideoTime >= mSendPlayVideoTime) {
-                String liveId = mVideoEntity.getLiveId();
-                // 发送观看视频时间
-                lectureLivePlayBackBll.sendLiveCourseVisitTime(stuCourId, liveId, mSendPlayVideoTime,
-                        sendPlayVideoHandler, 1000);
-                // 时长初始化
-                mPlayVideoTime = 0;
-            }
-        } else {
-            super.sendPlayVideo();
-        }
+//        if (isArts == 1) {
+//            // 如果观看视频时间等于或大于统计数则发送
+//            if (mPlayVideoTime >= mSendPlayVideoTime) {
+//                String liveId = mVideoEntity.getLiveId();
+//                // 发送观看视频时间
+//                lectureLivePlayBackBll.sendLiveCourseVisitTime(stuCourId, liveId, mSendPlayVideoTime,
+//                        sendPlayVideoHandler, 1000);
+//                // 时长初始化
+//                mPlayVideoTime = 0;
+//            }
+//        } else {
+//            super.sendPlayVideo();
+//        }
     }
 
     /** 视频播放进度实时获取 */
@@ -1045,6 +1045,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View result = inflater.inflate(R.layout.pop_experience_livevideo_result, null);
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+
         mWindow = new PopupWindow(result, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams
                 .MATCH_PARENT, false);
         mWindow.setOutsideTouchable(false);
@@ -1073,6 +1074,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             @Override
             public void onClick(View v) {
                 mWindow.dismiss();
+                activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 //                showPopupwinFeedback();
                 liveBackBll.onLiveBackBaseBllUserBackPressed();//展示学习反馈弹窗
                 mWindow = null;
