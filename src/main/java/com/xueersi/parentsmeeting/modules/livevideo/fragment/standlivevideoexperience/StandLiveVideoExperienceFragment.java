@@ -1086,7 +1086,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //                showPopupwinFeedback();
                 liveBackBll.onLiveBackBaseBllUserBackPressed();//展示学习反馈弹窗
                 mWindow = null;
-//                setBackgroundAlpha(1f);
+                setBackgroundAlpha(1f);
             }
         });
         Button chat = (Button) result.findViewById(R.id.bt_chat);
