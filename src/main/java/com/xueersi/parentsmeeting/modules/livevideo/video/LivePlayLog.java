@@ -143,7 +143,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private String PRI_KEY_onBufferComplete = "onBufferComplete";
     private String PRI_KEY_HEART = "HEART";
     private String tid = "";
-//    private HashMap<String, String> tidAndPri = new HashMap<>();
+    //    private HashMap<String, String> tidAndPri = new HashMap<>();
     private PlayBufferEntity bufferStartEntity = new PlayBufferEntity();
 
     static {
@@ -400,7 +400,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             }
             dataJson.put("code", 0);
             dataJson.put("msg", "Success");
-            dataJson.put("method", "" + method);
+            dataJson.put("method", activity.getClass().getSimpleName() + "-" + method);
             long bufferduration = dur;
             long trafficStatisticByteCount = lastTrafficStatisticByteCount;
             if (vPlayer.isInitialized()) {
