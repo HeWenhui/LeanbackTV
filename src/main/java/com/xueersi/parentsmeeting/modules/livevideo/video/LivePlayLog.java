@@ -560,10 +560,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     }
 
     public void stopPlay() {
+        handler.removeMessages(1);
         send("stopPlay", 0);
     }
 
     public void onBufferTimeOut() {
+        handler.removeMessages(1);
         send("onBufferTimeOut", 0);
     }
 
