@@ -690,11 +690,16 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
 //        continuedMTime =
         long pos = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime);
-        seekTo(pos);
+        liveBackPlayVideoFragment.seekTo(pos);//跳转到指定位置
+//        seekTo(pos);
         Log.d(TAG, "onPlayOpenSuccess:VisitTimeKey=" + mVideoEntity.getVisitTimeKey() + ",pos=" + pos);
         attachMediaController();
         long errorContinuedmTime = System.currentTimeMillis() - errorTime;//得到错误持续的时间
         everyTime = System.currentTimeMillis();
+
+//        showPopupwinResult();
+//        isFirstGetResult = false;
+//        setBackgroundAlpha(0.4f);
 
 //        showPopupwinResult();
     }
@@ -760,12 +765,17 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         liveBackVideoBll.savePosition(fromStart);
     }
 
+    /**
+     * 播放的开始位置
+     *
+     * @return
+     */
     @Override
     protected long getStartPosition() {
-        if (mFromStart) {
-            return 0;
-        }
-        return liveBackVideoBll.getStartPosition();
+//        if (mFromStart) {
+//            return 0;
+//        }
+        return 0;
     }
 
     @Override
