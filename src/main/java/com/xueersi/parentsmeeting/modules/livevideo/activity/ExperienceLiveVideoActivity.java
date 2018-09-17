@@ -1258,6 +1258,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         // 播放完毕直接退出
 //        onUserBackPressed();
         // 直播结束后，显示结束的提示图片
+        isPlay = false;
         ivTeacherNotpresent.setVisibility(View.VISIBLE);
 //        ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
         ivTeacherNotpresent.setBackgroundResource(R.drawable.live_free_play_end);
@@ -1269,6 +1270,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         if (scanRunnable != null) {
             scanRunnable.exit();
         }
+        mHandler.removeCallbacks(mPlayDuration);
 
     }
 
