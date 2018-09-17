@@ -105,7 +105,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
     }
 
     private IRCMessage mIRCMessage;
-    private final String IRC_CHANNEL_PREFIX = "#4L";
+    private final String IRC_CHANNEL_PREFIX = "4L";
 
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity,
