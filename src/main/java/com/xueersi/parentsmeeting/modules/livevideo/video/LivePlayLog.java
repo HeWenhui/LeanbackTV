@@ -687,7 +687,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
      */
     private void addDefault(HashMap<String, Object> defaultKey) {
         defaultKey.put("ts", System.currentTimeMillis());
-        defaultKey.put("appid", "" + UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
+        defaultKey.put("appId", "" + UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
         defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsimId());
         defaultKey.put("agent", "m-android_" + versionName);
         defaultKey.put("os", "" + Build.VERSION.SDK_INT);
@@ -876,7 +876,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //            defaultKey.put("serv", serv);
 //            defaultKey.put("pri", "920");
 //            defaultKey.put("ts", "" + System.currentTimeMillis());
-//            defaultKey.put("appid", "" + UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
+//            defaultKey.put("appId", "" + UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
 //            defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
 //            defaultKey.put("agent", "m-android_" + versionName);
 //            defaultKey.put("os", "" + Build.VERSION.SDK_INT);

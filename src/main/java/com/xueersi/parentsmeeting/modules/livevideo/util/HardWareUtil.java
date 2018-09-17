@@ -202,7 +202,7 @@ public class HardWareUtil {
                 }
             }
         }
-        double rate = -1;
+        double rate = 0;
         if (totalJiffies[0] > 0 && totalJiffies[1] > 0 && totalJiffies[0] != totalJiffies[1]) {
             rate = 100.0 * ((totalJiffies[1] - totalIdle[1]) - (totalJiffies[0] - totalIdle[0])) / (totalJiffies[1] - totalJiffies[0]);
         }
