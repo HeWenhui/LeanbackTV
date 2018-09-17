@@ -167,7 +167,7 @@ public class LiveBackBaseBll extends BaseBll {
      *
      * @return
      */
-    public void onUserBackPressed() {
+    public void resultComplete() {
 
     }
 }

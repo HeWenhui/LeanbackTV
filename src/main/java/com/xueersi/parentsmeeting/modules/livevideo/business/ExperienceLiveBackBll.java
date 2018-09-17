@@ -139,9 +139,9 @@ public class ExperienceLiveBackBll extends LiveBackBll {
     /**
      * 视频结束的时候，扫描一遍所有的livebackbasebll是否需要做什么事情
      */
-    public void onLiveBackBaseBllUserBackPressed() {
+    public void resultAllComplete() {
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
-            liveBackBaseBll.onUserBackPressed();
+            liveBackBaseBll.resultComplete();
         }
     }
 

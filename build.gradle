@@ -61,10 +61,10 @@ dependencies {
     implementation(rootProject.ext.businesslibraries.cloud) {
         changing = true
     }
-    //    implementation project(':business-base:browser')
-    implementation(rootProject.ext.businesslibraries.browser) {
-        changing = true
-    }
+        implementation project(':business-base:browser')
+//    implementation(rootProject.ext.businesslibraries.browser) {
+//        changing = true
+//    }
     implementation rootProject.ext.thirdlibraries.arouterapi
     //
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
