@@ -628,7 +628,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     public void onBufferComplete() {
         super.onBufferComplete();
         isBuffer = false;
-        bufType = 0;
         bufferStartEntity.setEndTime(System.currentTimeMillis());
         Loger.d(TAG, "onBufferComplete:isInitialized=" + vPlayer.isInitialized());
         HashMap<String, Object> defaultKey = new HashMap<>();
@@ -660,6 +659,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        bufType = 0;
         xescdnLog2(defaultKey, dataJson, false);
     }
 
