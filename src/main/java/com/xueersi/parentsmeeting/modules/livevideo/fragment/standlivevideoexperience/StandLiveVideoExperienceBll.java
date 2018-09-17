@@ -159,6 +159,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         if (mIRCMessage != null && mIRCMessage.isConnected()) {
             return;
         }
+        expChatId = mVideoEntity.getExpChatId();
         String channel = IRC_CHANNEL_PREFIX + expChatId;
         String chatRoomUid = "s_" + liveGetInfo.getLiveType() + "_"
                 + expChatId + "_" + liveGetInfo.getStuId() + "_" + liveGetInfo.getStuSex();
