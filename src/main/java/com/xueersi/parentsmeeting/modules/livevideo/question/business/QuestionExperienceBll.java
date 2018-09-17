@@ -199,7 +199,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
                                 (responseEntity,
                                         isVoice);
                         entity.setVoice(isVoice);
-                        if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity1.type)) {
+                        if (!LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity1.type)) {
                             if (answerReslut != null) {
                                 answerReslut.onAnswerReslut(videoQuestionLiveEntity1, entity);
                             }
