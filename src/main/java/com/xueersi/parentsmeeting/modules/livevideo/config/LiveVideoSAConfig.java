@@ -180,6 +180,8 @@ public class LiveVideoSAConfig {
          * */
         public String URL_ARTS_H5_URL = "https://static.arts.xueersi.com/kejian/";
 
+        public String URL_ARTS_COURSE_H5_URL = "https://live.arts.xueersi.com/v2/live/courseWareH5";
+
         /** 文科新课件平台 RolePlay 页面加载地址*/
         public String URL_NEWARTS_ROALPLAY_URL = "https://static.arts.xueersi.com/art_live/roleplay/";
         /** 文科新课件平台 语文跟读 页面加载地址*/
