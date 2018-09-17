@@ -465,6 +465,10 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 isHavePause = false;
             }
         }
+        //体验课为空
+        if (StringUtils.isEmpty(tid)) {
+            tid = "" + UUID.randomUUID();
+        }
         isOpenSuccess = false;
         framesPsTen.clear();
         handler.removeMessages(1);

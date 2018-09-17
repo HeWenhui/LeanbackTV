@@ -446,6 +446,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         getInfo.setStudentLiveInfo(studentLiveInfoEntity);
 
         getInfo.setId(mVideoEntity.getLiveId());
+        if (livePlayLog != null) {
+            livePlayLog.setChannelname(mVideoEntity.getLiveId());
+        }
         getInfo.setLiveType(EXP_LIVE_TYPE);
         getInfo.setStuId(UserBll.getInstance().getMyUserInfoEntity().getStuId());
         getInfo.setStuSex(TextUtils.isEmpty(sex) ? "" : sex);
@@ -1377,4 +1380,4 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         super.onStop();
         liveBackBll.onStop();
     }
-    }
+}
