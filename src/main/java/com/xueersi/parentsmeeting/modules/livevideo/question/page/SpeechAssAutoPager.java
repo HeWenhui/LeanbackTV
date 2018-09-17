@@ -31,6 +31,7 @@ import com.tal.speech.speechrecognizer.TalSpeech;
 import com.umeng.analytics.MobclickAgent;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
@@ -268,8 +269,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         if (split.length == 1) {
             spStarResult.setIsWord();
         }
-        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(),
-                "fangzhengcuyuan.ttf");
+        Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
         tvSpeectevalEncourage.setTypeface(fontFace);
         File dir = LiveCacheFile.geCacheFile(mContext, "liveSpeech");
         FileUtils.deleteDir(dir);

@@ -630,6 +630,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
      * @param testAnswer
      * @param isRight
      */
+    @Override
     public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity, String liveId, String
             testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -689,6 +690,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 });
     }
 
+    @Override
     public void getTestAnswerTeamStatus(final VideoQuestionLiveEntity videoQuestionLiveEntity, final
     AbstractBusinessDataCallBack callBack) {
         mHttpManager.getTestAnswerTeamStatus(videoQuestionLiveEntity.id, new HttpCallBack(false) {
@@ -2408,6 +2410,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             return isMyTeam;
         }
 
+        @Override
         public void onJoin(String target, String sender, String login, String hostname) {
             Loger.d(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
             if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
@@ -2440,6 +2443,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             }
         }
 
+        @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
             Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
@@ -2472,6 +2476,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             }
         }
 
+        @Override
         public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname,
                            String recipientNick, String reason) {
             mLogtf.d("onKick:target=" + target + ",kickerNick=" + kickerNick + ",kickerLogin=" + kickerLogin
@@ -2481,6 +2486,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             }
         }
 
+        @Override
         public void onUnknown(String line) {
             if (line.contains("BLOCK")) {//发送了敏感词
                 if (mLiveAutoNoticeBll != null) {
@@ -2505,6 +2511,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
      *
      * @return
      */
+    @Override
     public boolean isSeniorOfHighSchool() {
         return mGetInfo != null && mGetInfo.getIsSeniorOfHighSchool() == 1;
     }
@@ -3070,7 +3077,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
-                        livePlayLog.liveGetPlayServer(time, 20, "", urldns, serverurl);
+                        livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode20, 20, "", urldns, serverurl);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
                                 mVideoAction.onLiveStart(null, mLiveTopic, modechange);
@@ -3082,10 +3089,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     }
                 } else {
                     if (ex instanceof UnknownHostException) {
-                        livePlayLog.liveGetPlayServer(time, 10, "", urldns, serverurl);
+                        livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode10, 10, "", urldns, serverurl);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            livePlayLog.liveGetPlayServer(time, PlayFailCode.TIME_OUT, "", urldns, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode15, PlayFailCode.TIME_OUT, "", urldns, serverurl);
                         }
                     }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);
@@ -3121,7 +3128,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     if (server != null) {
                         if (livePlayLog != null) {
                             long time = System.currentTimeMillis() - before;
-                            livePlayLog.liveGetPlayServer(time, 0, server.getCipdispatch(), null, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode0, 0, server.getCipdispatch(), null, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -3426,6 +3433,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         }
     }
 
+    @Override
     public void praiseTeacher(final String formWhichTeacher, String ftype, String educationStage, final HttpCallBack callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String teacherId = mGetInfo.getMainTeacherInfo().getTeacherId();
@@ -3511,6 +3519,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         }
     }
 
+    @Override
     public boolean isDisable() {
         return mLiveTopic.isDisable();
     }
@@ -3522,6 +3531,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         return mIRCMessage.isConnected();
     }
 
+    @Override
     public boolean isHaveTeam() {
         return haveTeam;
     }
@@ -3529,6 +3539,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 是否开启聊天
      */
+    @Override
     public boolean openchat() {
         boolean openchat;
         if (LiveTopic.MODE_CLASS.equals(getMode())) {
@@ -3555,6 +3566,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 发生聊天消息
      */
+    @Override
     public boolean sendMessage(String msg, String name) {
         if (mSendMsgListener != null) {
             mSendMsgListener.onMessageSend(msg, name);
@@ -3595,6 +3607,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 发送上墙信号聊天消息
      */
+    @Override
     public void sendRankMessage(int code) {
         if (mLiveTopic.isDisable()) {
             return;
@@ -3613,6 +3626,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 是否开启献花
      */
+    @Override
     public boolean isOpenbarrage() {
         return mLiveTopic.getMainRoomstatus().isOpenbarrage();
     }
@@ -3620,6 +3634,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 理科主讲是否开启献花
      */
+    @Override
     public boolean isOpenZJLKbarrage() {
         return mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage();
     }
@@ -3627,6 +3642,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 理科辅导老师是否开启献花
      */
+    @Override
     public boolean isOpenFDLKbarrage() {
         return mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage();
     }
@@ -3781,6 +3797,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 得到当前模式
      */
+    @Override
     public String getMode() {
         String mode;
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -3795,6 +3812,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     /**
      * 得到当前理科的notice模式
      */
+    @Override
     public String getLKNoticeMode() {
         String mode;
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -3822,6 +3840,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         return mGetInfo.getStuName();
     }
 
+    @Override
     public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -3853,6 +3872,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         });
     }
 
+    @Override
     public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval
             onSpeechEval) {
         String liveid = mGetInfo.getId();
@@ -3879,6 +3899,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         });
     }
 
+    @Override
     public void sendSpeechEvalResult2(final String id, final String stuAnswer, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -3937,6 +3958,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         });
     }
 
+    @Override
     public void speechEval42IsAnswered(final String id, String num, final SpeechEvalAction.SpeechIsAnswered
             isAnswered) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -3961,6 +3983,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         });
     }
 
+    @Override
     public void getStuGoldCount() {
         postDelayedIfNotFinish(new Runnable() {
             @Override
@@ -4057,6 +4080,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         });
     }
 
+    @Override
     public void getQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack
             callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
@@ -5120,6 +5144,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
 
     // 04.04 获取更多课程
+    @Override
     public void getMoreChoice(final PageDataLoadEntity pageDataLoadEntity, final AbstractBusinessDataCallBack
             getDataCallBack) {
         mHttpManager.getMoreChoiceCount(mLiveId, new HttpCallBack(pageDataLoadEntity) {

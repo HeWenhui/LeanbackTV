@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.xueersi.common.base.BaseBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
@@ -16,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBack
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity;
 
 import org.json.JSONObject;
 
@@ -59,6 +58,7 @@ public class LiveVideoEnter {
     public static final int ENTER_FROM_25 = 25;
     public static HashMap<String, LiveGetInfo> getInfos = new HashMap();
     public static final String ENTER_ROOM_FROM = "from";
+
     /**
      * 跳转到直播,直播课，通过网页,已经废弃
      * //https://live.xueersi.com/Live/index/30641
@@ -121,7 +121,8 @@ public class LiveVideoEnter {
      * @param vSectionID 节id
      * @param from       入口
      */
-    public static boolean intentToLiveVideoActivity(final Activity context, final String vStuCourseID, String courseId, final String vSectionID, final int from) {
+    public static boolean intentToLiveVideoActivity(final Activity context, final String vStuCourseID, String
+            courseId, final String vSectionID, final int from) {
 
         if (TextUtils.isEmpty(vSectionID)) {
             Toast.makeText(context, "直播场次不能为空", Toast.LENGTH_SHORT).show();
@@ -146,7 +147,8 @@ public class LiveVideoEnter {
 //                LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(context);
 //                JSONObject object = (JSONObject) responseEntity.getJsonObject();
 //                LiveTopic mLiveTopic = new LiveTopic();
-//                LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, LiveVideoConfig.LIVE_TYPE_LIVE, from);
+//                LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, LiveVideoConfig
+// .LIVE_TYPE_LIVE, from);
 //                if (mGetInfo == null) {
 //                    XESToastUtils.showToast(context, "服务器异常");
 //                    return;
@@ -162,9 +164,11 @@ public class LiveVideoEnter {
 ////                    if (mGetInfo.getIsArts() == 1) {
 ////                        LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
 ////                    } else {
-////                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+////                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context,
+/// bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
 ////                    }
-//                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+//                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(context,
+// bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
 //                }
 //            }
 //
@@ -319,21 +323,38 @@ public class LiveVideoEnter {
 //        if (pattern == 2) {
 //            LiveStandPlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
 //        } else {
-//            com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-////            com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+//            com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context,
+// bundle, where, VIDEO_REQUEST);
+////            com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity.intentTo(context,
+/// bundle, where, VIDEO_REQUEST);
 //        }
-        com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
+                where, VIDEO_REQUEST);
         return true;
     }
 
     /**
-     * 跳转到体验直播播放器
+     * 跳转到三分屏体验直播播放器
      *
      * @param context
      * @param bundle
      */
     public static boolean intentToExperience(Activity context, Bundle bundle, String where) {
         ExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        return true;
+    }
+
+    /**
+     * 跳转到全身直播体验课
+     *
+     * @param activity
+     * @param bundle
+     * @param where
+     * @return
+     */
+    public static boolean intentToStandExperience(Activity activity, Bundle bundle, String where) {
+        com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(activity, bundle,
+                where, VIDEO_REQUEST);
         return true;
     }
 

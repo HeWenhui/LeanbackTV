@@ -1597,7 +1597,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /**
      * 试题布局隐藏
      */
-    private void questionViewGone(boolean delay) {
+    public void questionViewGone(boolean delay) {
         mIsShowQuestion = false;
         if (keyBordAction == null) {
             keyBordAction = ProxUtil.getProxUtil().get(activity, KeyBordAction.class);

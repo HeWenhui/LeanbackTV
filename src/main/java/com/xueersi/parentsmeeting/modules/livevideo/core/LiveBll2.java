@@ -1062,7 +1062,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
      * 各模块 调用此方法 暴露自己需要和其他模块共享的参数
      *
      * @param key
-     * @param value
      */
     public void removeBusinessShareParam(String key) {
         synchronized (businessShareParamMap) {

@@ -169,6 +169,82 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         try {
+            if (englishH5CoursewareBll != null && jsonObject.has("H5_Courseware")) {
+                VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
+                JSONObject h5_Experiment = jsonObject.getJSONObject("H5_Courseware");
+                String play_url = "";
+                String status = h5_Experiment.optString("status", "off");
+                String id = "";
+                String courseware_type = "";
+                if ("on".equals(status)) {
+                    englishH5Entity.setNewEnglishH5(false);
+                    LiveVideoConfig.isNewEnglishH5 = false;
+                    LiveVideoConfig.isSend = false;
+                    id = h5_Experiment.getString("id");
+                    courseware_type = h5_Experiment.getString("courseware_type");
+                    play_url = mLiveBll.getLiveVideoSAConfig().inner.coursewareH5 + mLiveId + "/" + mLiveBll.getStuCouId() + "/" + id +
+                            "/" + courseware_type
+                            + "/" + mGetInfo.getStuId();
+                    videoQuestionLiveEntity.id = id;
+                    videoQuestionLiveEntity.courseware_type = courseware_type;
+                    videoQuestionLiveEntity.setUrl(play_url);
+                    videoQuestionLiveEntity.nonce = "";
+                    String isVoice = h5_Experiment.optString("isVoice");
+                    videoQuestionLiveEntity.setIsVoice(isVoice);
+                    if ("1".equals(isVoice)) {
+                        videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = h5_Experiment
+                                .optString("questiontype");
+                        videoQuestionLiveEntity.assess_ref = h5_Experiment.optString("assess_ref");
+                    }
+                    if (mAnswerRankBll != null) {
+                        mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                        mAnswerRankBll.setType(videoQuestionLiveEntity.courseware_type);
+                    }
+                    if (mLiveAutoNoticeBll != null) {
+                        mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                        mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.courseware_type);
+                    }
+                } else {
+                    englishH5Entity.setNewEnglishH5(false);
+                    LiveVideoConfig.isNewEnglishH5 = false;
+                    if (englishH5CoursewareBll != null) {
+                        JSONObject object = jsonObject.optJSONObject("platformTest");
+                        if (object != null && !object.toString().equals("{}")) {
+                            englishH5Entity.setNewEnglishH5(true);
+                            LiveVideoConfig.isNewEnglishH5 = true;
+                            LiveVideoConfig.isSend = true;
+                            status = LiveVideoConfig.isSend ? "on" : "off";
+                            String nonce = object.optString("nonce");
+                            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+                            String teamId = studentLiveInfo.getTeamId();
+                            String classId = studentLiveInfo.getClassId();
+                            englishH5Entity.setNewEnglishH5(true);
+                            try {
+                                JSONObject objects = new JSONObject();
+                                objects.put("packageId", object.getString("pId"));
+                                englishH5Entity.setPackageId(object.getString("pId"));
+                                objects.put("packageSource", object.getString("pSrc"));
+                                englishH5Entity.setPackageSource(object.getString("pSrc"));
+                                objects.put("packageAttr", object.getString("pAttr"));
+                                englishH5Entity.setPackageAttr(object.getString("pAttr"));
+                                objects.put("releasedPageInfos", object.getString("tests"));
+                                englishH5Entity.setReleasedPageInfos(object.getString("tests"));
+                                objects.put("teamId", teamId);
+                                englishH5Entity.setTeamId(teamId);
+                                objects.put("stuCouId", mLiveBll.getStuCouId());
+                                englishH5Entity.setStuCouId(mLiveBll.getStuCouId());
+                                objects.put("stuId", mGetInfo.getStuId());
+                                englishH5Entity.setStuId(mGetInfo.getStuId());
+                                objects.put("classId", classId);
+                                englishH5Entity.setClassId(classId);
+                                objects.put("classTestId", object.getString("ctId"));
+                                mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(),
+                                        ShareDataManager.SHAREDATA_USER);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
             //文科新课件平台  topic
             if (isNewArtsH5Courseware(jsonObject)) {
                 LiveVideoConfig.isNewArts = true;

@@ -819,6 +819,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     }
 
     /** 聊天连上 */
+    @Override
     public void onConnect() {
         mainHandler.post(new Runnable() {
             @Override

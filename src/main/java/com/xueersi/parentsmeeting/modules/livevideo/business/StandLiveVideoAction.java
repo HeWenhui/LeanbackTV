@@ -226,24 +226,31 @@ public class StandLiveVideoAction extends LiveVideoAction {
     private void setTeacherNotpresent(View view) {
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             long now = System.currentTimeMillis() / 1000;
-            if (now < mGetInfo.getsTime()) {
-                if (dwTeacherNotpresenBefore == null) {
-                    dwTeacherNotpresenBefore = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_before);
-                }
-                view.setBackgroundDrawable(dwTeacherNotpresenBefore);
-                Loger.d(TAG, "setTeacherNotpresent:before");
-            } else if (now > mGetInfo.geteTime()) {
-                if (dwTeacherNotpresenAfter == null) {
-                    dwTeacherNotpresenAfter = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_after);
-                }
-                view.setBackgroundDrawable(dwTeacherNotpresenAfter);
-                Loger.d(TAG, "setTeacherNotpresent:after");
-            } else {
+            if (mGetInfo == null) {
                 if (dwTeacherNotpresenDoing == null) {
                     dwTeacherNotpresenDoing = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_before_doing);
                 }
                 view.setBackgroundDrawable(dwTeacherNotpresenDoing);
-                Loger.d(TAG, "setTeacherNotpresent:doing");
+            } else {
+                if (now < mGetInfo.getsTime()) {
+                    if (dwTeacherNotpresenBefore == null) {
+                        dwTeacherNotpresenBefore = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_before);
+                    }
+                    view.setBackgroundDrawable(dwTeacherNotpresenBefore);
+                    Loger.d(TAG, "setTeacherNotpresent:before");
+                } else if (now > mGetInfo.geteTime()) {
+                    if (dwTeacherNotpresenAfter == null) {
+                        dwTeacherNotpresenAfter = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_after);
+                    }
+                    view.setBackgroundDrawable(dwTeacherNotpresenAfter);
+                    Loger.d(TAG, "setTeacherNotpresent:after");
+                } else {
+                    if (dwTeacherNotpresenDoing == null) {
+                        dwTeacherNotpresenDoing = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_before_doing);
+                    }
+                    view.setBackgroundDrawable(dwTeacherNotpresenDoing);
+                    Loger.d(TAG, "setTeacherNotpresent:doing");
+                }
             }
         } else {
             Loger.d(TAG, "setTeacherNotpresent:mode=training");

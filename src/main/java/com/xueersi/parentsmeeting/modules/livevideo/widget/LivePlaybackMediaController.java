@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * 三分屏回放
  * 我的课程中看课的控制栏，完成指定业务 1、竖屏时上方系统栏永远只显示左上角的箭头，没有背景 2、竖屏时单击只对下方控制栏起作用
  *
  * @author ZouHao
@@ -164,7 +165,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                     }
                 } else {
                     if (!videoQuestionEntity.isAnswered()) {
-                        if( videoQuestionEntity.getvCategory()== LocalCourseConfig.CATEGORY_BULLETSCREEN) {
+                        if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_BULLETSCREEN) {
                             continue;
                         }
                         key = "" + videoQuestionEntity.getvCategory();
@@ -277,7 +278,8 @@ public class LivePlaybackMediaController extends MediaController2 {
                 int loction[] = new int[2];
                 rlKeyPoints.getLocationInWindow(loction);//rlKeytip的宽度是全屏，rlKeyPoints在中间
                 contentView.getViewTreeObserver().removeOnPreDrawListener(this);
-                RelativeLayout rlPointTop = (RelativeLayout) contentView.findViewById(R.id.rl_liveplayback_point_top);//上面的提示
+                RelativeLayout rlPointTop = (RelativeLayout) contentView.findViewById(R.id.rl_liveplayback_point_top)
+                        ;//上面的提示
                 ImageView ivArrow = (ImageView) contentView.findViewById(R.id.iv_liveplayback_point_arrow);//下面的箭头
                 int pointWidth = rlKeyPoints.getWidth();
                 float screenDensity = ScreenUtils.getScreenDensity();

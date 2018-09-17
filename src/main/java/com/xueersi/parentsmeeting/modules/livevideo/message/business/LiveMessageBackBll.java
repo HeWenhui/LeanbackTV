@@ -12,7 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveBackVideoM
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 /**
- * 直播回放，在聊天区加上MMD皮肤
+ * 全身直播回放，在聊天区加上MMD皮肤
  */
 public class LiveMessageBackBll extends LiveBackBaseBll {
     //是否是小英，使用MMD皮肤

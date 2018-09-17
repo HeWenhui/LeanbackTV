@@ -39,6 +39,11 @@ public class LiveBackBaseBll extends BaseBll {
     protected Handler mHandler = new Handler(Looper.getMainLooper());
     protected final int mLiveType;
     protected LiveVideoPoint liveVideoPoint;
+    /**
+     * 0 liveback
+     * 1 experience
+     */
+
 
     public LiveBackBaseBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity);
@@ -53,6 +58,7 @@ public class LiveBackBaseBll extends BaseBll {
         this.liveGetInfo = liveGetInfo;
         onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
     }
+
 
     public final void initViewF(RelativeLayout rlQuestionContentBottom, RelativeLayout bottomContent, AtomicBoolean
             mIsLand) {
@@ -153,6 +159,15 @@ public class LiveBackBaseBll extends BaseBll {
     }
 
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+
+    }
+
+    /**
+     * 视屏结束时的回调
+     *
+     * @return
+     */
+    public void onUserBackPressed() {
 
     }
 }

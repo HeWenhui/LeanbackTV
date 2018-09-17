@@ -273,6 +273,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                         params.addRule(RelativeLayout.CENTER_IN_PARENT);
+
                         rlRollCallContent.addView(smallEnglishClassSignPager.getRootView(), params);
                     }
 

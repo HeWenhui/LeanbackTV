@@ -220,34 +220,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 Loger.i(TAG, "onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord
                         .getHeight());
                 rlLivevideoCommonWord.setVisibility(View.VISIBLE);
-//                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_common_word
-// .getLayoutParams();
-//                int left = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
-//                if (lp.leftMargin == left) {
-//                    return;
-//                }
-//                lp.leftMargin = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
-//                rl_livevideo_common_word.setLayoutParams(lp);
-//                rl_livevideo_common_word.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
-// .OnPreDrawListener() {
-//                    @Override
-//                    public boolean onPreDraw() {
-//                        rl_livevideo_common_word.getViewTreeObserver().removeOnPreDrawListener(this);
-//                        int[] location = new int[2];
-//                        v.getLocationOnScreen(location);
-//                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_common_word
-// .getLayoutParams();
-//                        int left = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
-//                        if (lp.leftMargin == left) {
-//                            return false;
-//                        }
-//                        lp.leftMargin = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
-//                        rl_livevideo_common_word.setLayoutParams(lp);
-//                        Loger.i(TAG, "onClick2:Width=" + rl_livevideo_common_word.getWidth() + ",Height=" +
-// rlLivevideoCommonWord.getHeight());
-//                        return true;
-//                    }
-//                });
             }
         });
         etMessageContent.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -941,19 +913,21 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         {
-            int wradio = liveVideoPoint.getRightMargin();
+            int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-            if (wradio != params.width) {
+            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
                 //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;
+                params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
             if (cbMessageClock != null) {
+                int rightMargin = liveVideoPoint.getRightMargin();
                 params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-                if (params.rightMargin != wradio) {
-                    params.rightMargin = wradio;
+                if (params.rightMargin != rightMargin) {
+                    params.rightMargin = rightMargin;
 //                cbMessageClock.setLayoutParams(params);
                     LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
                 }
@@ -977,6 +951,43 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
             }
         }
+//        {
+//            int wradio = liveVideoPoint.getRightMargin();
+//            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
+//            if (wradio != params.width) {
+//                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+//                // + ",wradio=" + wradio + "," + params.width);
+//                params.width = wradio;
+////                rlInfo.setLayoutParams(params);
+//                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+//            }
+//            if (cbMessageClock != null) {
+//                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+//                if (params.rightMargin != wradio) {
+//                    params.rightMargin = wradio;
+////                cbMessageClock.setLayoutParams(params);
+//                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
+//                }
+//            }
+//        }
+//        {
+//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
+//            int topMargin = liveVideoPoint.y3;
+//            if (topMargin != params.topMargin) {
+//                params.topMargin = topMargin;
+////                rlInfo.setLayoutParams(params);
+//                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+//                logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
+//            }
+//            int bottomMargin = liveVideoPoint.y2;
+//            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
+//            if (params.bottomMargin != bottomMargin) {
+//                params.bottomMargin = bottomMargin;
+////                lvMessage.setLayoutParams(params);
+//                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
+//                //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+//            }
+//        }
     }
 
     @Override

@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
@@ -665,29 +666,29 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                                 break;
                         }
 
-                            CharacterStyle characterStyle = new ForegroundColorSpan(color);
-                            spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                            // 将字体文件保存在assets/fonts/目录下，在程序中通过如下方式实例化自定义字体：
-                            Typeface typeFace = Typeface.createFromAsset(liveVideoActivity.getAssets(),"fangzhengcuyuan.ttf");
-                            // 应用字体
-                            tvMessageItem.setTypeface(typeFace);
-                            if(LiveMessageEntity.MESSAGE_MINE == entity.getType()){
-                                tvMessageItem.setTextColor(0xffffffff);
-                            } else {
-                                tvMessageItem.setTextColor(0x7Fffffff);
-                            }
-                            if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
-                                tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
-                                tvMessageItem.setText(entity.getText());
-                                urlClick(tvMessageItem);
-                                CharSequence text = tvMessageItem.getText();
-                                tvMessageItem.setText(spanttt);
-                                tvMessageItem.append(text);
-                            } else {
-                                tvMessageItem.setAutoLinkMask(0);
-                                tvMessageItem.setText(spanttt);
-                                tvMessageItem.append(entity.getText());
-                            }
+                        CharacterStyle characterStyle = new ForegroundColorSpan(color);
+                        spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        // 将字体文件保存在assets/fonts/目录下，在程序中通过如下方式实例化自定义字体：
+                        Typeface typeFace = FontCache.getTypeface(liveVideoActivity, "fangzhengcuyuan.ttf");
+                        // 应用字体
+                        tvMessageItem.setTypeface(typeFace);
+                        if (LiveMessageEntity.MESSAGE_MINE == entity.getType()) {
+                            tvMessageItem.setTextColor(0xffffffff);
+                        } else {
+                            tvMessageItem.setTextColor(0x7Fffffff);
+                        }
+                        if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
+                            tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
+                            tvMessageItem.setText(entity.getText());
+                            urlClick(tvMessageItem);
+                            CharSequence text = tvMessageItem.getText();
+                            tvMessageItem.setText(spanttt);
+                            tvMessageItem.append(text);
+                        } else {
+                            tvMessageItem.setAutoLinkMask(0);
+                            tvMessageItem.setText(spanttt);
+                            tvMessageItem.append(entity.getText());
+                        }
 
                     }
                 };
@@ -744,7 +745,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         mFlowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "暖心茉莉茶", 50));
         mFlowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "冰淇淋", 100));
         flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_primary_flower, null);
-        PopupWindow flowerWindow = new PopupWindow(flowerContentView,dp2px(liveVideoActivity, 478), dp2px(liveVideoActivity, 347), false);
+        PopupWindow flowerWindow = new PopupWindow(flowerContentView, dp2px(liveVideoActivity, 478), dp2px(liveVideoActivity, 347), false);
         flowerWindow.setBackgroundDrawable(new BitmapDrawable());
         flowerWindow.setOutsideTouchable(true);
         flowerWindow.setFocusable(true);
@@ -1222,6 +1223,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     /** 聊天开始连接 */
+    @Override
     public void onStartConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1254,6 +1256,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     /** 聊天连上 */
+    @Override
     public void onConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1276,6 +1279,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     /** 聊天进入房间 */
+    @Override
     public void onRegister() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1287,6 +1291,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     /** 聊天断开 */
+    @Override
     public void onDisconnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1305,14 +1310,14 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
 //                    tvMessageCount.setText("班内" + peopleCount + "人");
-                    tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                    tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                 } else {
                     if (ircState.isHaveTeam()) {
 //                        tvMessageCount.setText("组内" + peopleCount + "人");
-                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                     } else {
 //                        tvMessageCount.setText(peopleCount + "人正在上课");
-                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                     }
                 }
             }
@@ -1362,12 +1367,12 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                    tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                    tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                 } else {
                     if (ircState.isHaveTeam()) {
-                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                     } else {
-                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                     }
                 }
             }
@@ -1380,12 +1385,12 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                    tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                    tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                 } else {
                     if (ircState.isHaveTeam()) {
-                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                     } else {
-                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                     }
                 }
             }
@@ -1752,14 +1757,14 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         cbMessageClock.setVisibility(View.GONE);
     }
 
-    public Drawable getHeard(int type){
+    public Drawable getHeard(int type) {
         Drawable drawable;
         drawable = mContext.getResources().getDrawable(flowsDrawLittleTips[type]);
         return drawable;
     }
 
-    public String getTips(int type){
-        StringBuffer tip =  new StringBuffer();
+    public String getTips(int type) {
+        StringBuffer tip = new StringBuffer();
         tip.append(getInfo.getStuName());
         tip.append(flowsTips[type]);
         return tip.toString();

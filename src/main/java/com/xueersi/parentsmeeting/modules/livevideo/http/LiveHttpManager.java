@@ -28,12 +28,16 @@ import org.xutils.xutils.ex.HttpException;
 import org.xutils.xutils.http.RequestParams;
 import org.xutils.xutils.x;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * 直播网络访问类
@@ -127,8 +131,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
                     DNSUtil.getDns(urldns, url2);
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
                 }
                 HttpURLConnection connection = null;
                 try {
@@ -189,6 +191,30 @@ public class LiveHttpManager extends BaseHttpBusiness {
         return cancelable;
     }
 
+    public Callback.Cancelable liveGetPlayServer2(final URLDNS urldns, final String url2, final CommonRequestCallBack<String>
+            requestCallBack) {
+        final HttpURLConnectionCancelable cancelable = new HttpURLConnectionCancelable();
+        HttpRequestParams params = new HttpRequestParams();
+        params.addHeaderParam("Connection", "Keep-Alive");
+        baseSendPostNoBusiness(url2, params, new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                if (cancelable.isCancelled()) {
+                    return;
+                }
+                requestCallBack.onError(e, false);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (cancelable.isCancelled()) {
+                    return;
+                }
+                requestCallBack.onSuccess(response.body().string());
+            }
+        });
+        return cancelable;
+    }
 
     class HttpURLConnectionCancelable implements Callback.Cancelable {
         HttpURLConnection connection;

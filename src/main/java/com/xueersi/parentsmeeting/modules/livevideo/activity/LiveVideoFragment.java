@@ -118,7 +118,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         super.onBusinessCreate();
         List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
         for (LiveBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(bottomContent, mIsLand);
+            businessBll.initViewF(bottomContent, mIsLand, mContentView);
         }
     }
 
@@ -336,6 +336,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                             }
                             vPlayer.releaseSurface();
                             vPlayer.stop();
+                        } else {
+                            Loger.d(TAG, "onPause:isInitialized=false");
                         }
                         isPlay = false;
                     }

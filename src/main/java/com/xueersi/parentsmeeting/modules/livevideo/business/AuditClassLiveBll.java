@@ -285,6 +285,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         }
 
+        @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
 
@@ -462,6 +463,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             return isMyTeam;
         }
 
+        @Override
         public void onJoin(String target, String sender, String login, String hostname) {
             Loger.d(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
             if (sender.startsWith(TEACHER_PREFIX)) {
@@ -493,6 +495,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         }
 
+        @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
             Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
@@ -524,6 +527,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         }
 
+        @Override
         public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname,
                            String recipientNick, String reason) {
             mLogtf.d("onKick:target=" + target + ",kickerNick=" + kickerNick + ",kickerLogin=" + kickerLogin
@@ -533,6 +537,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         }
 
+        @Override
         public void onUnknown(String line) {
         }
     };
@@ -751,7 +756,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                 if (ex instanceof HttpException) {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
-                        livePlayLog.liveGetPlayServer(time, 20, "", urldns, serverurl);
+                        livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode20, 20, "", urldns, serverurl);
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
@@ -762,10 +767,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                     }
                 } else {
                     if (ex instanceof UnknownHostException) {
-                        livePlayLog.liveGetPlayServer(time, 10, "", urldns, serverurl);
+                        livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode10, 10, "", urldns, serverurl);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            livePlayLog.liveGetPlayServer(time, PlayFailCode.TIME_OUT, "", urldns, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode15, PlayFailCode.TIME_OUT, "", urldns, serverurl);
                         }
                     }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);
@@ -801,7 +806,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                     if (server != null) {
                         if (livePlayLog != null) {
                             long time = System.currentTimeMillis() - before;
-                            livePlayLog.liveGetPlayServer(time, 0, server.getCipdispatch(), urldns, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode0, 0, server.getCipdispatch(), urldns, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {

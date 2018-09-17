@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,8 +42,8 @@ import okhttp3.Response;
 
 /**
  * Created by linyuqiang on 2018/6/22.
+ * 直播bll
  */
-
 public class LiveVideoBll implements VPlayerListenerReg {
     private final String TAG = "LiveVideoBll";
     private Logger logger = LoggerFactory.getLogger(TAG);
@@ -160,6 +161,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     public void setVideoFragment(BasePlayerFragment videoFragment) {
         this.videoFragment = videoFragment;
+        if (videoFragment instanceof LivePlayerFragment) {
+            LivePlayerFragment livePlayerFragment = (LivePlayerFragment) videoFragment;
+            livePlayerFragment.setLivePlayLog(livePlayLog);
+        }
     }
 
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
@@ -423,6 +428,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void onPlayError() {
+            mLogtf.d("onPlayError");
             isPlay = false;
             mHandler.removeCallbacks(mOpenTimeOutRun);
             mHandler.removeCallbacks(mBufferTimeOutRun);
@@ -513,11 +519,11 @@ public class LiveVideoBll implements VPlayerListenerReg {
     };
 
     public void stopPlay() {
+        livePlayLog.stopPlay();
         if (isInitialized()) {
             vPlayer.releaseSurface();
             vPlayer.stop();
         }
-        livePlayLog.stopPlay();
     }
 
     /** 播放器是否已经成功初始化完毕处于可以加载资源随时播放的状态 */
@@ -550,11 +556,11 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void run() {
+            livePlayLog.onBufferTimeOut();
             if (isInitialized()) {
                 vPlayer.releaseSurface();
                 vPlayer.stop();
             }
-            livePlayLog.onBufferTimeOut();
             long openTime = System.currentTimeMillis() - openStartTime;
             if (openTime > 40000) {
                 liveVideoReportBll.streamReport(LiveVideoReportBll.MegId.MEGID_12107, mGetInfo.getChannelname(), openTime);
@@ -580,7 +586,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         mHandler.removeCallbacks(mPlayDuration);
         playTime += (System.currentTimeMillis() - lastPlayTime);
         Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
-        livePlayLog.onPause();
+        livePlayLog.onPause(0);
     }
 
     /** 播放时长，7分钟统计 */
@@ -797,7 +803,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }
         liveVideoReportBll.onDestory();
         mPlayStatistics.clear();
-        livePlayLog.destory();
     }
 
 }

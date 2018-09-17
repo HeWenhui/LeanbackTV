@@ -1,10 +1,9 @@
-//package com.xueersi.parentsmeeting.modules.livevideo.page;
+//package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 //
 //import android.content.Context;
 //import android.graphics.Bitmap;
 //import android.graphics.drawable.AnimationDrawable;
 //import android.os.Build;
-//import android.os.Environment;
 //import android.os.Handler;
 //import android.os.Message;
 //import android.text.TextUtils;
@@ -12,6 +11,7 @@
 //import android.view.ViewGroup;
 //import android.webkit.ConsoleMessage;
 //import android.webkit.JsResult;
+//import android.webkit.WebChromeClient;
 //import android.webkit.WebSettings;
 //import android.webkit.WebView;
 //import android.webkit.WebViewClient;
@@ -22,17 +22,30 @@
 //import com.tal.speech.speechrecognizer.ResultEntity;
 //import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 //import com.tal.speech.speechrecognizer.TalSpeech;
-//import com.xueersi.parentsmeeting.modules.livevideo.R;
-//import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
+//
 //import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+//import com.xueersi.common.entity.BaseVideoQuestionEntity;
+//import com.xueersi.common.http.BaseHttp;
+//import com.xueersi.common.http.DownloadCallBack;
+//import com.xueersi.common.logerhelper.UmsAgentUtil;
+//import com.xueersi.common.permission.XesPermission;
+//import com.xueersi.common.permission.config.PermissionConfig;
 //import com.xueersi.common.speech.SpeechEvaluatorUtils;
-//import com.xueersi.lib.framework.utils.AppUtils;
 //import com.xueersi.lib.framework.are.ContextManager;
-//import com.xueersi.common.util.audio.AudioPlayer;
-//import com.xueersi.common.util.audio.AudioPlayerListening;
-//import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+//import com.xueersi.lib.framework.utils.AppUtils;
 //import com.xueersi.lib.framework.utils.NetWorkHelper;
+//import com.xueersi.lib.framework.utils.string.MD5Utils;
 //import com.xueersi.lib.framework.utils.string.StringUtils;
+//import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
+//import com.xueersi.parentsmeeting.module.audio.AudioPlayerListening;
+//import com.xueersi.parentsmeeting.modules.livevideo.R;
+//import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
+//import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+//import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+//import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
+//import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
+//import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+//import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 //import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 //
 //import java.io.File;
@@ -41,7 +54,7 @@
 //import java.util.HashMap;
 //import java.util.Map;
 //
-//import static com.xueersi.xesalib.utils.audio.AudioPlayer.mVoiceUrl;
+//import static com.xueersi.parentsmeeting.module.audio.AudioPlayer.mVoiceUrl;
 //
 ///**
 // * 语音评测WEB页
@@ -111,11 +124,22 @@
 //    boolean IS_SCIENCE;
 //    private boolean isStandingLive = false;
 //    // private AudioPlayerManager mAudioPlayerManager;
+//    /**
+//     * 是否是体验课
+//     */
+//    private boolean isExperience;
 //
-//    public SpeechAssessmentWebPager(Context context, String liveid, String testId, String stuId, boolean isLive,
-//                                    String nonce,
-//                                    SpeechEvalAction speechEvalAction, String stuCouId, boolean IS_SCIENCE) {
+//    public void setIsExperience(boolean experience) {
+//        this.isExperience = experience;
+//    }
+//
+//    public SpeechAssessmentWebPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String
+//            liveid, String testId, String stuId, boolean isLive,
+//                                      String nonce,
+//                                      SpeechEvalAction speechEvalAction, String stuCouId, boolean IS_SCIENCE,
+//                                      LivePagerBack livePagerBack) {
 //        super(context);
+//        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
 //        this.stuId = stuId;
 //        this.liveid = liveid;
 //        this.testId = testId;
@@ -124,16 +148,19 @@
 //        this.speechEvalAction = speechEvalAction;
 //        this.stuCouId = stuCouId;
 //        this.IS_SCIENCE = IS_SCIENCE;
-//        dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/liveSpeech/");
+//        this.livePagerBack = livePagerBack;
+//        dir = LiveCacheFile.geCacheFile(mContext, "liveSpeech");
 //        if (!dir.exists()) {
 //            dir.mkdirs();
 //        }
+//        mLogtf.d("SpeechAssess:isLive=" + isLive + ",stuId=" + stuId + ",liveid=" + liveid + ",testId=" + testId + "," +
+//                "stuCouId=" + stuCouId);
 //    }
 //
 //
 //    @Override
 //    public View initView() {
-//        final View view = View.inflate(mContext, R.layout.page_livevideo_english_speech, null);
+//        final View view = View.inflate(mContext, R.layout.page_livevideo_english_speech_x5, null);
 //        wvSubjectWeb = (WebView) view.findViewById(R.id.wv_livevideo_subject_web);
 //        errorView = view.findViewById(R.id.rl_livevideo_subject_error);
 //        view.findViewById(R.id.btn_error_refresh).setOnClickListener(new View.OnClickListener() {
@@ -169,22 +196,66 @@
 //        ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
 //        ((AnimationDrawable) ivLoading.getBackground()).start();
 //        //       wvSubjectWeb.loadUrl("http://172.88.1.180:8084/");
-//        String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
+//        String url = "";
+//        if (isExperience) {
+//            String termId = "";
+//            if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
+//                VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
+//                termId = videoQuestionLiveEntity.getTermId();
+//            }
+//            String isArts = IS_SCIENCE == false ? "1" : "0";
+//            url = "https://student.xueersi.com/science/AutoLive/SpeechEval";
+//            url += "?isArts=" + isArts + "&liveId=" + liveid + "&testId=" + testId +
+//                    "&stuId=" + stuId + "&termId=" + termId;
+//            if (isStandingLive) {
+//                url += "&isStandingLive=1&isAudio=1";
+//            }
+//        } else {
+//            String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
 ////        String url = "http://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
 ////                liveid + "/" + stuCouId + "/" + testId + "/" + stuId;
-//        String url = "http://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
-//                liveid + "/" + testId + "/" + stuId;
+//            url = "https://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") +
+//                    "/speechEval/" +
+//                    liveid + "/" + testId + "/" + stuId;
 ////        String url = "http://172.88.1.180:8082";
-//        if (!StringUtils.isEmpty(nonce)) {
-//            url += "?nonce=" + nonce;
-//            url += "&stuCouId=" + stuCouId;
-//        } else {
-//            url += "?stuCouId=" + stuCouId;
+//            if (!StringUtils.isEmpty(nonce)) {
+//                url += "?nonce=" + nonce;
+//                url += "&stuCouId=" + stuCouId;
+//            } else {
+//                url += "?stuCouId=" + stuCouId;
+//            }
+//            if (isStandingLive) {
+//                url += "&isStandingLive=1&isAudio=1";
+//            }
 //        }
-//        if (isStandingLive) {
-//            url += "&isStandingLive=1&isAudio=1";
+//        final String finalUrl = url;
+//
+//        boolean have = XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
+//
+//            @Override
+//            public void onFinish() {
+//
+//            }
+//
+//            @Override
+//            public void onDeny(String permission, int position) {
+//
+//            }
+//
+//            @Override
+//            public void onGuarantee(String permission, int position) {
+//                if (mView.getParent() == null) {
+//                    mLogtf.d("initData:onGuarantee:finish");
+//                    return;
+//                }
+//                wvSubjectWeb.loadUrl(finalUrl);
+//                mLogtf.d("initData:onGuarantee:url=" + finalUrl);
+//            }
+//        }, PermissionConfig.PERMISSION_CODE_AUDIO);
+//        if (have) {
+//            wvSubjectWeb.loadUrl(url);
+//            mLogtf.d("initData:url=" + url);
 //        }
-//        wvSubjectWeb.loadUrl(url);
 //    }
 //
 //    @android.webkit.JavascriptInterface
@@ -198,15 +269,16 @@
 //            webSetting.setMediaPlaybackRequiresUserGesture(false);
 //        }
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            webSetting.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+//            webSetting.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 //        }
 //    }
 //
+//    @Override
 //    public String getId() {
 //        return testId;
 //    }
 //
-//    public class MyWebChromeClient extends android.webkit.WebChromeClient {
+//    public class MyWebChromeClient extends WebChromeClient {
 //        @Override
 //        public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
 //            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext,
@@ -240,6 +312,14 @@
 //
 //        @Override
 //        public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+//            ConsoleMessage.MessageLevel mLevel = consoleMessage.messageLevel();
+//            boolean isRequst = false;
+//            if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
+//                isRequst = true;
+//            }
+////            UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
+//            Loger.d(TAG, "onConsoleMessage:console=" + consoleMessage.sourceId() + "," + consoleMessage.lineNumber()
+//                    + "," + consoleMessage.message());
 //            return super.onConsoleMessage(consoleMessage);
 //        }
 //
@@ -265,7 +345,7 @@
 //
 //        @Override
 //        public void onPageFinished(WebView view, String url) {
-//            Loger.i("SpeechWebPagerTest finish");
+//            Loger.d(TAG, "onPageFinished:url=" + url);
 //            if (failingUrl == null) {
 //                wvSubjectWeb.setVisibility(View.VISIBLE);
 //                errorView.setVisibility(View.GONE);
@@ -274,14 +354,14 @@
 //
 //        @Override
 //        public void onPageStarted(WebView view, String url, Bitmap favicon) {
-//            Loger.i("SpeechWebPagerTest start");
+//            Loger.d(TAG, "onPageStarted:url=" + url);
 //            super.onPageStarted(view, url, favicon);
 //            failingUrl = null;
 //        }
 //
 //        @Override
 //        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-//            Loger.i("SpeechWebPagerTest error");
+//            mLogtf.d("onReceivedError:url=" + failingUrl + ",errorCode=" + errorCode);
 //            this.failingUrl = failingUrl;
 //            wvSubjectWeb.setVisibility(View.INVISIBLE);
 //            errorView.setVisibility(View.VISIBLE);
@@ -296,9 +376,11 @@
 //            }
 //            try {
 //                String deUrl = URLDecoder.decode(url, "UTF-8");
+//                mLogtf.d("shouldOverrideUrlLoading:deUrl=" + deUrl);
 //                matchBusiness(deUrl);
 //            } catch (UnsupportedEncodingException e) {
 //                e.printStackTrace();
+//                mLogtf.e("shouldOverrideUrlLoading:url=" + url, e);
 //            }
 //            return true;
 //        }
@@ -355,7 +437,7 @@
 //        if (TextUtils.isEmpty(command)) {
 //            return;
 //        }
-//
+//        mLogtf.d("matchCommand:command=" + command);
 //        if (command.equals("startRecordEvaluator")) {
 //            //发起录音
 //            Loger.i(TAG, "startRecordEvaluator");
@@ -461,7 +543,8 @@
 //                    mIse = new SpeechEvaluatorUtils(true);
 //                }
 //                if (isEnglish) {
-//                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(assessRef, saveVideoFile.getAbsolutePath(), false,
+//                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(assessRef, saveVideoFile.getAbsolutePath
+//                                    (), false,
 //                            new EvaluatorListener() {
 //                                @Override
 //                                public void onBeginOfSpeech() {
@@ -484,7 +567,8 @@
 //                                    } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
 //                                        jsRecordCurrentResult(resultEntity);
 //                                    }
-//                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus() == ResultEntity.ERROR) {
+//                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus()
+//                                            == ResultEntity.ERROR) {
 //                                        mHandler.removeMessages(RECORD_WITE);
 //                                        if (!mIsFinishCurrentSpeech) {
 //                                            mIsFinishCurrentSpeech = true;
@@ -525,7 +609,8 @@
 //                                    } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
 //                                        jsRecordCurrentResult(resultEntity);
 //                                    }
-//                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus() == ResultEntity.ERROR) {
+//                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS || resultEntity.getStatus()
+//                                            == ResultEntity.ERROR) {
 //                                        mHandler.removeMessages(RECORD_WITE);
 //                                        if (!mIsFinishCurrentSpeech) {
 //                                            mIsFinishCurrentSpeech = true;
@@ -543,9 +628,11 @@
 //
 //                            }, false, liveId);
 //                }
+//            } else {
+//                mLogtf.d("startRecordEvaluator:assessRef=" + assessRef + ",liveId=" + liveId + ",language=" +
+//                        language + ",mStopPrefix=" + mStopPrefix);
 //            }
 //        }
-//
 //    }
 //
 //    /**
@@ -620,7 +707,7 @@
 //                if (group != null) {
 //                    wvSubjectWeb.destroy();
 //                    group.removeView(mView);
-//                    speechEvalAction.stopSpeech(SpeechAssessmentWebPager.this, testId);
+//                    speechEvalAction.stopSpeech(SpeechAssessmentWebPager.this, getBaseVideoQuestionEntity(), testId);
 //                }
 //            }
 //        });
@@ -635,43 +722,21 @@
 //            //roleplay录音
 //            final String webMp3Url = params.get("playSrc");
 //            if (!TextUtils.isEmpty(webMp3Url)) {
-//
 //                final String tip = params.get("which");
-//
-//
 //                wvSubjectWeb.post(new Runnable() {
 //                    @Override
 //                    public void run() {
 //                        //AudioPlayer.releaseAudioPlayer(mContext);
 //                        String playUrl = webMp3Url;
-//                        if (!webMp3Url.startsWith("http")) {
+//                        if (webMp3Url.startsWith("//")) {
+//                            playUrl = "https:" + playUrl;
+//                        } else if (!webMp3Url.startsWith("http")) {
 //                            saveVideoFile = new File(dir, webMp3Url + ".mp3");
 //                            playUrl = saveVideoFile.getPath();
 //                        }
-//                        Loger.i("SpeechWebPagerTest", "playRecordFile:" + playUrl);
-//
+//                        mLogtf.i("playRecordFile:playUrl=" + playUrl + ",tip=" + tip);
 //                        if (mCurrentPlayVoiceUrl != null && mCurrentPlayVoiceUrl.equals(playUrl)) {
 //                            //如果和当前播放的是一样的语音则停止
-//
-////                            if (mAudioPlayerManager != null && mAudioPlayerManager.getState() == AudioPlayerManager.State.playing) {
-////                                mAudioPlayerManager.stop();
-////                                mAudioPlayerManager.release();
-////                                mCurrentPlayVoiceUrl = "";
-////                                if (mIsStop) {
-////                                    if (!TextUtils.isEmpty(tip)) {
-////                                        isRebotLast = false;
-////                                        if (tip.equals("false")) {
-////                                            jsStopRecordBtn();
-////                                        } else if (tip.equals("last")) {
-////                                            isRebotLast = true;
-////                                            jsStopRecordBtn();
-////                                        }
-////                                    }
-////                                }
-////                                mIsStop = true;
-////                                return;
-////                            }
-//
 //                            if (AudioPlayer.isPlaying()) {
 //                                AudioPlayer.stop();
 //                                AudioPlayer.releaseAudioPlayer(mContext);
@@ -691,170 +756,26 @@
 //                                return;
 //                            }
 //                        } else {
-////                            if (mAudioPlayerManager != null && mAudioPlayerManager.getState() == AudioPlayerManager.State.playing) {
+////                            if (mAudioPlayerManager != null && mAudioPlayerManager.getState() == AudioPlayerManager
+//// .State.playing) {
 ////                                mIsStop = false;
 ////                            }
 //                            if (AudioPlayer.isPlaying()) {
-//                                mIsStop = false;
+//                                mLogtf.d("isPlaying:tip=" + tip + ",mIsStop=" + mIsStop);
+////                                mIsStop = false;
 //                            }
 //                        }
-//
-//
-////                        if (mAudioPlayerManager == null) {
-////                            mAudioPlayerManager = AudioPlayerManager.get(ContextManager.getApplication());
-////                            mAudioPlayerManager.setCallback(new PlayerCallback() {
-////                                @Override
-////                                public void onPreparing(Object o, AudioPlayerManager audioPlayerManager) {
-////                                    Loger.i("SpeechWebPagerTest", "prepared:");
-////                                    mCurrentPlayVoiceUrl = mVoiceUrl;
-////                                    AudioPlayer.play();
-////                                }
-////
-////                                @Override
-////                                public void onPlaying(Object o, AudioPlayerManager audioPlayerManager) {
-////
-////                                }
-////
-////                                @Override
-////                                public void onPause(Object o, AudioPlayerManager audioPlayerManager) {
-////
-////                                }
-////
-////                                @Override
-////                                public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
-////                                    try {
-////                                        AudioPlayer.stop();
-////                                    } catch (Exception e) {
-////
-////                                    }
-////                                    if (mIsStop) {
-////                                        if (!TextUtils.isEmpty(tip)) {
-////                                            isRebotLast = false;
-////                                            if (tip.equals("false")) {
-////                                                jsStopRecordBtn();
-////                                            } else if (tip.equals("last")) {
-////                                                isRebotLast = true;
-////                                                jsStopRecordBtn();
-////                                            }
-////                                        }
-////                                    }
-////                                    mIsStop = true;
-////                                    Loger.i(TAG, "playComplete");
-////                                }
-////
-////                                @Override
-////                                public void onStop(Object o, AudioPlayerManager audioPlayerManager) {
-////
-////                                }
-////
-////                                @Override
-////                                public void onError(String s, Object o, AudioPlayerManager audioPlayerManager) {
-////                                    Loger.i("SpeechWebPagerTest", "onError:");
-////                                    if (!TextUtils.isEmpty(tip)) {
-////                                        isRebotLast = false;
-////                                        if (tip.equals("false")) {
-////                                            jsStopRecordBtn();
-////                                        } else if (tip.equals("last")) {
-////                                            isRebotLast = true;
-////                                            jsStopRecordBtn();
-////                                        }
-////                                    }
-////                                    jsRecordError(ResultCode.PLAY_RECORD_FAIL);
-////                                }
-////
-////                                @Override
-////                                public void onRelease(Object o, AudioPlayerManager audioPlayerManager) {
-////
-////                                }
-////
-////                                @Override
-////                                public void onGetMaxDuration(int i) {
-////
-////                                }
-////
-////                                @Override
-////                                public void onProgress(int i, Object o, AudioPlayerManager audioPlayerManager) {
-////
-////                                }
-////
-////                                @Override
-////                                public void onSeeking(Object o, AudioPlayerManager audioPlayerManager) {
-////
-////                                }
-////
-////                                @Override
-////                                public void onBufferingUpdate(int i, AudioPlayerManager audioPlayerManager) {
-////
-////                                }
-////                            }).setDataSource(playUrl).start();
-////
-////                        } else {
-////                            mAudioPlayerManager.start(playUrl);
-////                        }
-//                        final boolean result = AudioPlayer.audioPlayerAsyncControl(playUrl, mContext, 1000, new
-//                                AudioPlayerListening() {
-//                                    @Override
-//                                    public void playComplete(int where) {
-//                                        try {
-//                                            AudioPlayer.stop();
-//                                        } catch (Exception e) {
-//
-//                                        }
-//                                        if (mIsStop) {
-//                                            if (!TextUtils.isEmpty(tip)) {
-//                                                isRebotLast = false;
-//                                                if (tip.equals("false")) {
-//                                                    jsStopRecordBtn();
-//                                                } else if (tip.equals("last")) {
-//                                                    isRebotLast = true;
-//                                                    jsStopRecordBtn();
-//                                                }
-//                                            }
-//                                        }
-//                                        mIsStop = true;
-//                                        Loger.i(TAG, "playComplete");
-//                                    }
-//
-//                                    @Override
-//                                    public void prepared(int duration) {
-//                                        Loger.i("SpeechWebPagerTest", "prepared:");
-//                                        mCurrentPlayVoiceUrl = mVoiceUrl;
-//                                        AudioPlayer.play();
-//                                    }
-//
-//                                    @Override
-//                                    public void currentDuration(int current, int duration) {
-//                                        Loger.i(TAG, "currentDuration:current=" + current + ",duration=" +
-//                                                duration);
-//
-//                                    }
-//
-//                                    @Override
-//                                    public void onError(int what, int code) {
-//                                        super.onError(what, code);
-//                                        Loger.i("SpeechWebPagerTest", "onError:");
-//                                        if (!TextUtils.isEmpty(tip)) {
-//                                            isRebotLast = false;
-//                                            if (tip.equals("false")) {
-//                                                jsStopRecordBtn();
-//                                            } else if (tip.equals("last")) {
-//                                                isRebotLast = true;
-//                                                jsStopRecordBtn();
-//                                            }
-//                                        }
-//                                    }
-//                                }, false, 0, true);
-//
-//                        if (!result) {
-//                            jsRecordError(ResultCode.PLAY_RECORD_FAIL);
-//                        }
+//                        remoteAudioPlayerControl(tip, playUrl);
 //                    }
 //                });
 //            }
 //        } else {
 //            //标准语音测评
-//            if (saveVideoFile.exists()) {
-//
+//            if (saveVideoFile == null) {
+//                mLogtf.i("playRecordFile:saveVideoFile=null");
+//                jsRecordError(ResultCode.PLAY_RECORD_FAIL);
+//            } else if (saveVideoFile.exists()) {
+//                mLogtf.i("playRecordFile:saveVideoFile=" + saveVideoFile + ",exists=true");
 //                if (AudioPlayer.isPlaying()) {
 //                    wvSubjectWeb.post(new Runnable() {
 //                        @Override
@@ -867,38 +788,282 @@
 //                    wvSubjectWeb.post(new Runnable() {
 //                        @Override
 //                        public void run() {
-//                            AudioPlayer.releaseAudioPlayer(mContext);
-//                            boolean result = AudioPlayer.audioPlayerControl(saveVideoFile.getPath(), mContext, 1000, new
-//                                    AudioPlayerListening() {
-//
-//                                        @Override
-//                                        public void playComplete(int where) {
-//                                            setPlayStatus(false);
-//                                            Loger.i(TAG, "playComplete");
-//                                        }
-//
-//                                        @Override
-//                                        public void prepared(int duration) {
-//                                            setPlayStatus(true);
-//                                            Loger.i(TAG, "prepared:duration=" + duration);
-//                                        }
-//
-//                                        @Override
-//                                        public void currentDuration(int current, int duration) {
-//                                            Loger.i(TAG, "currentDuration:current=" + current + ",duration=" +
-//                                                    duration);
-//
-//                                        }
-//
-//                                    }, false, 0, true);
-//
-//                            if (!result) {
-//                                jsRecordError(ResultCode.PLAY_RECORD_FAIL);
-//                            }
+//                            localAudioPlayerControl();
 //                        }
 //                    });
 //                }
+//            } else {
+//                mLogtf.i("playRecordFile:saveVideoFile=" + saveVideoFile + ",exists=false");
+//                jsRecordError(ResultCode.PLAY_RECORD_FAIL);
 //            }
+//        }
+//    }
+//
+//    Runnable localPlayTimeOut = new Runnable() {
+//        @Override
+//        public void run() {
+//            if (mView.getParent() == null) {
+//                return;
+//            }
+//            mLogtf.i("localPlayTimeOut");
+//            localAudioPlayerControl();
+//        }
+//    };
+//
+//    class RemotePlayTimeOut implements Runnable {
+//        String tip;
+//        String playUrl;
+//
+//        @Override
+//        public void run() {
+//            if (mView.getParent() == null) {
+//                return;
+//            }
+//            mLogtf.i("remotePlayTimeOut");
+//            remoteAudioPlayerControl(tip, playUrl);
+//        }
+//    }
+//
+//    RemotePlayTimeOut remotePlayTimeOut = new RemotePlayTimeOut();
+//
+//    /**
+//     * 播放远程音频
+//     *
+//     * @param tip
+//     * @param playUrl
+//     */
+//    private void remoteAudioPlayerControl(String tip, String playUrl) {
+//        remoteAudioPlayerListening = new RemoteAudioPlayerListening(tip);
+//        remotePlayTimeOut.tip = tip;
+//        remotePlayTimeOut.playUrl = playUrl;
+//        mHandler.removeCallbacks(remotePlayTimeOut);
+//        mHandler.postDelayed(remotePlayTimeOut, 5000);
+//        final File saveFile = new File(dir, MD5Utils.disgest(playUrl));
+//        String newPlayUrl = playUrl;
+//        if (saveFile.exists()) {
+//            newPlayUrl = saveFile.getPath();
+//        }
+//        final boolean result = AudioPlayer.audioPlayerAsyncControl(newPlayUrl, mContext, 1000,
+//                remoteAudioPlayerListening, false, 0, true);
+//        mLogtf.i("remoteAudioPlayerControl:result=" + result + ",playUrl=" + newPlayUrl);
+//        if (!result) {
+//            mHandler.removeCallbacks(remotePlayTimeOut);
+//            jsRecordError(ResultCode.PLAY_RECORD_FAIL);
+//        }
+//        if (!saveFile.exists() && playUrl.startsWith("http")) {
+//            BaseHttp baseHttp = new BaseHttp(mContext);
+//            final File tempFile = new File(dir, MD5Utils.disgest(playUrl) + ".tmp");
+//            baseHttp.download(playUrl, tempFile.getPath(), new DownloadCallBack() {
+//                @Override
+//                protected void onDownloadSuccess() {
+//                    tempFile.renameTo(saveFile);
+//                }
+//
+//                @Override
+//                protected void onDownloadFailed() {
+//
+//                }
+//            });
+//        }
+//    }
+//
+//    /**
+//     * 播放本地音频
+//     */
+//    private void localAudioPlayerControl() {
+//        AudioPlayer.releaseAudioPlayer(mContext);
+//        localAudioPlayerListening = new LocalAudioPlayerListening();
+//        mHandler.removeCallbacks(localPlayTimeOut);
+//        mHandler.postDelayed(localPlayTimeOut, 5000);
+//        boolean result = AudioPlayer.audioPlayerControl(saveVideoFile.getPath(), mContext, 1000,
+//                localAudioPlayerListening, false, 0, true);
+//        mLogtf.i("localAudioPlayerControl:result=" + result);
+//        if (!result) {
+//            mHandler.removeCallbacks(localPlayTimeOut);
+//            jsRecordError(ResultCode.PLAY_RECORD_FAIL);
+//        }
+//    }
+//
+//    private RemoteAudioPlayerListening remoteAudioPlayerListening;
+//
+//    class RemoteAudioPlayerListening extends AudioPlayerListening {
+//        String tip;
+//
+//        RemoteAudioPlayerListening(String tip) {
+//            this.tip = tip;
+//        }
+//
+//        @Override
+//        public void playComplete(int where) {
+//            if (remoteAudioPlayerListening != this) {
+//                mLogtf.i("remoteplayComplete:old:where=" + where + ",mIsStop=" + mIsStop);
+//                return;
+//            }
+//            remoteAudioPlayerListening = null;
+//            mHandler.removeCallbacks(remotePlayTimeOut);
+//            if (where == 0) {
+//                mLogtf.e("remoteplayComplete:where=" + where + ",tip=" + tip + ",mIsStop=" + mIsStop + ",voiceurl=" +
+//                        mVoiceUrl, new Exception());
+//            } else {
+//                mLogtf.i("remoteplayComplete:where=" + where + ",tip=" + tip + ",mIsStop=" + mIsStop + ",voiceurl=" +
+//                        mVoiceUrl);
+//            }
+//            try {
+//                AudioPlayer.stop();
+//            } catch (Exception e) {
+//
+//            }
+//            if (mIsStop) {
+//                if (!TextUtils.isEmpty(tip)) {
+//                    isRebotLast = false;
+//                    if (tip.equals("false")) {
+//                        jsStopRecordBtn();
+//                    } else if (tip.equals("last")) {
+//                        isRebotLast = true;
+//                        jsStopRecordBtn();
+//                    }
+//                }
+//            }
+//            mIsStop = true;
+//            Loger.i(TAG, "playComplete");
+//        }
+//
+//        @Override
+//        public void prepared(int duration) {
+//            if (remoteAudioPlayerListening != this) {
+//                mLogtf.i("remoteprepared:old:duration=" + duration);
+//                return;
+//            }
+//            mHandler.removeCallbacks(remotePlayTimeOut);
+//            mLogtf.i("remoteprepared:duration=" + duration);
+//            mCurrentPlayVoiceUrl = mVoiceUrl;
+//            AudioPlayer.play();
+//        }
+//
+//        int lastcurrent = -1;
+//        int times = 0;
+//
+//        @Override
+//        public void currentDuration(int current, int duration) {
+//            if (lastcurrent != current) {
+//                Loger.i(TAG, "remotecurrentDuration:current=" + current + ",duration=" +
+//                        duration);
+//                mLogtf.debugSave("remotecurrentDuration:current=" + current + ",duration=" +
+//                        duration);
+//            } else {
+//                times++;
+//                if (times > 15) {
+//                    mLogtf.i("remotecurrentDuration:times10:current=" + current);
+//                    try {
+//                        AudioPlayer.stop();
+//                    } catch (Exception e) {
+//
+//                    }
+//                    playComplete(100);
+//                }
+//            }
+//            lastcurrent = current;
+//        }
+//
+////        @Override
+////        public void onError(MediaPlayer mp, int what, int extra) {
+////            if (remoteAudioPlayerListening != this) {
+////                mLogtf.i("remoteonError1:old:what=" + what + ",extra=" + extra);
+////                return;
+////            } else {
+////                mLogtf.i("remoteonError1:what=" + what + ",extra=" + extra);
+////            }
+////            if (!TextUtils.isEmpty(tip)) {
+////                isRebotLast = false;
+////                if ("false".equals(tip)) {
+////                    jsStopRecordBtn();
+////                } else if ("last".equals(tip)) {
+////                    isRebotLast = true;
+////                    jsStopRecordBtn();
+////                }
+////            }
+////        }
+//
+//        @Override
+//        public void onError(int what, int code) {
+//            if (remoteAudioPlayerListening != this) {
+//                mLogtf.i("remoteonError2:old:what=" + what + ",code=" + code);
+//                return;
+//            } else {
+//                mLogtf.i("remoteonError2:what=" + what + ",code=" + code);
+//            }
+//            if (!TextUtils.isEmpty(tip)) {
+//                isRebotLast = false;
+//                if ("false".equals(tip)) {
+//                    jsStopRecordBtn();
+//                } else if ("last".equals(tip)) {
+//                    isRebotLast = true;
+//                    jsStopRecordBtn();
+//                }
+//            }
+//        }
+//    }
+//
+//    private LocalAudioPlayerListening localAudioPlayerListening;
+//
+//    class LocalAudioPlayerListening extends AudioPlayerListening {
+//
+//        @Override
+//        public void playComplete(int where) {
+//            if (localAudioPlayerListening != this) {
+//                Loger.i(TAG, "localplayComplete:old");
+//                return;
+//            }
+//            mHandler.removeCallbacks(localPlayTimeOut);
+//            localAudioPlayerListening = null;
+//            setPlayStatus(false);
+//            Loger.i(TAG, "localplayComplete");
+//        }
+//
+//        @Override
+//        public void prepared(int duration) {
+//            if (localAudioPlayerListening != this) {
+//                Loger.i(TAG, "localprepared:old:duration=" + duration);
+//                return;
+//            }
+//            mHandler.removeCallbacks(localPlayTimeOut);
+//            setPlayStatus(true);
+//            Loger.i(TAG, "localprepared:duration=" + duration);
+//        }
+//
+//        int lastcurrent = -1;
+//
+//        @Override
+//        public void currentDuration(int current, int duration) {
+//            if (lastcurrent != current) {
+//                Loger.i(TAG, "remotecurrentDuration:current=" + current + ",duration=" +
+//                        duration);
+//            }
+//            lastcurrent = current;
+//        }
+//
+////        @Override
+////        public void onError(MediaPlayer mp, int what, int extra) {
+////            if (localAudioPlayerListening != this) {
+////                mLogtf.i("localonError1:old:what=" + what + ",extra=" + extra);
+////                return;
+////            } else {
+////                mLogtf.i("localonError1:what=" + what + ",extra=" + extra);
+////            }
+////            mHandler.removeCallbacks(localPlayTimeOut);
+////            jsRecordError(ResultCode.PLAY_RECORD_FAIL);
+////        }
+//
+//        @Override
+//        public void onError(int what, int code) {
+//            if (localAudioPlayerListening != this) {
+//                mLogtf.i("localonError2:old:what=" + what + ",code=" + code);
+//                return;
+//            } else {
+//                mLogtf.i("localonError2:what=" + what + ",code=" + code);
+//            }
+//            mHandler.removeCallbacks(localPlayTimeOut);
+//            jsRecordError(ResultCode.PLAY_RECORD_FAIL);
 //        }
 //    }
 //
@@ -923,7 +1088,6 @@
 //        }
 //    }
 //
-//
 //    /**
 //     * 音量调节
 //     */
@@ -947,7 +1111,7 @@
 //            wvSubjectWeb.post(new Runnable() {
 //                @Override
 //                public void run() {
-//                    Loger.i("SpeechWebPagerTest", "js.record");
+//                    Loger.i(TAG, "js.record");
 //                    wvSubjectWeb.loadUrl("javascript:" + getCurrentJsPrefix() + ".record()");
 //                }
 //            });
@@ -964,7 +1128,7 @@
 //            wvSubjectWeb.post(new Runnable() {
 //                @Override
 //                public void run() {
-//                    Loger.i("SpeechWebPagerTest", "js.setPlayBtnStatus");
+//                    Loger.i(TAG, "js.setPlayBtnStatus");
 //                    wvSubjectWeb.loadUrl("javascript:" + getCurrentJsPrefix() + ".setPlayBtnStatus(" + (isPlayer ?
 //                            "1" : "0") + ")");
 //                }
@@ -972,7 +1136,6 @@
 //
 //        }
 //    }
-//
 //
 //    /**
 //     * 停止播放
@@ -995,7 +1158,7 @@
 //     * @param score
 //     */
 //    private void jsRecordResultSuccess(final int score) {
-//        Loger.i("SpeechAssessTest", "recordResultSuccess:" + score);
+//        mLogtf.i("jsRecordResultSuccess:score=" + score);
 //        if (wvSubjectWeb != null) {
 //            wvSubjectWeb.post(new Runnable() {
 //                @Override
@@ -1005,7 +1168,7 @@
 //                                ")");
 //
 //                    } else if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
-//                        Loger.i("SpeechWebPagerTest", "js.recordResultSuccess:" + score + " / " + mCurrentRecordName);
+//                        Loger.i(TAG, "js.recordResultSuccess:" + score + " / " + mCurrentRecordName);
 //                        wvSubjectWeb.loadUrl("javascript:" + getCurrentJsPrefix() + ".recordResultSuccess(" + score +
 //                                "," + mCurrentRecordName + ")");
 //                    }
@@ -1026,12 +1189,13 @@
 //                public void run() {
 //                    if (mSpeechType.equals(SPEECH_FOLLOW)) {
 //                        try {
-//                            String command = "javascript:" + getCurrentJsPrefix() + ".showResult(" + entity.getCurStatus()
+//                            String command = "javascript:" + getCurrentJsPrefix() + ".showResult(" + entity
+//                                    .getCurStatus()
 //                                    + "," + entity.getCurString() + ")";
 //                            wvSubjectWeb.loadUrl(command);
-//                            Loger.i("SpeechAssessTest", "command=" + command);
+//                            mLogtf.i("jsRecordCurrentResult:command=" + command);
 //                        } catch (Exception e) {
-//                            Loger.i("SpeechAssessTest", "currentResult" + e.getMessage());
+//                            mLogtf.i("jsRecordCurrentResult:currentResult" + e.getMessage());
 //                        }
 //                    }
 //                }
@@ -1045,12 +1209,12 @@
 //     * @param errStatus
 //     */
 //    private void jsRecordError(final int errStatus) {
-//        Loger.i("SpeechAssessTest", "RecordError:" + errStatus);
+//        mLogtf.i("jsRecordError:" + errStatus);
 //        if (wvSubjectWeb != null) {
 //            wvSubjectWeb.post(new Runnable() {
 //                @Override
 //                public void run() {
-//                    Loger.i("SpeechWebPagerTest", "js.recordError:" + errStatus);
+//                    Loger.i(TAG, "js.recordError:" + errStatus);
 //                    if (mSpeechType.equals(SPEECH_NORMAL) || mSpeechType.equals(SPEECH_FOLLOW)) {
 //                        wvSubjectWeb.loadUrl("javascript: " + getCurrentJsPrefix() + ".recordError(" + errStatus + ")");
 //                    } else if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
@@ -1067,7 +1231,7 @@
 //     */
 //    public void jsExamSubmit() {
 //        if (wvSubjectWeb != null) {
-//            Loger.i("SpeechWebPagerTest", "js.ajaxExamSubmit");
+//            mLogtf.i("jsExamSubmit");
 //            wvSubjectWeb.post(new Runnable() {
 //                @Override
 //                public void run() {
@@ -1085,7 +1249,7 @@
 //            wvSubjectWeb.post(new Runnable() {
 //                @Override
 //                public void run() {
-//                    Loger.i("SpeechWebPagerTest", "jsStopRecordBtn:" + mIsRecordFinish + " / " + isRebotLast);
+//                    mLogtf.i("jsStopRecordBtn:mIsRecordFinish=" + mIsRecordFinish + ",isRebotLast=" + isRebotLast);
 //                    if (mSpeechType.equals(SPEECH_ROLEPLAY)) {
 //                        wvSubjectWeb.loadUrl("javascript: " + getCurrentJsPrefix() + ".stopRecordBtn(" +
 //                                mIsRecordFinish + "," +
@@ -1096,7 +1260,6 @@
 //        }
 //    }
 //
-//
 //    /**
 //     * 告知网页当前APP版本号
 //     */
@@ -1105,7 +1268,7 @@
 //            wvSubjectWeb.post(new Runnable() {
 //                @Override
 //                public void run() {
-//                    Loger.i("SpeechWebPagerTest", "js.getAppVersion:" + AppUtils.getAppVersionCode(ContextManager
+//                    Loger.i(TAG, "js.getAppVersion:" + AppUtils.getAppVersionCode(ContextManager
 //                            .getContext()));
 //                    wvSubjectWeb.loadUrl("javascript: getAppVersion(" + AppUtils.getAppVersionCode(ContextManager
 //                            .getContext()) + ")");
@@ -1133,7 +1296,7 @@
 //     */
 //    public void examSubmitAll() {
 //        if (wvSubjectWeb != null) {
-//            Loger.i("SpeechWebPagerTest", "js.speechExamSubmitAll");
+//            mLogtf.i("js.speechExamSubmitAll");
 //            wvSubjectWeb.post(new Runnable() {
 //                @Override
 //                public void run() {
@@ -1170,6 +1333,5 @@
 //    private String getCurrentJsPrefix() {
 //        return mSpeechType.equals(SPEECH_ROLEPLAY) ? jsRolePlayPrefix : jsNormalPrefix;
 //    }
-//
 //
 //}

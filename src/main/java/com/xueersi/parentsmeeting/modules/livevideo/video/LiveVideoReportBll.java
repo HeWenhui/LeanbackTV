@@ -123,12 +123,18 @@ public class LiveVideoReportBll {
             mLogtf.d("onBufferStart:bufferCount=" + ",NetWorkState=" +
                     NetWorkHelper
                             .getNetWorkState(mContext));
+            if (livePlayLog != null) {
+                livePlayLog.onBufferStart();
+            }
         }
 
         @Override
         public void onBufferComplete() {
             long bufferTime = System.currentTimeMillis() - bufferStartTime;
             mLogtf.d("onBufferComplete:bufferTime=" + bufferTime);
+            if (livePlayLog != null) {
+                livePlayLog.onBufferComplete();
+            }
         }
 
         @Override

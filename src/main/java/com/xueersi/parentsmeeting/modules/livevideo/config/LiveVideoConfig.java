@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 
 /**
@@ -175,9 +176,17 @@ public class LiveVideoConfig {
     public static String LIVE_WEBVIEW_ERROR = "live_webview_error";
     /** 直播语音弹幕 */
     public static String LIVE_SPEECH_BULLETSCREEN = "voice_barrage";
+    /** 直播-错误码 */
+    public static String LIVE_PLAY_ERROR = "live_play_error";
 
-    //  体验课互动题提交答案
+    /**体验课互动题提交答案*/
     public static String LIVE_EXPE_SUBMIT = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
+    /**体验课主观题提交答案*/
+//    public static String LIVE_EXPE_SUBMIT_SUBJECT = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/subjectiveSubmit";
+    /** 体验课非h5语音互动题提交答案*/
+//    public static String URL_EXPE_SUBMIT_SPEECHEVAL = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/submitSpeechEval";
+    /** 体验课h5语音评测提交答案*/
+//    public static String URL_EXPE_SUBMIT_TEST_H5_ANSWER = AppConfig.HTTP_HOST_TEAMPK+"/science/AutoLive/submitCourseWareH5AnswerUseVoice";
     /** 获取标记点列表 */
     public static String URL_LIVE_GET_MARK_POINTS = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/getMarkpoint";
     /** 保存标记点 */
@@ -204,14 +213,20 @@ public class LiveVideoConfig {
     public static String URL_AUTO_LIVE_RECEIVE_GOLD = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/receiveGold";
     /** 获取体验课聊天记录 */
     public static String URL_AUTO_LIVE_MSGS = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/getLiveCourseMsgs";
+    /** 提交体验课交互记录*/
+    public static String URL_AUTO_LIVE_RECORD_INTERACT = AppConfig.HTTP_HOST_TEAMPK +"/secience/AutoLive/recordInteract";
     /** 获取讲座直播回放中更多课程的广告信息 */
     public static String URL_LEC_AD_CASE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getAdCase";
     /** 获取体验课学习报告 */
     public static String URL_AUTO_LIVE_FEAD_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/learnFeedback";
     /** 语文主观题获取答案的地址 */
     public static String URL_NEWARTS_SUBMITRESULT_H5 = "https://app.arts.xueersi.com/v2/SubjectiveTest/subjectiveTestAnswerResult";
+    /**提交体验课学习反馈*/
+    public static String URL_AUTO_LIVE_LEARN_FEED_BACK =LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitFeedback";
     /** 直播云平台日志统计 */
     public static String URL_CDN_LOG = "http://log.xescdn.com/log";
+    public static String URL_CDN_LOG1 = "http://log1.xescdn.com/log";
+    public static String URL_CDN_LOG2 = "http://log2.xescdn.com/log";
     /** 更多课程数量的记录 */
     public static int MORE_COURSE;
     public static Boolean isloading = false;
@@ -219,18 +234,18 @@ public class LiveVideoConfig {
     public static String LECTUREADID;
 
     public static Boolean isNewEnglishH5 = false;
-    /** 一题多发发题和收题的标志 */
+    /** 一题多发发题和收题的标志*/
     public static Boolean isSend = false;
     public static String newEnglishH5 = "NewEnglishH5";
-    /** 强制收题的标志 */
+    /** 强制收题的标志*/
     public static EnglishH5Entity englishH5Entity;
-    /** 小学阶段年级的标识 */
+    /** 小学阶段年级的标识*/
     public static Boolean isPrimary = false;
-    /** 一题多发的直播回放的标识 */
+    /** 一题多发的直播回放的标识*/
     public static Boolean isMulLiveBack = false;
-    /** 年级阶段的标识 */
+    /** 年级阶段的标识*/
     public static String educationstage;
-    /** 一发多题的日志 */
+    /** 一发多题的日志*/
     public static String nonce;
     /** 直播回放一发多题的拼装参数 */
     /** 文理科的标志*/
@@ -280,6 +295,7 @@ public class LiveVideoConfig {
     /** 直播-roleplay */
     public static String LIVE_ROLE_PLAY = "live_mutiroleplay";
     public static final String SP_LIVEVIDEO_MARK_POINT_COUNT = "sp_livevideo_mark_point_count";
+
 
     /** 文科新接口的标识*/
     public static Boolean isNewArts = false;

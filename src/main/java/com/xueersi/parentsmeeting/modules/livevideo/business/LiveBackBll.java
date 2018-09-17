@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.xueersi.common.base.BaseBll;
@@ -48,12 +49,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by lyqai on 2018/7/17.
  */
-public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick, LiveOnLineLogs {
+public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick,
+        LiveOnLineLogs {
     private String TAG = "LiveBackBll";
     Logger logger = LoggerFactory.getLogger(TAG);
     Activity activity;
@@ -75,7 +79,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     /** 播放器核心服务 */
     protected PlayerService vPlayer;
     /** 互动题 */
-    private VideoQuestionEntity mQuestionEntity;
+    protected VideoQuestionEntity mQuestionEntity;
     private HashMap<VideoQuestionEntity, VideoQuestionLiveEntity> liveEntityHashMap = new HashMap<>();
     /** 显示互动题 */
     private static final int SHOW_QUESTION = 0;
@@ -92,10 +96,17 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     private LivePlayBackHttpResponseParser mCourseHttpResponseParser;
     /** 本地视频 */
     boolean islocal;
+    /**
+     * 2 代表全身直播
+     */
     private int pattern = 1;
     ShowQuestion showQuestion;
     private LiveUidRx liveUidRx;
     LogToFile logToFile;
+    /**
+     * 是否是体验课
+     */
+    private Boolean isExperience;
 
     public LiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         super(activity);
@@ -107,6 +118,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         isArts = intent.getIntExtra("isArts", 0);
         islocal = intent.getBooleanExtra("islocal", false);
         pattern = intent.getIntExtra("pattern", 0);
+        isExperience = intent.getBooleanExtra("isExperience", false);
         if ("LivePlayBackActivity".equals(where)) {//直播辅导
             mLiveType = LiveVideoConfig.LIVE_TYPE_TUTORIAL;
         } else if ("PublicLiveDetailActivity".equals(where)) {//公开直播
@@ -144,6 +156,10 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         mHttpManager = new LiveHttpManager(activity);
         mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         mHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
+    }
+
+    public Boolean getExperience() {
+        return isExperience;
     }
 
     public int getLiveType() {
@@ -224,18 +240,22 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         liveGetInfo.setPattern(pattern);
         try {
             String getInfoStr = mVideoEntity.getGetInfoStr();
-            JSONObject liveInfo = new JSONObject(getInfoStr);
-            liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
+            if (getInfoStr != null) {
+                JSONObject liveInfo = new JSONObject(getInfoStr);
+                liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
+            }
         } catch (Exception e) {
             logger.e("onCreate", e);
         }
-        String clientLog = mShareDataManager.getString(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, LiveVideoConfig.URL_LIVE_ON_LOAD_LOGS, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        String clientLog = mShareDataManager.getString(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, LiveVideoConfig
+                .URL_LIVE_ON_LOAD_LOGS, ShareDataManager.SHAREDATA_NOT_CLEAR);
         liveGetInfo.setClientLog(clientLog);
         liveUidRx.setLiveGetInfo(liveGetInfo);
         liveUidRx.onCreate();
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
+
     }
 
     public ArrayList<LiveBackBaseBll> getLiveBackBaseBlls() {
@@ -264,6 +284,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     /** 扫描是否有需要弹出的互动题 */
     public void scanQuestion(long position) {
+
         VideoQuestionEntity oldQuestionEntity = mQuestionEntity;
         int playPosition = TimeUtils.gennerSecond(position);
         logger.d("scanQuestion:playPosition=" + playPosition);
@@ -314,26 +335,37 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             liveEntityHashMap.put(mQuestionEntity, videoQuestionLiveEntity);
             if (isShow) {
                 mIsShowQuestion = true;
-                MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
-                mediaControllerAction.release();
+                MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity,
+                        MediaControllerAction.class);
+                if (mediaControllerAction != null) {
+                    mediaControllerAction.release();
+                }
+
             }
         }
 
         @Override
         public void onHide(BaseVideoQuestionEntity baseVideoQuestionEntity) {
-            logToFile.d("onHide:mQuestionEntity=" + mQuestionEntity + ",baseVideoQuestionEntity=" + baseVideoQuestionEntity);
+            logToFile.d("onHide:mQuestionEntity=" + mQuestionEntity + ",baseVideoQuestionEntity=" +
+                    baseVideoQuestionEntity);
             if (mQuestionEntity != null && baseVideoQuestionEntity != null) {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = liveEntityHashMap.get(mQuestionEntity);
                 if (videoQuestionLiveEntity != null) {
-                    logToFile.d("onHide:vCategory=" + mQuestionEntity.getvCategory() + ",id=" + videoQuestionLiveEntity.getvQuestionID() + ",id2=" + baseVideoQuestionEntity.getvQuestionID());
+                    logToFile.d("onHide:vCategory=" + mQuestionEntity.getvCategory() + ",id=" +
+                            videoQuestionLiveEntity.getvQuestionID() + ",id2=" + baseVideoQuestionEntity
+                            .getvQuestionID());
                     if (videoQuestionLiveEntity != baseVideoQuestionEntity) {
                         return;
                     }
                 }
             }
             mIsShowQuestion = false;
-            MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction.class);
-            mediaControllerAction.attachMediaController();
+            MediaControllerAction mediaControllerAction = ProxUtil.getProxUtil().get(activity, MediaControllerAction
+                    .class);
+            if (mediaControllerAction != null) {
+                mediaControllerAction.attachMediaController();
+            }
+
         }
     }
 
@@ -364,7 +396,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     break;
                 }
             } else if (LocalCourseConfig.CATEGORY_QUESTION == videoQuestionEntity.getvCategory()) {
-                if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionEntity.getvQuestionType())) {//语音评测。在那个点弹出
+                if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionEntity.getvQuestionType()))
+                {//语音评测。在那个点弹出
                     // 在开始时间和结束时间之间
                     if (startTime <= playPosition && playPosition < endTime) {
 //                    if (startTime == playPosition) {
@@ -541,6 +574,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         return onUserBackPressed;
     }
 
+
     public boolean isShowQuestion() {
         return mIsShowQuestion;
     }
@@ -603,6 +637,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
      *
      * @param str
      */
+    @Override
     public void getOnloadLogs(String TAG, String str) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
@@ -623,7 +658,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             return;
         }
         LiveLogCallback liveLogCallback = new LiveLogCallback();
-        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mGetInfo.getId(), mGetInfo.getUname(), enstuId,
+        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mGetInfo.getId()
+                , mGetInfo.getUname(), enstuId,
                 mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, liveLogCallback);
         liveLogCallback.setParams(params);
     }
