@@ -12,6 +12,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -422,7 +423,7 @@ public class FrameAnimation {
                                                 Runtime runtime = Runtime.getRuntime();
                                                 map.put("totalMemory", "" + (runtime.totalMemory() / 1024 / 1024));
                                                 map.put("freeMemory", "" + (runtime.freeMemory() / 1024 / 1024));
-                                                Loger.d(mView.getContext(), eventId, map, true);
+                                                UmsAgentManager.umsAgentDebug(mView.getContext(), eventId, map);
                                             }
                                             if (i == mLastFrame) {
                                                 if (mIsRepeat) {

@@ -5,6 +5,7 @@ import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.network.IpAddressUtil;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -69,7 +70,8 @@ public class ErrorWebViewClient extends WebViewClient {
                     logHashMap.put("remoteip", "" + remoteip);
                     logHashMap.put("userip", "" + IpAddressUtil.USER_IP);
                     logHashMap.put("operator", "" + IpAddressUtil.USER_OPERATE);
-                    Loger.d(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData(), true);
+//                    Loger.d(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData(), true);
+                    UmsAgentManager.umsAgentDebug(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData());
                 }
             });
         }

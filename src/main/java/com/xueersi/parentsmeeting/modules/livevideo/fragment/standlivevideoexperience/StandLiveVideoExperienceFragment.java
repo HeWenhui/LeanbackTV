@@ -37,6 +37,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -323,7 +324,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 Map<String, String> mParams = new HashMap<>();
                 mParams.put("logtype", "check_onDataSucess");
                 mParams.put("isFinishing", "" + activity.isFinishing());
-                Loger.d(activity, TAG, mParams, true);
+//                Loger.d(activity, TAG, mParams, true);
+                UmsAgentManager.umsAgentDebug(activity, TAG, mParams);
                 if (activity.isFinishing()) {
                     return;
                 }

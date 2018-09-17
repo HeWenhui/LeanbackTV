@@ -16,8 +16,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.BaseHttp;
 import com.xueersi.common.http.DownloadCallBack;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
@@ -233,7 +235,8 @@ public class LiveStandFrameAnim {
                 logHashMap.put("times", "" + times.get());
                 logHashMap.put("version", "" + StandLiveConfig.version);
                 logHashMap.put("downloadsize", "" + downloadSize);
-                Loger.d(activity, eventId, logHashMap.getData(), true);
+//                Loger.d(activity, eventId, logHashMap.getData(), true);
+                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, logHashMap.getData());
                 onProgress(pbLiveStandUpdate.getLeft(), rlLiveStandUpdateProg, ivLiveStandUpdateProgLight, 50);
                 LiveZip liveZip = new LiveZip(view, callBack, saveFile, saveFileTemp);
                 zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, liveZip);
