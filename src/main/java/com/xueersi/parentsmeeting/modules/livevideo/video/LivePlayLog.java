@@ -84,6 +84,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private boolean isBuffer = false;
     /** 视频是不是暂停 */
     private boolean isPause = false;
+    /** 视频是不是暂停 */
+    private boolean isHavePause = false;
     /** 视频是不是销毁 */
     private boolean isDestory = false;
     /** 缓冲开始时间 */
@@ -326,7 +328,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
-        defaultKey.put("pri", "225");
+        defaultKey.put("pri", 225);
         addDefault(defaultKey);
 
         defaultKey.put("cpu", getCpuRate());
@@ -439,6 +441,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     public void onPause(long dur) {
         logger.d("onPause:isDestory=" + isDestory);
         isPause = true;
+        isHavePause = true;
         handler.removeMessages(1);
         if (!isDestory) {
             send("onPause", dur);
@@ -456,6 +459,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         super.onOpenStart();
         if (!isLive) {
             tid = "" + UUID.randomUUID();
+        } else {
+            if (isHavePause) {
+                tid = "" + UUID.randomUUID();
+                isHavePause = false;
+            }
         }
         isOpenSuccess = false;
         framesPsTen.clear();
@@ -560,6 +568,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     }
 
     public void stopPlay() {
+        isHavePause = true;
         handler.removeMessages(1);
         send("stopPlay", 0);
     }
@@ -704,7 +713,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
-        defaultKey.put("pri", "0");
+        defaultKey.put("pri", 0);
         addDefault(defaultKey);
         defaultKey.put("cpu", getCpuRate());
         defaultKey.put("mem", getMemRate());
@@ -826,7 +835,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             String string = FileStringUtil.readFromFile(file);
             try {
                 JSONObject jsonObject = new JSONObject(string);
-                jsonObject.put("pri", "920");
+                jsonObject.put("pri", 920);
                 xescdnLogUrl(jsonObject, file);
             } catch (JSONException e) {
                 logger.e("uploadOld", e);
@@ -1235,7 +1244,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     HashMap<String, Object> defaultKey = new HashMap<>();
                     defaultKey.put("ver", logVersion);
                     defaultKey.put("serv", serv);
-                    defaultKey.put("pri", "1");
+                    defaultKey.put("pri", 1);
                     addDefault(defaultKey);
                     defaultKey.put("cpu", getCpuRate());
                     defaultKey.put("mem", getMemRate());
