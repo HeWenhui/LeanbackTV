@@ -67,6 +67,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  * 直播播放日志
  */
 public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
+
     private static String TAG = "LivePlayLog";
     private Logger logger = LoggerFactory.getLogger(TAG);
     private PlayerService vPlayer;

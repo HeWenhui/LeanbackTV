@@ -473,6 +473,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private IRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "4L";
 
+
     /**
      * 连接 聊天服务器
      */
