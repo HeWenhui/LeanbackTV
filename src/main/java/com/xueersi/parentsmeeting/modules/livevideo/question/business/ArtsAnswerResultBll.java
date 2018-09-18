@@ -38,6 +38,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.ToDoubleBiFunction;
 
 /**
  * 文科答题结果
@@ -148,10 +149,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         try {
             JSONObject jsonObject = new JSONObject(result);
             int stat = jsonObject.optInt("stat");
-            if (stat == 1) {
+            if (stat == 1 && jsonObject.has("data")) {
                 JSONObject dataObject = jsonObject.getJSONObject("data");
                 mAnswerReulst = new AnswerResultEntity();
-
+                mAnswerReulst.setResultType(AnswerResultEntity.RESULT_TYPE_NEW_COURSE_WARE);
                 if (dataObject.has("total")) {
                     JSONObject totalObject = dataObject.getJSONObject("total");
                     mAnswerReulst.setLiveId(totalObject.optString("liveId"));
@@ -162,60 +163,78 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     mAnswerReulst.setGold(totalObject.optInt("gold"));
                     mAnswerReulst.setRightRate(totalObject.optDouble("rightRate"));
                     mAnswerReulst.setCreateTime(totalObject.optLong("createTime"));
-                }
 
-                if (dataObject.has("split")) {
-                    JSONArray splitArray = dataObject.getJSONArray("split");
-                    JSONObject answerObject = null;
-                    AnswerResultEntity.Answer answer = null;
-                    JSONArray choiceArray = null;
-                    JSONArray blankArray = null;
-                    JSONArray rightAnswerArray = null;
+                    if (dataObject.has("split")) {
+                        JSONArray splitArray = dataObject.getJSONArray("split");
+                        JSONObject answerObject = null;
+                        AnswerResultEntity.Answer answer = null;
+                        JSONArray choiceArray = null;
+                        JSONArray blankArray = null;
+                        JSONArray rightAnswerArray = null;
 
-                    List<AnswerResultEntity.Answer> answerList = new ArrayList<AnswerResultEntity.Answer>();
-                    List<String> choiceList = null;
-                    List<String> blankList = null;
-                    List<String> rightAnswerList = null;
+                        List<AnswerResultEntity.Answer> answerList = new ArrayList<AnswerResultEntity.Answer>();
+                        List<String> choiceList = null;
+                        List<String> blankList = null;
+                        List<String> rightAnswerList = null;
 
-                    for (int i = 0; i < splitArray.length(); i++) {
-                        choiceList = new ArrayList<>();
-                        blankList = new ArrayList<>();
-                        rightAnswerList = new ArrayList<>();
-                        answerObject = splitArray.getJSONObject(i);
-                        answer = new AnswerResultEntity.Answer();
-                        answer.setLiveId(answerObject.optString("liveId"));
-                        answer.setStuId(answerObject.optString("stuId"));
-                        answer.setTestId(answerObject.optString("testId"));
-                        answer.setTestSrc(answerObject.optString("testSrc"));
-                        answer.setTestType(answerObject.optInt("testType"));
-                        answer.setIsRight(answerObject.optInt("isRight"));
-                        answer.setRightRate(answerObject.optDouble("rightRate"));
-                        answer.setCreateTime(answerObject.optLong("createTime"));
+                        for (int i = 0; i < splitArray.length(); i++) {
+                            choiceList = new ArrayList<>();
+                            blankList = new ArrayList<>();
+                            rightAnswerList = new ArrayList<>();
+                            answerObject = splitArray.getJSONObject(i);
+                            answer = new AnswerResultEntity.Answer();
+                            answer.setLiveId(answerObject.optString("liveId"));
+                            answer.setStuId(answerObject.optString("stuId"));
+                            answer.setTestId(answerObject.optString("testId"));
+                            answer.setTestSrc(answerObject.optString("testSrc"));
+                            answer.setTestType(answerObject.optInt("testType"));
+                            answer.setIsRight(answerObject.optInt("isRight"));
+                            answer.setRightRate(answerObject.optDouble("rightRate"));
+                            answer.setCreateTime(answerObject.optLong("createTime"));
 
-                        choiceArray = answerObject.optJSONArray("choice");
-                        for (int i1 = 0; i1 < choiceArray.length(); i1++) {
-                            choiceList.add(choiceArray.getString(i1));
-                        }
-                        answer.setChoiceList(choiceList);
-                        blankArray = answerObject.optJSONArray("blank");
-
-                        for (int i1 = 0; i1 < blankArray.length(); i1++) {
-                            blankList.add(blankArray.getString(i1));
-                        }
-                        answer.setBlankList(blankList);
-                        rightAnswerArray = answerObject.optJSONArray("rightAnswer");
-                        if (rightAnswerArray != null) {
-                            for (int i1 = 0; i1 < rightAnswerArray.length(); i1++) {
-                                rightAnswerList.add(rightAnswerArray.getString(i1));
+                            choiceArray = answerObject.optJSONArray("choice");
+                            for (int i1 = 0; i1 < choiceArray.length(); i1++) {
+                                choiceList.add(choiceArray.getString(i1));
                             }
-                        }
-                        answer.setRightAnswers(rightAnswerList);
+                            answer.setChoiceList(choiceList);
+                            blankArray = answerObject.optJSONArray("blank");
 
-                        answerList.add(answer);
+                            for (int i1 = 0; i1 < blankArray.length(); i1++) {
+                                blankList.add(blankArray.getString(i1));
+                            }
+                            answer.setBlankList(blankList);
+                            rightAnswerArray = answerObject.optJSONArray("rightAnswer");
+                            if (rightAnswerArray != null) {
+                                for (int i1 = 0; i1 < rightAnswerArray.length(); i1++) {
+                                    rightAnswerList.add(rightAnswerArray.getString(i1));
+                                }
+                            }
+                            answer.setRightAnswers(rightAnswerList);
+
+                            answerList.add(answer);
+                        }
+                        mAnswerReulst.setAnswerList(answerList);
                     }
-                    mAnswerReulst.setAnswerList(answerList);
+                    showAnswerReulst();
+                }else{
+                    // TODO: 2018/9/18 新平台老课件
+                    mAnswerReulst.setResultType(AnswerResultEntity.RESULT_TYPE_OLD_COURSE_WARE);
+                    mAnswerReulst.setGold(dataObject.optInt("goldnum"));
+                    JSONArray jsonArray = dataObject.optJSONArray("result");
+                    if(jsonArray != null){
+                        List<AnswerResultEntity.Answer> answerList = new ArrayList<AnswerResultEntity.Answer>();
+                        AnswerResultEntity.Answer answer = null;
+                        JSONObject answerObj = null;
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            answerObj = jsonArray.getJSONObject(i);
+                            answer = new AnswerResultEntity.Answer();
+                            answer.setTestId(answerObj.optString("id"));
+                            answer.setIsRight(answerObj.optInt("isright"));
+                            answer.setRightRate(answerObj.optDouble("rate"));
+                        }
+                        mAnswerReulst.setAnswerList(answerList);
+                    }
                 }
-                showAnswerReulst();
             } else {
                 String errorMsg = jsonObject.optString("msg");
                 if (!TextUtils.isEmpty(errorMsg)) {
@@ -317,7 +336,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             AnswerResultEntity.Answer answer = null;
             for (int i = 0; i < mAnswerReulst.getAnswerList().size(); i++) {
                 answer = mAnswerReulst.getAnswerList().get(i);
-                if (testId.equals(answer.getTestId()) && answer.getIsRight() == 2) {
+                if (testId.equals(answer.getTestId()) && answer.getIsRight() == 2
+                        && mAnswerReulst.getResultType() == AnswerResultEntity.RESULT_TYPE_NEW_COURSE_WARE) {
+                    //新课件平台 2代表正确
+                    showPraise();
+                    break;
+                }else if(testId.equals(answer.getTestId()) && answer.getIsRight() == 1
+                        && mAnswerReulst.getResultType() == AnswerResultEntity.RESULT_TYPE_OLD_COURSE_WARE){
+                    //老课件平台 1 代表正确
                     showPraise();
                     break;
                 }

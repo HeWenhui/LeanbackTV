@@ -11,6 +11,11 @@ import java.util.List;
 
 public class AnswerResultEntity {
 
+    /**文科新课件平台 老课件 答题结果*/
+    public static final int RESULT_TYPE_OLD_COURSE_WARE = 1;
+    /**文科课件平台 新课件*/
+    public static final int RESULT_TYPE_NEW_COURSE_WARE = 2;
+
     private String liveId;
     private String stuId;
     /**后端生成的虚拟id*/
@@ -24,6 +29,8 @@ public class AnswerResultEntity {
     /**正确率*/
     private double rightRate;
     private long createTime;
+
+    private int  resultType;
 
     private List<Answer> answerList;
 
@@ -97,6 +104,14 @@ public class AnswerResultEntity {
 
     public void setAnswerList(List<Answer> answerList) {
         this.answerList = answerList;
+    }
+
+    public int getResultType() {
+        return resultType;
+    }
+
+    public void setResultType(int resultType) {
+        this.resultType = resultType;
     }
 
 

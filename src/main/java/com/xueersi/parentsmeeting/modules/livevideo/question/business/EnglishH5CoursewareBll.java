@@ -363,6 +363,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 } else {
                     Loger.e("Duncan", "======>EnglishH5CoursewareBll:" + "H5语音答题关闭1");
                     boolean havePager = false;
+                    Loger.e("EnglishH5", "======>EnglishH5CoursewareBll: voiceAnswerPager="+voiceAnswerPager );
                     if (voiceAnswerPager != null && !voiceAnswerPager.isEnd()) {
                         voiceAnswerPager.examSubmitAll("onH5Courseware", videoQuestionLiveEntity.nonce);
                         havePager = true;
@@ -370,6 +371,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     }
                     int delayTime = 0;
                     int isForce = 0;
+                    Loger.e("EnglishH5", "======>EnglishH5CoursewareBll: h5CoursewarePager="+h5CoursewarePager );
                     if (h5CoursewarePager != null) {
                         havePager = true;
                         curPager = h5CoursewarePager;
