@@ -465,6 +465,10 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 isHavePause = false;
             }
         }
+        //体验课为空
+        if (StringUtils.isEmpty(tid)) {
+            tid = "" + UUID.randomUUID();
+        }
         isOpenSuccess = false;
         framesPsTen.clear();
         handler.removeMessages(1);
@@ -628,7 +632,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     public void onBufferComplete() {
         super.onBufferComplete();
         isBuffer = false;
-        bufType = 0;
         bufferStartEntity.setEndTime(System.currentTimeMillis());
         Loger.d(TAG, "onBufferComplete:isInitialized=" + vPlayer.isInitialized());
         HashMap<String, Object> defaultKey = new HashMap<>();
@@ -660,6 +663,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        bufType = 0;
         xescdnLog2(defaultKey, dataJson, false);
     }
 

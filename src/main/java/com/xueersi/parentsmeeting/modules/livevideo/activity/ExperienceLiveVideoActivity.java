@@ -446,6 +446,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         getInfo.setStudentLiveInfo(studentLiveInfoEntity);
 
         getInfo.setId(mVideoEntity.getLiveId());
+        if (livePlayLog != null) {
+            livePlayLog.setChannelname(mVideoEntity.getLiveId());
+        }
         getInfo.setLiveType(EXP_LIVE_TYPE);
         getInfo.setStuId(UserBll.getInstance().getMyUserInfoEntity().getStuId());
         getInfo.setStuSex(TextUtils.isEmpty(sex) ? "" : sex);
@@ -468,7 +471,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
 
     private IRCMessage mIRCMessage;
-    private final String IRC_CHANNEL_PREFIX = "#4L";
+    private final String IRC_CHANNEL_PREFIX = "4L";
 
     /**
      * 连接 聊天服务器
@@ -1258,6 +1261,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         // 播放完毕直接退出
 //        onUserBackPressed();
         // 直播结束后，显示结束的提示图片
+        isPlay = false;
         ivTeacherNotpresent.setVisibility(View.VISIBLE);
 //        ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
         ivTeacherNotpresent.setBackgroundResource(R.drawable.live_free_play_end);
@@ -1269,6 +1273,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         if (scanRunnable != null) {
             scanRunnable.exit();
         }
+        mHandler.removeCallbacks(mPlayDuration);
 
     }
 
@@ -1375,4 +1380,4 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         super.onStop();
         liveBackBll.onStop();
     }
-    }
+}

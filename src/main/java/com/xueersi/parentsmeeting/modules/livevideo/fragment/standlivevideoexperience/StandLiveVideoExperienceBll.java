@@ -105,7 +105,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
     }
 
     private IRCMessage mIRCMessage;
-    private final String IRC_CHANNEL_PREFIX = "#4L";
+    private final String IRC_CHANNEL_PREFIX = "4L";
 
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity,
@@ -159,6 +159,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         if (mIRCMessage != null && mIRCMessage.isConnected()) {
             return;
         }
+        expChatId = mVideoEntity.getExpChatId();
         String channel = IRC_CHANNEL_PREFIX + expChatId;
         String chatRoomUid = "s_" + liveGetInfo.getLiveType() + "_"
                 + expChatId + "_" + liveGetInfo.getStuId() + "_" + liveGetInfo.getStuSex();
