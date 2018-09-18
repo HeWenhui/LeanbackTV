@@ -231,6 +231,10 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
             liveGetInfo.setNickname(mMyInfo.getNickName());
         }
+        //解析性别
+        if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
+            liveGetInfo.setNickname(mMyInfo.getNickName());
+        }
         liveGetInfo.setHeadImgPath(mMyInfo.getHeadImg());
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = new LiveGetInfo.StudentLiveInfoEntity();
@@ -255,7 +259,6 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
-
     }
 
     public ArrayList<LiveBackBaseBll> getLiveBackBaseBlls() {
