@@ -17,6 +17,8 @@ public class ArtsAnswerResultEvent {
    /**本地答题*/
    public static final int TYPE_NATIVE_ANSWERRESULT = 2;
 
+   /**js回传rolePlay答题结果*/
+   public static final int TYPE_ROLEPLAY_ANSWERRESULT = 3;
 
     /**
      * @param dataStr   结果数据   type 为1时  dataStr 为答案原始数据  type为2时  为试题id

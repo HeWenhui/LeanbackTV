@@ -9,6 +9,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
@@ -42,11 +43,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideo
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -194,6 +198,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient());
         wvSubjectWeb.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        wvSubjectWeb.addJavascriptInterface(this,"wx_xesapp");
+
 //        wvSubjectWeb.loadUrl("file:///android_asset/testjs.html");
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
@@ -262,6 +268,17 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             mLogtf.d("initData:url=" + mUrl);
         }
     }
+
+
+    /**
+     * rolePlay 答题结果
+     */
+    @JavascriptInterface
+    public void showAnswerResult_LiveVideo(String data){
+      Loger.e("SpeechAssessmentWebX5Pager", "=========>showAnswerResult_LiveVideo:"+data);
+        EventBus.getDefault().post(new ArtsAnswerResultEvent(data,ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT));
+    }
+
 
     @android.webkit.JavascriptInterface
     private void addJavascriptInterface() {
