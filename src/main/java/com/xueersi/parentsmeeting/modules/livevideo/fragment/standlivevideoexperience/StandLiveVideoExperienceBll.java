@@ -446,6 +446,16 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
 
     @Override
+    public void onDestory() {
+        super.onDestory();
+        if (mIRCMessage != null) {
+            mIRCMessage.setCallback(null);
+            mIRCMessage.destory();
+            Loger.e(TAG, "=========>:mIRCMessage.destory()");
+        }
+    }
+
+    @Override
     public void onKeyboardShowing(boolean isShowing) {
 
     }
