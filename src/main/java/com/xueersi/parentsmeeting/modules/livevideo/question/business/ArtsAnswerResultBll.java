@@ -158,7 +158,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     mAnswerReulst.setStuId(totalObject.optString("stuId"));
                     mAnswerReulst.setVirtualId(totalObject.optString("virtualId"));
                     mAnswerReulst.setTestCount(totalObject.optInt("testCount"));
-                    mAnswerReulst.setIsRight(totalObject.getInt("isRight"));
+                    mAnswerReulst.setIsRight(totalObject.optInt("isRight"));
                     mAnswerReulst.setGold(totalObject.optInt("gold"));
                     mAnswerReulst.setRightRate(totalObject.optDouble("rightRate"));
                     mAnswerReulst.setCreateTime(totalObject.optLong("createTime"));
@@ -434,6 +434,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 break;
 
             case XESCODE.ARTS_SEND_QUESTION:
+                mArtsAnswerResultEvent = null;
                 forceSumbmit = false;
                 break;
             case XESCODE.ARTS_STOP_QUESTION:
@@ -442,8 +443,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 break;
             case XESCODE.ARTS_H5_COURSEWARE:
                 String status = data.optString("status", "off");
+                mArtsAnswerResultEvent = null;
                 if ("off".equals(status)) {
-                    mArtsAnswerResultEvent = null;
                     closeAnswerResult(true);
                 } else if ("on".equals(status)) {
                     forceSumbmit = false;
@@ -486,6 +487,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWebviewClose(LiveRoomH5CloseEvent event) {
         Loger.e(TAG, "=======>onWebviewClose called");
+        //mArtsAnswerResultEvent = null;
         closeAnswerResult(false);
     }
 
@@ -496,6 +498,39 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mArtsAnswerResultEvent = event;
             if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()) {
                 onAnswerResult(event.getDataStr());
+            }else if(ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT == event.getType()){
+                onRolePlayAnswerResult(event.getDataStr());
+            }
+        }
+    }
+
+    /**
+     * rolePlay 答题结果
+     * @param dataStr
+     */
+    private void onRolePlayAnswerResult(String dataStr) {
+        if(!TextUtils.isEmpty(dataStr)){
+            try {
+             JSONObject jsonObject = new JSONObject(dataStr);
+             int stat = jsonObject.optInt("stat");
+             if(stat == 1){
+                 JSONObject dataJsonObj = jsonObject.optJSONObject("data");
+                 if (dataJsonObj != null && dataJsonObj.has("total")) {
+                     JSONObject totalObject = dataJsonObj.getJSONObject("total");
+                     String testId = totalObject.optString("testIds");
+                     int score = totalObject.optInt("score");
+                     mVoiceAnswerResult = new VoiceAnswerResultEvent(testId,score);
+                     Loger.e("ArtsAnswerResultBll","========>onRolePlayAnswerResult:"+mVoiceAnswerResult.getScore()+":"+mVoiceAnswerResult.getTestId());
+                 }
+             }else{
+                 String errorMsg = jsonObject.optString("msg");
+                 if (!TextUtils.isEmpty(errorMsg)) {
+                     XESToastUtils.showToast(mContext, errorMsg);
+                 }
+             }
+            }catch (Exception e){
+                e.printStackTrace();
+                XESToastUtils.showToast(mContext, "答题结果数据解析失败");
             }
         }
     }
