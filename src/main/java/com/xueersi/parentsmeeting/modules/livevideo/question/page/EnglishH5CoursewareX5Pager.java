@@ -156,10 +156,11 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     public void submitData() {
         isFinish = true;
-        String command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
-        wvSubjectWeb.loadUrl(command);
         if(isNewArtsCourseware){
             wvSubjectWeb.loadUrl(jsArtsForceSubmit);
+        } else {
+            String command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
+            wvSubjectWeb.loadUrl(command);
         }
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareEnd");
         logHashMap.put("coursewareid", id);
