@@ -185,7 +185,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         }
         mNetWorkType = NetWorkHelper.getNetWorkState(mContext);
         mIRCMessage = new IRCMessage(mContext, mNetWorkType, channel, liveGetInfo.getStuName(), chatRoomUid);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(null, liveGetInfo, liveGetInfo.getLiveType(), mHttpManager,
+        IRCTalkConf ircTalkConf = new IRCTalkConf(null, liveGetInfo, 4, mHttpManager,
                 talkConfHosts);
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
@@ -444,6 +444,16 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         }
     };
 
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        if (mIRCMessage != null) {
+            mIRCMessage.setCallback(null);
+            mIRCMessage.destory();
+            Loger.e(TAG, "=========>:mIRCMessage.destory()");
+        }
+    }
 
     @Override
     public void onKeyboardShowing(boolean isShowing) {
