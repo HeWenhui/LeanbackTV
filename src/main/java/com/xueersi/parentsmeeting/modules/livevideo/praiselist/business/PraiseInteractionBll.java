@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ArtsPraiseHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseInteractionPager;
@@ -53,7 +54,15 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         rlPraiseContentView.removeAllViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
+        int rightMargin = getRightMargin();
+        params.rightMargin = rightMargin;
         rlPraiseContentView.addView(praiseInteractionPager.getRootView(), params);
+
+        praiseInteractionPager.startPraisBtnEnterAnimation();
+    }
+
+    private int getRightMargin() {
+        return LiveVideoPoint.getInstance().getRightMargin();
     }
 
 
