@@ -50,6 +50,10 @@ import java.util.function.ToDoubleBiFunction;
 public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, AnswerResultStateListener {
     private static final String TAG = "ArtsAnswerResultBll";
     private RelativeLayout rlAnswerResultLayout;
+    /**
+     * 语文跟读
+     */
+    private static final int ARTS_FOLLOW_UP = 6;
 
     /**
      * 强制收卷 答题结果展示 时间
@@ -216,12 +220,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         mAnswerReulst.setAnswerList(answerList);
                     }
                     showAnswerReulst();
-                }else{
+                } else {
                     // TODO: 2018/9/18 新平台老课件
                     mAnswerReulst.setResultType(AnswerResultEntity.RESULT_TYPE_OLD_COURSE_WARE);
                     mAnswerReulst.setGold(dataObject.optInt("goldnum"));
                     JSONArray jsonArray = dataObject.optJSONArray("result");
-                    if(jsonArray != null){
+                    if (jsonArray != null) {
                         List<AnswerResultEntity.Answer> answerList = new ArrayList<AnswerResultEntity.Answer>();
                         AnswerResultEntity.Answer answer = null;
                         JSONObject answerObj = null;
@@ -341,8 +345,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     //新课件平台 2代表正确
                     showPraise();
                     break;
-                }else if(testId.equals(answer.getTestId()) && answer.getIsRight() == 1
-                        && mAnswerReulst.getResultType() == AnswerResultEntity.RESULT_TYPE_OLD_COURSE_WARE){
+                } else if (testId.equals(answer.getTestId()) && answer.getIsRight() == 1
+                        && mAnswerReulst.getResultType() == AnswerResultEntity.RESULT_TYPE_OLD_COURSE_WARE) {
                     //老课件平台 1 代表正确
                     showPraise();
                     break;
@@ -435,21 +439,28 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         Loger.e(TAG, "=====>onNotice :" + "type=:" + type + ":data=" + data.toString());
         switch (type) {
             case XESCODE.ARTS_REMID_SUBMIT:
-                remindSubmit();
+                int pType = data.optInt("ptype");
+                // 语文跟读不支持 提醒答题
+                if (ARTS_FOLLOW_UP != pType) {
+                    remindSubmit();
+                }
                 break;
             case XESCODE.ARTS_PARISE_ANSWER_RIGHT:
-                String praiseType = data.optString("praiseType");
-                if ("0".equals(praiseType)) {
-                    praiseAnswerAllRight();
-                } else if ("1".equals(praiseType)) {
-                    int scoreRangeIndex = data.optInt("scoreRange");
-                    JSONArray jsonArray = data.optJSONArray("id");
-                    if (jsonArray != null) {
-                        try {
-                            String testId = jsonArray.optString(0);
-                            praiseVoiceAnswer(scoreRangeIndex, testId);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                // 语文跟读不支持 表扬
+                if (ARTS_FOLLOW_UP != data.optInt("ptype")) {
+                    String praiseType = data.optString("praiseType");
+                    if ("0".equals(praiseType)) {
+                        praiseAnswerAllRight();
+                    } else if ("1".equals(praiseType)) {
+                        int scoreRangeIndex = data.optInt("scoreRange");
+                        JSONArray jsonArray = data.optJSONArray("id");
+                        if (jsonArray != null) {
+                            try {
+                                String testId = jsonArray.optString(0);
+                                praiseVoiceAnswer(scoreRangeIndex, testId);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -524,7 +535,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mArtsAnswerResultEvent = event;
             if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()) {
                 onAnswerResult(event.getDataStr());
-            }else if(ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT == event.getType()){
+            } else if (ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT == event.getType()) {
                 onRolePlayAnswerResult(event.getDataStr());
             }
         }
@@ -532,29 +543,31 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     /**
      * rolePlay 答题结果
+     *
      * @param dataStr
      */
     private void onRolePlayAnswerResult(String dataStr) {
-        if(!TextUtils.isEmpty(dataStr)){
+        if (!TextUtils.isEmpty(dataStr)) {
             try {
-             JSONObject jsonObject = new JSONObject(dataStr);
-             int stat = jsonObject.optInt("stat");
-             if(stat == 1){
-                 JSONObject dataJsonObj = jsonObject.optJSONObject("data");
-                 if (dataJsonObj != null && dataJsonObj.has("total")) {
-                     JSONObject totalObject = dataJsonObj.getJSONObject("total");
-                     String testId = totalObject.optString("testIds");
-                     int score = totalObject.optInt("score");
-                     mVoiceAnswerResult = new VoiceAnswerResultEvent(testId,score);
-                     Loger.e("ArtsAnswerResultBll","========>onRolePlayAnswerResult:"+mVoiceAnswerResult.getScore()+":"+mVoiceAnswerResult.getTestId());
-                 }
-             }else{
-                 String errorMsg = jsonObject.optString("msg");
-                 if (!TextUtils.isEmpty(errorMsg)) {
-                     XESToastUtils.showToast(mContext, errorMsg);
-                 }
-             }
-            }catch (Exception e){
+                JSONObject jsonObject = new JSONObject(dataStr);
+                int stat = jsonObject.optInt("stat");
+                if (stat == 1) {
+                    JSONObject dataJsonObj = jsonObject.optJSONObject("data");
+                    if (dataJsonObj != null && dataJsonObj.has("total")) {
+                        JSONObject totalObject = dataJsonObj.getJSONObject("total");
+                        String testId = totalObject.optString("testIds");
+                        int score = totalObject.optInt("score");
+                        mVoiceAnswerResult = new VoiceAnswerResultEvent(testId, score);
+                        Loger.e("ArtsAnswerResultBll", "========>onRolePlayAnswerResult:" + mVoiceAnswerResult
+                                .getScore() + ":" + mVoiceAnswerResult.getTestId());
+                    }
+                } else {
+                    String errorMsg = jsonObject.optString("msg");
+                    if (!TextUtils.isEmpty(errorMsg)) {
+                        XESToastUtils.showToast(mContext, errorMsg);
+                    }
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
                 XESToastUtils.showToast(mContext, "答题结果数据解析失败");
             }
