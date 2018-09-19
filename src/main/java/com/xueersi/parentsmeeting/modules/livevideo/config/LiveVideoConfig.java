@@ -249,7 +249,7 @@ public class LiveVideoConfig {
     public static String nonce;
     /** 直播回放一发多题的拼装参数 */
     /** 文理科的标志*/
-    public static Boolean isScience;
+    public static Boolean isScience = false;
     /** 直播回放一发多题的拼装参数*/
     // 直播回放的URL
     public static String LIVEPLAYBACKINFOS;

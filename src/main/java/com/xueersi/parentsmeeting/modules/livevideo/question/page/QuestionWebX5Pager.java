@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebChromeClient;
@@ -393,6 +395,45 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 }
             }
             return super.shouldInterceptRequest(view, s);
+        }
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            if("0".equals(type)){
+                File file;
+                int index = request.getUrl().toString().indexOf("courseware_pages");
+                if (index != -1) {
+                    String url2 = request.getUrl().toString().substring(index + "courseware_pages".length());
+                    int index2 = url2.indexOf("?");
+                    if (index2 != -1) {
+                        url2 = url2.substring(0, index2);
+                    }
+                    file = new File(mMorecacheout, url2);
+                    Loger.e("mqtt", "shouldInterceptRequestnew:file=" + file + ",file=" + file.exists());
+                } else {
+                    file = new File(mMorecacheout, MD5Utils.getMD5(request.getUrl().toString()));
+                    index = request.getUrl().toString().lastIndexOf("/");
+                    String name = request.getUrl().toString();
+                    if (index != -1) {
+                        name = request.getUrl().toString().substring(index);
+                    }
+                    Loger.e("mqtt", "shouldInterceptRequestnew:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
+                }
+                if (file.exists()) {
+                    FileInputStream inputStream = null;
+                    try {
+                        inputStream = new FileInputStream(file);
+                        String extension = MimeTypeMap.getFileExtensionFromUrl(request.getUrl().toString().toLowerCase());
+                        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                        WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                        return webResourceResponse;
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return super.shouldInterceptRequest(view, request);
         }
 
         @Override
