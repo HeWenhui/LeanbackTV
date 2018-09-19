@@ -33,6 +33,11 @@ public class WordDictationBll implements WordDictationAction {
         this.activity = activity;
     }
 
+    public void sendSwtichStream() {
+        Intent intent = new Intent(DictationConfig.ACTION_SWITCH_ANCHORLIVE);
+        activity.sendBroadcast(intent);
+    }
+
     public void initView(RelativeLayout bottomContent) {
         this.bottomContent = bottomContent;
     }
