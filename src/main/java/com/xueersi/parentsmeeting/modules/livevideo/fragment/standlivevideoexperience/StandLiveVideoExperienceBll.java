@@ -1,14 +1,17 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
@@ -277,9 +280,22 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onPrivateMessage");
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+            Loger.e(TAG, "=====>onPrivateMessage:isSelf=" + isSelf);
+            if (isSelf && "T".equals(message)) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        XESToastUtils.showToast(activity,"您的帐号已在其他设备登录，请重新进入直播间");
+                        Intent intent = new Intent();
+                        intent.putExtra("msg", "您的帐号已在其他设备登录，请重新进入直播间");
+                        activity.setResult(ShareBusinessConfig.LIVE_USER_KICK, intent);
+                        activity.finish();
+                    }
+                });
+            } else {
+                if (mLiveMessagePager != null) {
+                    mLiveMessagePager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                }
             }
         }
 

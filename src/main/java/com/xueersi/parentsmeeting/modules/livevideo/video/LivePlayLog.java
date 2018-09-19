@@ -377,6 +377,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //        if (StringUtils.isEmpty(tid)) {
 //            return;
 //        }
+        if (vPlayer == null) {
+            return;
+        }
         HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
