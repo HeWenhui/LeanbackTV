@@ -83,6 +83,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
     protected LivePlayerFragment videoFragment;
 
+
     protected LiveMediaController mMediaController;
 
     private LiveAchievementIRCBll starAction;
