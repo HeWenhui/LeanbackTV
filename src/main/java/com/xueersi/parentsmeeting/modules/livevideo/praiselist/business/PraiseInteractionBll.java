@@ -58,7 +58,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         params.rightMargin = rightMargin;
         rlPraiseContentView.addView(praiseInteractionPager.getRootView(), params);
 
-        praiseInteractionPager.startPraisBtnEnterAnimation();
+        praiseInteractionPager.startPraiseBtnEnterAnimation();
     }
 
     private int getRightMargin() {
