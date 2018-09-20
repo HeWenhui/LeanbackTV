@@ -463,6 +463,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 }
                 break;
             case XESCODE.ARTS_PARISE_ANSWER_RIGHT:
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("Arts_Praise_Answer_right:").append(data.toString());
+                Loger.i(mContext,"ArtsAnswerResultBll",stringBuilder.toString(),true);
                 // 语文跟读不支持 表扬
                 if (ARTS_FOLLOW_UP != data.optInt("ptype")) {
                     String praiseType = data.optString("praiseType");
@@ -552,8 +555,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mArtsAnswerResultEvent = event;
             if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()) {
                 onAnswerResult(event.getDataStr());
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("ArtsAnswerResult_:").append(event.getDataStr());
+                Loger.i(mContext,"ArtsAnswerResultBll",stringBuilder.toString(),true);
             } else if (ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT == event.getType()) {
                 onRolePlayAnswerResult(event.getDataStr());
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("ArtsAnswerResult_rolePlay:").append(event.getDataStr());
+                Loger.i(mContext,"ArtsAnswerResultBll",event.getDataStr(),true);
             }
         }
     }
