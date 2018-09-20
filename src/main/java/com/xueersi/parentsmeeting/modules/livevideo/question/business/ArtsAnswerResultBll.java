@@ -67,6 +67,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * 小学英语 统计面板
      */
     private static final int UI_TYPE_PSE = 2;
+    /**答题全对*/
+    private static final int ANSWER_RESULT_ALL_RIGHT = 2;
 
     private IArtsAnswerRsultDisplayer mDsipalyer;
     private AnswerResultEntity mAnswerReulst;
@@ -173,6 +175,15 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     mAnswerReulst.setGold(totalObject.optInt("gold"));
                     mAnswerReulst.setRightRate(totalObject.optDouble("rightRate"));
                     mAnswerReulst.setCreateTime(totalObject.optLong("createTime"));
+                    JSONArray testIds = totalObject.optJSONArray("testIds");
+                    if(testIds != null && testIds.length() > 0){
+                        List<String> idList = new ArrayList<>();
+                        for (int i = 0; i < testIds.length(); i++) {
+                            idList.add(testIds.getString(i));
+                        }
+                        mAnswerReulst.setIdArray(idList);
+                    }
+
                     int type = totalObject.optInt("type");
                     //不是游戏类型的试题 就显示 统计面板  (仿照pc端处理逻辑)
                     showAnswerResult = (type != TEST_TYPE_GAME);
@@ -346,10 +357,30 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     /**
      * 表扬答题全对
      */
-    private void praiseAnswerAllRight() {
-        if (mAnswerReulst != null && (mAnswerReulst.getIsRight() == 2)) {
-            showPraise();
+    private void praiseAnswerAllRight(JSONArray ids) {
+
+        if(ids != null && ids.length() > 0){
+            if(mAnswerReulst != null && mAnswerReulst.getIdArray() != null && mAnswerReulst.getIdArray().size() != 0){
+                String id = null;
+                boolean showPraise = true;
+                // 判断 表扬id 是否包含在 答题结果id里面
+                for (int i = 0; i < ids.length(); i++) {
+                    id = ids.optString(i);
+                    if(showPraise){
+                        showPraise = mAnswerReulst.getIdArray().contains(id);
+                        // 存在id 不再答题结果里面 结束比对
+                        if(!showPraise){
+                            break;
+                        }
+                    }
+                }
+                Loger.e(TAG,"=======>praiseAllRight:"+showPraise);
+                if(showPraise && mAnswerReulst.getIsRight() == ANSWER_RESULT_ALL_RIGHT){
+                    showPraise();
+                }
+            }
         }
+
     }
 
     /**
@@ -475,7 +506,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 if (ARTS_FOLLOW_UP != data.optInt("ptype")) {
                     String praiseType = data.optString("praiseType");
                     if ("0".equals(praiseType)) {
-                        praiseAnswerAllRight();
+                        JSONArray ids  = data.optJSONArray("id");
+                        praiseAnswerAllRight(ids);
                     } else if ("1".equals(praiseType)) {
                         int scoreRangeIndex = data.optInt("scoreRange");
                         JSONArray jsonArray = data.optJSONArray("id");
@@ -492,7 +524,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 break;
             case XESCODE.ARTS_PRAISE_ANSWER_RIGHT_SINGLE:
                 String testId = data.optString("id");
-                pariseSingleAnswerRight(testId);
+                if(!TextUtils.isEmpty(testId)){
+                    pariseSingleAnswerRight(testId);
+                }else {
+                    JSONArray ids = data.optJSONArray("ids");
+                    praiseAnswerAllRight(ids);
+                }
                 break;
 
             case XESCODE.ARTS_SEND_QUESTION:

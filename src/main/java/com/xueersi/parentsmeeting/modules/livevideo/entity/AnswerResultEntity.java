@@ -30,6 +30,17 @@ public class AnswerResultEntity {
     private double rightRate;
     private long createTime;
 
+    public List<String> getIdArray() {
+        return idArray;
+    }
+
+    public void setIdArray(List<String> idArray) {
+        this.idArray = idArray;
+    }
+
+    /**档次答题所有试题id集合*/
+    private List<String> idArray;
+
     private int  resultType;
 
     private List<Answer> answerList;
