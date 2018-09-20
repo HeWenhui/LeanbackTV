@@ -147,8 +147,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         });
     }
 
-    private static final int TEST_TYPE_SELECT = 2;
-    private static final int TEST_TYPE_BLANK  = 1;
+   // private static final int TEST_TYPE_SELECT = 2;
+   // private static final int TEST_TYPE_BLANK  = 1;
+
+    /**游戏类型试题*/
+    private static final int TEST_TYPE_GAME = 12;
 
     private void onAnswerResult(String result) {
         Loger.e(TAG, "=======>onAnswerResult:" + result);
@@ -170,6 +173,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     mAnswerReulst.setGold(totalObject.optInt("gold"));
                     mAnswerReulst.setRightRate(totalObject.optDouble("rightRate"));
                     mAnswerReulst.setCreateTime(totalObject.optLong("createTime"));
+                    int type = totalObject.optInt("type");
+                    //不是游戏类型的试题 就显示 统计面板  (仿照pc端处理逻辑)
+                    showAnswerResult = (type != TEST_TYPE_GAME);
 
                     if (dataObject.has("split")) {
                         JSONArray splitArray = dataObject.getJSONArray("split");
@@ -195,11 +201,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             answer.setTestId(answerObject.optString("testId"));
                             answer.setTestSrc(answerObject.optString("testSrc"));
                             answer.setTestType(answerObject.optInt("testType"));
-                            // 答题结果里是否有选择题
+                         /*   // 答题结果里是否有选择题
                             if(answer.getTestType() == TEST_TYPE_SELECT || answer.getTestType() == TEST_TYPE_BLANK){
                                 showAnswerResult = true;
-                            }
-
+                            }*/
                             answer.setIsRight(answerObject.optInt("isRight"));
                             answer.setRightRate(answerObject.optDouble("rightRate"));
                             answer.setCreateTime(answerObject.optLong("createTime"));
