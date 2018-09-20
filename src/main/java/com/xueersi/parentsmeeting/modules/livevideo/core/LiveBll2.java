@@ -425,15 +425,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         mLogtf.d("onGetInfoSuccess:old=" + businessBlls + ",new=" + businessBllTemps.size());
         businessBllTemps.clear();
         logger.d("=======>onGetInfoSuccess 333333333");
-        LiveGetInfo.NewTalkConfEntity talkConfEntity = new LiveGetInfo.NewTalkConfEntity();
-        talkConfEntity.setHost(mGetInfo.getTalkHost());
-        talkConfEntity.setPort(mGetInfo.getTalkPort());
-        talkConfEntity.setPwd(mGetInfo.getTalkPwd());
-        List<LiveGetInfo.NewTalkConfEntity> newTalkConf = new ArrayList<LiveGetInfo.NewTalkConfEntity>();
-        newTalkConf.add(talkConfEntity);
-        if (mGetInfo.getNewTalkConf() != null) {
-            newTalkConf.addAll(mGetInfo.getNewTalkConf());
-        }
         String channel = "";
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
             channel = "1" + ROOM_MIDDLE + mGetInfo.getId();
@@ -458,12 +449,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, channel, mGetInfo.getStuName(), nickname);
-        mIRCMessage.setNewTalkConf(newTalkConf);
         IRCTalkConf ircTalkConf = new IRCTalkConf(null, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
-        s += ",newTalkConf=" + newTalkConf.size();
         logger.e("=======>mIRCMessage.create()");
         mLogtf.d(s);
         liveVideoBll.onLiveInit(getInfo, mLiveTopic);

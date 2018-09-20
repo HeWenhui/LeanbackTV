@@ -243,23 +243,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
                 getInfo.setRtmpUrls(rtmpUrls);
             }
-            getInfo.setTalkHost(data.getString("talkHost"));
-            getInfo.setTalkPort(data.getString("talkPort"));
-            getInfo.setTalkPwd(data.optString("talkPwd"));
             getInfo.setRoomId(data.optString("roomId"));
-            if (data.has("newTalkConf")) {
-                List<NewTalkConfEntity> newTalkConf = new ArrayList<NewTalkConfEntity>();
-                JSONArray newTalkarray = data.getJSONArray("newTalkConf");
-                for (int i = 0; i < newTalkarray.length(); i++) {
-                    NewTalkConfEntity talkConfEntity = new NewTalkConfEntity();
-                    JSONObject talkConfobj = newTalkarray.getJSONObject(i);
-                    talkConfEntity.setHost(talkConfobj.getString("host"));
-                    talkConfEntity.setPort(talkConfobj.getString("port"));
-                    talkConfEntity.setPwd(talkConfobj.optString("pwd"));
-                    newTalkConf.add(talkConfEntity);
-                }
-                getInfo.setNewTalkConf(newTalkConf);
-            }
             ArrayList<TalkConfHost> newTalkConfHosts = new ArrayList<>();
             if (data.has("liveChatDispatchUrl")) {
                 JSONArray array = data.optJSONArray("liveChatDispatchUrl");

@@ -2592,15 +2592,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         if (mVideoAction != null) {
             mVideoAction.onLiveInit(mGetInfo);
         }
-        NewTalkConfEntity talkConfEntity = new NewTalkConfEntity();
-        talkConfEntity.setHost(mGetInfo.getTalkHost());
-        talkConfEntity.setPort(mGetInfo.getTalkPort());
-        talkConfEntity.setPwd(mGetInfo.getTalkPwd());
-        List<NewTalkConfEntity> newTalkConf = new ArrayList<NewTalkConfEntity>();
-        newTalkConf.add(talkConfEntity);
-        if (mGetInfo.getNewTalkConf() != null) {
-            newTalkConf.addAll(mGetInfo.getNewTalkConf());
-        }
         String channel = "";
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
             channel = "1" + ROOM_MIDDLE + mGetInfo.getId();
@@ -2627,12 +2618,10 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         mIRCMessage = new IRCMessage(mContext, netWorkType, channel, mGetInfo.getStuName(), nickname);
-        mIRCMessage.setNewTalkConf(newTalkConf);
         IRCTalkConf ircTalkConf = new IRCTalkConf(null, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
-        s += ",newTalkConf=" + newTalkConf.size();
         // Loger.d(TAG, s);
         mLogtf.d(s);
         if (mGetInfo.getStudentLiveInfo() != null) {

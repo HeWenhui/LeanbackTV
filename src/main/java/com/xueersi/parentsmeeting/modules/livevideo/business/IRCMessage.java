@@ -16,6 +16,7 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -32,7 +33,7 @@ public class IRCMessage {
     private String mChannel;
     private String mNickname;
     /** 备用用户聊天服务配置列表 */
-    private List<NewTalkConfEntity> mNewTalkConf;
+    private List<NewTalkConfEntity> mNewTalkConf = new ArrayList<>();
     private IRCTalkConf ircTalkConf;
     /** 从上面的列表选择一个服务器 */
     private int mSelectTalk = 0;
@@ -427,11 +428,6 @@ public class IRCMessage {
      */
     public String getNickname() {
         return mNickname;
-    }
-
-    /** 设置备用用户聊天服务配置列表 */
-    public void setNewTalkConf(List<NewTalkConfEntity> newTalkConf) {
-        this.mNewTalkConf = newTalkConf;
     }
 
     /**
