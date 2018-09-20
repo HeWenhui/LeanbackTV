@@ -147,9 +147,15 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         });
     }
 
+   // private static final int TEST_TYPE_SELECT = 2;
+   // private static final int TEST_TYPE_BLANK  = 1;
+
+    /**游戏类型试题*/
+    private static final int TEST_TYPE_GAME = 12;
 
     private void onAnswerResult(String result) {
         Loger.e(TAG, "=======>onAnswerResult:" + result);
+        boolean showAnswerResult = false;
         try {
             JSONObject jsonObject = new JSONObject(result);
             int stat = jsonObject.optInt("stat");
@@ -167,6 +173,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     mAnswerReulst.setGold(totalObject.optInt("gold"));
                     mAnswerReulst.setRightRate(totalObject.optDouble("rightRate"));
                     mAnswerReulst.setCreateTime(totalObject.optLong("createTime"));
+                    int type = totalObject.optInt("type");
+                    //不是游戏类型的试题 就显示 统计面板  (仿照pc端处理逻辑)
+                    showAnswerResult = (type != TEST_TYPE_GAME);
 
                     if (dataObject.has("split")) {
                         JSONArray splitArray = dataObject.getJSONArray("split");
@@ -192,6 +201,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             answer.setTestId(answerObject.optString("testId"));
                             answer.setTestSrc(answerObject.optString("testSrc"));
                             answer.setTestType(answerObject.optInt("testType"));
+                         /*   // 答题结果里是否有选择题
+                            if(answer.getTestType() == TEST_TYPE_SELECT || answer.getTestType() == TEST_TYPE_BLANK){
+                                showAnswerResult = true;
+                            }*/
                             answer.setIsRight(answerObject.optInt("isRight"));
                             answer.setRightRate(answerObject.optDouble("rightRate"));
                             answer.setCreateTime(answerObject.optLong("createTime"));
@@ -219,24 +232,33 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         }
                         mAnswerReulst.setAnswerList(answerList);
                     }
-                    showAnswerReulst();
+                    //答题结果里有填空选择 才展示 统计面板 (当前统计面UI 只支持显示 选择、填空题)
+                    if(showAnswerResult){
+                        showAnswerReulst();
+                    }
                 } else {
                     // TODO: 2018/9/18 新平台老课件
                     mAnswerReulst.setResultType(AnswerResultEntity.RESULT_TYPE_OLD_COURSE_WARE);
                     mAnswerReulst.setGold(dataObject.optInt("goldnum"));
                     JSONArray jsonArray = dataObject.optJSONArray("result");
-                    if (jsonArray != null) {
+                    if (jsonArray != null && jsonArray.length() > 0) {
                         List<AnswerResultEntity.Answer> answerList = new ArrayList<AnswerResultEntity.Answer>();
                         AnswerResultEntity.Answer answer = null;
                         JSONObject answerObj = null;
+                        boolean isAllRight = true;
                         for (int i = 0; i < jsonArray.length(); i++) {
                             answerObj = jsonArray.getJSONObject(i);
                             answer = new AnswerResultEntity.Answer();
                             answer.setTestId(answerObj.optString("id"));
                             answer.setIsRight(answerObj.optInt("isright"));
+                            //判断老课件是否全对 用于支持 多题全对表扬
+                            if(isAllRight){
+                                isAllRight = (answer.getIsRight() == 1);
+                            }
                             answer.setRightRate(answerObj.optDouble("rate"));
                         }
                         mAnswerReulst.setAnswerList(answerList);
+                        mAnswerReulst.setIsRight(isAllRight?2:0);
                     }
                 }
             } else {
@@ -446,6 +468,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 }
                 break;
             case XESCODE.ARTS_PARISE_ANSWER_RIGHT:
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("Arts_Praise_Answer_right:").append(data.toString());
+                Loger.i(mContext,"ArtsAnswerResultBll",stringBuilder.toString(),true);
                 // 语文跟读不支持 表扬
                 if (ARTS_FOLLOW_UP != data.optInt("ptype")) {
                     String praiseType = data.optString("praiseType");
@@ -535,8 +560,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mArtsAnswerResultEvent = event;
             if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()) {
                 onAnswerResult(event.getDataStr());
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("ArtsAnswerResult_:").append(event.getDataStr());
+                Loger.i(mContext,"ArtsAnswerResultBll",stringBuilder.toString(),true);
             } else if (ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT == event.getType()) {
                 onRolePlayAnswerResult(event.getDataStr());
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("ArtsAnswerResult_rolePlay:").append(event.getDataStr());
+                Loger.i(mContext,"ArtsAnswerResultBll",event.getDataStr(),true);
             }
         }
     }
