@@ -147,9 +147,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         });
     }
 
+    private static final int TEST_TYPE_SELECT = 2;
+    private static final int TEST_TYPE_BLANK  = 1;
 
     private void onAnswerResult(String result) {
         Loger.e(TAG, "=======>onAnswerResult:" + result);
+        boolean showAnswerResult = false;
         try {
             JSONObject jsonObject = new JSONObject(result);
             int stat = jsonObject.optInt("stat");
@@ -192,6 +195,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             answer.setTestId(answerObject.optString("testId"));
                             answer.setTestSrc(answerObject.optString("testSrc"));
                             answer.setTestType(answerObject.optInt("testType"));
+                            // 答题结果里是否有选择题
+                            if(answer.getTestType() == TEST_TYPE_SELECT || answer.getTestType() == TEST_TYPE_BLANK){
+                                showAnswerResult = true;
+                            }
+
                             answer.setIsRight(answerObject.optInt("isRight"));
                             answer.setRightRate(answerObject.optDouble("rightRate"));
                             answer.setCreateTime(answerObject.optLong("createTime"));
@@ -219,7 +227,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         }
                         mAnswerReulst.setAnswerList(answerList);
                     }
-                    showAnswerReulst();
+                    //答题结果里有填空选择 才展示 统计面板 (当前统计面UI 只支持显示 选择、填空题)
+                    if(showAnswerResult){
+                        showAnswerReulst();
+                    }
                 } else {
                     // TODO: 2018/9/18 新平台老课件
                     mAnswerReulst.setResultType(AnswerResultEntity.RESULT_TYPE_OLD_COURSE_WARE);
