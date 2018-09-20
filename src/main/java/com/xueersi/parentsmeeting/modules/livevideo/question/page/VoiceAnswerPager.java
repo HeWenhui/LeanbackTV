@@ -582,6 +582,8 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                                 entity.setStandardAnswer(answer);
                                 String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
                                 VoiceAnswerLog.sno5(VoiceAnswerPager.this, sourcetype, baseVideoQuestionEntity.getvQuestionID(), baseVideoQuestionEntity.nonce);
+                                // 发送已答过这题的标识
+                                EventBus.getDefault().post(new ArtsAnswerResultEvent(baseVideoQuestionEntity.getvQuestionID(),2));
                             }
                         }
 
