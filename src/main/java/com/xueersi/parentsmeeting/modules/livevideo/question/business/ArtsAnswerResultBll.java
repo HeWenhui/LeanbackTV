@@ -236,18 +236,24 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     mAnswerReulst.setResultType(AnswerResultEntity.RESULT_TYPE_OLD_COURSE_WARE);
                     mAnswerReulst.setGold(dataObject.optInt("goldnum"));
                     JSONArray jsonArray = dataObject.optJSONArray("result");
-                    if (jsonArray != null) {
+                    if (jsonArray != null && jsonArray.length() > 0) {
                         List<AnswerResultEntity.Answer> answerList = new ArrayList<AnswerResultEntity.Answer>();
                         AnswerResultEntity.Answer answer = null;
                         JSONObject answerObj = null;
+                        boolean isAllRight = true;
                         for (int i = 0; i < jsonArray.length(); i++) {
                             answerObj = jsonArray.getJSONObject(i);
                             answer = new AnswerResultEntity.Answer();
                             answer.setTestId(answerObj.optString("id"));
                             answer.setIsRight(answerObj.optInt("isright"));
+                            //判断老课件是否全对 用于支持 多题全对表扬
+                            if(isAllRight){
+                                isAllRight = (answer.getIsRight() == 1);
+                            }
                             answer.setRightRate(answerObj.optDouble("rate"));
                         }
                         mAnswerReulst.setAnswerList(answerList);
+                        mAnswerReulst.setIsRight(isAllRight?2:0);
                     }
                 }
             } else {
