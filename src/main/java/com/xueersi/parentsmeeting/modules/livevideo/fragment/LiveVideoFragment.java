@@ -215,7 +215,7 @@
 //
 //    @Override
 //    protected void onVideoCreateEnd() {
-//        mLiveBll.setTotalFrameStat(totalFrameStat);
+//        mLiveBll.setLivePlayLog(totalFrameStat);
 //        mLiveBll.getInfo(mGetInfo);
 //    }
 //

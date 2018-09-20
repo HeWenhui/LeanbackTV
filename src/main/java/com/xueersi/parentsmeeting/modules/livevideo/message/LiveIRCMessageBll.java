@@ -658,6 +658,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         /**
          * 理科主讲是否开启献花
          */
+        @Override
         public boolean isOpenZJLKbarrage() {
             return mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage();
         }
@@ -665,6 +666,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         /**
          * 理科辅导老师是否开启献花
          */
+        @Override
         public boolean isOpenFDLKbarrage() {
             return mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage();
         }
@@ -672,6 +674,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         /**
          * 得到当前理科的notice模式
          */
+        @Override
         public String getLKNoticeMode() {
             String mode;
             if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {

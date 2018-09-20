@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 
 /**
+ * 站立直播回放Bottom
  * Created by lyqai on 2018/3/21.
  */
 

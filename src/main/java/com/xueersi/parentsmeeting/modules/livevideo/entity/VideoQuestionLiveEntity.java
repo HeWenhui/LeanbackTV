@@ -57,6 +57,8 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     private int vEndTime;
     /** 测试题日期 */
     private String answerDay;
+    /** 体验课订单ID*/
+    private String termId;
 
     public VideoQuestionLiveEntity() {
     }
@@ -112,6 +114,12 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
         }
     }
 
+    public void addAnswerEntity(AnswerEntity answerEntity){
+        if(answerEntity != null){
+            mAnswerEntityLst.add(answerEntity);
+        }
+    }
+
     @Override
     public int getvBlankSize() {
         return num;
@@ -147,5 +155,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setAnswerDay(String answerDay) {
         this.answerDay = answerDay;
+    }
+
+    public String getTermId() {
+        return termId;
+    }
+
+    public void setTermId(String termId) {
+        this.termId = termId;
     }
 }

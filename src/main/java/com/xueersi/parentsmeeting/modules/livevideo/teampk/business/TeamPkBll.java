@@ -275,7 +275,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         final String eventId = getLogEventId(event.getH5Type());
 
         if (LiveVideoConfig.isNewEnglishH5) {
-
             mHttpManager.teamEnergyNumAndContributionmulStar(mLiveBll.getLiveId(),
                     roomInitInfo.getStudentLiveInfo().getTeamId(),
                     roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), LiveVideoConfig.tests,

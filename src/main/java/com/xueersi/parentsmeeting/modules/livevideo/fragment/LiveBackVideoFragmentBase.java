@@ -15,6 +15,9 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,7 +25,11 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,33 +38,44 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.FileLogger;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 import com.xueersi.ui.dataload.DataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import okhttp3.Call;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /***
@@ -73,7 +91,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
     protected int mLayoutVideo = R.layout.liveback_video_fragment;
     /** 播放器可刷新布局 */
     protected int mLayoutBackgroundRefresh = R.layout.layout_video_resfresh;
-    LiveBackPlayerFragment liveBackPlayVideoFragment;
+    protected LiveBackPlayerFragment liveBackPlayVideoFragment;
     /** 所在的Activity是否已经onCreated */
     private boolean mCreated = false;
     /** 视频的名称，用于显示在播放器上面的信息栏 */
@@ -360,6 +378,9 @@ public class LiveBackVideoFragmentBase extends Fragment {
 
     public final void onBackPressed() {
         // 这里需要写代码，如果是横屏则转换竖屏
+//        setBackgroundAlpha(0.4f);
+//        showPopupwinResult();
+//        XESToastUtils.showToast(activity, "onBackPressed");
         if (mIsLand.get()) {
             // 如果是横屏则切换为竖屏
             if (mIsAutoOrientation) {
@@ -391,12 +412,6 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        videoCreate.savedInstanceState = savedInstanceState;
-    }
-
     // region 播放管理业务
     protected RelativeLayout mContentView;
 
@@ -409,8 +424,6 @@ public class LiveBackVideoFragmentBase extends Fragment {
         return mContentView;
     }
 
-
-    // region 播放管理业务
 
     /** 加载界面 */
     protected void loadView(int id) {
@@ -454,6 +467,15 @@ public class LiveBackVideoFragmentBase extends Fragment {
         loadLandOrPortView();
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        videoCreate.savedInstanceState = savedInstanceState;
+    }
+
+    // region 播放管理业务
+
+
     protected LiveBackPlayerFragment getFragment() {
         LiveVideoFragmentBase liveVideoPlayFragment = new LiveVideoFragmentBase();
         liveVideoPlayFragment.liveBackVideoFragment = this;
@@ -494,6 +516,12 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
 
         @Override
+        public void seekTo(long pos) {
+            super.seekTo(pos);
+            liveBackVideoFragment.seekTo(pos);
+        }
+
+        @Override
         public void onPlayOpenSuccess() {
             super.onPlayOpenSuccess();
             liveBackVideoFragment.onPlayOpenSuccess();
@@ -518,6 +546,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         @Override
         protected void resultComplete() {
             super.resultComplete();
+            liveBackVideoFragment.resultComplete();
             mIsEnd = true;
         }
 
@@ -525,8 +554,8 @@ public class LiveBackVideoFragmentBase extends Fragment {
         protected long getStartPosition() {
             return liveBackVideoFragment.getStartPosition();
         }
-        
-        
+
+
     }
 
     protected void onStartPlayer() {
@@ -707,6 +736,10 @@ public class LiveBackVideoFragmentBase extends Fragment {
 
     protected void setSpeed(float speed) {
         mySpeed = speed;
+    }
+
+    protected void seekTo(long pos) {
+
     }
 
     protected void onPlayOpenStart() {
@@ -944,4 +977,85 @@ public class LiveBackVideoFragmentBase extends Fragment {
             }
         }
     }
+
+//    PopupWindow mWindow;
+//    PopupWindow mFeedbackWindow;
+//    String mDifficulty = "-1";
+//    String mSatisficing = "-1";
+//    String mSuggess = "";
+//
+//    public void showPopupwinResult() {
+//        LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        View result = inflater.inflate(R.layout.pop_experience_livevideo_result, null);
+//        result.setFocusable(true);
+//        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+//        mWindow = new PopupWindow(result, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams
+//                .MATCH_PARENT, false);
+//        mWindow.setOutsideTouchable(false);
+//        mWindow.setFocusable(false);
+//        mWindow.setTouchable(true);
+//        mWindow.showAtLocation(result, Gravity.CENTER, 0, 0);
+//        TextView recommand = (TextView) result.findViewById(R.id.tv_detail_result);
+//        TextView beat = (TextView) result.findViewById(R.id.tv_result);
+//        TextView totalscore = (TextView) result.findViewById(R.id.tv_total_score);
+//        ImageButton shut = (ImageButton) result.findViewById(R.id.ib_shut);
+//        result.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                if (keyCode == KeyEvent.KEYCODE_BACK) {
+//                    mWindow.dismiss();
+//                    mWindow = null;
+//                    showPopupwinFeedback();
+//                }
+//                return true;
+//            }
+//        });
+//        shut.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mWindow.dismiss();
+//                showPopupwinFeedback();
+////                setBackgroundAlpha(1f);
+//            }
+//        });
+//
+//
+//    }
+//
+//    private void showPopupwinFeedback() {
+//        VideoLivePlayBackEntity mVideoEntity = new VideoLivePlayBackEntity();
+//        mVideoEntity.setChapterId("1");
+//        mVideoEntity.setStuCourseId("22");
+//        mVideoEntity.setLiveId("333");
+//        LectureLivePlayBackBll lectureLivePlayBackBll = new LectureLivePlayBackBll(getActivity(), "");
+//        ExperienceLearnFeedbackPager expFeedbackPager = new ExperienceLearnFeedbackPager(getActivity(),
+// mVideoEntity, getActivity().getWindow(), lectureLivePlayBackBll);
+//        mFeedbackWindow = new PopupWindow(expFeedbackPager.getRootView(), RelativeLayout.LayoutParams.MATCH_PARENT,
+// RelativeLayout
+//                .LayoutParams.MATCH_PARENT, false);
+//        mFeedbackWindow.setBackgroundDrawable(activity.getResources().getDrawable(R.color.transparent));
+//        mFeedbackWindow.setOutsideTouchable(true);
+//        mFeedbackWindow.setFocusable(true);
+//        mFeedbackWindow.setSoftInputMode(PopupWindow.INPUT_METHOD_NEEDED);
+//        mFeedbackWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+//        mFeedbackWindow.showAtLocation(expFeedbackPager.getRootView(), Gravity.CENTER, 0, 0);
+//        expFeedbackPager.setCloseAction(new ExperienceLearnFeedbackPager.CloseAction() {
+//            @Override
+//            public void onClose() {
+//                mFeedbackWindow.dismiss();
+//            }
+//        });
+//    }
+//    public void setBackgroundAlpha(float bgAlpha) {
+//        WindowManager.LayoutParams lp = getActivity().getWindow()
+//                .getAttributes();
+//        lp.alpha = bgAlpha;
+//        getActivity().getWindow().setAttributes(lp);
+//    }
+//
+//    public static int dp2px(Context context, int dp) {
+//        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources()
+//                .getDisplayMetrics());
+//    }
+
 }

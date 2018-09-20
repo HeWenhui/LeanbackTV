@@ -8,6 +8,7 @@ import android.view.WindowManager;
 
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.event.AppEvent;
+import com.xueersi.common.http.HttpCall;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.log.FileLogger;
@@ -56,6 +57,11 @@ public class LiveBackVideoActivityBase extends XesActivity {
         if (liveVideoFragmentBase != null) {
             liveVideoFragmentBase.setRequestedOrientation(requestedOrientation);
         }
+    }
+
+    @Override
+    public void addHttpRequest(HttpCall httpCall) {
+        //去掉
     }
 
     @Override

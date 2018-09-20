@@ -25,13 +25,22 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
     LiveAndBackDebug liveAndBackDebug;
     LivePagerBack livePagerBack;
     WrapSpeechEvalAction wrapSpeechEvalAction;
+    /**
+     * 是否是体验课
+     */
+    private boolean isExperience;
 
     @Deprecated
     public LiveBackStandSpeechCreat(LiveBll liveBll) {
         liveAndBackDebug = liveBll;
     }
 
-    public LiveBackStandSpeechCreat(QuestionPlayBackBll questionIRCBll, LiveAndBackDebug liveAndBackDebug, LivePagerBack livePagerBack) {
+    public void setIsExperience(boolean experience) {
+        isExperience = experience;
+    }
+
+    public LiveBackStandSpeechCreat(QuestionPlayBackBll questionIRCBll, LiveAndBackDebug liveAndBackDebug,
+                                    LivePagerBack livePagerBack) {
         this.questionIRCBll = questionIRCBll;
         this.liveAndBackDebug = liveAndBackDebug;
         this.livePagerBack = livePagerBack;
@@ -47,8 +56,11 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
     }
 
     @Override
-    public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String nonce, VideoQuestionLiveEntity videoQuestionLiveEntity,
-                                                  boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
+    public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String nonce,
+                                                  VideoQuestionLiveEntity videoQuestionLiveEntity,
+                                                  boolean haveAnswer, SpeechEvalAction speechEvalAction,
+                                                  RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String
+                                                          learning_stage) {
         SpeechStandLog.sno2(liveAndBackDebug, videoQuestionLiveEntity.id, nonce);
         wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
@@ -62,19 +74,22 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
     }
 
     @Override
-    public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
+    public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity
+            videoQuestionLiveEntity, String testId,
                                                     SpeechEvalAction speechEvalAction, String stuCouId) {
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
                 false, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
         speechAssessmentPager.setStandingLive(true);
+        speechAssessmentPager.setIsExperience(isExperience);
         RolePlayStandLog.sno3(liveAndBackDebug, testId);
         return speechAssessmentPager;
     }
 
     @Override
     public void setViewLayoutParams(BaseSpeechAssessmentPager baseVoiceAnswerPager, int rightMargin) {
-//        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) baseVoiceAnswerPager.getRootView().getLayoutParams();
+//        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) baseVoiceAnswerPager.getRootView()
+// .getLayoutParams();
 //        if (rightMargin != params.rightMargin) {
 //            params.rightMargin = rightMargin;
 //            LayoutParamsUtil.setViewLayoutParams(baseVoiceAnswerPager.getRootView(), params);
@@ -104,12 +119,14 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
         }
 
         @Override
-        public void stopSpeech(BaseSpeechAssessmentPager pager, BaseVideoQuestionEntity baseVideoQuestionEntity, String num) {
+        public void stopSpeech(BaseSpeechAssessmentPager pager, BaseVideoQuestionEntity baseVideoQuestionEntity,
+                               String num) {
             action.stopSpeech(pager, baseVideoQuestionEntity, num);
         }
 
         @Override
-        public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, OnSpeechEval onSpeechEval) {
+        public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, OnSpeechEval
+                onSpeechEval) {
             action.sendSpeechEvalResult(id, stuAnswer, times, entranceTime, onSpeechEval);
         }
 

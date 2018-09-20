@@ -13,9 +13,10 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
+
+import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
  * Created by linyuqiang on 2018/8/3.
@@ -36,10 +37,18 @@ public class LiveBackVideoBll {
     String mUri = "";
     /** 进度缓存的追加KEY值 */
     protected String mShareKey = "LiveBack";
+    /** 直播帧数统计 */
+    private LivePlayLog livePlayLog;
+    boolean islocal;
 
-    public LiveBackVideoBll(Activity activity) {
+    public LiveBackVideoBll(Activity activity, boolean islocal) {
         this.activity = activity;
+        this.islocal = islocal;
         logger = LoggerFactory.getLogger("LiveBackVideoBll");
+        if (islocal) {
+            return;
+        }
+        livePlayLog = new LivePlayLog(activity, false);
     }
 
     public void setSectionName(String mSectionName) {
@@ -48,10 +57,16 @@ public class LiveBackVideoBll {
 
     public void setvPlayer(PlayerService vPlayer) {
         this.vPlayer = vPlayer;
+        if (livePlayLog != null) {
+            livePlayLog.setvPlayer(vPlayer);
+        }
     }
 
     public void setVideoEntity(VideoLivePlayBackEntity mVideoEntity) {
         this.mVideoEntity = mVideoEntity;
+        if (livePlayLog != null) {
+            livePlayLog.setChannelname(mVideoEntity.getLiveId());
+        }
         try {
             String hostPath = mVideoEntity.getHostPath();
             String videoPathNoHost = mVideoEntity.getVideoPathNoHost();
@@ -72,8 +87,31 @@ public class LiveBackVideoBll {
         }
     }
 
+    public void onResume() {
+        if (livePlayLog != null) {
+            livePlayLog.onReplay();
+        }
+    }
+
+    public void onPause(long dur) {
+        if (livePlayLog != null) {
+            livePlayLog.onPause(dur);
+        }
+    }
+
+    public void onDestroy() {
+
+    }
+
+    public void seekTo(long pos) {
+        if (livePlayLog != null) {
+            livePlayLog.seekTo(pos);
+        }
+    }
+
     public void setLiveBackPlayVideoFragment(LiveBackPlayerFragment liveBackPlayVideoFragment) {
         this.liveBackPlayVideoFragment = liveBackPlayVideoFragment;
+        liveBackPlayVideoFragment.setLivePlayLog(livePlayLog);
     }
 
     public void playNewVideo() {
@@ -107,6 +145,9 @@ public class LiveBackVideoBll {
         if (netWorkType == NetWorkHelper.NO_NETWORK) {
             vPlayer.stop();
             liveBackPlayVideoFragment.resultFailed(0, 0);
+            if (livePlayLog != null) {
+                livePlayLog.onOpenFailed(0, AvformatOpenInputError.ENETDOWN.getNum());
+            }
         }
     }
 
@@ -119,12 +160,18 @@ public class LiveBackVideoBll {
         public void onOpenFailed(int arg1, int arg2) {
             logger.d("onOpenFailed:index=" + index + ",arg2=" + arg2);
             super.onOpenFailed(arg1, arg2);
+            if (livePlayLog != null) {
+                livePlayLog.onOpenFailed(arg1, arg2);
+            }
         }
 
         @Override
         public void onOpenStart() {
             logger.d("onOpenStart");
             super.onOpenStart();
+            if (livePlayLog != null) {
+                livePlayLog.onOpenStart();
+            }
         }
 
         @Override
@@ -132,8 +179,34 @@ public class LiveBackVideoBll {
             logger.d("onOpenSuccess:index=" + index);
             index--;
             super.onOpenSuccess();
+            if (livePlayLog != null) {
+                livePlayLog.onOpenSuccess();
+            }
         }
 
+        @Override
+        public void onSeekComplete() {
+            super.onSeekComplete();
+            if (livePlayLog != null) {
+                livePlayLog.onSeekComplete();
+            }
+        }
+
+        @Override
+        public void onPlaybackComplete() {
+            super.onPlaybackComplete();
+            if (livePlayLog != null) {
+                livePlayLog.onPlaybackComplete();
+            }
+        }
+
+        @Override
+        public void onPlayError() {
+            super.onPlayError();
+            if (livePlayLog != null) {
+                livePlayLog.onPlayError();
+            }
+        }
     };
 
 }

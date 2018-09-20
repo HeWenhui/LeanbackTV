@@ -416,7 +416,11 @@ public class LiveRemarkBll {
         englishH5Num = 0;
         markNum = 0;
         for (VideoPointEntity entity : lst) {
-            switch (entity.getNewType()) {
+            String newType = entity.getNewType();
+            if (newType == null) {
+                continue;
+            }
+            switch (newType) {
                 case "1":
                 case "6":
                     entity.setNumone(++questionNum);

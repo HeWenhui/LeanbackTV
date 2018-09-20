@@ -4,6 +4,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -42,7 +43,8 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
                 Map<String, String> mParams = new HashMap<>();
                 mParams.put("logtype", "check_onDataSucess");
                 mParams.put("isFinishing", "" + activity.isFinishing());
-                Loger.d(activity, TAG, mParams, true);
+//                Loger.d(activity, TAG, mParams, true);
+                UmsAgentManager.umsAgentDebug(activity, TAG, mParams);
                 if (activity.isFinishing()) {
                     return;
                 }

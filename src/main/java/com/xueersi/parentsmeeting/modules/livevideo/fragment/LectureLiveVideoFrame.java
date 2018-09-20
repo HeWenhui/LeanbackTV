@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -157,6 +158,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll));
         mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll));
         mLiveBll.addBusinessBll(new LecAdvertIRCBll(activity, mLiveBll));
+        mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
         mLiveBll.addBusinessBll(new LecLearnReportIRCBll(activity, mLiveBll));
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }
@@ -302,7 +304,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                 before = System.currentTimeMillis();
                 List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
                 for (LiveBaseBll businessBll : businessBlls) {
-                    businessBll.initViewF(bottomContent, mIsLand);
+                    businessBll.initViewF(bottomContent, mIsLand, mContentView);
                 }
                 logger.d("changeLandAndPort:time2=" + (System.currentTimeMillis() - before));
 //                liveMessageBll.initView(questionContent, mIsLand);
@@ -353,7 +355,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                 before = System.currentTimeMillis();
                 List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
                 for (LiveBaseBll businessBll : businessBlls) {
-                    businessBll.initViewF(bottomContent, mIsLand);
+                    businessBll.initViewF(bottomContent, mIsLand, mContentView);
                 }
                 logger.d("changeLandAndPort:time4=" + (System.currentTimeMillis() - before));
 //                liveMessageBll.initView(questionContent, mIsLand);

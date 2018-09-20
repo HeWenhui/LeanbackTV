@@ -42,11 +42,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
-import com.xueersi.parentsmeeting.modules.livevideo.business.KeyboardObserverReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -58,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5P
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
@@ -291,6 +290,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             } else {
                 PlayErrorCode playErrorCode = PlayErrorCode.getError(arg2);
                 errorInfo.setText("视频播放失败 [" + playErrorCode.getCode() + "]");
+                //统计日志
+                PlayErrorCodeLog.livePlayError(liveBackBll, playErrorCode);
             }
         }
         rlQuestionContent.setVisibility(View.GONE);
@@ -341,7 +342,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         where = intent.getStringExtra("where");
         isArts = intent.getIntExtra("isArts", 0);
 
-        liveBackVideoBll = new LiveBackVideoBll(activity);
+        liveBackVideoBll = new LiveBackVideoBll(activity, islocal);
         liveBackVideoBll.setVideoEntity(mVideoEntity);
         liveBackVideoBll.setLiveBackPlayVideoFragment(liveBackPlayVideoFragment);
         liveBackVideoBll.setvPlayer(vPlayer);
@@ -489,10 +490,21 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (isInitialized() && pausePlay) {
             vPlayer.pause();
         }
+        if (liveBackVideoBll != null) {
+            liveBackVideoBll.onResume();
+        }
+
     }
 
     @Override
     public void onPause() {
+        if (isInitialized()) {
+            if (!onPauseNotStopVideo.get()) {
+                if (liveBackVideoBll != null) {
+                    liveBackVideoBll.onPause(0);
+                }
+            }
+        }
         super.onPause();
     }
 
@@ -522,6 +534,12 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             return 0;
         }
         return liveBackVideoBll.getStartPosition();
+    }
+
+    @Override
+    protected void seekTo(long pos) {
+        super.seekTo(pos);
+        liveBackVideoBll.seekTo(pos);
     }
 
     @Override
@@ -762,6 +780,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (liveBackBll != null) {
             liveBackBll.onDestory();
         }
+        if (liveBackVideoBll != null) {
+            liveBackVideoBll.onDestroy();
+        }
         ProxUtil.getProxUtil().clear(activity);
     }
 
@@ -806,7 +827,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     /** 重新打开播放器的监听 */
     public void onRestart() {
-        liveBackBll.onRestart();
+        if (liveBackBll != null) {
+            liveBackBll.onRestart();
+        }
     }
 
     @Override

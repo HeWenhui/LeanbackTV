@@ -11,6 +11,7 @@ import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -172,7 +173,7 @@ public class IRCTalkConf {
                 stableLogHashMap.put("errmsg", msg);
                 stableLogHashMap.put("ip", getHostIP());
                 stableLogHashMap.put("netWorkType", "" + netWorkType);
-                Loger.d(BaseApplication.getContext(), eventId, stableLogHashMap.getData(), true);
+                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
                 reTry();
             }
 
@@ -187,7 +188,7 @@ public class IRCTalkConf {
                 stableLogHashMap.put("gslburl", url);
                 stableLogHashMap.put("errmsg", responseEntity.getErrorMsg());
                 stableLogHashMap.put("ip", getHostIP());
-                Loger.d(BaseApplication.getContext(), eventId, stableLogHashMap.getData(), true);
+                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
                 reTry();
             }
 

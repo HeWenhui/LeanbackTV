@@ -14,11 +14,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerTopInter;
 import com.xueersi.parentsmeeting.module.videoplayer.media.FractionalTouchDelegate;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**
  * 直播播放器控制栏顶部区域
@@ -43,10 +42,11 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
     protected TextView tvFileName;
     /** 底部控制栏右边的横竖屏切换按钮 */
     private ImageView mAllView;
-    /**标题栏右侧按钮*/
+    /** 标题栏右侧按钮 */
     private View vTitleRight;
 
-    public BaseLiveMediaControllerTop(Context context, LiveMediaController controller, LiveMediaController.MediaPlayerControl mPlayer) {
+    public BaseLiveMediaControllerTop(Context context, LiveMediaController controller, LiveMediaController
+            .MediaPlayerControl mPlayer) {
         super(context);
         mContext = context;
         this.mPlayer = mPlayer;
@@ -58,8 +58,10 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
         inflateLayout();
         findViewItems();
         // 初始化上下控制栏的动画
-        mAnimSlideOutBottom = AnimationUtils.loadAnimation(mContext, com.xueersi.parentsmeeting.base.R.anim.anim_mediactrl_slide_out_bottom);
-        mAnimSlideInBottom = AnimationUtils.loadAnimation(mContext, com.xueersi.parentsmeeting.base.R.anim.anim_mediactrl_slide_in_bottom);
+        mAnimSlideOutBottom = AnimationUtils.loadAnimation(mContext, com.xueersi.parentsmeeting.base.R.anim
+                .anim_mediactrl_slide_out_bottom);
+        mAnimSlideInBottom = AnimationUtils.loadAnimation(mContext, com.xueersi.parentsmeeting.base.R.anim
+                .anim_mediactrl_slide_in_bottom);
         mAnimSlideOutBottom.setFillAfter(true);
         mAnimSlideInBottom.setFillAfter(true);
         mAnimSlideOutBottom.setAnimationListener(new Animation.AnimationListener() {
@@ -71,8 +73,8 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
             public void onAnimationEnd(Animation animation) {
                 mMediaController.hiderl_video_mediacontroller(); // 隐藏控制栏
                 mMediaController.showButtons(false); // 隐藏系统按钮
-                mMediaController.removeMessages(mMediaController.MSG_HIDE_SYSTEM_UI);
-                mMediaController.sendEmptyMessage(mMediaController.MSG_HIDE_SYSTEM_UI); // 隐藏状态栏
+                mMediaController.removeMessages(LiveMediaController.MSG_HIDE_SYSTEM_UI);
+                mMediaController.sendEmptyMessage(LiveMediaController.MSG_HIDE_SYSTEM_UI); // 隐藏状态栏
             }
 
             @Override
@@ -94,7 +96,7 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
         mAllView = (ImageView) findViewById(R.id.iv_video_mediacontroller_controls_allview);
         mBack.setOnClickListener(mBackClickListener);
         mAllView.setOnClickListener(mAllViewClickListener);
-        vTitleRight=findViewById(R.id.iv_video_mark_points);
+        vTitleRight = findViewById(R.id.iv_video_mark_points);
         FractionalTouchDelegate.setupDelegate(mSystemInfoLayout, mBack, new RectF(1.0f, 1f, 1.2f, 1.2f));
     }
 
@@ -141,12 +143,13 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
             mAllView.setVisibility(View.INVISIBLE);
         }
     }
-    /**标记点按钮是否显示及监听*/
-    public void setMarkPointsOp(boolean isShow,OnClickListener listener){
-        if(isShow){
+
+    /** 标记点按钮是否显示及监听 */
+    public void setMarkPointsOp(boolean isShow, OnClickListener listener) {
+        if (isShow) {
             vTitleRight.setVisibility(VISIBLE);
             vTitleRight.setOnClickListener(listener);
-        }else{
+        } else {
             vTitleRight.setVisibility(GONE);
         }
     }
