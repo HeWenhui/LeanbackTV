@@ -388,6 +388,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
                         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                         WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                        Loger.e("mqtt", "读取本地资源了old");
                         return webResourceResponse;
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -410,7 +411,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         url2 = url2.substring(0, index2);
                     }
                     file = new File(mMorecacheout, url2);
-                    Loger.e("mqtt", "shouldInterceptRequestnew:file=" + file + ",file=" + file.exists());
+                    Loger.e("mqtt", "shouldInterceptRequestnew:fileone=" + file + ",fileone=" + file.exists() + "sourceexists:" + mMorecacheout.exists());
                 } else {
                     file = new File(mMorecacheout, MD5Utils.getMD5(request.getUrl().toString()));
                     index = request.getUrl().toString().lastIndexOf("/");
@@ -418,7 +419,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                     if (index != -1) {
                         name = request.getUrl().toString().substring(index);
                     }
-                    Loger.e("mqtt", "shouldInterceptRequestnew:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
+                    Loger.e("mqtt", "shouldInterceptRequestnew:filetwo=" + file.getName() + ",name=" + name + ",filetwo=" + file.exists() + "sourceexists:" + mMorecacheout.exists());
                 }
                 if (file.exists()) {
                     FileInputStream inputStream = null;
@@ -427,6 +428,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         String extension = MimeTypeMap.getFileExtensionFromUrl(request.getUrl().toString().toLowerCase());
                         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                         WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                        Loger.e("mqtt", "读取本地资源了new");
                         return webResourceResponse;
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
