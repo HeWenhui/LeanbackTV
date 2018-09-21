@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
+import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 
@@ -73,6 +74,10 @@ public class IRCTalkConf {
 
     public IRCTalkConf(Context context, LiveGetInfo liveGetInfo, int mLiveType, BaseHttpBusiness baseHttpBusiness,
                        ArrayList<TalkConfHost> hosts) {
+//        if (AppConfig.DEBUG) {
+//            TalkConfHost talkConfHost = hosts.remove(hosts.size() - 1);
+//            hosts.add(0, talkConfHost);
+//        }
         this.liveId = liveGetInfo.getId();
         this.mLiveType = mLiveType;
         this.baseHttpBusiness = baseHttpBusiness;
@@ -86,6 +91,7 @@ public class IRCTalkConf {
             TalkConfHost talkConfHost = hosts.get(i);
             if (!talkConfHost.isIp()) {
                 baseHost = talkConfHost.getHost();
+                baseHost = DNSUtil.getHost(baseHost);
                 break;
             }
         }
@@ -124,7 +130,12 @@ public class IRCTalkConf {
         params.setWriteAndreadTimeOut(GET_SERVER_TIMEOUT);
         final TalkConfHost talkConfHost = hosts.get(mSelectTalk++ % hosts.size());
         final String host = talkConfHost.getHost();
-        String url = "http://" + host + "/getserver";
+        String url;
+        if (host.startsWith("http")) {
+            url = host + "/getserver";
+        } else {
+            url = "http://" + host + "/getserver";
+        }
         if (talkConfHost.isIp()) {
             params.addHeaderParam("Host", baseHost);
         }

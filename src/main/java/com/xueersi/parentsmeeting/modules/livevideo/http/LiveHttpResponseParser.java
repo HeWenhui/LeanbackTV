@@ -245,8 +245,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             getInfo.setRoomId(data.optString("roomId"));
             ArrayList<TalkConfHost> newTalkConfHosts = new ArrayList<>();
-            if (data.has("liveChatDispatchUrl")) {
-                JSONArray array = data.optJSONArray("liveChatDispatchUrl");
+            if (data.has("httpsLiveChatDispatchUrl")) {
+                JSONArray array = data.optJSONArray("httpsLiveChatDispatchUrl");
                 if (array != null) {
                     for (int i = 0; i < array.length(); i++) {
                         String host = array.getString(i);
