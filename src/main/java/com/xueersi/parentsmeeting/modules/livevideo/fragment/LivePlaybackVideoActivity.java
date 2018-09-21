@@ -30,7 +30,6 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             if (pattern == 2) {
                 return new StandBackVideoFragment();
             }
-            logger.e("=========>loadView:LiveBackVideoFragment" );
             return new LiveBackVideoFragment();
         }
         return StandLiveVideoExperienceFragment.newInstance(isExperience);
