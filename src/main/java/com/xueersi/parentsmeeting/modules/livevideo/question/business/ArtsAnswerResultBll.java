@@ -366,14 +366,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 // 判断 表扬id 是否包含在 答题结果id里面
                 for (int i = 0; i < ids.length(); i++) {
                     id = ids.optString(i);
-                    if(showPraise){
-                        showPraise = mAnswerReulst.getIdArray().contains(id);
-                        // 存在id 不再答题结果里面 结束比对
-                        if(!showPraise){
-                            break;
-                        }
+                    if(!mAnswerReulst.getIdArray().contains(id)){
+                        showPraise = false;
+                        break;
                     }
                 }
+
                 Loger.e(TAG,"=======>praiseAllRight:"+showPraise);
                 if(showPraise && mAnswerReulst.getIsRight() == ANSWER_RESULT_ALL_RIGHT){
                     showPraise();
