@@ -29,11 +29,11 @@ public class PraiseTestActivity extends Activity {
         View rootView = praiseInteractionPager.getRootView();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
-        int rightMargin =600;
+        int rightMargin = 600;
         params.rightMargin = rightMargin;
         conntLayout.addView(praiseInteractionPager.getRootView(), params);
 
-//        praiseInteractionPager.startPraiseBtnEnterAnimation();
+        praiseInteractionPager.startPraiseBtnEnterAnimation();
     }
 
 }

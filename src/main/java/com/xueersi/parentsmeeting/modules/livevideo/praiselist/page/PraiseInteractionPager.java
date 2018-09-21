@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
@@ -46,9 +47,23 @@ public class PraiseInteractionPager extends BasePager {
     //是否点击点赞按钮
     private boolean isClickPraiseBtn;
 
+    //点赞数字
+    private TextView praiseNumView;
+
+    private int num;
+
+    private int btnWidth;
+    private int btnMarginRight;
+    private int btnMarginBottom;
+
 
     public PraiseInteractionPager(Context context, PraiseInteractionBll praiseInteractionBll) {
         super(context);
+        btnWidth = (int) context.getResources().getDimension(R.dimen.livevideo_praise_interac_praise_btn_width);
+        btnMarginRight = (int) mContext.getResources().getDimension(R.dimen
+                .livevideo_praise_interac_praise_btn_margin_right);
+        btnMarginBottom = (int) mContext.getResources().getDimension(R.dimen
+                .livevideo_praise_interac_praise_btn_margin_bottom);
     }
 
 
@@ -73,21 +88,45 @@ public class PraiseInteractionPager extends BasePager {
             }
         });
         breathView = view.findViewById(R.id.iv_livevideo_praise_interac_breath);
+
         bubbleView = view.findViewById(R.id.lav_livevideo_praise_interac_bubble);
         bubbleRepeatView = view.findViewById(R.id.lav_livevideo_praise_interac_bubble_repeat);
-        pressLottileView = view.findViewById(R.id.iv_livevideo_praise_interac_press);
-        breathView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        bubbleView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                caculateBreathPosition();
-                caculateBubblePosition();
-                caculatePressPosition();
-                breathView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int width = bubbleView.getWidth();
+                if (width > 0) {
+                    caculateBubblePosition();
+                    bubbleView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
+        pressLottileView = view.findViewById(R.id.iv_livevideo_praise_interac_press);
+        pressLottileView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int width = pressLottileView.getWidth();
+                if (width > 0) {
+                    caculatePressPosition();
+                    pressLottileView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
+
+        praiseNumView = view.findViewById(R.id.lav_livevideo_praise_interac_num);
+        praiseNumView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int width = praiseNumView.getWidth();
+                if (width > 0) {
+                    caculatePraiseNumPosition();
+                    praiseNumView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
 
             }
         });
 
-//        initBubbleEnterAnimation();
+        initBubbleEnterAnimation();
 
         return view;
     }
@@ -99,8 +138,13 @@ public class PraiseInteractionPager extends BasePager {
         stopBubbleRepeatAnimation();
         startPraiseBtnPressAnimation();
 
+        praiseNumView.setText(String.valueOf(++num));
+        praiseNumView.setVisibility(View.VISIBLE);
+        startPraiseNumDisplayAnimation();
+
 
     }
+
 
     /**
      * 长按点赞按钮
@@ -108,6 +152,30 @@ public class PraiseInteractionPager extends BasePager {
     private void onLongClickPraiseBtn() {
         stopBubbleRepeatAnimation();
 
+    }
+
+    private void startPraiseNumDisplayAnimation() {
+        int distance = SizeUtils.Dp2Px(mContext, 10);
+        AnimatorSet animatorSet = new AnimatorSet();
+
+        final float translationY = praiseNumView.getTranslationY();
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(praiseNumView, "translationY", -distance);
+
+        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(praiseNumView, "alpha", 0f, 1f);
+
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                praiseNumView.setTranslationY(translationY);
+                praiseNumView.setAlpha(0);
+                praiseNumView.setVisibility(View.GONE);
+            }
+        });
+
+        animatorSet.play(objectAnimator).with(alphaAnimator);
+        animatorSet.setDuration(1000);
+        animatorSet.start();
     }
 
 
@@ -142,7 +210,7 @@ public class PraiseInteractionPager extends BasePager {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-//                pressLottileView.setVisibility(View.GONE);
+                pressLottileView.setVisibility(View.GONE);
 
             }
         });
@@ -155,11 +223,9 @@ public class PraiseInteractionPager extends BasePager {
      * 点赞按钮进场动画
      */
     public void startPraiseBtnEnterAnimation() {
-        int imageWidth = SizeUtils.Dp2Px(mContext, 40);
-        int marginLeft = SizeUtils.Dp2Px(mContext, 45);
 
         float translationX = praiseBtn.getTranslationX();
-        float distance = getRightMargin() + imageWidth + marginLeft;
+        float distance = getRightMargin() + btnWidth + btnMarginRight;
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(praiseBtn, "translationX", distance, translationX);
         objectAnimator.setDuration(1000);
         objectAnimator.addListener(new AnimatorListenerAdapter() {
@@ -275,18 +341,22 @@ public class PraiseInteractionPager extends BasePager {
         bubbleRepeatView.playAnimation();
     }
 
+    private void caculatePraiseNumPosition() {
+        int numMarginRight = btnMarginRight + btnWidth / 2 - praiseNumView.getWidth() / 2;
+
+        RelativeLayout.LayoutParams breathParams = (RelativeLayout.LayoutParams) praiseNumView.getLayoutParams();
+        breathParams.rightMargin = numMarginRight;
+
+        praiseNumView.setLayoutParams(breathParams);
+    }
+
     /**
      * 计算点赞按钮按下动效位置
      */
     private void caculatePressPosition() {
-        int width = praiseBtn.getWidth();
-        int height = praiseBtn.getHeight();
-        int marginRight = (int) mContext.getResources().getDimension(R.dimen
-                .livevideo_praise_interac_praise_btn_margin_right);
-        int marginBottom = (int) mContext.getResources().getDimension(R.dimen
-                .livevideo_praise_interac_praise_btn_margin_bottom);
-        int pressMarginRight = marginRight - (pressLottileView.getWidth() - praiseBtn.getWidth()) / 2;
-        int pressMarginBottom = marginBottom - (pressLottileView.getHeight() - praiseBtn.getHeight()) / 2;
+
+        int pressMarginRight = btnMarginRight - (pressLottileView.getWidth() - btnWidth) / 2;
+        int pressMarginBottom = btnMarginBottom - (pressLottileView.getHeight() - btnWidth) / 2;
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) pressLottileView.getLayoutParams();
         params.rightMargin = pressMarginRight;
@@ -301,9 +371,7 @@ public class PraiseInteractionPager extends BasePager {
      * 计算冒星星位置
      */
     private void caculateBubblePosition() {
-        int marginRight = (int) mContext.getResources().getDimension(R.dimen
-                .livevideo_praise_interac_praise_btn_margin_right);
-        int bubbleMarginRight = marginRight - bubbleView.getWidth() / 2;
+        int bubbleMarginRight = btnMarginRight + btnWidth / 2 - bubbleView.getWidth() / 2;
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) bubbleView.getLayoutParams();
         params.rightMargin = Math.abs(bubbleMarginRight);
