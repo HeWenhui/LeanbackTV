@@ -90,6 +90,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private View praiseRootView;
     private boolean isPerfectRight;
     private HashMap<Integer, ScoreRange> mScoreRangeMap;
+    /**是否需要更新右侧金币数*/
+    private boolean shoulUpdateGold;
 
     /**
      * 当前语音题的答题结果
@@ -251,10 +253,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     }
                     //答题结果里有填空选择 才展示 统计面板 (当前统计面UI 只支持显示 选择、填空题)
                     if (showAnswerResult) {
-                        //刷新右侧 金币
-                        if(mAnswerReulst.getGold() > 0){
-                            upDateGold();
-                        }
+                        shoulUpdateGold = true;
                         showAnswerReulst();
                     }
                 } else {
@@ -596,6 +595,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         Loger.e(TAG, "=======>onWebviewClose called");
         //mArtsAnswerResultEvent = null;
         closeAnswerResult(false);
+        //刷新右侧 金币
+        if(mAnswerReulst != null && mAnswerReulst.getGold() > 0 && shoulUpdateGold){
+            shoulUpdateGold = false;
+            upDateGold();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
