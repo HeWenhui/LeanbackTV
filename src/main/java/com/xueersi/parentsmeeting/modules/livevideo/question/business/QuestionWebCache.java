@@ -31,6 +31,7 @@ public class QuestionWebCache {
         CacheWebView webView = new CacheWebView(context);
         webView.setWebViewClient(new MyWebViewClient());
         webView.loadUrl("https://live.xueersi.com/science/Live/getMultiTestPaper?liveId=119740&testId=365160-1&stuId=-111&stuName=test@talwx.com&stuCouId=12345654&isArts=0&nonce=45645dasf&isTowall=0");
+        webView.getWebViewCache().setNeedHttpDns(true);
     }
 
     public class MyWebViewClient extends ErrorWebViewClient {

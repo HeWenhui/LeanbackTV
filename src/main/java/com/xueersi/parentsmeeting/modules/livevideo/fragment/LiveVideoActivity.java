@@ -3,12 +3,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCall;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 
@@ -109,4 +111,15 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
         isResume = true;
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        UmsAgentManager.umsAgentDebug(this, TAG + "finish", "finish:" + Log.getStackTraceString(new Exception()));
+    }
+
+    @Override
+    public void finish(int result) {
+        super.finish(result);
+        UmsAgentManager.umsAgentDebug(this, TAG + "finish", "finish(result):" + Log.getStackTraceString(new Exception()));
+    }
 }

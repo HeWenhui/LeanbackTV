@@ -36,6 +36,8 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.HashMap;
 import java.util.Map;
 
+import ren.yale.android.cachewebviewlib.CacheWebView;
+
 /**
  * @author linyuqiang
  * @date 2017/8/23
@@ -205,6 +207,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         webSetting.setBuiltInZoomControls(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webSetting.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+        if (wvSubjectWeb instanceof CacheWebView) {
+            CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+            cacheWebView.getWebViewCache().setNeedHttpDns(true);
         }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);

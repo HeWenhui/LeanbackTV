@@ -158,6 +158,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             });
         }
+        QuestionWebCache webCache = new QuestionWebCache(activity);
+        webCache.startCache();
     }
 
     @Override
