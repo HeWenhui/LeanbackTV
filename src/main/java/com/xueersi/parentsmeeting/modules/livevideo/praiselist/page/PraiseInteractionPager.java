@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -28,6 +29,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseIn
 
 public class PraiseInteractionPager extends BasePager {
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "praise_list/interaction/";
+
+    //纳秒单位
+    private static final long NAS = 1000000;
 
     //点赞按钮
     private ImageView praiseBtn;
@@ -51,11 +55,19 @@ public class PraiseInteractionPager extends BasePager {
     private TextView praiseNumView;
 
     private int num;
+    private float translationY;
+
 
     private int btnWidth;
     private int btnMarginRight;
     private int btnMarginBottom;
 
+    private AnimatorSet animatorSet;
+
+    //长按首次按下时间
+    private long lastPraiseTime = 0;
+    //是否是长按
+    private boolean isLongPress = false;
 
     public PraiseInteractionPager(Context context, PraiseInteractionBll praiseInteractionBll) {
         super(context);
@@ -74,7 +86,6 @@ public class PraiseInteractionPager extends BasePager {
         praiseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isClickPraiseBtn = true;
                 onClickPraiseBtn();
             }
         });
@@ -82,11 +93,35 @@ public class PraiseInteractionPager extends BasePager {
         praiseBtn.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                isClickPraiseBtn = true;
-
                 return false;
             }
         });
+        praiseBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        lastPraiseTime = System.nanoTime();
+                        isLongPress = false;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        long interval = System.nanoTime() - lastPraiseTime;
+                        //长按每秒三次点赞
+                        if (interval > 1000 * NAS / 3) {
+                            lastPraiseTime = System.nanoTime();
+                            isLongPress = true;
+                            onClickPraiseBtn();
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        break;
+                }
+                return isLongPress;
+            }
+        });
+
         breathView = view.findViewById(R.id.iv_livevideo_praise_interac_breath);
 
         bubbleView = view.findViewById(R.id.lav_livevideo_praise_interac_bubble);
@@ -106,6 +141,7 @@ public class PraiseInteractionPager extends BasePager {
             @Override
             public void onGlobalLayout() {
                 int width = pressLottileView.getWidth();
+                System.out.println("width="+width);
                 if (width > 0) {
                     caculatePressPosition();
                     pressLottileView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -125,8 +161,10 @@ public class PraiseInteractionPager extends BasePager {
 
             }
         });
+        translationY = praiseNumView.getTranslationY();
 
         initBubbleEnterAnimation();
+        initPraiseNumDisplayAnimation();
 
         return view;
     }
@@ -135,13 +173,13 @@ public class PraiseInteractionPager extends BasePager {
      * 点击点赞按钮
      */
     private void onClickPraiseBtn() {
+        isClickPraiseBtn = true;
         stopBubbleRepeatAnimation();
         startPraiseBtnPressAnimation();
 
-        praiseNumView.setText(String.valueOf(++num));
+        praiseNumView.setText("+" + String.valueOf(++num));
         praiseNumView.setVisibility(View.VISIBLE);
         startPraiseNumDisplayAnimation();
-
 
     }
 
@@ -154,11 +192,10 @@ public class PraiseInteractionPager extends BasePager {
 
     }
 
-    private void startPraiseNumDisplayAnimation() {
+    private void initPraiseNumDisplayAnimation() {
         int distance = SizeUtils.Dp2Px(mContext, 10);
-        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet = new AnimatorSet();
 
-        final float translationY = praiseNumView.getTranslationY();
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(praiseNumView, "translationY", -distance);
 
         ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(praiseNumView, "alpha", 0f, 1f);
@@ -167,7 +204,7 @@ public class PraiseInteractionPager extends BasePager {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                praiseNumView.setTranslationY(translationY);
+                praiseNumView.setTranslationX(translationY);
                 praiseNumView.setAlpha(0);
                 praiseNumView.setVisibility(View.GONE);
             }
@@ -175,7 +212,13 @@ public class PraiseInteractionPager extends BasePager {
 
         animatorSet.play(objectAnimator).with(alphaAnimator);
         animatorSet.setDuration(1000);
-        animatorSet.start();
+
+    }
+
+    private void startPraiseNumDisplayAnimation() {
+        if (animatorSet != null && !animatorSet.isRunning()) {
+            animatorSet.start();
+        }
     }
 
 
@@ -183,7 +226,6 @@ public class PraiseInteractionPager extends BasePager {
      * 按钮点赞动效
      */
     private void startPraiseBtnPressAnimation() {
-        pressLottileView.setVisibility(View.VISIBLE);
         String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "press/images";
         String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "press/data.json";
         final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath);
@@ -207,6 +249,13 @@ public class PraiseInteractionPager extends BasePager {
             }
         });
         pressLottileView.addAnimatorListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                pressLottileView.setVisibility(View.VISIBLE);
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
