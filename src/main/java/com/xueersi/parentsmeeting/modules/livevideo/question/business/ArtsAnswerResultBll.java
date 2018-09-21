@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -26,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 
 import org.greenrobot.eventbus.EventBus;
@@ -67,6 +69,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * 小学英语 统计面板
      */
     private static final int UI_TYPE_PSE = 2;
+    /**
+     * 答题全对
+     */
+    private static final int ANSWER_RESULT_ALL_RIGHT = 2;
 
     private IArtsAnswerRsultDisplayer mDsipalyer;
     private AnswerResultEntity mAnswerReulst;
@@ -84,6 +90,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private View praiseRootView;
     private boolean isPerfectRight;
     private HashMap<Integer, ScoreRange> mScoreRangeMap;
+    /**是否需要更新右侧金币数*/
+    private boolean shoulUpdateGold;
 
     /**
      * 当前语音题的答题结果
@@ -147,10 +155,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         });
     }
 
-   // private static final int TEST_TYPE_SELECT = 2;
-   // private static final int TEST_TYPE_BLANK  = 1;
+    // private static final int TEST_TYPE_SELECT = 2;
+    // private static final int TEST_TYPE_BLANK  = 1;
 
-    /**游戏类型试题*/
+    /**
+     * 游戏类型试题
+     */
     private static final int TEST_TYPE_GAME = 12;
 
     private void onAnswerResult(String result) {
@@ -173,6 +183,15 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     mAnswerReulst.setGold(totalObject.optInt("gold"));
                     mAnswerReulst.setRightRate(totalObject.optDouble("rightRate"));
                     mAnswerReulst.setCreateTime(totalObject.optLong("createTime"));
+                    JSONArray testIds = totalObject.optJSONArray("testIds");
+                    if (testIds != null && testIds.length() > 0) {
+                        List<String> idList = new ArrayList<>();
+                        for (int i = 0; i < testIds.length(); i++) {
+                            idList.add(testIds.getString(i));
+                        }
+                        mAnswerReulst.setIdArray(idList);
+                    }
+
                     int type = totalObject.optInt("type");
                     //不是游戏类型的试题 就显示 统计面板  (仿照pc端处理逻辑)
                     showAnswerResult = (type != TEST_TYPE_GAME);
@@ -233,7 +252,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         mAnswerReulst.setAnswerList(answerList);
                     }
                     //答题结果里有填空选择 才展示 统计面板 (当前统计面UI 只支持显示 选择、填空题)
-                    if(showAnswerResult){
+                    if (showAnswerResult) {
+                        shoulUpdateGold = true;
                         showAnswerReulst();
                     }
                 } else {
@@ -252,13 +272,13 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             answer.setTestId(answerObj.optString("id"));
                             answer.setIsRight(answerObj.optInt("isright"));
                             //判断老课件是否全对 用于支持 多题全对表扬
-                            if(isAllRight){
+                            if (isAllRight) {
                                 isAllRight = (answer.getIsRight() == 1);
                             }
                             answer.setRightRate(answerObj.optDouble("rate"));
                         }
                         mAnswerReulst.setAnswerList(answerList);
-                        mAnswerReulst.setIsRight(isAllRight?2:0);
+                        mAnswerReulst.setIsRight(isAllRight ? 2 : 0);
                     }
                 }
             } else {
@@ -346,10 +366,28 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     /**
      * 表扬答题全对
      */
-    private void praiseAnswerAllRight() {
-        if (mAnswerReulst != null && (mAnswerReulst.getIsRight() == 2)) {
-            showPraise();
+    private void praiseAnswerAllRight(JSONArray ids) {
+
+        if (ids != null && ids.length() > 0) {
+            if (mAnswerReulst != null && mAnswerReulst.getIdArray() != null && mAnswerReulst.getIdArray().size() != 0) {
+                String id = null;
+                boolean showPraise = true;
+                // 判断 表扬id 是否包含在 答题结果id里面
+                for (int i = 0; i < ids.length(); i++) {
+                    id = ids.optString(i);
+                    if (!mAnswerReulst.getIdArray().contains(id)) {
+                        showPraise = false;
+                        break;
+                    }
+                }
+
+                Loger.e(TAG, "=======>praiseAllRight:" + showPraise);
+                if (showPraise && mAnswerReulst.getIsRight() == ANSWER_RESULT_ALL_RIGHT) {
+                    showPraise();
+                }
+            }
         }
+
     }
 
     /**
@@ -470,12 +508,13 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             case XESCODE.ARTS_PARISE_ANSWER_RIGHT:
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("Arts_Praise_Answer_right:").append(data.toString());
-                Loger.i(mContext,"ArtsAnswerResultBll",stringBuilder.toString(),true);
+                Loger.i(mContext, "ArtsAnswerResultBll", stringBuilder.toString(), true);
                 // 语文跟读不支持 表扬
                 if (ARTS_FOLLOW_UP != data.optInt("ptype")) {
                     String praiseType = data.optString("praiseType");
                     if ("0".equals(praiseType)) {
-                        praiseAnswerAllRight();
+                        JSONArray ids = data.optJSONArray("id");
+                        praiseAnswerAllRight(ids);
                     } else if ("1".equals(praiseType)) {
                         int scoreRangeIndex = data.optInt("scoreRange");
                         JSONArray jsonArray = data.optJSONArray("id");
@@ -492,7 +531,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 break;
             case XESCODE.ARTS_PRAISE_ANSWER_RIGHT_SINGLE:
                 String testId = data.optString("id");
-                pariseSingleAnswerRight(testId);
+                if (!TextUtils.isEmpty(testId)) {
+                    pariseSingleAnswerRight(testId);
+                } else {
+                    JSONArray ids = data.optJSONArray("ids");
+                    praiseAnswerAllRight(ids);
+                }
                 break;
 
             case XESCODE.ARTS_SEND_QUESTION:
@@ -551,6 +595,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         Loger.e(TAG, "=======>onWebviewClose called");
         //mArtsAnswerResultEvent = null;
         closeAnswerResult(false);
+        //刷新右侧 金币
+        if(mAnswerReulst != null && mAnswerReulst.getGold() > 0 && shoulUpdateGold){
+            shoulUpdateGold = false;
+            upDateGold();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -562,15 +611,27 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 onAnswerResult(event.getDataStr());
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_:").append(event.getDataStr());
-                Loger.i(mContext,"ArtsAnswerResultBll",stringBuilder.toString(),true);
+                Loger.i(mContext, "ArtsAnswerResultBll", stringBuilder.toString(), true);
             } else if (ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT == event.getType()) {
                 onRolePlayAnswerResult(event.getDataStr());
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_rolePlay:").append(event.getDataStr());
-                Loger.i(mContext,"ArtsAnswerResultBll",event.getDataStr(),true);
+                Loger.i(mContext, "ArtsAnswerResultBll", event.getDataStr(), true);
             }
         }
     }
+
+
+    /**
+     * 刷新学生金币
+     */
+    private void upDateGold() {
+        UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+        if (updateAchievement != null) {
+            updateAchievement.getStuGoldCount();
+        }
+    }
+
 
     /**
      * rolePlay 答题结果
