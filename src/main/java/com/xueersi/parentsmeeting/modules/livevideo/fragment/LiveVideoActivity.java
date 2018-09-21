@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.xueersi.common.business.AppBll;
@@ -35,6 +36,17 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
             liveVideoFragmentBase.onUserBackPressed();
         }
     }
+
+//    @Override
+//    public <T extends View> T findViewById(int id) {
+//        T t = super.findViewById(id);
+//        if (t == null) {
+//            if (liveVideoFragmentBase != null) {
+//                t = liveVideoFragmentBase.getContentView().findViewById(id);
+//            }
+//        }
+//        return t;
+//    }
 
     @Override
     public void onDestroy() {
