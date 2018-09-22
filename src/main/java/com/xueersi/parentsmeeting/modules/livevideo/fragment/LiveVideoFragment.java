@@ -467,7 +467,7 @@
 //        BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = liveMessageBll.getLiveMediaControllerBottom();
 //        int topGap = (ScreenUtils.getScreenHeight() - lp.height) / 2;
 //        int paddingBottom = (int) (topGap + 15 * ScreenUtils.getScreenDensity());
-//        //Loger.e(TAG, "setMediaControllerBottomParam:paddingBottom=" + paddingBottom + "," + liveMediaControllerBottom.getPaddingBottom());
+//        //logger.e( "setMediaControllerBottomParam:paddingBottom=" + paddingBottom + "," + liveMediaControllerBottom.getPaddingBottom());
 //        if (baseLiveMediaControllerBottom.getPaddingBottom() != paddingBottom) {
 //            baseLiveMediaControllerBottom.setPadding(0, 0, 0, paddingBottom);
 //        }
@@ -493,7 +493,7 @@
 //            LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
 ////            ivTeacherNotpresent.setLayoutParams(params);
 //        }
-//        //Loger.e(TAG, "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
+//        //logger.e( "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
 //    }
 //
 //    @Override

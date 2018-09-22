@@ -241,20 +241,20 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         handler.sendMessageDelayed(msg, i * 5000);
                     }
                 } catch (JSONException e) {
-                    Loger.e(TAG, "onPmSuccess", e);
+                    logger.e( "onPmSuccess", e);
                 }
             }
 
             @Override
             public void onFailure(Call call, IOException e) {
                 super.onFailure(call, e);
-                Loger.e(TAG, "getCourseWareUrl:onFailure:e=" + e);
+                logger.e( "getCourseWareUrl:onFailure:e=" + e);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.e(TAG, "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
+                logger.e( "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
             }
         });
 
@@ -262,7 +262,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         mHttpManager.getMoreCoureWareUrl(liveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.e(TAG, "responseEntity.getJsonObject=" + responseEntity.getJsonObject());
+                logger.e( "responseEntity.getJsonObject=" + responseEntity.getJsonObject());
 //                final Object jsonObject = responseEntity.getJsonObject();
                 JSONObject objects = new JSONObject(responseEntity.getJsonObject().toString());
                 JSONArray array = objects.optJSONArray("list");
@@ -289,8 +289,8 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     String txt = loadpages.optString(i);
                     mtexts.add(txt);
                 }
-                Loger.e(TAG, "list=" + mList.size());
-                Loger.e(TAG, "text=" + mtexts.size());
+                logger.e( "list=" + mList.size());
+                logger.e( "text=" + mtexts.size());
                 if (mList.size() > 0) {
                     download(todayLiveCacheDir);
                 }
@@ -299,13 +299,13 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             @Override
             public void onFailure(Call call, IOException e) {
                 super.onFailure(call, e);
-                Loger.e(TAG, "getCourseWareUrl:onFailure:e=" + e);
+                logger.e( "getCourseWareUrl:onFailure:e=" + e);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.e(TAG, "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
+                logger.e( "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
             }
         });
     }

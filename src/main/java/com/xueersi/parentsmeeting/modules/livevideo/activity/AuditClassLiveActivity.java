@@ -492,7 +492,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             xvlp.height = screenHeight - hradio;
             rl_livevideo_student.setLayoutParams(xvlp);
         }
-        //Loger.e(TAG, "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
+        //logger.e( "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
     }
 
     @Override
@@ -1200,7 +1200,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                             StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
                             stableLogHashMap.put("message", "" + url);
                             stableLogHashMap.put("activity", mContext.getClass().getSimpleName());
-                            Loger.e(mContext, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
+                            UmsAgentManager.umsAgentDebug(mContext, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData());
                         }
 
                         @Override

@@ -51,7 +51,7 @@ public class DNSUtil {
             InetAddress inetAddress = InetAddress.getByName(url2);
             urldns.ip = inetAddress.getHostAddress();
         } catch (UnknownHostException e) {
-            Loger.e(TAG, "getDns", e);
+            logger.e( "getDns", e);
             exception = e;
         }
         urldns.time = System.currentTimeMillis() - before;

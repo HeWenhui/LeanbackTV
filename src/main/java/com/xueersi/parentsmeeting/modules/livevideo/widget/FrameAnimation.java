@@ -595,12 +595,12 @@ public class FrameAnimation {
             drawFile = file;
             try {
                 if (getBitmap().isRecycled()) {
-                    Loger.e(TAG, "setBackgroundDrawable:file=" + file + ",index=" + index);
+                    logger.e( "setBackgroundDrawable:file=" + file + ",index=" + index);
                     return;
                 }
                 super.draw(canvas);
             } catch (Exception e) {
-                Loger.e(TAG, "setBackgroundDrawable:file=" + file);
+                logger.e( "setBackgroundDrawable:file=" + file);
             }
         }
     }

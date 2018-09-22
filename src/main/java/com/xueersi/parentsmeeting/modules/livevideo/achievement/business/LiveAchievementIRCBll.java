@@ -463,7 +463,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.e(TAG, "setNotOpeningNum:onFailure", e);
+                logger.e( "setNotOpeningNum:onFailure", e);
                 super.onFailure(call, e);
             }
 
@@ -490,7 +490,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 //            }
                 mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
             } catch (Exception e) {
-                // Loger.e(TAG, "understand", e);
+                // logger.e( "understand", e);
                 mLogtf.e("sendStat", e);
             }
         }
@@ -506,7 +506,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 jsonObject.put("duration", "" + dbDuration);
                 mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
             } catch (Exception e) {
-                // Loger.e(TAG, "understand", e);
+                // logger.e( "understand", e);
                 mLogtf.e("sendDBStudent", e);
             }
         }

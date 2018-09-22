@@ -143,7 +143,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
 
     public void initView(final RelativeLayout bottomContent) {
-        Loger.e("RollCallBll", "======>:bottomContent" + bottomContent);
+        logger.e( "======>:bottomContent" + bottomContent);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -414,7 +414,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
      * @return
      */
     public boolean isTimeAvaliable(long classBeginTime, long nowTime) {
-        Loger.e("RollCallBll", "====>isTimeAvaliable:" + classBeginTime);
+        logger.e( "====>isTimeAvaliable:" + classBeginTime);
         boolean result = false;
         try {
             if (classBeginTime > 0 && nowTime > 0) {
@@ -425,7 +425,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                 //自动关闭时间
                 autoCloseSignDelay = classBeginTime - nowTime < 0 ? 0 : classBeginTime - nowTime;
                 //autoCloseSignDelay = 2*60*1000;
-                Loger.e("RollCallBll", "====> isTimeAvaliable :+ " + result + ":" + autoShowSignDelay + ":" +
+                logger.e( "====> isTimeAvaliable :+ " + result + ":" + autoShowSignDelay + ":" +
                         autoCloseSignDelay);
             }
         } catch (Exception e) {
@@ -531,7 +531,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
     public void onLiveInited(LiveGetInfo data, RelativeLayout rootView, int liveType) {
         this.mRootView = rootView;
-        Loger.e("RollCallBll", "======>onLiveInited called:" + data + ":" + mRootView);
+        logger.e( "======>onLiveInited called:" + data + ":" + mRootView);
         mGetInfo = data;
         if (mGetInfo != null) {
             isSmallEnglish = mGetInfo.getSmallEnglish();

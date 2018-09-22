@@ -124,7 +124,7 @@ public class InputThread extends Thread {
 			}
 		} catch (Exception e) {
 			// Do nothing.
-			Loger.e(TAG, "run", e);
+			logger.e( "run", e);
 		}
 
 		// If we reach this point, then we must have disconnected.

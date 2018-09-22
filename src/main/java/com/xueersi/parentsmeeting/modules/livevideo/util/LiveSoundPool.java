@@ -31,7 +31,7 @@ public class LiveSoundPool {
 
     private int load(String path, int i) {
         if (soundPool == null) {
-            Loger.e(TAG, "load:path=" + path, new Exception());
+            logger.e( "load:path=" + path, new Exception());
             return -1;
         }
         return soundPool.load(path, i);
@@ -39,7 +39,7 @@ public class LiveSoundPool {
 
     private int load(Context context, int resId, int i) {
         if (soundPool == null) {
-            Loger.e(TAG, "load:resId=" + resId, new Exception());
+            logger.e( "load:resId=" + resId, new Exception());
             return -1;
         }
         return soundPool.load(context, resId, i);
@@ -47,7 +47,7 @@ public class LiveSoundPool {
 
     public void release() {
         if (soundPool == null) {
-            Loger.e(TAG, "release", new Exception());
+            logger.e( "release", new Exception());
             return;
         }
         soundPool.release();
@@ -63,7 +63,7 @@ public class LiveSoundPool {
 
     public void pause(int soundId) {
         if (soundPool == null) {
-            Loger.e(TAG, "pause", new Exception());
+            logger.e( "pause", new Exception());
             return;
         }
         soundPool.pause(soundId);
@@ -79,7 +79,7 @@ public class LiveSoundPool {
 
     public void stop(int streamId) {
         if (soundPool == null) {
-            Loger.e(TAG, "stop", new Exception());
+            logger.e( "stop", new Exception());
             return;
         }
         soundPool.stop(streamId);

@@ -1138,7 +1138,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             int wradio = liveVideoPoint.getRightMargin();
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
             if (wradio != params.width) {
-                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;
 //                rlInfo.setLayoutParams(params);
@@ -1168,7 +1168,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 params.bottomMargin = bottomMargin;
 //                lvMessage.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-                //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
             }
         }
     }
@@ -1185,7 +1185,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
             if (wradio != params.width) {
-                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;
 //                rlInfo.setLayoutParams(params);
@@ -1209,7 +1209,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 params.topMargin = topMargin;
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-                Loger.e(TAG, "setVideoWidthAndHeight:topMargin=" + params.topMargin);
+                logger.e( "setVideoWidthAndHeight:topMargin=" + params.topMargin);
             }
             int bottomMargin = (ScreenUtils.getScreenHeight() - height) / 2;
             params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
@@ -1217,7 +1217,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 params.bottomMargin = bottomMargin;
 //                lvMessage.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-                //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
             }
         }
     }

@@ -163,7 +163,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
         examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
         wvSubjectWeb.loadUrl(examUrl);
-        Loger.e("QuestionWebPager", "======> loadUrl:" + examUrl);
+        logger.e( "======> loadUrl:" + examUrl);
 
         mGoldNum = -1;
         mEngerNum = -1;
@@ -178,7 +178,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             public void onViewDetachedFromWindow(View v) {
                 LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEngerNum, LiveRoomH5CloseEvent.H5_TYPE_INTERACTION, testId);
                 if (questionBll != null && questionBll instanceof QuestionBll) {
-                    Loger.e("webViewCloseByTeacher", "=======> postEvent closeByTeacher:" + ((QuestionBll) questionBll).isWebViewCloseByTeacher());
+                    logger.e( "=======> postEvent closeByTeacher:" + ((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
                 }
@@ -346,7 +346,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             mLogtf.i("shouldOverrideUrlLoading:url=" + url);
 
-            Loger.e("QuestionWebPager", "======> shouldOverrideUrlLoading:" + url);
+            logger.e( "======> shouldOverrideUrlLoading:" + url);
 
             if (url.contains("science/Live/getMultiTestResult")) {
                 if (questionBll instanceof QuestionBll) {

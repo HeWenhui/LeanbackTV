@@ -355,7 +355,7 @@
 //        BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = liveMessageBll.getLiveMediaControllerBottom();
 //        int topGap = (ScreenUtils.getScreenHeight() - lp.height) / 2;
 //        int paddingBottom = (int) (topGap + 15 * ScreenUtils.getScreenDensity());
-//        //Loger.e(TAG, "setMediaControllerBottomParam:paddingBottom=" + paddingBottom + "," +
+//        //logger.e( "setMediaControllerBottomParam:paddingBottom=" + paddingBottom + "," +
 //        // liveMediaControllerBottom.getPaddingBottom());
 //        if (baseLiveMediaControllerBottom.getPaddingBottom() != paddingBottom) {
 //            baseLiveMediaControllerBottom.setPadding(0, 0, 0, paddingBottom);
@@ -524,7 +524,7 @@
 //            ivTeacherNotpresent.setLayoutParams(params);
 //            ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
 //        }
-//        //Loger.e(TAG, "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
+//        //logger.e( "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
 //    }
 //
 //
@@ -537,7 +537,7 @@
 //            ivTeacherNotpresent.setLayoutParams(params);
 //            ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
 //        }
-//        //Loger.e(TAG, "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
+//        //logger.e( "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
 //    }
 //
 //    @Override

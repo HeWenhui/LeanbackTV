@@ -715,7 +715,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        Loger.e("LiveVoteBll", "=====>onNotice =:" + type);
+        logger.e( "=====>onNotice =:" + type);
         try {
             switch (type) {
                 case XESCODE.VOTE_START: {

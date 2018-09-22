@@ -189,7 +189,7 @@ public class StandLiveHeadView extends LottieAnimationView {
 
             @Override
             public void onFail() {
-                Loger.e(TAG, "onFail");
+                logger.e( "onFail");
             }
         });
     }
@@ -227,7 +227,7 @@ public class StandLiveHeadView extends LottieAnimationView {
 //                headBitmap.recycle();
 //            }
         } catch (IOException e) {
-            Loger.e(TAG, "updateHead", e);
+            logger.e( "updateHead", e);
 //            e.printStackTrace();
             return;
         }

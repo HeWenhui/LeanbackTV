@@ -226,7 +226,7 @@ public class LiveGetPlayServer {
                     mLogtf.d(s);
                 } catch (JSONException e) {
                     MobAgent.httpResponseParserError(TAG, "liveGetPlayServer", result + "," + e.getMessage());
-                    // Loger.e(TAG, "liveGetPlayServer", e);
+                    // logger.e( "liveGetPlayServer", e);
                     mLogtf.e("liveGetPlayServer", e);
                     onLiveFailure("直播调度失败", new Runnable() {
 

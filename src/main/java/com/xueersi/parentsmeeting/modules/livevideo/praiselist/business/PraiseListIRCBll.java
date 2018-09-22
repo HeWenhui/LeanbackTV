@@ -184,7 +184,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
         if (mPraiseListAction != null) {
 
             LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getCoachRoomstatus();
-            Loger.e(TAG, "listStatus=" + mainRoomstatus.getListStatus());
+            logger.e( "listStatus=" + mainRoomstatus.getListStatus());
             if (mainRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_HONOR) {
                 getHonorList(0);
             } else if (mainRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS) {

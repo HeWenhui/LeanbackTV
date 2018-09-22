@@ -420,7 +420,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
 //            ivTeacherNotpresent.setLayoutParams(params);
 //            ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
 //        }
-//        Loger.e(TAG, "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
+//        logger.e( "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
         lecLiveVideoAction.setFirstParam(LiveVideoPoint.getInstance());
     }
 

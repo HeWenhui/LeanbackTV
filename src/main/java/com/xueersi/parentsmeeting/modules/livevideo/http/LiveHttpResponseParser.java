@@ -277,7 +277,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 getInfo.setImgSizeType(data.optString("imgSizeType"));
                 getInfo.setHeadImgVersion(data.optString("headImgVersion"));
             } catch (Exception e) {
-                Loger.e(TAG, "parseLiveGetInfo.Head", e);
+                logger.e( "parseLiveGetInfo.Head", e);
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.Head", e.getMessage());
             }
             getInfo.setCloseChat(data.optInt("isCloseChat", 0) == 1);
@@ -326,7 +326,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             return getInfo;
         } catch (JSONException e) {
-            Loger.e(TAG, "parseLiveGetInfo", e);
+            logger.e( "parseLiveGetInfo", e);
             MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", e.getMessage());
         }
         return null;
@@ -567,7 +567,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     liveTopic.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
                 }
             } catch (JSONException e) {
-                Loger.e(TAG, "parseLiveTopic", e);
+                logger.e( "parseLiveTopic", e);
             }
         }
         try {
@@ -580,7 +580,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             liveTopic.setDisableSpeaking(disableSpeaking);
         } catch (JSONException e) {
             MobAgent.httpResponseParserError(TAG, "parseLiveTopic", e.getMessage());
-            Loger.e(TAG, "parseLiveTopic", e);
+            logger.e( "parseLiveTopic", e);
         }
         return liveTopic;
     }

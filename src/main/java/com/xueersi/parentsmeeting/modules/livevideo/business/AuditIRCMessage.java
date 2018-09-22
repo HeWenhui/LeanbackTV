@@ -208,7 +208,7 @@ public class AuditIRCMessage {
 //                                                    mConnection.sendMessage(sender, heartJson.toString());
 //                                                }
                                             } catch (Exception e) {
-                                                Loger.e(TAG, "STUDENT_STU_HEART", e);
+                                                logger.e( "STUDENT_STU_HEART", e);
                                             }
                                         }
                                     }, 1500);

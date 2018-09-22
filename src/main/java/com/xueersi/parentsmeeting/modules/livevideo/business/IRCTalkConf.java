@@ -278,7 +278,7 @@ public class IRCTalkConf {
                 }
             }
         } catch (SocketException e) {
-            Loger.e("yao", "SocketException");
+            logger.e( "SocketException");
             e.printStackTrace();
         }
         return hostIp;

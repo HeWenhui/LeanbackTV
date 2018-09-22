@@ -726,7 +726,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
             OtherModulesEnter.intentTo((Activity) mContext, courseId, groupId, "", url);
             return true;
         } catch (Exception e) {
-            Loger.e(TAG, "startCourseDetail", e);
+            logger.e( "startCourseDetail", e);
             return false;
         }
     }

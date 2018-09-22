@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -29,13 +30,13 @@ public class BaseEnglishStandSpeekBll implements SpeakerRecognitioner.SpeakerPre
             return;
         }
         try {
-            logger.i( "loadLibrary");
+            logger.i("loadLibrary");
             System.loadLibrary(SpeechEvaluatorUtils.TAL_ASSESS_LIB);
-            logger.i( "loadLibrary ok");
+            logger.i("loadLibrary ok");
             loadSuccess = true;
         } catch (Throwable e) {
             loadSuccess = false;
-            Loger.e(BaseApplication.getContext(), "BaseEnglishStandSpeekBll", "loadLibrary", e, true);
+            UmsAgentManager.umsAgentException(BaseApplication.getContext(), "BaseEnglishStandSpeekBll" + "loadLibrary", e);
         }
     }
 

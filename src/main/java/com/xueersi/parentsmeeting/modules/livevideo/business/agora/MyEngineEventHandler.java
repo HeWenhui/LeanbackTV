@@ -114,7 +114,7 @@ public class MyEngineEventHandler {
         @Override
         public void onError(int err) {
             super.onError(err);
-            Loger.e(TAG, "onError:err=" + err);
+            logger.e( "onError:err=" + err);
             Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
                 AGEventHandler handler = it.next();
@@ -138,7 +138,7 @@ public class MyEngineEventHandler {
         }
 
         public void onWarning(int warn) {
-            Loger.e(TAG, "onWarning " + warn);
+            logger.e( "onWarning " + warn);
         }
     };
 

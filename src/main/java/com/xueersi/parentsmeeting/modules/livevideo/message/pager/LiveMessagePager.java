@@ -916,7 +916,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
             if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
-                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;
                 params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
@@ -948,14 +948,14 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 params.bottomMargin = bottomMargin;
 //                lvMessage.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-                //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
             }
         }
 //        {
 //            int wradio = liveVideoPoint.getRightMargin();
 //            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
 //            if (wradio != params.width) {
-//                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+//                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
 //                // + ",wradio=" + wradio + "," + params.width);
 //                params.width = wradio;
 ////                rlInfo.setLayoutParams(params);
@@ -985,7 +985,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 //                params.bottomMargin = bottomMargin;
 ////                lvMessage.setLayoutParams(params);
 //                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-//                //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+//                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
 //            }
 //        }
     }
@@ -1003,7 +1003,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
             if (wradio != params.width) {
-                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;
 //                rlInfo.setLayoutParams(params);
@@ -1027,7 +1027,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 params.topMargin = topMargin;
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-                Loger.e(TAG, "setVideoWidthAndHeight:topMargin=" + params.topMargin);
+                logger.e( "setVideoWidthAndHeight:topMargin=" + params.topMargin);
             }
             int bottomMargin = (ScreenUtils.getScreenHeight() - height) / 2;
             params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
@@ -1035,7 +1035,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 params.bottomMargin = bottomMargin;
 //                lvMessage.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-                //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
             }
         }
     }

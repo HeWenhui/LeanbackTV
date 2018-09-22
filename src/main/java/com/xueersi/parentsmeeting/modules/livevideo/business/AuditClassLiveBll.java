@@ -657,12 +657,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                Loger.e(TAG, "getStudentLiveInfo:onPmFailure:msg=" + msg, error);
+                logger.e( "getStudentLiveInfo:onPmFailure:msg=" + msg, error);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                Loger.e(TAG, "getStudentLiveInfo:onPmError:errorMsg=" + responseEntity.getErrorMsg());
+                logger.e( "getStudentLiveInfo:onPmError:errorMsg=" + responseEntity.getErrorMsg());
             }
         });
     }
@@ -820,7 +820,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                     mLogtf.d(s);
                 } catch (JSONException e) {
                     MobAgent.httpResponseParserError(TAG, "liveGetPlayServer", result + "," + e.getMessage());
-                    // Loger.e(TAG, "liveGetPlayServer", e);
+                    // logger.e( "liveGetPlayServer", e);
                     mLogtf.e("liveGetPlayServer", e);
                     onLiveFailure("直播调度失败", new Runnable() {
 
@@ -909,7 +909,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         public void onOpenFailed(int arg1, int arg2) {
             if (isOpenSuccess) {
                 MegId megId = MegId.MEGID_12103;
-                megId.msgid = "fail " + TotalFrameStat.getErrorCode(arg2) + " ";
+                megId.msgid = "fail " + LivePlayLog.getErrorCodeInt(arg2) + " ";
                 streamReport(megId, mGetInfo.getChannelname(), -1);
             }
             long openTime = System.currentTimeMillis() - openStartTime;
@@ -1137,7 +1137,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                Loger.e(TAG, "getToken:getRoomid:onError", ex);
+                logger.e( "getToken:getRoomid:onError", ex);
                 licodeToken.onError(ex);
             }
 

@@ -26,7 +26,7 @@ import static io.agora.rtc.Constants.RAW_AUDIO_FRAME_OP_MODE_WRITE_ONLY;
 
 public class WorkerThread extends Thread {
     private final static String TAG = "WorkerThread";
-    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    protected static Logger logger = LoggerFactory.getLogger(TAG);
     private final Context mContext;
     boolean feadback = false;
     private static final int ACTION_WORKER_THREAD_QUIT = 0X1010; // quit this thread
@@ -60,7 +60,7 @@ public class WorkerThread extends Thread {
         @Override
         public void handleMessage(Message msg) {
             if (this.mWorkerThread == null) {
-                Loger.e(TAG, "handler is already released! " + msg.what);
+                logger.e("handler is already released! " + msg.what);
                 return;
             }
 
@@ -100,13 +100,13 @@ public class WorkerThread extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            logger.d( "wait for " + WorkerThread.class.getSimpleName());
+            logger.d("wait for " + WorkerThread.class.getSimpleName());
         }
     }
 
     @Override
     public void run() {
-        logger.d( "start to run");
+        logger.d("start to run");
         Looper.prepare();
 
         mWorkerHandler = new WorkerThreadHandler(this);
@@ -166,7 +166,7 @@ public class WorkerThread extends Thread {
      */
     public final void joinChannel(String channelKey, final String channel, int uid, OnJoinChannel onJoinChannel) {
         if (Thread.currentThread() != this) {
-            Loger.w(TAG, "joinChannel() - worker thread asynchronously " + channelKey + "," + channel + " " + uid);
+            logger.w( "joinChannel() - worker thread asynchronously " + channelKey + "," + channel + " " + uid);
             Message envelop = new Message();
             envelop.what = ACTION_WORKER_JOIN_CHANNEL;
             envelop.obj = new Object[]{channelKey, channel, onJoinChannel};
@@ -183,17 +183,17 @@ public class WorkerThread extends Thread {
         }
         int joinChannel = mRtcEngine.joinChannel(null, channel, "OpenLive", uid);
         onJoinChannel.onJoinChannel(joinChannel);
-        logger.d( "joinChannel:channelKey=" + channelKey + ",channel=" + channel + ",uid=" + uid + ",joinChannel="
+        logger.d("joinChannel:channelKey=" + channelKey + ",channel=" + channel + ",uid=" + uid + ",joinChannel="
                 + joinChannel);
         mEngineConfig.mChannel = channel;
 
         enablePreProcessor();
-        logger.d( "joinChannel " + channel + " " + uid);
+        logger.d("joinChannel " + channel + " " + uid);
     }
 
     public final void leaveChannel(String channel, OnLevelChannel onLevelChannel) {
         if (Thread.currentThread() != this && mWorkerHandler != null) {
-            Loger.w(TAG, "leaveChannel() - worker thread asynchronously " + channel);
+            logger.w( "leaveChannel() - worker thread asynchronously " + channel);
             Message envelop = new Message();
             envelop.what = ACTION_WORKER_LEAVE_CHANNEL;
             envelop.obj = new Object[]{channel, onLevelChannel};
@@ -210,7 +210,7 @@ public class WorkerThread extends Thread {
 
         int clientRole = mEngineConfig.mClientRole;
         mEngineConfig.reset();
-        logger.d( "leaveChannel " + channel + " " + clientRole);
+        logger.d("leaveChannel " + channel + " " + clientRole);
     }
 
     private EngineConfig mEngineConfig;
@@ -223,7 +223,7 @@ public class WorkerThread extends Thread {
 
     public final void configEngine(int cRole, int vProfile) {
         if (Thread.currentThread() != this) {
-            Loger.w(TAG, "configEngine() - worker thread asynchronously " + cRole + " " + vProfile);
+            logger.w( "configEngine() - worker thread asynchronously " + cRole + " " + vProfile);
             Message envelop = new Message();
             envelop.what = ACTION_WORKER_CONFIG_ENGINE;
             envelop.obj = new Object[]{cRole, vProfile};
@@ -246,12 +246,12 @@ public class WorkerThread extends Thread {
             mRtcEngine.enableAudioVolumeIndication(500, 3);
             mRtcEngine.muteAllRemoteAudioStreams(true);
         }
-        logger.d( "configEngine " + cRole + " " + mEngineConfig.mVideoProfile);
+        logger.d("configEngine " + cRole + " " + mEngineConfig.mVideoProfile);
     }
 
     public final void preview(boolean start, SurfaceView view, int uid) {
         if (Thread.currentThread() != this) {
-            Loger.w(TAG, "preview() - worker thread asynchronously " + start + " " + view + " " + (uid & 0XFFFFFFFFL));
+            logger.w( "preview() - worker thread asynchronously " + start + " " + view + " " + (uid & 0XFFFFFFFFL));
             Message envelop = new Message();
             envelop.what = ACTION_WORKER_PREVIEW;
             envelop.obj = new Object[]{start, view, uid};
@@ -289,7 +289,7 @@ public class WorkerThread extends Thread {
             if (TextUtils.isEmpty(appId)) {
                 throw new RuntimeException("NEED TO use your App ID, get your own ID at https://dashboard.agora.io/");
             }
-            logger.d( "ensureRtcEngineReadyLock:appId=" + appId);
+            logger.d("ensureRtcEngineReadyLock:appId=" + appId);
             mRtcEngine = RtcEngine.create(mContext, appId, mEngineEventHandler.mRtcEventHandler);
             mRtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
 //            mRtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_COMMUNICATION);
@@ -328,7 +328,7 @@ public class WorkerThread extends Thread {
      */
     public final void exit() {
         if (Thread.currentThread() != this) {
-            Loger.w(TAG, "exit() - exit app thread asynchronously");
+            logger.w( "exit() - exit app thread asynchronously");
             mWorkerHandler.sendEmptyMessage(ACTION_WORKER_THREAD_QUIT);
             return;
         }
@@ -337,14 +337,14 @@ public class WorkerThread extends Thread {
         RtcEngine.destroy();
         // TODO should remove all pending(read) messages
 
-        logger.d( "exit() > start");
+        logger.d("exit() > start");
 
         // exit thread looper
         Looper.myLooper().quit();
 
         mWorkerHandler.release();
 
-        logger.d( "exit() > end");
+        logger.d("exit() > end");
     }
 
     public WorkerThread(Context context, int mUid, boolean feadback) {

@@ -137,7 +137,7 @@ public class StandLiveVideoAction extends LiveVideoAction {
             iv_course_video_loading_bg.setVisibility(View.VISIBLE);
             rlFirstBackgroundView.setBackgroundColor(0xff000000);
         }
-        //Loger.e(TAG, "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
+        //logger.e( "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
     }
 
     @Override

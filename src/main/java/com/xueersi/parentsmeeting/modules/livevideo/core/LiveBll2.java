@@ -571,7 +571,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
             }
-            Loger.e(Tag, "======>onTopic:" + topicstr);
+            logger.e( "======>onTopic:" + topicstr);
             if (TextUtils.isEmpty(topicstr)) {
                 return;
             }

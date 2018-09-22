@@ -728,7 +728,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
             int videoGap = (screenWidth - width) / 2;
             if (videoGap != params.leftMargin) {
-                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.leftMargin = videoGap;
 //                rlInfo.setLayoutParams(params);

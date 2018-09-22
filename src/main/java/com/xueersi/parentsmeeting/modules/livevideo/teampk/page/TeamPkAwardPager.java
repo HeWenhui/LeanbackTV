@@ -365,7 +365,7 @@ public class TeamPkAwardPager extends BasePager {
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
         int realY = Math.min(point.x, point.y);
         int topMargin = (int) (realY * 0.36);
-        Loger.e("TeamPkAwardPager","=======>showDetailInfo: topMargin="+topMargin);
+        logger.e( "=======>showDetailInfo: topMargin="+topMargin);
         layoutParams.topMargin = topMargin;
         rlLuckyStartRoot.setLayoutParams(layoutParams);
 
@@ -468,7 +468,7 @@ public class TeamPkAwardPager extends BasePager {
      * 注 此处的暂停  只是将音量设置为0  （因为 动画和音效是 同步的）
      */
     private void pauseMusic() {
-        Loger.e("TeamPkTeamSelectPager", "======>pauseMusic called");
+        logger.e( "======>pauseMusic called");
         if (soundPoolHelper != null) {
             for (int i = 0; i < soundResArray.length; i++) {
                 soundPoolHelper.setVolume(soundResArray[i], 0);
@@ -482,7 +482,7 @@ public class TeamPkAwardPager extends BasePager {
      * 注释  将音量恢复为暂停之前的状态
      */
     private void resumeMusic() {
-        Loger.e("TeamPkTeamSelectPager", "======>resumeMusic called");
+        logger.e( "======>resumeMusic called");
         if (soundPoolHelper != null) {
             for (int i = 0; i < soundResArray.length; i++) {
                 if (soundResArray[i] == R.raw.war_bg) {

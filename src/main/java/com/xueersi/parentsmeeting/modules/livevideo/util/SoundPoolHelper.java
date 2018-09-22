@@ -8,7 +8,6 @@ import android.os.Build;
 import android.util.Log;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SoundInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -186,10 +185,10 @@ public class SoundPoolHelper {
     private void doSetVolume(Object key, float volume) {
         if (mSoundInfoMap != null && mSoundPool != null) {
             SoundInfo soundInfo = mSoundInfoMap.get(key);
-            Loger.e("SoundPoolHelper", "=====>setVolume:" + key);
+            logger.e( "=====>setVolume:" + key);
             if (soundInfo != null) {
                 mSoundPool.setVolume(soundInfo.getStreamId(), volume, volume);
-                Loger.e("SoundPoolHelper", "======>setVolume:" + soundInfo.getStreamId());
+                logger.e( "======>setVolume:" + soundInfo.getStreamId());
             }
         }
     }
@@ -198,10 +197,10 @@ public class SoundPoolHelper {
     private void doPauseMusic(Object key) {
         if (mSoundInfoMap != null && mSoundPool != null) {
             SoundInfo soundInfo = mSoundInfoMap.get(key);
-            Loger.e("SoundPoolHelper", "=====>pauseMusic:" + key);
+            logger.e( "=====>pauseMusic:" + key);
             if (soundInfo != null) {
                 mSoundPool.pause(soundInfo.getStreamId());
-                Loger.e("SoundPoolHelper", "======>pauseMusic:" + soundInfo.getStreamId());
+                logger.e( "======>pauseMusic:" + soundInfo.getStreamId());
             }
         }
     }
@@ -210,10 +209,10 @@ public class SoundPoolHelper {
     private void doStopMusic(Object key) {
         if (mSoundInfoMap != null && mSoundPool != null) {
             SoundInfo soundInfo = mSoundInfoMap.get(key);
-            Loger.e("SoundPoolHelper", "=====>stopMusic:" + key);
+            logger.e( "=====>stopMusic:" + key);
             if (soundInfo != null) {
                 mSoundPool.stop(soundInfo.getStreamId());
-                Loger.e("SoundPoolHelper", "======>stopMusic:" + soundInfo.getStreamId());
+                logger.e( "======>stopMusic:" + soundInfo.getStreamId());
             }
         }
     }

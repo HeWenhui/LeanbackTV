@@ -47,7 +47,7 @@ public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCal
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        Loger.e("=====>RollCallBll", "=======>onNotice:" + type);
+        logger.e( "=======>onNotice:" + type);
         try {
             switch (type) {
                 case XESCODE.CLASSBEGIN:

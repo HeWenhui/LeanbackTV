@@ -237,7 +237,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
-                        Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: " +
+                        logger.e( "======>LiveBll setWebViewCloseByTeacher: " +
                                 "SENDQUESTION");
                     }
                 }
@@ -250,7 +250,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
                         if (mQuestionAction instanceof QuestionBll) {
                             ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
-                            Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: " +
+                            logger.e( "======>LiveBll setWebViewCloseByTeacher: " +
                                     "STOPQUESTION");
                         }
                     } catch (Exception e) {
@@ -268,7 +268,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
-                        Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: EXAM_START");
+                        logger.e( "======>LiveBll setWebViewCloseByTeacher: EXAM_START");
                     }
                 }
                 break;
@@ -278,7 +278,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mQuestionAction.onExamStop(num);
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
-                        Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: EXAM_STOP");
+                        logger.e( "======>LiveBll setWebViewCloseByTeacher: EXAM_STOP");
                     }
                 }
                 break;
@@ -347,7 +347,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        Loger.e(TAG, "getQuestion:onFailure", e);
+                        logger.e( "getQuestion:onFailure", e);
                         super.onFailure(call, e);
                         callBack.onDataSucess();
                     }

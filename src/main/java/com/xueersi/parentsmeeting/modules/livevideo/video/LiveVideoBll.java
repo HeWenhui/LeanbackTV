@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -328,7 +329,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                             StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
                             stableLogHashMap.put("message", "" + url);
                             stableLogHashMap.put("activity", activity.getClass().getSimpleName());
-                            Loger.e(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
+                            UmsAgentManager.umsAgentDebug(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData());
                         }
 
                         @Override
@@ -390,7 +391,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 }
             }
         }
-        logger.d( "addBody:method=" + method + ",url=" + url);
+        logger.d("addBody:method=" + method + ",url=" + url);
         return msg;
     }
 
@@ -585,7 +586,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     public void stopPlayDuration() {
         mHandler.removeCallbacks(mPlayDuration);
         playTime += (System.currentTimeMillis() - lastPlayTime);
-        logger.d( "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+        logger.d("onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
         livePlayLog.onPause(0);
     }
 
@@ -596,7 +597,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             if (lastPlayserverEntity != null) {
                 lastPlayTime = System.currentTimeMillis();
                 playTime += mPlayDurTime;
-                logger.d( "mPlayDuration:playTime=" + playTime / 1000);
+                logger.d("mPlayDuration:playTime=" + playTime / 1000);
                 liveVideoReportBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "normal");
                 reportPlayStarTime = System.currentTimeMillis();
             }
@@ -693,7 +694,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         final AbstractBusinessDataCallBack dataCallBack = new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                logger.d( "dns_resolve_stream:onDataSucess:haveCall=" + haveCall.get() + ",objData=" + objData[0]);
+                logger.d("dns_resolve_stream:onDataSucess:haveCall=" + haveCall.get() + ",objData=" + objData[0]);
                 if (!haveCall.get()) {
                     haveCall.set(true);
                     callBack.onDataSucess(objData);
@@ -702,7 +703,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
-                logger.d( "dns_resolve_stream:onDataFail:haveCall=" + haveCall.get() + ",errStatus=" + errStatus +
+                logger.d("dns_resolve_stream:onDataFail:haveCall=" + haveCall.get() + ",errStatus=" + errStatus +
                         ",failMsg=" + failMsg);
                 if (!haveCall.get()) {
                     haveCall.set(true);
@@ -720,7 +721,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
             @Override
             public void onFailure(Call call, IOException e) {
-                logger.i( "dns_resolve_stream:onFailure=", e);
+                logger.i("dns_resolve_stream:onFailure=", e);
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -738,7 +739,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                         String r = "";
                         try {
                             r = response.body().string();
-                            logger.i( "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
+                            logger.i("dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
                             if (response.code() >= 200 && response.code() <= 300) {
                                 if ("wangsu".equals(provide)) {
 //                        rtmp://111.202.83.208/live_server/x_3_55873?wsiphost=ipdb&wsHost=livewangsu.xescdn.com

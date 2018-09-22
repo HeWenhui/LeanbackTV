@@ -220,7 +220,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     protected boolean shouldOverrideUrlLoading(WebView view, String url) {
         //      if ("http://baidu.com/".equals(url)) {
         logger.d( "shouldOverrideUrlLoading:url=" + url);
-        Loger.e(TAG, "======> shouldOverrideUrlLoading:" + url);
+        logger.e( "======> shouldOverrideUrlLoading:" + url);
 
         reloadurl = url;
         if (url.contains("baidu.com")) {
@@ -250,7 +250,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     if (!TextUtils.isEmpty(goldNUmStr)) {
                         mGoldNum = Integer.parseInt(goldNUmStr.trim());
                     }
-                    Loger.e(TAG, "======> shouldOverrideUrlLoading: mGoldNum=" + mGoldNum);
+                    logger.e( "======> shouldOverrideUrlLoading: mGoldNum=" + mGoldNum);
                 }
                 int satrIndex2 = url.indexOf("energyNum=") + "energyNum=".length();
                 if (satrIndex2 != -1) {
@@ -264,7 +264,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     if (!TextUtils.isEmpty(energyNumStr)) {
                         mEnergyNum = Integer.parseInt(energyNumStr.trim());
                     }
-                    Loger.e(TAG, "======> shouldOverrideUrlLoading: mEnergyNum=" + mEnergyNum);
+                    logger.e( "======> shouldOverrideUrlLoading: mEnergyNum=" + mEnergyNum);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -272,8 +272,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             return true;
         }
 
-        Loger.e(TAG, "======> reloadUrlLivedshouldurl:" + url);
-        Loger.e(TAG, "======> reloadUrlLivedshouldreloadurl:" + reloadurl);
+        logger.e( "======> reloadUrlLivedshouldurl:" + url);
+        logger.e( "======> reloadUrlLivedshouldreloadurl:" + reloadurl);
         return super.shouldOverrideUrlLoading(view, url);
     }
 
@@ -383,9 +383,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 mLoadUrls += "&isShowTeamPk=1";
             }
             loadUrl(mLoadUrls);
-            Loger.e(TAG, "======> mulloadUrlLives:" + mLoadUrls);
+            logger.e( "======> mulloadUrlLives:" + mLoadUrls);
             reloadurl = mLoadUrls;
-            Loger.e(TAG, "======> mulloadUrlLive:" + reloadurl);
+            logger.e( "======> mulloadUrlLive:" + reloadurl);
         } else {
             String loadUrl = url + "?t=" + System.currentTimeMillis();
             if (!url.isEmpty() && url.substring(url.length() - 1).equals("&")) {
@@ -402,9 +402,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             logger.i( "initData:loadUrl=" + loadUrl);
             loadUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
             loadUrl(loadUrl);
-            Loger.e(TAG, "======> loadUrl:" + loadUrl);
+            logger.e( "======> loadUrl:" + loadUrl);
             reloadurl = loadUrl;
-            Loger.e(TAG, "======> loadUrlLive:" + reloadurl);
+            logger.e( "======> loadUrlLive:" + reloadurl);
         }
         if (mLogtf != null) {
             mLogtf.d("initData:reloadurl=" + reloadurl);
@@ -415,16 +415,16 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             @Override
             public void onClick(final View v) {
 //                newWebView();
-                Loger.e(TAG, "======> reloadUrlLives:" + mLoadUrls);
-                Loger.e(TAG, "======> reloadUrlLive:" + reloadurl);
+                logger.e( "======> reloadUrlLives:" + mLoadUrls);
+                logger.e( "======> reloadUrlLive:" + reloadurl);
                 if ((englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack) && LiveVideoConfig.isPrimary) {
                     loadUrl(mLoadUrls);
-                    Loger.e(TAG, "======> reloadUrlLiveds:" + mLoadUrls);
+                    logger.e( "======> reloadUrlLiveds:" + mLoadUrls);
                 } else {
                     String url = reloadurl + "&time=" + System.currentTimeMillis();
                     loadUrl(url);
                     reloadUrl();
-                    Loger.e(TAG, "======> reloadUrlLived:" + url);
+                    logger.e( "======> reloadUrlLived:" + url);
                 }
                 v.setVisibility(View.GONE);
                 v.postDelayed(new Runnable() {

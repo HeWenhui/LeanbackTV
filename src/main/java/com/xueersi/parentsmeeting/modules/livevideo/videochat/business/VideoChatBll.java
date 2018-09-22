@@ -390,7 +390,7 @@ public class VideoChatBll implements VideoChatAction {
                             @Override
                             public void onPmFailure(Throwable error, String msg) {
                                 super.onPmFailure(error, msg);
-                                Loger.e(TAG, "chatHandAdd:onPmFailure:responseEntity=" + msg);
+                                logger.e( "chatHandAdd:onPmFailure:responseEntity=" + msg);
                             }
                         });
                         BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();

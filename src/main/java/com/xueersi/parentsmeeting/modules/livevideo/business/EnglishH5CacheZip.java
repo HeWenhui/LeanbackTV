@@ -203,20 +203,20 @@
 //                        }
 //                    }
 //                } catch (JSONException e) {
-//                    Loger.e(TAG, "onPmSuccess", e);
+//                    logger.e( "onPmSuccess", e);
 //                }
 //            }
 //
 //            @Override
 //            public void onFailure(Call call, IOException e) {
 //                super.onFailure(call, e);
-//                Loger.e(TAG, "getCourseWareUrl:onFailure:e=" + e);
+//                logger.e( "getCourseWareUrl:onFailure:e=" + e);
 //            }
 //
 //            @Override
 //            public void onPmError(ResponseEntity responseEntity) {
 //                super.onPmError(responseEntity);
-//                Loger.e(TAG, "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
+//                logger.e( "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
 //            }
 //        });
 //    }

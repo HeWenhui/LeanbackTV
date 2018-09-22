@@ -20,6 +20,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
@@ -452,7 +454,7 @@ public class LivePublicPraisePager extends BasePager {
         } catch (JSONException e) {
             isOk = false;
             isHave = false;
-            Loger.e(mContext, TAG, "onPraiseOrEncourage", e, true);
+            UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + "onPraiseOrEncourage", e);
         }
         if (!isOk) {
             if (!runs.isEmpty()) {

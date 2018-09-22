@@ -287,7 +287,7 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
                 mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);
             }
         } catch (Exception e) {
-            // Loger.e(TAG, "understand", e);
+            // logger.e( "understand", e);
             mLogtf.e("requestMicro", e);
         }
     }
@@ -305,7 +305,7 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
                 mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);
             }
         } catch (Exception e) {
-            // Loger.e(TAG, "understand", e);
+            // logger.e( "understand", e);
             mLogtf.e("giveupMicro", e);
         }
     }

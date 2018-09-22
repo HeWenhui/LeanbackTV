@@ -109,7 +109,7 @@ public class LiveVideoReportBll {
         public void onOpenFailed(int arg1, int arg2) {
             if (isOpenSuccess) {
                 MegId megId = MegId.MEGID_12103;
-                megId.msgid = "fail " + TotalFrameStat.getErrorCode(arg2) + " ";
+                megId.msgid = "fail " + LivePlayLog.getErrorCodeInt(arg2) + " ";
                 streamReport(megId, mGetInfo.getChannelname(), -1);
             }
             long openTime = System.currentTimeMillis() - openStartTime;
@@ -224,12 +224,12 @@ public class LiveVideoReportBll {
 
             @Override
             public void onFailure(Call call, IOException e) {
-                logger.i( "streamReport:onFailure=", e);
+                logger.i("streamReport:onFailure=", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                logger.i( "streamReport:onResponse:response=" + response.message());
+                logger.i("streamReport:onResponse:response=" + response.message());
             }
         });
     }
@@ -272,12 +272,12 @@ public class LiveVideoReportBll {
 
             @Override
             public void onFailure(Call call, IOException e) {
-                logger.i( "live_report_play_duration:onFailure=", e);
+                logger.i("live_report_play_duration:onFailure=", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                logger.i( "live_report_play_duration:onResponse:response=" + response.message());
+                logger.i("live_report_play_duration:onResponse:response=" + response.message());
             }
         });
     }

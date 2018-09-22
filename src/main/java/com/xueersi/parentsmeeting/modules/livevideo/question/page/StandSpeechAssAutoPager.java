@@ -710,7 +710,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 });
             } catch (JSONException e) {
-                Loger.e(TAG, "sendSpeechEvalResult2", e);
+                logger.e( "sendSpeechEvalResult2", e);
             }
         }
         rlSpeectevalEncourage.setVisibility(View.INVISIBLE);
@@ -1422,7 +1422,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 img7Bitmap.recycle();
                 img7Bitmap = creatBitmap;
             } catch (IOException e) {
-                Loger.e(TAG, "updateScore", e);
+                logger.e( "updateScore", e);
                 return;
             }
             lottieAnimationView.updateBitmap("image_0", img7Bitmap);

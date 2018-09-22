@@ -318,7 +318,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     logger.d("handleHeartMessage:isInitialized=false");
                 }
             } catch (Exception e) {
-                Loger.e(BaseApplication.getContext(), TAG, "handleHeartMessage", e, true);
+                UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + "handleHeartMessage", e);
             }
             handler.sendEmptyMessageDelayed(1, 1000);
         }
@@ -485,12 +485,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             ijkMediaPlayer.setOnNativeInvokeListener(new IjkMediaPlayer.OnNativeInvokeListener() {
                 @Override
                 public boolean onNativeInvoke(int what, Bundle args) {
-                    logger.d( "onOpenStart:what=" + what + "," + mUri + ",args=" + args);
+                    logger.d("onOpenStart:what=" + what + "," + mUri + ",args=" + args);
                     if (what == CTRL_DID_TCP_OPEN) {
                         sip = args.getString("ip", "0.0.0.0");
                         sipMap.put(mUri, sip);
                         long openTime = (System.currentTimeMillis() - openSuccess);
-                        logger.d( "onOpenStart:what=" + what + "," + mUri + ",openTime=" + openTime);
+                        logger.d("onOpenStart:what=" + what + "," + mUri + ",openTime=" + openTime);
                     }
                     return false;
                 }
@@ -500,14 +500,14 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
                 @Override
                 public boolean onInfo(IMediaPlayer mp, int what, int extra) {
-                    logger.d( "onInfo:what=" + what + "," + extra);
+                    logger.d("onInfo:what=" + what + "," + extra);
                     if (what == IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                         if (haveStart) {
                             return false;
                         }
                         haveStart = true;
                         final long openTime = (System.currentTimeMillis() - openStart);
-                        logger.d( "onInfo:what=3," + (System.currentTimeMillis() - openSuccess));
+                        logger.d("onInfo:what=3," + (System.currentTimeMillis() - openSuccess));
                         getFps();
                         final String finalTid = tid;
                         liveThreadPoolExecutor.execute(new Runnable() {
@@ -571,7 +571,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         openSuccess = System.currentTimeMillis();
         handler.sendEmptyMessageDelayed(1, 1000);
         long openTime = (System.currentTimeMillis() - openStart);
-        logger.d( "onOpenSuccess:openTime=" + openTime + ",sipMap=" + sipMap.size() + ",sip=" + sip);
+        logger.d("onOpenSuccess:openTime=" + openTime + ",sipMap=" + sipMap.size() + ",sip=" + sip);
         isOpenSuccess = true;
     }
 
@@ -596,7 +596,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             bufType = 1;
         }
         bufferTime = System.currentTimeMillis();
-        logger.d( "onBufferStart:isInitialized=" + vPlayer.isInitialized());
+        logger.d("onBufferStart:isInitialized=" + vPlayer.isInitialized());
         bufferStartEntity.setTip(tid);
         bufferStartEntity.setStartTime(bufferTime);
         HashMap<String, Object> defaultKey = new HashMap<>();
@@ -637,7 +637,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         super.onBufferComplete();
         isBuffer = false;
         bufferStartEntity.setEndTime(System.currentTimeMillis());
-        logger.d( "onBufferComplete:isInitialized=" + vPlayer.isInitialized());
+        logger.d("onBufferComplete:isInitialized=" + vPlayer.isInitialized());
         HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
@@ -717,7 +717,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
     public void liveGetPlayServer(final long delay, PlayFailCode playFailCode, int code, String cipdispatch, URLDNS urldns, final String url) {
         tid = "" + UUID.randomUUID();
-        logger.d( "liveGetPlayServer:delay=" + delay + ",ipsb=" + urldns.ip);
+        logger.d("liveGetPlayServer:delay=" + delay + ",ipsb=" + urldns.ip);
         HashMap<String, Object> defaultKey = new HashMap<>();
         defaultKey.put("ver", logVersion);
         defaultKey.put("serv", serv);
@@ -971,16 +971,16 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.e(TAG, "xescdnLogUrl:onFailure", e);
+                logger.e( "xescdnLogUrl:onFailure", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 file.delete();
                 if (response.body() != null) {
-                    logger.d( "xescdnLogUrl:onResponse:retry=" + retryInt.get() + ",response=" + response.body().string());
+                    logger.d("xescdnLogUrl:onResponse:retry=" + retryInt.get() + ",response=" + response.body().string());
                 } else {
-                    logger.d( "xescdnLogUrl:onResponse:response=null");
+                    logger.d("xescdnLogUrl:onResponse:response=null");
                 }
             }
         });
@@ -1028,7 +1028,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Loger.e(TAG, "xescdnLog:onFailure", e);
+                    logger.e( "xescdnLog:onFailure", e);
                     if (retryInt.get() < 2) {
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -1078,9 +1078,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.body() != null) {
-                        logger.d( "xescdnLog:onResponse:retry=" + retryInt.get() + ",response=" + response.body().string());
+                        logger.d("xescdnLog:onResponse:retry=" + retryInt.get() + ",response=" + response.body().string());
                     } else {
-                        logger.d( "xescdnLog:onResponse:response=null");
+                        logger.d("xescdnLog:onResponse:response=null");
                     }
 //                    if (AppConfig.DEBUG) {
 //                        try {
@@ -1355,12 +1355,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     for (int i = 0; i < arrayList.size(); i++) {
                         Bundle bundle1 = (Bundle) arrayList.get(i);
                         if ("video".equals(bundle1.getString("type"))) {
-                            logger.d( "getFps:bundle1=" + bundle1);
+                            logger.d("getFps:bundle1=" + bundle1);
                             if (bundle1.containsKey("fps_num") && bundle1.containsKey("fps_den")) {
                                 int fps_num = Integer.parseInt(bundle1.getString("fps_num"));
                                 int fps_den = Integer.parseInt(bundle1.getString("fps_den"));
                                 videofps = (float) fps_num / (float) fps_den;
-                                logger.d( "getFps:fps_num=" + fps_num + ",fps_den=" + fps_den + ",fps=" + videofps);
+                                logger.d("getFps:fps_num=" + fps_num + ",fps_den=" + fps_den + ",fps=" + videofps);
                             }
                             break;
                         }
@@ -1368,8 +1368,17 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 }
             }
         } catch (Exception e) {
-            Loger.e(BaseApplication.getContext(), TAG, "getFps", e, true);
+            UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + "getFps", e);
         }
+    }
+
+    public static int getErrorCodeInt(int arg2) {
+        int code = -1111;
+        PlayFailCode code1 = getErrorCode(arg2);
+        if (code1 != null) {
+            code = code1.code;
+        }
+        return code;
     }
 
     public static PlayFailCode getErrorCode(int arg2) {
@@ -1437,7 +1446,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             }
         } catch (Exception e) {
             net = -1024;
-            Loger.e(BaseApplication.getContext(), TAG, "getNetworkType", e, true);
+            UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + "getNetworkType", e);
         }
         return net;
     }

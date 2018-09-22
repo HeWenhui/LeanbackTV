@@ -229,7 +229,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String
             message) {
-        Loger.e("LiveBll", "=====> onPrivateMessage:" + sender + ":" + login + ":" + hostname + ":" + target + ":" +
+        logger.e( "=====> onPrivateMessage:" + sender + ":" + login + ":" + hostname + ":" + target + ":" +
                 message);
         if (!"T".equals(message) && haveTeam) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
@@ -716,7 +716,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         starAction.onSendMsg(msg);
                     }
                 } catch (Exception e) {
-                    // Loger.e(TAG, "understand", e);
+                    // logger.e( "understand", e);
                     UmsAgentManager.umsAgentException(BaseApplication.getContext(), "livevideo_livebll_sendMessage", e);
                     mLogtf.e("sendMessage", e);
                 }
@@ -784,7 +784,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             mHttpManager.getMoreChoiceCount(mLiveId, new HttpCallBack(pageDataLoadEntity) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                    Loger.e("Duncan", "responseEntity:" + responseEntity);
+                    logger.e( "responseEntity:" + responseEntity);
                     MoreChoice choiceEntity = mHttpResponseParser.parseMoreChoice(responseEntity);
                     if (choiceEntity != null) {
                         getDataCallBack.onDataSucess(choiceEntity);
@@ -856,7 +856,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             mLiveBll.sendMessage(jsonObject);
 //            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
         } catch (Exception e) {
-            // Loger.e(TAG, "understand", e);
+            // logger.e( "understand", e);
             mLogtf.e("sendFlowerMessage", e);
         }
     }
@@ -873,7 +873,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             mLiveBll.sendMessage(jsonObject);
 //            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
         } catch (Exception e) {
-            // Loger.e(TAG, "understand", e);
+            // logger.e( "understand", e);
             mLogtf.e("sendFlowerMessage", e);
         }
     }

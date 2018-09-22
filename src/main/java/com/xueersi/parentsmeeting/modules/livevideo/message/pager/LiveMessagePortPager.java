@@ -49,7 +49,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.item.MoreChoiceItem
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -82,7 +81,6 @@ import java.util.List;
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
-import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
 
 /**
  * Created by linyuqiang on 2016/8/2.
@@ -426,7 +424,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
             // 04.04 获取到数据之后的逻辑处理
             if (objData.length > 0) {
                 mData = (MoreChoice) objData[0];
-                Loger.e("Duncan", "mData:" + mData);
+                logger.e( "mData:" + mData);
                 mChoices.clear();
                 mChoices.addAll(mData.getCases());
                 LiveVideoConfig.MORE_COURSE = mChoices.size();

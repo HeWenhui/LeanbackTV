@@ -81,7 +81,7 @@ public class WebViewCache {
                         connection.disconnect();
                     }
                 } catch (Exception e) {
-                    Loger.e(TAG, "release:disconnect");
+                    logger.e( "release:disconnect");
                 }
             }
         }.start();

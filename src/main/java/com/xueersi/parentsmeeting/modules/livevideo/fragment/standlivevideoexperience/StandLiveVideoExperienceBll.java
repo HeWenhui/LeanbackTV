@@ -280,7 +280,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
-            Loger.e(TAG, "=====>onPrivateMessage:isSelf=" + isSelf);
+            logger.e( "=====>onPrivateMessage:isSelf=" + isSelf);
             if (isSelf && "T".equals(message)) {
                 mHandler.post(new Runnable() {
                     @Override
@@ -410,7 +410,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
                         starAction.onSendMsg(msg);
                     }
                 } catch (Exception e) {
-                    // Loger.e(TAG, "understand", e);
+                    // logger.e( "understand", e);
                     UmsAgentManager.umsAgentException(BaseApplication.getContext(), "livevideo_livebll_sendMessage", e);
                     logToFile.e(TAG + ":sendMessage", e);
                 }
@@ -467,7 +467,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         if (mIRCMessage != null) {
             mIRCMessage.setCallback(null);
             mIRCMessage.destory();
-            Loger.e(TAG, "=========>:mIRCMessage.destory()");
+            logger.e( "=========>:mIRCMessage.destory()");
         }
     }
 

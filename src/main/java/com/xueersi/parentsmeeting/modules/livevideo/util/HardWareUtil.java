@@ -97,7 +97,7 @@ public class HardWareUtil {
             reader.close();
             cpuInfos = load.split(" ");
         } catch (IOException ex) {
-            Loger.e(TAG, "IOException" + ex.toString());
+            logger.e( "IOException" + ex.toString());
             return 0;
         }
         long totalCpu = 0;
@@ -128,7 +128,7 @@ public class HardWareUtil {
             reader.close();
             cpuInfos = load.split(" ");
         } catch (IOException e) {
-            Loger.e(TAG, "IOException" + e.toString());
+            logger.e( "IOException" + e.toString());
             return 0;
         }
         long appCpuTime = 0;

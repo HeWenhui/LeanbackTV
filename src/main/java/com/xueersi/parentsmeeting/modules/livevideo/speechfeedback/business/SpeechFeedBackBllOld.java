@@ -113,7 +113,7 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
                     }
                     logger.d( "start:startRecording:end;time=" + (System.currentTimeMillis() - time));
                 } catch (IOException e) {
-                    Loger.e(TAG, "initAudioRecorder", e);
+                    logger.e( "initAudioRecorder", e);
                 }
             }
         });

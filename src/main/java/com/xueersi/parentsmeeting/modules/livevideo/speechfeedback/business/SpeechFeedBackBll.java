@@ -265,7 +265,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                     }*/
                     logger.d( "start:startRecording:end;time=" + (System.currentTimeMillis() - time));
                 } catch (Exception e) {
-                    Loger.e(TAG, "initAudioRecorder", e);
+                    logger.e( "initAudioRecorder", e);
                 }
             }
         });
