@@ -205,7 +205,7 @@ public class QuestionMulitSelectPortLivePager extends BaseLiveQuestionPager {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (position == 0) {
                 mAnswer = "";
-                Loger.i(TAG, "getView:position=0");
+                logger.i( "getView:position=0");
             }
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_livevideo_selectportquestion, parent, false);
             Button button = (Button) convertView.findViewById(R.id.btn_livevideo_question_select_questiona);
@@ -222,7 +222,7 @@ public class QuestionMulitSelectPortLivePager extends BaseLiveQuestionPager {
                 button.setBackgroundResource(R.drawable.shape_question_mulitselect_answer_normal);
             }
             button.setOnClickListener(new AnswerOnClickListener());
-            Loger.i(TAG, "getView:position=" + position + ",mAnswer=" + mAnswer);
+            logger.i( "getView:position=" + position + ",mAnswer=" + mAnswer);
             return convertView;
         }
     }

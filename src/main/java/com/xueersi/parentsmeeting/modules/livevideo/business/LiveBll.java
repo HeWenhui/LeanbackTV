@@ -887,7 +887,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager.userModeTime(enstuId, mLiveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
-                Loger.d(TAG, "userModeTime:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                logger.d( "userModeTime:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
             }
 
             @Override
@@ -1330,7 +1330,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target,
                              final String notice) {
-            // Loger.d(TAG, "onNotice:target=" + target + ",notice=" + notice);
+            // logger.d( "onNotice:target=" + target + ",notice=" + notice);
             // mLogtf.i("onNotice:target=" + target + ",notice=" + notice);
             Loger.i("yzl_fd", "onNotice: = " + "target=" + target + ",notice=" + notice);
             String msg = "onNotice:target=" + target;
@@ -2125,8 +2125,8 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                             }
                             JSONArray agreeForms = object.optJSONArray("agreeFroms");
                             boolean isTeacher = object.optBoolean("isTeacher");
-                            Loger.i(TAG, "agreeForms=" + agreeForms.toString());
-                            Loger.i(TAG, "isTeacher=" + isTeacher);
+                            logger.i( "agreeForms=" + agreeForms.toString());
+                            logger.i( "isTeacher=" + isTeacher);
                             if (isTeacher) {
                                 if (mPraiseListAction != null && agreeForms.length() != 0) {
                                     mPraiseListAction.showPraiseScroll(mGetInfo.getStuName(), agreeForms.getString(0));
@@ -2135,7 +2135,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                                 ArrayList<String> list = new ArrayList<>();
                                 for (int i = 0; i < agreeForms.length(); i++) {
                                     String stuName = agreeForms.getString(i);
-                                    Loger.i(TAG, "stuName=" + stuName);
+                                    logger.i( "stuName=" + stuName);
                                     list.add(stuName);
                                 }
                                 if (mPraiseListAction != null && list.size() != 0) {
@@ -2237,7 +2237,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 //                    }
                 }
                 mLogtf.i("onNotice:msg=" + msg);
-                // Loger.d(TAG, "onNotice:msg=" + msg);
+                // logger.d( "onNotice:msg=" + msg);
             } catch (JSONException e) {
                 // Loger.e(TAG, "onNotice", e);
                 mLogtf.e("onNotice:" + notice, e);
@@ -2375,7 +2375,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
         @Override
         public void onJoin(String target, String sender, String login, String hostname) {
-            Loger.d(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+            logger.d( "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
             if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
                 synchronized (mIRCcallback) {
                     mMainTeacher = new Teacher(sender);
@@ -2408,7 +2408,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
         @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-            Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+            logger.d( "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
             if (sourceNick.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
                 synchronized (mIRCcallback) {
@@ -2622,7 +2622,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
-        // Loger.d(TAG, s);
+        // logger.d( s);
         mLogtf.d(s);
         if (mGetInfo.getStudentLiveInfo() != null) {
             if (mGetInfo.getStudentLiveInfo().getEvaluateStatus() == 1) {
@@ -3022,7 +3022,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
             @Override
             public void onSuccess(String result) {
-//                Loger.i(TAG, "liveGetPlayServer:onSuccess:result=" + result);
+//                logger.i( "liveGetPlayServer:onSuccess:result=" + result);
                 String s = "liveGetPlayServer:onSuccess";
                 try {
                     JSONObject object = new JSONObject(result);
@@ -3895,7 +3895,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 mHttpManager.getStuGoldCount(enstuId, liveid, new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        Loger.i(TAG, "getStuGoldCount:onPmSuccess=" + responseEntity.getJsonObject());
+                        logger.i( "getStuGoldCount:onPmSuccess=" + responseEntity.getJsonObject());
                         if (starAction != null) {
                             StarAndGoldEntity starAndGoldEntity = mHttpResponseParser.parseStuGoldCount(responseEntity);
                             mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
@@ -3907,13 +3907,13 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
-                        Loger.i(TAG, "getStuGoldCount:onPmFailure=" + msg);
+                        logger.i( "getStuGoldCount:onPmFailure=" + msg);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
-                        Loger.i(TAG, "getStuGoldCount:onPmError=" + responseEntity.getErrorMsg());
+                        logger.i( "getStuGoldCount:onPmError=" + responseEntity.getErrorMsg());
                     }
                 });
             }
@@ -3930,7 +3930,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        Loger.d(TAG, "setTotalOpeningLength:onPmSuccess" + responseEntity.getJsonObject());
+                        logger.d( "setTotalOpeningLength:onPmSuccess" + responseEntity.getJsonObject());
                         if (starAction != null) {
                             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                             int star = jsonObject.getInt("star");
@@ -3942,7 +3942,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        Loger.d(TAG, "setTotalOpeningLength:onFailure");
+                        logger.d( "setTotalOpeningLength:onFailure");
                         super.onFailure(call, e);
                         postDelayedIfNotFinish(new Runnable() {
                             @Override
@@ -3954,7 +3954,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        Loger.d(TAG, "setTotalOpeningLength:onPmError" + responseEntity.getErrorMsg());
+                        logger.d( "setTotalOpeningLength:onPmError" + responseEntity.getErrorMsg());
                         super.onPmError(responseEntity);
                     }
                 });
@@ -3965,7 +3965,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager.setNotOpeningNum(enstuId, mGetInfo.getId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.d(TAG, "setNotOpeningNum:onPmSuccess" + responseEntity.getJsonObject());
+                logger.d( "setNotOpeningNum:onPmSuccess" + responseEntity.getJsonObject());
             }
 
             @Override
@@ -3976,7 +3976,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                Loger.d(TAG, "setNotOpeningNum:onPmError" + responseEntity.getErrorMsg());
+                logger.d( "setNotOpeningNum:onPmError" + responseEntity.getErrorMsg());
                 super.onPmError(responseEntity);
             }
         });
@@ -3990,7 +3990,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        Loger.d(TAG, "getQuestion:onPmSuccess" + responseEntity.getJsonObject());
+                        logger.d( "getQuestion:onPmSuccess" + responseEntity.getJsonObject());
                         callBack.onDataSucess();
                     }
 
@@ -4003,7 +4003,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        Loger.d(TAG, "getQuestion:onPmError" + responseEntity.getErrorMsg());
+                        logger.d( "getQuestion:onPmError" + responseEntity.getErrorMsg());
                         super.onPmError(responseEntity);
                         callBack.onDataSucess();
                     }
@@ -4036,7 +4036,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager.getAdOnLL(lecAdvertEntity.course_id, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.d(TAG, "getAdOnLL:onPmSuccess=" + responseEntity.getJsonObject());
+                logger.d( "getAdOnLL:onPmSuccess=" + responseEntity.getJsonObject());
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                 int isLearn = jsonObject.optInt("isLearn", 0);
                 lecAdvertEntity.isLearn = isLearn;
@@ -4053,7 +4053,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.d(TAG, "getAdOnLL:onPmError=" + responseEntity.getErrorMsg());
+                logger.d( "getAdOnLL:onPmError=" + responseEntity.getErrorMsg());
 //                if(AppConfig.DEBUG){
 //                    callBack.onDataSucess();
 //                }
@@ -4064,7 +4064,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             @Override
             public void onFailure(Call call, IOException e) {
                 super.onFailure(call, e);
-                Loger.d(TAG, "getAdOnLL:onFailure", e);
+                logger.d( "getAdOnLL:onFailure", e);
 //                if(AppConfig.DEBUG){
 //                    callBack.onDataSucess();
 //                }
@@ -4088,14 +4088,14 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                Loger.d(TAG, "getRolePlayAnswerTeamRank:msg=" + msg);
+                logger.d( "getRolePlayAnswerTeamRank:msg=" + msg);
                 callBack.onDataFail(0, msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.d(TAG, "getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
+                logger.d( "getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
                 callBack.onDataFail(1, responseEntity.getErrorMsg());
             }
 
@@ -4111,19 +4111,19 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager.saveStuTalkSource(mGetInfo.getStuId(), talkSourcePath, service, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.d(TAG, "saveStuTalkSource:onPmSuccess" + responseEntity.getJsonObject());
+                logger.d( "saveStuTalkSource:onPmSuccess" + responseEntity.getJsonObject());
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                Loger.d(TAG, "saveStuTalkSource:onPmFailure" + msg);
+                logger.d( "saveStuTalkSource:onPmFailure" + msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.d(TAG, "saveStuTalkSource:onPmError" + responseEntity.getErrorMsg());
+                logger.d( "saveStuTalkSource:onPmError" + responseEntity.getErrorMsg());
             }
         });
     }
@@ -4136,13 +4136,13 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         liveScienceHttpManager.chatHandAdd(new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.d(TAG, "chatHandAdd:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                logger.d( "chatHandAdd:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.d(TAG, "chatHandAdd:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                logger.d( "chatHandAdd:onPmError:responseEntity=" + responseEntity.getErrorMsg());
             }
 
             @Override
@@ -4166,7 +4166,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     public void getToken(final LicodeToken licodeToken) {
         final String id = "x_" + mLiveType + "_" + mGetInfo.getId();
         String roomid = channelAndRoomid.get(id);
-        Loger.i(TAG, "getToken:id=" + id + ",roomid=null?" + (roomid == null));
+        logger.i( "getToken:id=" + id + ",roomid=null?" + (roomid == null));
         if (roomid != null) {
             mHttpManager.getToken(roomid, mGetInfo.getStuId(), new Callback.CacheCallback<String>() {
 
@@ -4217,7 +4217,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 if (roomidIndex != -1) {
                     result = result.substring(0, roomidIndex);
                 }
-                Loger.i(TAG, "getToken:getRoomid:onSuccess:result=" + result);
+                logger.i( "getToken:getRoomid:onSuccess:result=" + result);
                 channelAndRoomid.put(id, result);
                 mHttpManager.getToken(result, mGetInfo.getStuId(), new CacheCallback<String>() {
 
@@ -4269,7 +4269,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
         if (netWorkType != NetWorkHelper.NO_NETWORK) {
-            Loger.i(TAG, "onNetWorkChange:liveGetPlayServerError=" + liveGetPlayServerError);
+            logger.i( "onNetWorkChange:liveGetPlayServerError=" + liveGetPlayServerError);
             if (liveGetPlayServerError) {
                 liveGetPlayServerError = false;
                 liveGetPlayServer(mLiveTopic.getMode(), false);
@@ -4388,12 +4388,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.i(TAG, "live_report_play_duration:onFailure=", e);
+                logger.i( "live_report_play_duration:onFailure=", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Loger.i(TAG, "live_report_play_duration:onResponse:response=" + response.message());
+                logger.i( "live_report_play_duration:onResponse:response=" + response.message());
             }
         });
     }
@@ -4461,7 +4461,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         final AbstractBusinessDataCallBack dataCallBack = new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                Loger.d(TAG, "dns_resolve_stream:onDataSucess:haveCall=" + haveCall.get() + ",objData=" + objData[0]);
+                logger.d( "dns_resolve_stream:onDataSucess:haveCall=" + haveCall.get() + ",objData=" + objData[0]);
                 if (!haveCall.get()) {
                     haveCall.set(true);
                     callBack.onDataSucess(objData);
@@ -4470,7 +4470,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
-                Loger.d(TAG, "dns_resolve_stream:onDataFail:haveCall=" + haveCall.get() + ",errStatus=" + errStatus +
+                logger.d( "dns_resolve_stream:onDataFail:haveCall=" + haveCall.get() + ",errStatus=" + errStatus +
                         ",failMsg=" + failMsg);
                 if (!haveCall.get()) {
                     haveCall.set(true);
@@ -4488,7 +4488,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.i(TAG, "dns_resolve_stream:onFailure=", e);
+                logger.i( "dns_resolve_stream:onFailure=", e);
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -4506,7 +4506,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                         String r = "";
                         try {
                             r = response.body().string();
-                            Loger.i(TAG, "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
+                            logger.i( "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
                             if (response.code() >= 200 && response.code() <= 300) {
                                 if ("wangsu".equals(provide)) {
 //                        rtmp://111.202.83.208/live_server/x_3_55873?wsiphost=ipdb&wsHost=livewangsu.xescdn.com
@@ -4611,12 +4611,12 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.i(TAG, "streamReport:onFailure=", e);
+                logger.i( "streamReport:onFailure=", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Loger.i(TAG, "streamReport:onResponse:response=" + response.message());
+                logger.i( "streamReport:onResponse:response=" + response.message());
             }
         });
     }

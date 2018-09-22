@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -41,6 +43,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class FrameAnimation {
     static String TAG = "FrameAnimation";
+    protected static Logger logger = LoggerFactory.getLogger(TAG);
     String eventId = LiveVideoConfig.LIVE_FRAME_ANIM;
     /** 是不是循环播放 */
     private boolean mIsRepeat;
@@ -402,7 +405,7 @@ public class FrameAnimation {
                                                                 String f = files[index];
                                                                 Bitmap bitmap1 = bitmapHashMap.get(f);
                                                                 if (f.equals(drawFile)) {
-                                                                    Loger.d(TAG, "setBackgroundDrawable:recycle");
+                                                                    logger.d( "setBackgroundDrawable:recycle");
                                                                 }
                                                                 if (bitmap1 != null) {
                                                                     bitmap1.recycle();
@@ -446,7 +449,7 @@ public class FrameAnimation {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             } catch (OutOfMemoryError e) {
-                                Loger.d(TAG, "play:OutOfMemoryError:file=" + file);
+                                logger.d( "play:OutOfMemoryError:file=" + file);
                             } finally {
                                 if (inputStream != null) {
                                     try {
@@ -614,12 +617,12 @@ public class FrameAnimation {
                 files = externalFilesDir.list();
                 if (files != null) {
                     Arrays.sort(files);
-                    Loger.d(TAG, "createFromAees:path=" + path + ",files=" + files.length);
+                    logger.d( "createFromAees:path=" + path + ",files=" + files.length);
                     for (int i = 0; i < files.length; i++) {
                         files[i] = new File(externalFilesDir, files[i]).getPath();
                     }
                 } else {
-                    Loger.d(TAG, "createFromAees:path=" + path + ",files=null");
+                    logger.d( "createFromAees:path=" + path + ",files=null");
                 }
             }
             if (files == null || files.length == 0) {
@@ -652,10 +655,10 @@ public class FrameAnimation {
         for (String k : keys) {
             Bitmap bitmap = allBitmapHashMap.get(k);
             if (!bitmap.isRecycled()) {
-                Loger.d(TAG, "allRecycle:k=" + k);
+                logger.d( "allRecycle:k=" + k);
             }
         }
-        Loger.d(TAG, "allRecycle:allBitmapHashMap=" + allBitmapHashMap.size());
+        logger.d( "allRecycle:allBitmapHashMap=" + allBitmapHashMap.size());
         allBitmapHashMap.clear();
     }
 }

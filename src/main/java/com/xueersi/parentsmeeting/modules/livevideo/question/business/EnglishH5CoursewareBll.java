@@ -15,6 +15,8 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -63,6 +65,7 @@ import java.util.Map;
  */
 public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAndBackDebug, BaseVoiceAnswerCreat.AnswerRightResultVoice, LivePagerBack, EnglishShowReg {
     String TAG = "EnglishH5CoursewareBll";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
     String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     Context context;
@@ -446,7 +449,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 }
                 baseEnglishH5CoursewarePager.destroy();
                 bottomContent.removeView(baseEnglishH5CoursewarePager.getRootView());
-                Loger.d(TAG, "onH5ResultClose:pager=" + baseEnglishH5CoursewarePager + ",old=" + h5CoursewarePager);
+                logger.d( "onH5ResultClose:pager=" + baseEnglishH5CoursewarePager + ",old=" + h5CoursewarePager);
                 if (baseEnglishH5CoursewarePager == h5CoursewarePager) {
                     h5CoursewarePager = null;
                 }

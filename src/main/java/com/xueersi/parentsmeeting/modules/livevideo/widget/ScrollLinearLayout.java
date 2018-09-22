@@ -65,7 +65,7 @@ public class ScrollLinearLayout extends LinearLayout {
             // Flip sign to convert finger direction to list items direction
             // (e.g. finger moving down means list is moving towards the top)
             int delta = mLastFlingY - y;
-            //Loger.i(TAG, "computeScroll:delta=" + delta + ",y=" + y);
+            //logger.i( "computeScroll:delta=" + delta + ",y=" + y);
             offsetChildrenTopAndBottom(delta);
             mLastFlingY = y;
             // 必须调用该方法，否则不一定能看到滚动效果

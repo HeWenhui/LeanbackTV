@@ -341,7 +341,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        Loger.d(TAG, "getQuestion:onPmSuccess" + responseEntity.getJsonObject());
+                        logger.d( "getQuestion:onPmSuccess" + responseEntity.getJsonObject());
                         callBack.onDataSucess();
                     }
 
@@ -354,7 +354,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        Loger.d(TAG, "getQuestion:onPmError" + responseEntity.getErrorMsg());
+                        logger.d( "getQuestion:onPmError" + responseEntity.getErrorMsg());
                         super.onPmError(responseEntity);
                         callBack.onDataSucess();
                     }
@@ -646,14 +646,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                Loger.d(TAG, "getRolePlayAnswerTeamRank:msg=" + msg);
+                logger.d( "getRolePlayAnswerTeamRank:msg=" + msg);
                 callBack.onDataFail(0, msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.d(TAG, "getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
+                logger.d( "getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
                 callBack.onDataFail(1, responseEntity.getErrorMsg());
             }
 

@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
@@ -27,6 +29,7 @@ import java.util.Vector;
  */
 public class IRCMessage {
     private String TAG = "IRCMessage";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private IRCConnection mConnection;
     private int mConnectCount = 0, mDisconnectCount = 0;
     private IRCCallback mIRCCallback;
@@ -134,7 +137,7 @@ public class IRCMessage {
 
             @Override
             public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
-                Loger.i(TAG, "onPrivateMessage:sender=" + sender + ",target=" + target + ",message=" + message);
+                logger.i("onPrivateMessage:sender=" + sender + ",target=" + target + ",message=" + message);
                 String name = mConnection.getName();
                 if (sender.startsWith("p") || sender.startsWith("pt")) {
                     String subStr = mNickname.substring(1);
@@ -266,7 +269,7 @@ public class IRCMessage {
             @Override
             public void onJoin(String target, String sender, String login, String hostname) {
                 if (sender.startsWith("s_") || sender.startsWith("ws_")) {
-                    Loger.i(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+                    logger.i("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 } else {
                     mLogtf.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 }
@@ -278,7 +281,7 @@ public class IRCMessage {
             @Override
             public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
                 if (sourceNick.startsWith("s_") || sourceNick.startsWith("ws_")) {
-                    Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                    logger.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                             + sourceHostname + ",reason=" + reason);
                 } else {
                     mLogtf.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="

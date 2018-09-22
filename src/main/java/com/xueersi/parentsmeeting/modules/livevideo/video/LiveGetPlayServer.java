@@ -193,7 +193,7 @@ public class LiveGetPlayServer {
 
             @Override
             public void onSuccess(String result) {
-//                Loger.i(TAG, "liveGetPlayServer:onSuccess:result=" + result);
+//                logger.i( "liveGetPlayServer:onSuccess:result=" + result);
                 String s = "liveGetPlayServer:onSuccess";
                 try {
                     JSONObject object = new JSONObject(result);
@@ -249,7 +249,7 @@ public class LiveGetPlayServer {
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
         if (netWorkType != NetWorkHelper.NO_NETWORK) {
-            Loger.i(TAG, "onNetWorkChange:liveGetPlayServerError=" + liveGetPlayServerError);
+            logger.i( "onNetWorkChange:liveGetPlayServerError=" + liveGetPlayServerError);
             if (liveGetPlayServerError) {
                 liveGetPlayServerError = false;
                 liveGetPlayServer(mLiveTopic.getMode(), false);

@@ -319,7 +319,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     @Override
     public void goToRobot() {
         isGoToRobot = true;
-        Loger.d(TAG, "进人机");
+        logger.d( "进人机");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -342,7 +342,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     @Override
     public void onGoToRobot() {
-        Loger.d(TAG, "进入人机；断开socket");
+        logger.d( "进入人机；断开socket");
         if (mWebSocket != null && mWebSocket.isOpen()) {
             mWebSocket.close();
             mWebSocket = null;

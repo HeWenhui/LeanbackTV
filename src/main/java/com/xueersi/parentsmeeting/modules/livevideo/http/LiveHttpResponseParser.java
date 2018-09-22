@@ -214,7 +214,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         for (int i = 0; i < teamStuIdArray.length(); i++) {
                             teamStuIds.add(teamStuIdArray.getString(i));
                         }
-                        Loger.d(TAG, "parseLiveGetInfo:teamStuIds=" + teamStuIds.size());
+                        logger.d( "parseLiveGetInfo:teamStuIds=" + teamStuIds.size());
                     } catch (Exception e) {
                         MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.teamStuIds", e.getMessage());
                     }
@@ -271,7 +271,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
                 }
             }
-            Loger.i(TAG, "parseLiveGetInfo:headImgUrl=" + headImgUrl.size());
+            logger.i( "parseLiveGetInfo:headImgUrl=" + headImgUrl.size());
             getInfo.setHeadImgUrl(headImgUrl);
             try {
                 getInfo.setHeadImgPath(data.optString("headImgPath"));
@@ -1102,7 +1102,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //            }
 //        }
 
-        Loger.i(TAG, "parseHonorList: " + responseEntity.getJsonObject());
+        logger.i( "parseHonorList: " + responseEntity.getJsonObject());
         HonorListEntity honorListEntity = new HonorListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1152,7 +1152,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //            thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
 //        }
 
-        Loger.i(TAG, "parseThumbsUpList: " + responseEntity.getJsonObject());
+        logger.i( "parseThumbsUpList: " + responseEntity.getJsonObject());
         ThumbsUpListEntity thumbsUpListEntity = new ThumbsUpListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1201,7 +1201,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //            }
 //            progressListEntity.getProgressEntities().add(progressEntity);
 //        }
-        Loger.i(TAG, "parseProgressList: " + responseEntity.getJsonObject());
+        logger.i( "parseProgressList: " + responseEntity.getJsonObject());
         ProgressListEntity progressListEntity = new ProgressListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1234,7 +1234,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public ThumbsUpProbabilityEntity parseThumbsUpProbability(ResponseEntity responseEntity) {
-        Loger.i(TAG, "parseThumbsUpProbability: " + responseEntity.getJsonObject());
+        logger.i( "parseThumbsUpProbability: " + responseEntity.getJsonObject());
         ThumbsUpProbabilityEntity thumbsUpProbabilityEntity = new ThumbsUpProbabilityEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {

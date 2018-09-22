@@ -64,7 +64,7 @@ public class KeyboardObserverReg {
                 if (isShowing) {
                     height = KeyboardUtil.getValidPanelHeight(activity);
                 }
-                Loger.d("onKeyboardShowing:isShowing=" + isShowing + ",height=" + height);
+                logger.d("onKeyboardShowing:isShowing=" + isShowing + ",height=" + height);
                 for (int i = 0; i < observers.size(); i++) {
                     observers.get(i).onKeyboardHeightChanged(height, Configuration.ORIENTATION_LANDSCAPE);
                 }

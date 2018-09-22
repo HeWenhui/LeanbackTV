@@ -245,16 +245,16 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 //                                    } else if (type == MessageEntity.MessageViewType.COME_VOICE) {
 //                                        if (messageEntity.voiceComeItem != null) {
 //                                            messageEntity.voiceComeItem.voiceClick();
-//                                            Loger.i(TAG, "playComplete:(equals)nextItem=" + (messageEntity
+//                                            logger.i( "playComplete:(equals)nextItem=" + (messageEntity
 //                                                    .voiceComeItem.mEntity == messageEntity));
 //                                        } else {
-//                                            Loger.i(TAG, "playComplete:(equals)nextItem.voiceSelfItem=null");
+//                                            logger.i( "playComplete:(equals)nextItem.voiceSelfItem=null");
 //                                        }
 //                                    } else {
-//                                        Loger.i(TAG, "playComplete:(equals)nextItem.type=" + type);
+//                                        logger.i( "playComplete:(equals)nextItem.type=" + type);
 //                                    }
 //                                } else {
-//                                    Loger.i(TAG, "playComplete:(equals)last");
+//                                    logger.i( "playComplete:(equals)last");
 //                                }
 //                            }
 //                        });

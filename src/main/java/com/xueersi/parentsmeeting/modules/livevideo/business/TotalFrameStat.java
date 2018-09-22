@@ -20,6 +20,8 @@ import com.xueersi.lib.analytics.umsagent.DeviceInfo;
 import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
@@ -51,6 +53,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  */
 public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     private static String TAG = "TotalFrameStat";
+    protected static Logger logger = LoggerFactory.getLogger(TAG);
     private PlayerService vPlayer;
     /** 五秒帧数 */
     private ArrayList<String> frames = new ArrayList<>();
@@ -114,7 +117,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
 //                        defaultKey.put("mem", "" + totalMemory);
 //                        double CPURateDesc = HardWareUtil.getCPURateDesc();
 //                        DecimalFormat df = new DecimalFormat("######0.00");
-//                        Loger.d(TAG, "testCpu:cpuRate=" + cpuRate + ",totalMemory=" + totalMemory + ",CPURateDesc=" + df.format(CPURateDesc));
+//                        logger.d( "testCpu:cpuRate=" + cpuRate + ",totalMemory=" + totalMemory + ",CPURateDesc=" + df.format(CPURateDesc));
 //                    }
 //                }
 //            }.start();
@@ -189,9 +192,9 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                                 send("frames12");
                             }
                         }
-                        Loger.d(TAG, "handleMessage:fps=" + fps + ",disaplyCount=" + disaplyCount + "," + (disaplyCount - lastDisaplyCount));
+                        logger.d( "handleMessage:fps=" + fps + ",disaplyCount=" + disaplyCount + "," + (disaplyCount - lastDisaplyCount));
                         if (framesPsTen.size() == 10) {
-                            Loger.d(TAG, "handleMessage:fps=" + (disaplyCount - fistDisaplyCount) / 10);
+                            logger.d( "handleMessage:fps=" + (disaplyCount - fistDisaplyCount) / 10);
                             ArrayList<Float> framesPsTenTemp = new ArrayList<Float>(framesPsTen);
                             framesPsTen.clear();
                             xescdnLogHeart(framesPsTenTemp, (float) (((double) (disaplyCount - fistDisaplyCount)) * 1000 / (System.currentTimeMillis() - frame10Start)));
@@ -218,7 +221,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
         if (!isLive) {
             return;
         }
-        Loger.d(TAG, "send:method=" + method + ",frames=" + frames.size());
+        logger.d( "send:method=" + method + ",frames=" + frames.size());
         if (frames.isEmpty()) {
             return;
         }
@@ -267,7 +270,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
             ijkMediaPlayer.setOnNativeInvokeListener(new IjkMediaPlayer.OnNativeInvokeListener() {
                 @Override
                 public boolean onNativeInvoke(int what, Bundle args) {
-                    Loger.d(TAG, "onOpenStart:what=" + what + "," + mUri + ",args=" + args);
+                    logger.d( "onOpenStart:what=" + what + "," + mUri + ",args=" + args);
                     if (what == CTRL_DID_TCP_OPEN) {
                         sip = args.getString("ip", "");
                     }
@@ -312,18 +315,18 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
     public void onBufferStart() {
         super.onBufferStart();
         isBuffer = true;
-        Loger.d(TAG, "onBufferStart:isInitialized=" + vPlayer.isInitialized());
+        logger.d( "onBufferStart:isInitialized=" + vPlayer.isInitialized());
     }
 
     @Override
     public void onBufferComplete() {
         super.onBufferComplete();
         isBuffer = false;
-        Loger.d(TAG, "onBufferComplete:isInitialized=" + vPlayer.isInitialized());
+        logger.d( "onBufferComplete:isInitialized=" + vPlayer.isInitialized());
     }
 
     public void liveGetPlayServer(long delay, int code, String cipdispatch, StringBuilder ipsb, String url) {
-        Loger.d(TAG, "liveGetPlayServer:delay=" + delay + ",ipsb=" + ipsb.toString());
+        logger.d( "liveGetPlayServer:delay=" + delay + ",ipsb=" + ipsb.toString());
         HashMap<String, String> defaultKey = new HashMap<>();
         defaultKey.put("dataType", "0");
         defaultKey.put("delay", "" + delay);
@@ -371,14 +374,14 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                 int totalRam = HardWareUtil.getTotalRam();
                 double memRate = (double) ((totalRam - availMemory) * 100) / (double) totalRam;
                 defaultKey.put("mem", "" + df.format(memRate));
-                Loger.d(TAG, "xescdnLogHeart:cpuRate=" + cpuRate + ",availMemory=" + availMemory);
+                logger.d( "xescdnLogHeart:cpuRate=" + cpuRate + ",availMemory=" + availMemory);
                 float totalfps = 0;
                 for (int i = 0; i < framesPsTen.size(); i++) {
                     Float f = framesPsTen.get(i);
                     totalfps += f;
                 }
                 float averagefps2 = totalfps / 10f;
-                Loger.d(TAG, "xescdnLogHeart:averagefps=" + averagefps + "," + averagefps2);
+                logger.d( "xescdnLogHeart:averagefps=" + averagefps + "," + averagefps2);
                 xescdnLogHeart(defaultKey, averagefps, averagefps2);
             }
         });
@@ -468,9 +471,9 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.body() != null) {
-                        Loger.d(TAG, "xescdnLog:onResponse:retry=" + retryInt.get() + ",response=" + response.body().string());
+                        logger.d( "xescdnLog:onResponse:retry=" + retryInt.get() + ",response=" + response.body().string());
                     } else {
-                        Loger.d(TAG, "xescdnLog:onResponse:response=null");
+                        logger.d( "xescdnLog:onResponse:response=null");
                     }
                 }
             });
@@ -554,12 +557,12 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                     for (int i = 0; i < arrayList.size(); i++) {
                         Bundle bundle1 = (Bundle) arrayList.get(i);
                         if ("video".equals(bundle1.getString("type"))) {
-                            Loger.d(TAG, "getFps:bundle1=" + bundle1);
+                            logger.d( "getFps:bundle1=" + bundle1);
                             if (bundle1.containsKey("fps_num") && bundle1.containsKey("fps_den")) {
                                 int fps_num = Integer.parseInt(bundle1.getString("fps_num"));
                                 int fps_den = Integer.parseInt(bundle1.getString("fps_den"));
                                 fps = (float) fps_num / (float) fps_den;
-                                Loger.d(TAG, "getFps:fps_num=" + fps_num + ",fps_den=" + fps_den + ",fps=" + fps);
+                                logger.d( "getFps:fps_num=" + fps_num + ",fps_den=" + fps_den + ",fps=" + fps);
                             }
                             break;
                         }

@@ -113,7 +113,7 @@ class SocketIOConnection {
                 child.setParent(connecting);
             return;
         }
-        Loger.i(TAG,"reconnect:Reconnecting");
+        logger.i("reconnect:Reconnecting");
         request.logi("Reconnecting socket.io");
 
         connecting = httpClient.executeString(request, null)

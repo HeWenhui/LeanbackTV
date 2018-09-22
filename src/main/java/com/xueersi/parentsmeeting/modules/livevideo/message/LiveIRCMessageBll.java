@@ -338,7 +338,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
-        Loger.d(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+        logger.d( "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
         if (sender.startsWith(TEACHER_PREFIX)) {
             synchronized (lock) {
                 mMainTeacher = new Teacher(sender);
@@ -371,7 +371,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+        logger.d( "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                 + sourceHostname + ",reason=" + reason);
         if (sourceNick.startsWith(TEACHER_PREFIX)) {
             synchronized (lock) {

@@ -222,7 +222,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                         if (isInitialized()) {
                             if (openSuccess) {
                                 mLiveVideoBll.stopPlayDuration();
-                                Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+                                logger.d( "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
                             }
                             vPlayer.releaseSurface();
                             vPlayer.stop();
@@ -243,7 +243,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
         long before = System.currentTimeMillis();
         mMediaController.setFileName(getInfo.getName());
-        Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
+        logger.d( "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 
     @Override

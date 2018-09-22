@@ -341,7 +341,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, new MediaPlayerControl() {//zyy:
             @Override
             public void start() {
-                Loger.d(TAG, "initBll:start:isFinishing="+isFinishing);
+                logger.d( "initBll:start:isFinishing="+isFinishing);
                 if (!isFinishing) {
                     liveBackPlayVideoFragment.start();
                 }
@@ -489,9 +489,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
     @Override
     public void attachMediaController() {
-        Loger.d(TAG, "attachMediaController:beforeAttach=" + beforeAttach);
+        logger.d( "attachMediaController:beforeAttach=" + beforeAttach);
         if (resultFailed) {
-            Loger.d(TAG, "attachMediaController:resultFailed");
+            logger.d( "attachMediaController:resultFailed");
             return;
         }
         rlQuestionContentBottom.setVisibility(View.VISIBLE);
@@ -531,7 +531,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         mMediaController.setFileName(mDisplayName);
         if (liveBackBll.isShowQuestion()) {
             mMediaController.release();
-            Loger.d(TAG, "attachMediaController:release:isShowQuestion");
+            logger.d( "attachMediaController:release:isShowQuestion");
         } else {
             showLongMediaController();
         }
@@ -656,7 +656,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         super.resultFailed(arg1, arg2);
         isPlay = false;
         resultFailed = true;
-        Loger.d(TAG, "resultFailed:arg2=" + arg2);
+        logger.d( "resultFailed:arg2=" + arg2);
         if (arg2 != 0 && mVideoEntity != null) {
             if ("LivePlayBackActivity".equals(where)) {//直播辅导
                 XesMobAgent.onOpenFail(where + ":playback2", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
@@ -785,7 +785,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
     @Override
     protected void startPlayer() {
-        Loger.d(TAG, "startPlayer:isFinishing=" + isFinishing);
+        logger.d( "startPlayer:isFinishing=" + isFinishing);
         if (!isFinishing) {
             super.startPlayer();
         }
@@ -954,7 +954,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 }
             }
             final boolean finalPause = pause;
-            Loger.i(TAG, "onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
+            logger.i( "onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
@@ -971,7 +971,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                     cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Loger.i(TAG, "onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
+                            logger.i( "onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
                                     finalPause);
                             if (initialized) {
                                 if (finalPause) {
@@ -1138,7 +1138,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      */
     @Override
     protected void resultComplete() {
-        Loger.d(TAG, "resultComplete");
+        logger.d( "resultComplete");
         isPlay = false;
         isFinishing = true;
         lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
@@ -1152,7 +1152,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         isPlay = true;
         if (AppBll.getInstance(activity).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
-            Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+            logger.d( "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
             playNewVideo();
         }
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
@@ -1170,7 +1170,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
     @Override
     public void setRequestedOrientation(int requestedOrientation) {
-        Loger.d(TAG, "setRequestedOrientation:requestedOrientation=" + requestedOrientation);
+        logger.d( "setRequestedOrientation:requestedOrientation=" + requestedOrientation);
         super.setRequestedOrientation(requestedOrientation);
     }
 

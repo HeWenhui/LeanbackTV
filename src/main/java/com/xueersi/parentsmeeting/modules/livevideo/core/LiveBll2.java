@@ -640,7 +640,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
 
         @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-            Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+            logger.d( "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
             if (mMessageActions != null && mMessageActions.size() > 0) {
                 for (MessageAction mesAction : mMessageActions) {

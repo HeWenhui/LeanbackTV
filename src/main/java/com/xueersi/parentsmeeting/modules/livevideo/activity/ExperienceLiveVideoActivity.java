@@ -202,7 +202,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         HandlerThread handlerThread = new HandlerThread("ScanRunnable");
 
         ScanRunnable() {
-            Loger.i(TAG, "ScanRunnable");
+            logger.i( "ScanRunnable");
             handlerThread.start();
             scanHandler = new Handler(handlerThread.getLooper());
         }
@@ -691,7 +691,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
-        Loger.i(TAG, "onEvent:netWorkType=" + event.netWorkType);
+        logger.i( "onEvent:netWorkType=" + event.netWorkType);
         mNetWorkType = event.netWorkType;
 
         if (mIRCMessage != null) {
@@ -752,7 +752,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     public void onGlobalLayout() {
                         boolean isLand = getResources().getConfiguration().orientation == Configuration
                                 .ORIENTATION_LANDSCAPE;
-                        //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
+                        //logger.i( "setVideoWidthAndHeight:isLand=" + isLand);
                         if (!isLand) {
                             return;
                         }
@@ -797,7 +797,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         long before = System.currentTimeMillis();
         mLiveMessagePager = new LiveMessagePager(this, questionBll, ums, liveMediaControllerBottom,
                 liveMessageLandEntities, null);
-        Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
+        logger.d( "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
         // 关联聊天人数
         mLiveMessagePager.setPeopleCount(peopleCount);
@@ -1295,7 +1295,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     protected void onRefresh() {
         if (AppBll.getInstance(this).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
-//            Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+//            logger.d( "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
 //            if (rlQuestionContent.getChildCount() > 0) {
 //                rlQuestionContent.setVisibility(View.VISIBLE);
 //            }

@@ -288,7 +288,7 @@
 //                    return;
 //                }
 //                boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-//                //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
+//                //logger.i( "setVideoWidthAndHeight:isLand=" + isLand);
 //                if (!isLand) {
 //                    return;
 //                }
@@ -800,7 +800,7 @@
 //                        }
 //                    }
 //                }.start();
-//                //Loger.i(TAG, "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
+//                //logger.i( "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
 //            }
 //        }
 //    };
@@ -1227,7 +1227,7 @@
 //                }
 //            }
 //        }
-//        Loger.d(TAG, "addBody:method=" + method + ",url=" + url);
+//        logger.d( "addBody:method=" + method + ",url=" + url);
 //        return msg;
 //    }
 //
@@ -1307,7 +1307,7 @@
 //
 //    @Subscribe(threadMode = ThreadMode.POSTING)
 //    public void onEvent(AppEvent event) {
-//        Loger.i(TAG, "onEvent:netWorkType=" + event.netWorkType);
+//        logger.i( "onEvent:netWorkType=" + event.netWorkType);
 //        mLiveBll.onNetWorkChange(event.netWorkType);
 //    }
 //

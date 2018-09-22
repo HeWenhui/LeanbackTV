@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 
 import android.net.Uri;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
 import java.net.InetAddress;
@@ -15,6 +17,7 @@ import java.net.UnknownHostException;
  */
 public class DNSUtil {
     static String TAG = "DNSUtil";
+    static Logger logger = LoggerFactory.getLogger(TAG);
 
     public static URLDNS getDns(String url2) throws MalformedURLException, UnknownHostException {
         URLDNS urldns = new URLDNS();
@@ -44,7 +47,7 @@ public class DNSUtil {
         try {
             urldns.url = url2;
             url2 = getHost(url2);
-            Loger.d(TAG, "getDns:url2=" + urldns.url + "," + url2);
+            logger.d("getDns:url2=" + urldns.url + "," + url2);
             InetAddress inetAddress = InetAddress.getByName(url2);
             urldns.ip = inetAddress.getHostAddress();
         } catch (UnknownHostException e) {
@@ -52,7 +55,7 @@ public class DNSUtil {
             exception = e;
         }
         urldns.time = System.currentTimeMillis() - before;
-        Loger.d(TAG, "getDns:url2=" + urldns.url + ",time=" + urldns.time);
+        logger.d("getDns:url2=" + urldns.url + ",time=" + urldns.time);
         if (exception != null) {
             throw exception;
         }

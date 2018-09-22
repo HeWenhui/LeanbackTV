@@ -99,7 +99,7 @@ public class IRCConnection extends PircBot {
      */
     @Override
     public void onConnect() {
-        Loger.d(TAG, "onConnect");
+        logger.d( "onConnect");
         if (mIRCCallback != null) {
             mIRCCallback.onConnect(this);
         }

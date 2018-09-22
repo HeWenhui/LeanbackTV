@@ -126,12 +126,12 @@ public class LivePublicPraisePager extends BasePager {
             @Override
             public void onAnimationStart(Animation animation) {
                 isHave = true;
-                Loger.i(TAG, "animationIn:onAnimationStart");
+                logger.i( "animationIn:onAnimationStart");
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                Loger.i(TAG, "animationIn:onAnimationEnd");
+                logger.i( "animationIn:onAnimationEnd");
                 final View child = relativeLayout.getChildAt(0);
                 if (child != null) {
                     if (child == vMultiPrise) {
@@ -141,7 +141,7 @@ public class LivePublicPraisePager extends BasePager {
                                 final int last = gvPublicMultiPraise.getLastVisiblePosition();
                                 final AtomicInteger lastAtomic = new AtomicInteger(last);
                                 final int count = gvPublicMultiPraise.getAdapter().getCount();
-                                Loger.i(TAG, "animationIn:End:Multi:last=" + last + ",count=" + count);
+                                logger.i( "animationIn:End:Multi:last=" + last + ",count=" + count);
                                 if (last != count - 1 && gvPublicMultiPraise.getChildCount() > 0) {
                                     int lastrow = (count - lastAtomic.get()) / 5;// 剩余的行数
                                     if ((count - lastAtomic.get()) % 5 > 0) {
@@ -154,7 +154,7 @@ public class LivePublicPraisePager extends BasePager {
                                     int duration = lastrow * 500;
                                     int distance = lastrow * gvPublicMultiPraise.getHeight() / line - 10;
                                     View child0 = gvPublicMultiPraise.getChildAt(0);
-                                    Loger.i(TAG, "animationIn:End:Multi:lastrow=" + lastrow + ",Height=" +
+                                    logger.i( "animationIn:End:Multi:lastrow=" + lastrow + ",Height=" +
                                             child0.getHeight() + ",line=" + line + "," + gvPublicMultiPraise
                                             .getHeight() / line);
                                     try {
@@ -165,12 +165,12 @@ public class LivePublicPraisePager extends BasePager {
                                     relativeLayout.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Loger.i(TAG, "animationIn:End:Multi.startAnimation1");
+                                            logger.i( "animationIn:End:Multi.startAnimation1");
                                             child.startAnimation(animationOut);
                                         }
                                     }, duration + 500);
                                 } else {
-                                    Loger.i(TAG, "animationIn:End:Multi.startAnimation2");
+                                    logger.i( "animationIn:End:Multi.startAnimation2");
                                     child.startAnimation(animationOut);
                                 }
                             }
@@ -182,7 +182,7 @@ public class LivePublicPraisePager extends BasePager {
                                 final int last = gvHonorPraise.getLastVisiblePosition();
                                 final AtomicInteger lastAtomic = new AtomicInteger(last);
                                 final int count = gvHonorPraise.getAdapter().getCount();
-                                Loger.i(TAG, "animationIn:End:Honor:last=" + last + ",count=" + count);
+                                logger.i( "animationIn:End:Honor:last=" + last + ",count=" + count);
                                 if (last != count - 1 && gvHonorPraise.getChildCount() > 0) {
                                     int lastrow = (count - lastAtomic.get()) / 5;// 剩余的行数
                                     if ((count - lastAtomic.get()) % 5 > 0) {
@@ -195,7 +195,7 @@ public class LivePublicPraisePager extends BasePager {
                                     }
                                     int distance = lastrow * gvHonorPraise.getHeight() / line - 10;
                                     View child0 = gvHonorPraise.getChildAt(0);
-                                    Loger.i(TAG, "animationIn:End:Honor:lastrow=" + lastrow + ",Height=" +
+                                    logger.i( "animationIn:End:Honor:lastrow=" + lastrow + ",Height=" +
                                             child0.getHeight() + ",line=" + line + "," + gvHonorPraise.getHeight() /
                                             line);
                                     try {
@@ -206,18 +206,18 @@ public class LivePublicPraisePager extends BasePager {
                                     relativeLayout.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Loger.i(TAG, "animationIn:End:Honor.startAnimation1");
+                                            logger.i( "animationIn:End:Honor.startAnimation1");
                                             child.startAnimation(animationOut);
                                         }
                                     }, duration + 500);
                                 } else {
-                                    Loger.i(TAG, "animationIn:End:Honor.startAnimation2");
+                                    logger.i( "animationIn:End:Honor.startAnimation2");
                                     child.startAnimation(animationOut);
                                 }
                             }
                         }, 1000);
                     } else {
-                        Loger.i(TAG, "animationIn:End:child.startAnimation=" + child.getAnimation());
+                        logger.i( "animationIn:End:child.startAnimation=" + child.getAnimation());
                         relativeLayout.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -226,19 +226,19 @@ public class LivePublicPraisePager extends BasePager {
                         }, 3000);
                     }
                 } else {
-                    Loger.i(TAG, "animationIn:onAnimationEnd:child=null");//不会发生
+                    logger.i( "animationIn:onAnimationEnd:child=null");//不会发生
                 }
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-                Loger.i(TAG, "animationIn:onAnimationRepeat");
+                logger.i( "animationIn:onAnimationRepeat");
             }
         });
         animationOut.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                Loger.i(TAG, "animationOut:onAnimationStart");
+                logger.i( "animationOut:onAnimationStart");
             }
 
             @Override
@@ -247,29 +247,29 @@ public class LivePublicPraisePager extends BasePager {
 //                relativeLayout.postDelayed(new Runnable() {
 //                    @Override
 //                    public void run() {
-//                        Loger.i(TAG, "animationOut:onAnimationEnd:time=" + (System.currentTimeMillis() - inStart));
+//                        logger.i( "animationOut:onAnimationEnd:time=" + (System.currentTimeMillis() - inStart));
 //                        isHave = false;
 //                        if (!runs.isSpace()) {
-//                            Loger.i(TAG, "animationOut:onAnimationEnd:runs=" + runs.size());
+//                            logger.i( "animationOut:onAnimationEnd:runs=" + runs.size());
 //                            onPraiseOrEncourage(runs.remove(0));
 //                        } else {
-//                            Loger.i(TAG, "animationOut:onAnimationEnd:runs.isSpace");
+//                            logger.i( "animationOut:onAnimationEnd:runs.isSpace");
 //                        }
 //                    }
 //                }, 200);
                 isHave = false;
                 if (!runs.isEmpty()) {
-                    Loger.i(TAG, "animationOut:onAnimationEnd:runs=" + runs.size());
+                    logger.i( "animationOut:onAnimationEnd:runs=" + runs.size());
                     onPraiseOrEncourage(runs.remove(0), false);
                 } else {
                     relativeLayout.removeAllViews();
-                    Loger.i(TAG, "animationOut:onAnimationEnd:runs.isSpace");
+                    logger.i( "animationOut:onAnimationEnd:runs.isSpace");
                 }
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-                Loger.i(TAG, "animationOut:onAnimationRepeat");
+                logger.i( "animationOut:onAnimationRepeat");
             }
         });
 //        relativeLayout.postDelayed(new Runnable() {
@@ -355,7 +355,7 @@ public class LivePublicPraisePager extends BasePager {
      * @param jsonType
      */
     public void onPraiseOrEncourage(JsonType jsonType, boolean isNew) {
-        Loger.i(TAG, "onPraiseOrEncourage:isHave=" + isHave + ",isNew=" + isNew);
+        logger.i( "onPraiseOrEncourage:isHave=" + isHave + ",isNew=" + isNew);
         if (isHave) {
             runs.add(jsonType);
             return;
@@ -392,7 +392,7 @@ public class LivePublicPraisePager extends BasePager {
                             multiPraise(num, names);
                             isOk = true;
                         } else {
-                            Loger.i(TAG, "onPraiseOrEncourage:multiPraise.isSpace");
+                            logger.i( "onPraiseOrEncourage:multiPraise.isSpace");
                         }
                     }
                     break;
@@ -410,7 +410,7 @@ public class LivePublicPraisePager extends BasePager {
                             honor(names);
                             isOk = true;
                         } else {
-                            Loger.i(TAG, "onPraiseOrEncourage:honor.isSpace");
+                            logger.i( "onPraiseOrEncourage:honor.isSpace");
                         }
                     }
                     break;
@@ -431,12 +431,12 @@ public class LivePublicPraisePager extends BasePager {
                             isOk = true;
                             encourageWrong(classmateEntity.getName());
                         } else {
-                            Loger.i(TAG, "onPraiseOrEncourage:encourageWrong");
+                            logger.i( "onPraiseOrEncourage:encourageWrong");
                         }
                     }
                     break;
                     default:
-                        Loger.i(TAG, "onPraiseOrEncourage:type=" + type);
+                        logger.i( "onPraiseOrEncourage:type=" + type);
                         break;
                 }
             } else if (jsonType.type == JsonType.TYPE_FIGHT) {
@@ -456,11 +456,11 @@ public class LivePublicPraisePager extends BasePager {
         }
         if (!isOk) {
             if (!runs.isEmpty()) {
-                Loger.i(TAG, "onPraiseOrEncourage:runs=" + runs.size());
+                logger.i( "onPraiseOrEncourage:runs=" + runs.size());
                 onPraiseOrEncourage(runs.remove(0), false);
             } else {
                 relativeLayout.removeAllViews();
-                Loger.i(TAG, "onPraiseOrEncourage:runs.isSpace");
+                logger.i( "onPraiseOrEncourage:runs.isSpace");
             }
         }
     }
@@ -532,7 +532,7 @@ public class LivePublicPraisePager extends BasePager {
             addView(vSignalPrise);
         }
         isHave = true;
-        Loger.i(TAG, "signalPraise:name=" + name);
+        logger.i( "signalPraise:name=" + name);
         SpannableString spanttt = new SpannableString(name + "同学");
         CharacterStyle characterStyle = new ForegroundColorSpan(lightRedColor);
         spanttt.setSpan(characterStyle, 0, (name + "同学").length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
@@ -553,7 +553,7 @@ public class LivePublicPraisePager extends BasePager {
             addView(vMultiPrise);
         }
         isHave = true;
-        Loger.i(TAG, "multiPraise:num=" + num + ",names=" + names.size());
+        logger.i( "multiPraise:num=" + num + ",names=" + names.size());
         tvPublicMultiPraise.setText("本班有");
         SpannableString spanttt = new SpannableString(num + "人");
         CharacterStyle characterStyle = new ForegroundColorSpan(lightRedColor);
@@ -575,7 +575,7 @@ public class LivePublicPraisePager extends BasePager {
 //                    gvPublicMultiPraise.setLayoutParams(params);
                     LayoutParamsUtil.setViewLayoutParams(gvPublicMultiPraise, params);
                 } catch (Exception e) {
-                    Loger.i(TAG, "multiPraise:setLayoutParams", e);
+                    logger.i( "multiPraise:setLayoutParams", e);
                 }
             }
         });
@@ -594,7 +594,7 @@ public class LivePublicPraisePager extends BasePager {
             addView(vHonor);
         }
         isHave = true;
-        Loger.i(TAG, "honor:names=" + names.size());
+        logger.i( "honor:names=" + names.size());
         tvHonorPraise.setText("恭喜本班有");
         SpannableString spanttt = new SpannableString(names.size() + "人");
         CharacterStyle characterStyle = new ForegroundColorSpan(lightRedColor);
@@ -611,7 +611,7 @@ public class LivePublicPraisePager extends BasePager {
 //                    gvHonorPraise.setLayoutParams(params);
                     LayoutParamsUtil.setViewLayoutParams(gvHonorPraise, params);
                 } catch (Exception e) {
-                    Loger.i(TAG, "honor:setLayoutParams", e);
+                    logger.i( "honor:setLayoutParams", e);
                 }
             }
         });
@@ -630,7 +630,7 @@ public class LivePublicPraisePager extends BasePager {
             addView(vEncourage);
         }
         isHave = true;
-        Loger.i(TAG, "encourageWrong:name=" + name);
+        logger.i( "encourageWrong:name=" + name);
         ivEncourage.setBackgroundResource(R.drawable.bg_web_request_error);
         SpannableString spanttt = new SpannableString(name + "同学");
         CharacterStyle characterStyle = new ForegroundColorSpan(lightRedColor);
@@ -649,7 +649,7 @@ public class LivePublicPraisePager extends BasePager {
 
     /** 答题超时 */
     public void encourageTimeOut(String name) {
-        Loger.i(TAG, "encourageTimeOut:name=" + name);
+        logger.i( "encourageTimeOut:name=" + name);
         if (relativeLayout.getChildAt(0) != vEncourage) {
             addView(vEncourage);
         }

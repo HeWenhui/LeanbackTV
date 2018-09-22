@@ -19,6 +19,8 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -39,6 +41,7 @@ import java.util.Map;
  */
 public class LiveAchievementBll implements StarInteractAction {
     private String TAG = "LiveAchievementBll";
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private String eventId;
     private int liveType;
     private Activity activity;
@@ -158,12 +161,12 @@ public class LiveAchievementBll implements StarInteractAction {
         LineMath line1 = getAandB(starScaleStep1, 1.0f, starScaleStep2, starScaleMax);
         starInLine1a = line1.a;
         starInLine1b = line1.b;
-        Loger.d(TAG, "StarInteractBll:starInLine1a=(" + starInLine1a + "," + starInLine1b + ")");
+        logger.d( "StarInteractBll:starInLine1a=(" + starInLine1a + "," + starInLine1b + ")");
         //第二条线
         LineMath line2 = getAandB(starScaleStep2, starScaleMax, 1.0f, 1.0f);
         starInLine2a = line2.a;
         starInLine2b = line2.b;
-        Loger.d(TAG, "StarInteractBll:starInLine2a=(" + starInLine2a + "," + starInLine2b + ")");
+        logger.d( "StarInteractBll:starInLine2a=(" + starInLine2a + "," + starInLine2b + ")");
         LineMath line3 = getAandB(0.25f, 1f, 0.75f, -1f);
         starRotateLine1a = line3.a;
         starRotateLine1b = line3.b;
@@ -260,7 +263,7 @@ public class LiveAchievementBll implements StarInteractAction {
 //                    } else {
 //                        tvStarInteractCountHind.setText("×" + starCount);
 //                    }
-//                    Loger.i(TAG, "onClick:id=" + tvStarInteractCountHind.getId());
+//                    logger.i( "onClick:id=" + tvStarInteractCountHind.getId());
 //                    AllAnimation allAnimation = onReceiveStat(AnimationType_STAR, 1, "");
 //                    allAnimation.setOnAnimationEnd(new OnAnimationEnd() {
 //                        @Override
@@ -281,7 +284,7 @@ public class LiveAchievementBll implements StarInteractAction {
 //                    } else {
 //                        tvStarInteractGoldHind.setText("×" + goldCount);
 //                    }
-//                    Loger.i(TAG, "onClick:id=" + tvStarInteractGoldHind.getId());
+//                    logger.i( "onClick:id=" + tvStarInteractGoldHind.getId());
 //                    onReceiveStat(AnimationType_GOLD, 1, "");
 ////                    liveBll.getStuGoldCount();
 //                }
@@ -591,8 +594,8 @@ public class LiveAchievementBll implements StarInteractAction {
                 float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
                 iv_livevideo_starinteract_stat.setScaleX(scale);
                 iv_livevideo_starinteract_stat.setScaleY(scale);
-                Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
-//                    Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float)
+                logger.i( "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
+//                    logger.i( "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float)
 // ivStarInteractStat.getWidth() / (float) width));
             }
         });
@@ -659,10 +662,10 @@ public class LiveAchievementBll implements StarInteractAction {
         AllAnimation allAnimation;
         if (!allAnimations.isEmpty()) {
             allAnimation = allAnimations.remove(0);
-            Loger.i(TAG, "onReceiveStat:allAnimation=old");
+            logger.i( "onReceiveStat:allAnimation=old");
         } else {
             allAnimation = new AllAnimation();
-            Loger.i(TAG, "onReceiveStat:allAnimation=new");
+            logger.i( "onReceiveStat:allAnimation=new");
         }
         allAnimation.setFlyStat(type, flyStat);
         allAnimation.setNonce(nonce);
@@ -748,7 +751,7 @@ public class LiveAchievementBll implements StarInteractAction {
 //                        output = accelerateInterpolator.getInterpolation(output);
 //                        output = accelerateDecelerateInterpolator.getInterpolation(output);
                     }
-                    Loger.i(TAG, "getInterpolation:input=" + input + ",output=" + output + ",sameIn=" +
+                    logger.i( "getInterpolation:input=" + input + ",output=" + output + ",sameIn=" +
                             (firstAllAnimation == AllAnimation.this) + "," + (lastAllAnimation == null));
                     if (firstAllAnimation == AllAnimation.this) {
                         flyLight.setScaleX(output);
@@ -780,8 +783,8 @@ public class LiveAchievementBll implements StarInteractAction {
                     float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
                     iv_livevideo_starinteract_stat.setScaleX(scale);
                     iv_livevideo_starinteract_stat.setScaleY(scale);
-                    Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
-//                    Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float)
+                    logger.i( "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
+//                    logger.i( "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float)
 // ivStarInteractStat.getWidth() / (float) width));
                 }
             });
@@ -879,7 +882,7 @@ public class LiveAchievementBll implements StarInteractAction {
                     } else {
                         output = starRotateLine2a * fraction + starRotateLine2b;
                     }
-                    Loger.d(TAG, "RotateInterpolator:input=" + fraction + "," + output);
+                    logger.d( "RotateInterpolator:input=" + fraction + "," + output);
                     return output;
                 }
             });
@@ -982,7 +985,7 @@ public class LiveAchievementBll implements StarInteractAction {
 //                    float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
 //                    iv_livevideo_starinteract_stat.setScaleX(scale);
 //                    iv_livevideo_starinteract_stat.setScaleY(scale);
-//                    Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float)
+//                    logger.i( "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float)
 // ivStarInteractStat.getWidth() / (float) width));
 //                }
 //            });

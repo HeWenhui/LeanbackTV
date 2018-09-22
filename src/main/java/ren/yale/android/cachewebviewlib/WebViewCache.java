@@ -9,6 +9,8 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.xueersi.common.network.TxHttpDns;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.File;
@@ -40,6 +42,7 @@ import ren.yale.android.cachewebviewlib.utils.NetworkUtils;
 
 public class WebViewCache {
     String TAG = "WebViewCache";
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     private DiskLruCache mDiskLruCache;
     private CacheExtensionConfig mCacheExtensionConfig;
     private Context mContext;
@@ -68,7 +71,7 @@ public class WebViewCache {
                 e.printStackTrace();
             }
         }
-        Loger.d(TAG, "release:httpURLConnections=" + httpURLConnections.size());
+        logger.d("release:httpURLConnections=" + httpURLConnections.size());
         new Thread() {
             @Override
             public void run() {

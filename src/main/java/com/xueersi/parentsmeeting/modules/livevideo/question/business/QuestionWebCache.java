@@ -49,7 +49,7 @@ public class QuestionWebCache {
         public void onPageFinished(WebView webView, String s) {
             super.onPageFinished(webView, s);
             webView.destroy();
-            Loger.d(TAG, "onPageFinished:s=" + s);
+            logger.d( "onPageFinished:s=" + s);
         }
     }
 }

@@ -112,12 +112,12 @@ public class RedPackageTeamPage extends LiveBasePager {
             imageView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
                 @Override
                 public void onViewAttachedToWindow(View v) {
-                    Loger.d(TAG, "onGetTeamPackage:Attached");
+                    logger.d( "onGetTeamPackage:Attached");
                 }
 
                 @Override
                 public void onViewDetachedFromWindow(View v) {
-                    Loger.d(TAG, "onGetTeamPackage:Detached:Animations=" + frameAnimations2.size());
+                    logger.d( "onGetTeamPackage:Detached:Animations=" + frameAnimations2.size());
                     for (int i = 0; i < frameAnimations2.size(); i++) {
                         FrameAnimation frameAnimation = frameAnimations2.get(i);
                         frameAnimation.destory();
@@ -133,12 +133,12 @@ public class RedPackageTeamPage extends LiveBasePager {
         imageView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-                Loger.d(TAG, "onGetTeamPackage:Attached");
+                logger.d( "onGetTeamPackage:Attached");
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                Loger.d(TAG, "onGetTeamPackage:Detached:Animations=" + frameAnimations2.size());
+                logger.d( "onGetTeamPackage:Detached:Animations=" + frameAnimations2.size());
                 for (int i = 0; i < frameAnimations2.size(); i++) {
                     FrameAnimation frameAnimation = frameAnimations2.get(i);
                     frameAnimation.destory();
@@ -454,7 +454,7 @@ public class RedPackageTeamPage extends LiveBasePager {
                 } else {
                     canvas.translate((canvasBitmap.getWidth() - measuredWidth) / 2, 192);
                 }
-//                Loger.d(TAG, "initTeamHeadAndGold:measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
+//                logger.d( "initTeamHeadAndGold:measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
                 layoutLiveStandRedMine1.draw(canvas);
                 canvas.restore();
             }
@@ -487,7 +487,7 @@ public class RedPackageTeamPage extends LiveBasePager {
         //切图标准宽1334，高750
         float scaleX = (float) screenHeight / 750.0f;
         float scaleY = (float) screenWidth / 1334.0f;
-        Loger.d(TAG, "initPos:scaleX=" + scaleX + ",scaleY=" + scaleY);
+        logger.d( "initPos:scaleX=" + scaleX + ",scaleY=" + scaleY);
         teamLeftAndTops.add(new Point(313, 263));//左
         teamLeftAndTops.add(new Point(904, 271));//右
         teamLeftAndTops.add(new Point(472, 72));//左上
@@ -505,7 +505,7 @@ public class RedPackageTeamPage extends LiveBasePager {
         float chax = (width - width3) * scaleX / 2;
         float chay = (height - height3) * scaleX / 2;
 
-        Loger.d(TAG, "initPos:chax=" + chax + ",chay=" + chay);
+        logger.d( "initPos:chax=" + chax + ",chay=" + chay);
         for (int i = 0; i < teamLeftAndTops.size(); i++) {
             Point point = teamLeftAndTops.get(i);
             point.x = (point.x * scaleX - chax);

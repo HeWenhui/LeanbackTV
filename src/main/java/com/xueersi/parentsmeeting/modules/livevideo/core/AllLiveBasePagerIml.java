@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 import android.content.Context;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -15,7 +17,7 @@ import java.util.ArrayList;
  */
 
 public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
-    private String TAG = "AllLiveBasePagerIml";
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private ArrayList<LiveBasePager> liveBasePagers = new ArrayList<>();
     Context context;
 
@@ -25,12 +27,12 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     }
 
     public boolean onUserBackPressed() {
-        Loger.d(TAG, "onUserBackPressed:liveBasePagers=" + liveBasePagers.size());
+        logger.d( "onUserBackPressed:liveBasePagers=" + liveBasePagers.size());
         ArrayList<LiveBasePager> liveBasePagersTemp = new ArrayList<>(liveBasePagers);
         for (int i = liveBasePagersTemp.size() - 1; i >= 0; i--) {
             LiveBasePager liveBasePager = liveBasePagersTemp.get(i);
             boolean onUserBackPressed = liveBasePager.onUserBackPressed();
-            Loger.d(TAG, "onUserBackPressed:liveBasePager=" + liveBasePager + ",Back=" + onUserBackPressed);
+            logger.d( "onUserBackPressed:liveBasePager=" + liveBasePager + ",Back=" + onUserBackPressed);
             if (onUserBackPressed) {
                 return true;
             }

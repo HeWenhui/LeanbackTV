@@ -407,7 +407,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
                         if (danmaku.text instanceof TypeSpannableStringBuilder) {
                             TypeSpannableStringBuilder spannableStringBuilder = (TypeSpannableStringBuilder) danmaku
                                     .text;
-//                            Loger.i(TAG, "prepareDrawing:ftype=" + spannableStringBuilder.ftype);
+//                            logger.i( "prepareDrawing:ftype=" + spannableStringBuilder.ftype);
                             switch (spannableStringBuilder.ftype) {
                                 case FLOWERS_SMALL:
                                 case FLOWERS_MIDDLE:
@@ -546,7 +546,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
 
 
     protected SpannableStringBuilder createSpannable(int ftype, String name, Drawable drawable) {
-//        Loger.i(TAG, "createSpannable:name=" + name + ",ftype=" + ftype);
+//        logger.i( "createSpannable:name=" + name + ",ftype=" + ftype);
         String tip = "";
         switch (ftype) {
             case FLOWERS_SMALL:
@@ -708,7 +708,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
             if (index != -1) {
                 kc = kc.substring(0, index);
             }
-            Loger.i(TAG, "startCourseDetail:kc=" + kc);
+            logger.i( "startCourseDetail:kc=" + kc);
             String courseId = "";
             String groupId = "";
             String[] courseIds = kc.split("-");

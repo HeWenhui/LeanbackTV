@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -26,6 +28,7 @@ import java.util.Vector;
  */
 public class AuditIRCMessage {
     private String TAG = "AuditIRCMessage";
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     String eventid = LiveVideoConfig.LIVE_LISTEN;
     private IRCConnection mConnection;
     private int mConnectCount = 0, mDisconnectCount = 0;
@@ -128,7 +131,7 @@ public class AuditIRCMessage {
 
             @Override
             public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target, String message) {
-                Loger.i(TAG, "onPrivateMessage:sender=" + sender + ",target=" + target + ",message=" + message);
+                logger.i( "onPrivateMessage:sender=" + sender + ",target=" + target + ",message=" + message);
                 if (sender.startsWith("ws") || sender.startsWith("s")) {
                     if (sender.endsWith(mNickname)) {
                         if (childName == null) {
@@ -322,7 +325,7 @@ public class AuditIRCMessage {
             @Override
             public void onJoin(String target, String sender, String login, String hostname) {
                 if (sender.startsWith("s_")) {
-                    Loger.i(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+                    logger.i( "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 } else {
                     mLogtf.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 }
@@ -379,7 +382,7 @@ public class AuditIRCMessage {
     }
 
     public void startVideo() {
-        Loger.i(TAG, "startVideo:childName=" + childName);
+        logger.i( "startVideo:childName=" + childName);
 //        childName = null;
 //        if (oldChildName != null) {
 //            mHandler.removeCallbacks(startVideoRun);
@@ -397,7 +400,7 @@ public class AuditIRCMessage {
             if (mConnection == null || mIsDestory) {
                 return;
             }
-            Loger.i(TAG, "startVideoRun:childName=" + childName + ",stuPushSuccess=" + stuPushSuccess);
+            logger.i( "startVideoRun:childName=" + childName + ",stuPushSuccess=" + stuPushSuccess);
             if (childName != null && stuPushSuccess) {
 //                mHandler.postDelayed(this, 60000);
                 return;
@@ -660,7 +663,7 @@ public class AuditIRCMessage {
             if (mIsDestory) {
                 return;
             }
-            Loger.i(TAG, "mStudyTimeoutRunnable:childName=" + childName);
+            logger.i( "mStudyTimeoutRunnable:childName=" + childName);
             childName = null;
             mIRCCallback.onStudentLeave(true, stuPushStatus);
         }

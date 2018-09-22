@@ -165,7 +165,7 @@
 //    @Override
 //    protected boolean shouldOverrideUrlLoading(WebView view, String url) {
 //        //      if ("http://baidu.com/".equals(url)) {
-//        Loger.d(TAG, "shouldOverrideUrlLoading:url=" + url);
+//        logger.d( "shouldOverrideUrlLoading:url=" + url);
 //        Loger.e("EnglishH5CoursewarePager", "======> shouldOverrideUrlLoading:" + url);
 //        reloadurl = url;
 //        if (url.contains("baidu.com")) {
@@ -237,7 +237,7 @@
 //            loadUrl += "&nonce=" + nonce;
 //        }
 //        loadUrl += "&isTowall=" + isShowRanks;
-//        Loger.i(TAG, "initData:loadUrl=" + loadUrl);
+//        logger.i( "initData:loadUrl=" + loadUrl);
 //        loadUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
 //        loadUrl(loadUrl);
 //        Loger.e("EnglishH5CoursewarePager", "======> loadUrl:" + loadUrl);

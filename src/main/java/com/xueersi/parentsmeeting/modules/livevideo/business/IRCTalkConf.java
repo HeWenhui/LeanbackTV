@@ -12,6 +12,8 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -39,6 +41,7 @@ import java.util.List;
  */
 public class IRCTalkConf {
     private static String TAG = "IRCTalkConf";
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private static String eventId = LiveVideoConfig.LIVE_CHAT_GSLB;
     private LogToFile mLogtf;
     private BaseHttpBusiness baseHttpBusiness;
@@ -67,7 +70,7 @@ public class IRCTalkConf {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Loger.d(TAG, "handleMessage:what=" + msg.what);
+            logger.d( "handleMessage:what=" + msg.what);
             getserver();
         }
     };

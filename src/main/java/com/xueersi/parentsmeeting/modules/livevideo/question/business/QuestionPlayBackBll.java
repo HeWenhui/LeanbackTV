@@ -222,7 +222,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         HttpCallBack httpCallBack = new HttpCallBack(loadEntity) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
-                Loger.d(TAG, "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity
+                logger.d( "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity
                         .getJsonObject());
                 VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer(responseEntity,
                         isVoice);

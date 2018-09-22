@@ -118,8 +118,8 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
                     }
                     JSONArray agreeForms = data.optJSONArray("agreeFroms");
                     boolean isTeacher = data.optBoolean("isTeacher");
-                    Loger.i(TAG, "agreeForms=" + agreeForms.toString());
-                    Loger.i(TAG, "isTeacher=" + isTeacher);
+                    logger.i( "agreeForms=" + agreeForms.toString());
+                    logger.i( "isTeacher=" + isTeacher);
                     if (isTeacher) {
                         if (mPraiseListAction != null && agreeForms.length() != 0) {
                             try {
@@ -137,7 +137,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            Loger.i(TAG, "stuName=" + stuName);
+                            logger.i( "stuName=" + stuName);
                             list.add(stuName);
                         }
                         if (mPraiseListAction != null && list.size() != 0) {

@@ -54,109 +54,6 @@ public final class Loger {
     }
 
     /**
-     * verbose 任何信息，调试信息文字黑色
-     *
-     * @param msg 调试信息
-     */
-    public static void v(String msg) {
-        if (DEBUG) {
-            Log.v(sTag, msg);
-        }
-    }
-
-    /**
-     * verbose 任何信息，调试信息文字黑色
-     *
-     * @param tag 标签
-     * @param msg 调试信息
-     */
-    public static void v(String tag, String msg) {
-        if (DEBUG) {
-            Log.v(tag, msg);
-        }
-    }
-
-    /**
-     * verbose 任何信息，调试信息文字黑色
-     *
-     * @param context
-     * @param tag      标签
-     * @param msg      调试信息
-     * @param isRequst 是否上传大数据
-     */
-    public static void v(Context context, String tag, String msg, boolean isRequst) {
-        v(tag, msg);
-        if (isRequst) {
-            Map<String, String> map = new HashMap<String, String>();
-            map.put(DEFAULT_KEY, msg);
-            UmsAgentManager.umsAgentDebug(context, tag, map);
-        }
-    }
-
-    /**
-     * verbose 任何信息，调试信息文字黑色
-     *
-     * @param tag       标签
-     * @param mParams   调试信息map
-     * @param isRequest 是否上传大数据
-     */
-    public static void v(Context context, String tag, Map<String, String> mParams, boolean isRequest) {
-        v(tag, mParams.toString());
-        if (isRequest) {
-            UmsAgentManager.umsAgentDebug(context, tag, mParams);
-        }
-    }
-
-    /**
-     * verbose 任何信息，调试信息文字黑色
-     *
-     * @param msg 调试信息
-     * @param tr  异常
-     */
-    public static void v(String msg, Throwable tr) {
-        if (DEBUG) {
-            Log.v(sTag, msg, tr);
-        }
-    }
-
-    /**
-     * verbose 任何信息，调试信息文字黑色
-     *
-     * @param tag 标签
-     * @param msg 调试信息
-     * @param tr  异常
-     */
-    public static void v(String tag, String msg, Throwable tr) {
-        if (DEBUG) {
-            Log.v(tag, msg, tr);
-        }
-    }
-
-    /**
-     * debug 调试信息, 调试信息文字蓝色
-     *
-     * @param message 调试信息
-     */
-    public static void d(String message) {
-        if (DEBUG) {
-            getMethodNames(new Throwable().getStackTrace());
-            Log.d(className, createLog(message));
-        }
-    }
-
-    /**
-     * debug 调试信息, 调试信息文字蓝色
-     *
-     * @param message 调试信息
-     * @param args    可变参数
-     */
-    public static void d(String message, Object... args) {
-        if (DEBUG) {
-            d(String.format(message, args));
-        }
-    }
-
-    /**
      * debug 调试信息, 调试信息文字蓝色
      *
      * @param tag 标签
@@ -384,17 +281,6 @@ public final class Loger {
     public static void w(String tag, String msg, Throwable tr) {
         if (DEBUG) {
             Log.w(tag, msg, tr);
-        }
-    }
-
-    /**
-     * error 调试信息,调试信息文字红色
-     *
-     * @param msg 调试信息
-     */
-    public static void e(String msg) {
-        if (DEBUG) {
-            Log.e(sTag, msg);
         }
     }
 

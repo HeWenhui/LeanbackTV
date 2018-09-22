@@ -382,12 +382,12 @@
 //
 //        @Override
 //        public void onTokenError(String createTokenError) {
-//            Loger.i(TAG, "onTokenError:createTokenError=" + createTokenError);
+//            logger.i( "onTokenError:createTokenError=" + createTokenError);
 //        }
 //
 //        @Override
 //        public void onRoomConnected(Map<String, StreamDescriptionInterface> streamList) {
-//            Loger.i(TAG, "onRoomConnected:reconnect=" + reconnect);
+//            logger.i( "onRoomConnected:reconnect=" + reconnect);
 //            if (reconnect) {
 //                startPublish();
 //            } else {
@@ -474,7 +474,7 @@
 //
 //        @Override
 //        public void onStreamMediaAvailable(final StreamDescriptionInterface stream) {
-//            Loger.i(TAG, "onStreamMediaAvailable");
+//            logger.i( "onStreamMediaAvailable");
 //            activity.runOnUiThread(new Runnable() {
 //                @Override
 //                public void run() {

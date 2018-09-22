@@ -219,7 +219,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     protected boolean shouldOverrideUrlLoading(WebView view, String url) {
         //      if ("http://baidu.com/".equals(url)) {
-        Loger.d(TAG, "shouldOverrideUrlLoading:url=" + url);
+        logger.d( "shouldOverrideUrlLoading:url=" + url);
         Loger.e(TAG, "======> shouldOverrideUrlLoading:" + url);
 
         reloadurl = url;
@@ -295,7 +295,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                             url2 = url2.substring(0, index2);
                         }
                         file = new File(mMorecacheout, url2);
-                        Loger.d(TAG, "shouldInterceptRequest:file=" + file + ",file=" + file.exists());
+                        logger.d( "shouldInterceptRequest:file=" + file + ",file=" + file.exists());
                     } else {
                         file = new File(mMorecacheout, MD5Utils.getMD5(s));
                         index = s.lastIndexOf("/");
@@ -303,7 +303,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         if (index != -1) {
                             name = s.substring(index);
                         }
-                        Loger.d(TAG, "shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
+                        logger.d( "shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
                     }
                     if (file.exists()) {
                         FileInputStream inputStream = null;
@@ -399,7 +399,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 loadUrl += "&nonce=" + nonce;
             }
             loadUrl += "&isTowall=" + isShowRanks;
-            Loger.i(TAG, "initData:loadUrl=" + loadUrl);
+            logger.i( "initData:loadUrl=" + loadUrl);
             loadUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
             loadUrl(loadUrl);
             Loger.e(TAG, "======> loadUrl:" + loadUrl);

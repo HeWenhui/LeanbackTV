@@ -10,6 +10,8 @@ import android.text.TextUtils;
 import android.view.SurfaceView;
 
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
@@ -24,7 +26,7 @@ import static io.agora.rtc.Constants.RAW_AUDIO_FRAME_OP_MODE_WRITE_ONLY;
 
 public class WorkerThread extends Thread {
     private final static String TAG = "WorkerThread";
-
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private final Context mContext;
     boolean feadback = false;
     private static final int ACTION_WORKER_THREAD_QUIT = 0X1010; // quit this thread
@@ -98,13 +100,13 @@ public class WorkerThread extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Loger.d(TAG, "wait for " + WorkerThread.class.getSimpleName());
+            logger.d( "wait for " + WorkerThread.class.getSimpleName());
         }
     }
 
     @Override
     public void run() {
-        Loger.d(TAG, "start to run");
+        logger.d( "start to run");
         Looper.prepare();
 
         mWorkerHandler = new WorkerThreadHandler(this);
@@ -181,12 +183,12 @@ public class WorkerThread extends Thread {
         }
         int joinChannel = mRtcEngine.joinChannel(null, channel, "OpenLive", uid);
         onJoinChannel.onJoinChannel(joinChannel);
-        Loger.d(TAG, "joinChannel:channelKey=" + channelKey + ",channel=" + channel + ",uid=" + uid + ",joinChannel="
+        logger.d( "joinChannel:channelKey=" + channelKey + ",channel=" + channel + ",uid=" + uid + ",joinChannel="
                 + joinChannel);
         mEngineConfig.mChannel = channel;
 
         enablePreProcessor();
-        Loger.d(TAG, "joinChannel " + channel + " " + uid);
+        logger.d( "joinChannel " + channel + " " + uid);
     }
 
     public final void leaveChannel(String channel, OnLevelChannel onLevelChannel) {
@@ -208,7 +210,7 @@ public class WorkerThread extends Thread {
 
         int clientRole = mEngineConfig.mClientRole;
         mEngineConfig.reset();
-        Loger.d(TAG, "leaveChannel " + channel + " " + clientRole);
+        logger.d( "leaveChannel " + channel + " " + clientRole);
     }
 
     private EngineConfig mEngineConfig;
@@ -244,7 +246,7 @@ public class WorkerThread extends Thread {
             mRtcEngine.enableAudioVolumeIndication(500, 3);
             mRtcEngine.muteAllRemoteAudioStreams(true);
         }
-        Loger.d(TAG, "configEngine " + cRole + " " + mEngineConfig.mVideoProfile);
+        logger.d( "configEngine " + cRole + " " + mEngineConfig.mVideoProfile);
     }
 
     public final void preview(boolean start, SurfaceView view, int uid) {
@@ -287,7 +289,7 @@ public class WorkerThread extends Thread {
             if (TextUtils.isEmpty(appId)) {
                 throw new RuntimeException("NEED TO use your App ID, get your own ID at https://dashboard.agora.io/");
             }
-            Loger.d(TAG, "ensureRtcEngineReadyLock:appId=" + appId);
+            logger.d( "ensureRtcEngineReadyLock:appId=" + appId);
             mRtcEngine = RtcEngine.create(mContext, appId, mEngineEventHandler.mRtcEventHandler);
             mRtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
 //            mRtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_COMMUNICATION);
@@ -335,14 +337,14 @@ public class WorkerThread extends Thread {
         RtcEngine.destroy();
         // TODO should remove all pending(read) messages
 
-        Loger.d(TAG, "exit() > start");
+        logger.d( "exit() > start");
 
         // exit thread looper
         Looper.myLooper().quit();
 
         mWorkerHandler.release();
 
-        Loger.d(TAG, "exit() > end");
+        logger.d( "exit() > end");
     }
 
     public WorkerThread(Context context, int mUid, boolean feadback) {

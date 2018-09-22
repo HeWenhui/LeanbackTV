@@ -225,16 +225,16 @@
 //            return false;
 //        }
 //        mLogtf.setLiveOnLineLogs(mLiveBll);
-//        Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System
+//        logger.d( "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System
 //                .currentTimeMillis() - before));
 //        before = System.currentTimeMillis();
 //        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
 //        LiveGetInfo mGetInfo = LiveVideoEnter.getInfos.get(stuId + "-" + vStuCourseID + "-" + mVSectionID);
 //        initAllBll();
-//        Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
+//        logger.d( "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
 //        before = System.currentTimeMillis();
 //        initView();
-//        Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
+//        logger.d( "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
 ////        SpeechAssessmentWebPager pager=new SpeechAssessmentWebPager(mContext,"","","",true,"",null);
 ////        ((RelativeLayout)findViewById(R.id.rl_speech_test)).addView(pager.getRootView());
 //        return true;
@@ -278,7 +278,7 @@
 //        liveLazyBllCreat.setBottomContent(bottomContent);
 //        liveLazyBllCreat.setPraiselistContent(praiselistContent);
 //        liveMessageBll.initViewLive(bottomContent);
-//        Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
+//        logger.d( "initView:time1=" + (System.currentTimeMillis() - before));
 //        before = System.currentTimeMillis();
 //
 //        //先让播放器按照默认模式设置
@@ -304,7 +304,7 @@
 //
 //        setFirstParam(lp);
 //        liveMessageBll.setVideoLayout(lp.width, lp.height);
-//        Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
+//        logger.d( "initView:time2=" + (System.currentTimeMillis() - before));
 //        final View contentView = findViewById(android.R.id.content);
 //        contentView.postDelayed(new Runnable() {
 //            @Override
@@ -318,7 +318,7 @@
 //                        }
 //                        boolean isLand = getResources().getConfiguration().orientation == Configuration
 //                                .ORIENTATION_LANDSCAPE;
-//                        //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
+//                        //logger.i( "setVideoWidthAndHeight:isLand=" + isLand);
 //                        if (!isLand) {
 //                            return;
 //                        }
@@ -634,7 +634,7 @@
 //                            if (openSuccess) {
 //                                mHandler.removeCallbacks(mPlayDuration);
 //                                playTime += (System.currentTimeMillis() - lastPlayTime);
-//                                Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+//                                logger.d( "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
 //                            }
 //                            vPlayer.releaseSurface();
 //                            vPlayer.stop();
@@ -848,7 +848,7 @@
 //                        }
 //                    }
 //                }.start();
-//                //Loger.i(TAG, "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
+//                //logger.i( "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
 //            }
 //        }
 //    };
@@ -887,7 +887,7 @@
 //            if (lastPlayserverEntity != null) {
 //                lastPlayTime = System.currentTimeMillis();
 //                playTime += mPlayDurTime;
-//                Loger.d(TAG, "mPlayDuration:playTime=" + playTime / 1000);
+//                logger.d( "mPlayDuration:playTime=" + playTime / 1000);
 //                mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() -
 //                        reportPlayStarTime, lastPlayserverEntity, "normal");
 //                reportPlayStarTime = System.currentTimeMillis();
@@ -1016,7 +1016,7 @@
 //                questionWebCache.startCache();
 //            }
 //        }
-//        Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
+//        logger.d( "onLiveInit:time=" + (System.currentTimeMillis() - before));
 //        before = System.currentTimeMillis();
 //        //本场成就
 //        if (1 == getInfo.getIsAllowStar()) {
@@ -1036,7 +1036,7 @@
 //                LiveVideoActivity.this.englishSpeekBll = englishSpeekBll;
 //            }
 //        }
-//        Loger.d(TAG, "onLiveInit:time2=" + (System.currentTimeMillis() - before));
+//        logger.d( "onLiveInit:time2=" + (System.currentTimeMillis() - before));
 //        before = System.currentTimeMillis();
 //        if (1 == getInfo.getIsEnglish()) {
 //            mIse = new SpeechEvaluatorUtils(true);
@@ -1070,7 +1070,7 @@
 //        //rollCallBll.onLiveInit(liveType, getInfo);
 //        questionBll.setLiveGetInfo(getInfo);
 //        videoChatBll.onLiveInit(getInfo);
-//        Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
+//        logger.d( "onLiveInit:time3=" + (System.currentTimeMillis() - before));
 //    }
 //
 //    @Override
@@ -1454,7 +1454,7 @@
 //                }
 //            }
 //        }
-//        Loger.d(TAG, "addBody:method=" + method + ",url=" + url);
+//        logger.d( "addBody:method=" + method + ",url=" + url);
 //        return msg;
 //    }
 //
@@ -1541,7 +1541,7 @@
 //
 //    @Subscribe(threadMode = ThreadMode.POSTING)
 //    public void onEvent(AppEvent event) {
-//        Loger.i(TAG, "onEvent:netWorkType=" + event.netWorkType);
+//        logger.i( "onEvent:netWorkType=" + event.netWorkType);
 //        videoChatBll.onNetWorkChange(event.netWorkType);
 //        mLiveBll.onNetWorkChange(event.netWorkType);
 //        if (englishH5Cache != null) {
@@ -1707,7 +1707,7 @@
 //        public void handleMessage(Message msg) {
 //            if (msg.what == 1) {
 //                englishSpeekBll.start();
-//                Loger.d(TAG, "start:englishSpeekBll.start");
+//                logger.d( "start:englishSpeekBll.start");
 //            }
 //        }
 //    };
@@ -1715,7 +1715,7 @@
 //    @Override
 //    public void request(OnAudioRequest onAudioRequest) {
 //        audioRequest = true;
-//        Loger.d(TAG, "request:englishSpeekBll=" + (englishSpeekBll == null));
+//        logger.d( "request:englishSpeekBll=" + (englishSpeekBll == null));
 //        if (englishSpeekBll != null) {
 //            handler.removeMessages(1);
 //            englishSpeekBll.stop(onAudioRequest);
@@ -1729,7 +1729,7 @@
 //    @Override
 //    public void release() {
 //        audioRequest = false;
-//        Loger.d(TAG, "release:englishSpeekBll=" + (englishSpeekBll == null));
+//        logger.d( "release:englishSpeekBll=" + (englishSpeekBll == null));
 //        if (englishSpeekBll != null) {
 //            handler.sendEmptyMessageDelayed(1, 2000);
 //        }
@@ -1737,7 +1737,7 @@
 //
 //    @Override
 //    public void requestWebView() {
-//        Loger.d(TAG, "requestWebView:englishH5Cache=" + (englishH5Cache == null));
+//        logger.d( "requestWebView:englishH5Cache=" + (englishH5Cache == null));
 //        if (englishH5Cache != null) {
 //            englishH5Cache.stop();
 //        }
@@ -1745,7 +1745,7 @@
 //
 //    @Override
 //    public void releaseWebView() {
-//        Loger.d(TAG, "releaseWebView:englishH5Cache=" + (englishH5Cache == null));
+//        logger.d( "releaseWebView:englishH5Cache=" + (englishH5Cache == null));
 //        if (englishH5Cache != null) {
 //            englishH5Cache.start();
 //        }

@@ -465,7 +465,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
         @Override
         public void onJoin(String target, String sender, String login, String hostname) {
-            Loger.d(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+            logger.d( "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
             if (sender.startsWith(TEACHER_PREFIX)) {
                 synchronized (mIRCcallback) {
                     mMainTeacher = new Teacher(sender);
@@ -497,7 +497,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
         @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-            Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+            logger.d( "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
             if (sourceNick.startsWith(TEACHER_PREFIX)) {
                 synchronized (mIRCcallback) {
@@ -625,7 +625,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
-        // Loger.d(TAG, s);
+        // logger.d( s);
         mLogtf.d(s);
         mLogtf.d("onGetInfoSuccess:mode=" + mLiveTopic.getMode());
         liveGetPlayServerFirst();
@@ -787,7 +787,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
             @Override
             public void onSuccess(String result) {
-//                Loger.i(TAG, "liveGetPlayServer:onSuccess:result=" + result);
+//                logger.i( "liveGetPlayServer:onSuccess:result=" + result);
                 String s = "liveGetPlayServer:onSuccess";
                 try {
                     JSONObject object = new JSONObject(result);
@@ -1054,7 +1054,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     public void getToken(final LicodeToken licodeToken) {
         final String id = "x_" + mLiveType + "_" + mGetInfo.getId();
         String roomid = channelAndRoomid.get(id);
-        Loger.i(TAG, "getToken:id=" + id + ",roomid=null?" + (roomid == null));
+        logger.i( "getToken:id=" + id + ",roomid=null?" + (roomid == null));
         if (roomid != null) {
             mHttpManager.getToken(roomid, mGetInfo.getStuId(), new Callback.CacheCallback<String>() {
 
@@ -1104,7 +1104,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                 if (roomidIndex != -1) {
                     result = result.substring(0, roomidIndex);
                 }
-                Loger.i(TAG, "getToken:getRoomid:onSuccess:result=" + result);
+                logger.i( "getToken:getRoomid:onSuccess:result=" + result);
                 channelAndRoomid.put(id, result);
                 mHttpManager.getToken(result, mGetInfo.getStuId(), new CacheCallback<String>() {
 
@@ -1156,7 +1156,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
         if (netWorkType != NetWorkHelper.NO_NETWORK) {
-            Loger.i(TAG, "onNetWorkChange:liveGetPlayServerError=" + liveGetPlayServerError);
+            logger.i( "onNetWorkChange:liveGetPlayServerError=" + liveGetPlayServerError);
             if (liveGetPlayServerError) {
                 liveGetPlayServerError = false;
                 liveGetPlayServer(mLiveTopic.getMode(), false);
@@ -1255,12 +1255,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.i(TAG, "streamReport:onFailure=", e);
+                logger.i( "streamReport:onFailure=", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Loger.i(TAG, "streamReport:onResponse:response=" + response.message());
+                logger.i( "streamReport:onResponse:response=" + response.message());
             }
         });
     }
@@ -1300,7 +1300,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         final AbstractBusinessDataCallBack dataCallBack = new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                Loger.d(TAG, "dns_resolve_stream:onDataSucess:haveCall=" + haveCall.get() + ",objData=" + objData[0]);
+                logger.d( "dns_resolve_stream:onDataSucess:haveCall=" + haveCall.get() + ",objData=" + objData[0]);
                 if (!haveCall.get()) {
                     haveCall.set(true);
                     callBack.onDataSucess(objData);
@@ -1309,7 +1309,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
-                Loger.d(TAG, "dns_resolve_stream:onDataFail:haveCall=" + haveCall.get() + ",errStatus=" + errStatus + ",failMsg=" + failMsg);
+                logger.d( "dns_resolve_stream:onDataFail:haveCall=" + haveCall.get() + ",errStatus=" + errStatus + ",failMsg=" + failMsg);
                 if (!haveCall.get()) {
                     haveCall.set(true);
                     callBack.onDataFail(errStatus, failMsg);
@@ -1326,7 +1326,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.i(TAG, "dns_resolve_stream:onFailure=", e);
+                logger.i( "dns_resolve_stream:onFailure=", e);
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -1344,7 +1344,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                         String r = "";
                         try {
                             r = response.body().string();
-                            Loger.i(TAG, "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
+                            logger.i( "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
                             if (response.code() >= 200 && response.code() <= 300) {
                                 if ("wangsu".equals(provide)) {
 //                        rtmp://111.202.83.208/live_server/x_3_55873?wsiphost=ipdb&wsHost=livewangsu.xescdn.com

@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -29,12 +31,14 @@ public class LogToFile {
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     public static int LIVE_TIME = 0;
     public LiveOnLineLogs liveOnLineLogs;
+    protected Logger logger = LoggerFactory.getLogger(TAG);
 
     static {
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
     }
 
     public LogToFile(String tag) {
+        logger = LoggerFactory.getLogger(tag);
         this.TAG = "OL:" + tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
@@ -51,6 +55,7 @@ public class LogToFile {
     }
 
     public LogToFile(String tag, LiveOnLineLogs liveOnLineLogs) {
+        logger = LoggerFactory.getLogger(tag);
         this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
@@ -67,6 +72,7 @@ public class LogToFile {
     }
 
     public LogToFile(LiveOnLineLogs liveBll2, String tag) {
+        logger = LoggerFactory.getLogger(tag);
         this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
@@ -79,6 +85,7 @@ public class LogToFile {
     }
 
     public LogToFile(Context context, String tag) {
+        logger = LoggerFactory.getLogger(tag);
         this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
@@ -102,7 +109,7 @@ public class LogToFile {
             getPrefix = liveOnLineLogs.getPrefix();
             liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
         }
-        Loger.i(getPrefix + ":" + TAG, message);
+        logger.i(message);
         if (AppConfig.DEBUG) {
             liveThreadPoolExecutor.execute(new WriteThread(message));
         }
@@ -115,7 +122,7 @@ public class LogToFile {
             getPrefix = liveOnLineLogs.getPrefix();
             liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
         }
-        Loger.i(getPrefix + ":" + TAG, message);
+        logger.d(message);
         if (AppConfig.DEBUG) {
             liveThreadPoolExecutor.execute(new WriteThread(message));
         }
@@ -123,7 +130,7 @@ public class LogToFile {
     }
 
     public void debugSave(String message) {
-        Loger.i(TAG, message);
+        logger.i(message);
         if (AppConfig.DEBUG) {
             liveThreadPoolExecutor.execute(new WriteThread(message));
         }
@@ -136,7 +143,7 @@ public class LogToFile {
             getPrefix = liveOnLineLogs.getPrefix();
             liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message + "**" + e);
         }
-        Loger.i(getPrefix + ":" + TAG, message, e);
+        logger.e(message, e);
         if (AppConfig.DEBUG) {
             liveThreadPoolExecutor.execute(new WriteThread(message, e));
         }

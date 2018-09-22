@@ -191,7 +191,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
 
     @Override
     public void voteJoin(final LiveTopic.VoteEntity voteEntity, int answer) {
-        Loger.d(TAG, "voteJoin:choiceId=" + voteEntity + ",answer=" + answer);
+        logger.d( "voteJoin:choiceId=" + voteEntity + ",answer=" + answer);
         this.answer = answer;
         idAndAnswer.put(voteEntity, answer);
         if (0 == answer && !LiveVideoConfig.isPrimary) {
@@ -204,7 +204,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
 
     @Override
     public void voteStart(final LiveTopic.VoteEntity voteEntity) {
-        Loger.d(TAG, "voteStart:voteEntity=" + voteEntity);
+        logger.d( "voteStart:voteEntity=" + voteEntity);
         this.voteEntity = voteEntity;
         this.answer = 0;
         StableLogHashMap logHashMap = new StableLogHashMap("receiveVote");
@@ -525,7 +525,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
 
     @Override
     public void voteStop(final LiveTopic.VoteEntity voteEntity) {
-        Loger.d(TAG, "voteStop:voteEntity=" + voteEntity);
+        logger.d( "voteStop:voteEntity=" + voteEntity);
         this.voteEntity = null;
         mRootView.post(new Runnable() {
             @Override

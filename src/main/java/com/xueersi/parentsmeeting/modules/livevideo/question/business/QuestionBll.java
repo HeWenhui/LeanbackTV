@@ -14,6 +14,8 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -83,6 +85,7 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
 public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEvalAction, BaseQuestionWebInter
         .StopWebQuestion, BaseVoiceAnswerCreat.AnswerRightResultVoice, QuestionStatic, QuestionShowReg, KeyboardUtil.OnKeyboardShowingListener, KeyboardPopWindow.KeyboardObserver, LivePagerBack {
     private String TAG = "QuestionBll";
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private SpeechEvaluatorUtils mIse;
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE = false;
@@ -313,7 +316,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onKeyboardHeightChanged(int height, int orientation) {
-        Loger.d(TAG, "onKeyboardHeightChanged:height=" + height);
+        logger.d( "onKeyboardHeightChanged:height=" + height);
         if (baseQuestionPager != null) {
             baseQuestionPager.onKeyboardShowing(height > 0, height);
         }
@@ -705,7 +708,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             if (!isVoice && LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity.type)) {
                 String url = liveGetInfo.getSubjectiveTestAnswerResult() + "?stuId=" + liveGetInfo.getStuId() +
                         "&testId=" + videoQuestionLiveEntity.getvQuestionID();
-                Loger.d(TAG, "showQuestion:url=" + url);
+                logger.d( "showQuestion:url=" + url);
                 subjectResultPager = baseSubjectResultCreat.creat(activity, this,
                         liveGetInfo.getSubjectiveTestAnswerResult(),
                         liveGetInfo.getStuId(), liveGetInfo.getId(), videoQuestionLiveEntity, stuCouId);
@@ -909,19 +912,19 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 //                //{"stu":{"stuId":"11022","rank":0,"allRank":0,"gold":0,"rate":0},"first":[]}
 //                //{"stu":{"stuId":11022,"rank":2,"gold":0,"rate":0},"first":{"stuId":31203,"rank":1,"gold":1,
 // "rate":9}}
-//                Loger.i(TAG, "onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+//                logger.i( "onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
 //                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
 //                addFighting(jsonObject);
 //            }
 //
 //            @Override
 //            public void onPmFailure(Throwable error, String msg) {
-//                Loger.i(TAG, "onPmFailure:msg=" + msg, error);
+//                logger.i( "onPmFailure:msg=" + msg, error);
 //            }
 //
 //            @Override
 //            public void onPmError(ResponseEntity responseEntity) {
-//                Loger.i(TAG, "onPmError:error=" + responseEntity.getErrorMsg());
+//                logger.i( "onPmError:error=" + responseEntity.getErrorMsg());
 //            }
 //        });
     }
@@ -1280,7 +1283,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onSpeechSuccess(String num) {
-        Loger.d(TAG, "onSpeechSuccess:num=" + num);
+        logger.d( "onSpeechSuccess:num=" + num);
         mQueAndBool.add("" + num);
         JSONObject object = new JSONObject();
         try {

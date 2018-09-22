@@ -224,18 +224,18 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 //                                            if (type == MessageEntity.MessageViewType.SELF_VOICE) {
 //                                                if (messageEntity.voiceSelfItem != null) {
 //                                                    messageEntity.voiceSelfItem.voiceClick();
-//                                                    Loger.i(TAG, "playComplete:(equals)nextItem=" + (messageEntity
+//                                                    logger.i( "playComplete:(equals)nextItem=" + (messageEntity
 //                                                            .voiceSelfItem.mEntity == messageEntity));
 //                                                } else {
-//                                                    Loger.i(TAG, "playComplete:(equals)nextItem.voiceSelfItem=null");
+//                                                    logger.i( "playComplete:(equals)nextItem.voiceSelfItem=null");
 //                                                }
 //                                            } else if (type == MessageEntity.MessageViewType.COME_VOICE) {
 //
 //                                            } else {
-//                                                Loger.i(TAG, "playComplete:(equals)nextItem.type=" + type);
+//                                                logger.i( "playComplete:(equals)nextItem.type=" + type);
 //                                            }
 //                                        } else {
-//                                            Loger.i(TAG, "playComplete:(equals)last");
+//                                            logger.i( "playComplete:(equals)last");
 //                                        }
 //                                    }
 //                                });

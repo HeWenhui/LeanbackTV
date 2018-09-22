@@ -74,13 +74,13 @@ public class QuestionFillInBlankPortLivePager extends BaseLiveQuestionPager {
         mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-                Loger.i(TAG, "onViewAttachedToWindow:v=" + (v == mView));
+                logger.i( "onViewAttachedToWindow:v=" + (v == mView));
                 KeyboardUtil.registKeyboardShowingListener(onKeyboardShowingListener);
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                Loger.i(TAG, "onViewDetachedFromWindow:v=" + (v == mView));
+                logger.i( "onViewDetachedFromWindow:v=" + (v == mView));
                 mView.removeOnAttachStateChangeListener(this);
                 KeyboardUtil.unRegistKeyboardShowingListener(onKeyboardShowingListener);
             }
@@ -98,11 +98,11 @@ public class QuestionFillInBlankPortLivePager extends BaseLiveQuestionPager {
             if (lastShowing != isShowing) {
                 lastShowing = isShowing;
                 View focused = gvFillBlank.getFocusedChild();
-                Loger.i(TAG, "onKeyboardShowing:isShowing=" + isShowing + ",KeyboardHeight=" + KeyboardUtil.getKeyboardHeight(mContext));
+                logger.i( "onKeyboardShowing:isShowing=" + isShowing + ",KeyboardHeight=" + KeyboardUtil.getKeyboardHeight(mContext));
                 if (isShowing) {
                     if (focused != null) {
                         scrollBy = focused.getTop();
-                        Loger.i(TAG, "onKeyboardShowing:focused=" + scrollBy);
+                        logger.i( "onKeyboardShowing:focused=" + scrollBy);
                         gvFillBlank.scrollBy(0, scrollBy);
                     }
                 } else {
@@ -159,7 +159,7 @@ public class QuestionFillInBlankPortLivePager extends BaseLiveQuestionPager {
                 public void afterTextChanged(Editable edit) {
                     //TODO removeTextChangedListener后，应该不会发生了
 //                    if (!holder.etFillBlank.getTag().equals(position)) {
-//                        Loger.i(TAG, "getView:position=" + position + "," + holder.etFillBlank.getTag() + ",afterTextChanged:edit=" + edit);
+//                        logger.i( "getView:position=" + position + "," + holder.etFillBlank.getTag() + ",afterTextChanged:edit=" + edit);
 //                        return;
 //                    }
                     // 保存答案

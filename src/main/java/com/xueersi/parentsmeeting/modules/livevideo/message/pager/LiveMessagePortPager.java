@@ -223,7 +223,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND || (event != null && event.getKeyCode() == KeyEvent
                         .KEYCODE_ENTER)) {
-                    Loger.i(TAG, "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
+                    logger.i( "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
                     Editable editable = etMessageContent.getText();
                     String msg = editable.toString();
                     if (!StringUtils.isSpace(msg)) {
@@ -322,7 +322,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
                 .OnKeyboardShowingListener() {
             @Override
             public void onKeyboardShowing(boolean isShowing) {
-                Loger.i(TAG, "onKeyboardShowing:isShowing=" + isShowing);
+                logger.i( "onKeyboardShowing:isShowing=" + isShowing);
                 if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
                     onTitleShow(true);
                 }

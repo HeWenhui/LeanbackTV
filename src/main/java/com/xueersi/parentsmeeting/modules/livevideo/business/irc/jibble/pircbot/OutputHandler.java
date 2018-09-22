@@ -17,6 +17,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.BufferedWriter;
@@ -33,7 +35,7 @@ import java.io.BufferedWriter;
  */
 public class OutputHandler extends Handler {
 	static String TAG = "OutputHandlerLog";
-
+	protected static Logger logger = LoggerFactory.getLogger(TAG);
 	/**
 	 * Constructs an OutputThread for the underlying PircBot. All messages sent
 	 * to the IRC server are sent by this OutputThread to avoid hammering the
@@ -75,7 +77,7 @@ public class OutputHandler extends Handler {
 		if (line.length() > bot.getMaxLineLength() - 2) {
 			line = line.substring(0, bot.getMaxLineLength() - 2);
 		}
-		Loger.d(TAG, "sendRawLine:line=" + line);
+		logger.d( "sendRawLine:line=" + line);
 		synchronized (bwriter) {
 			try {
 				bwriter.write(line + "\r\n");

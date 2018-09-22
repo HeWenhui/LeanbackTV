@@ -227,7 +227,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     public void initData() {
         long before = System.currentTimeMillis();
         super.initData();
-        Loger.i(TAG, "initData:time1=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
@@ -249,7 +249,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
 
 
-        Loger.i(TAG, "initData:minisize=" + minisize);
+        logger.i( "initData:minisize=" + minisize);
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
             @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
@@ -330,7 +330,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             }
         };
         lvMessage.setAdapter(messageAdapter);
-        Loger.i(TAG, "initData:time2=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mView.post(new Runnable() {
             @Override
@@ -338,10 +338,10 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 initDanmaku();
             }
         });
-        Loger.i(TAG, "initData:time3=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initCommonWord();
-        Loger.i(TAG, "initData:time4=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
 
@@ -415,7 +415,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 int[] location = new int[2];
                 v.getLocationOnScreen(location);
                 //在控件上方显示
-                Loger.i(TAG, "onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord
+                logger.i( "onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord
                         .getHeight());
                 rlLivevideoCommonWord.setVisibility(View.VISIBLE);
             }
@@ -488,7 +488,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         btMessageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Loger.i(TAG, "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
+                logger.i( "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
                 Editable editable = etMessageContent.getText();
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
@@ -542,7 +542,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         .OnKeyboardShowingListener() {
                     @Override
                     public void onKeyboardShowing(boolean isShowing) {
-                        Loger.i(TAG, "onKeyboardShowing:isShowing=" + isShowing);
+                        logger.i( "onKeyboardShowing:isShowing=" + isShowing);
                         if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
                             onTitleShow(true);
                         }
@@ -935,7 +935,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 //                .ll_livevideo_message_flower);
 //        final LayoutInflater factory = LayoutInflater.from(mContext);
 //        final CompoundButtonGroup group = new CompoundButtonGroup();
-        Loger.i(TAG, "initFlower:time1=" + (System.currentTimeMillis() - before));
+        logger.i( "initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
 
 
@@ -970,11 +970,11 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 //                }
 //            }, i * 10);
 //        }
-        Loger.i(TAG, "initFlower:time2=" + (System.currentTimeMillis() - before));
+        logger.i( "initFlower:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         flowerWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         flowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        Loger.i(TAG, "initFlower:time3=" + (System.currentTimeMillis() - before));
+        logger.i( "initFlower:time3=" + (System.currentTimeMillis() - before));
     }
 
     FlowerAction commonAction = new CommonDisable();

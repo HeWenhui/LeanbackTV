@@ -441,7 +441,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                         .OnKeyboardShowingListener() {
                     @Override
                     public void onKeyboardShowing(boolean isShowing) {
-                        Loger.i(TAG, "onKeyboardShowing:isShowing=" + isShowing);
+                        logger.i( "onKeyboardShowing:isShowing=" + isShowing);
                         switchFSPanelLinearLayout.refreshHeight(KeyboardUtil.getValidPanelHeight(mContext));
                         if (!isShowing) {
                             if (rlSpeechbulInputContent.getVisibility()==View.VISIBLE) {
@@ -502,7 +502,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
 
                     @Override
                     public void onVolumeUpdate(int volume) {
-                        Loger.d(TAG, "onVolumeUpdate:volume=" + volume);
+                        logger.d( "onVolumeUpdate:volume=" + volume);
                         vwvSpeechbulWave.setVolume(volume * 3);
                     }
                 });

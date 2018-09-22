@@ -246,7 +246,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         LiveFragmentBase liveFragmentBase;
 
         public LiveLivePlayerPlayFragment() {
-            Loger.d(TAG, "LiveLivePlayerPlayFragment");
+            logger.d( "LiveLivePlayerPlayFragment");
         }
 
         @Override
@@ -524,7 +524,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
         if (event.getClass() == AppEvent.class) {
-            Loger.i(TAG, "onEvent:netWorkType=" + event.netWorkType);
+            logger.i( "onEvent:netWorkType=" + event.netWorkType);
             mLiveVideoBll.onNetWorkChange(event.netWorkType);
         }
     }
