@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ListView;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**
@@ -12,7 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
  */
 
 public class CustomUnScorllListView extends ListView {
-
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private boolean mIsUnScroll = false;//true 为不可滑动；false为可滑动，默认不可滑动
 
     public CustomUnScorllListView(Context context) {
@@ -38,7 +40,7 @@ public class CustomUnScorllListView extends ListView {
             case MotionEvent.ACTION_MOVE:
                 if (mIsUnScroll) {
                     //禁止滑动
-                    Loger.i("RolePlayerDemoTest", "禁止listView滑动");
+                    logger.i( "禁止listView滑动");
                     return false;
                 } else {
                     return super.onTouchEvent(ev);
@@ -54,7 +56,7 @@ public class CustomUnScorllListView extends ListView {
             case MotionEvent.ACTION_MOVE:
                 if (mIsUnScroll) {
                     //禁止滑动
-                    Loger.i("RolePlayerDemoTest", "listView不拦截滑动");
+                    logger.i( "listView不拦截滑动");
                     return false;
                 } else {
                     return super.onInterceptTouchEvent(ev);

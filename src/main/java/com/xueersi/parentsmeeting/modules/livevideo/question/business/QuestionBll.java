@@ -651,7 +651,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 id, QuestionBll.this, stuCouId);
                         speechAssessmentPager.setIse(mIse);
                         speechAssessmentPager.initData();
-                        Loger.i("RolePlayerDemoTest", "走人机");
+                        logger.i( "走人机");
                     }
                     setHaveSpeech(true);
                     rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
@@ -890,7 +890,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
             getAutoNotice(0);
-            Loger.i(LiveAutoNoticeBll.class.getSimpleName(), "question end");
+            logger.i( "question end");
             hasQuestion = false;
         }
         if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(ptype)) {
@@ -1833,7 +1833,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (isForceSubmit) {
             getFullMarkList(type, 3000);
             getAutoNotice(1);
-            Loger.i(LiveAutoNoticeBll.class.getSimpleName(), "question force submit");
+            logger.i( "question force submit");
             switch (type) {
                 case XESCODE.STOPQUESTION:
                     hasQuestion = false;
@@ -1862,14 +1862,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         case XESCODE.STOPQUESTION:
                             if (questionWebPager != null) {
                                 if (curQuestionView == questionWebPager) {
-                                    Loger.i("======questionbll  cur==ques");
+                                    logger.i("======questionbll  cur==ques");
                                     questionWebPager.onDestroy();
                                     rlQuestionContent.removeView(questionWebPager.getRootView());
                                     questionWebPager = null;
                                     curQuestionView = null;
                                     setHaveWebQuestion(false);
                                 } else if (curQuestionView != null) {
-                                    Loger.i("======questionbll  cur=" + curQuestionView.toString() + "   que=" +
+                                    logger.i("======questionbll  cur=" + curQuestionView.toString() + "   que=" +
                                             questionWebPager.toString());
                                     rlQuestionContent.removeView(curQuestionView.getRootView());
                                     curQuestionView = null;
@@ -1879,14 +1879,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         case XESCODE.EXAM_STOP:
                             if (examQuestionPager != null) {
                                 if (curQuestionView == examQuestionPager) {
-                                    Loger.i("======questionbll  cur==exa");
+                                    logger.i("======questionbll  cur==exa");
                                     examQuestionPager.onDestroy();
                                     rlQuestionContent.removeView(examQuestionPager.getRootView());
                                     examQuestionPager = null;
                                     curQuestionView = null;
                                     setHaveExam(false);
                                 } else if (curQuestionView != null) {
-                                    Loger.i("======questionbll  cur=" + curQuestionView.toString() + "   que=" +
+                                    logger.i("======questionbll  cur=" + curQuestionView.toString() + "   que=" +
                                             examQuestionPager.toString());
                                     rlQuestionContent.removeView(curQuestionView.getRootView());
                                     curQuestionView = null;

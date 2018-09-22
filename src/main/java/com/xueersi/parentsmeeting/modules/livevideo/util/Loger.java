@@ -54,154 +54,15 @@ public final class Loger {
     }
 
     /**
-     * debug 调试信息, 调试信息文字蓝色
-     *
-     * @param tag 标签
-     * @param msg 调试信息
-     */
-    public static void d(String tag, String msg) {
-        if (DEBUG) {
-            getMethodNames(new Throwable().getStackTrace());
-            Log.d(tag, createLog(msg));
-        }
-    }
-
-
-    /**
-     * debug 任何信息，调试信息文字黑色
-     *
-     * @param context
-     * @param tag      标签
-     * @param msg      调试信息
-     * @param isRequst 是否上传大数据
-     */
-    public static void d(Context context, String tag, String msg, boolean isRequst) {
-        d(tag, msg);
-        if (isRequst) {
-            Map<String, String> map = new HashMap<String, String>();
-            map.put(DEFAULT_KEY, msg);
-            UmsAgentManager.umsAgentDebug(context, tag, map);
-        }
-    }
-
-    /**
-     * debug 任何信息，调试信息文字黑色
-     *
-     * @param tag       标签
-     * @param mParams   调试信息map
-     * @param isRequest 是否上传大数据
-     */
-    public static void d(Context context, String tag, Map<String, String> mParams, boolean isRequest) {
-        d(tag, mParams.toString());
-        if (isRequest) {
-            UmsAgentManager.umsAgentDebug(context, tag, mParams);
-        }
-    }
-
-    /**
-     * debug 调试信息, 调试信息文字蓝色
-     *
-     * @param msg 调试信息
-     * @param tr  错误
-     */
-    public static void d(String msg, Throwable tr) {
-        if (DEBUG) {
-            Log.d(sTag, msg, tr);
-        }
-    }
-
-    /**
-     * debug 调试信息,调试信息文字蓝色
-     *
-     * @param tag 标签
-     * @param msg 调试信息
-     * @param tr  错误
-     */
-    public static void d(String tag, String msg, Throwable tr) {
-        if (DEBUG) {
-            Log.d(tag, msg, tr);
-        }
-    }
-
-    /**
      * infomation 调试信息, 调试信息文字绿色
      *
-     * @param msg 调试信息
-     */
-    public static void i(String msg) {
-        if (DEBUG) {
-            getMethodNames(new Throwable().getStackTrace());
-            Log.i(className, createLog(msg));
-        }
-    }
-
-    /**
-     * infomation 调试信息, 调试信息文字绿色
-     *
-     * @param tag 标签
+     * @param tag
      * @param msg 调试信息
      */
     public static void i(String tag, String msg) {
         if (DEBUG) {
             getMethodNames(new Throwable().getStackTrace());
             Log.i(tag, createLog(msg));
-        }
-    }
-
-
-    /**
-     * infomation 任何信息，调试信息文字黑色
-     *
-     * @param context
-     * @param tag      标签
-     * @param msg      调试信息
-     * @param isRequst 是否上传大数据
-     */
-    public static void i(Context context, String tag, String msg, boolean isRequst) {
-        i(tag, msg);
-        if (isRequst) {
-            Map<String, String> map = new HashMap<String, String>();
-            map.put(DEFAULT_KEY, msg);
-            UmsAgentManager.umsAgentDebug(context, tag, map);
-        }
-    }
-
-    /**
-     * infomation 任何信息，调试信息文字黑色
-     *
-     * @param tag       标签
-     * @param mParams   调试信息map
-     * @param isRequest 是否上传大数据
-     */
-    public static void i(Context context, String tag, Map<String, String> mParams, boolean isRequest) {
-        i(tag, mParams.toString());
-        if (isRequest) {
-            UmsAgentManager.umsAgentDebug(context, tag, mParams);
-        }
-    }
-
-    /**
-     * infomation 调试信息, 调试信息文字绿色
-     *
-     * @param msg 调试信息
-     * @param tr  错误
-     */
-    public static void i(String msg, Throwable tr) {
-        if (DEBUG) {
-            Log.i(sTag, msg, tr);
-        }
-    }
-
-    /**
-     * infomation 调试信息, 调试信息文字绿色
-     *
-     * @param tag 标签
-     * @param msg 调试信息
-     * @param tr  错误
-     */
-    public static void i(String tag, String msg, Throwable tr) {
-        if (DEBUG) {
-            Log.i(tag, msg, tr);
         }
     }
 

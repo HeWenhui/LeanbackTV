@@ -322,12 +322,12 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         dvMessageDanmaku.setOnDanmakuClickListener(new IDanmakuView.OnDanmakuClickListener() {
             @Override
             public void onDanmakuClick(BaseDanmaku latest) {
-                Loger.i("DFM", "onDanmakuClick text:" + latest.text);
+                logger.i( "onDanmakuClick text:" + latest.text);
             }
 
             @Override
             public void onDanmakuClick(IDanmakus danmakus) {
-                Loger.i("DFM", "onDanmakuClick danmakus size:" + danmakus.size());
+                logger.i( "onDanmakuClick danmakus size:" + danmakus.size());
             }
         });
         dvMessageDanmaku.prepare(mParser, mDanmakuContext);

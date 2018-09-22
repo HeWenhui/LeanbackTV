@@ -147,7 +147,7 @@ public class RolePlayerActivity extends XesActivity {
                     @Override
                     public void onJoinChannel(int joinChannel) {
 
-                        Loger.i("RolePlayerDemoTest", "声网:" + joinChannel);
+                        logger.i( "声网:" + joinChannel);
                     }
                 });
 
@@ -417,7 +417,7 @@ public class RolePlayerActivity extends XesActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Loger.i("RolePlayerDemoTest", "onStop 离开连麦界面");
+        logger.i( "onStop 离开连麦界面");
         bllRole.realease();
     }
 }

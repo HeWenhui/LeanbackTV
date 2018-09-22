@@ -484,7 +484,7 @@ public abstract class PircBot implements ReplyConstants {
      */
     public final void sendNotice(String target, String notice) {
         _outputhandler.add("NOTICE " + target + " :" + notice);
-        Loger.i("====notice send  ", "NOTICE " + target + " :" + notice);
+        logger.i( "NOTICE " + target + " :" + notice);
     }
 
     /**

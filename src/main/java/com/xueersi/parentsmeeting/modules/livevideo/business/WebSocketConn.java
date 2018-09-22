@@ -2,7 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.text.TextUtils;
 
-import com.tal.speech.asr.SpeechLog;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.java_websocket.client.WebSocketClient;
@@ -30,7 +31,7 @@ import javax.security.cert.X509Certificate;
  */
 public class WebSocketConn {
     static String TAG = "WebSocketASR";
-
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private WebSocketClient mWebSocketClient;
 
     private WebSocketCallBack mCallBack;
@@ -93,7 +94,7 @@ public class WebSocketConn {
                 @Override
                 public void onError(Exception ex) {
                     ex.printStackTrace();
-                    Loger.i("RolePlayerDemoTest", "onError : "+ex.toString());
+                    logger.i( "onError : "+ex.toString());
                     mCallBack.onError();
                 }
             };

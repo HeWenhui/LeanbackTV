@@ -21,6 +21,7 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.lib.analytics.umsagent.DeviceInfo;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -1431,7 +1432,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             } else {
                 if (!StringUtils.isEmpty(strNetworkType)) {
                     net = 10;
-                    Loger.d(BaseApplication.getContext(), TAG, "getNetworkType:strNetworkType=" + strNetworkType, true);
+                    UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), TAG, "getNetworkType:strNetworkType=" + strNetworkType);
                 }
             }
         } catch (Exception e) {

@@ -15,6 +15,7 @@ import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.network.IpAddressUtil;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -424,7 +425,7 @@ public class TotalFrameStat extends PlayerService.SimpleVPlayerListener {
                     } else {
                         if (!StringUtils.isEmpty(strNetworkType)) {
                             net = 10;
-                            Loger.d(BaseApplication.getContext(), TAG, "getNetworkType:strNetworkType=" + strNetworkType, true);
+                            UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), TAG, "getNetworkType:strNetworkType=" + strNetworkType);
                         }
                     }
                 } catch (Exception e) {
