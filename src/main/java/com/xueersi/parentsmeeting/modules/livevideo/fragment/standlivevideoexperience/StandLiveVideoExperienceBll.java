@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience;
 
 import android.app.Activity;
-import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
@@ -32,7 +31,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -211,7 +209,6 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         } else {
             openChat = false;
         }
-        Log.e(TAG, "openChat = " + openChat);
         if (mLiveMessagePager != null) {
 //            mLiveMessagePager.onQuestionShow(true);
             mLiveMessagePager.onopenchat(openChat, "", false);
