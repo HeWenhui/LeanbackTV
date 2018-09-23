@@ -141,7 +141,7 @@ public class PraiseInteractionPager extends BasePager {
             @Override
             public void onGlobalLayout() {
                 int width = pressLottileView.getWidth();
-                System.out.println("width="+width);
+                System.out.println("width=" + width);
                 if (width > 0) {
                     caculatePressPosition();
                     pressLottileView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -163,6 +163,8 @@ public class PraiseInteractionPager extends BasePager {
         });
         translationY = praiseNumView.getTranslationY();
 
+
+        initPraiseBtnPressAnimation();
         initBubbleEnterAnimation();
         initPraiseNumDisplayAnimation();
 
@@ -178,9 +180,7 @@ public class PraiseInteractionPager extends BasePager {
         startPraiseBtnPressAnimation();
 
         praiseNumView.setText("+" + String.valueOf(++num));
-        praiseNumView.setVisibility(View.VISIBLE);
         startPraiseNumDisplayAnimation();
-
     }
 
 
@@ -216,6 +216,7 @@ public class PraiseInteractionPager extends BasePager {
     }
 
     private void startPraiseNumDisplayAnimation() {
+        praiseNumView.setVisibility(View.VISIBLE);
         if (animatorSet != null && !animatorSet.isRunning()) {
             animatorSet.start();
         }
@@ -225,11 +226,11 @@ public class PraiseInteractionPager extends BasePager {
     /**
      * 按钮点赞动效
      */
-    private void startPraiseBtnPressAnimation() {
+    private void initPraiseBtnPressAnimation() {
         String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "press/images";
         String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "press/data.json";
         final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath);
-        pressLottileView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext));
+        pressLottileView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext), "press");
         pressLottileView.useHardwareAcceleration(true);
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
@@ -240,20 +241,11 @@ public class PraiseInteractionPager extends BasePager {
             }
         };
         pressLottileView.setImageAssetDelegate(imageAssetDelegate);
-        pressLottileView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Object animatedValue = animation.getAnimatedValue();
-                float animatedFraction = animation.getAnimatedFraction();
-
-            }
-        });
         pressLottileView.addAnimatorListener(new AnimatorListenerAdapter() {
 
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
-                pressLottileView.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -263,8 +255,14 @@ public class PraiseInteractionPager extends BasePager {
 
             }
         });
-        pressLottileView.playAnimation();
 
+    }
+
+    private void startPraiseBtnPressAnimation() {
+        if (pressLottileView != null) {
+            pressLottileView.setVisibility(View.VISIBLE);
+            pressLottileView.playAnimation();
+        }
     }
 
 
@@ -329,7 +327,7 @@ public class PraiseInteractionPager extends BasePager {
         String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "bubble_enter/images";
         String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "bubble_enter/data.json";
         final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath);
-        bubbleView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext));
+        bubbleView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext), "bubble_enter");
         bubbleView.useHardwareAcceleration(true);
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
