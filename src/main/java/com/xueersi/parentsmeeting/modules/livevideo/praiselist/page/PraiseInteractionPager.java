@@ -82,21 +82,22 @@ public class PraiseInteractionPager extends BasePager {
     @Override
     public View initView() {
         final View view = View.inflate(mContext, R.layout.page_livevideo_praise_interaction, null);
+        pressLottileView = view.findViewById(R.id.iv_livevideo_praise_interac_press);
         praiseBtn = view.findViewById(R.id.iv_livevideo_praise_interac_praise_btn);
-        praiseBtn.setOnClickListener(new View.OnClickListener() {
+        pressLottileView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onClickPraiseBtn();
             }
         });
 
-        praiseBtn.setOnLongClickListener(new View.OnLongClickListener() {
+        pressLottileView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 return false;
             }
         });
-        praiseBtn.setOnTouchListener(new View.OnTouchListener() {
+        pressLottileView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
@@ -136,7 +137,7 @@ public class PraiseInteractionPager extends BasePager {
                 }
             }
         });
-        pressLottileView = view.findViewById(R.id.iv_livevideo_praise_interac_press);
+
         pressLottileView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -251,7 +252,6 @@ public class PraiseInteractionPager extends BasePager {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                pressLottileView.setVisibility(View.GONE);
 
             }
         });
@@ -273,7 +273,7 @@ public class PraiseInteractionPager extends BasePager {
 
         float translationX = praiseBtn.getTranslationX();
         float distance = getRightMargin() + btnWidth + btnMarginRight;
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(praiseBtn, "translationX", distance, translationX);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(pressLottileView, "translationX", distance, translationX);
         objectAnimator.setDuration(1000);
         objectAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
