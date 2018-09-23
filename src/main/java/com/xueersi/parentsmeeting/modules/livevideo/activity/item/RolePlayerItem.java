@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
@@ -21,7 +23,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
  * Roleplayer对话内容
  */
 public abstract class RolePlayerItem implements AdapterItemInterface<RolePlayerEntity.RolePlayerMessage> {
-
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     /**
      * 对话内容
      */
@@ -96,7 +98,7 @@ public abstract class RolePlayerItem implements AdapterItemInterface<RolePlayerE
      * 显示评价星星
      */
     protected void showSpeechStar() {
-        Loger.i("RolePlayerDemoTest", "showSpeechStar:mEntity.getStars() = "+mEntity.getStars());
+        logger.i("showSpeechStar:mEntity.getStars() = " + mEntity.getStars());
         if (mEntity.getStars() >= 1) {
             ivSpeechStart1.setVisibility(View.VISIBLE);
         }

@@ -156,7 +156,7 @@ public class ExperienceLearnFeedbackPager extends BasePager {
 
                                         @Override
                                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                            Loger.d(TAG, "sendFeedbackSuccess");
+                                            logger.d( "sendFeedbackSuccess");
                                         }
                                     });
                 } else {
@@ -186,13 +186,13 @@ public class ExperienceLearnFeedbackPager extends BasePager {
 
                                     @Override
                                     public void onPmFailure(Throwable error, String msg) {
-                                        Loger.d(TAG, "sendFeedbackFailure:" + msg);
+                                        logger.d( "sendFeedbackFailure:" + msg);
                                         super.onPmFailure(error, msg);
                                     }
 
                                     @Override
                                     public void onPmError(ResponseEntity responseEntity) {
-                                        Loger.d(TAG, "sendFeedbackError:" + responseEntity.toString());
+                                        logger.d( "sendFeedbackError:" + responseEntity.toString());
                                         super.onPmError(responseEntity);
                                     }
                                 });

@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
@@ -16,6 +18,7 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -26,13 +29,14 @@ import java.util.Vector;
  */
 public class IRCMessage {
     private String TAG = "IRCMessage";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private IRCConnection mConnection;
     private int mConnectCount = 0, mDisconnectCount = 0;
     private IRCCallback mIRCCallback;
     private String mChannel;
     private String mNickname;
     /** 备用用户聊天服务配置列表 */
-    private List<NewTalkConfEntity> mNewTalkConf;
+    private List<NewTalkConfEntity> mNewTalkConf = new ArrayList<>();
     private IRCTalkConf ircTalkConf;
     /** 从上面的列表选择一个服务器 */
     private int mSelectTalk = 0;
@@ -133,7 +137,7 @@ public class IRCMessage {
 
             @Override
             public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
-                Loger.i(TAG, "onPrivateMessage:sender=" + sender + ",target=" + target + ",message=" + message);
+                logger.i("onPrivateMessage:sender=" + sender + ",target=" + target + ",message=" + message);
                 String name = mConnection.getName();
                 if (sender.startsWith("p") || sender.startsWith("pt")) {
                     String subStr = mNickname.substring(1);
@@ -265,7 +269,7 @@ public class IRCMessage {
             @Override
             public void onJoin(String target, String sender, String login, String hostname) {
                 if (sender.startsWith("s_") || sender.startsWith("ws_")) {
-                    Loger.i(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+                    logger.i("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 } else {
                     mLogtf.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 }
@@ -277,7 +281,7 @@ public class IRCMessage {
             @Override
             public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
                 if (sourceNick.startsWith("s_") || sourceNick.startsWith("ws_")) {
-                    Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                    logger.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                             + sourceHostname + ",reason=" + reason);
                 } else {
                     mLogtf.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
@@ -427,11 +431,6 @@ public class IRCMessage {
      */
     public String getNickname() {
         return mNickname;
-    }
-
-    /** 设置备用用户聊天服务配置列表 */
-    public void setNewTalkConf(List<NewTalkConfEntity> newTalkConf) {
-        this.mNewTalkConf = newTalkConf;
     }
 
     /**

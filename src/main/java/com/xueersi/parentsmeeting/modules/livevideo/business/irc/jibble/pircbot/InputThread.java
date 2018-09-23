@@ -15,6 +15,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot
 
 import android.util.Log;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.BufferedReader;
@@ -36,7 +38,7 @@ import java.net.Socket;
  */
 public class InputThread extends Thread {
 	String TAG = "InputThreadLog";
-
+	protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 	/**
 	 * The InputThread reads lines from the IRC server and allows the PircBot to
 	 * handle them.
@@ -122,7 +124,7 @@ public class InputThread extends Thread {
 			}
 		} catch (Exception e) {
 			// Do nothing.
-			Loger.e(TAG, "run", e);
+			logger.e( "run", e);
 		}
 
 		// If we reach this point, then we must have disconnected.
@@ -131,7 +133,7 @@ public class InputThread extends Thread {
 		} catch (Exception e) {
 			// Just assume the socket was already closed.
 		}
-		Loger.d(TAG, "run:_disposed=" + _disposed);
+		logger.d( "run:_disposed=" + _disposed);
 		if (!_disposed) {
 			_isConnected = false;
 

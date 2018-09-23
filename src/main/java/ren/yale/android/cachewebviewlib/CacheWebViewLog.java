@@ -4,6 +4,8 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -25,7 +27,7 @@ import ren.yale.android.cachewebviewlib.utils.FileUtil;
 
 class CacheWebViewLog {
     private static final String TAG = "CacheWebViewFile";
-
+    protected static Logger logger = LoggerFactory.getLogger(TAG);
     private static SimpleDateFormat dateFormat;
     public static String path;
     private static File alldir;
@@ -40,7 +42,7 @@ class CacheWebViewLog {
 
     public static void d(String log) {
         if (CacheConfig.getInstance().isDebug()) {
-            Loger.d(TAG, log);
+            logger.d( log);
             LiveThreadPoolExecutor executor = LiveThreadPoolExecutor.getInstance();
             executor.execute(new WriteThread(TAG + "--!!" + log));
         }
@@ -48,7 +50,7 @@ class CacheWebViewLog {
 
     public static void d(String log, Throwable e) {
         if (CacheConfig.getInstance().isDebug()) {
-            Loger.d(TAG, log);
+            logger.d( log);
             LiveThreadPoolExecutor executor = LiveThreadPoolExecutor.getInstance();
             executor.execute(new WriteThread(TAG + "--!!" + log, e));
         }
@@ -90,7 +92,7 @@ class CacheWebViewLog {
                 if (alldir != null && !alldir.exists()) {
                     alldir.mkdirs();
                 }
-                Loger.d(TAG, "WriteThread", e);
+                logger.d( "WriteThread", e);
             } finally {
                 if (os != null) {
                     try {

@@ -189,7 +189,7 @@ public class TeamPkResultPager extends BasePager {
         mLayoutManager = new ContributionLayoutManager(spanCount);
         int itemWidth = rclContributionRank.getMeasuredWidth() / spanCount;
         mLayoutManager.setItemWidth(itemWidth);
-        Loger.e("TeamPkResultPager", "======>initRecycleView:" + itemWidth);
+        logger.e( "======>initRecycleView:" + itemWidth);
         rclContributionRank.setLayoutManager(mLayoutManager);
         pkResultAdapter = new PkResultAdapter(mContributions, itemWidth);
         rclContributionRank.setAdapter(pkResultAdapter);
@@ -239,13 +239,13 @@ public class TeamPkResultPager extends BasePager {
         int pkResult = (int) (data.getMyTeamResultInfo().getEnergy() - data.getCompetitorResultInfo().getEnergy());
         if (pkResult == 0) {
             showDrawAnim();
-            Loger.e("PkResult", "======> ResultPager show showDraw");
+            logger.e( "======> ResultPager show showDraw");
         } else if (pkResult > 0) {
             showWinAnim();
-            Loger.e("PkResult", "======> ResultPager show showWin");
+            logger.e( "======> ResultPager show showWin");
         } else {
             showLoseAnim();
-            Loger.e("PkResult", "======> ResultPager show showLose");
+            logger.e( "======> ResultPager show showLose");
         }
     }
 
@@ -351,7 +351,7 @@ public class TeamPkResultPager extends BasePager {
                 .getAddEnergy();
         long otherTeamOldEnergy = data.getCompetitorEngerInfo().getTotalEnergy() - data.getCompetitorEngerInfo()
                 .getAddEnergy();
-        Loger.e("TeamPkResultPager", "========>updateProgressBar:" + myTeamOldEnergy + ":" + otherTeamOldEnergy);
+        logger.e( "========>updateProgressBar:" + myTeamOldEnergy + ":" + otherTeamOldEnergy);
         float ratio;
         if ((myTeamOldEnergy + otherTeamOldEnergy) > 0) {
             ratio = myTeamOldEnergy / (float) (myTeamOldEnergy + otherTeamOldEnergy);
@@ -362,7 +362,7 @@ public class TeamPkResultPager extends BasePager {
         tpbEnergyBar.setProgress(progress);
         tvMyTeamEnergy.setText(myTeamOldEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamOldEnergy + "");
-        Loger.e("TeamPkResultPager", "========>updateProgressBar22222:" + progress);
+        logger.e( "========>updateProgressBar22222:" + progress);
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -498,7 +498,7 @@ public class TeamPkResultPager extends BasePager {
      * 注 此处的暂停  只是将音量设置为0  （因为 动画和音效是 同步的）
      */
     private void pauseMusic() {
-        Loger.e("TeamPkResultPager", "======>pauseMusic called");
+        logger.e( "======>pauseMusic called");
         if (soundPoolHelper != null) {
             for (int i = 0; i < soundResArray.length; i++) {
                 soundPoolHelper.setVolume(soundResArray[i], 0);
@@ -513,7 +513,7 @@ public class TeamPkResultPager extends BasePager {
      * 注释  将音量恢复为暂停之前的状态
      */
     private void resumeMusic() {
-        Loger.e("TeamPkResultPager", "======>resumeMusic called");
+        logger.e( "======>resumeMusic called");
         if (soundPoolHelper != null) {
             for (int i = 0; i < soundResArray.length; i++) {
                 if (soundResArray[i] == R.raw.war_bg) {
@@ -886,7 +886,7 @@ public class TeamPkResultPager extends BasePager {
     private void turn2openBox() {
         if (mFinalPkResult != null && mFinalPkResult.getMyTeamResultInfo()
                 != null && mFinalPkResult.getCompetitorResultInfo() != null) {
-            Loger.e("teamPkResultPager", "======>turn2openBox called");
+            logger.e( "======>turn2openBox called");
             mTeamPkBll.showOpenBoxScene(mFinalPkResult.getMyTeamResultInfo().getEnergy()
                     >= mFinalPkResult.getCompetitorResultInfo().getEnergy());
         }
@@ -901,7 +901,7 @@ public class TeamPkResultPager extends BasePager {
 
     @Override
     public void initData() {
-        Loger.e(TAG, "======> initData called");
+        logger.e( "======> initData called");
     }
 }
 

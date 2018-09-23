@@ -307,7 +307,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                Loger.e(TAG, "====>onAnimationUpdate:" + animation.getAnimatedFraction());
+                logger.e( "====>onAnimationUpdate:" + animation.getAnimatedFraction());
                 if (!isInited && animation.getAnimatedFraction() > 0) {
                     isInited = true;
                     return;
@@ -336,7 +336,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
      * 展示 战队成员列表
      */
     private void showTeamMembers() {
-        Loger.e(TAG, "=====>showTeamMembers called");
+        logger.e( "=====>showTeamMembers called");
         rclTeamMember = mView.findViewById(R.id.rcl_teampk_teammember);
         rclTeamMember.setVisibility(View.VISIBLE);
 
@@ -345,7 +345,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
         int realY = Math.min(point.x, point.y);
         layoutParams.topMargin = (int) (realY * 0.32);
-        Loger.e("TeamPkTeamSelectPager", "=======>showTeamMembers:" + point.x + ":" + point.y);
+        logger.e( "=======>showTeamMembers:" + point.x + ":" + point.y);
         rclTeamMember.setLayoutParams(layoutParams);
         final int spanCount = 5;
         rclTeamMember.setLayoutManager(new TeamMemberGridlayoutManager(mContext, 5,
@@ -454,12 +454,12 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         int topMargin = (int) (realY * 0.456f);
         layoutParams.topMargin = topMargin;
         rlTeamIntroduceRoot.setLayoutParams(layoutParams);
-        Loger.e("TeamPkTeamSelectPager", "=====>showTeamIntroduce:" + topMargin);
+        logger.e( "=====>showTeamIntroduce:" + topMargin);
         displayTeamInfo();
     }
 
     private void bgMaskFadeIn() {
-        Loger.e("TeamPkTeamSelectPager", "=====>bgMaskFadeIn called:");
+        logger.e( "=====>bgMaskFadeIn called:");
         if(ivBgMask.getVisibility() != View.VISIBLE){
             ivBgMask.setVisibility(View.VISIBLE);
             AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.
@@ -830,7 +830,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     }
 
     private void showMarquee() {
-        Loger.e(TAG, "========> showMarquee");
+        logger.e( "========> showMarquee");
         ((ViewGroup) mView).setClipChildren(false);
         final int spanCount = 3;
         lavTeamSelectAnimView.cancelAnimation();
@@ -858,7 +858,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
                     top = getTopGap(teamsRecyclerView,spanCount);
                     top = top <0?0:top;
                 }
-                Loger.e("cksdd","top:"+top);
+                logger.e( "top:"+top);
                 outRect.set(left, top, right, bottom);
             }
         });
@@ -934,7 +934,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     }
 
     private void cancelMarquee() {
-        Loger.e(TAG, "======>cancelMarquee");
+        logger.e( "======>cancelMarquee");
         stopMusic(R.raw.marquee);
         if (teamItemAnimInfoList != null && teamItemAnimInfoList.size() > 0) {
             for (TeamItemAnimInfo itemAnimInfo : teamItemAnimInfoList) {
@@ -948,7 +948,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
         if (teamsRecyclerView != null && teamsRecyclerView.getParent() != null) {
             ((ViewGroup) teamsRecyclerView.getParent()).removeView(teamsRecyclerView);
         }
-        Loger.e(TAG, "======>cancelMarquee done");
+        logger.e( "======>cancelMarquee done");
     }
 
     /**
@@ -992,7 +992,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
 
     private void showTimeCutdown() {
-        Loger.e(TAG, "===>show time cut down");
+        logger.e( "===>show time cut down");
         ivBgMask.setVisibility(View.GONE);
         String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "time_cutdown/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "time_cutdown/data.json";
@@ -1037,7 +1037,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
 
     @Override
     public void initData() {
-        //Loger.e(TAG, "======> initData called");
+        //logger.e( "======> initData called");
     }
 
 

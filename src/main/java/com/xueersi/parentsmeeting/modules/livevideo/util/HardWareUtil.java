@@ -4,6 +4,9 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
 import android.text.format.Formatter;
+
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.BufferedReader;
@@ -21,7 +24,7 @@ import java.util.regex.Pattern;
 
 public class HardWareUtil {
     private static String TAG = "HardWareUtil";
-
+    protected static Logger logger = LoggerFactory.getLogger(TAG);
     /**
      * 获得cpu型号名字
      *
@@ -42,7 +45,7 @@ public class HardWareUtil {
                         cpu = text.substring(index + 1);
                     }
                     cpu = cpu.trim();
-                    Loger.d(TAG, "getCpuName:text=" + text + ",cpu=" + cpu);
+                    logger.d( "getCpuName:text=" + text + ",cpu=" + cpu);
                     return cpu;
                 }
             }
@@ -94,7 +97,7 @@ public class HardWareUtil {
             reader.close();
             cpuInfos = load.split(" ");
         } catch (IOException ex) {
-            Loger.e(TAG, "IOException" + ex.toString());
+            logger.e( "IOException" + ex.toString());
             return 0;
         }
         long totalCpu = 0;
@@ -104,7 +107,7 @@ public class HardWareUtil {
                     + Long.parseLong(cpuInfos[6]) + Long.parseLong(cpuInfos[5])
                     + Long.parseLong(cpuInfos[7]) + Long.parseLong(cpuInfos[8]);
         } catch (ArrayIndexOutOfBoundsException e) {
-            Loger.i(TAG, "ArrayIndexOutOfBoundsException" + e.toString());
+            logger.i( "ArrayIndexOutOfBoundsException" + e.toString());
             return 0;
         }
         return totalCpu;
@@ -125,7 +128,7 @@ public class HardWareUtil {
             reader.close();
             cpuInfos = load.split(" ");
         } catch (IOException e) {
-            Loger.e(TAG, "IOException" + e.toString());
+            logger.e( "IOException" + e.toString());
             return 0;
         }
         long appCpuTime = 0;
@@ -134,7 +137,7 @@ public class HardWareUtil {
                     + Long.parseLong(cpuInfos[14]) + Long.parseLong(cpuInfos[15])
                     + Long.parseLong(cpuInfos[16]);
         } catch (ArrayIndexOutOfBoundsException e) {
-            Loger.i(TAG, "ArrayIndexOutOfBoundsException" + e.toString());
+            logger.i( "ArrayIndexOutOfBoundsException" + e.toString());
             return 0;
         }
         return appCpuTime;

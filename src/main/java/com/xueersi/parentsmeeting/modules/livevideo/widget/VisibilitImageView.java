@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**
@@ -12,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
  */
 public class VisibilitImageView extends ImageView {
     String TAG = "VisibilitImageView";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
     public VisibilitImageView(Context context) {
         super(context);
@@ -20,12 +23,12 @@ public class VisibilitImageView extends ImageView {
     public VisibilitImageView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         int visibility = getVisibility();
-        Loger.d(TAG, "VisibilitImageView:visibility=" + visibility);
+        logger.d( "VisibilitImageView:visibility=" + visibility);
     }
 
     @Override
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
-        Loger.d(TAG, "setVisibility:visibility=" + visibility);
+        logger.d( "setVisibility:visibility=" + visibility);
     }
 }

@@ -184,7 +184,7 @@
 //                    tvSpeectevalVideotime.setVisibility(View.GONE);
 //                    stopSpeectevalVideotime();
 //                    mIse.stop();
-//                    Loger.d(TAG, "mIse.stop");
+//                    logger.d( "mIse.stop");
 //                    rrpSpeectevalVideo.setVisibility(View.GONE);
 //                    setSpeechEvalStartPlay();
 //                    setPlayAndUploadEnabled(false);
@@ -210,7 +210,7 @@
 //            @Override
 //            public void onClick(View v) {
 //                mIse.cancel();
-//                Loger.d(TAG, "mIse.cancel");
+//                logger.d( "mIse.cancel");
 //                rlSpeectevalUpload.setVisibility(View.VISIBLE);
 //                rlSpeectevalCancle.setVisibility(View.GONE);
 //                tvSpeectevalVideotime.setVisibility(View.GONE);
@@ -232,17 +232,17 @@
 //                                AudioPlayerListening() {
 //                                    @Override
 //                                    public void playComplete(int where) {
-//                                        Loger.i(TAG, "playComplete");
+//                                        logger.i( "playComplete");
 //                                    }
 //
 //                                    @Override
 //                                    public void prepared(int duration) {
-//                                        Loger.i(TAG, "prepared:duration=" + duration);
+//                                        logger.i( "prepared:duration=" + duration);
 //                                    }
 //
 //                                    @Override
 //                                    public void currentDuration(int current, int duration) {
-//                                        Loger.i(TAG, "currentDuration:current=" + current + ",duration=" + duration);
+//                                        logger.i( "currentDuration:current=" + current + ",duration=" + duration);
 //                                    }
 //
 //                                }, false, 0, true);
@@ -455,9 +455,9 @@
 //            ((AnimationDrawable) ivLoading.getBackground()).start();
 //            TextView tvLoadingTip = (TextView) loadView.findViewById(R.id.tv_data_loading_tip);
 //            tvLoadingTip.setText(tip);
-//            Loger.i(TAG, "startLoad:start");
+//            logger.i( "startLoad:start");
 //        } else {
-//            Loger.i(TAG, "startLoad:else");
+//            logger.i( "startLoad:else");
 //        }
 //    }
 //
@@ -468,9 +468,9 @@
 //            loadView.setVisibility(View.GONE);
 //            ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
 //            ((AnimationDrawable) ivLoading.getBackground()).stop();
-//            Loger.i(TAG, "stopLoad:stop");
+//            logger.i( "stopLoad:stop");
 //        } else {
-//            Loger.i(TAG, "stopLoad:else");
+//            logger.i( "stopLoad:else");
 //        }
 //    }
 //
@@ -483,7 +483,7 @@
 //        public void onBeginOfSpeech() {
 //            begin = System.currentTimeMillis();
 //            // 此回调表示：sdk内部录音机已经准备好了，用户可以开始语音输入
-//            Loger.i(TAG, "onBeginOfSpeech");
+//            logger.i( "onBeginOfSpeech");
 //            rrpSpeectevalVideo.setVisibility(View.VISIBLE);
 //        }
 //
@@ -525,13 +525,13 @@
 //
 //        @Override
 //        public void onVolumeUpdate(int volume) {
-//            Loger.i(TAG, "onVolumeChanged:volume=" + volume);
+//            logger.i( "onVolumeChanged:volume=" + volume);
 //            rrpSpeectevalVideo.setProgress(volume);
 //        }
 //
 //        public void onEndOfSpeech() {
 //            // 此回调表示：检测到了语音的尾端点，已经进入识别过程，不再接受语音输入
-//            Loger.i(TAG, "onEndOfSpeech");
+//            logger.i( "onEndOfSpeech");
 //            rlSpeectevalCancle.setVisibility(View.GONE);
 //            rlSpeectevalUpload.setVisibility(View.VISIBLE);
 //            rrpSpeectevalVideo.setVisibility(View.GONE);
@@ -563,7 +563,7 @@
 //        speechEvalAction.sendSpeechEvalResult(id, stuAnswer, times, (int) entranceTime, new OnSpeechEval() {
 //            @Override
 //            public void onSpeechEval(Object object) {
-//                Loger.i(TAG, "sendSpeechEvalResult:onSpeechEval");
+//                logger.i( "sendSpeechEvalResult:onSpeechEval");
 //                wvSpeechResult.setVisibility(View.VISIBLE);
 //                stopSpeechEval();
 //                ViewGroup group = (ViewGroup) rlSpeectevalGroup.getParent();
@@ -578,7 +578,7 @@
 //                            .getResources()
 //                            .getString(R.string.net_request_error));
 //                }
-//                Loger.i(TAG, "sendSpeechEvalResult:onPmFailure:msg=" + msg);
+//                logger.i( "sendSpeechEvalResult:onPmFailure:msg=" + msg);
 //                if (isEnd) {
 //                    tvSpeectevalPlay.postDelayed(new Runnable() {
 //                        @Override
@@ -595,7 +595,7 @@
 //
 //            @Override
 //            public void onPmError(ResponseEntity responseEntity) {
-//                Loger.i(TAG, "sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
+//                logger.i( "sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
 //                XESToastUtils.showToast(mContext, responseEntity
 //                        .getErrorMsg());
 //                stopLoad();
@@ -605,7 +605,7 @@
 //
 //    public void stopSpeechEval() {
 //        mIse.cancel();
-//        Loger.d(TAG, "mIse.cancel");
+//        logger.d( "mIse.cancel");
 //        new Thread() {
 //            @Override
 //            public void run() {
@@ -720,7 +720,7 @@
 //            speechExamSubmitAll();
 //        } else {
 //            mIse.stop();
-//            Loger.d(TAG, "mIse.stop");
+//            logger.d( "mIse.stop");
 //            ivSpeectevalStart.setEnabled(false);
 //            ivSpeectevalPlay.setEnabled(false);
 //            ivSpeectevalUpload.setEnabled(false);
@@ -739,14 +739,14 @@
 //
 //    private void speechExamSubmitAll() {
 //        if (onPageFinished) {
-//            Loger.i(TAG, "speechExamSubmitAll");
+//            logger.i( "speechExamSubmitAll");
 //            wvSpeechResult.loadUrl("javascript:speechExamSubmitAll()");
 //        }
 //    }
 //
 //    public boolean onSpeechResult(final String json) {
 //        if (onPageFinished) {
-//            Loger.i(TAG, "onSpeechResult");
+//            logger.i( "onSpeechResult");
 //            mView.post(new Runnable() {
 //                @Override
 //                public void run() {

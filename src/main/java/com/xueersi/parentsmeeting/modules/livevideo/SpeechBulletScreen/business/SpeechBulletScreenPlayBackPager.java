@@ -301,7 +301,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
     }
 
     protected SpannableStringBuilder createSpannable(String name, String msg, Drawable drawable, boolean isGuest) {
-//        Loger.i(TAG, "createSpannable:name=" + name + ",ftype=" + ftype);
+//        logger.i( "createSpannable:name=" + name + ",ftype=" + ftype);
 
         String text = " " + name + " : " + msg + "  ";
         SpannableStringBuilder spannable = new SpannableStringBuilder(text);

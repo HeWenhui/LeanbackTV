@@ -27,6 +27,8 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnglishSpeekPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
@@ -61,6 +63,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements EnglishSpeekAction {
     static int staticInt = 0;
     String TAG = "EnglishSpeekBll" + staticInt++;
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     private Activity activity;
     private EnglishSpeekHttp liveBll;
     private LiveAndBackDebug liveAndBackDebug;
@@ -187,7 +190,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             } else {
                 this.talLanguage = talLanguage;
             }
-            Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
+            logger.d( "initView:time1=" + (System.currentTimeMillis() - before));
         }
         this.bottomContent = bottomContent;
         myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_english_content);
@@ -429,7 +432,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void destory() {
-        Loger.d(TAG, "destory:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
+        logger.d( "destory:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
         isDestory = true;
         isDestory2 = true;
         stop(null);
@@ -479,14 +482,14 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         String time_len = jsonObject.getString("time_len");
                         int en_seg_num = jsonObject.getInt("en_seg_num");
                         totalEn_seg_num += en_seg_num;
-//                                Loger.d(TAG, "onProcessData:out=" + out);
+//                                logger.d( "onProcessData:out=" + out);
                         String duration = getDuration(time_len);
                         if (duration == null || duration.equals(lastduration)) {
                             return;
                         }
                         String en_seg_len = jsonObject.optString("en_seg_len");
                         lastduration = duration;
-//                            Loger.d(TAG, "onProcessData:en_seg_num=" + en_seg_num + ",duration=" + duration);
+//                            logger.d( "onProcessData:en_seg_num=" + en_seg_num + ",duration=" + duration);
                         String[] split = duration.split("\\.");
                         if (split.length == 2) {
                             int totalSecond = Integer.parseInt(split[0]);
@@ -497,7 +500,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                                     sendDbDuration = dbDuration;
                                     liveBll.sendDBStudent(dbDuration);
                                     lastDBTime = nowTime;
-                                    Loger.d(TAG, "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
+                                    logger.d( "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
                                 }
                             }
                             if (totalOpeningLength.duration == 0) {
@@ -506,7 +509,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                                 int d = (int) totalOpeningLength.duration;
                                 setEnglishTime((totalSecond + d) / 60, (totalSecond + d) % 60);
                             }
-//                                        Loger.d(TAG, "onProcessData:totalSecond=" + totalSecond);
+//                                        logger.d( "onProcessData:totalSecond=" + totalSecond);
                             second15 += totalSecond - lastSecond;
                             int oldProgress = tv_livevideo_english_prog.getProgress();
                             if (second15 * 3 != oldProgress) {
@@ -518,7 +521,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //                                                setTime(2 * MAX_SECOND - second15);
                                     newProgress = (second15 % MAX_SECOND) * 3;
                                     setTime(MAX_SECOND - second15 % MAX_SECOND);
-//                                                        Loger.d(TAG, "onProcessData(<0):oldProgress=" + oldProgress
+//                                                        logger.d( "onProcessData(<0):oldProgress=" + oldProgress
 // + ",second15=" + second15);
                                 } else {
                                     newProgress = second15 * 3;
@@ -528,7 +531,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                                         setTime(MAX_SECOND);
                                     }
                                 }
-                                Loger.d(TAG, "onProcessData:second=" + second + ",oldProgress=" + oldProgress
+                                logger.d( "onProcessData:second=" + second + ",oldProgress=" + oldProgress
                                         + ",newProgress=" + newProgress);
                                 if (newProgress != 45) {
                                     setProg(startProgress, newProgress);
@@ -589,7 +592,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onPredict(String predict) {
-        Loger.d(TAG, "onPredict:predict=" + predict);
+        logger.d( "onPredict:predict=" + predict);
         if (totalOpeningLength == null) {
             return;
         }
@@ -598,7 +601,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             JSONObject jsonObject = new JSONObject(predict);
             int en_seg_num = 0;
             totalEn_seg_num += en_seg_num;
-//                                Loger.d(TAG, "onProcessData:out=" + out);
+//                                logger.d( "onProcessData:out=" + out);
             final String duration = jsonObject.getString("time");
             if (duration == null || duration.equals(lastduration)) {
                 return;
@@ -614,7 +617,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                     sendDbDuration = dbDuration;
                     liveBll.sendDBStudent(dbDuration);
                     lastDBTime = nowTime;
-                    Loger.d(TAG, "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
+                    logger.d( "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
                 }
             }
             second15 += totalSecond - lastSecond;
@@ -637,7 +640,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //                                                setTime(2 * MAX_SECOND - second15);
                             newProgress = (second15 % MAX_SECOND) * 3;
                             setTime(MAX_SECOND - second15 % MAX_SECOND);
-//                                                        Loger.d(TAG, "onProcessData(<0):oldProgress=" + oldProgress
+//                                                        logger.d( "onProcessData(<0):oldProgress=" + oldProgress
 // + ",second15=" + second15);
                         } else {
                             newProgress = second15 * 3;
@@ -647,7 +650,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                                 setTime(MAX_SECOND);
                             }
                         }
-                        Loger.d(TAG, "onProcessData:second=" + second + ",oldProgress=" + oldProgress
+                        logger.d( "onProcessData:second=" + second + ",oldProgress=" + oldProgress
                                 + ",newProgress=" + newProgress);
                         if (newProgress != 45) {
                             setProg(startProgress, newProgress);
@@ -709,7 +712,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
             @Override
             public void onAnimationEnd(Animator animation) {
-//                                                        Loger.i(TAG, "onAnimationEnd:equal=" + (lastValueAnimator
+//                                                        logger.i( "onAnimationEnd:equal=" + (lastValueAnimator
 // == valueAnimator));
                 if (lastValueAnimator == valueAnimator) {
                     lastValueAnimator = null;
@@ -718,7 +721,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
             @Override
             public void onAnimationCancel(Animator animation) {
-                Loger.i(TAG, "onAnimationCancel:equal=" + (lastValueAnimator ==
+                logger.i( "onAnimationCancel:equal=" + (lastValueAnimator ==
                         valueAnimator));
             }
 
@@ -767,7 +770,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onDBStart() {
-        Loger.d(TAG, "onDBStart:dbStart=" + dbStart);
+        logger.d( "onDBStart:dbStart=" + dbStart);
         if (!dbStart) {
             dbStart = true;
             dbSecond = lastSecond;
@@ -782,7 +785,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onDBStop() {
-        Loger.d(TAG, "onDBStop:dbStart=" + dbStart + ",dbDuration=" + dbDuration + ",sendDbDuration=" + sendDbDuration);
+        logger.d( "onDBStop:dbStart=" + dbStart + ",dbDuration=" + dbDuration + ",sendDbDuration=" + sendDbDuration);
         if (dbStart) {
             dbStart = false;
             LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
@@ -809,7 +812,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onModeChange(final String mode, final boolean audioRequest) {
-        Loger.d(TAG, "onModeChange:mode=" + mode + ",audioRequest=" + audioRequest);
+        logger.d( "onModeChange:mode=" + mode + ",audioRequest=" + audioRequest);
         this.mode = mode;
         myView.post(new Runnable() {
             @Override
@@ -860,7 +863,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     @Override
     public void praise(int answer) {
 
-        Loger.d(TAG, "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
+        logger.d( "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration >= answer) {
             Map<String, String> mData = new HashMap<>();
             mData.put("logtype", "sendPraise");
@@ -953,7 +956,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     @Override
     public void remind(int answer) {
 
-        Loger.d(TAG, "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
+        logger.d( "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
 
         if (sendDbDuration <= answer) {
             Map<String, String> mData = new HashMap<>();

@@ -254,7 +254,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 
                 mLiveBll.sendMessage(jsonObject);
             } catch (Exception e) {
-//            Loger.e(TAG, "understand", e);
+//            logger.e( "understand", e);
                 mLogtf.e("sendDanmakuMessage", e);
             }
         }

@@ -6,6 +6,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**
@@ -14,7 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
  */
 public class TextStrokeUtil {
     static String TAG = "TextStrokeUtil";
-
+    protected static Logger logger = LoggerFactory.getLogger(TAG);
     public static Bitmap createTextStroke(String num, Typeface fontFace, float textSize, int textColor, int stroke, int strokeColor) {
         Paint paintOut2 = new Paint();
         paintOut2.setAntiAlias(true);
@@ -55,7 +57,7 @@ public class TextStrokeUtil {
         }
 //        paintOut2.setColor(bianColor);
 //        canvas2.drawText(num, stroke, baseline, paintOut2);
-        Loger.d(TAG, "createTextStroke:time=" + (System.currentTimeMillis() - before));
+        logger.d( "createTextStroke:time=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         bitmap.getPixels(pixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
 
@@ -140,8 +142,8 @@ public class TextStrokeUtil {
                 }
             }
         }
-        Loger.d(TAG, "createTextStroke:noStrokeCount=" + noStrokeCount);
-        Loger.d(TAG, "createTextStroke:time2=" + (System.currentTimeMillis() - before));
+        logger.d( "createTextStroke:noStrokeCount=" + noStrokeCount);
+        logger.d( "createTextStroke:time2=" + (System.currentTimeMillis() - before));
         paintOut2.setColor(textColor);
         canvas2.drawText(num, stroke, baseline, paintOut2);
         return bitmap;

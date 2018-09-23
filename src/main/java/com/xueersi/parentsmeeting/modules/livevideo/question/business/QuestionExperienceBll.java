@@ -193,7 +193,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
-                        Loger.d(TAG, "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity
+                        logger.d( "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity
                                 .getJsonObject());
                         VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer
                                 (responseEntity,

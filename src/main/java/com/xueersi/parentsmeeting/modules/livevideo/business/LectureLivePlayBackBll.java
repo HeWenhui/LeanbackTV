@@ -142,7 +142,7 @@ public class LectureLivePlayBackBll extends BaseBll {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
-                        Loger.d(TAG, "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                        logger.d( "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
                         VideoResultEntity entity = mCourseHttpResponseParser.parseQuestionAnswer(responseEntity, voice);
                         entity.setVoice(voice);
                         isEmpty(entity, dataLoadEntity);
@@ -385,12 +385,12 @@ public class LectureLivePlayBackBll extends BaseBll {
                 LiveMessageGroupEntity liveMessageGroupEntity = mCourseHttpResponseParser.liveMessagesParser(array);
                 ArrayList<LivePlayBackMessageEntity> liveMessageEntities = liveMessageGroupEntity.liveMessageEntities;
                 if (liveMessageGroupEntity.count > 0) {
-                    Loger.i(TAG, "getLiveLectureMsgsFromFile:file=" + file.getName() + ",liveMessageEntities=" +
+                    logger.i( "getLiveLectureMsgsFromFile:file=" + file.getName() + ",liveMessageEntities=" +
                             liveMessageEntities.size());
                     return liveMessageGroupEntity;
                 }
             } catch (Exception e) {
-                Loger.i(TAG, "getLiveLectureMsgsFromFile:file=" + file.getName() + ",delete");
+                logger.i( "getLiveLectureMsgsFromFile:file=" + file.getName() + ",delete");
                 file.delete();
             }
         }
@@ -401,7 +401,7 @@ public class LectureLivePlayBackBll extends BaseBll {
     public void saveLiveLectureMsgs(final File dir, String channel, final String start, final
     ArrayList<VideoQuestionEntity> timeEntities) {
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        Loger.i(TAG, "saveLiveLectureMsgs:start=" + start);
+        logger.i( "saveLiveLectureMsgs:start=" + start);
         mCourseHttpManager.getLiveLectureMsgs(myUserInfoEntity.getEnstuId(), channel, 50, start, 1, new
                 HttpCallBack(false) {
 
@@ -442,23 +442,23 @@ public class LectureLivePlayBackBll extends BaseBll {
                             }
                         }
                         if (save == 1 || save == 3) {
-                            Loger.i(TAG, "saveLiveLectureMsgs:onPmSuccess:liveMessageGroupEntity=" + liveMessageEntities.size()
+                            logger.i( "saveLiveLectureMsgs:onPmSuccess:liveMessageGroupEntity=" + liveMessageEntities.size()
                                     + "," + liveMessageGroupEntity.otherMessageEntities.size() + ",save=" + save + ",start="
                                     + start);
                         } else {
-                            Loger.i(TAG, "saveLiveLectureMsgs:onPmSuccess:liveMessageGroupEntity=" + liveMessageEntities.size()
+                            logger.i( "saveLiveLectureMsgs:onPmSuccess:liveMessageGroupEntity=" + liveMessageEntities.size()
                                     + "," + liveMessageGroupEntity.otherMessageEntities.size() + ",save=" + save);
                         }
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
-                        Loger.i(TAG, "saveLiveLectureMsgs:onPmFailure:msg=" + msg);
+                        logger.i( "saveLiveLectureMsgs:onPmFailure:msg=" + msg);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        Loger.i(TAG, "saveLiveLectureMsgs:onPmError:ErrorMsg=" + responseEntity.getErrorMsg());
+                        logger.i( "saveLiveLectureMsgs:onPmError:ErrorMsg=" + responseEntity.getErrorMsg());
                     }
                 });
     }
@@ -475,12 +475,12 @@ public class LectureLivePlayBackBll extends BaseBll {
     ArrayList<VideoQuestionEntity> timeEntities, final LectureLivePlayBackVideoActivity.GetLiveLectureMsgs
                                            getLiveLectureMsgs) {
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
-        Loger.i(TAG, "getLiveLectureMsgs:start=" + start);
+        logger.i( "getLiveLectureMsgs:start=" + start);
         File file = new File(dir, start);
         LiveMessageGroupEntity liveMessageGroupEntity = getLiveLectureMsgsFromFile(file);
         if (liveMessageGroupEntity != null && liveMessageGroupEntity.count > 0) {
             ArrayList<LivePlayBackMessageEntity> liveMessageEntities = liveMessageGroupEntity.liveMessageEntities;
-            Loger.i(TAG, "getLiveLectureMsgs:count=" + liveMessageGroupEntity.count + ",liveMessageEntities=" +
+            logger.i( "getLiveLectureMsgs:count=" + liveMessageGroupEntity.count + ",liveMessageEntities=" +
                     liveMessageEntities.size());
             getLiveLectureMsgs.getLiveLectureMsgs(liveMessageGroupEntity);
             return;
@@ -503,24 +503,24 @@ public class LectureLivePlayBackBll extends BaseBll {
                                 long time = Long.parseLong(file.getName());
                                 if (Long.parseLong(start) < time && time <= liveMessageGroupEntity.lastid) {
                                     boolean delete = file.delete();
-                                    Loger.i(TAG, "getLiveLectureMsgs:onPmSuccess:delete=" + delete);
+                                    logger.i( "getLiveLectureMsgs:onPmSuccess:delete=" + delete);
                                 }
                             }
                         }
-                        Loger.i(TAG, "getLiveLectureMsgs:onPmSuccess:liveMessageGroupEntity=" + liveMessageEntities.size()
+                        logger.i( "getLiveLectureMsgs:onPmSuccess:liveMessageGroupEntity=" + liveMessageEntities.size()
                                 + "," + liveMessageGroupEntity.otherMessageEntities.size());
                         getLiveLectureMsgs.getLiveLectureMsgs(liveMessageGroupEntity);
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
-                        Loger.i(TAG, "getLiveLectureMsgs:onPmFailure:msg=" + msg);
+                        logger.i( "getLiveLectureMsgs:onPmFailure:msg=" + msg);
                         getLiveLectureMsgs.onPmFailure();
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        Loger.i(TAG, "getLiveLectureMsgs:onPmError:ErrorMsg=" + responseEntity.getErrorMsg());
+                        logger.i( "getLiveLectureMsgs:onPmError:ErrorMsg=" + responseEntity.getErrorMsg());
                     }
                 });
     }
@@ -551,7 +551,7 @@ public class LectureLivePlayBackBll extends BaseBll {
                                 int vCategory2 = videoQuestionEntity2.getvCategory();
                                 if (vCategory2 == LocalCourseConfig.CATEGORY_VIDEO_START) {//小于开始时间
                                     if (id <= (long) videoQuestionEntity2.getvQuestionInsretTime() * 1000000) {
-//                                        Loger.i(TAG, "saveMsgToFile:continue");
+//                                        logger.i( "saveMsgToFile:continue");
                                         continue a;
                                     }
                                 }
@@ -563,7 +563,7 @@ public class LectureLivePlayBackBll extends BaseBll {
             } catch (JSONException e) {
             }
         }
-        Loger.i(TAG, "saveMsgToFile:array=" + array.length() + ",array2=" + array2.length());
+        logger.i( "saveMsgToFile:array=" + array.length() + ",array2=" + array2.length());
         FileUtils.writeFileFromString(dir.getPath() + File.separator + start, array2.toString(), false);
     }
 
@@ -605,19 +605,19 @@ public class LectureLivePlayBackBll extends BaseBll {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
-                        Loger.i(TAG, "sendSpeechEvalResult:onPmSuccess=" + responseEntity.getJsonObject());
+                        logger.i( "sendSpeechEvalResult:onPmSuccess=" + responseEntity.getJsonObject());
                         onSpeechEval.onSpeechEval(null);
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
-                        Loger.i(TAG, "sendSpeechEvalResult:onPmFailure=" + msg);
+                        logger.i( "sendSpeechEvalResult:onPmFailure=" + msg);
                         onSpeechEval.onPmFailure(error, msg);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        Loger.i(TAG, "sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
+                        logger.i( "sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
                         onSpeechEval.onPmError(responseEntity);
                     }
                 });
@@ -632,19 +632,19 @@ public class LectureLivePlayBackBll extends BaseBll {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                        Loger.i(TAG, "sendSpeechEvalResult:onPmSuccess=" + jsonObject);
+                        logger.i( "sendSpeechEvalResult:onPmSuccess=" + jsonObject);
                         onSpeechEval.onSpeechEval(jsonObject);
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
-                        Loger.i(TAG, "sendSpeechEvalResult:onPmFailure=" + msg);
+                        logger.i( "sendSpeechEvalResult:onPmFailure=" + msg);
                         onSpeechEval.onPmFailure(error, msg);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        Loger.i(TAG, "sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
+                        logger.i( "sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
                         onSpeechEval.onPmError(responseEntity);
                     }
                 });
@@ -664,12 +664,12 @@ public class LectureLivePlayBackBll extends BaseBll {
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
-                        Loger.i(TAG, "sendSpeechEvalResult:onPmFailure=" + msg);
+                        logger.i( "sendSpeechEvalResult:onPmFailure=" + msg);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        Loger.i(TAG, "sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
+                        logger.i( "sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
                     }
                 });
     }
@@ -711,18 +711,18 @@ public class LectureLivePlayBackBll extends BaseBll {
         mCourseHttpManager.sendExpeRecordInteract(url, termId, times, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.i(TAG, "sendRecordInteract : Success");
+                logger.i( "sendRecordInteract : Success");
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                Loger.i(TAG, "sendRecordInteract : Failure,msg: "+msg);
+                logger.i( "sendRecordInteract : Failure,msg: "+msg);
                 super.onPmFailure(error, msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                Loger.i(TAG, "sendRecordInteract : Error");
+                logger.i( "sendRecordInteract : Error");
                 super.onPmError(responseEntity);
             }
         });
@@ -818,13 +818,13 @@ public class LectureLivePlayBackBll extends BaseBll {
         mCourseHttpManager.sendLiveCourseVisitTime(myUserInfoEntity.getEnstuId(), stuCouId, liveId, hbTime, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.d(TAG, "onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                logger.d( "onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.d(TAG, "onPmError:errorMsg=" + responseEntity.getErrorMsg());
+                logger.d( "onPmError:errorMsg=" + responseEntity.getErrorMsg());
             }
 
             @Override

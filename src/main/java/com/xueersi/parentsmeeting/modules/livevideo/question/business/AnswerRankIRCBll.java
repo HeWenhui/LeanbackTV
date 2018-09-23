@@ -71,7 +71,7 @@ public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
                         mAnswerRankBll.showRankList(lst, -1);
                     }
                 } catch (Exception e) {
-                    Loger.i("=====notice " + e.getMessage());
+                    logger.i("=====notice " + e.getMessage());
                 }
             }
             break;

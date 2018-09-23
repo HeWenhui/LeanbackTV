@@ -7,6 +7,8 @@ import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -23,11 +25,13 @@ import java.util.HashMap;
  */
 public class ErrorWebViewClient extends WebViewClient {
     private String TAG;
+    protected Logger logger;
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     public HashMap<String, String> urlAndIp = new HashMap<>();
 
     public ErrorWebViewClient(String TAG) {
         this.TAG = TAG;
+        logger = LoggerFactory.getLogger(TAG);
     }
 
     @Override
@@ -53,7 +57,7 @@ public class ErrorWebViewClient extends WebViewClient {
                             synchronized (urlAndIp) {
                                 urlAndIp.put(url, remoteip);
                             }
-                            Loger.d(TAG, "onReceivedError:host=" + url2 + ",ip=" + remoteip);
+                            logger.d("onReceivedError:host=" + url2 + ",ip=" + remoteip);
                         }
                     } catch (UnknownHostException e) {
                         remoteip = "unknown";

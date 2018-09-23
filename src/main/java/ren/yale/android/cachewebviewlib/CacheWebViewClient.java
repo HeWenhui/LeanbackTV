@@ -35,117 +35,125 @@ final class CacheWebViewClient extends ErrorWebViewClient {
     private String mEncoding = "";
     private CacheInterceptor mCacheInterceptor;
     private Vector<String> mVisitVectorUrl = null;
-    private String mUserAgent="";
-    private HashMap<String,Map> mHeaderMaps;
+    private String mUserAgent = "";
+    private HashMap<String, Map> mHeaderMaps;
 
     private WebViewCache mWebViewCache;
 
-    public CacheWebViewClient(){
+    public CacheWebViewClient() {
         super("CacheWebViewClient");
         mHeaderMaps = new HashMap<>();
         mVisitVectorUrl = new Vector<>();
     }
 
-    public void setWebViewCache(WebViewCache webViewCache){
+    public void setWebViewCache(WebViewCache webViewCache) {
         mWebViewCache = webViewCache;
     }
 
-    public void setCustomWebViewClient(WebViewClient webViewClient){
+    public void setCustomWebViewClient(WebViewClient webViewClient) {
         mCustomWebViewClient = webViewClient;
     }
-    public void setUserAgent(String agent){
+
+    public void setUserAgent(String agent) {
         mUserAgent = agent;
     }
-    public String getUserAgent(){
+
+    public String getUserAgent() {
         return mUserAgent;
     }
-    public void addHeaderMap(String url ,Map<String, String> additionalHttpHeaders){
-        if(mHeaderMaps!=null&&additionalHttpHeaders!=null){
-            mHeaderMaps.put(url,additionalHttpHeaders);
+
+    public void addHeaderMap(String url, Map<String, String> additionalHttpHeaders) {
+        if (mHeaderMaps != null && additionalHttpHeaders != null) {
+            mHeaderMaps.put(url, additionalHttpHeaders);
         }
     }
 
-    public Map<String,String> getHeader(String url){
-        if(mHeaderMaps!=null){
+    public Map<String, String> getHeader(String url) {
+        if (mHeaderMaps != null) {
             return mHeaderMaps.get(url);
         }
         return null;
     }
 
-    public void setEncoding(String encoding){
+    public void setEncoding(String encoding) {
         mEncoding = encoding;
     }
-    public void setCacheInterceptor(CacheInterceptor interceptor){
+
+    public void setCacheInterceptor(CacheInterceptor interceptor) {
         mCacheInterceptor = interceptor;
     }
-    public void addVisitUrl(String url){
-        if (mVisitVectorUrl != null){
-            if (!mVisitVectorUrl.contains(url)){
+
+    public void addVisitUrl(String url) {
+        if (mVisitVectorUrl != null) {
+            if (!mVisitVectorUrl.contains(url)) {
                 mVisitVectorUrl.add(url);
             }
         }
 
     }
 
-    public void clearLastUrl(){
-        if (mVisitVectorUrl!=null&&mVisitVectorUrl.size()>0){
-            mVisitVectorUrl.remove(mVisitVectorUrl.size()-1);
+    public void clearLastUrl() {
+        if (mVisitVectorUrl != null && mVisitVectorUrl.size() > 0) {
+            mVisitVectorUrl.remove(mVisitVectorUrl.size() - 1);
         }
     }
 
-    public void clear(){
-        if (mVisitVectorUrl!=null){
+    public void clear() {
+        if (mVisitVectorUrl != null) {
             mVisitVectorUrl.clear();
             mVisitVectorUrl = null;
         }
-        if (mHeaderMaps!=null){
+        if (mHeaderMaps != null) {
             mHeaderMaps.clear();
             mHeaderMaps = null;
         }
 
     }
-    public String getOriginUrl(){
+
+    public String getOriginUrl() {
         String ou = "";
-        if (mVisitVectorUrl == null){
+        if (mVisitVectorUrl == null) {
             return ou;
         }
         try {
-            ou =  mVisitVectorUrl.lastElement();
+            ou = mVisitVectorUrl.lastElement();
             URL url = new URL(ou);
             int port = url.getPort();
-            ou=  url.getProtocol()+"://"+url.getHost()+(port==-1?"":":"+port);
-        }catch (Exception e){
+            ou = url.getProtocol() + "://" + url.getHost() + (port == -1 ? "" : ":" + port);
+        } catch (Exception e) {
         }
         return ou;
     }
-    public String getRefererUrl(){
-        if (mVisitVectorUrl == null){
+
+    public String getRefererUrl() {
+        if (mVisitVectorUrl == null) {
             return "";
         }
         try {
-            if (mVisitVectorUrl.size()>0){
-                return mVisitVectorUrl.get(mVisitVectorUrl.size()-1);
+            if (mVisitVectorUrl.size() > 0) {
+                return mVisitVectorUrl.get(mVisitVectorUrl.size() - 1);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
         }
         return "";
     }
 
-    public String getHost(String u){
+    public String getHost(String u) {
         String ou = "";
         try {
             URL url = new URL(u);
-            ou=  url.getHost();
-        }catch (Exception e){
+            ou = url.getHost();
+        } catch (Exception e) {
         }
         return ou;
     }
+
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-        if (mCustomWebViewClient!=null){
-            boolean ret =  mCustomWebViewClient.shouldOverrideUrlLoading(view,url);
-            if (ret){
+        if (mCustomWebViewClient != null) {
+            boolean ret = mCustomWebViewClient.shouldOverrideUrlLoading(view, url);
+            if (ret) {
                 return true;
             }
         }
@@ -157,9 +165,9 @@ final class CacheWebViewClient extends ErrorWebViewClient {
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
 
-        if (mCustomWebViewClient!=null){
-            boolean ret =  mCustomWebViewClient.shouldOverrideUrlLoading(view,request);
-            if (ret){
+        if (mCustomWebViewClient != null) {
+            boolean ret = mCustomWebViewClient.shouldOverrideUrlLoading(view, request);
+            if (ret) {
                 return true;
             }
         }
@@ -169,12 +177,12 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-        if (mIsBlockImageLoad){
+        if (mIsBlockImageLoad) {
             WebSettings webSettings = view.getSettings();
             webSettings.setBlockNetworkImage(true);
         }
-        if (mCustomWebViewClient!=null){
-            mCustomWebViewClient.onPageStarted(view,url,favicon);
+        if (mCustomWebViewClient != null) {
+            mCustomWebViewClient.onPageStarted(view, url, favicon);
             return;
         }
         super.onPageStarted(view, url, favicon);
@@ -182,12 +190,12 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     @Override
     public void onPageFinished(WebView view, String url) {
-        if (mIsBlockImageLoad){
+        if (mIsBlockImageLoad) {
             WebSettings webSettings = view.getSettings();
             webSettings.setBlockNetworkImage(false);
         }
-        if (mCustomWebViewClient!=null){
-            mCustomWebViewClient.onPageFinished(view,url);
+        if (mCustomWebViewClient != null) {
+            mCustomWebViewClient.onPageFinished(view, url);
             return;
         }
         super.onPageFinished(view, url);
@@ -195,8 +203,8 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     @Override
     public void onLoadResource(WebView view, String url) {
-        if (mCustomWebViewClient!=null){
-            mCustomWebViewClient.onLoadResource(view,url);
+        if (mCustomWebViewClient != null) {
+            mCustomWebViewClient.onLoadResource(view, url);
             return;
         }
         super.onLoadResource(view, url);
@@ -213,32 +221,33 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 //        super.onPageCommitVisible(view, url);
 //    }
 
-    public void setCacheStrategy(WebViewCache.CacheStrategy cacheStrategy){
-        mCacheStrategy =cacheStrategy;
+    public void setCacheStrategy(WebViewCache.CacheStrategy cacheStrategy) {
+        mCacheStrategy = cacheStrategy;
     }
 
-    public void setBlockNetworkImage(boolean isBlock){
+    public void setBlockNetworkImage(boolean isBlock) {
         mIsBlockImageLoad = isBlock;
     }
 
-    public void setEnableCache(boolean enableCache){
+    public void setEnableCache(boolean enableCache) {
         mIsEnableCache = enableCache;
     }
+
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
         WebResourceResponse webResourceResponse = null;
-        if (mCustomWebViewClient!=null){
-            webResourceResponse =  mCustomWebViewClient.shouldInterceptRequest(view,url);
+        if (mCustomWebViewClient != null) {
+            webResourceResponse = mCustomWebViewClient.shouldInterceptRequest(view, url);
         }
-        if (webResourceResponse != null){
+        if (webResourceResponse != null) {
             return webResourceResponse;
 
         }
-        if (!mIsEnableCache){
+        if (!mIsEnableCache) {
             return null;
         }
-        return mWebViewCache.getWebResourceResponse(this,url,mCacheStrategy,
-                mEncoding,mCacheInterceptor);
+        return mWebViewCache.getWebResourceResponse(this, url, mCacheStrategy,
+                mEncoding, mCacheInterceptor);
 
     }
 
@@ -247,13 +256,13 @@ final class CacheWebViewClient extends ErrorWebViewClient {
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
 
         WebResourceResponse webResourceResponse = null;
-        if (mCustomWebViewClient!=null){
-            webResourceResponse =  mCustomWebViewClient.shouldInterceptRequest(view,request);
+        if (mCustomWebViewClient != null) {
+            webResourceResponse = mCustomWebViewClient.shouldInterceptRequest(view, request);
         }
-        if (webResourceResponse != null){
+        if (webResourceResponse != null) {
             return webResourceResponse;
         }
-        if (!mIsEnableCache){
+        if (!mIsEnableCache) {
             return null;
         }
         return mWebViewCache.getWebResourceResponse(this,request.getUrl().toString(),
@@ -263,7 +272,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
     @Override
     public void onTooManyRedirects(WebView view, Message cancelMsg, Message continueMsg) {
 
-        if (mCustomWebViewClient!=null){
+        if (mCustomWebViewClient != null) {
             mCustomWebViewClient.onTooManyRedirects(view, cancelMsg, continueMsg);
             return;
         }
@@ -274,7 +283,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 
-        if (mCustomWebViewClient!=null){
+        if (mCustomWebViewClient != null) {
             mCustomWebViewClient.onReceivedError(view, errorCode, description, failingUrl);
             return;
         }
@@ -284,7 +293,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-        if (mCustomWebViewClient!=null){
+        if (mCustomWebViewClient != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 mCustomWebViewClient.onReceivedError(view, request, error);
             }
@@ -296,7 +305,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
     @Override
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
 
-        if (mCustomWebViewClient!=null){
+        if (mCustomWebViewClient != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 mCustomWebViewClient.onReceivedHttpError(view, request, errorResponse);
             }
@@ -309,7 +318,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
     @Override
     public void onFormResubmission(WebView view, Message dontResend, Message resend) {
 
-        if (mCustomWebViewClient!=null){
+        if (mCustomWebViewClient != null) {
             mCustomWebViewClient.onFormResubmission(view, dontResend, resend);
             return;
         }
@@ -319,7 +328,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
     @Override
     public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
 
-        if (mCustomWebViewClient!=null){
+        if (mCustomWebViewClient != null) {
             mCustomWebViewClient.doUpdateVisitedHistory(view, url, isReload);
             return;
         }
@@ -338,7 +347,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     @Override
     public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {
-        if (mCustomWebViewClient!=null){
+        if (mCustomWebViewClient != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mCustomWebViewClient.onReceivedClientCertRequest(view, request);
             }
@@ -350,7 +359,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
     @Override
     public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
 
-        if (mCustomWebViewClient!=null){
+        if (mCustomWebViewClient != null) {
             mCustomWebViewClient.onReceivedHttpAuthRequest(view, handler, host, realm);
             return;
         }
@@ -360,7 +369,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     @Override
     public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
-        if (mCustomWebViewClient!=null){
+        if (mCustomWebViewClient != null) {
             return mCustomWebViewClient.shouldOverrideKeyEvent(view, event);
         }
         return super.shouldOverrideKeyEvent(view, event);
@@ -368,7 +377,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     @Override
     public void onUnhandledKeyEvent(WebView view, KeyEvent event) {
-        if (mCustomWebViewClient!=null){
+        if (mCustomWebViewClient != null) {
             mCustomWebViewClient.onUnhandledKeyEvent(view, event);
             return;
         }
@@ -377,7 +386,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     @Override
     public void onScaleChanged(WebView view, float oldScale, float newScale) {
-        if (mCustomWebViewClient!=null){
+        if (mCustomWebViewClient != null) {
             mCustomWebViewClient.onScaleChanged(view, oldScale, newScale);
             return;
         }
@@ -386,7 +395,7 @@ final class CacheWebViewClient extends ErrorWebViewClient {
 
     @Override
     public void onReceivedLoginRequest(WebView view, String realm, String account, String args) {
-        if (mCustomWebViewClient!=null){
+        if (mCustomWebViewClient != null) {
             mCustomWebViewClient.onReceivedLoginRequest(view, realm, account, args);
             return;
         }

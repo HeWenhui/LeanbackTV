@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**
@@ -14,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
  */
 public class LiveRelativeLayout extends RelativeLayout {
     String TAG = "LiveRelativeLayout";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
     public LiveRelativeLayout(Context context) {
         super(context);
@@ -30,37 +33,37 @@ public class LiveRelativeLayout extends RelativeLayout {
     @Override
     public void setLayoutParams(ViewGroup.LayoutParams params) {
         super.setLayoutParams(params);
-        Loger.d(TAG, "setLayoutParams:params=" + params.width + "," + params.height);
+        logger.d( "setLayoutParams:params=" + params.width + "," + params.height);
     }
 
     @Override
     public void addView(View child) {
         super.addView(child);
-        Loger.d(TAG, "addView:id=" + child.getId());
+        logger.d( "addView:id=" + child.getId());
     }
 
     @Override
     public void addView(View child, ViewGroup.LayoutParams params) {
         super.addView(child, params);
-        Loger.d(TAG, "addView:id=" + child.getId() + ",params=" + params.width + "," + params.height);
+        logger.d( "addView:id=" + child.getId() + ",params=" + params.width + "," + params.height);
     }
 
     @Override
     public void removeView(View view) {
         super.removeView(view);
-        Loger.d(TAG, "removeView:id=" + view.getId());
+        logger.d( "removeView:id=" + view.getId());
     }
 
     @Override
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
-        Loger.d(TAG, "setVisibility:visibility=" + visibility);
+        logger.d( "setVisibility:visibility=" + visibility);
     }
 
     @Override
     public void removeAllViews() {
         super.removeAllViews();
-        Loger.d(TAG, "removeAllViews");
+        logger.d( "removeAllViews");
     }
 
 }

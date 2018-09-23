@@ -464,7 +464,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                                 } else {
                                     firstMessageEntity = messageEntity;
                                 }
-                                Loger.i(TAG, "getLiveLectureMsgs:delayed=" + delayed);
+                                logger.i( "getLiveLectureMsgs:delayed=" + delayed);
                                 if (firstMessageEntity != null) {
                                     firstMsg = delayed;
                                 }
@@ -485,7 +485,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
         HandlerThread handlerThread = new HandlerThread("ScanRunnable");
 
         ScanRunnable() {
-            Loger.i(TAG, "ScanRunnable");
+            logger.i( "ScanRunnable");
             handlerThread.start();
             scanHandler = new Handler(handlerThread.getLooper());
         }
@@ -501,7 +501,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
             }
             if (lastMsg != -1) {
                 if (lastMsg < currentMsg * 1000) {
-                    Loger.i(TAG, "ScanRunnable:lastMsg=" + lastMsg);
+                    logger.i( "ScanRunnable:lastMsg=" + lastMsg);
                     return;
                 }
             }
@@ -514,7 +514,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                     needFind = false;
                 }
             }
-            Loger.i(TAG, "ScanRunnable:needFind=" + needFind + ",currentMsg=" + currentMsg);
+            logger.i( "ScanRunnable:needFind=" + needFind + ",currentMsg=" + currentMsg);
             if (needFind) {
                 File[] files = dir.listFiles();
                 ArrayList<LivePlayBackMessageEntity> newArrayList = new ArrayList<>();
@@ -531,7 +531,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                     if (firstFile > 0) {//找到以后，往前减一
                         firstFile--;
                     }
-                    Loger.i(TAG, "ScanRunnable:firstFile=" + firstFile);
+                    logger.i( "ScanRunnable:firstFile=" + firstFile);
                     int current = -1;//找到当前文件
                     LivePlayBackMessageEntity nextMessageEntity = null;
                     for (int i = firstFile; i < files.length; i++) {
@@ -545,7 +545,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                                     current = i;
                                     newArrayList.addAll(liveMessageEntities);
                                     nextTime = -1;
-                                    Loger.i(TAG, "ScanRunnable:fileName=" + fileName + ",size=" + liveMessageEntities.size());
+                                    logger.i( "ScanRunnable:fileName=" + fileName + ",size=" + liveMessageEntities.size());
                                     if (newArrayList.size() > 200) {//如果当前文件记录大于200，不查询
                                         break;
                                     }
@@ -553,7 +553,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                                     if (current != -1 && i > current && newArrayList.size() < 200) {//如果当前文件记录小于200，继续往后查
                                         newArrayList.addAll(liveMessageEntities);
                                         nextTime = -1;
-                                        Loger.i(TAG, "ScanRunnable:fileName=" + fileName + ",next");
+                                        logger.i( "ScanRunnable:fileName=" + fileName + ",next");
                                     } else {
                                         if (newArrayList.isEmpty()) {//如果没有找到
                                             for (int j = 0; j < liveMessageEntities.size(); j++) {
@@ -566,16 +566,16 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                                                     }
                                                 }
                                             }
-                                            Loger.i(TAG, "ScanRunnable:fileName=" + fileName + ",current=" + current
+                                            logger.i( "ScanRunnable:fileName=" + fileName + ",current=" + current
                                                     + ",other:i=" + i + ",all=" + newArrayList.size() + ",nextTime=" + nextTime);
                                         }
                                     }
                                 }
                             } else {
-                                Loger.i(TAG, "ScanRunnable:fileName=" + fileName + ",isSpace");
+                                logger.i( "ScanRunnable:fileName=" + fileName + ",isSpace");
                             }
                         } else {
-                            Loger.i(TAG, "ScanRunnable:fileName=" + fileName + ",liveMessageGroupEntity=null");
+                            logger.i( "ScanRunnable:fileName=" + fileName + ",liveMessageGroupEntity=null");
                         }
                     }
                     if (newArrayList.size() > 5) {
@@ -618,7 +618,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                         change = false;
                     }
                 }
-                Loger.i(TAG, "postDelayed:start=" + start + ",list=" + list.size() + ",nextTime=" + nextTime + ",change=" + change);
+                logger.i( "postDelayed:start=" + start + ",list=" + list.size() + ",nextTime=" + nextTime + ",change=" + change);
                 if (change) {
                     mPlayVideoControlHandler.post(new Runnable() {
                         @Override
@@ -634,7 +634,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                 }
             } else {
                 if (isEnd) {
-                    Loger.i(TAG, "ScanRunnable:allLiveMessageEntities.isSpace,isEnd" + ",nextTime=" + nextTime);
+                    logger.i( "ScanRunnable:allLiveMessageEntities.isSpace,isEnd" + ",nextTime=" + nextTime);
 //                    nextTime = -1;
 //                    return;
                 }
@@ -642,7 +642,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
             if (isFinishing()) {
                 return;
             }
-            Loger.i(TAG, "ScanRunnable:allLiveMessageEntities=" + allLiveMessageEntities.size() + ",nextTime=" + nextTime);
+            logger.i( "ScanRunnable:allLiveMessageEntities=" + allLiveMessageEntities.size() + ",nextTime=" + nextTime);
             if (nextTime == -1) {
                 lectureLivePlayBackBll.saveLiveLectureMsgs(dir, "2L" + mVideoEntity.getLiveId(), "" + start, timeEntities);
                 scanHandler.postDelayed(this, 300);
@@ -716,7 +716,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
             }
         }
         if (currentMsg - currentPosition != 0) {
-            Loger.i(TAG, "onSeekComplete:currentPosition=" + currentPosition + ",allCha=" + (currentMsg - currentPosition));
+            logger.i( "onSeekComplete:currentPosition=" + currentPosition + ",allCha=" + (currentMsg - currentPosition));
         }
         if (scanRunnable != null) {
             scanHandler.removeCallbacks(scanRunnable);
@@ -757,7 +757,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                 }
             }
             if (currentMsg - currentPosition != 0) {
-                Loger.i(TAG, "playingPosition:currentPosition=" + currentPosition + ",allCha=" + (currentMsg - currentPosition) + ",time=" + time);
+                logger.i( "playingPosition:currentPosition=" + currentPosition + ",allCha=" + (currentMsg - currentPosition) + ",time=" + time);
             }
         }
         if (onlineNumList != null) {
@@ -891,7 +891,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
         mPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
-                Loger.i(TAG, "showQestion:time=" + (System.currentTimeMillis() - before));
+                logger.i( "showQestion:time=" + (System.currentTimeMillis() - before));
                 if (rlQuestionContent != null && mQuestionEntity != null) {
                     // 填空题
                     if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(mQuestionEntity.getvQuestionType())) {
@@ -1109,7 +1109,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                 }
             }
             final boolean finalPause = pause;
-            Loger.i(TAG, "onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
+            logger.i( "onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
@@ -1125,7 +1125,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                     cancelDialog.setVerifyBtnListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Loger.i(TAG, "onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" + finalPause);
+                            logger.i( "onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" + finalPause);
                             if (initialized) {
                                 if (finalPause) {
                                     if (vPlayer != null) {
@@ -1331,7 +1331,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                 }
             }
         }
-//        Loger.i(TAG, "getPlayQuetion:playPosition=" + playPosition + ",hasQuestionShow=" + hasQuestionShow + ",mQuestionEntity=" + (mQuestionEntity != null));
+//        logger.i( "getPlayQuetion:playPosition=" + playPosition + ",hasQuestionShow=" + hasQuestionShow + ",mQuestionEntity=" + (mQuestionEntity != null));
         if (mQuestionEntity != null) {
             if (LocalCourseConfig.CATEGORY_EXAM == mQuestionEntity.getvCategory()) {
                 if (mQuestionEntity.getvEndTime() < playPosition) {
@@ -1340,7 +1340,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
                         if (vPlayer != null) {
                             vPlayer.pause();
                         }
-                        Loger.i(TAG, "getPlayQuetion:examSubmitAll:playPosition=" + playPosition);
+                        logger.i( "getPlayQuetion:examSubmitAll:playPosition=" + playPosition);
                     }
                 }
                 return;
@@ -1350,7 +1350,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
         if (!hasQuestionShow && mQuestionEntity != null) {
             startTime = mQuestionEntity.getvQuestionInsretTime();
             //播放器seekto的误差
-            Loger.i(TAG, "getPlayQuetion:isClick=" + mQuestionEntity.isClick() + ",playPosition=" + playPosition + ",startTime=" + startTime);
+            logger.i( "getPlayQuetion:isClick=" + mQuestionEntity.isClick() + ",playPosition=" + playPosition + ",startTime=" + startTime);
             if (mQuestionEntity.isClick()) {
                 if (startTime - playPosition >= 0 && startTime - playPosition < 5) {
                     return;

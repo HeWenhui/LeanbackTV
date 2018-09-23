@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
@@ -16,6 +18,7 @@ import com.xueersi.ui.dialog.BaseAlertDialog;
  */
 public class RaiseHandDialog extends BaseAlertDialog {
     private String TAG = "RaiseHandDialog";
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     private RaiseHandGiveup raiseHandGiveup;
     private TextView tvRaiseHandsCount;
     private FrameLayout flRaiseHandsContent;
@@ -84,7 +87,7 @@ public class RaiseHandDialog extends BaseAlertDialog {
     }
 
     public boolean setFail() {
-        Loger.i(TAG, "setFail:status=" + status);
+        logger.i( "setFail:status=" + status);
         int oldStatus = status;
         status = FAIL;
         flRaiseHandsContent.removeView(rlRaiseHandsWait);
@@ -95,7 +98,7 @@ public class RaiseHandDialog extends BaseAlertDialog {
     }
 
     public boolean setSuccess() {
-        Loger.i(TAG, "setSuccess:status=" + status);
+        logger.i( "setSuccess:status=" + status);
         int oldStatus = status;
         status = SUCCESS;
         flRaiseHandsContent.removeView(rlRaiseHandsWait);

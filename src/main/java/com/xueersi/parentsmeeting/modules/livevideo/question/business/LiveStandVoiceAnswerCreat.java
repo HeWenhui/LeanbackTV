@@ -19,6 +19,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -51,6 +53,7 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  */
 public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     private String TAG = "LiveStandVoiceAnswerCreat";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private QuestionSwitch questionSwitch;
     private String headUrl;
     private String userName;
@@ -178,7 +181,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 
                         @Override
                         public void onViewDetachedFromWindow(View v) {
-                            Loger.d(TAG, "onViewDetachedFromWindow right");
+                            logger.d( "onViewDetachedFromWindow right");
                             questionBll.removeBaseVoiceAnswerPager(baseVoiceAnswerPager);
                             liveSoundPool.stop(task);
                             Handler handler = new Handler(Looper.getMainLooper());
@@ -254,7 +257,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 
                         @Override
                         public void onViewDetachedFromWindow(View v) {
-                            Loger.d(TAG, "onViewDetachedFromWindow error");
+                            logger.d( "onViewDetachedFromWindow error");
                             questionBll.removeBaseVoiceAnswerPager(baseVoiceAnswerPager);
                             liveSoundPool.stop(task);
                             Handler handler = new Handler(Looper.getMainLooper());
@@ -293,7 +296,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             img_7Bitmap.recycle();
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
-            Loger.e(TAG, "setRightGold", e);
+            logger.e( "setRightGold", e);
             return;
         }
         lottieAnimationView.updateBitmap("image_22", img_7Bitmap);
@@ -319,7 +322,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             img_7Bitmap.recycle();
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
-            Loger.e(TAG, "setRightGold", e);
+            logger.e( "setRightGold", e);
             return;
         }
         lottieAnimationView.updateBitmap("image_5", img_7Bitmap);

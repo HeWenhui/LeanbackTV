@@ -7,6 +7,10 @@ import android.util.LruCache;
 
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
+import com.xueersi.common.network.TxHttpDns;
+import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.File;
@@ -38,6 +42,7 @@ import ren.yale.android.cachewebviewlib.utils.NetworkUtils;
 
 public class WebViewCache {
     String TAG = "WebViewCache";
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     private DiskLruCache mDiskLruCache;
     private CacheExtensionConfig mCacheExtensionConfig;
     private Context mContext;
@@ -47,10 +52,15 @@ public class WebViewCache {
     private LruCache<String, RamObject> mLruCache;
     private BytesEncodingDetect mEncodingDetect;
     private ArrayList<HttpURLConnection> httpURLConnections = new ArrayList<>();
+    private boolean needHttpDns = false;
 
     public WebViewCache() {
         mCacheExtensionConfig = new CacheExtensionConfig();
         mEncodingDetect = new BytesEncodingDetect();
+    }
+
+    public void setNeedHttpDns(boolean needHttpDns) {
+        this.needHttpDns = needHttpDns;
     }
 
     public void release() {
@@ -61,7 +71,7 @@ public class WebViewCache {
                 e.printStackTrace();
             }
         }
-        Loger.d(TAG, "release:httpURLConnections=" + httpURLConnections.size());
+        logger.d("release:httpURLConnections=" + httpURLConnections.size());
         new Thread() {
             @Override
             public void run() {
@@ -71,7 +81,7 @@ public class WebViewCache {
                         connection.disconnect();
                     }
                 } catch (Exception e) {
-                    Loger.e(TAG, "release:disconnect");
+                    logger.e( "release:disconnect");
                 }
             }
         }.start();
@@ -204,6 +214,14 @@ public class WebViewCache {
     public InputStream httpRequest(CacheWebViewClient client, CacheStrategy cacheStrategy, String url) {
         HttpURLConnection httpURLConnection = null;
         try {
+            URL oldUrl = new URL(url);
+            if (needHttpDns) {
+                String ip3 = TxHttpDns.getInstance().getTxEnterpriseDns(oldUrl.getHost());
+                if (!StringUtils.isEmpty(ip3)) {
+                    String[] ips = ip3.split(";");
+                    url = url.replaceFirst(oldUrl.getHost(), ips[0]);
+                }
+            }
             URL urlRequest = new URL(url);
             httpURLConnection = (HttpURLConnection) urlRequest.openConnection();
             httpURLConnection.setRequestMethod("GET");
@@ -216,7 +234,9 @@ public class WebViewCache {
                 httpURLConnection.setConnectTimeout(30000);
                 httpURLConnection.setReadTimeout(30000);
             }
-
+            if (needHttpDns) {
+                httpURLConnection.setRequestProperty("Host", oldUrl.getHost());
+            }
             Map<String, String> header = client.getHeader(url);
             if (header != null) {
                 for (Map.Entry entry : header.entrySet()) {

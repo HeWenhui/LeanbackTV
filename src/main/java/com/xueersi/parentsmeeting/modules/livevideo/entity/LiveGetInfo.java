@@ -89,18 +89,6 @@ public class LiveGetInfo {
      * 直播状态，1：无老师，2：有老师，3：已上课
      */
     private int stat;
-    /**
-     * 聊天服务器地址
-     */
-    private String talkHost;
-    /**
-     * 聊天服务器密码
-     */
-    private String talkPwd;
-    /**
-     * 聊天服务器端口
-     */
-    private String talkPort;
     private String roomId;
     /**
      * 直播调度URL
@@ -167,10 +155,6 @@ public class LiveGetInfo {
      */
     private double nowTime;
     private List<TestInfoEntity> testInfo = new ArrayList<TestInfoEntity>();
-    /**
-     * host : 124.243.202.5 port : 16692 pwd : xueersi.com 备用用户聊天服务配置
-     */
-    private List<NewTalkConfEntity> newTalkConf;
     private ArrayList<TalkConfHost> newTalkConfHosts;
     /**
      * 用户头像服务器地址
@@ -401,22 +385,6 @@ public class LiveGetInfo {
         this.stat = stat;
     }
 
-    public void setTalkHost(String talkHost) {
-        this.talkHost = talkHost;
-    }
-
-    public void setTalkPort(String talkPort) {
-        this.talkPort = talkPort;
-    }
-
-    public String getTalkPwd() {
-        return talkPwd;
-    }
-
-    public void setTalkPwd(String talkPwd) {
-        this.talkPwd = talkPwd;
-    }
-
     public String getRoomId() {
         return roomId;
     }
@@ -483,10 +451,6 @@ public class LiveGetInfo {
 
     public void setTestInfo(List<TestInfoEntity> testInfo) {
         this.testInfo = testInfo;
-    }
-
-    public void setNewTalkConf(List<NewTalkConfEntity> newTalkConf) {
-        this.newTalkConf = newTalkConf;
     }
 
     public void setNewTalkConfHosts(ArrayList<TalkConfHost> newTalkConfHosts) {
@@ -591,14 +555,6 @@ public class LiveGetInfo {
         return stat;
     }
 
-    public String getTalkHost() {
-        return talkHost;
-    }
-
-    public String getTalkPort() {
-        return talkPort;
-    }
-
     public String getGslbServerUrl() {
         return gslbServerUrl;
     }
@@ -673,10 +629,6 @@ public class LiveGetInfo {
 
     public List<TestInfoEntity> getTestInfo() {
         return testInfo;
-    }
-
-    public List<NewTalkConfEntity> getNewTalkConf() {
-        return newTalkConf;
     }
 
     public ArrayList<TalkConfHost> getNewTalkConfHosts() {

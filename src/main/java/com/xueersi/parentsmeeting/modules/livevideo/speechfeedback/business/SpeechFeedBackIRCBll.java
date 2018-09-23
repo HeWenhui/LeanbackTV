@@ -30,19 +30,19 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
         getHttpManager().saveStuTalkSource(mGetInfo.getStuId(), talkSourcePath, service, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.d(TAG, "saveStuTalkSource:onPmSuccess" + responseEntity.getJsonObject());
+                logger.d( "saveStuTalkSource:onPmSuccess" + responseEntity.getJsonObject());
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                Loger.d(TAG, "saveStuTalkSource:onPmFailure" + msg);
+                logger.d( "saveStuTalkSource:onPmFailure" + msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.d(TAG, "saveStuTalkSource:onPmError" + responseEntity.getErrorMsg());
+                logger.d( "saveStuTalkSource:onPmError" + responseEntity.getErrorMsg());
             }
         });
     }

@@ -1,8 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
-import com.tal.speech.asr.talAsrJni;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**
@@ -11,7 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
  */
 public class BaseEnglishStandSpeekBll implements SpeakerRecognitioner.SpeakerPredict {
     protected static boolean loadSuccess = false;
-
+    private static Logger logger = LoggerFactory.getLogger("BaseEnglishStandSpeekBll");
     protected SpeakerRecognitioner speakerRecognitioner;
 
     public void setSpeakerRecognitioner(SpeakerRecognitioner speakerRecognitioner) {
@@ -28,13 +30,13 @@ public class BaseEnglishStandSpeekBll implements SpeakerRecognitioner.SpeakerPre
             return;
         }
         try {
-            Loger.i("BaseEnglishStandSpeekBll", "loadLibrary");
+            logger.i("loadLibrary");
             System.loadLibrary(SpeechEvaluatorUtils.TAL_ASSESS_LIB);
-            Loger.i("BaseEnglishStandSpeekBll", "loadLibrary ok");
+            logger.i("loadLibrary ok");
             loadSuccess = true;
         } catch (Throwable e) {
             loadSuccess = false;
-            Loger.e(BaseApplication.getContext(), "BaseEnglishStandSpeekBll", "loadLibrary", e, true);
+            UmsAgentManager.umsAgentException(BaseApplication.getContext(), "BaseEnglishStandSpeekBll" + "loadLibrary", e);
         }
     }
 

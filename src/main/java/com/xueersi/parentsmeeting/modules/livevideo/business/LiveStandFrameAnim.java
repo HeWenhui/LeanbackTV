@@ -20,6 +20,8 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.BaseHttp;
 import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
@@ -43,6 +45,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class LiveStandFrameAnim {
     String eventId = LiveVideoConfig.LIVE_STAND_RES_UPDATE;
     static String TAG = "LiveStandFrameAnim";
+    protected static Logger logger = LoggerFactory.getLogger(TAG);
     Activity activity;
     private final String filePath = "/android_stand_live/" + StandLiveConfig.version + "/frame_anim6.zip";
     /** 下载地址，阿里云 */
@@ -256,7 +259,7 @@ public class LiveStandFrameAnim {
                         @Override
                         public void run() {
                             String url = urls[times.get() % urls.length];
-                            Loger.d(TAG, "onDownloadFailed:times=" + times.get() + ",url=" + url);
+                            logger.d( "onDownloadFailed:times=" + times.get() + ",url=" + url);
                             downloadStart = System.currentTimeMillis();
                             baseHttp.downloadRenew(url, tempFileZip, downloadCallBack);
                         }
@@ -312,9 +315,9 @@ public class LiveStandFrameAnim {
     private void onProgress(int progLeft, RelativeLayout rlLiveStandUpdateProg, ImageView ivLiveStandUpdateProgLight, int progress) {
         int progTipWidth = rlLiveStandUpdateProg.getWidth();
         int lightWidth = ivLiveStandUpdateProgLight.getWidth();
-        Loger.d(TAG, "onProgress:progLeft=" + progLeft + ",progTipWidth=" + progTipWidth + ",lightWidth=" + lightWidth);
+        logger.d( "onProgress:progLeft=" + progLeft + ",progTipWidth=" + progTipWidth + ",lightWidth=" + lightWidth);
         int left = (int) (((float) progWidth) * (float) progress / 100.0f);
-        Loger.d(TAG, "onProgress:progress=" + progress + ",left=" + left);
+        logger.d( "onProgress:progress=" + progress + ",left=" + left);
         {
             RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) rlLiveStandUpdateProg.getLayoutParams();
 //                        int left = pbLiveStandUpdate.getWidth() * progress / 100;
@@ -371,7 +374,7 @@ public class LiveStandFrameAnim {
                     ivLiveStandUpdateProgLight.setVisibility(View.VISIBLE);
                 }
                 float progressF = (50 + (float) values[0] * 100f / (float) max / 2);
-//                Loger.d(TAG, "onProgressUpdate:progress=" + ((float) values[0] * 100f / (float) max));
+//                logger.d( "onProgressUpdate:progress=" + ((float) values[0] * 100f / (float) max));
                 final int progress = (int) progressF;
                 if (pbLiveStandUpdate.getProgress() != progress) {
                     pbLiveStandUpdate.setProgress(progress);
@@ -469,7 +472,7 @@ public class LiveStandFrameAnim {
             if (cancle) {
                 setCancle(true);
                 zipProg.setCancle(true);
-                Loger.d(TAG, "onProgressUpdate:cancle");
+                logger.d( "onProgressUpdate:cancle");
                 return;
             }
             super.onProgressUpdate(values);
@@ -487,7 +490,7 @@ public class LiveStandFrameAnim {
     public void onDestory() {
         cancle = true;
         if (zipExtractorTask != null) {
-            Loger.d(TAG, "onDestory:cancle");
+            logger.d( "onDestory:cancle");
             zipExtractorTask.cancle = true;
         }
         if (liveSoundPool != null && loadTask != null) {

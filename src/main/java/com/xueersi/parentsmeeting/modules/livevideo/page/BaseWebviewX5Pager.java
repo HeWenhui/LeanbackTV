@@ -20,6 +20,7 @@ import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
@@ -128,7 +129,7 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
             if (newProgress == 100) {
-                Loger.i(TAG, "onProgressChanged");
+                logger.i( "onProgressChanged");
                 View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
                 if (loadView != null) {
                     ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
@@ -213,13 +214,13 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
                 wvSubjectWeb.setVisibility(View.VISIBLE);
                 errorView.setVisibility(View.GONE);
             }
-            Loger.i(TAG, "onPageFinished");
+            logger.i( "onPageFinished");
             BaseWebviewX5Pager.this.onPageFinished(view, url);
         }
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            Loger.i(TAG, "onPageStarted");
+            logger.i( "onPageStarted");
             this.failingUrl = null;
             super.onPageStarted(view, url, favicon);
             BaseWebviewX5Pager.this.onPageStarted(view, url, favicon);
@@ -227,8 +228,8 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
 
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            Loger.d(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
-                    "&&," + description, true);
+            UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
+                    "&&," + description);
             this.failingUrl = failingUrl;
             wvSubjectWeb.setVisibility(View.INVISIBLE);
             errorView.setVisibility(View.VISIBLE);

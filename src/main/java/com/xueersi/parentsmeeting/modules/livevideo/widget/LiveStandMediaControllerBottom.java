@@ -54,7 +54,7 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
             view = tranLiveView;
             addView(view);
         }
-        Loger.d(TAG, "inflateLayout:mode=" + mode + ",mainLiveView=" + mainLiveView + ",tranLiveView=" + tranLiveView);
+        logger.d( "inflateLayout:mode=" + mode + ",mainLiveView=" + mainLiveView + ",tranLiveView=" + tranLiveView);
         return view;
     }
 

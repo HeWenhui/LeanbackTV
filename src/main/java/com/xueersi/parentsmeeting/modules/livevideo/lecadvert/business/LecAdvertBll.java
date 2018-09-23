@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 
 public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
     String TAG = "LecAdvertBll";
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     String eventid = LiveVideoConfig.LEC_ADS;
     Context context;
     RelativeLayout bottomContent;
@@ -160,7 +163,7 @@ public class LecAdvertBll implements LecAdvertAction, LecAdvertPagerClose {
 
     @Override
     public void onPaySuccess(LecAdvertEntity lecAdvertEntity) {
-        Loger.d(TAG, "onPaySuccess:lecAdvertEntity=" + lecAdvertEntity.course_id);
+        logger.d("onPaySuccess:lecAdvertEntity=" + lecAdvertEntity.course_id);
     }
 
 }

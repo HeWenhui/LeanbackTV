@@ -371,7 +371,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
      * @param type
      */
     public void getAutoNotice(int isForce, int type) {
-        Loger.i(TAG, "getAutoNotice");
+        logger.i( "getAutoNotice");
         try {
             if (Integer.parseInt(classId) < 0) {
                 return;
@@ -384,7 +384,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 try {
                     JSONObject object = (JSONObject) responseEntity.getJsonObject();
-                    Loger.i(TAG, "getAutoNotice success" + object.toString());
+                    logger.i( "getAutoNotice success" + object.toString());
 
                     int type = object.optInt("type", -1);
                     int choose = object.optInt("choose", -1);
@@ -403,7 +403,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                Loger.i(TAG, "getAutoNotice fail" + msg);
+                logger.i( "getAutoNotice fail" + msg);
                 umsAgent(0, false);
                 //showNotice("老师",notice[1][1],"");
             }
@@ -411,7 +411,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.i(TAG, "getAutoNotice fail" + responseEntity.getErrorMsg());
+                logger.i( "getAutoNotice fail" + responseEntity.getErrorMsg());
                 umsAgent(0, false);
                 //showNotice("老师",notice[1][1],"");
             }

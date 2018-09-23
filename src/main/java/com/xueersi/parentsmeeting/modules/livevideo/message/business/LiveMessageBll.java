@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RoomAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
@@ -42,6 +44,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAction, KeyboardShowingReg,
         KeyboardUtil.OnKeyboardShowingListener {
     private String TAG = "LiveMessageBll";
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     /** 消息 */
     private BaseLiveMessagePager mLiveMessagePager;
 
@@ -138,7 +141,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         LiveMessageStandPager liveMessagePager = new LiveMessageStandPager(activity, this,
                 baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
-        Loger.d(TAG, "initViewLiveStand:time1=" + (System.currentTimeMillis() - before));
+        logger.d( "initViewLiveStand:time1=" + (System.currentTimeMillis() - before));
 
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
@@ -215,7 +218,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
 
 
-        Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
+        logger.d( "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
@@ -288,7 +291,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                             null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                     mLiveMessagePager = liveMessagePager;
                 }
-                Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
+                logger.d( "initView:time1=" + (System.currentTimeMillis() - before));
             }
         } else {
             mLiveMessagePager = new LiveMessagePortPager(activity, this, liveMessagePortEntities,

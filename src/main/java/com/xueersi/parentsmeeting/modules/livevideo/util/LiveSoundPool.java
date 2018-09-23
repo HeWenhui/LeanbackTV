@@ -6,6 +6,8 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SoundInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
@@ -19,6 +21,7 @@ import java.util.HashMap;
  */
 public class LiveSoundPool {
     static String TAG = "LiveSoundPool";
+    protected static Logger logger = LoggerFactory.getLogger(TAG);
     private SoundPool soundPool;
     private HashMap<SoundPlayTask, SoundInfo> mSoundInfoMap;
 
@@ -28,7 +31,7 @@ public class LiveSoundPool {
 
     private int load(String path, int i) {
         if (soundPool == null) {
-            Loger.e(TAG, "load:path=" + path, new Exception());
+            logger.e( "load:path=" + path, new Exception());
             return -1;
         }
         return soundPool.load(path, i);
@@ -36,7 +39,7 @@ public class LiveSoundPool {
 
     private int load(Context context, int resId, int i) {
         if (soundPool == null) {
-            Loger.e(TAG, "load:resId=" + resId, new Exception());
+            logger.e( "load:resId=" + resId, new Exception());
             return -1;
         }
         return soundPool.load(context, resId, i);
@@ -44,7 +47,7 @@ public class LiveSoundPool {
 
     public void release() {
         if (soundPool == null) {
-            Loger.e(TAG, "release", new Exception());
+            logger.e( "release", new Exception());
             return;
         }
         soundPool.release();
@@ -54,13 +57,13 @@ public class LiveSoundPool {
         SoundInfo soundInfo = mSoundInfoMap.get(task);
         if (soundInfo != null) {
             stop(soundInfo.getStreamId());
-            Loger.d(TAG, "pause:task=" + task.path + ",streamId=" + soundInfo.getStreamId());
+            logger.d( "pause:task=" + task.path + ",streamId=" + soundInfo.getStreamId());
         }
     }
 
     public void pause(int soundId) {
         if (soundPool == null) {
-            Loger.e(TAG, "pause", new Exception());
+            logger.e( "pause", new Exception());
             return;
         }
         soundPool.pause(soundId);
@@ -70,13 +73,13 @@ public class LiveSoundPool {
         SoundInfo soundInfo = mSoundInfoMap.remove(task);
         if (soundInfo != null) {
             stop(soundInfo.getStreamId());
-            Loger.d(TAG, "stop:task=" + task.path + ",streamId=" + soundInfo.getStreamId());
+            logger.d( "stop:task=" + task.path + ",streamId=" + soundInfo.getStreamId());
         }
     }
 
     public void stop(int streamId) {
         if (soundPool == null) {
-            Loger.e(TAG, "stop", new Exception());
+            logger.e( "stop", new Exception());
             return;
         }
         soundPool.stop(streamId);
@@ -86,10 +89,10 @@ public class LiveSoundPool {
         final int soundId;
         if (task.resId != 0) {
             soundId = liveSoundPool.load(context, task.resId, 1);
-            Loger.d(TAG, "play:resId=" + task.resId + ",soundId=" + soundId);
+            logger.d( "play:resId=" + task.resId + ",soundId=" + soundId);
         } else {
             soundId = liveSoundPool.load(task.path, 1);
-            Loger.d(TAG, "play:path=" + task.path + ",soundId=" + soundId);
+            logger.d( "play:path=" + task.path + ",soundId=" + soundId);
         }
         liveSoundPool.soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
@@ -99,15 +102,15 @@ public class LiveSoundPool {
                     SoundInfo soundInfo = new SoundInfo(sampleId, streamID);
                     liveSoundPool.mSoundInfoMap.put(task, soundInfo);
                     if (task.resId != 0) {
-                        Loger.d(TAG, "onLoadComplete:resId=" + task.resId + ",streamID=" + streamID);
+                        logger.d( "onLoadComplete:resId=" + task.resId + ",streamID=" + streamID);
                     } else {
-                        Loger.d(TAG, "onLoadComplete:path=" + task.path + ",streamID=" + streamID);
+                        logger.d( "onLoadComplete:path=" + task.path + ",streamID=" + streamID);
                     }
                 } else {
                     if (task.resId != 0) {
-                        Loger.d(TAG, "onLoadComplete:resId=" + task.resId + ",status=" + status);
+                        logger.d( "onLoadComplete:resId=" + task.resId + ",status=" + status);
                     } else {
-                        Loger.d(TAG, "onLoadComplete:path=" + task.path + ",status=" + status);
+                        logger.d( "onLoadComplete:path=" + task.path + ",status=" + status);
                     }
                 }
             }

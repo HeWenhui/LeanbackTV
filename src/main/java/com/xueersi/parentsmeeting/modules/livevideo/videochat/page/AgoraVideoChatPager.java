@@ -210,7 +210,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
     @Override
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
-        Loger.i(TAG, "onNetWorkChange:netWorkType=" + netWorkType + ",isFail=" + isFail);
+        logger.i( "onNetWorkChange:netWorkType=" + netWorkType + ",isFail=" + isFail);
         if (netWorkType == NetWorkHelper.NO_NETWORK) {
             isFail = true;
         } else {

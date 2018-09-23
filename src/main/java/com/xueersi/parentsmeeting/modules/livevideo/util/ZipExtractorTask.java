@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.apache.tools.zip.ZipEntry;
@@ -21,7 +23,8 @@ import java.util.Enumeration;
 import java.util.zip.ZipException;
 
 public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
-    private final String TAG = "ZipExtractorTask";
+    private final static String TAG = "ZipExtractorTask";
+    protected static Logger logger = LoggerFactory.getLogger(TAG);
     private final File mInput;
     private final File mOutput;
     private int mProgress = 0;
@@ -35,7 +38,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
         mOutput = out;
         if (!mOutput.exists()) {
             if (!mOutput.mkdirs()) {
-                Loger.e(TAG, "Failed to make directories:" + mOutput.getAbsolutePath());
+                logger.e( "Failed to make directories:" + mOutput.getAbsolutePath());
             }
         }
         mContext = context;
