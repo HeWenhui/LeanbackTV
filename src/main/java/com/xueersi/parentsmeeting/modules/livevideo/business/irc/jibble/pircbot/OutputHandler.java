@@ -19,7 +19,6 @@ import android.os.Message;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.BufferedWriter;
 

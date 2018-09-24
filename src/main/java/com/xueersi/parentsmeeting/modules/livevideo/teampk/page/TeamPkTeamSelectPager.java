@@ -44,7 +44,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolat
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 

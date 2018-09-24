@@ -24,7 +24,6 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import java.io.File;

@@ -19,7 +19,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 
 import org.json.JSONArray;
@@ -81,6 +80,7 @@ public class IRCTalkConf {
 //            TalkConfHost talkConfHost = hosts.remove(hosts.size() - 1);
 //            hosts.add(0, talkConfHost);
 //        }
+
         this.liveId = liveGetInfo.getId();
         this.mLiveType = mLiveType;
         this.baseHttpBusiness = baseHttpBusiness;
@@ -278,7 +278,6 @@ public class IRCTalkConf {
                 }
             }
         } catch (SocketException e) {
-            logger.e( "SocketException");
             e.printStackTrace();
         }
         return hostIp;

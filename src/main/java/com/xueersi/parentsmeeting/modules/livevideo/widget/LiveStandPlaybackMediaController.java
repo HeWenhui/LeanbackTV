@@ -21,7 +21,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 

@@ -11,7 +11,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONObject;
 

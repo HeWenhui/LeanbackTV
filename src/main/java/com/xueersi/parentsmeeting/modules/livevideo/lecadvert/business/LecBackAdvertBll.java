@@ -14,7 +14,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

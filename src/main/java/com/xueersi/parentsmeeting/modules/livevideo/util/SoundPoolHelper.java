@@ -7,6 +7,8 @@ import android.media.SoundPool;
 import android.os.Build;
 import android.util.Log;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SoundInfo;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.List;
  */
 public class SoundPoolHelper {
 
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private List<SoundPlayTask> playTasks;
     /**
      * 当前是否正在加载音效资源
@@ -269,7 +272,6 @@ public class SoundPoolHelper {
                 attrBuilder.setLegacyStreamType(mStreamTYpe);
                 builder.setAudioAttributes(attrBuilder.build());
                 mSoundPool = builder.build();
-                Log.e("SoundPoolHelper", "=========> create soundPool by builder");
             } else {
                 mSoundPool = new SoundPool(mMaxStreamNum, mStreamTYpe, 0);
             }
@@ -289,13 +291,11 @@ public class SoundPoolHelper {
         }
         if (mSoundPool != null) {
             mSoundPool.release();
-            Log.e("SoundPoolHelper", "=======>release called 22222");
         }
         if (mSoundInfoMap != null) {
             mSoundInfoMap.clear();
         }
         mContext = null;
-        Log.e("SoundPoolHelper", "=======>release called ");
 
     }
 }

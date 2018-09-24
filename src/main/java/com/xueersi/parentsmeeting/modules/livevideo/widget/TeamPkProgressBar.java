@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 
 /**
@@ -162,7 +161,6 @@ public class TeamPkProgressBar extends View {
 
 
     public void setProgress(int progress) {
-        logger.e( "====>isAnimRunning:"+isAnimRunning());
         if (!isAnimRunning()) {
             this.mProgress = progress;
             setProgressRightBound(-1);
@@ -330,7 +328,6 @@ public class TeamPkProgressBar extends View {
      * @param cacheProgress
      */
     private void cacheProgress(int cacheProgress) {
-        logger.e( "====>cacheProgress:"+mCacheProgress);
         mCacheProgress = cacheProgress;
     }
 

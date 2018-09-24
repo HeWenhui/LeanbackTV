@@ -20,7 +20,6 @@ import android.util.Base64;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.yaaic.pircbot.NaiveTrustManager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -18,7 +18,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePage
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveHeadView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**
  * 站立直播非系统消息

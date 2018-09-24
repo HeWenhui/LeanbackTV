@@ -27,7 +27,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.ui.adapter.XsBaseAdapter;
 

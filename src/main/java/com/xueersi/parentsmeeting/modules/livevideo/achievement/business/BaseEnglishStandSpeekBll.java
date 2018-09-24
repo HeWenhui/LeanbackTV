@@ -5,7 +5,6 @@ import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**
  * Created by linyuqiang on 2018/7/29.

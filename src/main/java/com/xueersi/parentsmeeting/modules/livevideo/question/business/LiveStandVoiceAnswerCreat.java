@@ -37,7 +37,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONObject;
 

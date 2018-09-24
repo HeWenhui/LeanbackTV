@@ -24,7 +24,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.PircBot;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.IOException;
 import java.util.Vector;

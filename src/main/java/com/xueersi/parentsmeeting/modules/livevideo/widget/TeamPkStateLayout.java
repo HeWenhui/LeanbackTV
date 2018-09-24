@@ -17,11 +17,12 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.SizeUtils;
 
 /**
@@ -31,7 +32,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
  * created  at 2018/4/16 18:38
  */
 public class TeamPkStateLayout extends FrameLayout {
-
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private TeamPkProgressBar pkProgressBar;
     private SmoothAddNumTextView tvMyTeamEnergy;
     private SmoothAddNumTextView tvOtherTeamEnergy;

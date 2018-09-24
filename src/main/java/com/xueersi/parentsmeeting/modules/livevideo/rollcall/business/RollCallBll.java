@@ -10,6 +10,8 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -24,7 +26,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.rollcall.page.ClassSignPager
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.page.ClassmateSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.page.SmallEnglishClassSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONObject;
 
@@ -33,6 +34,8 @@ import org.json.JSONObject;
  * Created by linyuqiang on 2016/9/23.
  */
 public class RollCallBll implements RollCallAction, Handler.Callback {
+
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     /**
      * 可签到时间  课前15 分钟

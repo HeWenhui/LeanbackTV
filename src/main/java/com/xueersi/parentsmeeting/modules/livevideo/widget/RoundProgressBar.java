@@ -10,14 +10,17 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 
 /**
  * Created by David on 2018/04/20.
  */
 public class RoundProgressBar extends View {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     /**
      * 画笔对象的引用
      */

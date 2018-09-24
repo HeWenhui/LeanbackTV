@@ -13,7 +13,6 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.File;
 
