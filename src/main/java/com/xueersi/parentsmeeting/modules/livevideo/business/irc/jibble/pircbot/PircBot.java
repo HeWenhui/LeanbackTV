@@ -17,8 +17,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot
 import android.os.HandlerThread;
 import android.util.Base64;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.yaaic.pircbot.NaiveTrustManager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -85,6 +86,7 @@ public abstract class PircBot implements ReplyConstants {
      * this before automatically building releases)
      */
     public static final String VERSION = "1.4.6";
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     String TAG = "PircBotLog";
     private static final int OP_ADD = 1;
     private static final int OP_REMOVE = 2;
@@ -266,7 +268,7 @@ public abstract class PircBot implements ReplyConstants {
             thread.start();
             _outputhandler = new OutputHandler(thread.getLooper(), this);
         }
-        Loger.d(TAG, "connect:privMsg=" + privMsg.size());
+        logger.d( "connect:privMsg=" + privMsg.size());
         while (!privMsg.isEmpty()) {
             String msg = privMsg.remove(0);
             _outputhandler.add(msg);
@@ -452,9 +454,9 @@ public abstract class PircBot implements ReplyConstants {
      * @see Colors
      */
     public final void sendMessage(String target, String message) {
-        Loger.d(TAG, "sendMessage:message=" + message);
+        logger.d( "sendMessage:message=" + message);
         if (_outputhandler == null) {
-            Loger.d(TAG, "sendMessage:privMsg=" + privMsg.size());
+            logger.d( "sendMessage:privMsg=" + privMsg.size());
             privMsg.add("PRIVMSG " + target + " :" + message);
             return;
         }
@@ -481,7 +483,7 @@ public abstract class PircBot implements ReplyConstants {
      */
     public final void sendNotice(String target, String notice) {
         _outputhandler.add("NOTICE " + target + " :" + notice);
-        Loger.i("====notice send  ", "NOTICE " + target + " :" + notice);
+        logger.i( "NOTICE " + target + " :" + notice);
     }
 
     /**
@@ -862,7 +864,7 @@ public abstract class PircBot implements ReplyConstants {
                 sourceNick = senderInfo.substring(1, exclamation);
                 sourceLogin = senderInfo.substring(exclamation + 1, at);
                 sourceHostname = senderInfo.substring(at + 1);
-                Loger.d(TAG, "handleLine:sourceLogin=" + sourceLogin);
+                logger.d( "handleLine:sourceLogin=" + sourceLogin);
             } else {
 
                 if (tokenizer.hasMoreTokens()) {

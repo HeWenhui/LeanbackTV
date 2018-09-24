@@ -25,6 +25,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -37,7 +38,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
@@ -51,6 +51,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import ren.yale.android.cachewebviewlib.CacheWebView;
 
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
@@ -206,14 +208,14 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient());
-        Loger.e("QuestionX5Pager","=======> isNewArtsTest:"+isNewArtsTest);
+        logger.e("=======> isNewArtsTest:"+isNewArtsTest);
         // 文科新课件平台 填空选择题
         if (isNewArtsTest) {
             WebSettings webSetting = wvSubjectWeb.getSettings();
             webSetting.setBuiltInZoomControls(true);
             webSetting.setJavaScriptEnabled(true);
             wvSubjectWeb.addJavascriptInterface(this,"wx_xesapp");
-            Loger.e("QuestionX5Pager","=======> loadUrl:"+examUrl);
+            logger.e("=======> loadUrl:"+examUrl);
             wvSubjectWeb.loadUrl(examUrl);
         } else {
             ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
@@ -227,7 +229,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
             examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
             wvSubjectWeb.loadUrl(examUrl);
-            Loger.e("QuestionWebPager", "======> loadUrl:" + examUrl);
+            logger.e( "======> loadUrl:" + examUrl);
         }
         mGoldNum = -1;
         mEngerNum = -1;
@@ -242,6 +244,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             public void onViewDetachedFromWindow(View v) {
                 LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEngerNum, LiveRoomH5CloseEvent.H5_TYPE_INTERACTION, testId);
                 if (questionBll != null && questionBll instanceof QuestionBll) {
+                    logger.e( "=======> postEvent closeByTeacher:" + ((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
                 }
@@ -267,7 +270,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
      */
     @JavascriptInterface
     public void showAnswerResult_LiveVideo(String data){
-         Loger.e("QuestionWebX5Pager","=========>showAnswerResult_LiveVideo:"+data);
+         logger.e("=========>showAnswerResult_LiveVideo:"+data);
          EventBus.getDefault().post(new ArtsAnswerResultEvent(data,ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
 
@@ -282,6 +285,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         webSetting.setBuiltInZoomControls(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webSetting.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+        if (wvSubjectWeb instanceof CacheWebView) {
+            CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+            cacheWebView.getWebViewCache().setNeedHttpDns(true);
         }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);
@@ -371,7 +378,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         url2 = url2.substring(0, index2);
                     }
                     file = new File(mMorecacheout, url2);
-                    Loger.e("mqtt", "shouldInterceptRequest:file=" + file + ",file=" + file.exists());
+                    logger.e( "shouldInterceptRequest:file=" + file + ",file=" + file.exists());
                 } else {
                     file = new File(mMorecacheout, MD5Utils.getMD5(s));
                     index = s.lastIndexOf("/");
@@ -379,7 +386,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                     if (index != -1) {
                         name = s.substring(index);
                     }
-                    Loger.e("mqtt", "shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
+                    logger.e("shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
                 }
                 if (file.exists()) {
                     FileInputStream inputStream = null;
@@ -388,7 +395,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
                         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                         WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
-                        Loger.e("mqtt", "读取本地资源了old");
+                        logger.e("读取本地资源了old");
                         return webResourceResponse;
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -411,7 +418,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         url2 = url2.substring(0, index2);
                     }
                     file = new File(mMorecacheout, url2);
-                    Loger.e("mqtt", "shouldInterceptRequestnew:fileone=" + file + ",fileone=" + file.exists() + "sourceexists:" + mMorecacheout.exists());
+                    logger.e( "shouldInterceptRequestnew:fileone=" + file + ",fileone=" + file.exists() + "sourceexists:" + mMorecacheout.exists());
                 } else {
                     file = new File(mMorecacheout, MD5Utils.getMD5(request.getUrl().toString()));
                     index = request.getUrl().toString().lastIndexOf("/");
@@ -419,7 +426,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                     if (index != -1) {
                         name = request.getUrl().toString().substring(index);
                     }
-                    Loger.e("mqtt", "shouldInterceptRequestnew:filetwo=" + file.getName() + ",name=" + name + ",filetwo=" + file.exists() + "sourceexists:" + mMorecacheout.exists());
+                    logger.e( "shouldInterceptRequestnew:filetwo=" + file.getName() + ",name=" + name + ",filetwo=" + file.exists() + "sourceexists:" + mMorecacheout.exists());
                 }
                 if (file.exists()) {
                     FileInputStream inputStream = null;
@@ -428,7 +435,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         String extension = MimeTypeMap.getFileExtensionFromUrl(request.getUrl().toString().toLowerCase());
                         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                         WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
-                        Loger.e("mqtt", "读取本地资源了new");
+                        logger.e( "读取本地资源了new");
                         return webResourceResponse;
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -479,8 +486,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             this.failingUrl = failingUrl;
-            Loger.d(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
-                    "&&," + description, true);
+            UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
+                    "&&," + description);
             mLogtf.i("onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
 //            super.onReceivedError(view, errorCode, description, failingUrl);
             wvSubjectWeb.setVisibility(View.INVISIBLE);
@@ -498,7 +505,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             mLogtf.i("shouldOverrideUrlLoading:url=" + url);
 
-            Loger.e("QuestionWebPager", "======> shouldOverrideUrlLoading:" + url);
+            logger.e( "======> shouldOverrideUrlLoading:" + url);
 
             if (url.contains("science/Live/getMultiTestResult")) {
                 if (questionBll instanceof QuestionBll) {

@@ -57,7 +57,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.dialog.CloseConfirmDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
 import org.json.JSONArray;
@@ -441,7 +440,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                         .OnKeyboardShowingListener() {
                     @Override
                     public void onKeyboardShowing(boolean isShowing) {
-                        Loger.i(TAG, "onKeyboardShowing:isShowing=" + isShowing);
+                        logger.i( "onKeyboardShowing:isShowing=" + isShowing);
                         switchFSPanelLinearLayout.refreshHeight(KeyboardUtil.getValidPanelHeight(mContext));
                         if (!isShowing) {
                             if (rlSpeechbulInputContent.getVisibility()==View.VISIBLE) {
@@ -502,7 +501,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
 
                     @Override
                     public void onVolumeUpdate(int volume) {
-                        Loger.d(TAG, "onVolumeUpdate:volume=" + volume);
+                        logger.d( "onVolumeUpdate:volume=" + volume);
                         vwvSpeechbulWave.setVolume(volume * 3);
                     }
                 });

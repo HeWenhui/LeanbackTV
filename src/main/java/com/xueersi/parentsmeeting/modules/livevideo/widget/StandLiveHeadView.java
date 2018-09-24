@@ -15,11 +15,12 @@ import android.util.AttributeSet;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 
@@ -32,6 +33,7 @@ import java.io.IOException;
 public class StandLiveHeadView extends LottieAnimationView {
     Paint paint;
     private String TAG = "StandLiveHeadView";
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     String name;
     String headUrl;
     int sysHeadId = R.drawable.bg_live_stand_message_sys;
@@ -98,7 +100,7 @@ public class StandLiveHeadView extends LottieAnimationView {
 //        List<Layer> layers = composition.getLayers();
 //        for (int i = 0; i < layers.size(); i++) {
 //            Layer layer = layers.get(i);
-//            Loger.d(TAG, "setComposition:layer=" + layer.getLayerType());
+//            logger.d( "setComposition:layer=" + layer.getLayerType());
 //        }
     }
 
@@ -112,7 +114,7 @@ public class StandLiveHeadView extends LottieAnimationView {
 //        List<Layer> layers = composition.getLayers();
 //        for (int i = 0; i < layers.size(); i++) {
 //            Layer layer = layers.get(i);
-//            Loger.d(TAG, "onDraw:layer=" + layer.getLayerType());
+//            logger.d( "onDraw:layer=" + layer.getLayerType());
 //        }
     }
 
@@ -180,13 +182,13 @@ public class StandLiveHeadView extends LottieAnimationView {
                     }
                     updateHead(headBitmap);
                 } else {
-                    Loger.d(TAG, "updateHeadUrl2:headUrl=" + headUrl + ",finalHeadUrl=" + finalHeadUrl);
+                    logger.d( "updateHeadUrl2:headUrl=" + headUrl + ",finalHeadUrl=" + finalHeadUrl);
                 }
             }
 
             @Override
             public void onFail() {
-                Loger.e(TAG, "onFail");
+                logger.e( "onFail");
             }
         });
     }
@@ -224,7 +226,7 @@ public class StandLiveHeadView extends LottieAnimationView {
 //                headBitmap.recycle();
 //            }
         } catch (IOException e) {
-            Loger.e(TAG, "updateHead", e);
+            logger.e( "updateHead", e);
 //            e.printStackTrace();
             return;
         }

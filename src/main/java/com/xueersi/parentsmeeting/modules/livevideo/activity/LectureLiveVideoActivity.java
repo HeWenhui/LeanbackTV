@@ -288,7 +288,7 @@
 //                    return;
 //                }
 //                boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-//                //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
+//                //logger.i( "setVideoWidthAndHeight:isLand=" + isLand);
 //                if (!isLand) {
 //                    return;
 //                }
@@ -355,7 +355,7 @@
 //        BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = liveMessageBll.getLiveMediaControllerBottom();
 //        int topGap = (ScreenUtils.getScreenHeight() - lp.height) / 2;
 //        int paddingBottom = (int) (topGap + 15 * ScreenUtils.getScreenDensity());
-//        //Loger.e(TAG, "setMediaControllerBottomParam:paddingBottom=" + paddingBottom + "," +
+//        //logger.e( "setMediaControllerBottomParam:paddingBottom=" + paddingBottom + "," +
 //        // liveMediaControllerBottom.getPaddingBottom());
 //        if (baseLiveMediaControllerBottom.getPaddingBottom() != paddingBottom) {
 //            baseLiveMediaControllerBottom.setPadding(0, 0, 0, paddingBottom);
@@ -524,7 +524,7 @@
 //            ivTeacherNotpresent.setLayoutParams(params);
 //            ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
 //        }
-//        //Loger.e(TAG, "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
+//        //logger.e( "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
 //    }
 //
 //
@@ -537,7 +537,7 @@
 //            ivTeacherNotpresent.setLayoutParams(params);
 //            ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
 //        }
-//        //Loger.e(TAG, "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
+//        //logger.e( "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
 //    }
 //
 //    @Override
@@ -800,7 +800,7 @@
 //                        }
 //                    }
 //                }.start();
-//                //Loger.i(TAG, "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
+//                //logger.i( "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
 //            }
 //        }
 //    };
@@ -1227,7 +1227,7 @@
 //                }
 //            }
 //        }
-//        Loger.d(TAG, "addBody:method=" + method + ",url=" + url);
+//        logger.d( "addBody:method=" + method + ",url=" + url);
 //        return msg;
 //    }
 //
@@ -1307,7 +1307,7 @@
 //
 //    @Subscribe(threadMode = ThreadMode.POSTING)
 //    public void onEvent(AppEvent event) {
-//        Loger.i(TAG, "onEvent:netWorkType=" + event.netWorkType);
+//        logger.i( "onEvent:netWorkType=" + event.netWorkType);
 //        mLiveBll.onNetWorkChange(event.netWorkType);
 //    }
 //

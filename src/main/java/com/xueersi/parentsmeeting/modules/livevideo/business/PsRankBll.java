@@ -92,7 +92,7 @@ public class PsRankBll {
             int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
             if (wradio != params.width) {
-                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;
 //                relativeLayout.setLayoutParams(params);

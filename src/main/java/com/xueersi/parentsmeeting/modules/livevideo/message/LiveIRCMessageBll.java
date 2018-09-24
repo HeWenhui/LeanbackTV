@@ -39,7 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
@@ -169,7 +169,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             public void run() {
                 //理科，主讲和辅导切换的时候，给出提示（切流）
                 if (mRoomAction != null) {
-                    Loger.i("yzl_fd", "主讲和辅导切换的时候，给出提示（切流）");
+                    logger.i( "主讲和辅导切换的时候，给出提示（切流）");
                     mRoomAction.onTeacherModeChange(oldMode, mode, false, mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage(), mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage());
                     //mRoomAction.onTeacherModeChange(mode,false);
                 }
@@ -229,7 +229,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String
             message) {
-        Loger.e("LiveBll", "=====> onPrivateMessage:" + sender + ":" + login + ":" + hostname + ":" + target + ":" +
+        logger.e( "=====> onPrivateMessage:" + sender + ":" + login + ":" + hostname + ":" + target + ":" +
                 message);
         if (!"T".equals(message) && haveTeam) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
@@ -338,7 +338,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
-        Loger.d(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+        logger.d( "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
         if (sender.startsWith(TEACHER_PREFIX)) {
             synchronized (lock) {
                 mMainTeacher = new Teacher(sender);
@@ -371,7 +371,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+        logger.d( "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                 + sourceHostname + ",reason=" + reason);
         if (sourceNick.startsWith(TEACHER_PREFIX)) {
             synchronized (lock) {
@@ -436,11 +436,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 try {
                     boolean open = object.getBoolean("open");
                     String fromWhichTeacher = object.optString("from");//如果解析不到就默认主讲
-                    Loger.i("yzl_fd", "onNotice: XESCODE.OPENBARRAGE fromWhichTeacher = " + fromWhichTeacher);
+                    logger.i( "onNotice: XESCODE.OPENBARRAGE fromWhichTeacher = " + fromWhichTeacher);
                     msg += open ? "OPENBARRAGE" : "CLOSEBARRAGE";
 
                     if (!fromWhichTeacher.equals("t") && !fromWhichTeacher.equals("f")) {
-                        Loger.i("yzl_fd", "onNotice: XESCODE.OPENBARRAGE 文科没有form字段");
+                        logger.i( "onNotice: XESCODE.OPENBARRAGE 文科没有form字段");
                         mLiveTopic.getMainRoomstatus().setOpenbarrage(open);
                         if (mRoomAction != null) {
                             mRoomAction.onOpenbarrage(open, true);
@@ -448,7 +448,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     } else {
                         mLiveTopic.getCoachRoomstatus().setLKNoticeMode(fromWhichTeacher.equals("t") ? LiveTopic.MODE_CLASS : LiveTopic.MODE_TRANING);
                         mLiveTopic.setLKNoticeMode(fromWhichTeacher.equals("t") ? LiveTopic.MODE_CLASS : LiveTopic.MODE_TRANING);
-                        Loger.i("yzl_fd", "onNotice: XESCODE.OPENBARRAGE 理科有form字段 open = " + open);
+                        logger.i( "onNotice: XESCODE.OPENBARRAGE 理科有form字段 open = " + open);
 
                         if ("t".equals(fromWhichTeacher)) {
                             //来自主讲的notice 主讲开启鲜花与否
@@ -577,16 +577,16 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     JSONObject status = jsonObject.getJSONObject("room_2");
                     if (status.has("openbarrage")) {
                         //理科的room2里面才有openbarrage字段
-                        Loger.i("yzl_fd", "理科的room2里面才有openbarrage字段 ");
+                        logger.i( "理科的room2里面才有openbarrage字段 ");
 
                         if (mRoomAction != null) {
                             if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode())) {
-                                Loger.i("yzl_fd", "mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage() =  " + mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage());
+                                logger.i( "mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage() =  " + mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage());
                                 //理科的主讲！！！！！！！mLiveTopic.getCoachRoomstatus()
                                 mRoomAction.onOpenbarrage(mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage(), false);
                                 mRoomAction.onDisable(forbidSendMsg, false);
                             } else {
-                                Loger.i("yzl_fd", "mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage() =  " + mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage());
+                                logger.i( "mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage() =  " + mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage());
                                 //辅导
                                 mRoomAction.onFDOpenbarrage(mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage(), false);
                                 mRoomAction.onDisable(forbidSendMsg, false);
@@ -595,9 +595,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         }
                     } else {
                         //文科的room2里面没有openbarrage字段
-                        Loger.i("yzl_fd", "文科的room2里面没有openbarrage字段");
+                        logger.i( "文科的room2里面没有openbarrage字段");
                         if (mRoomAction != null) {
-                            Loger.i("yzl_fd", "mLiveTopic.getMainRoomstatus().isOpenbarrage() =  " + mLiveTopic.getMainRoomstatus().isOpenbarrage());
+                            logger.i( "mLiveTopic.getMainRoomstatus().isOpenbarrage() =  " + mLiveTopic.getMainRoomstatus().isOpenbarrage());
                             mRoomAction.onOpenbarrage(mLiveTopic.getMainRoomstatus().isOpenbarrage(), false);
                             mRoomAction.onDisable(forbidSendMsg, false);
                         }
@@ -716,7 +716,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         starAction.onSendMsg(msg);
                     }
                 } catch (Exception e) {
-                    // Loger.e(TAG, "understand", e);
+                    // logger.e( "understand", e);
                     UmsAgentManager.umsAgentException(BaseApplication.getContext(), "livevideo_livebll_sendMessage", e);
                     mLogtf.e("sendMessage", e);
                 }
@@ -784,7 +784,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             mHttpManager.getMoreChoiceCount(mLiveId, new HttpCallBack(pageDataLoadEntity) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                    Loger.e("Duncan", "responseEntity:" + responseEntity);
+                    logger.e( "responseEntity:" + responseEntity);
                     MoreChoice choiceEntity = mHttpResponseParser.parseMoreChoice(responseEntity);
                     if (choiceEntity != null) {
                         getDataCallBack.onDataSucess(choiceEntity);
@@ -856,7 +856,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             mLiveBll.sendMessage(jsonObject);
 //            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
         } catch (Exception e) {
-            // Loger.e(TAG, "understand", e);
+            // logger.e( "understand", e);
             mLogtf.e("sendFlowerMessage", e);
         }
     }
@@ -873,7 +873,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             mLiveBll.sendMessage(jsonObject);
 //            mIRCMessage.sendMessage(mMainTeacherStr, jsonObject.toString());
         } catch (Exception e) {
-            // Loger.e(TAG, "understand", e);
+            // logger.e( "understand", e);
             mLogtf.e("sendFlowerMessage", e);
         }
     }

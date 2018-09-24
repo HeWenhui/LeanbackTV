@@ -11,12 +11,13 @@ import android.widget.TextView;
 
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveHeadView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**
  * 站立直播非系统消息
@@ -26,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
  */
 public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageEntity> {
     static String TAG = "StandLiveMessSysItem";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     TextView tvMessageItem;
     StandLiveHeadView standLiveHeadView;
     LottieComposition mComposition;
@@ -51,7 +53,7 @@ public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageE
 
     @Override
     public void initViews(View root) {
-        Loger.d(TAG, "initViews");
+        logger.d( "initViews");
         tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
         tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
         standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
@@ -128,7 +130,7 @@ public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageE
             tvMessageItem.setText(entity.getText());
         }
 //                        boolean deng = standLiveHeadView.getEntity() == entity;
-//                        Loger.d(TAG, "updateViews:deng=" + deng + ",text=" + entity.getText());
+//                        logger.d( "updateViews:deng=" + deng + ",text=" + entity.getText());
 //                        if (!deng) {
 //                            standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
 ////                        entity.setHeadUrl(getInfo.getHeadImgPath());
@@ -142,7 +144,7 @@ public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageE
 //                            }
 //                        } else {
 //                            if (!entity.isPlayAnimation()) {
-//                                Loger.d(TAG, "updateViews:isPlayAnimation=false");
+//                                logger.d( "updateViews:isPlayAnimation=false");
 //                                entity.setPlayAnimation(true);
 //                                standLiveHeadView.playAnimation();
 //                            } else {
@@ -150,11 +152,11 @@ public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageE
 //                            }
 //                        }
 //                        if (!entity.isPlayAnimation()) {
-//                            Loger.d(TAG, "updateViews:isPlayAnimation=false");
+//                            logger.d( "updateViews:isPlayAnimation=false");
 //                            entity.setPlayAnimation(true);
 //                            standLiveHeadView.playAnimation();
 //                        } else {
-//                            Loger.d(TAG, "updateViews:equal=" + (standLiveHeadView.getEntity() != entity));
+//                            logger.d( "updateViews:equal=" + (standLiveHeadView.getEntity() != entity));
 //                            if (standLiveHeadView.getEntity() != entity) {
 ////                                standLiveHeadView.setProgress(1.0f);
 //                                standLiveHeadView.playAnimation();
@@ -166,7 +168,7 @@ public class StandLiveMessOtherItem implements AdapterItemInterface<LiveMessageE
 //                            if (deng) {
 //                                return;
 //                            }
-        Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
+        logger.d( "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
         standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
 //                        entity.setHeadUrl(getInfo.getHeadImgPath());
         standLiveHeadView.setName(entity.getSender());

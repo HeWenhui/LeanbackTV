@@ -63,7 +63,6 @@ import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 
@@ -279,12 +278,12 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View view) {
-                Loger.d(TAG, "onViewAttachedToWindow");
+                logger.d( "onViewAttachedToWindow");
             }
 
             @Override
             public void onViewDetachedFromWindow(View view) {
-                Loger.d(TAG, "onViewDetachedFromWindow:frameAnimations=" + frameAnimations.size());
+                logger.d( "onViewDetachedFromWindow:frameAnimations=" + frameAnimations.size());
                 for (int i = 0; i < frameAnimations.size(); i++) {
                     FrameAnimation animation = frameAnimations.get(i);
                     animation.destory();
@@ -520,7 +519,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     private void setAudioRequest() {
-        Loger.d(TAG, "setAudioRequest:userBack=" + userBack + ",isEnd=" + isEnd);
+        logger.d( "setAudioRequest:userBack=" + userBack + ",isEnd=" + isEnd);
         if (userBack) {
             return;
         }
@@ -538,7 +537,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
             @Override
             public void onBeginOfSpeech() {
-                Loger.d(TAG, "onBeginOfSpeech");
+                logger.d( "onBeginOfSpeech");
                 isSpeechError = false;
             }
 
@@ -616,7 +615,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
     private void onEvaluatorSuccess(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
         final int score = resultEntity.getScore();
-        Loger.d(TAG, "onEvaluatorSuccess:score=" + score + ",isEnd=" + isEnd);
+        logger.d( "onEvaluatorSuccess:score=" + score + ",isEnd=" + isEnd);
         if (!isEnd) {
             if (score == 1) {
                 errorSetVisible();
@@ -710,7 +709,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 });
             } catch (JSONException e) {
-                Loger.e(TAG, "sendSpeechEvalResult2", e);
+                logger.e( "sendSpeechEvalResult2", e);
             }
         }
         rlSpeectevalEncourage.setVisibility(View.INVISIBLE);
@@ -792,7 +791,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 int measuredHeight = layout_live_stand_red_mine1.getMeasuredHeight();
 //                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 345 + (height - measuredHeight) / 2);
                 canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 348);
-//                Loger.d(TAG, "updateHead:measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
+//                logger.d( "updateHead:measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
                 layout_live_stand_red_mine1.draw(canvas);
                 canvas.restore();
             }
@@ -1124,7 +1123,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                    }
 //                } else {
 //                    if (point90_6 != null) {
-//                        Loger.d(TAG, "onEvaluatorIng:point90_61=" + point90_6);
+//                        logger.d( "onEvaluatorIng:point90_61=" + point90_6);
 //                        if (point90_6.right - point90_6.left >= 5) {
 //                            arrayList90_6.add(point90_6);
 //                        }
@@ -1133,7 +1132,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                }
 //                if (i == lstPhonemeScore.size() - 1) {
 //                    if (point90_6 != null) {
-//                        Loger.d(TAG, "onEvaluatorIng:point90_62=" + point90_6);
+//                        logger.d( "onEvaluatorIng:point90_62=" + point90_6);
 //                        if (point90_6.right - point90_6.left >= 5) {
 //                            arrayList90_6.add(point90_6);
 //                        }
@@ -1150,7 +1149,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                    }
 //                } else {
 //                    if (point90_3 != null) {
-//                        Loger.d(TAG, "onEvaluatorIng:point90_31=" + point90_3);
+//                        logger.d( "onEvaluatorIng:point90_31=" + point90_3);
 //                        if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
 //                            arrayList90_3.add(point90_3);
 //                        }
@@ -1159,14 +1158,14 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                }
 //                if (i == lstPhonemeScore.size() - 1) {
 //                    if (point90_3 != null) {
-//                        Loger.d(TAG, "onEvaluatorIng:point90_32=" + point90_3);
+//                        logger.d( "onEvaluatorIng:point90_32=" + point90_3);
 //                        if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
 //                            arrayList90_3.add(point90_3);
 //                        }
 //                    }
 //                }
 //            }
-//            Loger.d(TAG, "onResult:onEvaluatorIng:arrayList90_6=" + arrayList90_6.size() + ",arrayList90_3=" + arrayList90_3.size());
+//            logger.d( "onResult:onEvaluatorIng:arrayList90_6=" + arrayList90_6.size() + ",arrayList90_3=" + arrayList90_3.size());
 ////            ArrayList<Point90> point90_6s = new ArrayList<Point90>();
 ////            ArrayList<Point90> point90_3s = new ArrayList<Point90>();
 //            ArrayList<Point90> point90_6s = arrayList90_6;
@@ -1219,7 +1218,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
 //                logToFile.d("onEvaluatorIng(great):nbest=" + nbest);
 //            }
-//            Loger.d(TAG, "onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
+//            logger.d( "onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
 //        }
     }
 
@@ -1422,7 +1421,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 img7Bitmap.recycle();
                 img7Bitmap = creatBitmap;
             } catch (IOException e) {
-                Loger.e(TAG, "updateScore", e);
+                logger.e( "updateScore", e);
                 return;
             }
             lottieAnimationView.updateBitmap("image_0", img7Bitmap);

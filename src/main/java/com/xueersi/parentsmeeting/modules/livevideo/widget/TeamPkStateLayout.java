@@ -6,7 +6,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,12 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.SizeUtils;
 
 /**
@@ -32,7 +32,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
  * created  at 2018/4/16 18:38
  */
 public class TeamPkStateLayout extends FrameLayout {
-
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private TeamPkProgressBar pkProgressBar;
     private SmoothAddNumTextView tvMyTeamEnergy;
     private SmoothAddNumTextView tvOtherTeamEnergy;
@@ -106,7 +106,7 @@ public class TeamPkStateLayout extends FrameLayout {
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                Loger.e("0008","===========>:onGlobalLayout"+TeamPkStateLayout.this.getMeasuredWidth());
+                logger.e( "===========>:onGlobalLayout"+TeamPkStateLayout.this.getMeasuredWidth());
                 if(TeamPkStateLayout.this.getMeasuredWidth() > 0){
                     try {
                         addPkStatBar();
@@ -168,7 +168,7 @@ public class TeamPkStateLayout extends FrameLayout {
         mMyTeamEnergy = mMyTeamEnergy + ownEnergyAdd;
         mOtherTeamEnergy = mOtherTeamEnergy + otherEnergyAdd;
         mCoinNum = mCoinNum + coinAdd;
-        Loger.e("coinNum", "====>updateData22222:" + mMyTeamEnergy + ":" + mOtherTeamEnergy + ":" + mCoinNum);
+        logger.e( "====>updateData22222:" + mMyTeamEnergy + ":" + mOtherTeamEnergy + ":" + mCoinNum);
         if (mTeamPkBll != null && coinAdd > 0) {
             TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(), mCoinNum + "");
         }
@@ -207,14 +207,14 @@ public class TeamPkStateLayout extends FrameLayout {
         int addProgress = (int) (ratio * 100 + 0.5f) - pkProgressBar.getProgress();
         if (addProgress > 0) {
             pkProgressBar.smoothAddProgress(addProgress);
-            Loger.e("coinNum", "====>updateData smoothAddProgress:" + addProgress + ":" + pkProgressBar.getProgress());
+            logger.e( "====>updateData smoothAddProgress:" + addProgress + ":" + pkProgressBar.getProgress());
 
         } else {
            /* if (pkProgressBar.isAnimRunning()) {
                 pkProgressBar.cancel();
             }*/
             pkProgressBar.setProgress((int) (ratio * 100));
-            Loger.e("coinNum", "====>updateData setProgress:" + (int) (ratio * 100));
+            logger.e( "====>updateData setProgress:" + (int) (ratio * 100));
         }
     }
 
@@ -228,8 +228,8 @@ public class TeamPkStateLayout extends FrameLayout {
      * @param showPopWindow   是否显示顶部进度状态
      */
     public void bindData(long coinNum, long myTeamEnergy, long otherTeamEnergy, boolean showPopWindow) {
-        Loger.e("coinNum", "====> PkstateLayout bindData 111:" + coinNum + ":" + myTeamEnergy + ":" + otherTeamEnergy);
-        Loger.e("coinNum", "====> PkstateLayout bindData 333:" + mCoinNum + ":" + mMyTeamEnergy + ":" +
+        logger.e( "====> PkstateLayout bindData 111:" + coinNum + ":" + myTeamEnergy + ":" + otherTeamEnergy);
+        logger.e( "====> PkstateLayout bindData 333:" + mCoinNum + ":" + mMyTeamEnergy + ":" +
                 mOtherTeamEnergy);
         this.showPopWindow = showPopWindow;
         if (!dataInited) {
@@ -239,7 +239,7 @@ public class TeamPkStateLayout extends FrameLayout {
             int addCoin = (int) (coinNum - mCoinNum);
             int ownEnergyAdd = (int) (myTeamEnergy - mMyTeamEnergy);
             int otherEnergyAdd = (int) (otherTeamEnergy - mOtherTeamEnergy);
-            Loger.e("coinNum", "====> PkstateLayout bindData 222:" + addCoin + ":" + ownEnergyAdd + ":" +
+            logger.e( "====> PkstateLayout bindData 222:" + addCoin + ":" + ownEnergyAdd + ":" +
                     otherEnergyAdd);
             updateData(ownEnergyAdd, otherEnergyAdd, addCoin);
         }

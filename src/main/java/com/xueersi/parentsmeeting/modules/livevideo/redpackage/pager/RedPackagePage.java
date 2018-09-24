@@ -34,7 +34,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.Top3FrameAnim;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 
@@ -111,18 +110,18 @@ public class RedPackagePage extends LiveBasePager {
         mView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View view) {
-                Loger.d(TAG, "onViewAttachedToWindow");
+                logger.d( "onViewAttachedToWindow");
                 viewAttached = true;
             }
 
             @Override
             public void onViewDetachedFromWindow(View view) {
                 viewAttached = false;
-                Loger.d(TAG, "onViewDetachedFromWindow:frameAnimations=" + frameAnimations.size());
+                logger.d( "onViewDetachedFromWindow:frameAnimations=" + frameAnimations.size());
                 for (int i = 0; i < frameAnimations.size(); i++) {
                     FrameAnimation animation = frameAnimations.get(i);
                     int destory = animation.destory();
-                    Loger.d(TAG, "onViewDetachedFromWindow:animation=" + animation.path + ",destory=" + destory);
+                    logger.d( "onViewDetachedFromWindow:animation=" + animation.path + ",destory=" + destory);
                 }
                 if (soundPool != null) {
                     soundPool.release();
@@ -220,7 +219,7 @@ public class RedPackagePage extends LiveBasePager {
                         if (click.get()) {
                             return;
                         }
-                        Loger.d(TAG, "onPackageClick(timeout):operateId=" + operateId);
+                        logger.d( "onPackageClick(timeout):operateId=" + operateId);
                         ivLivevideoRedpackageBg.setOnClickListener(null);
                         if (finalBtframeAnimation != null) {
                             finalBtframeAnimation.pauseAnimation();
@@ -237,7 +236,7 @@ public class RedPackagePage extends LiveBasePager {
                                 ivLivevideoRedpackageBg.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        Loger.d(TAG, "onPackageClick2:operateId=" + operateId + "," + view.getTop());
+                                        logger.d( "onPackageClick2:operateId=" + operateId + "," + view.getTop());
                                         ivLivevideoRedpackageBg.setOnClickListener(null);
                                         StandLiveMethod.onClickVoice(soundPool);
                                         btframeAnimationFile6.pauseAnimation();
@@ -280,7 +279,7 @@ public class RedPackagePage extends LiveBasePager {
                     public void onClick(View view) {
                         click.set(true);
                         ivLivevideoRedpackageBg.setOnClickListener(null);
-                        Loger.d(TAG, "onPackageClick:operateId=" + operateId);
+                        logger.d( "onPackageClick:operateId=" + operateId);
                         if (finalBtframeAnimation != null) {
                             finalBtframeAnimation.pauseAnimation();
                             ivLivevideoRedpackageBg.postDelayed(new Runnable() {
@@ -450,7 +449,7 @@ public class RedPackagePage extends LiveBasePager {
                 btframeAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
                     @Override
                     public Bitmap onAnimationCreate(String file) {
-//                        Loger.d(TAG, "onAnimationCreate:file=" + file);
+//                        logger.d( "onAnimationCreate:file=" + file);
 //                        return headBitmap;
                         return initHeadAndGold(entity, file, btframeAnimation2, true);
                     }

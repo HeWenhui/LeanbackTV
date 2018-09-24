@@ -8,7 +8,6 @@ import android.widget.RelativeLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

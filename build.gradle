@@ -48,7 +48,7 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.recyclerview
     implementation rootProject.ext.thirdlibraries.okhttp
     implementation(rootProject.ext.xeslibraries.xeslottie) { changing = true }
-    //    implementation project(':xesijkplayer')
+    //    implementation project(':ijkplayer')
     implementation(rootProject.ext.xeslibraries.ijkplayer) { changing = true }
 //    implementation project(':business-base:player')
     implementation(rootProject.ext.businesslibraries.player) {

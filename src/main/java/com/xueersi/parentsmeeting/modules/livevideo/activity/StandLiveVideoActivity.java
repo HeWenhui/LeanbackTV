@@ -238,17 +238,17 @@
 //            return false;
 //        }
 //        mLogtf.setLiveOnLineLogs(mLiveBll);
-//        Loger.d(TAG, "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System
+//        logger.d( "onVideoCreate:time1=" + (System.currentTimeMillis() - startTime) + "," + (System
 //                .currentTimeMillis() - before));
 //        before = System.currentTimeMillis();
 //        if (mGetInfo != null) {
 //            mode = mGetInfo.getMode();
 //        }
 //        initAllBll();
-//        Loger.d(TAG, "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
+//        logger.d( "onVideoCreate:time2=" + (System.currentTimeMillis() - before));
 //        before = System.currentTimeMillis();
 //        initView();
-//        Loger.d(TAG, "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
+//        logger.d( "onVideoCreate:time3=" + (System.currentTimeMillis() - before));
 ////        SpeechAssessmentWebPager pager=new SpeechAssessmentWebPager(mContext,"","","",true,"",null);
 ////        ((RelativeLayout)findViewById(R.id.rl_speech_test)).addView(pager.getRootView());
 //        return true;
@@ -312,7 +312,7 @@
 //
 //        liveLazyBllCreat.setPraiselistContent(praiselistContent);
 //        liveMessageBll.initViewLiveStand(bottomContent);
-//        Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
+//        logger.d( "initView:time1=" + (System.currentTimeMillis() - before));
 //        before = System.currentTimeMillis();
 //
 //        //先让播放器按照默认模式设置
@@ -342,7 +342,7 @@
 //        setFirstParam(lp, true);
 //        liveMessageBll.setVideoLayout(lp.width, lp.height);
 //        LiveVideoPoint.initLiveVideoPoint(this, liveVideoPoint, lp);
-//        Loger.d(TAG, "initView:time2=" + (System.currentTimeMillis() - before));
+//        logger.d( "initView:time2=" + (System.currentTimeMillis() - before));
 //        final View contentView = findViewById(android.R.id.content);
 //        contentView.postDelayed(new Runnable() {
 //            @Override
@@ -356,7 +356,7 @@
 //                        }
 //                        boolean isLand = getResources().getConfiguration().orientation == Configuration
 //                                .ORIENTATION_LANDSCAPE;
-//                        //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
+//                        //logger.i( "setVideoWidthAndHeight:isLand=" + isLand);
 //                        if (!isLand) {
 //                            return;
 //                        }
@@ -531,7 +531,7 @@
 //        BaseLiveMediaControllerBottom baseLiveMediaControllerBottom = liveMessageBll.getLiveMediaControllerBottom();
 //        int topGap = (ScreenUtils.getScreenHeight() - lp.height) / 2;
 //        int paddingBottom = (int) (topGap + 15 * ScreenUtils.getScreenDensity());
-//        //Loger.e(TAG, "setMediaControllerBottomParam:paddingBottom=" + paddingBottom + "," +
+//        //logger.e( "setMediaControllerBottomParam:paddingBottom=" + paddingBottom + "," +
 //        // liveMediaControllerBottom.getPaddingBottom());
 //        if (baseLiveMediaControllerBottom.getPaddingBottom() != paddingBottom) {
 //            baseLiveMediaControllerBottom.setPadding(0, 0, 0, paddingBottom);
@@ -547,7 +547,7 @@
 //        Rect r = new Rect();
 //        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
 //        int screenWidth = (r.right - r.left);
-//        Loger.d(TAG, "setFirstParam:mode=" + mode);
+//        logger.d( "setFirstParam:mode=" + mode);
 //        if (LiveTopic.MODE_CLASS.equals(mode)) {
 //            if (first) {
 //                //主讲模式去掉外层的RelativeLayout换回FrameLayout
@@ -601,7 +601,7 @@
 //                params.height = ScreenUtils.getScreenHeight();
 //                LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
 //                LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
-//                Loger.d(TAG, "setFirstParam:width");
+//                logger.d( "setFirstParam:width");
 //            }
 //
 //            int rightMargin = (int) (StandLiveVideoActivity.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (screenWidth
@@ -612,10 +612,10 @@
 //                params.bottomMargin = params.topMargin = topMargin;
 //                LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
 //                LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
-//                Loger.d(TAG, "setFirstParam:rightMargin");
+//                logger.d( "setFirstParam:rightMargin");
 //            }
 //        }
-//        //Loger.e(TAG, "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," +
+//        //logger.e( "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," +
 //        // rightMargin);
 //    }
 //
@@ -693,7 +693,7 @@
 //                            if (openSuccess) {
 //                                mHandler.removeCallbacks(mPlayDuration);
 //                                playTime += (System.currentTimeMillis() - lastPlayTime);
-//                                Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+//                                logger.d( "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
 //                            }
 //                            vPlayer.releaseSurface();
 //                            vPlayer.stop();
@@ -896,7 +896,7 @@
 //                        }
 //                    }
 //                }.start();
-//                //Loger.i(TAG, "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
+//                //logger.i( "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
 //            }
 //        }
 //    };
@@ -932,7 +932,7 @@
 //            if (lastPlayserverEntity != null) {
 //                lastPlayTime = System.currentTimeMillis();
 //                playTime += mPlayDurTime;
-//                Loger.d(TAG, "mPlayDuration:playTime=" + playTime / 1000);
+//                logger.d( "mPlayDuration:playTime=" + playTime / 1000);
 //                mLiveBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() -
 //                        reportPlayStarTime, lastPlayserverEntity, "normal");
 //                reportPlayStarTime = System.currentTimeMillis();
@@ -1004,16 +1004,16 @@
 //            long now = System.currentTimeMillis() / 1000;
 //            if (now < mGetInfo.getsTime()) {
 //                view.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before);
-//                Loger.d(TAG, "setTeacherNotpresent:before");
+//                logger.d( "setTeacherNotpresent:before");
 //            } else if (now > mGetInfo.geteTime()) {
 //                view.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_after);
-//                Loger.d(TAG, "setTeacherNotpresent:after");
+//                logger.d( "setTeacherNotpresent:after");
 //            } else {
 //                view.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_before_doing);
-//                Loger.d(TAG, "setTeacherNotpresent:doing");
+//                logger.d( "setTeacherNotpresent:doing");
 //            }
 //        } else {
-//            Loger.d(TAG, "setTeacherNotpresent:mode=training");
+//            logger.d( "setTeacherNotpresent:mode=training");
 //            view.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
 //        }
 //    }
@@ -1075,13 +1075,13 @@
 ////                mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);
 ////            }
 //        }
-//        Loger.d(TAG, "onLiveInit:time=" + (System.currentTimeMillis() - before));
+//        logger.d( "onLiveInit:time=" + (System.currentTimeMillis() - before));
 //        before = System.currentTimeMillis();
 //        //本场成就
 //        if (1 == getInfo.getIsAllowStar()) {
 //            initAchievement(mode);
 //        }
-//        Loger.d(TAG, "onLiveInit:time2=" + (System.currentTimeMillis() - before));
+//        logger.d( "onLiveInit:time2=" + (System.currentTimeMillis() - before));
 //        before = System.currentTimeMillis();
 //        if (1 == getInfo.getIsEnglish()) {
 //            mIse = new SpeechEvaluatorUtils(true);
@@ -1103,7 +1103,7 @@
 ////        if (AppConfig.DEBUG) {
 ////            redPackageBll.onReadPackage(1);
 ////        }
-//        Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
+//        logger.d( "onLiveInit:time3=" + (System.currentTimeMillis() - before));
 //        postDelayedIfNotFinish(new Runnable() {
 //            @Override
 //            public void run() {
@@ -1545,7 +1545,7 @@
 //                }
 //            }
 //        }
-//        Loger.d(TAG, "addBody:method=" + method + ",url=" + url);
+//        logger.d( "addBody:method=" + method + ",url=" + url);
 //        return msg;
 //    }
 //
@@ -1621,7 +1621,7 @@
 //    @Override
 //    public void onLowMemory() {
 //        super.onLowMemory();
-//        Loger.d(TAG, "onLowMemory");
+//        logger.d( "onLowMemory");
 //    }
 //
 //    public void setFirstBackgroundVisible(int visible) {
@@ -1643,7 +1643,7 @@
 //
 //    @Subscribe(threadMode = ThreadMode.POSTING)
 //    public void onEvent(AppEvent event) {
-//        Loger.i(TAG, "onEvent:netWorkType=" + event.netWorkType);
+//        logger.i( "onEvent:netWorkType=" + event.netWorkType);
 //        videoChatBll.onNetWorkChange(event.netWorkType);
 //        mLiveBll.onNetWorkChange(event.netWorkType);
 //        if (englishH5Cache != null) {
@@ -1813,7 +1813,7 @@
 //        public void handleMessage(Message msg) {
 //            if (msg.what == 1) {
 //                englishSpeekAction.start();
-//                Loger.d(TAG, "start:englishSpeekAction.start");
+//                logger.d( "start:englishSpeekAction.start");
 //            }
 //        }
 //    };
@@ -1821,7 +1821,7 @@
 //    @Override
 //    public void request(OnAudioRequest onAudioRequest) {
 //        audioRequest = true;
-//        Loger.d(TAG, "request:englishSpeekAction=" + (englishSpeekAction == null));
+//        logger.d( "request:englishSpeekAction=" + (englishSpeekAction == null));
 //        if (englishSpeekAction != null) {
 //            handler.removeMessages(1);
 //            englishSpeekAction.stop(onAudioRequest);
@@ -1835,7 +1835,7 @@
 //    @Override
 //    public void release() {
 //        audioRequest = false;
-//        Loger.d(TAG, "release:englishSpeekAction=" + (englishSpeekAction == null));
+//        logger.d( "release:englishSpeekAction=" + (englishSpeekAction == null));
 //        if (englishSpeekAction != null) {
 //            handler.sendEmptyMessageDelayed(1, 2000);
 //        }
@@ -1843,7 +1843,7 @@
 //
 //    @Override
 //    public void requestWebView() {
-//        Loger.d(TAG, "requestWebView:englishH5Cache=" + (englishH5Cache == null));
+//        logger.d( "requestWebView:englishH5Cache=" + (englishH5Cache == null));
 //        if (englishH5Cache != null) {
 //            englishH5Cache.stop();
 //        }
@@ -1851,7 +1851,7 @@
 //
 //    @Override
 //    public void releaseWebView() {
-//        Loger.d(TAG, "releaseWebView:englishH5Cache=" + (englishH5Cache == null));
+//        logger.d( "releaseWebView:englishH5Cache=" + (englishH5Cache == null));
 //        if (englishH5Cache != null) {
 //            englishH5Cache.start();
 //        }

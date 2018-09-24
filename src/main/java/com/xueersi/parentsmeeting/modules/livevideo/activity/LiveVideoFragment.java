@@ -49,7 +49,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
@@ -332,12 +331,12 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                         if (isInitialized()) {
                             if (openSuccess) {
                                 mLiveVideoBll.stopPlayDuration();
-                                Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+                                logger.d( "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
                             }
                             vPlayer.releaseSurface();
                             vPlayer.stop();
                         } else {
-                            Loger.d(TAG, "onPause:isInitialized=false");
+                            logger.d( "onPause:isInitialized=false");
                         }
                         isPlay = false;
                     }
@@ -363,7 +362,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
         long before = System.currentTimeMillis();
         mMediaController.setFileName(getInfo.getName());
-        Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
+        logger.d( "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 
     @Override

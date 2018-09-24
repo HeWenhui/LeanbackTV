@@ -1,25 +1,18 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.ImageSpan;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 
 import java.io.InputStream;
@@ -132,12 +125,12 @@ public abstract class BaseSmallEnglishLiveMessagePager extends BaseLiveMessagePa
         dvMessageDanmaku.setOnDanmakuClickListener(new IDanmakuView.OnDanmakuClickListener() {
             @Override
             public void onDanmakuClick(BaseDanmaku latest) {
-                Loger.i("DFM", "onDanmakuClick text:" + latest.text);
+                logger.i( "onDanmakuClick text:" + latest.text);
             }
 
             @Override
             public void onDanmakuClick(IDanmakus danmakus) {
-                Loger.i("DFM", "onDanmakuClick danmakus size:" + danmakus.size());
+                logger.i( "onDanmakuClick danmakus size:" + danmakus.size());
             }
         });
         dvMessageDanmaku.prepare(new BaseDanmakuParser() {
