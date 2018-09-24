@@ -7,7 +7,7 @@ import android.util.LruCache;
 
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
-import com.xueersi.common.network.TxHttpDns;
+//import com.xueersi.common.network.TxHttpDns;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -213,14 +213,14 @@ public class WebViewCache {
     public InputStream httpRequest(CacheWebViewClient client, CacheStrategy cacheStrategy, String url) {
         HttpURLConnection httpURLConnection = null;
         try {
-            URL oldUrl = new URL(url);
-            if (needHttpDns) {
+          //  URL oldUrl = new URL(url);
+         /*   if (needHttpDns) {
                 String ip3 = TxHttpDns.getInstance().getTxEnterpriseDns(oldUrl.getHost());
                 if (!StringUtils.isEmpty(ip3)) {
                     String[] ips = ip3.split(";");
                     url = url.replaceFirst(oldUrl.getHost(), ips[0]);
                 }
-            }
+            }*/
             URL urlRequest = new URL(url);
             httpURLConnection = (HttpURLConnection) urlRequest.openConnection();
             httpURLConnection.setRequestMethod("GET");
@@ -233,9 +233,9 @@ public class WebViewCache {
                 httpURLConnection.setConnectTimeout(30000);
                 httpURLConnection.setReadTimeout(30000);
             }
-            if (needHttpDns) {
+          /*  if (needHttpDns) {
                 httpURLConnection.setRequestProperty("Host", oldUrl.getHost());
-            }
+            }*/
             Map<String, String> header = client.getHeader(url);
             if (header != null) {
                 for (Map.Entry entry : header.entrySet()) {
