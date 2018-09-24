@@ -63,7 +63,11 @@ public class LiveBaseBll extends BaseBll {
     }
 
     public LiveHttpResponseParser getHttpResponseParser() {
-        return mLiveBll.getHttpResponseParser();
+        if(mLiveBll != null){
+            return mLiveBll.getHttpResponseParser();
+        }else{
+            return null;
+        }
     }
 
 
