@@ -268,7 +268,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Loger.e("Duncan", "======>QuestionIRCBlle:" + e.toString());
+                logger.e("======>QuestionIRCBlle:" + e.toString());
             }
         } else {
             LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
@@ -610,7 +610,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
         }
         if(LiveVideoConfig.isNewArts){
-            Loger.e("Duncan", "======> liveSubmitTestAnswer:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
+            logger.e( "======> liveSubmitTestAnswer:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
             getHttpManager().liveNewArtsSubmitTestAnswer(mLiveType, enstuId, videoQuestionLiveEntity.srcType,
                     videoQuestionLiveEntity.id, mLiveId, testAnswer, userMode, isVoice, isRight, new HttpCallBack() {
 

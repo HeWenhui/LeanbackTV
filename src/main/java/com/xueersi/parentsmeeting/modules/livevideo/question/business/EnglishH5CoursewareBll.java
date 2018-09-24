@@ -293,7 +293,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     public void onH5Courseware(final String status, final VideoQuestionLiveEntity videoQuestionLiveEntity) {
 //        logToFile.i("onH5Courseware:url=" + url + ",status=" + status);
 
-        Loger.e("EnglishH5CourseWareBll", "===========>onH5Courseware:" + status + ":" +
+        logger.e("===========>onH5Courseware:" + status + ":" +
                 videoQuestionLiveEntity);
 
         setWebViewCloseByTeacher(true);
@@ -348,13 +348,13 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             bottomContent.removeView(h5CoursewarePager.getRootView());
                         }
                     }
-                    Loger.e("Duncan", "======>EnglishH5CoursewareBll:" + "H5语音答题开启1" + "getIsVoice():" + videoQuestionLiveEntity.getIsVoice() + "getUrl():" + videoQuestionLiveEntity.getUrl());
+                    logger.e( "======>EnglishH5CoursewareBll:" + "H5语音答题开启1" + "getIsVoice():" + videoQuestionLiveEntity.getIsVoice() + "getUrl():" + videoQuestionLiveEntity.getUrl());
                     if ("1".equals(videoQuestionLiveEntity.getIsVoice()) && !mErrorVoiceQue.contains(videoQuestionLiveEntity.getUrl())) {
                         try {
                             showVoiceAnswer(videoQuestionLiveEntity);
-                            Loger.e("Duncan", "======>EnglishH5CoursewareBll:" + "H5语音答题开启2");
+                            logger.e( "======>EnglishH5CoursewareBll:" + "H5语音答题开启2");
                         } catch (Exception e) {
-                            Loger.e("Duncan", "======>EnglishH5CoursewareBll:" + "H5语音答题开启3");
+                            logger.e( "======>EnglishH5CoursewareBll:" + "H5语音答题开启3");
                             logToFile.d("onH5Courseware:showVoiceAnswer.error1=" + e.getMessage());
                             mErrorVoiceQue.add(videoQuestionLiveEntity.getUrl());
                             showH5Paper(videoQuestionLiveEntity);
@@ -363,17 +363,17 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         showH5Paper(videoQuestionLiveEntity);
                     }
                 } else {
-                    Loger.e("Duncan", "======>EnglishH5CoursewareBll:" + "H5语音答题关闭1");
+                    logger.e( "======>EnglishH5CoursewareBll:" + "H5语音答题关闭1");
                     boolean havePager = false;
-                    Loger.e("EnglishH5", "======>EnglishH5CoursewareBll: voiceAnswerPager="+voiceAnswerPager );
+                    logger.e( "======>EnglishH5CoursewareBll: voiceAnswerPager="+voiceAnswerPager );
                     if (voiceAnswerPager != null && !voiceAnswerPager.isEnd()) {
                         voiceAnswerPager.examSubmitAll("onH5Courseware", videoQuestionLiveEntity.nonce);
                         havePager = true;
-                        Loger.e("Duncan", "======>EnglishH5CoursewareBll:" + "H5语音答题关闭2");
+                        logger.e("======>EnglishH5CoursewareBll:" + "H5语音答题关闭2");
                     }
                     int delayTime = 0;
                     int isForce = 0;
-                    Loger.e("EnglishH5", "======>EnglishH5CoursewareBll: h5CoursewarePager="+h5CoursewarePager );
+                    logger.e( "======>EnglishH5CoursewareBll: h5CoursewarePager="+h5CoursewarePager );
                     if (h5CoursewarePager != null) {
                         havePager = true;
                         curPager = h5CoursewarePager;
@@ -410,7 +410,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
-                 Loger.e("EnglishH5CoursewareCBll:froceClose "+h5CoursewarePager +":"+(h5CoursewarePager == curPager));
+                logger.e("EnglishH5CoursewareCBll:froceClose "+h5CoursewarePager +":"+(h5CoursewarePager == curPager));
                 if (h5CoursewarePager != null) {
                     h5CoursewarePager.destroy();
                     bottomContent.removeView(h5CoursewarePager.getRootView());
@@ -925,7 +925,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
         @Override
         public BasePager questionSwitch(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseQuestionEntity) {
-            Loger.e("Duncan", "questionSwitch:" + "EnglishH5Bll");
+            logger.e("questionSwitch:" + "EnglishH5Bll");
             VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) baseQuestionEntity;
             switchVoiceAnswerPager(baseVoiceAnswerPager);
             showH5Paper(videoQuestionLiveEntity1);
@@ -947,7 +947,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         @Override
         public void onPutQuestionResult(BaseVoiceAnswerPager baseVoiceAnswerPager, final BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, final OnAnswerReslut answerReslut) {
             if(LiveVideoConfig.isNewArts){
-                Loger.d("Duncan", "onPutQuestionResultNewArts0");
+                logger.d("onPutQuestionResultNewArts0");
                 final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
                 JSONArray answers = new JSONArray();
                 JSONObject answerdetail = new JSONObject();
@@ -984,7 +984,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
                     @Override
                     public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-                        Loger.d("Duncan", "onPutQuestionResultNewArts5");
+                        logger.d( "onPutQuestionResultNewArts5");
                         logToFile.d("liveSubmitTestH5Answer:question=" + baseVideoQuestionEntity + ",pager=" + (voiceAnswerPager == null));
                         answerReslut.onAnswerReslut(baseVideoQuestionEntity, entity);
                         if (entity != null) {

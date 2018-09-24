@@ -105,8 +105,8 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         }
         initListener();
         initData();
-        Loger.e("Duncan", "普通互动题展示了！！！");
-        Loger.e("Duncan", "type:" + type);
+        logger.e("普通互动题展示了！！！");
+        logger.e( "type:" + type);
     }
 
     @Override
@@ -409,7 +409,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
             logger.d( "onResult(SUCCESS):phoneScores.isEmpty");
         } else {
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
-                Loger.e("Duncan", "选择题！！！" + "type:" + type);
+                logger.e("选择题！！！" + "type:" + type);
                 int rightIndex = -1;
                 int rightCount = 0;
                 String sss = "";
@@ -532,7 +532,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                     }
                 }
             } else {
-                Loger.e("Duncan", "  填空题！！！" + "type:" + type);
+                logger.e( "  填空题！！！" + "type:" + type);
                 int score = phoneScores.get(0).getScore();
                 boolean isRight = score > 0;
                 logger.d( "onResult(SUCCESS):score=" + score);

@@ -31,7 +31,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
@@ -181,7 +180,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     };
 
     public void getAllRanking(final AbstractBusinessDataCallBack callBack) {
-        Loger.e("ArtsExtInfo","======> rankBll getAllRanking called:"+":"+mGetInfo.getArtsExtLiveInfo());
+        logger.e("======> rankBll getAllRanking called:"+":"+mGetInfo.getArtsExtLiveInfo());
         if(mGetInfo.getArtsExtLiveInfo() != null
                 && mGetInfo.getArtsExtLiveInfo().getNewCourseWarePlatform().equals("1")){
             getArtsNewAllRanking(callBack);
@@ -195,7 +194,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
      * @param callBack
      */
     private void getArtsNewAllRanking(final AbstractBusinessDataCallBack callBack) {
-        Loger.e("ArtsExtInfo","======> rankBll getArtsNewAllRanking called:"+":"+mGetInfo.getArtsExtLiveInfo().getNewCourseWarePlatform());
+        logger.e("======> rankBll getArtsNewAllRanking called:"+":"+mGetInfo.getArtsExtLiveInfo().getNewCourseWarePlatform());
         getHttpManager().getNewArtsAllRank(mGetInfo.getId(),mGetInfo.getStuCouId(),new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

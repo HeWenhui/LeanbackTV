@@ -17,6 +17,8 @@ import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
@@ -54,6 +56,7 @@ import okhttp3.Call;
  */
 public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     private final LiveGetInfo mLiveGetInfo;
     /**
@@ -281,8 +284,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                             mRolePlayerHttpResponseParser.parserNewArtsRolePlayTestInfos(responseEntity, mRolePlayerEntity);
-                            Loger.i("RolePlayerDemoTest", "服务器试题信息返回 " + responseEntity.getJsonObject().toString());
-                            Loger.i("RolePlayerDemoTest", "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
+                            logger.i( "服务器试题信息返回 " + responseEntity.getJsonObject().toString());
+                            logger.i( "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
                                     ".getLstRolePlayerMessage()" +
                                     ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
                                     mRolePlayerEntity.toString());
@@ -291,13 +294,13 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
-                            Loger.i("RolePlayerDemoTest", "onPmError:" + responseEntity.getErrorMsg());
+                            logger.i( "onPmError:" + responseEntity.getErrorMsg());
                         }
 
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
-                            Loger.i("RolePlayerDemoTest", "onPmFailure:" + msg);
+                            logger.i( "onPmFailure:" + msg);
                         }
                     });
         }
@@ -804,8 +807,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 文科新课件平台提交结果
      */
     public synchronized void requestNewArtsResult() {
-        Loger.i("RolePlayerDemoTest", "提交结果");
-        Loger.i("RolePlayerDemoTestlog", "用户提交结果,记录日志");
+        logger.i( "提交结果");
+        logger.i( "用户提交结果,记录日志");
         //提交结果的时候，记录日志信息
         RolePlayLog.sno6(mLiveBll, mRolePlayerEntity, mContext);
         mRolePlayerEntity.setResult(true);
@@ -841,7 +844,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 i++;
             }
             obj.put("answers", arrAnswer);
-            Loger.i("RolePlayerDemoTest", "mStuCouId = " + mStuCouId + " mLiveId = " + mLiveId + " mRolePlayerEntity" +
+            logger.i( "mStuCouId = " + mStuCouId + " mLiveId = " + mLiveId + " mRolePlayerEntity" +
                     ".getTestId() = " + mRolePlayerEntity.getTestId()
                     + " obj = " + obj.toString());
 
@@ -857,18 +860,18 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     // 发送已答过的状态
                     EventBus.getDefault().post(new ArtsAnswerResultEvent(mRolePlayerEntity.getTestId(),2));
                     EventBus.getDefault().post(new VoiceAnswerResultEvent(mRolePlayerEntity.getTestId(),scores));
-                    Loger.i("RolePlayerDemoTest", "onPmSuccess: gold  =" + gold);
+                    logger.i( "onPmSuccess: gold  =" + gold);
                 }
 
                 @Override
                 public void onFailure(Call call, IOException e) {
                     super.onFailure(call, e);
-                    Loger.i("RolePlayerDemoTest", "onFailure: e.getMessage()  =" + e.getMessage() + "取消点赞");
+                    logger.i( "onFailure: e.getMessage()  =" + e.getMessage() + "取消点赞");
                 }
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
-                    Loger.i("RolePlayerDemoTest", "onPmError: responseEntity.toString()  =" + responseEntity.toString
+                    logger.i( "onPmError: responseEntity.toString()  =" + responseEntity.toString
                             () + "提交结果失败，但是要释放资源");
                     super.onPmError(responseEntity);
                     if (mRolePlayerPager != null) {

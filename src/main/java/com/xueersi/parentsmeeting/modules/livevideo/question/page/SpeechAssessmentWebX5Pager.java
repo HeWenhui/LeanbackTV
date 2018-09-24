@@ -263,7 +263,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
         if (have) {
             wvSubjectWeb.loadUrl(mUrl);
-            Loger.e("SpeechAssessmentWebX5Pager","=======>webloadUrl:" + mUrl);
+            logger.e("=======>webloadUrl:" + mUrl);
             mLogtf.d("initData:url=" + mUrl);
         }
     }
@@ -274,7 +274,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
      */
     @JavascriptInterface
     public void showAnswerResult_LiveVideo(String data){
-      Loger.e("SpeechAssessmentWebX5Pager", "=========>showAnswerResult_LiveVideo:"+data);
+        logger.e("=========>showAnswerResult_LiveVideo:"+data);
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data,ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT));
     }
 

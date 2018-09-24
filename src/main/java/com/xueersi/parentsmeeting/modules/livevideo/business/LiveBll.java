@@ -2721,7 +2721,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         }
 
         private void retry(){
-            Loger.e("LiveBll2","======>retry get ArtsExtLiveInfo");
+            logger.e("======>retry get ArtsExtLiveInfo");
             if(retryCount < MAX_RETRY_TIME){
                 retryCount ++;
                 postDelayedIfNotFinish(initArtsExtLiveInfoTask,RETRY_DELAY);

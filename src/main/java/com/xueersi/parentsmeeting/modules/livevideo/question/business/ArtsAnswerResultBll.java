@@ -10,7 +10,11 @@ import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -26,7 +30,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 
@@ -52,6 +55,7 @@ import java.util.function.ToDoubleBiFunction;
 public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, AnswerResultStateListener {
     private static final String TAG = "ArtsAnswerResultBll";
     private RelativeLayout rlAnswerResultLayout;
+
     /**
      * 语文跟读
      */
@@ -121,7 +125,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     }
 
     private void addPager() {
-        Loger.e("ArtsAnswerResultBll:addPager:" + mDsipalyer);
+        logger.e("ArtsAnswerResultBll:addPager:" + mDsipalyer);
         if (mDsipalyer != null) {
             return;
         }
@@ -137,7 +141,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
         }
-        Loger.e("Arts", "==========> ArtsAnswerResultBll addPager called:");
+        logger.e( "==========> ArtsAnswerResultBll addPager called:");
     }
 
     /**
@@ -164,7 +168,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private static final int TEST_TYPE_GAME = 12;
 
     private void onAnswerResult(String result) {
-        Loger.e(TAG, "=======>onAnswerResult:" + result);
+        logger.e( "=======>onAnswerResult:" + result);
         boolean showAnswerResult = false;
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -296,14 +300,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private boolean forceSumbmit;
 
     public void closeAnswerResult(boolean forceSumbmit) {
-        Loger.e("ArtsAnswerBll", "=====>closeAnswerResult:" + forceSumbmit + ":" + mDsipalyer);
+        logger.e( "=====>closeAnswerResult:" + forceSumbmit + ":" + mDsipalyer);
         // 已展示过答题结果
         if (mDsipalyer != null) {
             mDsipalyer.close();
             mDsipalyer = null;
             EventBus.getDefault().post(new AnswerResultCplShowEvent());
         }
-        Loger.e("ArtsAnswerBll", "=====>closeAnswerResult:" + forceSumbmit + ":" + this);
+        logger.e("=====>closeAnswerResult:" + forceSumbmit + ":" + this);
         this.forceSumbmit = forceSumbmit;
     }
 
@@ -321,7 +325,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     };
 
     public void remindSubmit() {
-        Loger.e("ArtsAnswerResult", "======>remindSubmit:" + mDsipalyer + ":" + this);
+        logger.e("======>remindSubmit:" + mDsipalyer + ":" + this);
         //没有答题结果页时才展示
         if (mArtsAnswerResultEvent == null) {
             rlAnswerResultLayout.post(new Runnable() {
@@ -351,7 +355,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Override
     public void onCompeletShow() {
-        Loger.e("ArtsAnswerResultBll", "=======onCompeletShow called:" + forceSumbmit + ":" + this);
+        logger.e( "=======onCompeletShow called:" + forceSumbmit + ":" + this);
         if (forceSumbmit) {
             mRootView.postDelayed(new Runnable() {
                 @Override
@@ -381,7 +385,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     }
                 }
 
-                Loger.e(TAG, "=======>praiseAllRight:" + showPraise);
+                logger.e( "=======>praiseAllRight:" + showPraise);
                 if (showPraise && mAnswerReulst.getIsRight() == ANSWER_RESULT_ALL_RIGHT) {
                     showPraise();
                 }
@@ -496,7 +500,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        Loger.e(TAG, "=====>onNotice :" + "type=:" + type + ":data=" + data.toString());
+        logger.e( "=====>onNotice :" + "type=:" + type + ":data=" + data.toString());
         switch (type) {
             case XESCODE.ARTS_REMID_SUBMIT:
                 int pType = data.optInt("ptype");
@@ -508,7 +512,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             case XESCODE.ARTS_PARISE_ANSWER_RIGHT:
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("Arts_Praise_Answer_right:").append(data.toString());
-                Loger.i(mContext, "ArtsAnswerResultBll", stringBuilder.toString(), true);
+                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" + "loadLibrary", stringBuilder.toString());
+
                 // 语文跟读不支持 表扬
                 if (ARTS_FOLLOW_UP != data.optInt("ptype")) {
                     String praiseType = data.optString("praiseType");
@@ -577,9 +582,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mScoreRangeMap.put(6, new ScoreRange(90, 100));
         }
         ScoreRange range = mScoreRangeMap.get(scoreRange);
-        Loger.e(TAG, "====>praiseVoiceAnswer:" + range + ":" + mVoiceAnswerResult);
+        logger.e("====>praiseVoiceAnswer:" + range + ":" + mVoiceAnswerResult);
         if (range != null && mVoiceAnswerResult != null) {
-            Loger.e(TAG, "====>praiseVoiceAnswer:" + scoreRange + ":" + testId + ":"
+            logger.e("====>praiseVoiceAnswer:" + scoreRange + ":" + testId + ":"
                     + mVoiceAnswerResult.getTestId() + ":" + mVoiceAnswerResult.getScore());
             if (testId.equals(mVoiceAnswerResult.getTestId())) {
                 if (mVoiceAnswerResult.getScore() >= range.getLow() && mVoiceAnswerResult.getScore() <= range.getHigh
@@ -592,7 +597,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWebviewClose(LiveRoomH5CloseEvent event) {
-        Loger.e(TAG, "=======>onWebviewClose called");
+        logger.e( "=======>onWebviewClose called");
         //mArtsAnswerResultEvent = null;
         closeAnswerResult(false);
         //刷新右侧 金币
@@ -604,19 +609,21 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAnswerResult(ArtsAnswerResultEvent event) {
-        Loger.e(TAG, "====>ArtsAnswerResultEvent:" + event);
+        logger.e("====>ArtsAnswerResultEvent:" + event);
         if (event != null && !event.equals(mArtsAnswerResultEvent)) {
             mArtsAnswerResultEvent = event;
             if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()) {
                 onAnswerResult(event.getDataStr());
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_:").append(event.getDataStr());
-                Loger.i(mContext, "ArtsAnswerResultBll", stringBuilder.toString(), true);
+                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" ,stringBuilder.toString());
+
+
             } else if (ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT == event.getType()) {
                 onRolePlayAnswerResult(event.getDataStr());
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_rolePlay:").append(event.getDataStr());
-                Loger.i(mContext, "ArtsAnswerResultBll", event.getDataStr(), true);
+                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll"+"_ArtsAnswerResult_rolePlay",stringBuilder.toString());
             }
         }
     }
@@ -650,7 +657,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         String testId = totalObject.optString("testIds");
                         int score = totalObject.optInt("score");
                         mVoiceAnswerResult = new VoiceAnswerResultEvent(testId, score);
-                        Loger.e("ArtsAnswerResultBll", "========>onRolePlayAnswerResult:" + mVoiceAnswerResult
+                        logger.e("========>onRolePlayAnswerResult:" + mVoiceAnswerResult
                                 .getScore() + ":" + mVoiceAnswerResult.getTestId());
                     }
                 } else {
@@ -668,7 +675,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVoiceAnswerReuslt(VoiceAnswerResultEvent event) {
-        Loger.e(TAG, "====>onVoiceAnswerReuslt:" + event);
+        logger.e( "====>onVoiceAnswerReuslt:" + event);
         if (event != null && !event.equals(mVoiceAnswerResult)) {
             mVoiceAnswerResult = event;
         }

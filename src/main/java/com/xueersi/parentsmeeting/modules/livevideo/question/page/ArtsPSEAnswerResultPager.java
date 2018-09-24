@@ -29,13 +29,14 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerResultLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerStateLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ArtsAnswerTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 
@@ -52,6 +53,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result/";
     private final String TAG = "ArtsPSEAnswerResultPager";
+    protected Logger logger = LoggerFactory.getLogger("ArtsPSEAnswerResultPager");
 
     /**强制提交 展示答题结果 延时自动关闭**/
     private final long AUTO_CLOSE_DELAY = 2000;
@@ -219,7 +221,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Loger.e("Arts", "========> close Btn called:");
+                logger.e( "========> close Btn called:");
                 hideAnswerReuslt();
             }
         });
@@ -311,7 +313,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     private void showAnswerList() {
 
         answerListShowing = true;
-        Loger.e(TAG, "=====>showAnswerList called");
+        logger.e("=====>showAnswerList called");
         recyclerView = mView.findViewById(R.id.rcl_arts_answer_result_detail);
         recyclerView.setVisibility(View.VISIBLE);
         AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
@@ -326,7 +328,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                Loger.e("Arts", "=======> getItemOffsets:" + recyclerView.computeVerticalScrollRange());
+                logger.e( "=======> getItemOffsets:" + recyclerView.computeVerticalScrollRange());
                 if (mAdapter.getItemCount() > 1) {
                     int itemPosition = parent.getChildAdapterPosition(view);
                     int left = 0;

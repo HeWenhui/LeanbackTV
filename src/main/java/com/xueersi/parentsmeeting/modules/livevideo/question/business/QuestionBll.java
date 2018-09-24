@@ -651,7 +651,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 id, QuestionBll.this, stuCouId);
                         speechAssessmentPager.setIse(mIse);
                         speechAssessmentPager.initData();
-                        logger.i("RolePlayerDemoTest", "走人机");
+                        logger.i( "走人机");
                     }
                     setHaveSpeech(true);
                     rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
@@ -2184,7 +2184,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Loger.e("QuestionBll", "=======>forceClose 2222:" + curQuestionView);
+                    logger.e( "=======>forceClose 2222:" + curQuestionView);
                     if (questionWebPager != null) {
                         rlQuestionContent.removeView(questionWebPager.getRootView());
                         if (questionWebPager instanceof BaseQuestionWebInter) {
