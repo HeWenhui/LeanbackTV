@@ -30,7 +30,7 @@ public class LogToFile {
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     public static int LIVE_TIME = 0;
     public LiveOnLineLogs liveOnLineLogs;
-    protected Logger logger = LoggerFactory.getLogger(TAG);
+    protected Logger logger = LoggerFactory.getLogger("LogToFile");
 
     static {
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
