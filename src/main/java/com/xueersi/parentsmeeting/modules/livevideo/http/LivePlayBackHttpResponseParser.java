@@ -96,7 +96,7 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
 //                date.setTime(id / 1000);
 //                Calendar calendar = Calendar.getInstance();
 //                calendar.setTime(date);
-//                Loger.i(TAG, "liveMessagesParser:id=" + id + ",calendar,Y=" + calendar.get(Calendar.YEAR)
+//                logger.i( "liveMessagesParser:id=" + id + ",calendar,Y=" + calendar.get(Calendar.YEAR)
 //                        + ",M=" + calendar.get(Calendar.MONTH) + ",d=" + calendar.get(Calendar.DAY_OF_MONTH)
 //                        + ",h=" + calendar.get(Calendar.HOUR_OF_DAY)
 //                        + ",m=" + calendar.get(Calendar.MINUTE)

@@ -113,7 +113,7 @@
 //                + "&stuId=" + stuId + "&stuName=" + stuName + "&stuCouId=" + stuCouId;
 ////        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
 ////        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
-//        Loger.d(TAG, "initData:examUrl=" + examUrl);
+//        logger.d( "initData:examUrl=" + examUrl);
 //        wvSubjectWeb.loadUrl(examUrl);
 ////        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
 //    }

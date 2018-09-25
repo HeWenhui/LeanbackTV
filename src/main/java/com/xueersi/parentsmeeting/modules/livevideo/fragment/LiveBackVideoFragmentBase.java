@@ -85,7 +85,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  */
 public class LiveBackVideoFragmentBase extends Fragment {
     private String TAG = "LiveBackVideoFragmentBase";
-    Logger logger = LoggerFactory.getLogger(TAG);
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected BaseActivity activity;
     /** 布局默认资源 */
     protected int mLayoutVideo = R.layout.liveback_video_fragment;

@@ -179,7 +179,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
         btMessageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Loger.i(TAG, "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
+                logger.i( "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
                 Editable editable = etMessageContent.getText();
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
@@ -228,7 +228,7 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
                 .OnKeyboardShowingListener() {
             @Override
             public void onKeyboardShowing(boolean isShowing) {
-                Loger.i(TAG, "onKeyboardShowing:isShowing=" + isShowing);
+                logger.i( "onKeyboardShowing:isShowing=" + isShowing);
                 if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
                     onTitleShow(true);
                 }

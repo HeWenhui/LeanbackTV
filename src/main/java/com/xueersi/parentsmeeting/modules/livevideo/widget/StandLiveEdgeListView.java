@@ -16,7 +16,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ListView;
 
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
 /**
@@ -25,6 +26,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
  */
 public class StandLiveEdgeListView extends ListView {
     public String TAG = "StandLiveEdgeListView";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     public Paint paint;
     public Matrix matrix;
     public Shader shader;
@@ -70,11 +72,11 @@ public class StandLiveEdgeListView extends ListView {
                                 }
                             }
                         }
-                        Loger.d(TAG, "onPreDraw:height=" + height + ",i=" + index + ",totalChildHeight=" + totalChildHeight);
+                        logger.d( "onPreDraw:height=" + height + ",i=" + index + ",totalChildHeight=" + totalChildHeight);
                         if (totalChildHeight > ScreenUtils.getScreenHeight() / 2) {
                             drawShader = true;
                             drawHeight = height - ScreenUtils.getScreenHeight() / 2;
-                            Loger.d(TAG, "onPreDraw:drawTop=" + drawTop + ",drawHeight=" + drawHeight);
+                            logger.d( "onPreDraw:drawTop=" + drawTop + ",drawHeight=" + drawHeight);
 
                             matrix.setScale(1, drawHeight);
                             matrix.postTranslate(getLeft(), 0);
@@ -112,7 +114,7 @@ public class StandLiveEdgeListView extends ListView {
             final int flags = Canvas.HAS_ALPHA_LAYER_SAVE_FLAG;
             canvas.saveLayer(getLeft(), 0, getRight(), drawHeight, null, flags);
             super.draw(canvas);
-            Loger.d(TAG, "draw:top=" + getTop());
+            logger.d( "draw:top=" + getTop());
             canvas.drawRect(0, 0, getWidth(), drawHeight, paint);
             canvas.restoreToCount(saveCount);
         } else {

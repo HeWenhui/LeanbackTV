@@ -12,8 +12,9 @@ import android.util.AttributeSet;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.PaintTextUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.IOException;
 
@@ -22,6 +23,7 @@ import java.io.IOException;
  * 站立直播背景Lottie动画，本场成就
  */
 public class StandLiveLottieAnimationView extends LottieAnimationView {
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     int goldCount = -1;
     int starCount = -1;
     Paint paint;
@@ -65,7 +67,7 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
             canvas.drawText(num, img_7Bitmap.getWidth() - width - 20, baseline, paint);
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
-            Loger.e(TAG, "setGoldCount", e);
+            logger.e( "setGoldCount", e);
             return;
         }
         updateBitmap("image_9", img_7Bitmap);
@@ -100,7 +102,7 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
             canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, baseline, paint);
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
-            Loger.e(TAG, "setStarCount", e);
+            logger.e( "setStarCount", e);
             return;
         }
         updateBitmap("image_3", img_7Bitmap);

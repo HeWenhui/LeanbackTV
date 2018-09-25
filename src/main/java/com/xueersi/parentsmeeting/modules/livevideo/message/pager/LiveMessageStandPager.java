@@ -58,7 +58,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -224,7 +223,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         if (lvMessage.getVisibility() == View.GONE) {
             btMesOpen.setEnabled(false);
             ivMessageClose.setEnabled(false);
-            Loger.d(TAG, "initBtMesOpenAnimation:false");
+            logger.d( "initBtMesOpenAnimation:false");
             btMesOpenAnimation = FrameAnimation.createFromAees(mContext, btMesOpen, "live_stand/frame_anim/openmsg",
                     50, false);
             btMesOpenAnimation.setDensity((int) (FrameAnimation.DEFAULT_DENSITY * 2.8f / ScreenUtils.getScreenDensity
@@ -233,7 +232,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             btMesOpenAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
                 @Override
                 public void onAnimationStart() {
-                    Loger.d(TAG, "onAnimationStart");
+                    logger.d( "onAnimationStart");
                 }
 
                 @Override
@@ -241,12 +240,12 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     btMesOpen.setEnabled(true);
                     ivMessageClose.setEnabled(true);
                     initOpenBt(true);
-                    Loger.d(TAG, "initBtMesOpenAnimation:true");
+                    logger.d( "initBtMesOpenAnimation:true");
                 }
 
                 @Override
                 public void onAnimationRepeat() {
-                    Loger.d(TAG, "onAnimationRepeat");
+                    logger.d( "onAnimationRepeat");
                 }
             });
             lvMessage.setVisibility(View.VISIBLE);
@@ -352,7 +351,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         btMessageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Loger.i(TAG, "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
+                logger.i( "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
                 Editable editable = etMessageContent.getText();
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
@@ -404,7 +403,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         .OnKeyboardShowingListener() {
                     @Override
                     public void onKeyboardShowing(boolean isShowing) {
-                        Loger.i(TAG, "onKeyboardShowing:isShowing=" + isShowing);
+                        logger.i( "onKeyboardShowing:isShowing=" + isShowing);
                         if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
                             onTitleShow(true);
                         }
@@ -441,7 +440,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     public void initData() {
         long before = System.currentTimeMillis();
         super.initData();
-        Loger.i(TAG, "initData:time1=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
@@ -467,7 +466,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
-        Loger.i(TAG, "initData:minisize=" + minisize);
+        logger.i( "initData:minisize=" + minisize);
 
 //        liveMessageEntities.clear();
 //        for (int i = 0; i < 3; i++) {
@@ -516,7 +515,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //            }
 //        });
         liveSoundPool = LiveSoundPool.createSoundPool();
-        Loger.i(TAG, "initData:time2=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mView.post(new Runnable() {
             @Override
@@ -524,9 +523,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 initDanmaku();
             }
         });
-        Loger.i(TAG, "initData:time3=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        Loger.i(TAG, "initData:time4=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mView.post(new Runnable() {
             @Override
@@ -534,7 +533,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 initFlower();
             }
         });
-        Loger.i(TAG, "initData:time5=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time5=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initOpenBt(true);
     }
@@ -571,7 +570,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 .ll_livevideo_message_flower);
         final LayoutInflater factory = LayoutInflater.from(mContext);
         final CompoundButtonGroup group = new CompoundButtonGroup();
-        Loger.i(TAG, "initFlower:time1=" + (System.currentTimeMillis() - before));
+        logger.i( "initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mFlowerWindow = flowerWindow;
         Handler handler = new Handler(Looper.getMainLooper());
@@ -603,7 +602,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 }
             }, i * 10);
         }
-        Loger.i(TAG, "initFlower:time2=" + (System.currentTimeMillis() - before));
+        logger.i( "initFlower:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         flowerContentView.findViewById(R.id.bt_livevideo_message_flowersend).setOnClickListener(new View
                 .OnClickListener() {
@@ -663,7 +662,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         });
         flowerWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         flowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        Loger.i(TAG, "initFlower:time3=" + (System.currentTimeMillis() - before));
+        logger.i( "initFlower:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
 
@@ -672,7 +671,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //        if (rlMessageContent.getVisibility() != View.GONE) {
 //            rlMessageContent.setVisibility(View.GONE);
 //        }
-        Loger.d(TAG, "onTitleShow:show=" + show + ",keyboardShowing=" + keyboardShowing);
+        logger.d( "onTitleShow:show=" + show + ",keyboardShowing=" + keyboardShowing);
         btMessageExpress.setBackgroundResource(R.drawable.selector_live_stand_chat_expression);
         InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
                 .INPUT_METHOD_SERVICE);
@@ -728,7 +727,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
             int videoGap = (screenWidth - width) / 2;
             if (videoGap != params.leftMargin) {
-                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.leftMargin = videoGap;
 //                rlInfo.setLayoutParams(params);
@@ -1067,9 +1066,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //                            boolean same = standLiveHeadView.getEntity() == entity;
 //                            if (same) {
 //                                standLiveHeadView.pauseAnimation();
-//                                Loger.d(TAG, "addMessage:pauseAnimation:entity=" + entity.getText());
+//                                logger.d( "addMessage:pauseAnimation:entity=" + entity.getText());
 //                            } else {
-//                                Loger.d(TAG, "addMessage:entity=" + standLiveHeadView.getEntity() + "," + entity
+//                                logger.d( "addMessage:entity=" + standLiveHeadView.getEntity() + "," + entity
 // .getText());
 //                            }
                         }
@@ -1100,12 +1099,12 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                                             View child = lvMessage.getChildAt(childrenCount - 1);
                                             int childBottom = child.getBottom();
                                             int paddingBottom = lvMessage.getPaddingBottom();
-//                                                Loger.d(TAG, "addMessage:lvMessage=" + paddingBottom + "," +
+//                                                logger.d( "addMessage:lvMessage=" + paddingBottom + "," +
 // lvMessage.getScrollY() + "," + lvMessage.getHeight()
 //                                                        + ",child=" + child.getHeight() + "," + childBottom);
                                             if (childBottom + paddingBottom > lvMessage.getHeight()) {
                                                 int offset = (childBottom + paddingBottom) - lvMessage.getHeight();
-                                                Loger.d(TAG, "addMessage:offset=" + offset);
+                                                logger.d( "addMessage:offset=" + offset);
                                                 lvMessage.smoothScrollByOffset(offset);
                                             }
                                         }

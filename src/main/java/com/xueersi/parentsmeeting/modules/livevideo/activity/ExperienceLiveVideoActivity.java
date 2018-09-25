@@ -47,6 +47,7 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.TimeUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
@@ -201,7 +202,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         HandlerThread handlerThread = new HandlerThread("ScanRunnable");
 
         ScanRunnable() {
-            Loger.i(TAG, "ScanRunnable");
+            logger.i( "ScanRunnable");
             handlerThread.start();
             scanHandler = new Handler(handlerThread.getLooper());
         }
@@ -446,6 +447,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         getInfo.setStudentLiveInfo(studentLiveInfoEntity);
 
         getInfo.setId(mVideoEntity.getLiveId());
+        if (livePlayLog != null) {
+            livePlayLog.setChannelname(mVideoEntity.getLiveId());
+        }
         getInfo.setLiveType(EXP_LIVE_TYPE);
         getInfo.setStuId(UserBll.getInstance().getMyUserInfoEntity().getStuId());
         getInfo.setStuSex(TextUtils.isEmpty(sex) ? "" : sex);
@@ -468,7 +472,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
 
     private IRCMessage mIRCMessage;
-    private final String IRC_CHANNEL_PREFIX = "#4L";
+    private final String IRC_CHANNEL_PREFIX = "4L";
 
     /**
      * 连接 聊天服务器
@@ -553,9 +557,22 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onPrivateMessage");
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+            Loger.e("ExperiencLvieAvtiv", "=====>onPrivateMessage:isSelf=" + isSelf);
+            if (isSelf && "T".equals(message)) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        XESToastUtils.showToast(ExperienceLiveVideoActivity.this,"您的帐号已在其他设备登录，请重新进入直播间");
+                        Intent intent = new Intent();
+                        intent.putExtra("msg", "您的帐号已在其他设备登录，请重新进入直播间");
+                        setResult(ShareBusinessConfig.LIVE_USER_KICK, intent);
+                        finish();
+                    }
+                });
+            } else {
+                if (mLiveMessagePager != null) {
+                    mLiveMessagePager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                }
             }
         }
 
@@ -674,7 +691,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
-        Loger.i(TAG, "onEvent:netWorkType=" + event.netWorkType);
+        logger.i( "onEvent:netWorkType=" + event.netWorkType);
         mNetWorkType = event.netWorkType;
 
         if (mIRCMessage != null) {
@@ -735,7 +752,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     public void onGlobalLayout() {
                         boolean isLand = getResources().getConfiguration().orientation == Configuration
                                 .ORIENTATION_LANDSCAPE;
-                        //Loger.i(TAG, "setVideoWidthAndHeight:isLand=" + isLand);
+                        //logger.i( "setVideoWidthAndHeight:isLand=" + isLand);
                         if (!isLand) {
                             return;
                         }
@@ -780,7 +797,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         long before = System.currentTimeMillis();
         mLiveMessagePager = new LiveMessagePager(this, questionBll, ums, liveMediaControllerBottom,
                 liveMessageLandEntities, null);
-        Loger.d(TAG, "initViewLive:time1=" + (System.currentTimeMillis() - before));
+        logger.d( "initViewLive:time1=" + (System.currentTimeMillis() - before));
 
         // 关联聊天人数
         mLiveMessagePager.setPeopleCount(peopleCount);
@@ -1258,6 +1275,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         // 播放完毕直接退出
 //        onUserBackPressed();
         // 直播结束后，显示结束的提示图片
+        isPlay = false;
         ivTeacherNotpresent.setVisibility(View.VISIBLE);
 //        ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
         ivTeacherNotpresent.setBackgroundResource(R.drawable.live_free_play_end);
@@ -1269,6 +1287,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         if (scanRunnable != null) {
             scanRunnable.exit();
         }
+        mHandler.removeCallbacks(mPlayDuration);
 
     }
 
@@ -1276,7 +1295,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     protected void onRefresh() {
         if (AppBll.getInstance(this).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
-//            Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+//            logger.d( "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
 //            if (rlQuestionContent.getChildCount() > 0) {
 //                rlQuestionContent.setVisibility(View.VISIBLE);
 //            }
@@ -1375,4 +1394,4 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         super.onStop();
         liveBackBll.onStop();
     }
-    }
+}

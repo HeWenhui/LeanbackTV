@@ -10,6 +10,8 @@ import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -17,7 +19,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -34,6 +35,7 @@ import okhttp3.Response;
 
 public class LiveVideoReportBll {
     private final String TAG = "LiveVideoReportBll";
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     private LiveHttpManager mHttpManager;
     /** 直播帧数统计 */
     private LivePlayLog livePlayLog;
@@ -106,7 +108,7 @@ public class LiveVideoReportBll {
         public void onOpenFailed(int arg1, int arg2) {
             if (isOpenSuccess) {
                 MegId megId = MegId.MEGID_12103;
-                megId.msgid = "fail " + TotalFrameStat.getErrorCode(arg2) + " ";
+                megId.msgid = "fail " + LivePlayLog.getErrorCodeInt(arg2) + " ";
                 streamReport(megId, mGetInfo.getChannelname(), -1);
             }
             long openTime = System.currentTimeMillis() - openStartTime;
@@ -221,12 +223,12 @@ public class LiveVideoReportBll {
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.i(TAG, "streamReport:onFailure=", e);
+                logger.i("streamReport:onFailure=", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Loger.i(TAG, "streamReport:onResponse:response=" + response.message());
+                logger.i("streamReport:onResponse:response=" + response.message());
             }
         });
     }
@@ -269,12 +271,12 @@ public class LiveVideoReportBll {
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.i(TAG, "live_report_play_duration:onFailure=", e);
+                logger.i("live_report_play_duration:onFailure=", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Loger.i(TAG, "live_report_play_duration:onResponse:response=" + response.message());
+                logger.i("live_report_play_duration:onResponse:response=" + response.message());
             }
         });
     }

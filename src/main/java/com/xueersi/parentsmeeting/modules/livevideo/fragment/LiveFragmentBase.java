@@ -33,7 +33,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
@@ -246,7 +245,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         LiveFragmentBase liveFragmentBase;
 
         public LiveLivePlayerPlayFragment() {
-            Loger.d(TAG, "LiveLivePlayerPlayFragment");
+            logger.d( "LiveLivePlayerPlayFragment");
         }
 
         @Override
@@ -524,7 +523,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
         if (event.getClass() == AppEvent.class) {
-            Loger.i(TAG, "onEvent:netWorkType=" + event.netWorkType);
+            logger.i( "onEvent:netWorkType=" + event.netWorkType);
             mLiveVideoBll.onNetWorkChange(event.netWorkType);
         }
     }

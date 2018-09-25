@@ -11,11 +11,12 @@ import android.widget.TextView;
 
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveHeadView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**
  * 站立直播系统消息
@@ -25,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
  */
 public class StandLiveMessSysItem implements AdapterItemInterface<LiveMessageEntity> {
     static String TAG = "StandLiveMessSysItem";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     TextView tvMessageItem;
     StandLiveHeadView standLiveHeadView;
     LottieComposition mComposition;
@@ -46,7 +48,7 @@ public class StandLiveMessSysItem implements AdapterItemInterface<LiveMessageEnt
 
     @Override
     public void initViews(View root) {
-        Loger.d(TAG, "initViews");
+        logger.d( "initViews");
         tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
         tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
         standLiveHeadView = root.findViewById(R.id.slhv_livevideo_message_head);
@@ -107,7 +109,7 @@ public class StandLiveMessSysItem implements AdapterItemInterface<LiveMessageEnt
 //                            if (deng) {
 //                                return;
 //                            }
-        Loger.d(TAG, "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
+        logger.d( "updateViews:deng=" + deng + ",progress=" + standLiveHeadView.getProgress() + ",standLiveHeadView=" + standLiveHeadView.getEntity() + ",text=" + entity.getText());
         standLiveHeadView.setIsMine(entity.getType() == LiveMessageEntity.MESSAGE_MINE);
 //                        entity.setHeadUrl(getInfo.getHeadImgPath());
         standLiveHeadView.setName(entity.getSender());

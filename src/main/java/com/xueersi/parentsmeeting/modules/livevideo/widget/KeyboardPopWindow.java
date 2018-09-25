@@ -10,8 +10,9 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 
 /**
@@ -21,7 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
  */
 
 public class KeyboardPopWindow extends PopupWindow {
-
+    Logger logger = LoggerFactory.getLogger("KeyboardPopWindow");
     private Activity activity;
     private View popupView;
     private int keyboardPortraitHeight;
@@ -84,7 +85,7 @@ public class KeyboardPopWindow extends PopupWindow {
 
     private void notifyKeyboardHeightChanged(int height, int orientation) {
         if (observer != null) {
-            Loger.d("软键盘状态： " + height);
+            logger.d("软键盘状态： " + height);
             observer.onKeyboardHeightChanged(height, orientation);
         }
     }

@@ -11,6 +11,8 @@ import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.lib.log.Loger;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -43,6 +45,7 @@ import okhttp3.Response;
  */
 public class LiveHttpManager extends BaseHttpBusiness {
     String TAG = "LiveHttpManager";
+    private final Logger logger = LoggerFactory.getLogger(TAG);
     HashMap<String, String> defaultKey = new HashMap<>();
     LiveVideoSAConfig.Inner liveVideoSAConfigInner;
     private LiveVideoSAConfig liveVideoSAConfig;
@@ -167,7 +170,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
                         });
                     }
                 } catch (final Exception e) {
-                    Loger.d(TAG, "liveGetPlayServer:disconnect=" + (connection != null));
+                    logger.d( "liveGetPlayServer:disconnect=" + (connection != null));
                     try {
                         if (connection != null) {
                             connection.disconnect();
@@ -595,7 +598,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("entranceTime", "" + entranceTime);
         params.addBodyParam("type", "1");
         setDefaultParameter(params);
-        Loger.i(TAG, "sendSpeechEvalResult:enstuId=" + enstuId + ",liveId=" + liveId);
+        logger.i( "sendSpeechEvalResult:enstuId=" + enstuId + ",liveId=" + liveId);
         sendPost(LiveVideoConfig.URL_LIVE_SEND_SPEECHEVAL, params, requestCallBack);
     }
 
@@ -608,7 +611,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("answers", "" + stuAnswer);
         params.addBodyParam("type", "1");
         setDefaultParameter(params);
-        Loger.i(TAG, "sendSpeechEvalResult2:enstuId=" + enstuId + ",liveId=" + liveId);
+        logger.i( "sendSpeechEvalResult2:enstuId=" + enstuId + ",liveId=" + liveId);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
     }
 
@@ -617,7 +620,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("testId", id);
         setDefaultParameter(params);
-        Loger.i(TAG, "getSpeechEvalAnswerTeamRank:id=" + id);
+        logger.i( "getSpeechEvalAnswerTeamRank:id=" + id);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM_RAND, params, requestCallBack);
     }
 
@@ -628,7 +631,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", id);
         params.addBodyParam("type", "1");
         setDefaultParameter(params);
-        Loger.i(TAG, "speechEval42IsAnswered:enstuId=" + enstuId + ",liveId=" + liveId);
+        logger.i( "speechEval42IsAnswered:enstuId=" + enstuId + ",liveId=" + liveId);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42_ANSWER, params, requestCallBack);
     }
 

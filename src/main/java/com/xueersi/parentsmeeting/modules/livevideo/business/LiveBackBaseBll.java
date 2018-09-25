@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 直播回放总bll
  */
 public class LiveBackBaseBll extends BaseBll {
-    protected Logger logger = LoggerFactory.getLogger(TAG);
+    protected Logger logger = LoggerFactory.getLogger("LiveBackBaseBll");
     protected LiveBackBll liveBackBll;
     protected Activity activity;
     protected RelativeLayout mRootViewBottom;

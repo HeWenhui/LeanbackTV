@@ -14,8 +14,9 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.FileLogger;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +43,7 @@ import java.util.Locale;
  */
 public class LiveService extends Service {
     String TAG = "LiveService";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private File alldir;
     int livepid;
     Handler handler = new Handler(Looper.getMainLooper());
@@ -61,7 +63,7 @@ public class LiveService extends Service {
             for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager.getRunningAppProcesses()) {
                 if (appProcess.pid == livepid) {
                     isAlive = true;
-                    Loger.d(TAG, "onCreate:appProcess=" + appProcess.processName);
+                    logger.d( "onCreate:appProcess=" + appProcess.processName);
                 }
             }
             if (!isAlive) {
@@ -83,7 +85,7 @@ public class LiveService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Loger.d(TAG, "onCreate");
+        logger.d( "onCreate");
         dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
         alldir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/cache");
         if (!alldir.exists()) {
@@ -105,7 +107,7 @@ public class LiveService extends Service {
                         }
                         if (start) {
                             nativeList.add(string);
-                            Loger.d(TAG, "onCreate:string=" + string);
+                            logger.d( "onCreate:string=" + string);
                             if (nativeList.size() > 20) {
                                 break;
                             }
@@ -139,7 +141,7 @@ public class LiveService extends Service {
         super.onDestroy();
         handler.removeCallbacks(runnable);
         System.exit(0);
-        Loger.d(TAG, "onDestroy");
+        logger.d( "onDestroy");
     }
 
     @Override

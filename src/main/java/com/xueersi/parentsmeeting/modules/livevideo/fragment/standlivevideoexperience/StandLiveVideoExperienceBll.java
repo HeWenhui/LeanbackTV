@@ -1,18 +1,19 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
-import com.xueersi.lib.log.LoggerFactory;
-import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
@@ -107,7 +108,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
     }
 
     private IRCMessage mIRCMessage;
-    private final String IRC_CHANNEL_PREFIX = "#4L";
+    private final String IRC_CHANNEL_PREFIX = "4L";
 
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity,
@@ -161,10 +162,11 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         if (mIRCMessage != null && mIRCMessage.isConnected()) {
             return;
         }
+        expChatId = mVideoEntity.getExpChatId();
         String channel = IRC_CHANNEL_PREFIX + expChatId;
         String chatRoomUid = "s_" + liveGetInfo.getLiveType() + "_"
                 + expChatId + "_" + liveGetInfo.getStuId() + "_" + liveGetInfo.getStuSex();
-        LoggerFactory.getLogger(TAG).e("=====>connectChatServer:channel=" + channel + ":nickname =" +
+        Loger.e("ExperienceLiveVideoActivity", "=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
 
         // 获取 聊天服务器地址  的接口地址
@@ -186,7 +188,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         }
         mNetWorkType = NetWorkHelper.getNetWorkState(mContext);
         mIRCMessage = new IRCMessage(mContext, mNetWorkType, channel, liveGetInfo.getStuName(), chatRoomUid);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(null, liveGetInfo, liveGetInfo.getLiveType(), mHttpManager,
+        IRCTalkConf ircTalkConf = new IRCTalkConf(null, liveGetInfo, 4, mHttpManager,
                 talkConfHosts);
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
@@ -212,7 +214,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         } else {
             openChat = false;
         }
-        Loger.i(TAG, "openChat = " + openChat);
+        Log.e(TAG, "openChat = " + openChat);
         if (mLiveMessagePager != null) {
 //            mLiveMessagePager.onQuestionShow(true);
             mLiveMessagePager.onopenchat(openChat, "", false);
@@ -233,7 +235,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
         @Override
         public void onStartConnect() {
-            Loger.i(TAG, "=====>onStartConnect");
+            Loger.e("ExperiencLvieAvtiv", "=====>onStartConnect");
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onStartConnect();
             }
@@ -241,7 +243,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
         @Override
         public void onConnect(IRCConnection connection) {
-            Loger.i(TAG, "=====>onConnect");
+            Loger.e("ExperiencLvieAvtiv", "=====>onConnect");
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onConnect();
             }
@@ -249,7 +251,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
         @Override
         public void onRegister() {
-            Loger.i(TAG, "=====>onRegister");
+            Loger.e("ExperiencLvieAvtiv", "=====>onRegister");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onRegister();
@@ -258,7 +260,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
         @Override
         public void onDisconnect(IRCConnection connection, boolean isQuitting) {
-            Loger.i(TAG, "=====>onDisconnect");
+            Loger.e("ExperiencLvieAvtiv", "=====>onDisconnect");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onDisconnect();
@@ -268,7 +270,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
         @Override
         public void onMessage(String target, String sender, String login, String hostname, String text) {
-            Loger.i(TAG, "=====>onMessage");
+            Loger.e("ExperiencLvieAvtiv", "=====>onMessage");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onMessage(target, sender, login, hostname, text, "");
@@ -278,26 +280,39 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
-            Loger.i(TAG, "=====>onPrivateMessage");
-            if (mLiveMessagePager != null) {
-                mLiveMessagePager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+            logger.e( "=====>onPrivateMessage:isSelf=" + isSelf);
+            if (isSelf && "T".equals(message)) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        XESToastUtils.showToast(activity,"您的帐号已在其他设备登录，请重新进入直播间");
+                        Intent intent = new Intent();
+                        intent.putExtra("msg", "您的帐号已在其他设备登录，请重新进入直播间");
+                        activity.setResult(ShareBusinessConfig.LIVE_USER_KICK, intent);
+                        activity.finish();
+                    }
+                });
+            } else {
+                if (mLiveMessagePager != null) {
+                    mLiveMessagePager.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                }
             }
         }
 
         @Override
         public void onChannelInfo(String channel, int userCount, String topic) {
-            Loger.i(TAG, "=====>onChannelInfo");
+            Loger.e("ExperiencLvieAvtiv", "=====>onChannelInfo");
         }
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
                 notice) {
-            Loger.i(TAG, "=====>onNotice");
+            Loger.e("ExperiencLvieAvtiv", "=====>onNotice");
         }
 
         @Override
         public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
-            Loger.i(TAG, "=====>onTopic");
+            Loger.e("ExperiencLvieAvtiv", "=====>onTopic");
 
         }
 
@@ -395,7 +410,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
                         starAction.onSendMsg(msg);
                     }
                 } catch (Exception e) {
-                    // Loger.e(TAG, "understand", e);
+                    // logger.e( "understand", e);
                     UmsAgentManager.umsAgentException(BaseApplication.getContext(), "livevideo_livebll_sendMessage", e);
                     logToFile.e(TAG + ":sendMessage", e);
                 }
@@ -444,6 +459,17 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
             return "";
         }
     };
+
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        if (mIRCMessage != null) {
+            mIRCMessage.setCallback(null);
+            mIRCMessage.destory();
+            logger.e( "=========>:mIRCMessage.destory()");
+        }
+    }
 
     @Override
     public void onKeyboardShowing(boolean isShowing) {

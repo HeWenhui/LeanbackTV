@@ -3,15 +3,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.stablelog;
 
 import android.content.Context;
 
-import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.analytics.umsagent.UmsConstants;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 
 /**
@@ -21,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
  */
 
 public class RolePlayLog {
+    protected static Logger logger = LoggerFactory.getLogger("RolePlayLog");
     private static String eventId = LiveVideoConfig.LIVE_ROLE_PLAY;
 
 
@@ -30,7 +29,7 @@ public class RolePlayLog {
 
     public static void sno2(LiveAndBackDebug liveAndBackDebug, Context context, String nonce) {
         if (liveAndBackDebug == null) {
-            Loger.i("RolePlayerDemoTestlog", " liveAndBackDebug 为空，不记录日志 ");
+            logger.i( " liveAndBackDebug 为空，不记录日志 ");
             return;
         }
         StableLogHashMap logHashMap = new StableLogHashMap("websocketconnected");
@@ -45,7 +44,7 @@ public class RolePlayLog {
 
     public static void sno4(LiveAndBackDebug liveAndBackDebug, VideoQuestionLiveEntity videoQuestionLiveEntity, Context context) {
         if (liveAndBackDebug == null || videoQuestionLiveEntity == null) {
-            Loger.i("RolePlayerDemoTestlog", " liveAndBackDebug 或 videoQuestionLiveEntity，不记录日志 ");
+            logger.i( " liveAndBackDebug 或 videoQuestionLiveEntity，不记录日志 ");
             return;
         }
         StableLogHashMap logHashMap = new StableLogHashMap("showmutirole");
@@ -61,7 +60,7 @@ public class RolePlayLog {
 
     public static void sno6(LiveAndBackDebug liveAndBackDebug,RolePlayerEntity rolePlayerEntity, Context context) {
         if(liveAndBackDebug == null || rolePlayerEntity == null){
-            Loger.i("RolePlayerDemoTestlog", " liveAndBackDebug 或 rolePlayerEntity为空，不记录日志 ");
+            logger.i( " liveAndBackDebug 或 rolePlayerEntity为空，不记录日志 ");
             return;
         }
         StableLogHashMap logHashMap = new StableLogHashMap("submitmutirole");
@@ -72,7 +71,7 @@ public class RolePlayLog {
         logHashMap.put("testid", "" + rolePlayerEntity.getTestId());
         logHashMap.addExY().addSno("6");
         liveAndBackDebug.umsAgentDebugInter(eventId,logHashMap.getData());
-        Loger.i("RolePlayerDemoTestlog", " speaktime =  "+rolePlayerEntity.getSelfValidSpeechTime());
+        logger.i( " speaktime =  "+rolePlayerEntity.getSelfValidSpeechTime());
     }
 
     /**
@@ -81,7 +80,7 @@ public class RolePlayLog {
 
     public static void sno7(LiveAndBackDebug liveAndBackDebug,RolePlayerEntity rolePlayerEntity, Context context) {
         if(liveAndBackDebug == null || rolePlayerEntity == null){
-            Loger.i("RolePlayerDemoTestlog", " liveAndBackDebug 或 rolePlayerEntity为空，不记录日志 ");
+            logger.i( " liveAndBackDebug 或 rolePlayerEntity为空，不记录日志 ");
             return;
         }
         StableLogHashMap logHashMap = new StableLogHashMap("showmutirolersultdlg");
@@ -96,7 +95,7 @@ public class RolePlayLog {
 
     public static void sno8(LiveAndBackDebug liveAndBackDebug,RolePlayerEntity.RolePlayerMessage rolePlayermsg, Context context) {
         if(liveAndBackDebug == null || rolePlayermsg == null){
-            Loger.i("RolePlayerDemoTestlog", " liveAndBackDebug 或 rolePlayermsg，不记录日志 ");
+            logger.i( " liveAndBackDebug 或 rolePlayermsg，不记录日志 ");
             return;
         }
         StableLogHashMap logHashMap = new StableLogHashMap("playoneaudio");

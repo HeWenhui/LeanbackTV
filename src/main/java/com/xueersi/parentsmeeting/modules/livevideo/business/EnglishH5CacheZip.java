@@ -147,7 +147,7 @@
 //                    }
 //                }.start();
 //                final JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-//                Loger.d(TAG, "getCourseWareUrl:onPmSuccess:jsonObject=" + jsonObject);
+//                logger.d( "getCourseWareUrl:onPmSuccess:jsonObject=" + jsonObject);
 //                try {
 //                    JSONObject liveIdObj = jsonObject.getJSONObject(liveId);
 //                    JSONArray urlArray = liveIdObj.getJSONArray("url");
@@ -165,7 +165,7 @@
 //                        liveBll.download(fileUrl, saveFile.getPath(), new DownloadCallBack() {
 //                            @Override
 //                            protected void onDownloadSuccess() {
-//                                Loger.d(TAG, "onDownloadSuccess:saveFile=" + saveFile.length());
+//                                logger.d( "onDownloadSuccess:saveFile=" + saveFile.length());
 //                                ZipExtractorTask zipExtractorTask = new ZipExtractorTask(saveFile, new File(todayUnZipDir, saveName.replace(".", "")), context, true);
 //                                zipExtractorTask.execute();
 //                                File[] files = saveFile.listFiles();
@@ -173,19 +173,19 @@
 //                                    for (int i = 0; i < files.length; i++) {
 //                                        File file = files[i];
 //                                        String s = file.getPath().substring(saveFile.getPath().length());
-//                                        Loger.d(TAG, "onDownloadSuccess:s=" + s);
+//                                        logger.d( "onDownloadSuccess:s=" + s);
 //                                    }
 //                                }
 //                            }
 //
 //                            @Override
 //                            protected void onDownloadFailed() {
-//                                Loger.d(TAG, "onDownloadFailed:saveFile=" + saveFile.length());
+//                                logger.d( "onDownloadFailed:saveFile=" + saveFile.length());
 //                            }
 //                        });
 //                        zipUrls.add(fileUrl);
 //                    }
-//                    Loger.d(TAG, "getCourseWareUrl:onPmSuccess:urlArray=" + urlArray.length() + ",urls=" + urls.size());
+//                    logger.d( "getCourseWareUrl:onPmSuccess:urlArray=" + urlArray.length() + ",urls=" + urls.size());
 //                    JSONArray infoArray = liveIdObj.getJSONArray("infos");
 //                    for (int i = 0; i < infoArray.length(); i++) {
 //                        JSONObject infoObj = infoArray.getJSONObject(i);
@@ -193,7 +193,7 @@
 //                        String courseware_type = infoObj.getString("type");
 //                        String play_url = "https://live.xueersi.com/Live/coursewareH5/" + liveId + "/" + id + "/" + courseware_type
 //                                + "/123456";
-//                        Loger.d(TAG, "getCourseWareUrl:onPmSuccess:play_url=" + play_url);
+//                        logger.d( "getCourseWareUrl:onPmSuccess:play_url=" + play_url);
 ////                        urls.add(play_url);
 //                    }
 //                    if (urls.isEmpty()) {
@@ -203,33 +203,33 @@
 //                        }
 //                    }
 //                } catch (JSONException e) {
-//                    Loger.e(TAG, "onPmSuccess", e);
+//                    logger.e( "onPmSuccess", e);
 //                }
 //            }
 //
 //            @Override
 //            public void onFailure(Call call, IOException e) {
 //                super.onFailure(call, e);
-//                Loger.e(TAG, "getCourseWareUrl:onFailure:e=" + e);
+//                logger.e( "getCourseWareUrl:onFailure:e=" + e);
 //            }
 //
 //            @Override
 //            public void onPmError(ResponseEntity responseEntity) {
 //                super.onPmError(responseEntity);
-//                Loger.e(TAG, "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
+//                logger.e( "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
 //            }
 //        });
 //    }
 //
 //    public void start() {
 //        isStart = true;
-//        Loger.d(TAG, "start");
+//        logger.d( "start");
 //        getCourseWareUrl();
 //    }
 //
 //    public void stop() {
 //        isStart = false;
-//        Loger.d(TAG, "stop");
+//        logger.d( "stop");
 //        handler.removeMessages(1);
 //    }
 //

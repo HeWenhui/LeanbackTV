@@ -7,9 +7,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.ui.dialog.BaseAlertDialog;
 
 /**
@@ -18,6 +19,7 @@ import com.xueersi.ui.dialog.BaseAlertDialog;
  */
 public class MicTipDialog extends BaseAlertDialog {
     private String TAG = "MicTipDialog";
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     private TextView tvRaiseHandsCount;
     private FrameLayout flRaiseHandsContent;
     /** 举手失败 */
@@ -52,7 +54,7 @@ public class MicTipDialog extends BaseAlertDialog {
     }
 
     public boolean setFail(String msg) {
-        Loger.i(TAG, "setFail:status=" + status);
+        logger.i( "setFail:status=" + status);
         int oldStatus = status;
         status = FAIL;
         flRaiseHandsContent.removeView(rlRaiseHandsSuccess);
@@ -63,7 +65,7 @@ public class MicTipDialog extends BaseAlertDialog {
 
 
     public boolean setSuccessTip(String msg) {
-        Loger.i(TAG, "setSuccessTip:status=" + status);
+        logger.i( "setSuccessTip:status=" + status);
         int oldStatus = status;
         status = SUCCESS;
         flRaiseHandsContent.removeView(rlRaiseHandsFail);
@@ -74,7 +76,7 @@ public class MicTipDialog extends BaseAlertDialog {
     }
 
     public boolean setSuccess(String msg) {
-        Loger.i(TAG, "setSuccess:status=" + status);
+        logger.i( "setSuccess:status=" + status);
         int oldStatus = status;
         status = SUCCESS;
         flRaiseHandsContent.removeView(rlRaiseHandsFail);

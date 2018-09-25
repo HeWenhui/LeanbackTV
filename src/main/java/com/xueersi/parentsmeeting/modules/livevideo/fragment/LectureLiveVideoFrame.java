@@ -32,7 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -157,6 +157,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll));
         mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll));
         mLiveBll.addBusinessBll(new LecAdvertIRCBll(activity, mLiveBll));
+        mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
         mLiveBll.addBusinessBll(new LecLearnReportIRCBll(activity, mLiveBll));
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }
@@ -220,7 +221,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                         if (isInitialized()) {
                             if (openSuccess) {
                                 mLiveVideoBll.stopPlayDuration();
-                                Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+                                logger.d( "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
                             }
                             vPlayer.releaseSurface();
                             vPlayer.stop();
@@ -241,7 +242,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
         long before = System.currentTimeMillis();
         mMediaController.setFileName(getInfo.getName());
-        Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
+        logger.d( "onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 
     @Override
@@ -418,7 +419,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
 //            ivTeacherNotpresent.setLayoutParams(params);
 //            ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
 //        }
-//        Loger.e(TAG, "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
+//        logger.e( "setFirstParamLand:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
         lecLiveVideoAction.setFirstParam(LiveVideoPoint.getInstance());
     }
 
