@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexpe
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
@@ -13,7 +12,6 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
@@ -35,7 +33,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -166,7 +163,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         String channel = IRC_CHANNEL_PREFIX + expChatId;
         String chatRoomUid = "s_" + liveGetInfo.getLiveType() + "_"
                 + expChatId + "_" + liveGetInfo.getStuId() + "_" + liveGetInfo.getStuSex();
-        Loger.e("ExperienceLiveVideoActivity", "=====>connectChatServer:channel=" + channel + ":nickname =" +
+        logger.i( "=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
 
         // 获取 聊天服务器地址  的接口地址
@@ -214,7 +211,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         } else {
             openChat = false;
         }
-        Log.e(TAG, "openChat = " + openChat);
+        logger.i( "openChat = " + openChat);
         if (mLiveMessagePager != null) {
 //            mLiveMessagePager.onQuestionShow(true);
             mLiveMessagePager.onopenchat(openChat, "", false);
@@ -235,7 +232,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
         @Override
         public void onStartConnect() {
-            Loger.e("ExperiencLvieAvtiv", "=====>onStartConnect");
+            logger.i( "=====>onStartConnect");
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onStartConnect();
             }
@@ -243,7 +240,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
         @Override
         public void onConnect(IRCConnection connection) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onConnect");
+            logger.i("=====>onConnect");
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onConnect();
             }
@@ -251,7 +248,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
         @Override
         public void onRegister() {
-            Loger.e("ExperiencLvieAvtiv", "=====>onRegister");
+            logger.i( "=====>onRegister");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onRegister();
@@ -260,7 +257,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
         @Override
         public void onDisconnect(IRCConnection connection, boolean isQuitting) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onDisconnect");
+            logger.i( "=====>onDisconnect");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onDisconnect();
@@ -270,7 +267,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
         @Override
         public void onMessage(String target, String sender, String login, String hostname, String text) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onMessage");
+            logger.i("=====>onMessage");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onMessage(target, sender, login, hostname, text, "");
@@ -280,7 +277,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
         @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
-            logger.e( "=====>onPrivateMessage:isSelf=" + isSelf);
+            logger.i("=====>onPrivateMessage:isSelf=" + isSelf);
             if (isSelf && "T".equals(message)) {
                 mHandler.post(new Runnable() {
                     @Override
@@ -301,18 +298,18 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
         @Override
         public void onChannelInfo(String channel, int userCount, String topic) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onChannelInfo");
+            logger.i("=====>onChannelInfo");
         }
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
                 notice) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onNotice");
+            logger.i( "=====>onNotice");
         }
 
         @Override
         public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onTopic");
+            logger.i( "=====>onTopic");
 
         }
 
