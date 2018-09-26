@@ -40,12 +40,6 @@ public class LiveBackBaseBll extends BaseBll {
     protected final int mLiveType;
     protected LiveVideoPoint liveVideoPoint;
 
-    /**
-     * 0 liveback
-     * 1 experience
-     */
-
-
     public LiveBackBaseBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity);
         this.activity = activity;
@@ -169,6 +163,13 @@ public class LiveBackBaseBll extends BaseBll {
      * @return
      */
     public void resultComplete() {
+
+    }
+
+    /**
+     * 站立直播体验课购买课程成功后
+     */
+    public void buyRecommondCourseComplete(Boolean isSuccess) {
 
     }
 }

@@ -9,15 +9,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 
 public class StandExperienceUnderstandBll extends LiveBackBaseBll {
+
     StandExperienceUnderstandPager mPager;
 
-    /**
-     * 0 liveback
-     * 1 experience
-     *
-     * @param activity
-     * @param liveBackBll
-     */
     public StandExperienceUnderstandBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
 
@@ -53,6 +47,7 @@ public class StandExperienceUnderstandBll extends LiveBackBaseBll {
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
             .ShowQuestion showQuestion) {
         super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
+
         if (mPager != null) {
             mRootView.addView(mPager.getRootView());
         }
@@ -61,6 +56,8 @@ public class StandExperienceUnderstandBll extends LiveBackBaseBll {
 
     @Override
     public int[] getCategorys() {
-        return new int[]{LocalCourseConfig.CATEGORY_UNDERSTAND};
+        return new int[]{
+                LocalCourseConfig.CATEGORY_UNDERSTAND
+        };
     }
 }

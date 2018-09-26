@@ -13,9 +13,8 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ExperienceLiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -24,7 +23,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dataload.DataLoadEntity;
-import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONObject;
 
@@ -34,7 +32,7 @@ public class ExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
 
     private String TAG = getClass().getSimpleName();
 
-    public ExperienceQuestionPlayBackBll(Activity activity, ExperienceLiveBackBll liveBackBll) {
+    public ExperienceQuestionPlayBackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
     }
 
@@ -54,7 +52,7 @@ public class ExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
             //语音评测
             LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(this, liveBackBll,
                     questionBll);
-            liveBackStandSpeechCreat.setIsExperience(((ExperienceLiveBackBll) liveBackBll).getExperience());
+            liveBackStandSpeechCreat.setIsExperience(((StandExperienceLiveBackBll) liveBackBll).getExperience());
             liveBackStandSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
             questionBll.setBaseSpeechCreat(liveBackStandSpeechCreat);
         } else {
@@ -64,7 +62,7 @@ public class ExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
             questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
             //语音评测
             LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
-            liveBackSpeechCreat.setIsExperience(((ExperienceLiveBackBll) liveBackBll).getExperience());
+            liveBackSpeechCreat.setIsExperience(((StandExperienceLiveBackBll) liveBackBll).getExperience());
             liveBackSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
             questionBll.setBaseSpeechCreat(liveBackSpeechCreat);
         }

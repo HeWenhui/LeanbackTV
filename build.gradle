@@ -27,21 +27,21 @@ dependencies {
     implementation(rootProject.ext.xeslibraries.speechrecognizer) { changing = true }
     implementation(rootProject.ext.xeslibraries.ldnetdiagnoservice) { changing = true }
     //uicomponent
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.uicomponent)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.uicomponent)
     //framework
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.framework)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.framework)
     //统计
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.analytics)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.analytics)
     //图片处理
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.imageloader)
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.businesslibraries.audio)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.imageloader)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.audio)
     //日志
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.logger)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.logger)
 //    implementation project(':xesijkplayer')
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.ijkplayer)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.ijkplayer)
 //    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.player)
 
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.businesslibraries.cloud)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.cloud)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.share)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.browser)
 
@@ -61,7 +61,7 @@ dependencies {
     implementation(rootProject.ext.businesslibraries.cloud) {
         changing = true
     }
-        implementation project(':business-base:browser')
+//        implementation project(':business-base:browser')
 //    implementation(rootProject.ext.businesslibraries.browser) {
 //        changing = true
 //    }
@@ -69,11 +69,12 @@ dependencies {
     //
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
     //    implementation project(path: ':business-base:audio')
-    implementation(rootProject.ext.businesslibraries.audio) {
-        changing = true
-    }
+//    implementation(rootProject.ext.businesslibraries.audio) {
+//        changing = true
+//    }
     //分享
-    implementation(rootProject.ext.xeslibraries.share) {
-        changing = true
-    }
+//    implementation(rootProject.ext.xeslibraries.share) {
+//        changing = true
+//    }
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }

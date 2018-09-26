@@ -7,15 +7,16 @@ import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
 
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-public class ExperienceLiveBackBll extends LiveBackBll {
+public class StandExperienceLiveBackBll extends LiveBackBll {
     private String TAG = getClass().getSimpleName();
 
-    public ExperienceLiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
+    public StandExperienceLiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         super(activity, mVideoEntity);
     }
 
@@ -142,6 +143,15 @@ public class ExperienceLiveBackBll extends LiveBackBll {
     public void resultAllComplete() {
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             liveBackBaseBll.resultComplete();
+        }
+    }
+
+    //    购课完成后专用
+    public void buyCourseComplete(boolean isSuccess) {
+        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+            if (liveBackBaseBll instanceof RecommondCourseBll) {//只有推荐课程才使用这个方法
+
+            }
         }
     }
 
