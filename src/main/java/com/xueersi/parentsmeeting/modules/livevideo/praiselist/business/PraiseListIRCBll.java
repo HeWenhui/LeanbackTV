@@ -52,19 +52,6 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-//        class TestThread extends Thread{
-//            @Override
-//            public void run() {
-//                JSONObject data = null;
-//                try {
-//                    data = new JSONObject("{\"from\":\"t\",\"open\":\"on\",\"zanType\":\"1\",\"voiceId\":\"2567_1533872215382\"}");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                onNotice("","",data,224);
-//            }
-//        }
-//        new TestThread().run();
     }
 
     @Override
