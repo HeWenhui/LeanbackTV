@@ -1245,4 +1245,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_UPLOAD_VOICE_BARRAGE, params, requestCallBack);
     }
+
+    /**
+     * 低端设备检测信息
+     *
+     * @param requestCallBack
+     */
+    public void getDeviceDetectionInfo(HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        sendPost(LiveVideoConfig.URL_CHECK_DEVICE, params, requestCallBack);
+    }
 }

@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnerg
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
@@ -1631,5 +1632,29 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         moreChoice.setRows(data.optString("rows"));
         return moreChoice;
 
+    }
+
+    /**
+     * 解析低端设备检测信息
+     */
+    public DeviceDetectionEntity parseDeviceDetectionInfo(ResponseEntity responseEntity) {
+        JSONObject data = (JSONObject) responseEntity.getJsonObject();
+        DeviceDetectionEntity entity = new DeviceDetectionEntity();
+        entity.setUnMatchCount(data.optInt("unMatchCount"));
+        entity.setUnMatchDesc(data.optString("unMatchDesc"));
+        JSONArray array = data.optJSONArray("unMatchList");
+        for (int i = 0; i < array.length(); i++) {
+            // type = 1：系统版本    type = 3： 设备内存
+            JSONObject jsonObject = array.optJSONObject(i);
+            int type = jsonObject.optInt("type");
+            if (type == 1) {
+                entity.setVersionCurrent(jsonObject.optString("current"));
+                entity.setVersionNotice(jsonObject.optString("notice"));
+            } else if (type == 3) {
+                entity.setMemoryCurrent(jsonObject.optString("current"));
+                entity.setMemoryNotice(jsonObject.optString("notice"));
+            }
+        }
+        return entity;
     }
 }
