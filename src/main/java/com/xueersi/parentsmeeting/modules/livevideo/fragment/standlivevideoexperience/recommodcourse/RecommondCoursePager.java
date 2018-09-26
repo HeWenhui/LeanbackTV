@@ -4,12 +4,16 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView;
 
 public class RecommondCoursePager extends BasePager {
     private final String TAG = getClass().getSimpleName();
@@ -33,6 +37,8 @@ public class RecommondCoursePager extends BasePager {
 
     private ClickListener listener;
 
+    private AutoVerticalScrollTextView autoVerticalScrollTextView;
+
     public RecommondCoursePager(Context context) {
         super(context);
         initData();
@@ -50,6 +56,10 @@ public class RecommondCoursePager extends BasePager {
         ivTeacherThumbnail = view.findViewById(R.id.iv_livevideo_stand_experience_recommod_course_teacher_thumbnail);
         wholeRecommondCourseLayout = view.findViewById(R.id.ctl_recommod_course);
         thumbnailRecommondCourseLayout = view.findViewById(R.id.ctl_recommod_course_thumbnail);
+
+        autoVerticalScrollTextView = new AutoVerticalScrollTextView(mContext);
+
+
         return view;
     }
 
@@ -139,9 +149,32 @@ public class RecommondCoursePager extends BasePager {
 //        thumbnailHideAnimator.start();
     }
 
+    private final int delayTime = 60 * 2 * 1000;
+    /**
+     * 设置滚动
+     */
+    private Runnable messageRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mView != null) {
+                SpannableString spannableString = new SpannableString("喇叭");
+                ImageSpan imageSpan = new ImageSpan(mContext.getResources().getDrawable(R.drawable
+                        .bg_livevideo_stand_experience_advertise_horn));
+                spannableString.setSpan(imageSpan, 0, 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+
+                autoVerticalScrollTextView.setText(spannableString);
+                autoVerticalScrollTextView.next();
+                mView.postDelayed(this, delayTime);
+            }
+        }
+    };
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mView != null) {
+            mView.removeCallbacks(messageRunnable);
+        }
         stopAnimator();
     }
 

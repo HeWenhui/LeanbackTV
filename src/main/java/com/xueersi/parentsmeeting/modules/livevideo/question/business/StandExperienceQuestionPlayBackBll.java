@@ -28,11 +28,11 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-public class ExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
+public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
 
     private String TAG = getClass().getSimpleName();
 
-    public ExperienceQuestionPlayBackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    public StandExperienceQuestionPlayBackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
     }
 
@@ -253,7 +253,7 @@ public class ExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
         HttpCallBack httpCallBack = new HttpCallBack(loadEntity) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
-                logger.d( "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity
+                logger.d("saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity
                         .getJsonObject());
                 VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer(responseEntity,
                         isVoice);
