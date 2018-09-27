@@ -53,7 +53,7 @@ public class ArtsAnswerTextView extends TextView {
             icon = BitmapFactory.decodeResource(context.getResources(), suffixResId);
             //Loger.e("ArtsAnswerTextView","======> padding:"+icon.getWidth()+":"+drawableLeftMargin);
             int rightPadding = icon.getWidth() + drawableLeftMargin;
-            this.setPadding(0, 0, rightPadding > 0?rightPadding:0, 0);
+            this.setPadding(0, 0, rightPadding > 0?rightPadding:0, drawableTopMargin);
             iconPaint = new Paint();
             iconPaint.setFilterBitmap(true);
             iconPaint.setAntiAlias(true);
@@ -98,6 +98,8 @@ public class ArtsAnswerTextView extends TextView {
                 lastLineBound = new Rect();
             }
             getLayout().getLineBounds(lindeIndex, lastLineBound);
+            //getLayout.getl
+
             int characterIndex = getText().length();
             int top = lastLineBound.top + drawableTopMargin;
             int left = 0;
