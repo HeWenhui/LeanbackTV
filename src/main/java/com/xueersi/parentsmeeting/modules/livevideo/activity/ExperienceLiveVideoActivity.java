@@ -411,15 +411,15 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
 //        AppBll.getInstance().registerAppEvent(this);
 //        initView();
-        if (mIsLand) {
+//        if (mIsLand) {
             // 加载横屏时互动题的列表布局
-            rlQuestionContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_contents);
-        } else {
-            if (rlQuestionContent != null) {
-                rlQuestionContent.removeAllViews();
-                rlQuestionContent = null;
-            }
-        }
+        rlQuestionContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_contents);
+//        } else {
+//            if (rlQuestionContent != null) {
+//                rlQuestionContent.removeAllViews();
+//                rlQuestionContent = null;
+//            }
+//        }
         loadData();
 
         return true;
