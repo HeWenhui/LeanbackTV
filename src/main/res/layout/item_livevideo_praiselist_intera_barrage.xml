@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_livevideo_praise_barrage_bg"
+    android:orientation="horizontal"
+    android:padding="3dp">
+
+
+    <ImageView
+        android:id="@+id/iv_praise_intera_barrage_item_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_livevideo_praise_intera_gift" />
+
+    <TextView
+        android:id="@+id/tv_praise_intera_barrage_item_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="我送出了一份礼物" />
+
+    <ImageView
+        android:id="@+id/iv_praise_intera_barrage_item_gift_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/livevideo_bubble_small_chemistry_icon_normal" />
+
+</LinearLayout>
