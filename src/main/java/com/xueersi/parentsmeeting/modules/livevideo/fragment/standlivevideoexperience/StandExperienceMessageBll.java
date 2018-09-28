@@ -49,7 +49,7 @@ import java.util.List;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
 //zyy:仿照全身直播的体验课聊天
-public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements KeyboardUtil.OnKeyboardShowingListener {
+public class StandExperienceMessageBll extends LiveBackBaseBll implements KeyboardUtil.OnKeyboardShowingListener {
     /**
      * 聊天消失
      */
@@ -97,7 +97,7 @@ public class StandLiveVideoExperienceBll extends LiveBackBaseBll implements Keyb
 
     LectureLivePlayBackBll lectureLivePlayBackBll;
 
-    public StandLiveVideoExperienceBll(Activity activity, LiveBackBll liveBackBll, LectureLivePlayBackBll
+    public StandExperienceMessageBll(Activity activity, LiveBackBll liveBackBll, LectureLivePlayBackBll
             lectureLivePlayBackBll) {
         super(activity, liveBackBll);
         mHttpManager = new LiveHttpManager(mContext);

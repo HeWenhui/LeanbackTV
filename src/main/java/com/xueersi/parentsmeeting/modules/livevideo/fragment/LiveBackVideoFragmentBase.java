@@ -978,7 +978,14 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
     }
 
-//    PopupWindow mWindow;
+    public VideoView getVideoView() {
+        return videoView;
+    }
+
+    public void setVideoView(VideoView videoView) {
+        this.videoView = videoView;
+    }
+    //    PopupWindow mWindow;
 //    PopupWindow mFeedbackWindow;
 //    String mDifficulty = "-1";
 //    String mSatisficing = "-1";

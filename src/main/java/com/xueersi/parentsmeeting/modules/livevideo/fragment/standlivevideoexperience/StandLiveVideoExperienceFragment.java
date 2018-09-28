@@ -43,18 +43,18 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
-import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.learnfeedback.ExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.ExperienceEnglishH5PlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceQuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -141,6 +141,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        arguments.putBoolean(experience, isExperience);
 //        StandLiveVideoExperienceFragment standLiveVideoExperienceFragment = ;
 //        standLiveVideoExperienceFragment.setArguments(arguments);
+
+
         return new StandLiveVideoExperienceFragment();
     }
 
@@ -448,9 +450,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         liveBackBll.addBusinessBll(new StandExperienceQuestionPlayBackBll(activity, liveBackBll));
         RedPackagePlayBackBll redPackagePlayBackBll = new RedPackagePlayBackBll(activity, liveBackBll);
         liveBackBll.addBusinessBll(redPackagePlayBackBll);
-        liveBackBll.addBusinessBll(new ExperienceEnglishH5PlayBackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new StandExperienceEnglishH5PlayBackBll(activity, liveBackBll));
         //站立直播体验课聊天区的添加
-        liveBackBll.addBusinessBll(new StandLiveVideoExperienceBll(activity, liveBackBll, lectureLivePlayBackBll));
+        liveBackBll.addBusinessBll(new StandExperienceMessageBll(activity, liveBackBll, lectureLivePlayBackBll));
         //播放完成后的反馈弹窗
         liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
     }
@@ -579,12 +581,17 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        rlQuestionContentBottom.setVisibility(View.GONE);
     }
 
+    //处理视频小窗口使用
+    private VideoPopView videoPopView;
 
     @Override
     public void onResume() {
         super.onResume();
         if (isInitialized() && pausePlay) {
             vPlayer.pause();
+        }
+        if (videoPopView != null) {
+            videoPopView.onResume();
         }
     }
 

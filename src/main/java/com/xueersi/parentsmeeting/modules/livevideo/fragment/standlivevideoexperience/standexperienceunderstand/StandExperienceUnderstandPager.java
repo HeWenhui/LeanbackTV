@@ -3,11 +3,18 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexpe
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 public class StandExperienceUnderstandPager extends BasePager {
+
+    private static StandExperienceUnderstandPager mPager;
     /**
      * 听懂了
      */
@@ -32,13 +39,26 @@ public class StandExperienceUnderstandPager extends BasePager {
      * 似懂非懂
      */
     private ImageView ivLittleUnderStandBtn;
+    //懂了吗标题
+    private TextView tvTitle;
     /**
      * 懂了么点击事件监听器
      */
     private IUnderStandListener iUnderStandListener;
 
-    public StandExperienceUnderstandPager(Context context) {
+    private VideoLivePlayBackEntity mVideoEntity;
+
+    public static StandExperienceUnderstandPager getInstance(Context context, VideoLivePlayBackEntity mVideoEntity) {
+        if (mPager == null) {
+            mPager = new StandExperienceUnderstandPager(context, mVideoEntity);
+        }
+        return mPager;
+    }
+
+    private StandExperienceUnderstandPager(Context context, VideoLivePlayBackEntity mVideoEntity) {
         super(context);
+        this.mVideoEntity = mVideoEntity;
+        initData();
         initListener();
     }
 
@@ -48,12 +68,23 @@ public class StandExperienceUnderstandPager extends BasePager {
         ivUnderStandBtn = view.findViewById(R.id.iv_livevideo_stand_experience_understand_understand);
         ivLittleUnderStandBtn = view.findViewById(R.id.iv_livevideo_stand_experience_understand_little_understand);
         ivNoUnderStandBtn = view.findViewById(R.id.iv_livevideo_stand_experience_understand_no_understand);
+        tvTitle = view.findViewById(R.id.iv_livevideo_stand_exeprience_understand_background);
         return view;
     }
 
+//    HashMap<String, String> map;
+
     @Override
     public void initData() {
-
+        tvTitle.setText(mVideoEntity.getUnderStandDifficultyTitle());
+//        map = mVideoEntity.getUnderStandDifficulty();
+//        Iterator<String> iterator = map.keySet().iterator();
+//
+//
+//        if (iterator.hasNext()) {
+//            String key = iterator.next();
+//
+//        }
     }
 
     @Override

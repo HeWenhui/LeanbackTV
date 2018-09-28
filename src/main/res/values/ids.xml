@@ -752,4 +752,5 @@
     <item name="iv_livevideo_stand_experience_understand_little_understand_icon" type="id" />
     <item name="iv_livevideo_stand_experience_understand_no_understand_icon" type="id" />
     <item name="iv_livevideo_stand_experience_understand_no_understand" type="id" />
+    <item name="tv_livevideo_stand_experience_recommond_course_title" type="id" />
 </resources>

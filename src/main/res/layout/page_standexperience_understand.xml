@@ -15,6 +15,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@id/tv_livevideo_stand_experience_recommond_course_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:text="1234556612332323434445546"
+        android:textColor="@color/COLOR_FF364A5D"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@id/iv_livevideo_stand_experience_understand_understand_icon"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_stand_exeprience_understand_background"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_stand_exeprience_understand_background" />
+
     <!--听懂了-->
     <ImageView
         android:id="@id/iv_livevideo_stand_experience_understand_understand_icon"

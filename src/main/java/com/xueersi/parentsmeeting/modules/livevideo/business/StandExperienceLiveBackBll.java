@@ -150,7 +150,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
     public void buyCourseComplete(boolean isSuccess) {
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             if (liveBackBaseBll instanceof RecommondCourseBll) {//只有推荐课程才使用这个方法
-
+                ((RecommondCourseBll) liveBackBaseBll).buyRecommondCourseComplete(isSuccess);
             }
         }
     }

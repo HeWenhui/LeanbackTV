@@ -1,16 +1,28 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand;
 
 import android.app.Activity;
-import android.content.Context;
 
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class StandExperienceUnderstandBll extends LiveBackBaseBll {
 
     StandExperienceUnderstandPager mPager;
+
+//    List<String> optionList;
+
+//    Map<String, String> map;
 
     public StandExperienceUnderstandBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -20,21 +32,51 @@ public class StandExperienceUnderstandBll extends LiveBackBaseBll {
     @Override
     public void initView() {
         super.initView();
-        mPager = new StandExperienceUnderstandPager(mContext);
+        mPager = StandExperienceUnderstandPager.getInstance(mContext, mVideoEntity);
+        initData();
         initListener();
+    }
+
+    /**
+     * 得到懂了么的数据
+     */
+    private void initData() {
+//        optionList = new ArrayList<>();
+//        map = mVideoEntity.getUnderStandDifficulty();
+//        Iterator<String> iterator = map.keySet().iterator();
+//        while (iterator.hasNext()) {
+//            optionList.add(iterator.next());
+//        }
     }
 
     private void initListener() {
         mPager.setUnderStandListener(new StandExperienceUnderstandPager.IUnderStandListener() {
             @Override
             public void onClick(int sign) {
+                HttpCallBack httpCallBack = new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        logger.i("send success");
+                    }
+                };
+                LivePlayBackHttpManager livePlayBackHttpManager = getCourseHttpManager();
+                String option = "";
                 if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_UNDERSTAND) {//懂了
-
+                    option = "0";
                 } else if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_LITTLE_UNDERSTAND) {//半懂
-
+                    option = "1";
                 } else if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_NO_UNDERSTAND) {//没懂
-
+                    option = "2";
                 }
+                livePlayBackHttpManager.sendStandExperienceUnderStand(
+                        mVideoEntity.getSubmitUnderStandUrl(),
+                        UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+                        mVideoEntity.getGradId(),
+                        mVideoEntity.getLiveId(),
+                        mVideoEntity.getSubjectId(),
+                        mVideoEntity.getChapterId(),
+                        option,
+                        httpCallBack);
                 //点击完成之后，不管消息是否送到服务器，都要调用关闭按钮
                 if (mPager != null && mPager.getRootView().getParent() == mRootView) {
                     mRootView.removeView(mPager.getRootView());

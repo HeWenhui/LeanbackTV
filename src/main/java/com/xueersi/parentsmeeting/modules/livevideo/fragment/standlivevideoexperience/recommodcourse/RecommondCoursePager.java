@@ -6,12 +6,14 @@ import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView;
 
@@ -23,7 +25,7 @@ public class RecommondCoursePager extends BasePager {
     private ImageView ivClose;
     private ImageView ivBuy;
     //课程名称
-    private ImageView tvCourseName;
+    private TextView tvCourseName;
     //课程价格
     private TextView tvCourseMoney;
     //老师头像
@@ -62,6 +64,7 @@ public class RecommondCoursePager extends BasePager {
 
         return view;
     }
+
 
     @Override
     public void initData() {
@@ -149,6 +152,21 @@ public class RecommondCoursePager extends BasePager {
 //        thumbnailHideAnimator.start();
     }
 
+
+    public void updateView(RecommondCourseEntity mRecommondCourseEntity) {
+        if (mRecommondCourseEntity != null) {
+            if (!TextUtils.isEmpty(mRecommondCourseEntity.getCourseName())) {
+                tvCourseName.setText(mRecommondCourseEntity.getCourseName());
+            }
+            if (!TextUtils.isEmpty(mRecommondCourseEntity.getCoursePrice())) {
+                tvCourseMoney.setText(mRecommondCourseEntity.getCoursePrice());
+            }
+        }
+    }
+
+    //10秒后发送http请求
+    private final int delayHttpTime = 1000 * 10;
+    //延迟2分钟发射
     private final int delayTime = 60 * 2 * 1000;
     /**
      * 设置滚动
@@ -168,6 +186,10 @@ public class RecommondCoursePager extends BasePager {
             }
         }
     };
+
+    public Runnable getBannerMessageRunnable() {
+        return messageRunnable;
+    }
 
     @Override
     public void onDestroy() {

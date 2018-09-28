@@ -53,10 +53,10 @@ dependencies {
     implementation(rootProject.ext.xeslibraries.xeslottie) { changing = true }
     //    implementation project(':ijkplayer')
     implementation(rootProject.ext.xeslibraries.ijkplayer) { changing = true }
-//    implementation project(':business-base:player')
-    implementation(rootProject.ext.businesslibraries.player) {
-        changing = true
-    }
+    implementation project(':business-base:player')
+//    implementation(rootProject.ext.businesslibraries.player) {
+//        changing = true
+//    }
     //    implementation project(':business-base:cloud')
     implementation(rootProject.ext.businesslibraries.cloud) {
         changing = true
@@ -76,5 +76,5 @@ dependencies {
 //    implementation(rootProject.ext.xeslibraries.share) {
 //        changing = true
 //    }
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 }

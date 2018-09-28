@@ -165,11 +165,4 @@ public class LiveBackBaseBll extends BaseBll {
     public void resultComplete() {
 
     }
-
-    /**
-     * 站立直播体验课购买课程成功后
-     */
-    public void buyRecommondCourseComplete(Boolean isSuccess) {
-
-    }
 }

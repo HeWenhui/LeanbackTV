@@ -112,17 +112,6 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                     mediaPlayerControl.pause();
                 }
                 questionEntity.setAnswered(true);
-//                if (liveBackBll.getExperience()) {//体验课直接出题
-//                    MediaPlayerControl mediaPlayerControl1 = getInstance(MediaPlayerControl.class);
-//                    if (mediaPlayerControl1 != null) {
-//                        mediaPlayerControl1.start();
-//                    }
-//                    VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
-//                            (questionEntity);
-//
-//                    englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
-//                    showQuestion.onShow(true, videoQuestionLiveEntity);
-//                } else {
                 VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
                         .getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
@@ -167,18 +156,6 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 LiveVideoConfig.LIVEPLAYBACKTEAMID = mVideoEntity.getTeamId();
                 LiveVideoConfig.LIVEPLAYBACKSTAGE = mVideoEntity.getEdustage();
                 LiveVideoConfig.LIVEPLAYBACKTYPE = questionEntity.getName();
-//                if (liveBackBll.getExperience()) {//站立直播体验课,不弹出弹窗
-//                    MediaPlayerControl mediaPlayerControl1 = getInstance(MediaPlayerControl.class);
-//                    if (mediaPlayerControl1 != null) {
-//                        mediaPlayerControl1.start();
-//                    }
-//                    VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
-//                            (questionEntity);
-//
-//                    videoQuestionLiveEntity.englishH5Entity.setNewEnglishH5(true);
-//                    englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
-//                    showQuestion.onShow(true, videoQuestionLiveEntity);
-//                } else {
                 VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
                         .getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
