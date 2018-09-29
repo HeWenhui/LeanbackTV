@@ -525,7 +525,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         sb.append(mLiveBll.getLiveVideoSAConfig().inner.URL_ARTS_COURSE_H5_URL).append("?stuId=").append(mGetInfo
                 .getStuId())
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&liveId=").append(mLiveId)
-                .append("&testId=").append(testIds).append("&type=").append(17);
+                .append("&testId=").append(testIds).append("&type=").append(17).append("&isPlayBack=0");
         return sb.toString();
     }
 

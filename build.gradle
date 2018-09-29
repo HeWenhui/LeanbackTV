@@ -36,7 +36,7 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.logger)
 //    implementation project(':xesijkplayer')
     rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.ijkplayer)
-//    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.player)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.player)
 
     rootProject.xrsImplementation(this.getProject(),rootProject.ext.businesslibraries.cloud)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.share)
@@ -51,9 +51,9 @@ dependencies {
     //    implementation project(':ijkplayer')
     implementation(rootProject.ext.xeslibraries.ijkplayer) { changing = true }
 //    implementation project(':business-base:player')
-    implementation(rootProject.ext.businesslibraries.player) {
-        changing = true
-    }
+//    implementation(rootProject.ext.businesslibraries.player) {
+//        changing = true
+//    }
     //    implementation project(':business-base:cloud')
     implementation(rootProject.ext.businesslibraries.cloud) {
         changing = true

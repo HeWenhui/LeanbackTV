@@ -243,6 +243,8 @@ public class LiveVideoConfig {
     public static Boolean isPrimary = false;
     /** 一题多发的直播回放的标识*/
     public static Boolean isMulLiveBack = false;
+    /** 文科回放一发多题的标识*/
+    public static Boolean isNewArtsLiveBack = false;
     /** 年级阶段的标识*/
     public static String educationstage;
     /** 一发多题的日志*/
