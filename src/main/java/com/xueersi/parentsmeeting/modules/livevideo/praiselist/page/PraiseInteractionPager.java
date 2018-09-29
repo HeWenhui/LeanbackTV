@@ -140,6 +140,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     private TimeHandler timeHandler = new TimeHandler();
     private VerticalBarrageView verticalBarrageView;
 
+    //连续点赞
     private long firstContinueTime = 0;
     private long lastContinueTime = 0;
     private boolean isPush = false;
@@ -501,8 +502,9 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     private void pushMyPraise() {
         PraiseMessageEntity praiseMessageEntity = new PraiseMessageEntity();
         praiseMessageEntity.setMessageType(PraiseMessageEntity.TYPE_PRAISE);
-        praiseMessageEntity.setMessageContent("我:点了" + praiseNumAmount + "赞");
+        praiseMessageEntity.setMessageContent("我:点了" + praiseNumAmount + "个赞!");
         verticalBarrageView.appendBarrages(praiseMessageEntity);
+        mPraiseInteractionBll.sendPrivateMessage(PraiseMessageEntity.TYPE_PRAISE,praiseNumAmount);
 
     }
 
@@ -681,6 +683,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                 startPraiseBtnEnterAnimation();
             }
         });
+        starEnterLottileView.playAnimation();
     }
 
 
@@ -1012,22 +1015,5 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
     private int getRightMargin() {
         return LiveVideoPoint.getInstance().getRightMargin();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 }

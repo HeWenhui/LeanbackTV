@@ -143,7 +143,11 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
             }
 
         } else if (messageType == PraiseMessageEntity.TYPE_PRAISE) {
+            holder.typeIcon.setVisibility(View.GONE);
+            holder.giftType.setVisibility(View.GONE);
+        } else if (messageType == PraiseMessageEntity.TYPE_CLASS) {
             holder.typeIcon.setVisibility(View.VISIBLE);
+            holder.giftType.setVisibility(View.GONE);
             holder.typeIcon.setImageResource(R.drawable.ic_livevideo_praise_intera_class);
         } else {
             holder.typeIcon.setVisibility(View.GONE);

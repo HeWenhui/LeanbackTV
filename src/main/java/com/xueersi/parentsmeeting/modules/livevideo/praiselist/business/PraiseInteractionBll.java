@@ -58,7 +58,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     //主讲或者辅导
     private String from;
 
-    private Timer timer = new Timer(true);
+    private Timer timer;
 
 
     public PraiseInteractionBll(Context context, LiveBll2 liveBll) {
@@ -78,6 +78,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
         @Override
         public void run() {
+            logger.d("specail gift size=" + classPraiseStack.size());
             if (!mySpecialGiftStack.isEmpty()) {
                 praiseInteractionPager.appendBarraige(mySpecialGiftStack.pop());
             } else if (!otherSpecialGiftStack.isEmpty()) {
@@ -94,6 +95,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
         @Override
         public void run() {
+            logger.d("class praise size=" + classPraiseStack.size());
             if (!classPraiseStack.isEmpty()) {
                 praiseInteractionPager.appendBarraige(classPraiseStack.pop());
             }
@@ -121,29 +123,35 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
             praiseInteractionPager.startEnterStarAnimation();
 
-            timer.schedule(new SpecailGiftTimerTask(), 5000);
-            timer.schedule(new ClassPraiseTimerTask(), 10000);
+            timer = new Timer(true);
+            timer.schedule(new SpecailGiftTimerTask(), 5000, 5000);
+            timer.schedule(new ClassPraiseTimerTask(), 10000, 10000);
         }
     }
 
     public void sendGiftDeductGold(int type, HttpCallBack httpCallBack) {
+        logger.d("type=" + type);
         String liveId = mRoomInitData.getId();
         String courseId = mRoomInitData.getStudentLiveInfo().getCourseId();
-        String mainTeacherId = mRoomInitData.getMainTeacherId();
+        String teacherId = mRoomInitData.getMainTeacherId();
+        if ("f".equals(from)) {
+            teacherId = mRoomInitData.getTeacherId();
+        }
         mLiveBll.getHttpManager().praiseSendGift(liveId, mRoomInitData.getStuId(),
-                mRoomInitData.getStuCouId(), type, mainTeacherId, httpCallBack);
+                mRoomInitData.getStuCouId(), type, teacherId, httpCallBack);
     }
 
     /**
      * {"ltype":1, "name":"student_name","id":"12453", "value": 123,"type":"266", "to":"t/f"}
      */
-    public void sendPrivateMessage(int messageType, int giftType) {
+    public void sendPrivateMessage(int messageType, int value) {
         try {
+            logger.d("messageType=" + messageType + ",value=" + value);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("ltype", messageType);
             jsonObject.put("name", mRoomInitData.getStuName());
             jsonObject.put("id", mRoomInitData.getStuId());
-            jsonObject.put("value", giftType);
+            jsonObject.put("value", value);
             jsonObject.put("type", XESCODE.PRAISE_MESSAGE);
             jsonObject.put("to", from);
             sendMsg(jsonObject);
@@ -212,9 +220,13 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
 
     private void closePraise() {
-        isOpen = false;
-        timer.cancel();
-        closePager();
+        if (isOpen == true) {
+            isOpen = false;
+            if (timer != null) {
+                timer.cancel();
+            }
+            closePager();
+        }
     }
 
 
@@ -255,7 +267,6 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                 }
             });
         }
-        praiseInteractionPager = null;
     }
 
 
@@ -290,6 +301,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         switch (type) {
             case XESCODE.PRAISE_SWITCH:
+                logger.d("data=" + data);
                 from = data.optString("from");
                 logger.d("from " + from);
                 final boolean open = data.optBoolean("open");
@@ -343,6 +355,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String
             message) {
         try {
+            logger.d("message=" + message);
             JSONObject jsonObject = new JSONObject(message);
             int type = jsonObject.optInt("type");
             if (type == XESCODE.PRAISE_MESSAGE) {
@@ -382,8 +395,8 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                     PraiseMessageEntity praiseMessageEntity = new PraiseMessageEntity();
                     praiseMessageEntity.setMessageType(PraiseMessageEntity.TYPE_CLASS);
 
-                    praiseMessageEntity.setUserName(jsonObject.optString("name"));
-                    praiseMessageEntity.setPraiseNum(jsonObject.optLong("likeNum"));
+                    praiseMessageEntity.setUserName(jsonNumObject.optString("name"));
+                    praiseMessageEntity.setPraiseNum(jsonNumObject.optLong("likeNum"));
                     praiseMessageEntity.setFrom(jsonObject.optString("from"));
                     praiseMessageEntity.setMessageContent(praiseMessageEntity.getUserName() + "班共点了" +
                             praiseMessageEntity.getPraiseNum() + "个赞");

@@ -49,6 +49,15 @@
         android:visibility="gone" />
 
 
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalBarrageView
+        android:id="@+id/vbv_livevideo_praise_barrageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="90dp"
+        android:layout_marginLeft="20dp" />
+
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lav_livevideo_praise_interac_bubble"
         android:layout_width="wrap_content"
@@ -83,7 +92,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="成功送出'魔法水'"
             android:textColor="@color/COLOR_FFFFFF"
             android:textSize="10sp" />
 
@@ -234,13 +242,6 @@
         android:visibility="gone" />
 
 
-    <com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalBarrageView
-        android:id="@+id/vbv_livevideo_praise_barrageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="90dp"
-        android:layout_marginLeft="20dp" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lav_livevideo_praise_interac_star_enter"
