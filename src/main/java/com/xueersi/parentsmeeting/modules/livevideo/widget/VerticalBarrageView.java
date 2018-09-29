@@ -40,6 +40,12 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
 
     private Pools.SimplePool<View> itemViewPool = new Pools.SimplePool<>(4);
 
+    public interface OnBarrageScrollListener {
+        void onBarrageScrollItem(PraiseMessageEntity praiseMessageEntity);
+    }
+
+    private OnBarrageScrollListener listener;
+
     public VerticalBarrageView(Context context) {
         this(context, null);
     }
@@ -65,17 +71,26 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
         this.setLayoutTransition(transition);
     }
 
-    public void addBarrages(List<PraiseMessageEntity> barrages) {
-        barrageQueue.addAll(barrages);
+    public void setListener(OnBarrageScrollListener listener) {
+        this.listener = listener;
+    }
+
+
+    public void appendBarrages(PraiseMessageEntity praiseMessageEntity) {
+        barrageQueue.add(praiseMessageEntity);
+    }
+
+
+    public void addBarrages(List<PraiseMessageEntity> praiseMessageEntities) {
+        barrageQueue.addAll(praiseMessageEntities);
     }
 
     public void start() {
         handler.sendEmptyMessage(0);
-
-
     }
 
     public void stop() {
+        handler.removeMessages(0);
     }
 
     @Override
@@ -87,10 +102,11 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
             PraiseMessageEntity messageEntity = barrageQueue.poll();
             View view = obtainTextView(messageEntity);
             this.addView(view);
-            handler.sendEmptyMessageDelayed(0, 1000);
-        } else {
-            handler.removeMessages(0);
+            if (listener != null) {
+                listener.onBarrageScrollItem(messageEntity);
+            }
         }
+        handler.sendEmptyMessageDelayed(0, 1000);
         return true;
     }
 
@@ -114,15 +130,26 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
         }
         int messageType = messageEntity.getMessageType();
         if (messageType == PraiseMessageEntity.TYPE_SPECIAL_GIFT) {
+            holder.typeIcon.setVisibility(View.VISIBLE);
             holder.typeIcon.setImageResource(R.drawable.ic_livevideo_praise_intera_gift);
-        } else if (messageType == PraiseMessageEntity.TYPE_CLASS) {
+            int giftType = messageEntity.getGiftType();
+            holder.giftType.setVisibility(View.VISIBLE);
+            if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_PHYSICAL) {
+                holder.giftType.setImageResource(R.drawable.livevideo_bubble_small_physics_icon_normal);
+            } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_CHEMISTRY) {
+                holder.giftType.setImageResource(R.drawable.livevideo_bubble_small_chemistry_icon_normal);
+            } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_MATH) {
+                holder.giftType.setImageResource(R.drawable.livevideo_bubble_small_math_icon_normal);
+            }
+
+        } else if (messageType == PraiseMessageEntity.TYPE_PRAISE) {
+            holder.typeIcon.setVisibility(View.VISIBLE);
             holder.typeIcon.setImageResource(R.drawable.ic_livevideo_praise_intera_class);
         } else {
             holder.typeIcon.setVisibility(View.GONE);
+            holder.giftType.setVisibility(View.GONE);
         }
         holder.messageContentView.setText(messageEntity.getMessageContent());
-
-        holder.giftType.setImageResource(R.drawable.livevideo_bubble_small_chemistry_icon_normal);
 
         return view;
     }

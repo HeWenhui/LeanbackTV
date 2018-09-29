@@ -25,7 +25,7 @@ public class PraiseTestActivity extends Activity {
 
         setContentView(R.layout.activity_livevideo_praise_test);
         RelativeLayout conntLayout = findViewById(R.id.iv_livevideo_praise_test_content);
-        praiseInteractionPager = new PraiseInteractionPager(this, null);
+        praiseInteractionPager = new PraiseInteractionPager(this,0, null,null);
         View rootView = praiseInteractionPager.getRootView();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);

@@ -1242,4 +1242,19 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_UPLOAD_VOICE_BARRAGE, params, requestCallBack);
     }
+
+
+    /**
+     * 立刻点赞送特效礼物
+     * @param requestCallBack
+     */
+    public void praiseSendGift(String liveId, String stuId,String stuCouId,int type,String teacherId,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("enstuId", stuId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("type", String.valueOf(type));
+        params.addBodyParam("teacherId", teacherId);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_PRAISE_GIFT, params, requestCallBack);
+    }
 }

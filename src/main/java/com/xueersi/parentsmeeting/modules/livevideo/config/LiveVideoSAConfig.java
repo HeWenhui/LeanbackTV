@@ -163,6 +163,9 @@ public class LiveVideoSAConfig {
         public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStarNew";
         /** 直播回放的用户在线心跳 */
         public String URL_LIVE_VISITTIME = HTTP_HOST + "/LiveCourse/visitTime";
+
+        /** 点赞送礼物扣除金币接口 */
+        public String URL_LIVE_PRAISE_GIFT = HTTP_HOST + "/LiveCourse/highPraiseTeacher";
     }
 
 }

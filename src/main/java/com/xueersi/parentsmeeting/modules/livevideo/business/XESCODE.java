@@ -164,6 +164,16 @@ public interface XESCODE {
     /**提醒学生标记*/
     int MARK_POINT_TIP=800;
 
+    /**
+     * 老师开启或者关闭点赞
+     */
+    int PRAISE_SWITCH=265;
+    /** 点赞消息 */
+    int PRAISE_MESSAGE =266;
+
+    /** 班级点赞数量消息 */
+    int PRAISE_CLASS_NUM =267;
+
 
     /**文科表扬榜  开始notice*/
     int ARTS_PRAISE_START = 1000;

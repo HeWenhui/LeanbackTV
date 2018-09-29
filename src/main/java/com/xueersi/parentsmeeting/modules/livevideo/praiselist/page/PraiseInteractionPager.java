@@ -20,19 +20,28 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.PraiseMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseInteractionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalBarrageView;
+
+import org.json.JSONObject;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Random;
 
 /**
  * 初高中点赞互动
  */
 
-public class PraiseInteractionPager extends BasePager {
+public class PraiseInteractionPager extends BasePager implements VerticalBarrageView.OnBarrageScrollListener {
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "praise_list/interaction/";
 
     //延迟开始冒泡
@@ -44,13 +53,19 @@ public class PraiseInteractionPager extends BasePager {
     //送出成功2秒消失
     private static final int MESSAGE_WHAT_DELAY_SEND_DISMISS = 3;
 
+    //连续点击计时器
+    private static final int MESSAGE_WHAT_DELAY_CONTINUE_PRAISE = 4;
+
     //礼物倒计时
-    private static final int SPECIAL_GIFT_TYPE_MATH = 3;
-    private static final int SPECIAL_GIFT_TYPE_PHYSICAL = 2;
-    private static final int SPECIAL_GIFT_TYPE_CHEMISTRY = 1;
+
 
     //纳秒单位
     private static final long NAS = 1000000;
+
+    private final PraiseInteractionBll mPraiseInteractionBll;
+
+    private final LiveBll2 liveBll;
+
 
     //点赞按钮
     private ImageView praiseBtn;
@@ -77,11 +92,11 @@ public class PraiseInteractionPager extends BasePager {
 
     private TextView countDownView;
 
-    private TextView goldView;
-
     private ImageView closeView;
 
     private ImageView giftImg;
+
+    private TextView goldCountView;
 
     private View giftSendView;
     private TextView giftSendText;
@@ -93,10 +108,17 @@ public class PraiseInteractionPager extends BasePager {
     //物理动画l
     private LottieAnimationView physicalLottileView;
 
+    private LottieAnimationView starEnterLottileView;
+
     //化学
     private ImageView chemistryView;
 
-    private int num = 0;
+    //点赞总数
+    private int praiseNumAmount = 0;
+
+    //连续点赞次数
+    private int continuePraiseNum = 0;
+
     private float translationY;
 
 
@@ -115,13 +137,23 @@ public class PraiseInteractionPager extends BasePager {
 
     private int currentGiftType = 0;
 
-    private int coinAmount = 10;
-
     private TimeHandler timeHandler = new TimeHandler();
+    private VerticalBarrageView verticalBarrageView;
+
+    private long firstContinueTime = 0;
+    private long lastContinueTime = 0;
+    private boolean isPush = false;
+
+    //金币总数
+    private int goldCount;
 
 
-    public PraiseInteractionPager(Context context, PraiseInteractionBll praiseInteractionBll) {
+    public PraiseInteractionPager(Context context, int goldCount, PraiseInteractionBll praiseInteractionBll, LiveBll2
+            liveBll) {
         super(context);
+        this.mPraiseInteractionBll = praiseInteractionBll;
+        this.liveBll = liveBll;
+        this.goldCount = goldCount;
         btnWidth = (int) context.getResources().getDimension(R.dimen.livevideo_praise_interac_praise_btn_width);
         btnMarginRight = (int) mContext.getResources().getDimension(R.dimen
                 .livevideo_praise_interac_praise_btn_margin_right);
@@ -133,6 +165,8 @@ public class PraiseInteractionPager extends BasePager {
     @Override
     public View initView() {
         final View view = View.inflate(mContext, R.layout.page_livevideo_praise_interaction, null);
+
+        starEnterLottileView = view.findViewById(R.id.lav_livevideo_praise_interac_star_enter);
         pressLottileView = view.findViewById(R.id.iv_livevideo_praise_interac_press);
         praiseBtn = view.findViewById(R.id.iv_livevideo_praise_interac_praise_btn);
         pressLottileView.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +201,7 @@ public class PraiseInteractionPager extends BasePager {
                         }
                         break;
                     case MotionEvent.ACTION_UP:
+                        break;
                     case MotionEvent.ACTION_CANCEL:
                         break;
                 }
@@ -232,12 +267,14 @@ public class PraiseInteractionPager extends BasePager {
             public void onClick(View v) {
                 timeHandler.removeMessages(MESSAGE_WHAT_DELAY_GIFT);
                 specialGiftView.setVisibility(View.GONE);
-                pressLottileView.setEnabled(true);
             }
         });
 
-        goldView = view.findViewById(R.id.tv_livevideo_praise_interac_special_gift_gold);
         giftImg = view.findViewById(R.id.lav_livevideo_praise_interac_special_gift_img);
+        goldCountView = view.findViewById(R.id.tv_livevideo_praise_interac_gold_amount);
+        goldCountView.setText(String.valueOf(goldCount));
+
+
         View sendView = view.findViewById(R.id.rl_livevideo_praise_interac_special_gift_send_group);
         sendView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,7 +282,7 @@ public class PraiseInteractionPager extends BasePager {
                 sendGift();
             }
         });
-
+        //成功送出
         giftSendView = view.findViewById(R.id.rl_livevideo_praise_interac_gift_send_group);
         giftSendView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -268,6 +305,10 @@ public class PraiseInteractionPager extends BasePager {
 
         chemistryView = view.findViewById(R.id.iv_livevideo_praise_interac_chemistry);
 
+        verticalBarrageView = view.findViewById(R.id.vbv_livevideo_praise_barrageView);
+        verticalBarrageView.setListener(this);
+        verticalBarrageView.start();
+
         initPraiseBtnPressAnimation();
         initBubbleEnterAnimation();
         initPraiseNumDisplayAnimation();
@@ -282,41 +323,88 @@ public class PraiseInteractionPager extends BasePager {
      * 送出礼物
      */
     private void sendGift() {
-        if (coinAmount - 5 > 0) {
-            String giftType = "";
-            if (currentGiftType == SPECIAL_GIFT_TYPE_PHYSICAL) {
-                giftType = "成功送出“星空”";
-                physicalLottileView.playAnimation();
-            } else if (currentGiftType == SPECIAL_GIFT_TYPE_CHEMISTRY) {
-                giftType = "成功送出“魔法水”";
-                chemistryView.setVisibility(View.VISIBLE);
-                AnimationDrawable animationDrawable = (AnimationDrawable) chemistryView.getBackground();
-                animationDrawable.start();
-                int numberOfFrames = animationDrawable.getNumberOfFrames();
-                int duration = 0;
-                for (int i = 0; i < numberOfFrames; i++) {
-                    duration = duration + animationDrawable.getDuration(i);
-                }
-                chemistryView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        chemistryView.setVisibility(View.GONE);
+        if (goldCount - 5 > 0) {
+            HttpCallBack httpCallBack = new HttpCallBack() {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    int type = jsonObject.optInt("type");
+                    int gold = jsonObject.optInt("gold");
+
+                    mPraiseInteractionBll.sendPrivateMessage(PraiseMessageEntity.TYPE_SPECIAL_GIFT, type);
+
+                    //插入我送出的特效礼物队列一条数据l
+                    mPraiseInteractionBll.insertMySpecialGift(type);
+
+                    String giftType = "";
+                    if (type == PraiseMessageEntity.SPECIAL_GIFT_TYPE_PHYSICAL) {
+                        giftType = "成功送出“星空”";
+                    } else if (type == PraiseMessageEntity.SPECIAL_GIFT_TYPE_CHEMISTRY) {
+                        giftType = "成功送出“魔法水”";
+                    } else if (type == PraiseMessageEntity.SPECIAL_GIFT_TYPE_MATH) {
+                        giftType = "成功送出“气球”";
                     }
-                }, duration);
-            } else if (currentGiftType == SPECIAL_GIFT_TYPE_MATH) {
-                mathLottileView.playAnimation();
-                giftType = "成功送出“气球”";
-            }
-            giftSendText.setText(giftType);
-            coinAmount = coinAmount - 5;
+                    giftSendText.setText(giftType);
+                    goldCount = goldCount - gold;
+                    giftSendCoin.setText(String.valueOf(goldCount));
+                    giftSendView.setVisibility(View.VISIBLE);
+                    specialGiftView.setVisibility(View.GONE);
+
+                    timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_SEND_DISMISS, 2000);
+                }
+            };
+            mPraiseInteractionBll.sendGiftDeductGold(currentGiftType, httpCallBack);
         } else {
             giftSendText.setText("金币不足");
+            giftSendCoin.setText(String.valueOf(goldCount));
+            giftSendView.setVisibility(View.VISIBLE);
+            specialGiftView.setVisibility(View.GONE);
+            timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_SEND_DISMISS, 2000);
         }
-        giftSendCoin.setText(String.valueOf(coinAmount));
-        giftSendView.setVisibility(View.VISIBLE);
+
+    }
+
+
+    private void startHidePraiseBtnAniamtion() {
+        float translationX = praiseBtn.getTranslationX();
+        float distance = getRightMargin() + btnWidth + btnMarginRight;
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(pressLottileView, "translationX", -distance,
+                translationX);
+        objectAnimator.setDuration(1000);
+        objectAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+        });
+        objectAnimator.start();
+    }
+
+
+    /**
+     * 关闭点赞
+     */
+    public void closePraise() {
+        startHidePraiseBtnAniamtion();
         specialGiftView.setVisibility(View.GONE);
-        pressLottileView.setEnabled(true);
-        timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_SEND_DISMISS, 2000);
+        verticalBarrageView.stop();
+    }
+
+    @Override
+    public void onBarrageScrollItem(PraiseMessageEntity praiseMessageEntity) {
+        int messageType = praiseMessageEntity.getMessageType();
+        if (messageType == PraiseMessageEntity.TYPE_SPECIAL_GIFT) {
+            int giftType = praiseMessageEntity.getGiftType();
+            if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_PHYSICAL) {
+                physicalLottileView.playAnimation();
+            } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_CHEMISTRY) {
+                startChemistrySpecailGiftAnimation();
+            } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_MATH) {
+                mathLottileView.playAnimation();
+            }
+
+        }
+
     }
 
 
@@ -333,7 +421,6 @@ public class PraiseInteractionPager extends BasePager {
                 countDownView.setText(countDownNum + "s关闭");
                 if (countDownNum == 0) {
                     specialGiftView.setVisibility(View.GONE);
-                    pressLottileView.setEnabled(true);
                     countDownNum = 10;
                     timeHandler.removeMessages(MESSAGE_WHAT_DELAY_GIFT);
                 } else {
@@ -342,17 +429,47 @@ public class PraiseInteractionPager extends BasePager {
                 }
             } else if (what == MESSAGE_WHAT_DELAY_SEND_DISMISS) {
                 giftSendView.setVisibility(View.GONE);
+            } else if (what == MESSAGE_WHAT_DELAY_CONTINUE_PRAISE) {
+                pushMyPraise();
             }
 
         }
     }
 
+
     /**
      * 点击点赞按钮
      */
     private void onClickPraiseBtn() {
-        timeHandler.removeMessages(MESSAGE_WHAT_DELAY_BUBBLE);
         isClickPraiseBtn = true;
+
+        //判断连续点赞超过1秒，暂停点赞以后推送，超过5秒直接推送
+        if (firstContinueTime == 0) {
+            firstContinueTime = lastContinueTime = System.nanoTime();
+        } else {
+            if (System.nanoTime() - lastContinueTime > 1000 * NAS) {
+                continuePraiseNum = 0;
+                if (isPush) {
+                    pushMyPraise();
+                    isPush = false;
+                }
+                firstContinueTime = lastContinueTime = 0;
+            } else {
+                long continueTime = lastContinueTime - firstContinueTime;
+                //如果大于5秒直接发
+                if (continueTime > 5000 * NAS) {
+                    firstContinueTime = lastContinueTime = 0;
+                    pushMyPraise();
+                } else if (continueTime > 1000 * NAS) {
+                    isPush = true;
+                }
+                lastContinueTime = System.nanoTime();
+            }
+        }
+
+        continuePraiseNum++;
+        praiseNumAmount++;
+        timeHandler.removeMessages(MESSAGE_WHAT_DELAY_BUBBLE);
 
         //暂停冒泡动画
         bubbleView.cancelAnimation();
@@ -363,17 +480,17 @@ public class PraiseInteractionPager extends BasePager {
         pressLottileView.playAnimation();
 
         //保留2位小数
-        num++;
         String strNum;
-        if (num > 1000) {
-            BigDecimal bigDecimal = new BigDecimal(num / 1000d);
+        if (continuePraiseNum > 1000) {
+            BigDecimal bigDecimal = new BigDecimal(continuePraiseNum / 1000d);
             double doubleNum = bigDecimal.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
             strNum = String.valueOf(doubleNum) + "k";
         } else {
-            strNum = String.valueOf(num);
+            strNum = String.valueOf(continuePraiseNum);
         }
+
         praiseNumView.setText(strNum);
-        startSpecailGiftAnimation();
+        displaySpecailGiftAnimation();
 
         if (animatorSet.isRunning()) {
             animatorSet.cancel();
@@ -381,28 +498,68 @@ public class PraiseInteractionPager extends BasePager {
         animatorSet.start();
     }
 
+    private void pushMyPraise() {
+        PraiseMessageEntity praiseMessageEntity = new PraiseMessageEntity();
+        praiseMessageEntity.setMessageType(PraiseMessageEntity.TYPE_PRAISE);
+        praiseMessageEntity.setMessageContent("我:点了" + praiseNumAmount + "赞");
+        verticalBarrageView.appendBarrages(praiseMessageEntity);
+
+    }
+
+    public void appendBarraige(PraiseMessageEntity data) {
+        if (verticalBarrageView != null) {
+            verticalBarrageView.appendBarrages(data);
+        }
+    }
+
+    public void addBarraige(List<PraiseMessageEntity> data) {
+        if (verticalBarrageView != null) {
+            verticalBarrageView.addBarrages(data);
+        }
+    }
+
+
+    /**
+     * 开启化学特效礼物动画
+     */
+    private void startChemistrySpecailGiftAnimation() {
+        chemistryView.setVisibility(View.VISIBLE);
+        AnimationDrawable animationDrawable = (AnimationDrawable) chemistryView.getBackground();
+        animationDrawable.start();
+        int numberOfFrames = animationDrawable.getNumberOfFrames();
+        int duration = 0;
+        for (int i = 0; i < numberOfFrames; i++) {
+            duration = duration + animationDrawable.getDuration(i);
+        }
+        chemistryView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                chemistryView.setVisibility(View.GONE);
+            }
+        }, duration);
+    }
+
+
     /**
      * 判断是否开启l神秘礼物
      */
-    private void startSpecailGiftAnimation() {
+    private void displaySpecailGiftAnimation() {
         //首次点赞5次出现礼物,20的整数倍并且从弹窗出现后10秒再出现礼物
-        logger.d("praise num=" + num);
-        if (num == 5 || (num % 20 == 0) && countDownNum == 10) {
+        if (praiseNumAmount == 5 || (praiseNumAmount % 20 == 0) && countDownNum == 10) {
             specialGiftView.setVisibility(View.VISIBLE);
             currentGiftType = getProbabilityNum();
-            logger.d("probabilityNum=" + currentGiftType);
-            if (currentGiftType == SPECIAL_GIFT_TYPE_CHEMISTRY) {
+            logger.d("special gift type=" + currentGiftType);
+            if (currentGiftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_CHEMISTRY) {
                 //化学
                 giftImg.setImageResource(R.drawable.livevideo_alert_chemistry_icon_normal);
 
-            } else if (currentGiftType == SPECIAL_GIFT_TYPE_PHYSICAL) {
+            } else if (currentGiftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_PHYSICAL) {
                 //物理星空
                 giftImg.setImageResource(R.drawable.livevideo_alert_physics_icon_normal);
             } else {
                 //数学
                 giftImg.setImageResource(R.drawable.livevideo_alert_math_icon_normal);
             }
-            pressLottileView.setEnabled(false);
             timeHandler.sendEmptyMessage(MESSAGE_WHAT_DELAY_GIFT);
         }
     }
@@ -494,10 +651,45 @@ public class PraiseInteractionPager extends BasePager {
     }
 
     /**
+     * 星星飘落
+     */
+    public void startEnterStarAnimation() {
+        String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "star_enter/images";
+        String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "star_enter/data.json";
+        final LottieEffectInfo repeatEffectInfo = new LottieEffectInfo(resPath, jsonPath);
+        starEnterLottileView.setAnimationFromJson(repeatEffectInfo.getJsonStrFromAssets(mContext), "star_enter");
+        starEnterLottileView.useHardwareAcceleration(true);
+        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                String fileName = lottieImageAsset.getFileName();
+                return repeatEffectInfo.fetchBitmapFromAssets(starEnterLottileView, lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
+            }
+        };
+        starEnterLottileView.setImageAssetDelegate(imageAssetDelegate);
+        starEnterLottileView.addAnimatorListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                starEnterLottileView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                starEnterLottileView.setVisibility(View.VISIBLE);
+                startPraiseBtnEnterAnimation();
+            }
+        });
+    }
+
+
+    /**
      * 点赞按钮进场动画
      */
-    public void startPraiseBtnEnterAnimation() {
-        num = 0;
+    private void startPraiseBtnEnterAnimation() {
+        praiseNumAmount = 0;
+        continuePraiseNum = 0;
         float translationX = praiseBtn.getTranslationX();
         float distance = getRightMargin() + btnWidth + btnMarginRight;
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(pressLottileView, "translationX", distance,
@@ -819,7 +1011,7 @@ public class PraiseInteractionPager extends BasePager {
     }
 
     private int getRightMargin() {
-        return 600;
+        return LiveVideoPoint.getInstance().getRightMargin();
     }
 
     @Override
