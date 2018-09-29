@@ -33,7 +33,7 @@ public class PraiseTestActivity extends Activity {
         params.rightMargin = rightMargin;
         conntLayout.addView(praiseInteractionPager.getRootView(), params);
 
-        praiseInteractionPager.startPraiseBtnEnterAnimation();
+        praiseInteractionPager.startEnterStarAnimation();
     }
 
 }
