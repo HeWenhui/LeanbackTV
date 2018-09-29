@@ -7,16 +7,12 @@ import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-public class StandExperienceUnderstandBll extends LiveBackBaseBll {
+public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll {
 
     StandExperienceUnderstandPager mPager;
 
@@ -24,7 +20,7 @@ public class StandExperienceUnderstandBll extends LiveBackBaseBll {
 
 //    Map<String, String> map;
 
-    public StandExperienceUnderstandBll(Activity activity, LiveBackBll liveBackBll) {
+    public StandExperienceUnderstandBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
 
     }
@@ -93,7 +89,14 @@ public class StandExperienceUnderstandBll extends LiveBackBaseBll {
         if (mPager != null) {
             mRootView.addView(mPager.getRootView());
         }
+    }
 
+    @Override
+    public void onQuestionEnd(VideoQuestionEntity questionEntity) {
+        super.onQuestionEnd(questionEntity);
+        if (mPager != null && mPager.getRootView().getParent() == mRootView) {
+            mRootView.removeView(mPager.getRootView());
+        }
     }
 
     @Override

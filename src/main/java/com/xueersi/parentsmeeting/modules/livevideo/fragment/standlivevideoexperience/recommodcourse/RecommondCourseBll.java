@@ -1,37 +1,30 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse;
 
 import android.app.Activity;
-import android.os.Build;
-import android.view.ViewGroup;
 
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.permission.XesPermission;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.RecommondCourseEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoBannerBuyCourseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.StandExperienceRecommondCourseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class RecommondCourseBll extends LiveBackBaseBll {
+public class RecommondCourseBll extends StandExperienceEventBaseBll {
     LiveAndBackDebug liveAndBackDebug;
     private RecommondCoursePager mPager;
 
-    public RecommondCourseBll(Activity activity, LiveBackBll liveBackBll) {
+    public RecommondCourseBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         initListener();
     }
@@ -49,7 +42,8 @@ public class RecommondCourseBll extends LiveBackBaseBll {
                 //跳转到购课页面
                 @Override
                 public void clickBuyCourse() {
-
+                    EventBus.getDefault().post(new StandExperienceRecommondCourseEvent("Order", mVideoEntity
+                            .getCourseId(), mVideoEntity.getClassId()));
                 }
             });
         }
@@ -95,7 +89,7 @@ public class RecommondCourseBll extends LiveBackBaseBll {
                 bannerBuyCourseEntity = livePlayBackHttpResponseParser.parseBannerBuyCourseEntity(responseEntity);
                 if (bannerBuyCourseEntity.getBannerMessages() != null) {
                     if (mPager != null) {
-                        mRootView.post(mPager.getBannerMessageRunnable());
+                        mRootView.post(mPager.getBannerMessageRunnable(bannerBuyCourseEntity.getBannerMessages()));
                     }
                 }
             }
@@ -127,6 +121,11 @@ public class RecommondCourseBll extends LiveBackBaseBll {
 
     }
 
+    /**
+     * 购课成功后的回调
+     *
+     * @param event
+     */
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
         if ("OrderPaySuccess".equals(event.getMin())) {

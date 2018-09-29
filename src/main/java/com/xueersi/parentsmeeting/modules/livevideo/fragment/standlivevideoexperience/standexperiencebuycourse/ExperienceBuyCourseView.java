@@ -14,11 +14,11 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.contract.IBuyCourseContract;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 
 public class ExperienceBuyCourseView extends BasePager implements IBuyCourseContract.View {
-    protected IBuyCourseContract.Presenter mPresenter;
+    protected IPresenter mPresenter;
 
     private TextView recommand;
 
@@ -32,7 +32,7 @@ public class ExperienceBuyCourseView extends BasePager implements IBuyCourseCont
 
     private Button apply;
 
-    public ExperienceBuyCourseView(Context context, IBuyCourseContract.Presenter mPresenter) {
+    public ExperienceBuyCourseView(Context context, IPresenter mPresenter) {
         super(context);
         this.mPresenter = mPresenter;
     }
@@ -76,10 +76,10 @@ public class ExperienceBuyCourseView extends BasePager implements IBuyCourseCont
             @Override
             public void onClick(View v) {
 //                mWindow.dismiss();
-                mPresenter.removeBuyCourseView();
+                mPresenter.removeWindow();
 //                activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 //                showPopupwinFeedback();
-                mPresenter.showStudyFeedBackView();//展示学习反馈弹窗
+                mPresenter.showNextWindow();//展示学习反馈弹窗
 //                mWindow = null;
 //                setBackgroundAlpha(1f);
             }

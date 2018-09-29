@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.event.StandExperienceRecommondCourseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 
@@ -27,22 +28,33 @@ public class VideoPopView {
 
     private Activity activity;
 
-    private MiniEvent event;
+    //    private MiniEvent event;
     //是否开启了小窗口
     private Boolean isShow = false;
 
-
-    public VideoPopView(Activity mContext, MiniEvent miniEvent) {
-        this.activity = mContext;
-        event = miniEvent;
+    public VideoPopView(Activity activity) {
+        this.activity = activity;
     }
 
-    public MiniEvent getEvent() {
-        return event;
+//    public VideoPopView(Activity mContext, MiniEvent miniEvent) {
+//        this.activity = mContext;
+//        event = miniEvent;
+//    }
+
+//    public MiniEvent getEvent() {
+//        return event;
+//    }
+
+//    public void setEvent(MiniEvent event) {
+//        this.event = event;
+//    }
+
+    public VideoView getVideoView() {
+        return videoView;
     }
 
-    public void setEvent(MiniEvent event) {
-        this.event = event;
+    public void setVideoView(VideoView videoView) {
+        this.videoView = videoView;
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
@@ -58,33 +70,36 @@ public class VideoPopView {
         }
     }
 
-    public void popupVideoView() {
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void popupVideoView(StandExperienceRecommondCourseEvent event) {
         if (event != null) {
-            final String courseId = event.getCourseId();
-            final String classId = event.getClassId();
+            if ("Order".equals(event.getTip())) {
+                final String courseId = event.getCourseId();
+                final String classId = event.getClassId();
 //            if (mIsLand.get()) {
-            //判断当前屏幕方向
-            ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
-            activityChangeLand.changeLOrP();
-            videoView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    createRealVideo(courseId, classId);
-                }
-            }, 500);
+                //判断当前屏幕方向
+                ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
+                activityChangeLand.changeLOrP();
+                videoView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        createRealVideo(courseId, classId);
+                    }
+                }, 500);
 //            } else {
 //                createRealVideo(event.getCourseId(), event.getClassId());
 //            }
-            PauseNotStopVideoInter onPauseNotStopVideo = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter
-                    .class);
-            onPauseNotStopVideo.setPause(true);
-            // 添加点击立即报名的日志
-            StableLogHashMap logHashMap = new StableLogHashMap("clickEnroll");
-            logHashMap.put("adsid", "" + event.getAdId());
-            logHashMap.addSno("5").addStable("2");
-            logHashMap.put("extra", "点击了立即报名");
+                PauseNotStopVideoInter onPauseNotStopVideo = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter
+                        .class);
+                onPauseNotStopVideo.setPause(true);
+                // 添加点击立即报名的日志
+                StableLogHashMap logHashMap = new StableLogHashMap("clickEnroll");
+//            logHashMap.put("adsid", "" + event.getAdId());
+                logHashMap.addSno("5").addStable("2");
+                logHashMap.put("extra", "点击了立即报名");
 //            liveAndBackDebug.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
-            LiveVideoConfig.LECTUREADID = event.getAdId();
+//            LiveVideoConfig.LECTUREADID = event.getAdId();
+            }
         }
     }
 

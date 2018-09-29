@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.contract;
+package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse;
 
 public interface IBuyCourseContract {
 
@@ -8,10 +8,9 @@ public interface IBuyCourseContract {
 
     interface Presenter<T extends View> {
         //        void setView(T view);
-        void removeStudyFeedBackView();
-
+//        void removeStudyFeedBackView();
         void removeBuyCourseView();
 
-        void showStudyFeedBackView();
+        void showNextWindow();
     }
 }

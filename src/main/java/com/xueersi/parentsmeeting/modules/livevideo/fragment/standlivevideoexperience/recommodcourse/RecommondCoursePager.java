@@ -13,9 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView;
+
+import java.util.Queue;
 
 public class RecommondCoursePager extends BasePager {
     private final String TAG = getClass().getSimpleName();
@@ -29,9 +32,9 @@ public class RecommondCoursePager extends BasePager {
     //课程价格
     private TextView tvCourseMoney;
     //老师头像
-    private ImageView ivTeacherImg;
+//    private ImageView ivTeacherImg;
     //老师缩略图的头像
-    private ImageView ivTeacherThumbnail;
+//    private ImageView ivTeacherThumbnail;
     //展开后的推荐课程布局
     private ConstraintLayout wholeRecommondCourseLayout;
     //缩略图的推荐课程布局.
@@ -54,8 +57,8 @@ public class RecommondCoursePager extends BasePager {
         ivBuy = view.findViewById(R.id.iv_livevideo_stand_experience_recommond_course_buy_btn);
         tvCourseName = view.findViewById(R.id.tv_livevideo_stand_experience_recommond_course_course_name);
         tvCourseMoney = view.findViewById(R.id.tv_livevideo_stand_experience_recommond_course_course_money);
-        ivTeacherImg = view.findViewById(R.id.iv_livevideo_stand_experience_recommond_course_teacher_icon);
-        ivTeacherThumbnail = view.findViewById(R.id.iv_livevideo_stand_experience_recommod_course_teacher_thumbnail);
+//        ivTeacherImg = view.findViewById(R.id.iv_livevideo_stand_experience_recommond_course_teacher_icon);
+//        ivTeacherThumbnail = view.findViewById(R.id.iv_livevideo_stand_experience_recommod_course_teacher_thumbnail);
         wholeRecommondCourseLayout = view.findViewById(R.id.ctl_recommod_course);
         thumbnailRecommondCourseLayout = view.findViewById(R.id.ctl_recommod_course_thumbnail);
 
@@ -171,30 +174,46 @@ public class RecommondCoursePager extends BasePager {
     /**
      * 设置滚动
      */
-    private Runnable messageRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mView != null) {
-                SpannableString spannableString = new SpannableString("喇叭");
-                ImageSpan imageSpan = new ImageSpan(mContext.getResources().getDrawable(R.drawable
-                        .bg_livevideo_stand_experience_advertise_horn));
-                spannableString.setSpan(imageSpan, 0, 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+    private Runnable messageRunnable;
 
-                autoVerticalScrollTextView.setText(spannableString);
-                autoVerticalScrollTextView.next();
-                mView.postDelayed(this, delayTime);
-            }
+    public Runnable getBannerMessageRunnable(final Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage) {
+        this.queMessage = queMessage;
+        if (messageRunnable == null) {
+            messageRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (mView != null) {
+                        SpannableString spannableString = new SpannableString("喇叭 " + queMessage.poll());
+                        ImageSpan imageSpan = new ImageSpan(mContext.getResources().getDrawable(R.drawable
+                                .bg_livevideo_stand_experience_advertise_horn));
+                        spannableString.setSpan(imageSpan, 0, 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+
+                        autoVerticalScrollTextView.setText(spannableString);
+                        autoVerticalScrollTextView.next();
+                        mView.postDelayed(this, delayTime);
+                    }
+                }
+            };
         }
-    };
-
-    public Runnable getBannerMessageRunnable() {
         return messageRunnable;
+    }
+
+    //轮播消息
+    private Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage;
+
+    //
+    public Queue<VideoBannerBuyCourseEntity.BannerMessage> getQueMessage() {
+        return queMessage;
+    }
+
+    public void setQueMessage(Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage) {
+        this.queMessage = queMessage;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mView != null) {
+        if (mView != null && messageRunnable != null) {
             mView.removeCallbacks(messageRunnable);
         }
         stopAnimator();
@@ -219,8 +238,7 @@ public class RecommondCoursePager extends BasePager {
     }
 
     public interface ClickListener {
-//        void clickClose();
-
+        //        void clickClose();
         void clickBuyCourse();
     }
 

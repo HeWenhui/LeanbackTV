@@ -53,6 +53,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.learnfeedback.ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand
+        .StandExperienceUnderstandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceQuestionPlayBackBll;
@@ -136,6 +139,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     /** 预加载 */
     private LiveStandFrameAnim liveStandFrameAnim;
 
+    //处理视频小窗口使用
+    private VideoPopView videoPopView;
+
     public static StandLiveVideoExperienceFragment newInstance(boolean isExperience) {
 //        Bundle arguments = new Bundle();
 //        arguments.putBoolean(experience, isExperience);
@@ -182,6 +188,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         rlQuestionContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         // 加载竖屏时显示更多课程广告的布局
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
+        //为
+        videoPopView = new VideoPopView(activity);
+        videoPopView.setVideoView(liveBackPlayVideoFragment.getVideoView());
     }
 
     protected void updateLoadingImage() {
@@ -453,8 +462,12 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         liveBackBll.addBusinessBll(new StandExperienceEnglishH5PlayBackBll(activity, liveBackBll));
         //站立直播体验课聊天区的添加
         liveBackBll.addBusinessBll(new StandExperienceMessageBll(activity, liveBackBll, lectureLivePlayBackBll));
+        //懂了吗
+        liveBackBll.addBusinessBll(new StandExperienceUnderstandBll(activity, liveBackBll));
+        //推荐课程信息
+        liveBackBll.addBusinessBll(new RecommondCourseBll(activity, liveBackBll));
         //播放完成后的反馈弹窗
-        liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
+//        liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
     }
 
     @Override
@@ -581,8 +594,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        rlQuestionContentBottom.setVisibility(View.GONE);
     }
 
-    //处理视频小窗口使用
-    private VideoPopView videoPopView;
 
     @Override
     public void onResume() {

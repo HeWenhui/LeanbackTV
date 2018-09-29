@@ -400,4 +400,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         }
     }
 
+    public VideoView getVideoView() {
+        return videoView;
+    }
 }

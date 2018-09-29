@@ -464,9 +464,19 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     break;
                 }
             } else if (LocalCourseConfig.CATEGORY_UNDERSTAND == videoQuestionEntity.getvCategory()) {//懂了吗
-                
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
             } else if (LocalCourseConfig.CATEGORY_RECOMMOND_COURSE == videoQuestionEntity.getvCategory()) {//推荐课程
-
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
             }
         }
         if (mQuestionEntity != null) {

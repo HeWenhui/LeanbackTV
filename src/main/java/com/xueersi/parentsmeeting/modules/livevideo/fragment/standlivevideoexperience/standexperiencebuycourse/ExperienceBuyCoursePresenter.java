@@ -1,25 +1,21 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse;
 
 import android.app.Activity;
-import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.JsonUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.contract.IBuyCourseContract;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.learnfeedback.ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
 
-public class ExperienceBuyCoursePresenter extends LiveBackBaseBll implements IBuyCourseContract.Presenter {
+public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll implements IPresenter {
 
     private boolean isFirstGetResult = true;
-
-    //    private IBuyCourseContract.View mView;
-
-    private BasePager basePager;
+    private ExperienceBuyCourseView mPager;
 
     /**
      * 0 liveback
@@ -28,37 +24,22 @@ public class ExperienceBuyCoursePresenter extends LiveBackBaseBll implements IBu
      * @param activity
      * @param liveBackBll
      */
-    public ExperienceBuyCoursePresenter(Activity activity, LiveBackBll liveBackBll) {
+    public ExperienceBuyCoursePresenter(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
 //        mView = new ExperienceBuyCourseView(activity, this);
-        basePager = new ExperienceBuyCourseView(activity, this);
+        mPager = new ExperienceBuyCourseView(activity, this);
     }
 
     @Override
-    public void initView() {
-        super.initView();
-    }
-
-    @Override
-    public void removeStudyFeedBackView() {
-
-    }
-
-    @Override
-    public void removeBuyCourseView() {
-        if (basePager != null && basePager.getRootView().getParent() == mRootView) {
-            mRootView.removeView(basePager.getRootView());
+    public void showNextWindow() {
+        if (liveBackBll instanceof StandExperienceLiveBackBll) {
+            ((StandExperienceLiveBackBll) liveBackBll).showNextWindow(new ExperienceLearnFeedbackBll(activity,
+                    (StandExperienceLiveBackBll) liveBackBll));
         }
     }
 
     @Override
-    public void showStudyFeedBackView() {
-
-    }
-
-    @Override
-    public void resultComplete() {
-        super.resultComplete();
+    public void showWindow() {
         //请求得到购课页面数据
         liveBackBll.getCourseHttpManager().getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
                 new HttpCallBack() {
@@ -69,23 +50,23 @@ public class ExperienceBuyCoursePresenter extends LiveBackBaseBll implements IBu
                         if (learn != null) {
                             getDataCallBack.onDataSucess(learn);
                         }
-                        Log.e("Duncan", "playbackresponseEntity:" + responseEntity);
+                        logger.i("playbackresponseEntity:" + responseEntity);
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
-                        Log.e("Duncan", "playbackerrorEntity:" + error);
+                        logger.i("playbackerrorEntity:" + error);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
-                        Log.e("Duncan", "playbackerrorEntity:" + responseEntity);
+                        logger.i("playbackerrorEntity:" + responseEntity);
                     }
-
                 });
     }
 
+    //从后台拿到的课程数据
     private ExperienceResult mData;
     AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack() {
         @Override
@@ -95,8 +76,7 @@ public class ExperienceBuyCoursePresenter extends LiveBackBaseBll implements IBu
                 mData = (ExperienceResult) objData[0];
                 // 测试体验课播放器的结果页面
                 if (mData != null && isFirstGetResult) {
-                    showPopupwinResult();
-
+                    showRealWindow();//展示页面
                     isFirstGetResult = false;
                 }
             }
@@ -105,7 +85,15 @@ public class ExperienceBuyCoursePresenter extends LiveBackBaseBll implements IBu
 
     };
 
-    private void showPopupwinResult() {
-        mRootView.addView(basePager.getRootView());
+    private void showRealWindow() {
+        mPager.updateView(mData);
+        mRootView.addView(mPager.getRootView());
+    }
+
+    @Override
+    public void removeWindow() {
+        if (mPager != null && mPager.getRootView().getParent() == mRootView) {
+            mRootView.removeView(mPager.getRootView());
+        }
     }
 }

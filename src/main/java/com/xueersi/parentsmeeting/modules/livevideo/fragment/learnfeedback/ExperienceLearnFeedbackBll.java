@@ -1,29 +1,32 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.learnfeedback;
 
 import android.app.Activity;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
 
 import org.json.JSONObject;
 
-public class ExperienceLearnFeedbackBll extends LiveBackBaseBll {
+public class ExperienceLearnFeedbackBll extends StandExperienceEventBaseBll implements IPresenter {
 
     ExperienceLearnFeedbackPager experienceLearnFeedbackPager;
 
-    public ExperienceLearnFeedbackBll(Activity activity, LiveBackBll liveBackBll) {
+    public ExperienceLearnFeedbackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
+        initListener();
     }
 
     @Override
     public void initView() {
         experienceLearnFeedbackPager = new ExperienceLearnFeedbackPager(mContext, mVideoEntity, ((Activity) mContext)
                 .getWindow());
+
+    }
+
+    private void initListener() {
         experienceLearnFeedbackPager.setLearnFeedBackPagerListener(new ExperienceLearnFeedbackPager
                 .LearnFeedBackPagerListener() {
             @Override
@@ -44,13 +47,12 @@ public class ExperienceLearnFeedbackBll extends LiveBackBaseBll {
         });
     }
 
-
     /**
      * 视屏播放完成回调
      * 把学习反馈弹窗放到正中间
      */
-    @Override
-    public void resultComplete() {
+//    @Override
+//    public void resultComplete() {
 //        super.resultComplete();
 //        if (experienceLearnFeedbackPager != null && experienceLearnFeedbackPager.getRootView().getParent() == null) {
 //            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
@@ -59,5 +61,19 @@ public class ExperienceLearnFeedbackBll extends LiveBackBaseBll {
 //            mRootView.addView(experienceLearnFeedbackPager.getRootView(), layoutParams);
 //            mRootView.setBackgroundColor(activity.getResources().getColor(R.color.COLOR_CC000000));
 //        }
+//    }
+    @Override
+    public void showWindow() {
+        if (experienceLearnFeedbackPager != null) {
+            mRootView.addView(experienceLearnFeedbackPager.getRootView());
+        }
+    }
+
+    @Override
+    public void removeWindow() {
+    }
+
+    @Override
+    public void showNextWindow() {
     }
 }

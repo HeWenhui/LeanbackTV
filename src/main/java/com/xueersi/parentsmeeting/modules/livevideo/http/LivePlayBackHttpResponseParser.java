@@ -3,8 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.RecommondCourseEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoBannerBuyCourseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.VoiceBarrageMsgEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -17,7 +17,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * 直播回放网络数据解析类
@@ -201,7 +202,7 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
     public VideoBannerBuyCourseEntity parseBannerBuyCourseEntity(ResponseEntity responseEntity) {
         VideoBannerBuyCourseEntity bannerBuyCourseEntity = new VideoBannerBuyCourseEntity();
         try {
-            List<VideoBannerBuyCourseEntity.BannerMessage> messageList = new ArrayList<>();
+            Queue<VideoBannerBuyCourseEntity.BannerMessage> messageList = new LinkedList<>();
             JSONArray jsonArray = (JSONArray) responseEntity.getJsonObject();
             for (int i = 0; i < jsonArray.length(); i++) {
                 VideoBannerBuyCourseEntity.BannerMessage bannerMessage = new VideoBannerBuyCourseEntity.BannerMessage();
