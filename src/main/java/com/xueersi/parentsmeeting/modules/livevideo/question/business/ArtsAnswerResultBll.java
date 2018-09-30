@@ -116,7 +116,17 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      */
     public ArtsAnswerResultBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
-        this.isPse = isPse;
+    }
+
+
+    /**
+     *  用于直播回放
+     * @param context
+     * @param rootView
+     */
+    public ArtsAnswerResultBll(Activity context,String liveId,int liveType,RelativeLayout rootView){
+        super(context,liveId,liveType);
+        mRootView = rootView;
     }
 
 
