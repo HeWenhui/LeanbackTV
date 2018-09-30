@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandLiveVideoExperienceFragment;
 
 /**
@@ -73,7 +74,6 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
         Intent intent = new Intent(context, LivePlaybackVideoActivity.class);
         intent.putExtras(bundle);
         intent.putExtra("where", where);
-
         context.startActivityForResult(intent, requestCode);
     }
 

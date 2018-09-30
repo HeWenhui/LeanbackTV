@@ -5,11 +5,14 @@ import android.os.Message;
 import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
@@ -20,11 +23,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by linyuqiang on 2018/7/17.
@@ -211,7 +219,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         }
                         VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
                                 (questionEntity);
-
+                        videoQuestionLiveEntity.englishH5Entity.setArtsNewH5Courseware(true);
                         englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                         showQuestion.onShow(true, videoQuestionLiveEntity);
                     }
@@ -243,7 +251,18 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             videoQuestionLiveEntity.type = questionEntity.getVoiceQuestiontype();
         }
         videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
-        videoQuestionLiveEntity.setUrl(questionEntity.getEnglishH5Play_url());
+        if(questionEntity.getvCategory() == 1000){
+            List<String> testIds = new ArrayList<>();
+            if(testIds.size() > 0){
+                testIds.clear();
+            }
+            for(int i = 0 ; i < questionEntity.getReleaseInfos().size() ; i++){
+                testIds.add(questionEntity.getReleaseInfos().get(i).getId());
+            }
+            videoQuestionLiveEntity.setUrl(buildCourseUrl(getTestIdS(testIds)));
+        } else {
+            videoQuestionLiveEntity.setUrl(questionEntity.getEnglishH5Play_url());
+        }
         videoQuestionLiveEntity.courseware_type = questionEntity.getvQuestionType();
         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
         videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
@@ -337,6 +356,36 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 //                        httpCallBack);
 //            }
         }
+    }
+
+    private String buildCourseUrl(String testIds) {
+        StringBuilder sb = new StringBuilder();
+        String falseStr = Base64.encodeBytes("false".getBytes());
+        sb.append(new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_ARTS_H5_URL).append("?liveId=").append(mVideoEntity.getLiveId())
+                .append("&testIds=").append(testIds).append("&isPlayBack=").append("2")
+                .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&stuId=").append(UserBll.getInstance().getMyUserInfoEntity().getStuId())
+                .append("&cookie=").append(AppBll.getInstance().getUserToken())
+                .append("&stuClientPath=").append(falseStr)
+                .append("&fontDir=").append(falseStr);
+        return sb.toString();
+    }
+
+    private String getTestIdS(List<String> testIds) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            if (testIds != null) {
+                for (int i = 0 ;i < testIds.size(); i++) {
+                    if (i < (testIds.size() - 1)) {
+                        stringBuilder.append(testIds.get(i)).append(",");
+                    } else {
+                        stringBuilder.append(testIds.get(i));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stringBuilder.toString();
     }
 
 
