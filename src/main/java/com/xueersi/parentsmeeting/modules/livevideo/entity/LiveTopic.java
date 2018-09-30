@@ -195,6 +195,11 @@ public class LiveTopic {
          */
         private String onVideoChat = "off";
 
+        /**
+         * 点赞送礼物开关
+         */
+        private boolean openlike=false;
+
         public RoomStatusEntity() {
             classbegin = false;
             openbarrage = false;
@@ -228,6 +233,7 @@ public class LiveTopic {
             agoraVoiceChatRoom = roomStatusEntity.agoraVoiceChatRoom;
             onVideoChat = roomStatusEntity.onVideoChat;
             isOnbreak = roomStatusEntity.isOnbreak;
+            openlike=roomStatusEntity.openlike;
         }
 
         public boolean isOnbreak() {
@@ -441,6 +447,14 @@ public class LiveTopic {
 
         public String getLKNoticeMode() {
             return mLKNoticeMode;
+        }
+
+        public boolean isOpenlike() {
+            return openlike;
+        }
+
+        public void setOpenlike(boolean openlike) {
+            this.openlike = openlike;
         }
     }
 

@@ -410,6 +410,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             coachStatusEntity.setOpenchat(status.getBoolean("openchat"));
             coachStatusEntity.setCalling(status.getBoolean("isCalling"));
             coachStatusEntity.setListStatus(status.optInt("listStatus"));
+            coachStatusEntity.setOpenlike(status.optBoolean("openlike"));
 
             if (status.has("openbarrage")) {
                 Loger.i("yzl_fd", "room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = " + status.getBoolean("openbarrage") + " " + status.toString());
@@ -433,6 +434,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 coachStatusEntity.setOnmic(link_mic.optString("onmic", "off"));
                 coachStatusEntity.setOpenhands(link_mic.optString("openhands", "off"));
                 coachStatusEntity.setRoom(link_mic.optString("room"));
+
                 ArrayList<ClassmateEntity> classmateEntities = coachStatusEntity.getClassmateEntities();
                 classmateEntities.clear();
                 JSONArray students = link_mic.optJSONArray("students");
@@ -485,6 +487,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             liveTopic.getCoachRoomstatus().setZJLKOpenbarrage(status.getBoolean("openbarrage"));//一定不要忘记在topic返回的时候，room1里openbarrage字段的值设置到理科主讲实体中
             mainStatusEntity.setOpenchat(status.getBoolean("openchat"));
             mainStatusEntity.setOpenFeedback(status.optBoolean("isOpenFeedback"));
+            mainStatusEntity.setOpenlike(status.optBoolean("openlike"));
 
             // 解析主讲老师信息
             LiveTopic.TeamPkEntity.RoomInfo roomInfo1 = new LiveTopic.TeamPkEntity.RoomInfo();

@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PraiseMessageEntity;
 
@@ -26,6 +28,7 @@ import java.util.List;
  * 垂直滚动弹幕
  */
 public class VerticalBarrageView extends LinearLayout implements Handler.Callback {
+    Logger logger = LoggerFactory.getLogger("VerticalBarrageView");
 
     private final int barrageCount = 4;
 
@@ -100,6 +103,7 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
                 this.removeViewAt(0);
             }
             PraiseMessageEntity messageEntity = barrageQueue.poll();
+            logger.d("message scroll="+messageEntity.getMessageContent());
             View view = obtainTextView(messageEntity);
             this.addView(view);
             if (listener != null) {

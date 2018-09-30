@@ -2,9 +2,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.praiselist.business;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -22,10 +24,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.ArtsPraiseHttpResponseP
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseInteractionPager;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -59,12 +65,21 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     private String from;
 
     private Timer timer;
+    private int goldNum;
 
 
     public PraiseInteractionBll(Context context, LiveBll2 liveBll) {
         super((Activity) context, liveBll);
         logger.d("PraiseInteractionBll construct");
         mLiveBll = liveBll;
+
+    }
+
+    @Override
+    public void onCreate(HashMap<String, Object> data) {
+        super.onCreate(data);
+        EventBus.getDefault().register(this);
+
     }
 
     public void attachToRootView() {
@@ -78,15 +93,21 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
         @Override
         public void run() {
-            logger.d("specail gift size=" + classPraiseStack.size());
+
+            PraiseMessageEntity praiseMessageEntity = null;
             if (!mySpecialGiftStack.isEmpty()) {
-                praiseInteractionPager.appendBarraige(mySpecialGiftStack.pop());
+                praiseMessageEntity = mySpecialGiftStack.pop();
             } else if (!otherSpecialGiftStack.isEmpty()) {
-                praiseInteractionPager.appendBarraige(otherSpecialGiftStack.pop());
+                praiseMessageEntity = otherSpecialGiftStack.pop();
             }
 
             if (!otherPraiseStack.isEmpty()) {
-                praiseInteractionPager.appendBarraige(otherPraiseStack.pop());
+                praiseMessageEntity = otherPraiseStack.pop();
+            }
+            if (praiseMessageEntity != null && praiseInteractionPager != null) {
+                logger.d("specail gift size=" + classPraiseStack.size() + ",message=" + praiseMessageEntity
+                        .getMessageContent());
+                praiseInteractionPager.appendBarraige(praiseMessageEntity);
             }
         }
     }
@@ -95,9 +116,11 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
         @Override
         public void run() {
-            logger.d("class praise size=" + classPraiseStack.size());
             if (!classPraiseStack.isEmpty()) {
-                praiseInteractionPager.appendBarraige(classPraiseStack.pop());
+                PraiseMessageEntity praiseMessageEntity = classPraiseStack.pop();
+                logger.d("class praise size=" + classPraiseStack.size() + ",message=" + praiseMessageEntity
+                        .getMessageContent());
+                praiseInteractionPager.appendBarraige(praiseMessageEntity);
             }
         }
     }
@@ -109,11 +132,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     private void openPraise() {
         if (!isOpen) {
             isOpen = true;
-            int goldCount = 0;
-            if (mGetInfo != null) {
-                goldCount = mGetInfo.getGoldCount();
-            }
-            praiseInteractionPager = new PraiseInteractionPager(mContext, goldCount, this, mLiveBll);
+            praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll);
             rlPraiseContentView.removeAllViews();
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
@@ -218,6 +237,17 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         return classPraiseStack;
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onEvent(AppEvent.OnGetGoldUpdateEvent event) {
+        if (!TextUtils.isEmpty(event.goldNum)) {
+            goldNum = Integer.valueOf(event.goldNum);
+            if (praiseInteractionPager != null) {
+                praiseInteractionPager.setGoldNum(goldNum);
+            }
+        }
+
+    }
+
 
     private void closePraise() {
         if (isOpen == true) {
@@ -254,6 +284,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         if (praiseInteractionPager != null) {
             praiseInteractionPager.onDestroy();
         }
+        EventBus.getDefault().unregister(this);
     }
 
 
@@ -295,6 +326,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
+
     }
 
     @Override
@@ -324,6 +356,28 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
+        logger.d("onTopic message=" + jsonObject);
+        LiveTopic.RoomStatusEntity mainRoomstatus = null;
+        if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode()) || "t".equals(from)) {
+            mainRoomstatus = liveTopic.getMainRoomstatus();
+        } else {
+            mainRoomstatus = liveTopic.getCoachRoomstatus();
+        }
+        if (mainRoomstatus != null) {
+            final boolean openlike = mainRoomstatus.isOpenlike();
+            rlPraiseContentView.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (openlike) {
+                        openPraise();
+                    } else {
+                        closePraise();
+                    }
+                }
+            });
+
+        }
+
     }
 
     @Override

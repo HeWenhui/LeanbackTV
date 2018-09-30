@@ -152,9 +152,9 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     public PraiseInteractionPager(Context context, int goldCount, PraiseInteractionBll praiseInteractionBll, LiveBll2
             liveBll) {
         super(context);
+        this.goldCount = goldCount;
         this.mPraiseInteractionBll = praiseInteractionBll;
         this.liveBll = liveBll;
-        this.goldCount = goldCount;
         btnWidth = (int) context.getResources().getDimension(R.dimen.livevideo_praise_interac_praise_btn_width);
         btnMarginRight = (int) mContext.getResources().getDimension(R.dimen
                 .livevideo_praise_interac_praise_btn_margin_right);
@@ -273,7 +273,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
         giftImg = view.findViewById(R.id.lav_livevideo_praise_interac_special_gift_img);
         goldCountView = view.findViewById(R.id.tv_livevideo_praise_interac_gold_amount);
-        goldCountView.setText(String.valueOf(goldCount));
+        goldCountView.setText("金币余额:  " + goldCount);
 
 
         View sendView = view.findViewById(R.id.rl_livevideo_praise_interac_special_gift_send_group);
@@ -408,6 +408,10 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
     }
 
+    public void setGoldNum(int goldNum) {
+        this.goldCount = goldNum;
+    }
+
 
     private class TimeHandler extends android.os.Handler {
         @Override
@@ -504,7 +508,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         praiseMessageEntity.setMessageType(PraiseMessageEntity.TYPE_PRAISE);
         praiseMessageEntity.setMessageContent("我:点了" + praiseNumAmount + "个赞!");
         verticalBarrageView.appendBarrages(praiseMessageEntity);
-        mPraiseInteractionBll.sendPrivateMessage(PraiseMessageEntity.TYPE_PRAISE,praiseNumAmount);
+        mPraiseInteractionBll.sendPrivateMessage(PraiseMessageEntity.TYPE_PRAISE, praiseNumAmount);
 
     }
 
@@ -549,7 +553,8 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         //首次点赞5次出现礼物,20的整数倍并且从弹窗出现后10秒再出现礼物
         if (praiseNumAmount == 5 || (praiseNumAmount % 20 == 0) && countDownNum == 10) {
             specialGiftView.setVisibility(View.VISIBLE);
-            currentGiftType = getProbabilityNum();
+            goldCountView.setText("金币余额:  " + goldCount);
+            currentGiftType = getProbabilityNum()-1;
             logger.d("special gift type=" + currentGiftType);
             if (currentGiftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_CHEMISTRY) {
                 //化学
