@@ -548,7 +548,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         keyboardShowing = isShowing;
                         keyboardShowingListener.onKeyboardShowing(isShowing);
                         if (keyboardShowing) {
-                            btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
+                            btMessageExpress.setBackgroundResource(R.drawable.selector_livevideo_small_english_chat_expression);
                         }
                     }
                 });
@@ -557,10 +557,10 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                             @Override
                             public void onClickSwitch(boolean switchToPanel) {
                                 if (switchToPanel) {
-                                    btMessageExpress.setBackgroundResource(R.drawable.im_input_jianpan_icon_normal);
+                                    btMessageExpress.setBackgroundResource(R.drawable.selector_livevideo_small_english_chat_keyborad_ic);
                                     etMessageContent.clearFocus();
                                 } else {
-                                    btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
+                                    btMessageExpress.setBackgroundResource(R.drawable.selector_livevideo_small_english_chat_expression);
                                     etMessageContent.requestFocus();
                                 }
                             }
