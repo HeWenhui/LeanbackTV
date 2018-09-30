@@ -62,6 +62,7 @@ public class LiveBaseBll extends BaseBll {
         this.activity = context;
         this.mLiveId = liveId;
         this.mLiveType = liveType;
+        mLogtf = new LogToFile(TAG);
     }
 
     /**
