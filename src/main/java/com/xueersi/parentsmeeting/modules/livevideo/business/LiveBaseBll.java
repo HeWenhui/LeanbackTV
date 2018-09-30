@@ -52,6 +52,20 @@ public class LiveBaseBll extends BaseBll {
     }
 
     /**
+     *  为兼容 回放  新增此构造函数
+     * @param context
+     * @param liveId
+     * @param liveType
+     */
+    public LiveBaseBll(Activity context,String liveId,int liveType){
+        super(context);
+        this.activity = context;
+        this.mLiveId = liveId;
+        this.mLiveType = liveType;
+        mLogtf = new LogToFile(TAG);
+    }
+
+    /**
      * 获取网络请求对象
      */
     public LiveHttpManager getHttpManager() {
