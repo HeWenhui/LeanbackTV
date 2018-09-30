@@ -73,8 +73,12 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
         Intent intent = new Intent(context, LivePlaybackVideoActivity.class);
         intent.putExtras(bundle);
         intent.putExtra("where", where);
+        try {
+            context.startActivityForResult(intent, requestCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        context.startActivityForResult(intent, requestCode);
     }
 
 }

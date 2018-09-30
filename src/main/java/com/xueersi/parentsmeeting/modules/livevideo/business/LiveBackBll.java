@@ -375,6 +375,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
      *
      * @param playPosition
      */
+    private boolean standexperienceRecommondCourseIsShow = false;
+
     private VideoQuestionEntity getPlayQuetion(int playPosition) {
         List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
         if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
@@ -464,17 +466,21 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     break;
                 }
             } else if (LocalCourseConfig.CATEGORY_UNDERSTAND == videoQuestionEntity.getvCategory()) {//懂了吗
-                if (startTime <= playPosition && playPosition < endTime) {
+                if (startTime == playPosition) {
                     mQuestionEntity = videoQuestionEntity;
                     hasQuestionShow = true;
                     index = i;
                     break;
                 }
             } else if (LocalCourseConfig.CATEGORY_RECOMMOND_COURSE == videoQuestionEntity.getvCategory()) {//推荐课程
-                if (startTime <= playPosition && playPosition < endTime) {
+                if (standexperienceRecommondCourseIsShow) {
+                    continue;
+                }
+                if (startTime <= playPosition) {
                     mQuestionEntity = videoQuestionEntity;
                     hasQuestionShow = true;
                     index = i;
+                    standexperienceRecommondCourseIsShow = true;
                     break;
                 }
             }

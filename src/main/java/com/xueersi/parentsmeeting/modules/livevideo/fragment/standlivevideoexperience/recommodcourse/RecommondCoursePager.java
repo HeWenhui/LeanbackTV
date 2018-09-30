@@ -96,8 +96,8 @@ public class RecommondCoursePager extends BasePager {
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wholeRecommondCourseLayout.setEnabled(false);
-                thumbnailRecommondCourseLayout.setEnabled(true);
+                wholeRecommondCourseLayout.setClickable(false);
+                thumbnailRecommondCourseLayout.setClickable(true);
                 thumbnailRecommondCourseLayout.setVisibility(View.VISIBLE);
                 hideWholeSet.start();
             }
@@ -113,8 +113,8 @@ public class RecommondCoursePager extends BasePager {
         thumbnailRecommondCourseLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wholeRecommondCourseLayout.setEnabled(true);
-                thumbnailRecommondCourseLayout.setEnabled(false);
+                wholeRecommondCourseLayout.setClickable(true);
+                thumbnailRecommondCourseLayout.setClickable(false);
                 showWholeSet.start();
             }
         });
@@ -157,12 +157,13 @@ public class RecommondCoursePager extends BasePager {
 
 
     public void updateView(RecommondCourseEntity mRecommondCourseEntity) {
+        logger.i(mRecommondCourseEntity.getCourseName() + " " + mRecommondCourseEntity.getCoursePrice());
         if (mRecommondCourseEntity != null) {
             if (!TextUtils.isEmpty(mRecommondCourseEntity.getCourseName())) {
                 tvCourseName.setText(mRecommondCourseEntity.getCourseName());
             }
             if (!TextUtils.isEmpty(mRecommondCourseEntity.getCoursePrice())) {
-                tvCourseMoney.setText(mRecommondCourseEntity.getCoursePrice());
+                tvCourseMoney.setText("¥" + mRecommondCourseEntity.getCoursePrice());
             }
         }
     }

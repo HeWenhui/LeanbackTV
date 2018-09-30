@@ -5,7 +5,10 @@ import android.os.Build;
 import android.view.ViewGroup;
 
 import com.xueersi.common.event.MiniEvent;
+import com.xueersi.common.http.LoggingInterceptor;
 import com.xueersi.common.permission.XesPermission;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
@@ -24,6 +27,8 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 public class VideoPopView {
 
+    private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+
     private VideoView videoView;
 
     private Activity activity;
@@ -32,50 +37,33 @@ public class VideoPopView {
     //是否开启了小窗口
     private Boolean isShow = false;
 
-    public VideoPopView(Activity activity) {
+    public VideoPopView(Activity activity, VideoView videoView) {
         this.activity = activity;
-    }
-
-//    public VideoPopView(Activity mContext, MiniEvent miniEvent) {
-//        this.activity = mContext;
-//        event = miniEvent;
-//    }
-
-//    public MiniEvent getEvent() {
-//        return event;
-//    }
-
-//    public void setEvent(MiniEvent event) {
-//        this.event = event;
-//    }
-
-    public VideoView getVideoView() {
-        return videoView;
-    }
-
-    public void setVideoView(VideoView videoView) {
         this.videoView = videoView;
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
         if ("OrderPaySuccess".equals(event.getMin())) {
+
             // 添加用户购买成功的日志
             StableLogHashMap logHashMap = new StableLogHashMap("purchaseSucceed");
             logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
             logHashMap.addSno("7").addStable("2");
             logHashMap.put("orderid", event.getCourseId());
+            logger.i("支付成功");
             logHashMap.put("extra", "用户支付成功");
 //            liveAndBackDebug.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public void popupVideoView(StandExperienceRecommondCourseEvent event) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(StandExperienceRecommondCourseEvent event) {
         if (event != null) {
             if ("Order".equals(event.getTip())) {
                 final String courseId = event.getCourseId();
                 final String classId = event.getClassId();
+                logger.i("跳转到订单页面");
 //            if (mIsLand.get()) {
                 //判断当前屏幕方向
                 ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
@@ -115,6 +103,7 @@ public class VideoPopView {
                     mParent.removeView(videoView);
                 }
             }
+            logger.i("开启悬浮窗");
             //开启悬浮窗
             OtherModulesEnter.intentToOrderConfirmActivity(activity, courseId + "-" + classId, 100,
                     "LivePlaybackVideoActivity");

@@ -184,7 +184,7 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
         RecommondCourseEntity recommondCourseEntity = new RecommondCourseEntity();
         try {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-            recommondCourseEntity.setCourseId(jsonObject.optString("courseName"));
+            recommondCourseEntity.setCourseName(jsonObject.optString("courseName"));
             recommondCourseEntity.setCoursePrice(jsonObject.optString("coursePrice"));
             recommondCourseEntity.setCourseId(jsonObject.optString("courseId"));
         } catch (Exception e) {

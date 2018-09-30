@@ -28,7 +28,7 @@ public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll {
     @Override
     public void initView() {
         super.initView();
-        mPager = StandExperienceUnderstandPager.getInstance(mContext, mVideoEntity);
+        mPager = new StandExperienceUnderstandPager(mContext, mVideoEntity);
         initData();
         initListener();
     }
@@ -52,18 +52,19 @@ public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll {
                 HttpCallBack httpCallBack = new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        logger.i("send success");
+                        logger.i("pm success");
                     }
                 };
                 LivePlayBackHttpManager livePlayBackHttpManager = getCourseHttpManager();
                 String option = "";
                 if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_UNDERSTAND) {//懂了
-                    option = "0";
-                } else if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_LITTLE_UNDERSTAND) {//半懂
                     option = "1";
-                } else if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_NO_UNDERSTAND) {//没懂
+                } else if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_LITTLE_UNDERSTAND) {//半懂
                     option = "2";
+                } else if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_NO_UNDERSTAND) {//没懂
+                    option = "3";
                 }
+                logger.i(option);
                 livePlayBackHttpManager.sendStandExperienceUnderStand(
                         mVideoEntity.getSubmitUnderStandUrl(),
                         UserBll.getInstance().getMyUserInfoEntity().getStuId(),
@@ -85,7 +86,7 @@ public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll {
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
             .ShowQuestion showQuestion) {
         super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
-
+        logger.i("显示懂了吗弹窗");
         if (mPager != null) {
             mRootView.addView(mPager.getRootView());
         }
@@ -94,6 +95,7 @@ public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll {
     @Override
     public void onQuestionEnd(VideoQuestionEntity questionEntity) {
         super.onQuestionEnd(questionEntity);
+        logger.i("移出懂了么窗口");
         if (mPager != null && mPager.getRootView().getParent() == mRootView) {
             mRootView.removeView(mPager.getRootView());
         }

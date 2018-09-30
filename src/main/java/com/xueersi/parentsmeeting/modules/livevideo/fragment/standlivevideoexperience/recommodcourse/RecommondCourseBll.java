@@ -26,14 +26,14 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
 
     public RecommondCourseBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
-        initListener();
+
     }
 
     @Override
     public void initView() {
         super.initView();
         mPager = new RecommondCoursePager(mContext);
-
+        initListener();
     }
 
     private void initListener() {
@@ -42,8 +42,10 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
                 //跳转到购课页面
                 @Override
                 public void clickBuyCourse() {
+                    logger.i("点击购买课程1");
                     EventBus.getDefault().post(new StandExperienceRecommondCourseEvent("Order", mVideoEntity
                             .getCourseId(), mVideoEntity.getClassId()));
+                    logger.i("购买课程2");
                 }
             });
         }
@@ -60,6 +62,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
             .ShowQuestion showQuestion) {
         super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
+        logger.i("显示推荐课程");
         if (mPager == null) {
             mPager = new RecommondCoursePager(mContext);
         }
@@ -101,7 +104,6 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
                 bannerMessageHttpCallBack
         );
         //添加窗口
-
     }
 
     @Override

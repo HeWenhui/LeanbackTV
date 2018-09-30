@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience;
+package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.livemessage;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -24,12 +24,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBack
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
@@ -49,7 +51,8 @@ import java.util.List;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
 //zyy:仿照全身直播的体验课聊天
-public class StandExperienceMessageBll extends LiveBackBaseBll implements KeyboardUtil.OnKeyboardShowingListener {
+public class StandExperienceMessageBll extends StandExperienceEventBaseBll implements KeyboardUtil
+        .OnKeyboardShowingListener {
     /**
      * 聊天消失
      */
@@ -97,7 +100,7 @@ public class StandExperienceMessageBll extends LiveBackBaseBll implements Keyboa
 
     LectureLivePlayBackBll lectureLivePlayBackBll;
 
-    public StandExperienceMessageBll(Activity activity, LiveBackBll liveBackBll, LectureLivePlayBackBll
+    public StandExperienceMessageBll(Activity activity, StandExperienceLiveBackBll liveBackBll, LectureLivePlayBackBll
             lectureLivePlayBackBll) {
         super(activity, liveBackBll);
         mHttpManager = new LiveHttpManager(mContext);
@@ -163,7 +166,7 @@ public class StandExperienceMessageBll extends LiveBackBaseBll implements Keyboa
         String channel = IRC_CHANNEL_PREFIX + expChatId;
         String chatRoomUid = "s_" + liveGetInfo.getLiveType() + "_"
                 + expChatId + "_" + liveGetInfo.getStuId() + "_" + liveGetInfo.getStuSex();
-        logger.i( "=====>connectChatServer:channel=" + channel + ":nickname =" +
+        logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
 
         // 获取 聊天服务器地址  的接口地址
@@ -211,7 +214,7 @@ public class StandExperienceMessageBll extends LiveBackBaseBll implements Keyboa
         } else {
             openChat = false;
         }
-        logger.i( "openChat = " + openChat);
+        logger.i("openChat = " + openChat);
         if (mLiveMessagePager != null) {
 //            mLiveMessagePager.onQuestionShow(true);
             mLiveMessagePager.onopenchat(openChat, "", false);
@@ -232,7 +235,7 @@ public class StandExperienceMessageBll extends LiveBackBaseBll implements Keyboa
 
         @Override
         public void onStartConnect() {
-            logger.i( "=====>onStartConnect");
+            logger.i("=====>onStartConnect");
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onStartConnect();
             }
@@ -248,7 +251,7 @@ public class StandExperienceMessageBll extends LiveBackBaseBll implements Keyboa
 
         @Override
         public void onRegister() {
-            logger.i( "=====>onRegister");
+            logger.i("=====>onRegister");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onRegister();
@@ -257,7 +260,7 @@ public class StandExperienceMessageBll extends LiveBackBaseBll implements Keyboa
 
         @Override
         public void onDisconnect(IRCConnection connection, boolean isQuitting) {
-            logger.i( "=====>onDisconnect");
+            logger.i("=====>onDisconnect");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onDisconnect();
@@ -282,7 +285,7 @@ public class StandExperienceMessageBll extends LiveBackBaseBll implements Keyboa
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        XESToastUtils.showToast(activity,"您的帐号已在其他设备登录，请重新进入直播间");
+                        XESToastUtils.showToast(activity, "您的帐号已在其他设备登录，请重新进入直播间");
                         Intent intent = new Intent();
                         intent.putExtra("msg", "您的帐号已在其他设备登录，请重新进入直播间");
                         activity.setResult(ShareBusinessConfig.LIVE_USER_KICK, intent);
@@ -304,12 +307,12 @@ public class StandExperienceMessageBll extends LiveBackBaseBll implements Keyboa
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
                 notice) {
-            logger.i( "=====>onNotice");
+            logger.i("=====>onNotice");
         }
 
         @Override
         public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
-            logger.i( "=====>onTopic");
+            logger.i("=====>onTopic");
 
         }
 
@@ -464,7 +467,7 @@ public class StandExperienceMessageBll extends LiveBackBaseBll implements Keyboa
         if (mIRCMessage != null) {
             mIRCMessage.setCallback(null);
             mIRCMessage.destory();
-            logger.e( "=========>:mIRCMessage.destory()");
+            logger.e("=========>:mIRCMessage.destory()");
         }
     }
 

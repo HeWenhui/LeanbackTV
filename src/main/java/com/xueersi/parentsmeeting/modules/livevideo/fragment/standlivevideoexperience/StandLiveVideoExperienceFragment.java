@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +51,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.learnfeedback.ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.livemessage
+        .StandExperienceMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand
         .StandExperienceUnderstandBll;
@@ -108,7 +108,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     LectureLivePlayBackBll lectureLivePlayBackBll;
     /** onPause状态不暂停视频 */
     PauseNotStopVideoIml pauseNotStopVideoIml;
-
     /** 播放路径名 */
     private String mWebPath;
     /** 节名称 */
@@ -131,7 +130,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     private View mFloatView;
     private PopupWindow mPopupWindows;
     private Handler mHandler;
-    private int progress = 0;
     protected StandExperienceLiveBackBll liveBackBll;
     protected LiveBackVideoBll liveBackVideoBll;
     /*** 全屏显示*/
@@ -189,8 +187,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         // 加载竖屏时显示更多课程广告的布局
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
         //为
-        videoPopView = new VideoPopView(activity);
-        videoPopView.setVideoView(liveBackPlayVideoFragment.getVideoView());
+        videoPopView = new VideoPopView(activity, liveBackPlayVideoFragment.getVideoView());
+//        videoPopView.setVideoView(liveBackPlayVideoFragment.getVideoView());
     }
 
     protected void updateLoadingImage() {
@@ -449,8 +447,12 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         addBusiness(activity);
         liveBackBll.onCreate();
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
-        for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(rlQuestionContentBottom, rlQuestionContent, mIsLand);
+        try {
+            for (LiveBackBaseBll businessBll : businessBlls) {
+                businessBll.initViewF(rlQuestionContentBottom, rlQuestionContent, mIsLand);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -668,6 +670,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         continuedMTime += System.currentTimeMillis() - everyTime;//得到这次观看的时间
     }
 
+    /**
+     * 播放成功（包括第一次进来，以及刷新重试）
+     */
     @Override
     protected void onPlayOpenSuccess() {
         isPlay = true;
@@ -681,9 +686,16 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
 //        continuedMTime =
         long pos = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime);
-        liveBackPlayVideoFragment.seekTo(pos);//跳转到指定位置
-//        seekTo(pos);
-        Log.d(TAG, "onPlayOpenSuccess:VisitTimeKey=" + mVideoEntity.getVisitTimeKey() + ",pos=" + pos);
+
+
+//        for (LiveBackBaseBll baseBll : liveBackBll.getLiveBackBaseBlls()) {
+//            if (baseBll instanceof StandExperienceUnderstandBll) {
+//
+//            }
+//        }
+
+        liveBackPlayVideoFragment.seekTo(630000);//跳转到指定位置
+        logger.d("onPlayOpenSuccess:VisitTimeKey=" + mVideoEntity.getVisitTimeKey() + ",pos=" + pos);
         attachMediaController();
         long errorContinuedmTime = System.currentTimeMillis() - errorTime;//得到错误持续的时间
         everyTime = System.currentTimeMillis();
