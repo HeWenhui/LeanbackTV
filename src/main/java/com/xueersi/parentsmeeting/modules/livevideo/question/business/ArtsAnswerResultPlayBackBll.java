@@ -51,8 +51,8 @@ import java.util.List;
  * created  at 2018/9/29 18:54
 */
 public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
-
     private ArtsAnswerResultBll mAnswerResultBll;
+    private QuestionStateListener mStateListener;
     /**
      * 0 liveback
      * 1 experience
@@ -64,37 +64,38 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
     }
 
     @Override
-    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
-        super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
+    public void initView() {
         mAnswerResultBll = new ArtsAnswerResultBll((Activity) mContext,liveGetInfo.getId(),liveGetInfo.getLiveType(),mRootView);
         mAnswerResultBll.onLiveInited(liveGetInfo);
-        Log.e("ArtsAnswerResultPlayBackBll","=====>onCreate called");
-    }
-    /**EventCategory*/
-    int[] category = new int[]{
-            1000
-    };
-    @Override
-    public int[] getCategorys() {
-        return category;
+        Log.e("ArtsAnswerResultPlayBackBll","=====>initView called");
+        registQuestionListener();
     }
 
-    @Override
-    public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll.ShowQuestion showQuestion) {
-        Log.e("ArtsAnswerResultPlayBackBll","======>showQuestion called:"+mAnswerResultBll);
-        if(mAnswerResultBll != null){
-            mAnswerResultBll.closeAnswerResult(false);
+    private void registQuestionListener() {
+        EnglishShowReg englishShowReg = ProxUtil.getProxUtil().get(mContext,EnglishShowReg.class);
+        if(englishShowReg != null){
+            mStateListener = new QuestionStateListener();
+            englishShowReg.registQuestionShow(mStateListener);
         }
     }
 
-    @Override
-    public void onQuestionEnd(VideoQuestionEntity questionEntity) {
-        Log.e("ArtsAnswerResultPlayBackBll","======>onQuestionEnd called:"+mAnswerResultBll);
-        if(mAnswerResultBll != null){
-            mAnswerResultBll.closeAnswerResult(true);
+   private void unRigistQuestionListener(){
+       EnglishShowReg englishShowReg = ProxUtil.getProxUtil().get(mContext,EnglishShowReg.class);
+       if(englishShowReg != null && mStateListener != null){
+           englishShowReg.unRegistQuestionShow(mStateListener);
+       }
+   }
+
+
+    private class QuestionStateListener implements QuestionShowAction{
+        @Override
+        public void onQuestionShow(boolean isShow) {
+            Log.e("ArtsAnswerResultPlayBackBll","======>onQuestionShow called:"+isShow);
+            if(mAnswerResultBll != null){
+                mAnswerResultBll.closeAnswerResult(!isShow);
+            }
         }
     }
-
 
     @Override
     public void onDestory() {
@@ -102,5 +103,6 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
         if(mAnswerResultBll != null){
             mAnswerResultBll.onDestory();
         }
+        unRigistQuestionListener();
     }
 }
