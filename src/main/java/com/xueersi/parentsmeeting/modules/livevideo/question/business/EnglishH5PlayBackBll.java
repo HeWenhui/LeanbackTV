@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -111,6 +112,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             }
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
+                Log.e("mqtt","关闭上一题" + "CATEGORY_H5COURSE_NEWARTSWARE");
                 englishH5CoursewareBll.onH5Courseware("off", videoQuestionLiveEntity);
             }
         }
@@ -222,6 +224,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
                                 (questionEntity);
                         videoQuestionLiveEntity.englishH5Entity.setArtsNewH5Courseware(true);
+                        EventBus.getDefault().post(new LiveBackQuestionEvent());
                         englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                         showQuestion.onShow(true, videoQuestionLiveEntity);
                     }

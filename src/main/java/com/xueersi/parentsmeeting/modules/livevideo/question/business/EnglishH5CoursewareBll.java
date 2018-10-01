@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -377,7 +378,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     if (h5CoursewarePager != null) {
                         havePager = true;
                         curPager = h5CoursewarePager;
+                        Log.e("mqtt","submitData" + "one");
                         h5CoursewarePager.submitData();
+                        Log.e("mqtt","submitData" + "two");
                         logToFile.i("onH5Courseware:submitData");
                         WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
                         if (webViewRequest != null) {
@@ -387,6 +390,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         isForce = 1;
                     }
                     if (isAnaswer && !havePager) {
+                        Log.e("mqtt","submitData" + "three");
                         onQuestionShow(false);
                     }
                     isAnaswer = false;

@@ -303,6 +303,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             LiveBackBaseBll liveBackBaseBll = array.get(oldQuestionEntity.getvCategory());
             if (liveBackBaseBll != null) {
                 logger.d("scanQuestion:onQuestionEnd:id=" + oldQuestionEntity.getvCategory());
+                Log.e("mqtt","关闭上一题" +"position:" + position);
                 liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
             }
             showQuestion.onHide(oldQuestionEntity);
