@@ -16,6 +16,7 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -28,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.NewArtsAnswer;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -52,6 +54,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -133,6 +137,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         this.context = context;
         liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
         ProxUtil.getProxUtil().put(context, EnglishShowReg.class, this);
+        EventBus.getDefault().register(this);
     }
 
     public void initView(RelativeLayout bottomContent) {
@@ -273,11 +278,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
     }
 
-    public void destroy() {
-        if (h5CoursewarePager != null) {
-            h5CoursewarePager.destroy();
-        }
-    }
 
     public void onResume() {
         if (h5CoursewarePager != null) {
@@ -1130,6 +1130,20 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 //                }
 //            }
         }
+    }
+
+    public void destroy() {
+        if (h5CoursewarePager != null) {
+            h5CoursewarePager.destroy();
+        }
+        EventBus.getDefault().unregister(this);
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onArtsResultCmplShow(AnswerResultCplShowEvent event) {
+        Loger.e("EnglishH5CoursewareBll:onArtsResultCmplShow ");
+            froceClose();
     }
 
     /**
