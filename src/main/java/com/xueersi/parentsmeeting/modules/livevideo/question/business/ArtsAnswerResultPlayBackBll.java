@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ScoreRange;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
@@ -52,7 +53,6 @@ import java.util.List;
 */
 public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
     private ArtsAnswerResultBll mAnswerResultBll;
-    private QuestionStateListener mStateListener;
     /**
      * 0 liveback
      * 1 experience
@@ -68,32 +68,17 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
         mAnswerResultBll = new ArtsAnswerResultBll((Activity) mContext,liveGetInfo.getId(),liveGetInfo.getLiveType(),mRootView);
         mAnswerResultBll.onLiveInited(liveGetInfo);
         Log.e("ArtsAnswerResultPlayBackBll","=====>initView called");
-        registQuestionListener();
+        EventBus.getDefault().register(this);
     }
 
-    private void registQuestionListener() {
-        EnglishShowReg englishShowReg = ProxUtil.getProxUtil().get(mContext,EnglishShowReg.class);
-        if(englishShowReg != null){
-            mStateListener = new QuestionStateListener();
-            englishShowReg.registQuestionShow(mStateListener);
-        }
-    }
 
-   private void unRigistQuestionListener(){
-       EnglishShowReg englishShowReg = ProxUtil.getProxUtil().get(mContext,EnglishShowReg.class);
-       if(englishShowReg != null && mStateListener != null){
-           englishShowReg.unRegistQuestionShow(mStateListener);
-       }
-   }
-
-
-    private class QuestionStateListener implements QuestionShowAction{
-        @Override
-        public void onQuestionShow(boolean isShow) {
-            Log.e("ArtsAnswerResultPlayBackBll","======>onQuestionShow called:"+isShow);
-            if(mAnswerResultBll != null){
-                mAnswerResultBll.closeAnswerResult(!isShow);
-            }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLiveBackQuestionEvent(LiveBackQuestionEvent event) {
+        Log.e("ArtsAnswerResultPlayBackBll", "=====>onLiveBackQuestionEvent:"+ event.getEnvetnType());
+        if(event.getEnvetnType() == LiveBackQuestionEvent.QUSTIONS_SHOW){
+            mAnswerResultBll.closeAnswerResult(false);
+        }else if(event.getEnvetnType() == LiveBackQuestionEvent.QUSTION_CLOSE){
+            mAnswerResultBll.closeAnswerResult(true);
         }
     }
 
@@ -103,6 +88,6 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
         if(mAnswerResultBll != null){
             mAnswerResultBll.onDestory();
         }
-        unRigistQuestionListener();
+        EventBus.getDefault().unregister(this);
     }
 }
