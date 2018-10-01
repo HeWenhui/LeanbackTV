@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,6 +36,9 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent.QUSTIONS_SHOW;
+import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent.QUSTION_CLOSE;
 
 /**
  * Created by linyuqiang on 2018/7/17.
@@ -113,6 +117,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity(questionEntity);
                 Log.e("mqtt","关闭上一题" + "CATEGORY_H5COURSE_NEWARTSWARE");
+                EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE,videoQuestionLiveEntity));
                 englishH5CoursewareBll.onH5Courseware("off", videoQuestionLiveEntity);
             }
         }
@@ -224,7 +229,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
                                 (questionEntity);
                         videoQuestionLiveEntity.englishH5Entity.setArtsNewH5Courseware(true);
-                        EventBus.getDefault().post(new LiveBackQuestionEvent());
+                        EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTIONS_SHOW,videoQuestionLiveEntity));
                         englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                         showQuestion.onShow(true, videoQuestionLiveEntity);
                     }
