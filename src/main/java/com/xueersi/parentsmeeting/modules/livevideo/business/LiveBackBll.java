@@ -310,6 +310,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         if (mQuestionEntity != null && oldQuestionEntity != mQuestionEntity && !mQuestionEntity.isAnswered()) {
             mQuestionEntity.setAnswered(true);
             logger.d("scanQuestion:showQuestion");
+            Log.e("Duncan","showQuestion:" + position);
             showQuestion(oldQuestionEntity, showQuestion);
         }
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
@@ -471,6 +472,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     mQuestionEntity = videoQuestionEntity;
                     hasQuestionShow = true;
                     index = i;
+                    Log.e("Duncan","i:" + i +"playPosition:" + playPosition);
                     break;
                 }
             }
