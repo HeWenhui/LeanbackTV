@@ -68,7 +68,7 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
         mAnswerResultBll = new ArtsAnswerResultBll((Activity) mContext,liveGetInfo.getId(),liveGetInfo.getLiveType(),mRootView);
         mAnswerResultBll.onLiveInited(liveGetInfo);
         Log.e("ArtsAnswerResultPlayBackBll","=====>initView called");
-        //registQuestionListener();
+        registQuestionListener();
     }
 
     private void registQuestionListener() {

@@ -1023,16 +1023,17 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onDestory() {
         super.onDestory();
-        EventBus.getDefault().unregister(this);
+        if(mQuestionAction != null){
+            mQuestionAction.onDestroy();
+        }
     }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void  onArtsResultCmplShow(AnswerResultCplShowEvent event){
         if(mQuestionAction != null){
             mQuestionAction.forceClose();
         }
-
     }
+
 }
 
 
