@@ -62,8 +62,7 @@ public class RecommondCoursePager extends BasePager {
         wholeRecommondCourseLayout = view.findViewById(R.id.ctl_recommod_course);
         thumbnailRecommondCourseLayout = view.findViewById(R.id.ctl_recommod_course_thumbnail);
 
-        autoVerticalScrollTextView = new AutoVerticalScrollTextView(mContext);
-
+        autoVerticalScrollTextView = view.findViewById(R.id.avstv_livevideo_stand_experience_banner_message);
 
         return view;
     }
@@ -197,6 +196,15 @@ public class RecommondCoursePager extends BasePager {
             };
         }
         return messageRunnable;
+    }
+
+    public void startBanner(final Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage) {
+        if (autoVerticalScrollTextView.getVisibility() == View.GONE) {
+            autoVerticalScrollTextView.setVisibility(View.VISIBLE);
+        }
+        if (mView != null) {
+            mView.post(getBannerMessageRunnable(queMessage));
+        }
     }
 
     //轮播消息

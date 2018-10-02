@@ -5,7 +5,6 @@ import android.os.Build;
 import android.view.ViewGroup;
 
 import com.xueersi.common.event.MiniEvent;
-import com.xueersi.common.http.LoggingInterceptor;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -59,6 +58,10 @@ public class VideoPopView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(StandExperienceRecommondCourseEvent event) {
+        turnToOrder(event);
+    }
+
+    public void turnToOrder(StandExperienceRecommondCourseEvent event) {
         if (event != null) {
             if ("Order".equals(event.getTip())) {
                 final String courseId = event.getCourseId();
@@ -126,4 +129,5 @@ public class VideoPopView {
             isShow = false;
         }
     }
+
 }

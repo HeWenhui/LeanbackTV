@@ -7,6 +7,7 @@ import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
@@ -14,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.StandExperienceRecommondCourseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.VideoPopView;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
 
 import org.greenrobot.eventbus.EventBus;
@@ -23,10 +25,11 @@ import org.greenrobot.eventbus.ThreadMode;
 public class RecommondCourseBll extends StandExperienceEventBaseBll {
     LiveAndBackDebug liveAndBackDebug;
     private RecommondCoursePager mPager;
+    private VideoPopView turnToOrder;
 
-    public RecommondCourseBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    public RecommondCourseBll(Activity activity, StandExperienceLiveBackBll liveBackBll, VideoView videoView) {
         super(activity, liveBackBll);
-
+        turnToOrder = new VideoPopView((Activity) mContext, videoView);
     }
 
     @Override
@@ -43,13 +46,20 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
                 @Override
                 public void clickBuyCourse() {
                     logger.i("点击购买课程1");
-                    EventBus.getDefault().post(new StandExperienceRecommondCourseEvent("Order", mVideoEntity
-                            .getCourseId(), mVideoEntity.getClassId()));
+//                    EventBus.getDefault().post(new StandExperienceRecommondCourseEvent("Order", mVideoEntity
+//                            .getCourseId(), mVideoEntity.getClassId()));
+                    turnToOrder.turnToOrder(new StandExperienceRecommondCourseEvent("Order", mVideoEntity.getCourseId(),
+                            mVideoEntity.getClassId()));
                     logger.i("购买课程2");
                 }
             });
         }
     }
+
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onEvent(StandExperienceRecommondCourseEvent event) {
+//        logger.i("跳转到了EventBus这里");
+//    }
 
     //推荐课程信息
     private RecommondCourseEntity mRecommondCourseEntity;
@@ -92,7 +102,8 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
                 bannerBuyCourseEntity = livePlayBackHttpResponseParser.parseBannerBuyCourseEntity(responseEntity);
                 if (bannerBuyCourseEntity.getBannerMessages() != null) {
                     if (mPager != null) {
-                        mRootView.post(mPager.getBannerMessageRunnable(bannerBuyCourseEntity.getBannerMessages()));
+                        //开始录播
+                        mPager.startBanner(bannerBuyCourseEntity.getBannerMessages());
                     }
                 }
             }
