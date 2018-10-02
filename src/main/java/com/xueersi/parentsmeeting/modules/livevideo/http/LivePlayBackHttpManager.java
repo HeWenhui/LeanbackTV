@@ -255,15 +255,28 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     //语音评测2期答案提交
     public void sendSpeechEvalResult2(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack
             requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        setDefaultParameter(params);
+        if(LiveVideoConfig.isNewArts){
+            HttpRequestParams params = new HttpRequestParams();
+            params.addBodyParam("liveId", liveId);
+            params.addBodyParam("testId", id);
+            params.addBodyParam("isRejected", "1");
+            params.addBodyParam("answers", "" + stuAnswer);
+            params.addBodyParam("type", "2");
+            setDefaultParameter(params);
+            Loger.i("Duncan", "sendSpeechEvalResult2:enstuId=" + enstuId + ",liveId=" + liveId);
+            sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVALUATEARTS, params, requestCallBack);
+        }else{
+            HttpRequestParams params = new HttpRequestParams();
+            setDefaultParameter(params);
 //        params.addBodyParam("enstuId", enstuId);
-        params.addBodyParam("liveId", liveId);
-        params.addBodyParam("testId", id);
-        params.addBodyParam("isRejected", "1");
-        params.addBodyParam("answers", "" + stuAnswer);
-        params.addBodyParam("type", "2");
-        sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
+            params.addBodyParam("liveId", liveId);
+            params.addBodyParam("testId", id);
+            params.addBodyParam("isRejected", "1");
+            params.addBodyParam("answers", "" + stuAnswer);
+            params.addBodyParam("type", "2");
+            sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
+        }
+
     }
 
     //判断语音评测2期是否作答
