@@ -183,7 +183,9 @@ public class RecommondCoursePager extends BasePager {
                 @Override
                 public void run() {
                     if (mView != null) {
-                        SpannableString spannableString = new SpannableString("喇叭 " + queMessage.poll());
+                        VideoBannerBuyCourseEntity.BannerMessage bannerMessage = queMessage.poll();
+                        SpannableString spannableString = new SpannableString("喇叭 欢迎" + bannerMessage.getUserName() +
+                                "加入" + bannerMessage.getCourseName());
                         ImageSpan imageSpan = new ImageSpan(mContext.getResources().getDrawable(R.drawable
                                 .bg_livevideo_stand_experience_advertise_horn));
                         spannableString.setSpan(imageSpan, 0, 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
