@@ -299,6 +299,6 @@ public class LiveVideoConfig {
     public static final String SP_LIVEVIDEO_MARK_POINT_COUNT = "sp_livevideo_mark_point_count";
 
 
-    /** 文科新接口的标识*/
+    /** 文科新课件平台的标识*/
     public static Boolean isNewArts = false;
 }
