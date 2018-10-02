@@ -476,6 +476,17 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     Log.e("Duncan","i:" + i +"playPosition:" + playPosition);
                     break;
                 }
+            } else if(LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == videoQuestionEntity.getvCategory()){
+                // 在开始时间和结束时间之间
+                if (startTime <= playPosition && playPosition < endTime) {
+                    LiveVideoConfig.isMulLiveBack = false;
+//                if (startTime == playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    Log.e("Duncan","i:" + i +"playPosition:" + playPosition);
+                    break;
+                }
             }
         }
         if (mQuestionEntity != null) {
