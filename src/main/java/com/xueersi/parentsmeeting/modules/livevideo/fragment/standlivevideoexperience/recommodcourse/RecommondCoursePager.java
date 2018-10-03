@@ -3,12 +3,14 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexpe
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,8 +18,11 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.MarqueeView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 
 public class RecommondCoursePager extends BasePager {
@@ -42,7 +47,7 @@ public class RecommondCoursePager extends BasePager {
 
     private ClickListener listener;
 
-    private AutoVerticalScrollTextView autoVerticalScrollTextView;
+    private MarqueeView mvBannerMessage;
 
     public RecommondCoursePager(Context context) {
         super(context);
@@ -62,7 +67,8 @@ public class RecommondCoursePager extends BasePager {
         wholeRecommondCourseLayout = view.findViewById(R.id.ctl_recommod_course);
         thumbnailRecommondCourseLayout = view.findViewById(R.id.ctl_recommod_course_thumbnail);
 
-        autoVerticalScrollTextView = view.findViewById(R.id.avstv_livevideo_stand_experience_banner_message);
+        mvBannerMessage = view.findViewById(R.id.mv_livevideo_stand_experience_banner_message);
+
 
         return view;
     }
@@ -171,62 +177,67 @@ public class RecommondCoursePager extends BasePager {
     private final int delayHttpTime = 1000 * 10;
     //延迟2分钟发射
     private final int delayTime = 60 * 2 * 1000;
+
     /**
      * 设置滚动
      */
-    private Runnable messageRunnable;
+//    private Runnable messageRunnable;
 
-    public Runnable getBannerMessageRunnable(final Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage) {
-        this.queMessage = queMessage;
-        if (messageRunnable == null) {
-            messageRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (mView != null) {
-                        VideoBannerBuyCourseEntity.BannerMessage bannerMessage = queMessage.poll();
-                        SpannableString spannableString = new SpannableString("喇叭 欢迎" + bannerMessage.getUserName() +
-                                "加入" + bannerMessage.getCourseName());
-                        ImageSpan imageSpan = new ImageSpan(mContext.getResources().getDrawable(R.drawable
-                                .bg_livevideo_stand_experience_advertise_horn));
-                        spannableString.setSpan(imageSpan, 0, 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-
-                        autoVerticalScrollTextView.setText(spannableString);
-                        autoVerticalScrollTextView.next();
-                        mView.postDelayed(this, delayTime);
-                    }
-                }
-            };
-        }
-        return messageRunnable;
-    }
-
+//    public Runnable getBannerMessageRunnable(final Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage) {
+//        this.queMessage = queMessage;
+//        if (messageRunnable == null) {
+//            messageRunnable = new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (mView != null) {
+//                        VideoBannerBuyCourseEntity.BannerMessage bannerMessage = queMessage.poll();
+//                        SpannableString spannableString = new SpannableString("喇叭 欢迎" + bannerMessage.getUserName() +
+//                                "加入" + bannerMessage.getCourseName());
+//                        ImageSpan imageSpan = new ImageSpan(mContext.getResources().getDrawable(R.drawable
+//                                .bg_livevideo_stand_experience_advertise_horn));
+//                        spannableString.setSpan(imageSpan, 0, 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+//
+//
+////                        mvBannerMessage.next();
+//                        mView.postDelayed(this, delayTime);
+//                    }
+//                }
+//            };
+//        }
+//        return messageRunnable;
+//    }
     public void startBanner(final Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage) {
-        if (autoVerticalScrollTextView.getVisibility() == View.GONE) {
-            autoVerticalScrollTextView.setVisibility(View.VISIBLE);
+        if (mvBannerMessage.getVisibility() == View.GONE) {
+            mvBannerMessage.setVisibility(View.VISIBLE);
         }
         if (mView != null) {
-            mView.post(getBannerMessageRunnable(queMessage));
+            mvBannerMessage.startWithList(getBannerList(queMessage));
         }
     }
 
-    //轮播消息
-    private Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage;
+    private List<SpannableString> getBannerList(Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage) {
+        //设置左边Left
+        Drawable drawable = mContext.getResources().getDrawable(R.drawable
+                .bg_livevideo_stand_experience_advertise_horn);
+        drawable.setBounds(0, 0, 60, 48);
+        mvBannerMessage.setLeftDrawable(drawable);
 
-    //
-    public Queue<VideoBannerBuyCourseEntity.BannerMessage> getQueMessage() {
-        return queMessage;
-    }
-
-    public void setQueMessage(Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage) {
-        this.queMessage = queMessage;
+        List<SpannableString> list = new ArrayList<>();
+        while (!queMessage.isEmpty()) {
+            VideoBannerBuyCourseEntity.BannerMessage bannerMessage = queMessage.poll();
+            SpannableString spannableString = new SpannableString(" 欢迎" + bannerMessage.getUserName() +
+                    "加入" + bannerMessage.getCourseName());
+            list.add(spannableString);
+        }
+        return list;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mView != null && messageRunnable != null) {
-            mView.removeCallbacks(messageRunnable);
-        }
+//        if (mView != null && messageRunnable != null) {
+//            mView.removeCallbacks(messageRunnable);
+//        }
         stopAnimator();
     }
 

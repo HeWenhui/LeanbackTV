@@ -31,6 +31,7 @@ public class FloatLayout extends FrameLayout {
     private RelativeLayout rl;
     private int mType;
 
+    public final static int INTENT_TO_LivePlaybackVideoActivity = 2;
     public FloatLayout(Context context,int type) {
         this(context, null);
         mContext = context;

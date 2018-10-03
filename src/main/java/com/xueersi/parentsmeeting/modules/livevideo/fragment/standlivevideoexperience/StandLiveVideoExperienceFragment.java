@@ -138,7 +138,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     private LiveStandFrameAnim liveStandFrameAnim;
 
     //处理视频小窗口使用
-    private VideoPopView videoPopView;
+//    private VideoPopView videoPopView;
 
     public static StandLiveVideoExperienceFragment newInstance(boolean isExperience) {
 //        Bundle arguments = new Bundle();
@@ -187,7 +187,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         // 加载竖屏时显示更多课程广告的布局
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
         //为
-        videoPopView = new VideoPopView(activity, liveBackPlayVideoFragment.getVideoView());
+//        videoPopView = new VideoPopView(activity, liveBackPlayVideoFragment.getVideoView());
 //        videoPopView.setVideoView(liveBackPlayVideoFragment.getVideoView());
     }
 
@@ -559,14 +559,14 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         liveBackPlayVideoFragment.changeLOrP();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
-        for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.onConfigurationChanged(newConfig);
-        }
-    }
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
+//        for (LiveBackBaseBll businessBll : businessBlls) {
+//            businessBll.onConfigurationChanged(newConfig);
+//        }
+//    }
 
     /** 加载旋转屏时相关布局 */
     @Override
@@ -603,9 +603,12 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         if (isInitialized() && pausePlay) {
             vPlayer.pause();
         }
-        if (videoPopView != null) {
-            videoPopView.onResume();
+        if (liveBackBll != null) {
+            liveBackBll.onResume();
         }
+//        if (videoPopView != null) {
+//            videoPopView.onResume();
+//        }
     }
 
     @Override

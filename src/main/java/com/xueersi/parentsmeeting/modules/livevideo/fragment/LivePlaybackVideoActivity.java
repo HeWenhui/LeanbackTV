@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandLiveVideoExperienceFragment;
@@ -32,6 +33,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             }
             return new LiveBackVideoFragment();
         }
+//        setRequestedOrientation(Configuration.ORIENTATION_LANDSCAPE);
         return StandLiveVideoExperienceFragment.newInstance(isExperience);
     }
 

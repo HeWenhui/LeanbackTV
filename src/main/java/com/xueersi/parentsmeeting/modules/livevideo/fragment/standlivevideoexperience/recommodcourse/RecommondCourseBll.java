@@ -166,4 +166,8 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
             }
         }
     }
+
+    public void onResume() {
+        turnToOrder.onResume();
+    }
 }

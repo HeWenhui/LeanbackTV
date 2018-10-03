@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.StandExperienceRecommondCourseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -96,6 +97,12 @@ public class VideoPopView {
 
     private ViewGroup mParent;
 
+    /**
+     * 跳转到购课页面，同时开启悬浮窗
+     *
+     * @param courseId
+     * @param classId
+     */
     private void createRealVideo(String courseId, String classId) {
         boolean isPermission = XesPermission.applyFloatWindow(activity);
         //有对应权限或者系统版本小于7.0
@@ -107,24 +114,30 @@ public class VideoPopView {
                 }
             }
             logger.i("开启悬浮窗");
-            //开启悬浮窗
+            //跳转到支付页面
             OtherModulesEnter.intentToOrderConfirmActivity(activity, courseId + "-" + classId, 100,
                     "LivePlaybackVideoActivity");
-            FloatWindowManager.addView(activity, videoView, 1);
+            //开启悬浮窗
+            FloatWindowManager.addView(activity, videoView, FloatLayout.INTENT_TO_LivePlaybackVideoActivity);
             isShow = true;
         }
 
     }
 
+    /**
+     * Fragment进入onResume的时候从悬浮窗中(FloatLayout)移出这个videoView;
+     */
     public void onResume() {
         if (isShow) {//还原VideoView
             ViewGroup parents = (ViewGroup) videoView.getParent();
             if (parents != null) {
+                logger.i("移出原来的浮窗videoView");
                 parents.removeView(videoView);
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
                 mParent.addView(videoView, params);
+                logger.i("恢复原状");
             }
             isShow = false;
         }

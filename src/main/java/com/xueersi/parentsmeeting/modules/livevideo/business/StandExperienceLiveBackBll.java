@@ -7,6 +7,7 @@ import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse
         .ExperienceBuyCoursePresenter;
 
@@ -192,4 +193,13 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
     public String getPrefix() {
         return "ELB";
     }
+
+    public void onResume() {
+        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+            if (liveBackBaseBll instanceof RecommondCourseBll) {
+                ((RecommondCourseBll) liveBackBaseBll).onResume();
+            }
+        }
+    }
+
 }
