@@ -39,16 +39,16 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
         }
     }
 
-//    @Override
-//    public <T extends View> T findViewById(int id) {
-//        T t = super.findViewById(id);
-//        if (t == null) {
-//            if (liveVideoFragmentBase != null) {
-//                t = liveVideoFragmentBase.getContentView().findViewById(id);
-//            }
-//        }
-//        return t;
-//    }
+    @Override
+    public <T extends View> T findViewById(int id) {
+        T t = super.findViewById(id);
+        if (t == null) {
+            if (liveVideoFragmentBase != null) {
+                t = liveVideoFragmentBase.getContentView().findViewById(id);
+            }
+        }
+        return t;
+    }
 
     @Override
     public void onDestroy() {
