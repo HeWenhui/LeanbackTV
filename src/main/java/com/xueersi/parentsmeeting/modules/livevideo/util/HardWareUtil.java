@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 public class HardWareUtil {
     private static String TAG = "HardWareUtil";
     protected static Logger logger = LoggerFactory.getLogger(TAG);
+
     /**
      * 获得cpu型号名字
      *
@@ -44,7 +45,7 @@ public class HardWareUtil {
                         cpu = text.substring(index + 1);
                     }
                     cpu = cpu.trim();
-                    logger.d( "getCpuName:text=" + text + ",cpu=" + cpu);
+                    logger.d("getCpuName:text=" + text + ",cpu=" + cpu);
                     return cpu;
                 }
             }
@@ -96,7 +97,7 @@ public class HardWareUtil {
             reader.close();
             cpuInfos = load.split(" ");
         } catch (IOException ex) {
-            logger.e( "IOException" + ex.toString());
+            logger.e("IOException" + ex.toString());
             return 0;
         }
         long totalCpu = 0;
@@ -106,7 +107,7 @@ public class HardWareUtil {
                     + Long.parseLong(cpuInfos[6]) + Long.parseLong(cpuInfos[5])
                     + Long.parseLong(cpuInfos[7]) + Long.parseLong(cpuInfos[8]);
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.i( "ArrayIndexOutOfBoundsException" + e.toString());
+            logger.i("ArrayIndexOutOfBoundsException" + e.toString());
             return 0;
         }
         return totalCpu;
@@ -127,7 +128,7 @@ public class HardWareUtil {
             reader.close();
             cpuInfos = load.split(" ");
         } catch (IOException e) {
-            logger.e( "IOException" + e.toString());
+            logger.e("IOException" + e.toString());
             return 0;
         }
         long appCpuTime = 0;
@@ -136,7 +137,7 @@ public class HardWareUtil {
                     + Long.parseLong(cpuInfos[14]) + Long.parseLong(cpuInfos[15])
                     + Long.parseLong(cpuInfos[16]);
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.i( "ArrayIndexOutOfBoundsException" + e.toString());
+            logger.i("ArrayIndexOutOfBoundsException" + e.toString());
             return 0;
         }
         return appCpuTime;
@@ -156,6 +157,7 @@ public class HardWareUtil {
         BufferedReader bufferedReader = null;
         String regex = " [0-9]+";
         Pattern pattern = Pattern.compile(regex);
+        StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < 2; i++) {
             totalJiffies[i] = 0;
             totalIdle[i] = 0;
@@ -165,6 +167,7 @@ public class HardWareUtil {
                 int currentCPUNum = 0;
                 String str;
                 while ((str = bufferedReader.readLine()) != null && (i == 0 || currentCPUNum < firstCPUNum)) {
+                    stringBuilder.append("i=" + i + "---" + str + "\n");
                     if (str.toLowerCase().startsWith("cpu")) {
                         currentCPUNum++;
                         int index = 0;
@@ -209,6 +212,17 @@ public class HardWareUtil {
             rate = 100.0 * ((totalJiffies[1] - totalIdle[1]) - (totalJiffies[0] - totalIdle[0])) / (totalJiffies[1] - totalJiffies[0]);
         }
 //        return String.format("cpu:%.2f", rate);
+        boolean error = false;
+        if (rate > 100) {
+            rate = 100;
+            error = true;
+        } else if (rate < 0) {
+            rate = 0;
+            error = false;
+        }
+        if (error) {
+            logger.d("getCPURateDesc:stringBuilder=" + stringBuilder);
+        }
         return rate;
     }
 

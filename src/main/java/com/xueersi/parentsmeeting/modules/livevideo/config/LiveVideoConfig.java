@@ -286,4 +286,8 @@ public class LiveVideoConfig {
     /** 直播-roleplay */
     public static String LIVE_ROLE_PLAY = "live_mutiroleplay";
     public static final String SP_LIVEVIDEO_MARK_POINT_COUNT="sp_livevideo_mark_point_count";
+    /** 低端设备检测 */
+    public static String URL_CHECK_DEVICE = HTTP_HOST + "/Users/checkDevice";
+//    public static String URL_CHECK_DEVICE = "https://www.easy-mock.com/mock/5b57f6919ddd1140ec2eb47b/xueersi.wx.android.app" + "/Users/checkDevice";
+
 }

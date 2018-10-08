@@ -112,6 +112,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     /** 直播云平台日志统计-多个 */
     private String[] logurls = {LiveVideoConfig.URL_CDN_LOG, LiveVideoConfig.URL_CDN_LOG1, LiveVideoConfig.URL_CDN_LOG2};
     private String userId;
+    private String psId;
     /** 当前播放的视频地址 */
     private Uri mUri;
     private String mUriHost = "";
@@ -122,7 +123,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private String cpuName;
     /** 可用内存大小 */
     private String memsize;
-    private String channelname;
+    private String channelname = "";
     private int heartCount;
     private LDNetTraceClient ldNetTraceClient;
     /** 一个地址5分钟传一次 */
@@ -174,6 +175,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         ldNetTraceClient = new LDNetTraceClient(activity);
         MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         userId = myUserInfoEntity.getStuId();
+        psId = UserBll.getInstance().getMyUserInfoEntity().getPsimId();
         versionName = getAppVersionName();
         cpuName = HardWareUtil.getCpuName();
         memsize = DeviceUtils.getAvailRams(activity);
@@ -342,7 +344,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
         JSONObject dataJson = new JSONObject();
         try {
-            dataJson.put("url", mUri);
+            dataJson.put("url", "" + mUri);
             dataJson.put("uri", channelname);
             if (lastPlayserverEntity != null) {
                 dataJson.put("node", "" + lastPlayserverEntity.getProvide());
@@ -396,7 +398,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
         JSONObject dataJson = new JSONObject();
         try {
-            dataJson.put("url", mUri);
+            dataJson.put("url", "" + mUri);
             dataJson.put("uri", channelname);
             if (lastPlayserverEntity != null) {
                 dataJson.put("node", "" + lastPlayserverEntity.getProvide());
@@ -448,7 +450,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         isHavePause = true;
         handler.removeMessages(1);
         if (!isDestory) {
-            send("onPause", dur);
+            if (mUri != null) {
+                send("onPause", dur);
+            }
         }
     }
 
@@ -536,7 +540,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
                                 JSONObject dataJson = new JSONObject();
                                 try {
-                                    dataJson.put("url", mUri);
+                                    dataJson.put("url", "" + mUri);
                                     dataJson.put("uri", channelname);
                                     if (lastPlayserverEntity != null) {
                                         dataJson.put("node", "" + lastPlayserverEntity.getProvide());
@@ -615,7 +619,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
         JSONObject dataJson = new JSONObject();
         try {
-            dataJson.put("url", mUri);
+            dataJson.put("url", "" + mUri);
             dataJson.put("uri", channelname);
             ;
             if (lastPlayserverEntity != null) {
@@ -654,7 +658,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
         JSONObject dataJson = new JSONObject();
         try {
-            dataJson.put("url", mUri);
+            dataJson.put("url", "" + mUri);
             dataJson.put("uri", channelname);
             if (lastPlayserverEntity != null) {
                 dataJson.put("node", "" + lastPlayserverEntity.getProvide());
@@ -705,7 +709,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private void addDefault(HashMap<String, Object> defaultKey) {
         defaultKey.put("ts", System.currentTimeMillis());
         defaultKey.put("appId", "" + UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
-        defaultKey.put("psId", UserBll.getInstance().getMyUserInfoEntity().getPsimId());
+        defaultKey.put("psId", "" + psId);
         defaultKey.put("agent", "m-android_" + versionName);
         defaultKey.put("os", "" + Build.VERSION.SDK_INT);
         defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
@@ -814,7 +818,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
                 JSONObject dataJson = new JSONObject();
                 try {
-                    dataJson.put("url", mUri);
+                    dataJson.put("url", "" + mUri);
                     dataJson.put("uri", channelname);
                     if (lastPlayserverEntity != null) {
                         dataJson.put("node", "" + lastPlayserverEntity.getProvide());
@@ -843,6 +847,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             String string = FileStringUtil.readFromFile(file);
             try {
                 JSONObject jsonObject = new JSONObject(string);
+                jsonObject.put("serv", 920);
                 jsonObject.put("pri", 920);
                 xescdnLogUrl(jsonObject, file);
             } catch (JSONException e) {
@@ -971,7 +976,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
             @Override
             public void onFailure(Call call, IOException e) {
-                logger.e( "xescdnLogUrl:onFailure", e);
+                logger.e("xescdnLogUrl:onFailure", e);
             }
 
             @Override
@@ -1028,7 +1033,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    logger.e( "xescdnLog:onFailure", e);
+                    logger.e("xescdnLog:onFailure", e);
                     if (retryInt.get() < 2) {
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -1158,7 +1163,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 JSONObject dataJson = new JSONObject();
                 PlayFailCode playFailCode = getErrorCode(arg2);
                 try {
-                    dataJson.put("url", mUri);
+                    dataJson.put("url", "" + mUri);
                     dataJson.put("uri", channelname);
                     if (lastPlayserverEntity != null) {
                         dataJson.put("node", "" + lastPlayserverEntity.getProvide());
@@ -1318,7 +1323,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         logger.d("destory:isPause=" + isPause);
         handler.removeMessages(1);
         if (!isPause) {
-            send("destory", 0);
+            if (mUri != null) {
+                send("destory", 0);
+            }
         }
         ldNetTraceClient.destory();
     }

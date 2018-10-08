@@ -211,7 +211,7 @@ public class LiveVideoAction implements VideoAction {
                         if (LiveVideoConfig.isPrimary) {
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable
                                     .livevideo_zw_dengdaida_bg_psnormal);
-                        } else if (mGetInfo.getSmallEnglish()) {//如果是小学英语
+                        } else if (mGetInfo != null && mGetInfo.getSmallEnglish()) {//如果是小学英语
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable
                                     .livevideo_small_english_zw_dengdaida_bg_psnormal);
                         } else {

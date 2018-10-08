@@ -90,6 +90,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             />
 
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity"
+            android:screenOrientation="portrait" />
+
         <service
             android:name="com.xueersi.parentsmeeting.modules.livevideo.service.LiveService"
             android:process=":livedaemon" />
