@@ -1290,6 +1290,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     JSONObject dataJson = new JSONObject();
                     try {
                         dataJson.put("url", url);
+                        dataJson.put("ldnetversion", LDNetTraceRoute.VERSION);
                         JSONArray traceArray = new JSONArray();
                         for (int i = 0; i < javaTraceResults.length; i++) {
                             JavaTraceResult javaTraceResult = javaTraceResults[i];
