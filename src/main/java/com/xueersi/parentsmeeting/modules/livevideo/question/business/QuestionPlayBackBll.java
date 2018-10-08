@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -145,6 +146,15 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                 videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
+                int isArts = liveBackBll.getIsArts();
+                if (isArts == 0 && mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+                    String[] ss = videoQuestionLiveEntity.id.split("-");
+                    if (ss.length > 1) {
+                        if ("0".equals(ss[1])) {
+                            videoQuestionLiveEntity.isTestUseH5 = true;
+                        }
+                    }
+                }
                 questionBll.showQuestion(videoQuestionLiveEntity);
                 showQuestion.onShow(true, videoQuestionLiveEntity);
             }
@@ -222,7 +232,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         HttpCallBack httpCallBack = new HttpCallBack(loadEntity) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
-                logger.d( "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity
+                logger.d("saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity
                         .getJsonObject());
                 VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer(responseEntity,
                         isVoice);
