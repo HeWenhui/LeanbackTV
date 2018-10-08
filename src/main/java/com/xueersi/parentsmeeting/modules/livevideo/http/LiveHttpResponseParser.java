@@ -213,7 +213,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         for (int i = 0; i < teamStuIdArray.length(); i++) {
                             teamStuIds.add(teamStuIdArray.getString(i));
                         }
-                        logger.d( "parseLiveGetInfo:teamStuIds=" + teamStuIds.size());
+                        logger.d("parseLiveGetInfo:teamStuIds=" + teamStuIds.size());
                     } catch (Exception e) {
                         MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.teamStuIds", e.getMessage());
                     }
@@ -270,14 +270,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
                 }
             }
-            logger.i( "parseLiveGetInfo:headImgUrl=" + headImgUrl.size());
+            logger.i("parseLiveGetInfo:headImgUrl=" + headImgUrl.size());
             getInfo.setHeadImgUrl(headImgUrl);
             try {
                 getInfo.setHeadImgPath(data.optString("headImgPath"));
                 getInfo.setImgSizeType(data.optString("imgSizeType"));
                 getInfo.setHeadImgVersion(data.optString("headImgVersion"));
             } catch (Exception e) {
-                logger.e( "parseLiveGetInfo.Head", e);
+                logger.e("parseLiveGetInfo.Head", e);
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.Head", e.getMessage());
             }
             getInfo.setCloseChat(data.optInt("isCloseChat", 0) == 1);
@@ -295,7 +295,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setUrlClick(data.optInt("urlClick", 0));
             getInfo.setAllowLinkMic(data.optInt("allowLinkMic", 1) == 1);
             getInfo.setStuLinkMicNum(data.optInt("stuLinkMicNum", 0));
-            getInfo.setTestPaperUrl(data.optString("testPaperUrl", "https://live.xueersi.com/Live/getMultiTestPaper"));
+            getInfo.setTestPaperUrl(data.optString("testPaperUrl", LiveVideoConfig.URL_LIVE_MULTI_TEST));
             getInfo.setBlockChinese(data.optInt("blockChinese", 0) == 1);
             getInfo.setSubjectiveTestAnswerResult(data.optString("getSubjectiveTestResultUrl", "https://live.xueersi" +
                     ".com/Live/subjectiveTestAnswerResult/" + getInfo.getId()));
@@ -326,7 +326,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             return getInfo;
         } catch (JSONException e) {
-            logger.e( "parseLiveGetInfo", e);
+            logger.e("parseLiveGetInfo", e);
             MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", e.getMessage());
         }
         return null;
@@ -395,12 +395,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             coachStatusEntity.setListStatus(status.optInt("listStatus"));
 
             if (status.has("openbarrage")) {
-                logger.i( "room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = " + status.getBoolean("openbarrage") + " " + status.toString());
+                logger.i("room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = " + status.getBoolean("openbarrage") + " " + status.toString());
                 //新增字段，辅导老师开启礼物与否 true开启
                 coachStatusEntity.setFDLKOpenbarrage(status.getBoolean("openbarrage"));
 
             } else {
-                logger.i( "room2中没有openbarrage字段 文科" + status.toString());
+                logger.i("room2中没有openbarrage字段 文科" + status.toString());
             }
 
             // 解析辅讲老师信息
@@ -411,7 +411,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             teamPkEntity.setRoomInfo2(roomInfo2);
 
             if (status.has("link_mic")) {
-                logger.i( "辅导老师 parseLiveTopic status = " + status.toString());
+                logger.i("辅导老师 parseLiveTopic status = " + status.toString());
                 JSONObject link_mic = status.getJSONObject("link_mic");
                 coachStatusEntity.setOnmic(link_mic.optString("onmic", "off"));
                 coachStatusEntity.setOpenhands(link_mic.optString("openhands", "off"));
@@ -458,7 +458,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         if (liveTopicJson.has("room_1")) {
-            logger.i( "主讲老师 parseLiveTopic liveTopicJson = " + liveTopicJson.toString());
+            logger.i("主讲老师 parseLiveTopic liveTopicJson = " + liveTopicJson.toString());
             JSONObject status = liveTopicJson.getJSONObject("room_1");
             RoomStatusEntity mainStatusEntity = liveTopic.getMainRoomstatus();
             mainStatusEntity.setOnbreak(status.optBoolean("isOnBreak"));
@@ -567,7 +567,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     liveTopic.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
                 }
             } catch (JSONException e) {
-                logger.e( "parseLiveTopic", e);
+                logger.e("parseLiveTopic", e);
             }
         }
         try {
@@ -580,7 +580,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             liveTopic.setDisableSpeaking(disableSpeaking);
         } catch (JSONException e) {
             MobAgent.httpResponseParserError(TAG, "parseLiveTopic", e.getMessage());
-            logger.e( "parseLiveTopic", e);
+            logger.e("parseLiveTopic", e);
         }
         return liveTopic;
     }
@@ -1101,7 +1101,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //            }
 //        }
 
-        logger.i( "parseHonorList: " + responseEntity.getJsonObject());
+        logger.i("parseHonorList: " + responseEntity.getJsonObject());
         HonorListEntity honorListEntity = new HonorListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1151,7 +1151,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //            thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
 //        }
 
-        logger.i( "parseThumbsUpList: " + responseEntity.getJsonObject());
+        logger.i("parseThumbsUpList: " + responseEntity.getJsonObject());
         ThumbsUpListEntity thumbsUpListEntity = new ThumbsUpListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1200,7 +1200,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //            }
 //            progressListEntity.getProgressEntities().add(progressEntity);
 //        }
-        logger.i( "parseProgressList: " + responseEntity.getJsonObject());
+        logger.i("parseProgressList: " + responseEntity.getJsonObject());
         ProgressListEntity progressListEntity = new ProgressListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1226,6 +1226,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         }
         return progressListEntity;
     }
+
     /**
      * 解析点赞概率
      *
@@ -1233,7 +1234,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public ThumbsUpProbabilityEntity parseThumbsUpProbability(ResponseEntity responseEntity) {
-        logger.i( "parseThumbsUpProbability: " + responseEntity.getJsonObject());
+        logger.i("parseThumbsUpProbability: " + responseEntity.getJsonObject());
         ThumbsUpProbabilityEntity thumbsUpProbabilityEntity = new ThumbsUpProbabilityEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
