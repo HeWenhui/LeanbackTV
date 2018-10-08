@@ -83,6 +83,7 @@ public class DeviceDetectionActivity extends XesActivity {
     DataLoadEntity mDataLoadEntity;
     DeviceDetectionEntity mDeviceDetectionEntity;
     DeviceDetectionBll mDeviceDetectionBll;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,14 +149,14 @@ public class DeviceDetectionActivity extends XesActivity {
      */
     private void fillData() {
         rlSummary.setVisibility(View.VISIBLE);
-        tvSummaryNumber.setText(mDeviceDetectionEntity.getUnMatchCount()+"");
+        tvSummaryNumber.setText(mDeviceDetectionEntity.getUnMatchCount() + "");
         tvSummaryConsequence.setText(mDeviceDetectionEntity.getUnMatchDesc());
-        if(!StringUtils.isEmpty(mDeviceDetectionEntity.getVersionCurrent())) {
+        if (!StringUtils.isEmpty(mDeviceDetectionEntity.getVersionCurrent())) {
             rlSystem.setVisibility(View.VISIBLE);
             tvSystemVersion.setText(mDeviceDetectionEntity.getVersionCurrent());
             tvSystemRequirement.setText(mDeviceDetectionEntity.getVersionNotice());
         }
-        if(!StringUtils.isEmpty(mDeviceDetectionEntity.getMemoryCurrent())) {
+        if (!StringUtils.isEmpty(mDeviceDetectionEntity.getMemoryCurrent())) {
             rlMemory.setVisibility(View.VISIBLE);
             tvMemorySize.setText(mDeviceDetectionEntity.getMemoryCurrent());
             tvMemoryRequirement.setText(mDeviceDetectionEntity.getMemoryNotice());
