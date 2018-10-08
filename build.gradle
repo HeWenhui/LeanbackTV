@@ -39,7 +39,7 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.logger)
 //    implementation project(':xesijkplayer')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.ijkplayer)
-//    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.player)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.player)
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.cloud)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.share)
@@ -51,29 +51,7 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.recyclerview
     implementation rootProject.ext.thirdlibraries.okhttp
     implementation rootProject.ext.thirdlibraries.constraint
-    //    implementation project(':ijkplayer')
-    implementation(rootProject.ext.xeslibraries.ijkplayer) { changing = true }
-//    implementation project(':business-base:player')
-    implementation(rootProject.ext.businesslibraries.player) {
-        changing = true
-    }
-    //    implementation project(':business-base:cloud')
-    implementation(rootProject.ext.businesslibraries.cloud) {
-        changing = true
-    }
-//        implementation project(':business-base:browser')
-    implementation(rootProject.ext.businesslibraries.browser) {
-        changing = true
-    }
     implementation rootProject.ext.thirdlibraries.arouterapi
     //
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
-    //    implementation project(path: ':business-base:audio')
-    implementation(rootProject.ext.businesslibraries.audio) {
-        changing = true
-    }
-    //分享
-    implementation(rootProject.ext.xeslibraries.share) {
-        changing = true
-    }
 }
