@@ -9,6 +9,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,13 +20,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.MarqueeView;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-public class RecommondCoursePager extends BasePager {
+public class RecommondCoursePager extends BasePager implements QuestionShowAction {
     private final String TAG = getClass().getSimpleName();
     //动画持续时间
     private final int Duration = 500;
@@ -46,8 +48,10 @@ public class RecommondCoursePager extends BasePager {
     private ConstraintLayout thumbnailRecommondCourseLayout;
 
     private ClickListener listener;
-
+    //轮播消息View
     private MarqueeView mvBannerMessage;
+    //展开的推荐课程是否处于显示状态
+    private boolean isWholeShow = true;
 
     public RecommondCoursePager(Context context) {
         super(context);
@@ -66,10 +70,7 @@ public class RecommondCoursePager extends BasePager {
 //        ivTeacherThumbnail = view.findViewById(R.id.iv_livevideo_stand_experience_recommod_course_teacher_thumbnail);
         wholeRecommondCourseLayout = view.findViewById(R.id.ctl_recommod_course);
         thumbnailRecommondCourseLayout = view.findViewById(R.id.ctl_recommod_course_thumbnail);
-
         mvBannerMessage = view.findViewById(R.id.mv_livevideo_stand_experience_banner_message);
-
-
         return view;
     }
 
@@ -101,26 +102,51 @@ public class RecommondCoursePager extends BasePager {
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wholeRecommondCourseLayout.setClickable(false);
-                thumbnailRecommondCourseLayout.setClickable(true);
-                thumbnailRecommondCourseLayout.setVisibility(View.VISIBLE);
-                hideWholeSet.start();
-            }
-        });
-        ivBuy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.clickBuyCourse();
+                if (isWholeShow) {
+                    wholeRecommondCourseLayout.setClickable(false);
+                    thumbnailRecommondCourseLayout.setClickable(true);
+                    thumbnailRecommondCourseLayout.setVisibility(View.VISIBLE);
+                    hideWholeSet.start();
+                    isWholeShow = false;
                 }
             }
         });
+        ivBuy.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (isWholeShow) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            ivBuy.setAlpha(0.8f);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            if (listener != null) {
+                                listener.clickBuyCourse();
+                            }
+                            ivBuy.setAlpha(1f);
+                            break;
+                    }
+                }
+                return true;
+            }
+        });
+//        ivBuy.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (listener != null) {
+//                    listener.clickBuyCourse();
+//                }
+//            }
+//        });
         thumbnailRecommondCourseLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wholeRecommondCourseLayout.setClickable(true);
-                thumbnailRecommondCourseLayout.setClickable(false);
-                showWholeSet.start();
+                if (!isWholeShow) {
+                    wholeRecommondCourseLayout.setClickable(true);
+                    thumbnailRecommondCourseLayout.setClickable(false);
+                    showWholeSet.start();
+                    isWholeShow = true;
+                }
             }
         });
     }
@@ -173,8 +199,7 @@ public class RecommondCoursePager extends BasePager {
         }
     }
 
-    //10秒后发送http请求
-    private final int delayHttpTime = 1000 * 10;
+
     //延迟2分钟发射
     private final int delayTime = 60 * 2 * 1000;
 
@@ -259,8 +284,23 @@ public class RecommondCoursePager extends BasePager {
         wholeHideAnimator = null;
     }
 
+    /**
+     * 在其他问题显示时隐藏该View
+     *
+     * @param isShow
+     */
+    @Override
+    public void onQuestionShow(boolean isShow) {
+        if (mView != null) {
+            if (isShow) {
+                mView.setVisibility(View.GONE);
+            } else {
+                mView.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
     public interface ClickListener {
-        //        void clickClose();
         void clickBuyCourse();
     }
 

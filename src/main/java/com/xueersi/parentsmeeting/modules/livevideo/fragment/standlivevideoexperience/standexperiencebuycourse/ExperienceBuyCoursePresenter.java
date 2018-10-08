@@ -8,7 +8,8 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback
+        .ExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
 
@@ -26,7 +27,6 @@ public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll im
      */
     public ExperienceBuyCoursePresenter(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
-//        mView = new ExperienceBuyCourseView(activity, this);
         mPager = new ExperienceBuyCourseView(activity, this);
     }
 
@@ -35,6 +35,9 @@ public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll im
         if (liveBackBll instanceof StandExperienceLiveBackBll) {
             ((StandExperienceLiveBackBll) liveBackBll).showNextWindow(new ExperienceLearnFeedbackBll(activity,
                     (StandExperienceLiveBackBll) liveBackBll));
+            // 不采用这种方式，在展示下一个View前可能会有业务逻辑去处理所以交给LiveBackBll去处理。
+//            (new ExperienceLearnFeedbackBll(activity, (StandExperienceLiveBackBll) liveBackBll)).showWindow();
+
         }
     }
 

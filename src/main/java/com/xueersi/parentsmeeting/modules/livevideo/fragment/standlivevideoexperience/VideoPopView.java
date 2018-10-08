@@ -70,8 +70,9 @@ public class VideoPopView {
                 logger.i("跳转到订单页面");
 //            if (mIsLand.get()) {
                 //判断当前屏幕方向
-                ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
-                activityChangeLand.changeLOrP();
+//                ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand
+// .class);
+//                activityChangeLand.changeLOrP();
                 videoView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -114,6 +115,7 @@ public class VideoPopView {
                 }
             }
             logger.i("开启悬浮窗");
+            logger.i("courseId = " + courseId + " - classId = " + classId);
             //跳转到支付页面
             OtherModulesEnter.intentToOrderConfirmActivity(activity, courseId + "-" + classId, 100,
                     "LivePlaybackVideoActivity");
