@@ -130,8 +130,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
             });
         }
-
-        EventBus.getDefault().register(this);
     }
 
     public void setIse(SpeechEvaluatorUtils ise) {
