@@ -424,6 +424,9 @@ public class LiveBackVideoFragmentBase extends Fragment {
         return mContentView;
     }
 
+    public RelativeLayout getContentView() {
+        return mContentView;
+    }
 
     /** 加载界面 */
     protected void loadView(int id) {
