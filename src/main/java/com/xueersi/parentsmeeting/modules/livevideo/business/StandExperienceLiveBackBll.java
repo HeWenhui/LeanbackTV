@@ -1,24 +1,26 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
-import android.util.Log;
 
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse
+        .ExperienceBuyCoursePresenter;
 
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-public class ExperienceLiveBackBll extends LiveBackBll {
+public class StandExperienceLiveBackBll extends LiveBackBll {
     private String TAG = getClass().getSimpleName();
 
-    public ExperienceLiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
+    public StandExperienceLiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         super(activity, mVideoEntity);
     }
-
 
     @Override
     public void scanQuestion(long position) {
@@ -55,7 +57,7 @@ public class ExperienceLiveBackBll extends LiveBackBll {
                                 LiveBackBaseBll liveBackBaseBll = array.get(LocalCourseConfig.CATEGORY_OPEN_CHAT);
                                 if (liveBackBaseBll != null) {
                                     liveBackBaseBll.showQuestion(oldQuestionEntity, videoQuestionEntity, showQuestion);
-                                    Log.e(TAG, playPosition + " 2:进去了打开站立直播聊天区");
+                                    logger.i(playPosition + " 2:进去了打开站立直播聊天区");
                                 }
                                 break;
                             }
@@ -66,7 +68,7 @@ public class ExperienceLiveBackBll extends LiveBackBll {
                             LiveBackBaseBll liveBackBaseBll = array.get(LocalCourseConfig.CATEGORY_CLOSE_CHAT);
                             if (liveBackBaseBll != null) {
                                 liveBackBaseBll.showQuestion(oldQuestionEntity, videoQuestionEntity, showQuestion);
-                                Log.e(TAG, playPosition + " 1:进去了关闭站立直播聊天区");
+                                logger.i(playPosition + " 1:进去了关闭站立直播聊天区");
                             }
                             break;
                         } else if (playPosition >= openQue.peek() && playPosition <= closeQue.peek()) {
@@ -76,7 +78,7 @@ public class ExperienceLiveBackBll extends LiveBackBll {
                             if (liveBackBaseBll != null) {
                                 liveBackBaseBll.showQuestion(oldQuestionEntity,
                                         videoQuestionEntity, showQuestion);
-                                Log.e(TAG, playPosition + " 3:进去了关闭站立直播聊天区");
+                                logger.i(playPosition + " 3:进去了关闭站立直播聊天区");
                                 openQue.poll();
                                 closeQue.poll();
                             }
@@ -139,14 +141,65 @@ public class ExperienceLiveBackBll extends LiveBackBll {
     /**
      * 视频结束的时候，扫描一遍所有的livebackbasebll是否需要做什么事情
      */
-    public void onLiveBackBaseBllUserBackPressed() {
-        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
-            liveBackBaseBll.onUserBackPressed();
-        }
+    public void resultAllComplete() {
+//        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+//            if (liveBackBaseBll instanceof StandExperienceEventBaseBll) {
+//                ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
+//            }
+//        }
+        showNextWindow(new ExperienceBuyCoursePresenter(activity, this));
+    }
+
+    //    购课完成后专用
+//    public void buyCourseComplete(boolean isSuccess) {
+//        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+//            if (liveBackBaseBll instanceof RecommondCourseBll) {//只有推荐课程才使用这个方法
+//                ((RecommondCourseBll) liveBackBaseBll).buyRecommondCourseComplete(isSuccess);
+//            }
+//        }
+//    }
+    //学习反馈弹窗bll
+//    private ExperienceLearnFeedbackBll experienceLearnFeedbackBll;
+
+    //展示学习反馈弹窗
+//    public void showFeedBackWindow() {
+//        if (experienceLearnFeedbackBll == null) {
+//            experienceLearnFeedbackBll = new ExperienceLearnFeedbackBll(activity, this);
+//        }
+//        experienceLearnFeedbackBll.showFeedBackPager();
+//    }
+
+    //定级卷Bll
+//    private StandExperienceEvaluationBll standExperienceEvaluationBll;
+
+    //展现定级卷
+//    public void showEvaluation() {
+//        if (standExperienceEvaluationBll == null) {
+//            standExperienceEvaluationBll = new StandExperienceEvaluationBll(activity, this);
+//        }
+//
+//    }
+
+    /**
+     * 展示下一个Window的页面
+     *
+     * @param mPresenter
+     */
+    public void showNextWindow(IPresenter mPresenter) {
+        mPresenter.showWindow();
     }
 
     @Override
     public String getPrefix() {
         return "ELB";
     }
+
+    public void onResume() {
+        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+            if (liveBackBaseBll instanceof RecommondCourseBll) {
+                ((RecommondCourseBll) liveBackBaseBll).onResume();
+            }
+        }
+    }
+
 }

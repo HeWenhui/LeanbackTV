@@ -1,29 +1,21 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience;
 
 import android.app.Activity;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
@@ -42,7 +34,6 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
@@ -51,25 +42,27 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.learnfeedback.ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.livemessage
+        .StandExperienceMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand
+        .StandExperienceUnderstandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.ExperienceEnglishH5PlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.ExperienceQuestionPlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceQuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.mediacontroller.StandLiveVideoExperienceMediaController;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -115,7 +108,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     LectureLivePlayBackBll lectureLivePlayBackBll;
     /** onPause状态不暂停视频 */
     PauseNotStopVideoIml pauseNotStopVideoIml;
-
     /** 播放路径名 */
     private String mWebPath;
     /** 节名称 */
@@ -138,31 +130,23 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     private View mFloatView;
     private PopupWindow mPopupWindows;
     private Handler mHandler;
-    private int progress = 0;
-    protected ExperienceLiveBackBll liveBackBll;
+    protected StandExperienceLiveBackBll liveBackBll;
     protected LiveBackVideoBll liveBackVideoBll;
     /*** 全屏显示*/
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
     /** 预加载 */
     private LiveStandFrameAnim liveStandFrameAnim;
 
-    /**
-     * 存放
-     */
-//    private static final String experience = "experience";
-//    /**
-//     *
-//     */
-//    private Boolean isExperience;
+    //处理视频小窗口使用
+//    private VideoPopView videoPopView;
 
-    /**
-     * 学习反馈窗口
-     */
     public static StandLiveVideoExperienceFragment newInstance(boolean isExperience) {
 //        Bundle arguments = new Bundle();
 //        arguments.putBoolean(experience, isExperience);
 //        StandLiveVideoExperienceFragment standLiveVideoExperienceFragment = ;
 //        standLiveVideoExperienceFragment.setArguments(arguments);
+
+
         return new StandLiveVideoExperienceFragment();
     }
 
@@ -202,8 +186,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         rlQuestionContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         // 加载竖屏时显示更多课程广告的布局
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
-
-
+        //为
+//        videoPopView = new VideoPopView(activity, liveBackPlayVideoFragment.getVideoView());
+//        videoPopView.setVideoView(liveBackPlayVideoFragment.getVideoView());
     }
 
     protected void updateLoadingImage() {
@@ -289,7 +274,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
         mDisplayName = mVideoEntity.getPlayVideoName();
-        liveBackBll = new ExperienceLiveBackBll(activity, mVideoEntity);
+        liveBackBll = new StandExperienceLiveBackBll(activity, mVideoEntity);
         liveBackBll.setStuCourId(stuCourId);
         liveBackBll.setvPlayer(vPlayer);
 
@@ -333,7 +318,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, new MediaPlayerControl() {//zyy:
             @Override
             public void start() {
-                logger.d( "initBll:start:isFinishing="+isFinishing);
+                logger.d("initBll:start:isFinishing=" + isFinishing);
                 if (!isFinishing) {
                     liveBackPlayVideoFragment.start();
                 }
@@ -462,28 +447,36 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         addBusiness(activity);
         liveBackBll.onCreate();
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
-        for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(rlQuestionContentBottom, rlQuestionContent, mIsLand);
+        try {
+            for (LiveBackBaseBll businessBll : businessBlls) {
+                businessBll.initViewF(rlQuestionContentBottom, rlQuestionContent, mIsLand);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     //添加功能模块
     protected void addBusiness(Activity activity) {
-        liveBackBll.addBusinessBll(new ExperienceQuestionPlayBackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new StandExperienceQuestionPlayBackBll(activity, liveBackBll));
         RedPackagePlayBackBll redPackagePlayBackBll = new RedPackagePlayBackBll(activity, liveBackBll);
         liveBackBll.addBusinessBll(redPackagePlayBackBll);
-        liveBackBll.addBusinessBll(new ExperienceEnglishH5PlayBackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new StandExperienceEnglishH5PlayBackBll(activity, liveBackBll));
         //站立直播体验课聊天区的添加
-        liveBackBll.addBusinessBll(new StandLiveVideoExperienceBll(activity, liveBackBll, lectureLivePlayBackBll));
+        liveBackBll.addBusinessBll(new StandExperienceMessageBll(activity, liveBackBll, lectureLivePlayBackBll));
+        //懂了吗
+        liveBackBll.addBusinessBll(new StandExperienceUnderstandBll(activity, liveBackBll));
+        //推荐课程信息
+        liveBackBll.addBusinessBll(new RecommondCourseBll(activity, liveBackBll, getVideoView()));
         //播放完成后的反馈弹窗
-        liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
+//        liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
     }
 
     @Override
     public void attachMediaController() {
-        logger.d( "attachMediaController:beforeAttach=" + beforeAttach);
+        logger.d("attachMediaController:beforeAttach=" + beforeAttach);
         if (resultFailed) {
-            logger.d( "attachMediaController:resultFailed");
+            logger.d("attachMediaController:resultFailed");
             return;
         }
         rlQuestionContentBottom.setVisibility(View.VISIBLE);
@@ -523,7 +516,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         mMediaController.setFileName(mDisplayName);
         if (liveBackBll.isShowQuestion()) {
             mMediaController.release();
-            logger.d( "attachMediaController:release:isShowQuestion");
+            logger.d("attachMediaController:release:isShowQuestion");
         } else {
             showLongMediaController();
         }
@@ -566,14 +559,14 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         liveBackPlayVideoFragment.changeLOrP();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
-        for (LiveBackBaseBll businessBll : businessBlls) {
-            businessBll.onConfigurationChanged(newConfig);
-        }
-    }
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
+//        for (LiveBackBaseBll businessBll : businessBlls) {
+//            businessBll.onConfigurationChanged(newConfig);
+//        }
+//    }
 
     /** 加载旋转屏时相关布局 */
     @Override
@@ -610,6 +603,12 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         if (isInitialized() && pausePlay) {
             vPlayer.pause();
         }
+        if (liveBackBll != null) {
+            liveBackBll.onResume();
+        }
+//        if (videoPopView != null) {
+//            videoPopView.onResume();
+//        }
     }
 
     @Override
@@ -648,7 +647,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         super.resultFailed(arg1, arg2);
         isPlay = false;
         resultFailed = true;
-        logger.d( "resultFailed:arg2=" + arg2);
+        logger.d("resultFailed:arg2=" + arg2);
         if (arg2 != 0 && mVideoEntity != null) {
             if ("LivePlayBackActivity".equals(where)) {//直播辅导
                 XesMobAgent.onOpenFail(where + ":playback2", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
@@ -674,6 +673,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         continuedMTime += System.currentTimeMillis() - everyTime;//得到这次观看的时间
     }
 
+    /**
+     * 播放成功（包括第一次进来，以及刷新重试）
+     */
     @Override
     protected void onPlayOpenSuccess() {
         isPlay = true;
@@ -687,18 +689,21 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
 //        continuedMTime =
         long pos = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime);
+
+
+//        for (LiveBackBaseBll baseBll : liveBackBll.getLiveBackBaseBlls()) {
+//            if (baseBll instanceof StandExperienceUnderstandBll) {
+//
+//            }
+//        }
+
         liveBackPlayVideoFragment.seekTo(pos);//跳转到指定位置
-//        seekTo(pos);
-        Log.d(TAG, "onPlayOpenSuccess:VisitTimeKey=" + mVideoEntity.getVisitTimeKey() + ",pos=" + pos);
+
+        logger.d("onPlayOpenSuccess:VisitTimeKey=" + mVideoEntity.getVisitTimeKey() + ",pos=" + pos);
         attachMediaController();
         long errorContinuedmTime = System.currentTimeMillis() - errorTime;//得到错误持续的时间
         everyTime = System.currentTimeMillis();
 
-//        showPopupwinResult();
-//        isFirstGetResult = false;
-//        setBackgroundAlpha(0.4f);
-
-//        showPopupwinResult();
     }
 
     /**
@@ -752,7 +757,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 (), 300L, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                logger.e( "uploadexperiencetime:" + responseEntity.getJsonObject());
+                logger.e("uploadexperiencetime:" + responseEntity.getJsonObject());
             }
         });
     }
@@ -777,7 +782,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
     @Override
     protected void startPlayer() {
-        logger.d( "startPlayer:isFinishing=" + isFinishing);
+        logger.d("startPlayer:isFinishing=" + isFinishing);
         if (!isFinishing) {
             super.startPlayer();
         }
@@ -946,7 +951,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 }
             }
             final boolean finalPause = pause;
-            logger.i( "onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
+            logger.i("onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
@@ -963,7 +968,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                     cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            logger.i( "onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
+                            logger.i("onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
                                     finalPause);
                             if (initialized) {
                                 if (finalPause) {
@@ -1022,119 +1027,17 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         }
     }
 
-    private boolean isFirstGetResult = true;
-    AbstractBusinessDataCallBack getDataCallBack = new AbstractBusinessDataCallBack() {
-        @Override
-        public void onDataSucess(Object... objData) {
-            // 获取到数据之后的逻辑处理
-            if (objData.length > 0) {
-                mData = (ExperienceResult) objData[0];
-                // 测试体验课播放器的结果页面
-                if (mData != null && isFirstGetResult) {
-                    showPopupwinResult();
-                    isFirstGetResult = false;
-                    setBackgroundAlpha(0.4f);
-                }
-            }
-        }
-    };
-
-    /**
-     * 设置添加屏幕的背景透明度
-     *
-     * @param bgAlpha 屏幕透明度0.0-1.0 1表示完全不透明
-     */
-    public void setBackgroundAlpha(float bgAlpha) {
-        WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
-        lp.alpha = bgAlpha;
-        activity.getWindow().setAttributes(lp);
-    }
-
-    private RoundProgressBar mProgressbar;
-
-    private PopupWindow mWindow;
-
-    private ExperienceResult mData;
-
-    private void showPopupwinResult() {
-        LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View result = inflater.inflate(R.layout.pop_experience_livevideo_result, null);
-        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-
-        mWindow = new PopupWindow(result, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams
-                .MATCH_PARENT, false);
-        mWindow.setOutsideTouchable(false);
-        mWindow.showAtLocation(result, Gravity.CENTER, 0, 0);
-        mProgressbar = (RoundProgressBar) result.findViewById(R.id.roundProgressBar);
-        TextView recommand = (TextView) result.findViewById(R.id.tv_detail_result);
-        TextView beat = (TextView) result.findViewById(R.id.tv_result);
-        TextView totalscore = (TextView) result.findViewById(R.id.tv_total_score);
-        beat.setText("恭喜，你打败了" + mData.getBeat() + "%的学生");
-        if (TextUtils.isEmpty(mData.getRecommend())) {
-            recommand.setVisibility(View.VISIBLE);
-            recommand.setText("赶快去报班继续提高成绩吧");
-        } else {
-            recommand.setVisibility(View.VISIBLE);
-            recommand.setText("推荐您报名" + mData.getRecommend());
-        }
-        totalscore.setText(mData.getCorrect() + "%");
-        mProgressbar.setMax(100);
-        if (mData.getCorrect() > 0) {
-            mProgressbar.setProgress(mData.getCorrect());
-        } else {
-            mProgressbar.setProgress(0);
-        }
-        ImageButton shut = (ImageButton) result.findViewById(R.id.ib_shut);
-        shut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mWindow.dismiss();
-                activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-//                showPopupwinFeedback();
-                liveBackBll.onLiveBackBaseBllUserBackPressed();//展示学习反馈弹窗
-                mWindow = null;
-                setBackgroundAlpha(1f);
-            }
-        });
-        Button chat = (Button) result.findViewById(R.id.bt_chat);
-        if (TextUtils.isEmpty(mData.getWechatNum())) {
-            chat.setVisibility(View.GONE);
-        } else {
-            chat.setVisibility(View.VISIBLE);
-        }
-        chat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ClipboardManager cm = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-                cm.setText(mData.getWechatNum());
-                Toast.makeText(activity, "您已复制老师微信号，快去添加吧!", Toast.LENGTH_LONG).show();
-            }
-        });
-        Button apply = (Button) result.findViewById(R.id.bt_apply);
-        apply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mData.getUrl() != null) {
-                    BrowserActivity.openBrowser(activity, mData.getUrl());
-                } else {
-                    Toast.makeText(activity, "数据异常", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
-
-    private PopupWindow mFeedbackWindow;
-
     /**
      * 视频回放结束
      */
     @Override
     protected void resultComplete() {
-        logger.d( "resultComplete");
+        logger.d("resultComplete");
         isPlay = false;
         isFinishing = true;
-        lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
-                getDataCallBack);
+//        lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
+//                getDataCallBack);
+        liveBackBll.resultAllComplete();
 //        onUserBackPressed();
     }
 
@@ -1144,7 +1047,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         isPlay = true;
         if (AppBll.getInstance(activity).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
-            logger.d( "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+            logger.d("onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
             playNewVideo();
         }
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
@@ -1162,7 +1065,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
     @Override
     public void setRequestedOrientation(int requestedOrientation) {
-        logger.d( "setRequestedOrientation:requestedOrientation=" + requestedOrientation);
+        logger.d("setRequestedOrientation:requestedOrientation=" + requestedOrientation);
         super.setRequestedOrientation(requestedOrientation);
     }
 

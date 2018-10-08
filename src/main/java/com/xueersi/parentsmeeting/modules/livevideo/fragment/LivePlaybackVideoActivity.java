@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandLiveVideoExperienceFragment;
@@ -32,6 +33,7 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             }
             return new LiveBackVideoFragment();
         }
+//        setRequestedOrientation(Configuration.ORIENTATION_LANDSCAPE);
         return StandLiveVideoExperienceFragment.newInstance(isExperience);
     }
 
@@ -73,8 +75,12 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
         Intent intent = new Intent(context, LivePlaybackVideoActivity.class);
         intent.putExtras(bundle);
         intent.putExtra("where", where);
+        try {
+            context.startActivityForResult(intent, requestCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        context.startActivityForResult(intent, requestCode);
     }
 
 }

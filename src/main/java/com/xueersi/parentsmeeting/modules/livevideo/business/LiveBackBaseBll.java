@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 直播回放总bll
  */
 public class LiveBackBaseBll extends BaseBll {
-    protected Logger logger = LoggerFactory.getLogger("LiveBackBaseBll");
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected LiveBackBll liveBackBll;
     protected Activity activity;
     protected RelativeLayout mRootViewBottom;
@@ -39,11 +39,6 @@ public class LiveBackBaseBll extends BaseBll {
     protected Handler mHandler = new Handler(Looper.getMainLooper());
     protected final int mLiveType;
     protected LiveVideoPoint liveVideoPoint;
-    /**
-     * 0 liveback
-     * 1 experience
-     */
-
 
     public LiveBackBaseBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity);
@@ -162,12 +157,4 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
-    /**
-     * 视屏结束时的回调
-     *
-     * @return
-     */
-    public void onUserBackPressed() {
-
-    }
 }

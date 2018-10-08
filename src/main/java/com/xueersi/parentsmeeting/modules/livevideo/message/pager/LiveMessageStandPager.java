@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -965,12 +964,12 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         }
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
-                        Log.e(TAG, "显示聊天框");
+                        logger.i( "显示聊天框");
                     } else {
                         liveStandMessageContent.setVisibility(View.GONE);
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.GONE);
-                        Log.e(TAG, "隐藏聊天框");
+                        logger.i( "隐藏聊天框");
                     }
                     if (fromNotice) {
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -1161,14 +1160,14 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                     liveStandMessageContent.setVisibility(View.GONE);
                     //现在的隐藏显示和liveStandMessageContent一致
                     btMesOpen.setVisibility(View.GONE);
-                    Log.e(TAG, "隐藏聊天框");
+                    logger.i("隐藏聊天框");
                 } else {
                     if (ircState.openchat()) {
                         if (liveStandMessageContent.getVisibility() != View.VISIBLE) {
                             liveStandMessageContent.setVisibility(View.VISIBLE);
                             StandLiveMethod.voicePopup(liveSoundPool);
                         }
-                        Log.e(TAG, "显示聊天框");
+                        logger.i( "显示聊天框");
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
                     }
