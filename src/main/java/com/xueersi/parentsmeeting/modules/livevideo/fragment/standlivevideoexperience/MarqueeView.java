@@ -29,6 +29,7 @@ public class MarqueeView extends ViewFlipper {
 
     private int interval = 3000;
     private boolean hasSetAnimDuration = false;
+
     private int animDuration = 1000;
     private int textSize = 14;
     private int textColor = 0xffffffff;
@@ -99,6 +100,14 @@ public class MarqueeView extends ViewFlipper {
 
     public MarqueeView(Context context) {
         this(context, null);
+    }
+
+    public int getAnimDuration() {
+        return animDuration;
+    }
+
+    public void setAnimDuration(int animDuration) {
+        this.animDuration = animDuration;
     }
 
     public MarqueeView(Context context, AttributeSet attrs) {

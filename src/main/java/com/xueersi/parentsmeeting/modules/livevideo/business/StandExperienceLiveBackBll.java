@@ -7,6 +7,7 @@ import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse
         .ExperienceBuyCoursePresenter;
@@ -147,6 +148,11 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 //                ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
 //            }
 //        }
+        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+            if (liveBackBaseBll instanceof StandExperienceEventBaseBll) {
+                ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
+            }
+        }
         showNextWindow(new ExperienceBuyCoursePresenter(activity, this));
     }
 
@@ -181,7 +187,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 //    }
 
     /**
-     * 展示下一个Window的页面
+     * 展示下一个View的页面,这里可以做一些下一个View展示前的逻辑处理
      *
      * @param mPresenter
      */

@@ -696,7 +696,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //
 //            }
 //        }
-
+        //pos->630000
         liveBackPlayVideoFragment.seekTo(pos);//跳转到指定位置
 
         logger.d("onPlayOpenSuccess:VisitTimeKey=" + mVideoEntity.getVisitTimeKey() + ",pos=" + pos);
@@ -1066,7 +1066,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     @Override
     public void setRequestedOrientation(int requestedOrientation) {
         logger.d("setRequestedOrientation:requestedOrientation=" + requestedOrientation);
-        super.setRequestedOrientation(requestedOrientation);
+//        super.setRequestedOrientation(requestedOrientation);
     }
 
 

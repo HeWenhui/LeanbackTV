@@ -141,17 +141,25 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         mLiveMessagePager.setGetInfo(liveGetInfo);
         //默认打开聊天区
         mLiveMessagePager.onopenchat(openChat, "", false);
+        registerInBllToHideView();
 
+        connectChatServer();
+    }
+
+    /**
+     * 将这个bll注册在所有的Bll中，在各种其他Bll（目前只有QuestionBll，EnglishH5CoursewareBll）显示时做出相应操作（目前是隐藏聊天区的View）
+     */
+    private void registerInBllToHideView() {
+        //在QuestionShowReg中注册(也就是QuestionShowReg唯一实现类QuestionBLl中注册)，为了在QuestionBll显示时隐藏该聊天区
         QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
         if (questionShowReg != null) {
             questionShowReg.registQuestionShow(mLiveMessagePager);
         }
+        //在EnglishShowReg中注册(也就是EnglishShowReg唯一实现类EnglishH5CoursewareBll中注册)，为了在EnglishH5CoursewareBll显示时隐藏该聊天区
         EnglishShowReg englishShowReg = getInstance(EnglishShowReg.class);
         if (englishShowReg != null) {
             englishShowReg.registQuestionShow(mLiveMessagePager);
         }
-
-        connectChatServer();
     }
 
     /**
@@ -475,4 +483,5 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
     public void onKeyboardShowing(boolean isShowing) {
 
     }
+
 }
