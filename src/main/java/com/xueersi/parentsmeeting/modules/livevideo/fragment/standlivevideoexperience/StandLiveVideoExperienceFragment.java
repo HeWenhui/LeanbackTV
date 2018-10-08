@@ -697,7 +697,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //            }
 //        }
 
-        liveBackPlayVideoFragment.seekTo(630000);//跳转到指定位置
+        liveBackPlayVideoFragment.seekTo(pos);//跳转到指定位置
+
         logger.d("onPlayOpenSuccess:VisitTimeKey=" + mVideoEntity.getVisitTimeKey() + ",pos=" + pos);
         attachMediaController();
         long errorContinuedmTime = System.currentTimeMillis() - errorTime;//得到错误持续的时间
