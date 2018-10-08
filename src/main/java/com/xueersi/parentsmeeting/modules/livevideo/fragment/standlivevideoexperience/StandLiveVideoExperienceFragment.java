@@ -51,9 +51,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback
+        .ExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.livemessage
         .StandExperienceMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse
+        .ExperienceBuyCoursePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand
         .StandExperienceUnderstandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -469,7 +473,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         //推荐课程信息
         liveBackBll.addBusinessBll(new RecommondCourseBll(activity, liveBackBll, getVideoView()));
         //播放完成后的反馈弹窗
-//        liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(ExperienceBuyCoursePresenter.getInstance(activity, liveBackBll));
+        liveBackBll.addBusinessBll(ExperienceLearnFeedbackBll.getInstance(activity, liveBackBll));
     }
 
     @Override

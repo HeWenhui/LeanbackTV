@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpRespons
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -32,6 +33,8 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     public RecommondCourseBll(Activity activity, StandExperienceLiveBackBll liveBackBll, VideoView videoView) {
         super(activity, liveBackBll);
         turnToOrder = new VideoPopView((Activity) mContext, videoView);
+        logger.i("注册EventBus");
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -149,6 +152,8 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     @Override
     public void onDestory() {
         super.onDestory();
+        logger.i("移出EventBus");
+        EventBus.getDefault().unregister(this);
         if (mPager != null) {
             mPager.onDestroy();
             mPager = null;
@@ -178,6 +183,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
 //            logHashMap.put("orderid", event.getCourseId());
 //            logHashMap.put("extra", "用户支付成功");
 //            liveAndBackDebug.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
+            logger.i("购课成功");
             buyRecommondCourseComplete(true);
 
         }
@@ -191,7 +197,8 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     public void buyRecommondCourseComplete(Boolean isSuccess) {
         if (isSuccess) {
             if (mPager != null && mPager.getRootView().getParent() == mRootView) {
-                mRootView.removeView(mPager.getRootView());
+//                mRootView.removeView(mPager.getRootView());
+                mPager.buyCourseSuccess();
             }
         }
     }

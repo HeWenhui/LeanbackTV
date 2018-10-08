@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback;
 
 import android.app.Activity;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
@@ -15,7 +16,16 @@ public class ExperienceLearnFeedbackBll extends StandExperienceEventBaseBll impl
 
     LearnFeedBackPager mPager;
 
-    public ExperienceLearnFeedbackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    private static ExperienceLearnFeedbackBll instance;
+
+    public static ExperienceLearnFeedbackBll getInstance(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+        if (instance == null) {
+            instance = new ExperienceLearnFeedbackBll(activity, liveBackBll);
+        }
+        return instance;
+    }
+
+    private ExperienceLearnFeedbackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         initListener();
     }
@@ -64,7 +74,11 @@ public class ExperienceLearnFeedbackBll extends StandExperienceEventBaseBll impl
     @Override
     public void showWindow() {
         if (mPager != null) {
-            mRootView.addView(mPager.getRootView());
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                    .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+            mRootView.addView(mPager.getRootView(), layoutParams);
+//            mRootView.addView(mPager.getRootView());
         }
     }
 

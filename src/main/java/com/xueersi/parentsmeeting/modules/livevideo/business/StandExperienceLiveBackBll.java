@@ -152,8 +152,16 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
             if (liveBackBaseBll instanceof StandExperienceEventBaseBll) {
                 ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
             }
+            if (liveBackBaseBll instanceof ExperienceBuyCoursePresenter) {
+//                ((ExperienceBuyCoursePresenter) liveBackBaseBll).showNextWindow();
+                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
+            }
         }
-        showNextWindow(new ExperienceBuyCoursePresenter(activity, this));
+//        showNextWindow(new ExperienceBuyCoursePresenter(activity, this));
+//        showNextWindow(ProxUtil.getProxUtil().get(activity, ExperienceBuyCoursePresenter
+//                .class));
+
+//        showNextWindow(iPresenter);
     }
 
     //    购课完成后专用
@@ -192,7 +200,9 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
      * @param mPresenter
      */
     public void showNextWindow(IPresenter mPresenter) {
-        mPresenter.showWindow();
+        if (mPresenter != null) {
+            mPresenter.showWindow();
+        }
     }
 
     @Override

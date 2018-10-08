@@ -1,22 +1,34 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse;
 
 import android.app.Activity;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.JsonUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback
-        .ExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback
+        .ExperienceLearnFeedbackBll;
 
 public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll implements IPresenter {
 
     private boolean isFirstGetResult = true;
     private ExperienceBuyCourseView mPager;
+
+    private static ExperienceBuyCoursePresenter instance;
+
+    public static ExperienceBuyCoursePresenter getInstance(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+        if (instance == null) {
+            instance = new ExperienceBuyCoursePresenter(activity, liveBackBll);
+        }
+        return instance;
+    }
 
     /**
      * 0 liveback
@@ -25,7 +37,7 @@ public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll im
      * @param activity
      * @param liveBackBll
      */
-    public ExperienceBuyCoursePresenter(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    private ExperienceBuyCoursePresenter(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         mPager = new ExperienceBuyCourseView(activity, this);
     }
@@ -33,11 +45,14 @@ public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll im
     @Override
     public void showNextWindow() {
         if (liveBackBll instanceof StandExperienceLiveBackBll) {
-            ((StandExperienceLiveBackBll) liveBackBll).showNextWindow(new ExperienceLearnFeedbackBll(activity,
-                    (StandExperienceLiveBackBll) liveBackBll));
             // 不采用这种方式，在展示下一个View前可能会有业务逻辑去处理所以交给LiveBackBll去处理。
 //            (new ExperienceLearnFeedbackBll(activity, (StandExperienceLiveBackBll) liveBackBll)).showWindow();
-
+            for (LiveBackBaseBll liveBackBaseBll : liveBackBll.getLiveBackBaseBlls()) {
+                if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
+                    ((StandExperienceLiveBackBll) liveBackBll).showNextWindow((ExperienceLearnFeedbackBll)
+                            liveBackBaseBll);
+                }
+            }
         }
     }
 
@@ -84,13 +99,14 @@ public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll im
                 }
             }
         }
-
-
     };
 
     private void showRealWindow() {
         mPager.updateView(mData);
-        mRootView.addView(mPager.getRootView());
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        mRootView.addView(mPager.getRootView(), layoutParams);
     }
 
     @Override

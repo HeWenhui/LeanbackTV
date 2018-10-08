@@ -53,6 +53,8 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
     //展开的推荐课程是否处于显示状态
     private boolean isWholeShow = true;
 
+    private boolean isBuyCourseSuccess = false;
+
     public RecommondCoursePager(Context context) {
         super(context);
         initData();
@@ -284,6 +286,13 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
         wholeHideAnimator = null;
     }
 
+    //购买课程成功
+    public void buyCourseSuccess() {
+        isBuyCourseSuccess = true;
+        wholeRecommondCourseLayout.setVisibility(View.GONE);
+        thumbnailRecommondCourseLayout.setVisibility(View.GONE);
+    }
+
     /**
      * 在其他问题显示时隐藏该View
      *
@@ -292,13 +301,16 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
     @Override
     public void onQuestionShow(boolean isShow) {
         if (mView != null) {
-            if (isShow) {
-                mView.setVisibility(View.GONE);
-            } else {
-                mView.setVisibility(View.VISIBLE);
+            if (!isBuyCourseSuccess) {
+                if (isShow) {
+                    mView.setVisibility(View.GONE);
+                } else {
+                    mView.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
+
 
     public interface ClickListener {
         void clickBuyCourse();
