@@ -61,7 +61,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 //            e.printStackTrace();
 //        }
 //        onNotice("","",data,260);
-//
+
 //        final JSONObject finalData = data;
 //        mHandler.postDelayed(new Runnable() {
 //            @Override
@@ -85,13 +85,13 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        Log.i(TAG,"onNotice:type="+type+"|data="+data);
+        logger.i("onNotice:type="+type+"|data="+data);
         switch (type) {
             case XESCODE.XCR_ROOM_DANMU_OPEN: {
                 open = data.optString("open");
                 voiceId = data.optString("voiceId");
                 from = data.optString("from");
-                Log.i(TAG,"open="+open+"|voiceId="+voiceId+"|from="+from);
+                logger.i("open="+open+"|voiceId="+voiceId+"|from="+from);
                 //voice不能为空，并且发送notice老师类型的与当前直播的老师类型一致
                 if ((!"".equals(voiceId)) &&
                         (LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())&&"t".equals(from) || LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())&&"f".equals(from))) {
@@ -157,8 +157,6 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 
     @Override
     public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
-        Log.i("LiveBll", "=====> onPrivateMessage:" + sender + ":" + login + ":" + hostname + ":" + target + ":" +
-                message);
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(message);
@@ -263,7 +261,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
          */
         @Override
         public void uploadSpeechBulletScreen(String msg, HttpCallBack requestCallBack){
-            Log.i(TAG,"uploadSpeechBulletScreen()");
+            logger.i("uploadSpeechBulletScreen()");
             getHttpManager().uploadVoiceBarrage(mGetInfo.getId(), mGetInfo.getStuId(), voiceId, msg , requestCallBack);
         }
 
