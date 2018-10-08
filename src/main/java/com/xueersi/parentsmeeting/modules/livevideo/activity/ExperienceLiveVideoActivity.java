@@ -202,7 +202,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         HandlerThread handlerThread = new HandlerThread("ScanRunnable");
 
         ScanRunnable() {
-            logger.i( "ScanRunnable");
+            logger.i("ScanRunnable");
             handlerThread.start();
             scanHandler = new Handler(handlerThread.getLooper());
         }
@@ -412,7 +412,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //        AppBll.getInstance().registerAppEvent(this);
 //        initView();
 //        if (mIsLand) {
-            // 加载横屏时互动题的列表布局
+        // 加载横屏时互动题的列表布局
         rlQuestionContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_contents);
 //        } else {
 //            if (rlQuestionContent != null) {
@@ -436,7 +436,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     @Override
     protected void onVideoCreateEnd() {
-        super.onVideoCreateEnd();
+        if (livePlayLog != null) {
+            livePlayLog.setLive(false);
+            livePlayLog.setChannelname(mVideoEntity.getLiveId());
+        }
     }
 
     private LiveGetInfo getRoomInitData() {
@@ -447,9 +450,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         getInfo.setStudentLiveInfo(studentLiveInfoEntity);
 
         getInfo.setId(mVideoEntity.getLiveId());
-        if (livePlayLog != null) {
-            livePlayLog.setChannelname(mVideoEntity.getLiveId());
-        }
         getInfo.setLiveType(EXP_LIVE_TYPE);
         getInfo.setStuId(UserBll.getInstance().getMyUserInfoEntity().getStuId());
         getInfo.setStuSex(TextUtils.isEmpty(sex) ? "" : sex);
@@ -562,7 +562,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        XESToastUtils.showToast(ExperienceLiveVideoActivity.this,"您的帐号已在其他设备登录，请重新进入直播间");
+                        XESToastUtils.showToast(ExperienceLiveVideoActivity.this, "您的帐号已在其他设备登录，请重新进入直播间");
                         Intent intent = new Intent();
                         intent.putExtra("msg", "您的帐号已在其他设备登录，请重新进入直播间");
                         setResult(ShareBusinessConfig.LIVE_USER_KICK, intent);
@@ -691,7 +691,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
-        logger.i( "onEvent:netWorkType=" + event.netWorkType);
+        logger.i("onEvent:netWorkType=" + event.netWorkType);
         mNetWorkType = event.netWorkType;
 
         if (mIRCMessage != null) {
@@ -797,7 +797,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         long before = System.currentTimeMillis();
         mLiveMessagePager = new LiveMessagePager(this, questionBll, ums, liveMediaControllerBottom,
                 liveMessageLandEntities, null);
-        logger.d( "initViewLive:time1=" + (System.currentTimeMillis() - before));
+        logger.d("initViewLive:time1=" + (System.currentTimeMillis() - before));
 
         // 关联聊天人数
         mLiveMessagePager.setPeopleCount(peopleCount);

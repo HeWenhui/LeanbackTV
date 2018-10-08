@@ -212,6 +212,27 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //        }
     }
 
+    public void setLive(boolean live) {
+        if (this.isLive != live) {
+            isLive = live;
+            if (isLive) {
+                serv = 120;
+                priMap.put(PRI_KEY_RENDERING, 120);
+                priMap.put(PRI_KEY_onOpenFailed, 121);
+                priMap.put(PRI_KEY_onBufferStart, 122);
+                priMap.put(PRI_KEY_onBufferComplete, 123);
+                priMap.put(PRI_KEY_HEART, 124);
+            } else {
+                serv = 220;
+                priMap.put(PRI_KEY_RENDERING, 220);
+                priMap.put(PRI_KEY_onOpenFailed, 221);
+                priMap.put(PRI_KEY_onBufferStart, 222);
+                priMap.put(PRI_KEY_onBufferComplete, 223);
+                priMap.put(PRI_KEY_HEART, 224);
+            }
+        }
+    }
+
     public void setvPlayer(PlayerService vPlayer) {
         this.vPlayer = vPlayer;
     }

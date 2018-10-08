@@ -13,12 +13,14 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
-public class ExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
-    public ExperienceEnglishH5PlayBackBll(Activity activity, LiveBackBll liveBackBll) {
+public class StandExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
+
+    public StandExperienceEnglishH5PlayBackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
     }
 
@@ -46,36 +48,6 @@ public class ExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
                     englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                     showQuestion.onShow(true, videoQuestionLiveEntity);
                 }
-//                else {
-//                    VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
-//                            .getApplication(), false,
-//                            VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
-//                    verifyCancelAlertDialog.initInfo("课件提醒", "老师发布了课件，是否参与互动？");
-//                    verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
-//                            if (mediaPlayerControl != null) {
-//                                mediaPlayerControl.start();
-//                            }
-//                            VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
-//                                    (questionEntity);
-//
-//                            englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
-//                            showQuestion.onShow(true, videoQuestionLiveEntity);
-//                        }
-//                    });
-//                    verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
-//                            mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
-//                            mediaPlayerControl.start();
-//                            showQuestion.onHide(questionEntity);
-//                        }
-//                    });
-//                    verifyCancelAlertDialog.showDialog();
-//                }
             }
             break;
             case LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE: {
@@ -103,36 +75,6 @@ public class ExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
                     englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                     showQuestion.onShow(true, videoQuestionLiveEntity);
                 }
-//                 else {
-//                    VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
-//                            .getApplication(), false,
-//                            VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
-//                    verifyCancelAlertDialog.initInfo("课件提醒", "老师发布了课件，是否参与互动？");
-//                    verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
-//                            if (mediaPlayerControl != null) {
-//                                mediaPlayerControl.start();
-//                            }
-//                            VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
-//                                    (questionEntity);
-//                            videoQuestionLiveEntity.englishH5Entity.setNewEnglishH5(true);
-//                            englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
-//                            showQuestion.onShow(true, videoQuestionLiveEntity);
-//                        }
-//                    });
-//                    verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
-//                            mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
-//                            mediaPlayerControl.start();
-//                            showQuestion.onHide(questionEntity);
-//                        }
-//                    });
-//                    verifyCancelAlertDialog.showDialog();
-//                }
             }
             break;
             default:
@@ -200,20 +142,6 @@ public class ExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
                     }
                 }
             };
-//            if (!liveBackBll.getExperience()) {
-//                getCourseHttpManager().sumitCourseWareH5(
-//                        enstuId,
-//                        videoQuestionLiveEntity.srcType,
-//                        videoQuestionLiveEntity.id,
-//                        testAnswer,
-//                        videoQuestionLiveEntity.getAnswerDay(),
-//                        mVideoEntity.getLiveId(),
-//                        videoQuestionLiveEntity.courseware_type,
-//                        isSubmit,
-//                        voiceTime,
-//                        isRight,
-//                        httpCallBack);
-//            } else {
             String isArts = String.valueOf(liveBackBll.getIsArts());
             getCourseHttpManager().submitExperienceCourseWareH5(
                     mVideoEntity.getSubmitCourseWareH5AnswerUseVoiceUrl(),
@@ -225,7 +153,6 @@ public class ExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
                     isRight,
                     isArts,
                     httpCallBack);
-//            }
         }
     }
 

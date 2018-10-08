@@ -147,6 +147,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /** 网页互动题正在作答 */
     private boolean isHaveWebQuestion = false;
     private BaseQuestionWebInter questionWebPager;
+    private QuestionWebCreate questionWebCreate;
     /** 试卷页面 */
     private BaseExamQuestionInter examQuestionPager;
     private BaseExamQuestionCreat baseExamQuestionCreat;
@@ -315,7 +316,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onKeyboardHeightChanged(int height, int orientation) {
-        logger.d( "onKeyboardHeightChanged:height=" + height);
+        logger.d("onKeyboardHeightChanged:height=" + height);
         if (baseQuestionPager != null) {
             baseQuestionPager.onKeyboardShowing(height > 0, height);
         }
@@ -502,11 +503,16 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             rlQuestionContent.removeView(questionWebPager.getRootView());
                             questionWebPager = null;
                         }
-                        QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, null, QuestionBll.this, liveGetInfo
-                                .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
-                                liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
-                                videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), IS_SCIENCE, stuCouId,
-                                "1".equals(liveGetInfo.getIsAllowTeamPk()));
+                        QuestionWebX5Pager questionWebPager;
+                        if (questionWebCreate != null) {
+                            questionWebPager = questionWebCreate.create(activity, videoQuestionLiveEntity, QuestionBll.this, liveGetInfo, IS_SCIENCE, stuCouId);
+                        } else {
+                            questionWebPager = new QuestionWebX5Pager(activity, videoQuestionLiveEntity, QuestionBll.this, liveGetInfo
+                                    .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
+                                    liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
+                                    videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), IS_SCIENCE, stuCouId,
+                                    "1".equals(liveGetInfo.getIsAllowTeamPk()));
+                        }
                         questionWebPager.setLivePagerBack(QuestionBll.this);
                         rlQuestionContent.addView(questionWebPager.getRootView());
                         QuestionBll.this.questionWebPager = questionWebPager;
@@ -650,7 +656,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 id, QuestionBll.this, stuCouId);
                         speechAssessmentPager.setIse(mIse);
                         speechAssessmentPager.initData();
-                        logger.i( "走人机");
+                        logger.i("走人机");
                     }
                     setHaveSpeech(true);
                     rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
@@ -707,7 +713,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             if (!isVoice && LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity.type)) {
                 String url = liveGetInfo.getSubjectiveTestAnswerResult() + "?stuId=" + liveGetInfo.getStuId() +
                         "&testId=" + videoQuestionLiveEntity.getvQuestionID();
-                logger.d( "showQuestion:url=" + url);
+                logger.d("showQuestion:url=" + url);
                 subjectResultPager = baseSubjectResultCreat.creat(activity, this,
                         liveGetInfo.getSubjectiveTestAnswerResult(),
                         liveGetInfo.getStuId(), liveGetInfo.getId(), videoQuestionLiveEntity, stuCouId);
@@ -889,7 +895,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
             getAutoNotice(0);
-            logger.i( "question end");
+            logger.i("question end");
             hasQuestion = false;
         }
         if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(ptype)) {
@@ -1046,14 +1052,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 战队pk答题结果页自动关闭
      */
     private void closePageByTeamPk(final BasePager pager) {
-        logger.e( "=======>closePageByTeamPk 1111:" + isTeamPkAllowed + ":" + isPageOnCloseing);
+        logger.e("=======>closePageByTeamPk 1111:" + isTeamPkAllowed + ":" + isPageOnCloseing);
         if (isTeamPkAllowed) {
             if (mVPlayVideoControlHandler != null && !isPageOnCloseing) {
                 isPageOnCloseing = true;
                 mVPlayVideoControlHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        logger.e( "=======>closePageByTeamPk 2222:" + curQuestionView);
+                        logger.e("=======>closePageByTeamPk 2222:" + curQuestionView);
                         if (pager != null) {
                             if (pager instanceof BaseQuestionWebInter) {
                                 setHaveWebQuestion(false);
@@ -1282,7 +1288,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onSpeechSuccess(String num) {
-        logger.d( "onSpeechSuccess:num=" + num);
+        logger.d("onSpeechSuccess:num=" + num);
         mQueAndBool.add("" + num);
         JSONObject object = new JSONObject();
         try {
@@ -1832,7 +1838,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (isForceSubmit) {
             getFullMarkList(type, 3000);
             getAutoNotice(1);
-            logger.i( "question force submit");
+            logger.i("question force submit");
             switch (type) {
                 case XESCODE.STOPQUESTION:
                     hasQuestion = false;
@@ -1903,6 +1909,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
             }
         }, delayTime);
+    }
+
+    public void setQuestionWebCreate(QuestionWebCreate questionWebCreate) {
+        this.questionWebCreate = questionWebCreate;
     }
 
     public void setBaseSpeechCreat(BaseSpeechCreat baseSpeechCreat) {

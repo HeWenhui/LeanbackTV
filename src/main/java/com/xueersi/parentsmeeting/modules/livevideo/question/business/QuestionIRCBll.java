@@ -103,6 +103,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         LiveSubjectResultCreat baseSubjectResultCreat = new LiveSubjectResultCreat();
         baseSubjectResultCreat.setLiveGetInfo(data);
         mQuestionAction.setBaseSubjectResultCreat(baseSubjectResultCreat);
+        mQuestionAction.setQuestionWebCreate(new LiveQuestionWebCreate());
         if (data.getPattern() == 2) {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction));
             mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(this, mLiveBll, mQuestionAction));
@@ -236,7 +237,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
-                        logger.e( "======>LiveBll setWebViewCloseByTeacher: " +
+                        logger.e("======>LiveBll setWebViewCloseByTeacher: " +
                                 "SENDQUESTION");
                     }
                 }
@@ -249,7 +250,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
                         if (mQuestionAction instanceof QuestionBll) {
                             ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
-                            logger.e( "======>LiveBll setWebViewCloseByTeacher: " +
+                            logger.e("======>LiveBll setWebViewCloseByTeacher: " +
                                     "STOPQUESTION");
                         }
                     } catch (Exception e) {
@@ -267,7 +268,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
-                        logger.e( "======>LiveBll setWebViewCloseByTeacher: EXAM_START");
+                        logger.e("======>LiveBll setWebViewCloseByTeacher: EXAM_START");
                     }
                 }
                 break;
@@ -277,7 +278,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mQuestionAction.onExamStop(num);
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
-                        logger.e( "======>LiveBll setWebViewCloseByTeacher: EXAM_STOP");
+                        logger.e("======>LiveBll setWebViewCloseByTeacher: EXAM_STOP");
                     }
                 }
                 break;
@@ -340,20 +341,20 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        logger.d( "getQuestion:onPmSuccess" + responseEntity.getJsonObject());
+                        logger.d("getQuestion:onPmSuccess" + responseEntity.getJsonObject());
                         callBack.onDataSucess();
                     }
 
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        logger.e( "getQuestion:onFailure", e);
+                        logger.e("getQuestion:onFailure", e);
                         super.onFailure(call, e);
                         callBack.onDataSucess();
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        logger.d( "getQuestion:onPmError" + responseEntity.getErrorMsg());
+                        logger.d("getQuestion:onPmError" + responseEntity.getErrorMsg());
                         super.onPmError(responseEntity);
                         callBack.onDataSucess();
                     }
@@ -645,14 +646,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                logger.d( "getRolePlayAnswerTeamRank:msg=" + msg);
+                logger.d("getRolePlayAnswerTeamRank:msg=" + msg);
                 callBack.onDataFail(0, msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                logger.d( "getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
+                logger.d("getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
                 callBack.onDataFail(1, responseEntity.getErrorMsg());
             }
 
