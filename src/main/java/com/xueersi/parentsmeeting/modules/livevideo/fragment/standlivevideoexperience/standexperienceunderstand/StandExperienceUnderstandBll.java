@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand;
 
 import android.app.Activity;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -88,7 +90,10 @@ public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll {
         super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
         logger.i("显示懂了吗弹窗");
         if (mPager != null) {
-            mRootView.addView(mPager.getRootView());
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
+                    .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+            mRootView.addView(mPager.getRootView(), layoutParams);
         }
     }
 
