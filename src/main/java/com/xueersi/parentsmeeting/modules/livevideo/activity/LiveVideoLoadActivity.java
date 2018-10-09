@@ -43,9 +43,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         LogToFile.LIVE_TIME++;
-        if (LogToFile.LIVE_TIME > 4) {
-            LogToFile.LIVE_TIME = 0;
-        }
         initData();
     }
 
