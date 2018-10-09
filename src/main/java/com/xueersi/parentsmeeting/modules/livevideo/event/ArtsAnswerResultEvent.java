@@ -17,6 +17,8 @@ public class ArtsAnswerResultEvent {
    /**本地答题*/
    public static final int TYPE_NATIVE_ANSWERRESULT = 2;
 
+   public static final int TYPE_VOICE_SELECT_BLANK = 4;
+
    /**js回传rolePlay答题结果*/
    public static final int TYPE_ROLEPLAY_ANSWERRESULT = 3;
 
