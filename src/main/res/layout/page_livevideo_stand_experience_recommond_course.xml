@@ -13,6 +13,7 @@
         android:background="@drawable/shape_livevideo_stand_experience_recommond_course_banner_message_background"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:mvAnimDuration="2000"

@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:src="@drawable/bg_livevideo_stand_experience_understand_understand"
+        android:src="@drawable/selector_livevideo_stand_experience_understand_understand"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_stand_experience_understand_understand_icon"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_stand_experience_understand_understand_icon"
         app:layout_constraintTop_toBottomOf="@id/iv_livevideo_stand_experience_understand_understand_icon" />
@@ -67,7 +67,7 @@
         android:id="@id/iv_livevideo_stand_experience_understand_little_understand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/bg_livevideo_stand_experience_understand_little_understand"
+        android:src="@drawable/selector_livevideo_stand_experience_understand_little_understand"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_stand_experience_understand_little_understand_icon"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_stand_experience_understand_little_understand_icon"
         app:layout_constraintTop_toTopOf="@id/iv_livevideo_stand_experience_understand_understand" />
@@ -87,7 +87,7 @@
         android:id="@id/iv_livevideo_stand_experience_understand_no_understand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/bg_livevideo_stand_experience_understand_no_understand"
+        android:src="@drawable/selector_livevideo_stand_experience_understand_no_understand"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_stand_experience_understand_no_understand_icon"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_stand_experience_understand_no_understand_icon"
         app:layout_constraintTop_toBottomOf="@id/iv_livevideo_stand_experience_understand_no_understand_icon"
