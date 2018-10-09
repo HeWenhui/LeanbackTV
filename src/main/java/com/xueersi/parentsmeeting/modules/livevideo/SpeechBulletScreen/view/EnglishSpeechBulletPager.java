@@ -5,11 +5,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.graphics.Typeface;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.CountDownTimer;
@@ -28,6 +29,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,7 +42,6 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
-import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.SizeUtils;
@@ -52,8 +53,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.Contract.EnglishSpeechBulletContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.CloseConfirmDialog;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.ShortToastDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -98,14 +97,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      * 语音录入标题
      */
     private TextView tvSpeechbulTitle;
-    /**
-     * 小喇叭动画
-     */
-    private ImageView ivSpeechbulVoice;
-    /**
-     * 关闭按钮
-     */
-    private ImageView ivSpeechbulClose;
     /**
      * 音量波形
      */
@@ -227,8 +218,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         switchFSPanelLinearLayout = mView.findViewById(R.id.rl_livevideo_speechbul_panelroot);
         rlSpeechbulBottomContent = mView.findViewById(R.id.rl_livevideo_speechbul_bottom_content);
         tvSpeechbulTitle = mView.findViewById(R.id.tv_livevideo_speechbul_title);
-        ivSpeechbulVoice = mView.findViewById(R.id.iv_livevideo_speechbul_voice);
-        ivSpeechbulClose = mView.findViewById(R.id.tv_livevideo_speechbul_close);
         vwvSpeechbulWave = mView.findViewById(R.id.vwv_livevideo_speechbul_wave);
         etSpeechbulWords = mView.findViewById(R.id.et_livevideo_speechbul_words);
         tvSpeechbulCount = mView.findViewById(R.id.tv_livevideo_speechbul_count);
@@ -238,11 +227,15 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
 
         rlSpeechBulRoot.setClickable(true);
         rlSpeechbulBottomContent.setVisibility(View.VISIBLE);
-        ivSpeechbulVoice.setBackgroundResource(R.drawable.animlst_livevide_speechbul_voice_anim);
-        AnimationDrawable animationDrawable = (AnimationDrawable) ivSpeechbulVoice.getBackground();
-        animationDrawable.start();
         int colors[] = {0x19FFA63C, 0x32FFA63C, 0x64FFC12C, 0x96FFC12C, 0xFFFFA200};
         vwvSpeechbulWave.setColors(colors);
+        vwvSpeechbulWave.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                vwvSpeechbulWave.setLinearGradient(new LinearGradient(0, 0, vwvSpeechbulWave.getMeasuredWidth(), 0,
+                        new int[]{0xFFFF00FF, 0xFF00FFFF}, new float[]{0, 1.0f}, Shader.TileMode.CLAMP));
+            }
+        });
         vwvSpeechbulWave.setBackColor(Color.TRANSPARENT);
         Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
         etSpeechbulWords.setTypeface(fontFace);
@@ -308,36 +301,12 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      */
     @Override
     public void initListener() {
-        //关闭语音识别
-        ivSpeechbulClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final CloseConfirmDialog closeConfirmDialog = new CloseConfirmDialog(mContext);
-                closeConfirmDialog.setOnClickCancelListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        closeConfirmDialog.cancelDialog();
-                    }
-                });
-                closeConfirmDialog.setOnClickConfirmlListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        closeConfirmDialog.cancelDialog();
-                        closeSpeechBullet(false);
-                    }
-                });
-                closeConfirmDialog.showDialog();
-            }
-        });
         //编辑话语
         etSpeechbulWords.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 logger.i("onClick: etSpeechbulWords");
                 KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etSpeechbulWords);
-                tvSpeechbulRepeat.setVisibility(View.GONE);
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlSpeechbulBottomContent.getLayoutParams();
-                params.height = SizeUtils.Dp2Px(mContext, 105);
                 ismodify = "1";
             }
         });
@@ -381,11 +350,10 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         tvSpeechbulRepeat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tvSpeechbulTitle.setText("语音录入中（15字以内）");
+                tvSpeechbulTitle.setText("语音输入中，请大声说英语");
                 rlSpeechbulInputContent.setVisibility(View.GONE);
                 tvSpeechbulRepeat.setVisibility(View.GONE);
                 tvSpeechbulTitle.setVisibility(View.VISIBLE);
-                ivSpeechbulVoice.setVisibility(View.VISIBLE);
                 vwvSpeechbulWave.setVisibility(View.VISIBLE);
                 startEvaluator();
                 isretalk = "1";
@@ -430,17 +398,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     public void onKeyboardShowing(boolean isShowing) {
                         logger.i("onKeyboardShowing: isShowing = " + isShowing);
                         switchFSPanelLinearLayout.refreshHeight(KeyboardUtil.getValidPanelHeight(mContext));
-                        if (!isShowing) {
-                            if (rlSpeechbulInputContent.getVisibility() == View.VISIBLE) {
-                                tvSpeechbulRepeat.setVisibility(View.VISIBLE);
-                            }
-                            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlSpeechbulBottomContent.getLayoutParams();
-                            params.height = SizeUtils.Dp2Px(mContext, 140);
-                        } else {
-                            tvSpeechbulRepeat.setVisibility(View.GONE);
-                            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlSpeechbulBottomContent.getLayoutParams();
-                            params.height = SizeUtils.Dp2Px(mContext, 105);
-                        }
                     }
 
                 });
@@ -459,7 +416,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             public void run() {
                 showStartSpeechBulletToast();
             }
-        },3000);
+        }, 3000);
         mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -626,19 +583,14 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             }
             content = content.replaceAll("。", "");
             //语音录入，限制15字以内
-            if (content.length() > 15) {
-                content = content.substring(0, 15);
+            if (content.length() > 40) {
+                content = content.substring(0, 40);
             }
             logger.i("=====speech evaluating: " + content);
             if (isSpeechFinished) {
-                if (!TextUtils.isEmpty(content)) {
-                    startTextInput(content);
-                } else {
-                    pleaseSayAgain();
-                }
+                startTextInput(content);
             } else {
                 if (!TextUtils.isEmpty(content)) {
-                    ivSpeechbulVoice.setVisibility(View.GONE);
                     tvSpeechbulTitle.setText(content);
                 }
             }
@@ -676,7 +628,9 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             startTextInput("");
 
         } else {
-            pleaseSayAgain();
+            if (!TextUtils.isEmpty(tvSpeechbulTitle.getText().toString()) && !"语音输入中，请大声说英语".equals(tvSpeechbulTitle.getText().toString())) {
+                startTextInput(tvSpeechbulTitle.getText().toString());
+            }
         }
 
         //系统日志
@@ -695,7 +649,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     private void startTextInput(String evaluateResult) {
         stopEvaluator();
         tvSpeechbulTitle.setVisibility(View.GONE);
-        ivSpeechbulVoice.setVisibility(View.GONE);
         vwvSpeechbulWave.setVisibility(View.GONE);
         rlSpeechbulInputContent.setVisibility(View.VISIBLE);
         tvSpeechbulRepeat.setVisibility(View.VISIBLE);
@@ -703,16 +656,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         tvSpeechbulCount.setText(evaluateResult.length() + "/15");
         etSpeechbulWords.requestFocus();
         etSpeechbulWords.setSelection(etSpeechbulWords.getText().toString().length());
-    }
-
-    /**
-     * 没听清，请重说
-     */
-    private void pleaseSayAgain() {
-        tvSpeechbulTitle.setText("没听清，请重说");
-        vwvSpeechbulWave.setVisibility(View.GONE);
-        ivSpeechbulVoice.setVisibility(View.VISIBLE);
-        tvSpeechbulRepeat.setVisibility(View.VISIBLE);
     }
 
     /**
