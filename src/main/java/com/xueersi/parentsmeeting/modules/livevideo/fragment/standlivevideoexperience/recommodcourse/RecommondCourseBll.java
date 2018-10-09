@@ -90,7 +90,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     //解析器
     private LivePlayBackHttpResponseParser livePlayBackHttpResponseParser;
     //10秒后发送请求获取购课Banner的http请求
-    private final int delayHttpTime = 1000 * 10;
+    private final int delayHttpTime = 1000 * 3;
 
     @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
