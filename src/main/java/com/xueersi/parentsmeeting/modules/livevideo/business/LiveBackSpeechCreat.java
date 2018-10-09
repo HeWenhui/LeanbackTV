@@ -21,9 +21,18 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 public class LiveBackSpeechCreat implements BaseSpeechCreat {
     WrapSpeechEvalAction wrapSpeechEvalAction;
     LivePagerBack livePagerBack;
+    /**
+     * 站立直播体验课
+     */
+    private boolean isExperience;
+
 
     public LiveBackSpeechCreat(LivePagerBack livePagerBack) {
         this.livePagerBack = livePagerBack;
+    }
+
+    public void setIsExperience(boolean isExperience) {
+        this.isExperience = isExperience;
     }
 
     @Override
@@ -36,30 +45,36 @@ public class LiveBackSpeechCreat implements BaseSpeechCreat {
     }
 
     @Override
-    public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String nonce, VideoQuestionLiveEntity videoQuestionLiveEntity, boolean haveAnswer, SpeechEvalAction speechEvalAction, RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String learning_stage) {
+    public BaseSpeechAssessmentPager createSpeech(Context context, String liveid, String nonce,
+                                                  VideoQuestionLiveEntity videoQuestionLiveEntity, boolean
+                                                          haveAnswer, SpeechEvalAction speechEvalAction,
+                                                  RelativeLayout.LayoutParams lp, LiveGetInfo getInfo, String
+                                                          learning_stage) {
         wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
         wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         SpeechAssAutoPager speechAssAutoPager = new SpeechAssAutoPager(context,
                 videoQuestionLiveEntity, liveid, videoQuestionLiveEntity.id,
                 "", videoQuestionLiveEntity.speechContent, (int) videoQuestionLiveEntity.time,
-                videoQuestionLiveEntity.getvEndTime() - videoQuestionLiveEntity.getvQuestionInsretTime(), learning_stage, wrapSpeechEvalAction, livePagerBack);
+                videoQuestionLiveEntity.getvEndTime() - videoQuestionLiveEntity.getvQuestionInsretTime(),
+                learning_stage, wrapSpeechEvalAction, livePagerBack);
         return speechAssAutoPager;
     }
 
     @Override
-    public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
-                                                    SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll) {
+    public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId, SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll) {
         wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
         wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
                 false, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false, livePagerBack);
+        speechAssessmentPager.setIsExperience(isExperience);
         return speechAssessmentPager;
     }
 
     @Override
     public void setViewLayoutParams(BaseSpeechAssessmentPager baseVoiceAnswerPager, int rightMargin) {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) baseVoiceAnswerPager.getRootView().getLayoutParams();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) baseVoiceAnswerPager.getRootView()
+                .getLayoutParams();
         if (rightMargin != params.rightMargin) {
             params.rightMargin = rightMargin;
             LayoutParamsUtil.setViewLayoutParams(baseVoiceAnswerPager.getRootView(), params);
