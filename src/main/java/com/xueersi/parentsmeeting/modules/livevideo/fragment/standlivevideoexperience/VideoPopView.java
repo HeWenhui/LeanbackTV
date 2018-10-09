@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Build;
 import android.view.ViewGroup;
 
+import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.lib.log.LoggerFactory;
@@ -19,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -40,27 +42,28 @@ public class VideoPopView {
     public VideoPopView(Activity activity, VideoView videoView) {
         this.activity = activity;
         this.videoView = videoView;
+        EventBus.getDefault().register(this);
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public void onEvent(MiniEvent event) {
-        if ("OrderPaySuccess".equals(event.getMin())) {
+    public void onEvent(AppEvent.OnPaySuccessEvent event) {
+//        if ("OrderPaySuccess".equals(event.getMin())) {
 
-            // 添加用户购买成功的日志
-            StableLogHashMap logHashMap = new StableLogHashMap("purchaseSucceed");
-            logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
-            logHashMap.addSno("7").addStable("2");
-            logHashMap.put("orderid", event.getCourseId());
-            logger.i("支付成功");
-            logHashMap.put("extra", "用户支付成功");
+        // 添加用户购买成功的日志
+        StableLogHashMap logHashMap = new StableLogHashMap("purchaseSucceed");
+        logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
+        logHashMap.addSno("7").addStable("2");
+//            logHashMap.put("orderid", event.getCourseId());
+        logger.i("支付成功");
+        logHashMap.put("extra", "用户支付成功");
 //            liveAndBackDebug.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
-        }
+//        }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(StandExperienceRecommondCourseEvent event) {
-        turnToOrder(event);
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onEvent( AppEvent.OnPaySuccessEvent event) {
+//        turnToOrder(event);
+//    }
 
     public void turnToOrder(StandExperienceRecommondCourseEvent event) {
         if (event != null) {
@@ -145,4 +148,7 @@ public class VideoPopView {
         }
     }
 
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+    }
 }

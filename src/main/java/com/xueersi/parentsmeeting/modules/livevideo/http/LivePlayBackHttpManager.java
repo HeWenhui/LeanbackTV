@@ -542,7 +542,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     public void getRecommondCourseInfo(String url, String teacherId, String gradeId, String subjectId, String
             orderId, HttpCallBack httpCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("teacherId", String.valueOf(2769));
+        params.addBodyParam("teacherId", teacherId);
         params.addBodyParam("gradeId", gradeId);
         params.addBodyParam("subjectId", subjectId);
         params.addBodyParam("orderId", orderId);
