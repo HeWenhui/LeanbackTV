@@ -379,6 +379,10 @@ public class RolePlayerEntity {
     public static class RolePlayerMessage {
 
         /**
+         * 对话的音频地址，主要是人机使用到
+         */
+        private String audio;
+        /**
          * 角色信息
          */
         private RolePlayerHead rolePlayer;
@@ -436,6 +440,23 @@ public class RolePlayerEntity {
         private int level;
         private String testId;
         private boolean mUnClick = true;
+
+
+        /**
+         *
+         * @param head
+         * @param msg
+         * @param maxTime
+         * @param audio 对应的音频地址
+         */
+        public RolePlayerMessage(RolePlayerHead head, String msg, int maxTime,String audio) {
+            this.rolePlayer = head;
+            this.readMsg = msg;
+            this.maxReadTime = maxTime;
+            this.endReadTime = maxTime;
+            this.msgStatus = RolePlayerMessageStatus.WAIT_NORMAL;
+            this.audio = audio;
+        }
 
         public RolePlayerMessage(RolePlayerHead head, String msg, int maxTime) {
             this.rolePlayer = head;
@@ -604,6 +625,11 @@ public class RolePlayerEntity {
 
         public boolean getUnClick() {
             return mUnClick;
+        }
+
+
+        public String getAudio(){
+            return audio;
         }
     }
 

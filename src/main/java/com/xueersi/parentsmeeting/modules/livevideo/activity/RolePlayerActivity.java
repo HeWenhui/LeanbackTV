@@ -17,6 +17,7 @@ import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.xueersi.common.base.XesActivity;
+import com.xueersi.common.http.LoggingInterceptor;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
@@ -373,9 +374,14 @@ public class RolePlayerActivity extends XesActivity {
     }
 
     public static void openActivity(Context context) {
-        Intent intent = new Intent();
-        intent.setClass(context, RolePlayerActivity.class);
-        context.startActivity(intent);
+        try {
+            Intent intent = new Intent();
+            intent.setClass(context, RolePlayerActivity.class);
+            context.startActivity(intent);
+        }catch (Exception e){
+            com.xueersi.lib.log.Loger.d("yzl","exception:  "+e);
+        }
+
     }
 
     @Override

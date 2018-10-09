@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,8 +21,10 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
@@ -37,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
@@ -174,6 +178,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private boolean hasSubmit;
     private String stuCouId;
     private RolePlayAction rolePlayAction;
+    private RolePlayAction rolePlayMachineAction;
+
+    RolePlayMachineBll rolePlayMachineBll;
 
     public QuestionBll(Activity activity, String stuCouId) {
         ProxUtil.getProxUtil().put(activity, QuestionStatic.class, this);
@@ -294,6 +301,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 //        rlQuestionContent.addView(questionMulitSelectLivePager.getRootView());
         if (videoQuestionLiveEntity != null) {
             showQuestion(videoQuestionLiveEntity);
+            Loger.i("RolePlayerDemoTest",  "showQuestion() videoQuestionLiveEntity = "+videoQuestionLiveEntity);
         }
         if (examQuestionPager != null) {
             ViewGroup group = (ViewGroup) examQuestionPager.getRootView().getParent();
@@ -393,6 +401,24 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void onError(BaseVideoQuestionEntity testId) {
                 mQueAndBool.remove(testId.getvQuestionID());
                 showQuestion((VideoQuestionLiveEntity) testId);
+                Loger.i("RolePlayerDemoTest",  "showQuestion() videoQuestionLiveEntity = "+testId);
+            }
+        });
+    }
+
+    /**
+     * 设置人机的action
+     * @param rolePlayAction
+     */
+    public void setRolePlayMachineAction(RolePlayAction rolePlayAction) {
+        this.rolePlayMachineAction = rolePlayAction;
+        rolePlayMachineAction.setOnError(new RolePlayAction.OnError() {
+
+            @Override
+            public void onError(BaseVideoQuestionEntity testId) {
+                mQueAndBool.remove(testId.getvQuestionID());
+                showQuestion((VideoQuestionLiveEntity) testId);
+                Loger.i("RolePlayerDemoTest",  "showQuestion() videoQuestionLiveEntity = "+testId);
             }
         });
     }
@@ -533,6 +559,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             mLogtf.d("showQuestion:showVoiceAnswer.error1=" + e.getMessage());
                             mErrorVoiceQue.add(videoQuestionLiveEntity.id);
                             showQuestion(videoQuestionLiveEntity);
+                            Loger.i("RolePlayerDemoTest",  "showQuestion() videoQuestionLiveEntity = "+videoQuestionLiveEntity);
                             return;
                         }
                     } else {
@@ -554,6 +581,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             mLogtf.d("showQuestion:showVoiceAnswer.error2=" + e.getMessage());
                             mErrorVoiceQue.add(videoQuestionLiveEntity.id);
                             showQuestion(videoQuestionLiveEntity);
+                            Loger.i("RolePlayerDemoTest",  "showQuestion() videoQuestionLiveEntity = "+videoQuestionLiveEntity);
                             return;
                         }
                     } else {
@@ -637,32 +665,39 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         if (rolePlayAction != null && id.equals(rolePlayAction.getQuestionId())) {
                             return;
                         }
+                        if (rolePlayMachineAction != null && id.equals(rolePlayMachineAction.getQuestionId())) {
+                            return;
+                        }
                         if (rolePlayAction != null) {
                             //走人机也通知多人的关掉WebSocket
                             rolePlayAction.onGoToRobot();
                         }
+
+                        Loger.i("RolePlayerDemoTest","走人机 START");
 //                        speechAssessmentPager = new SpeechAssessmentWebPager(activity,
 //                                liveGetInfo.getId(), id, liveGetInfo.getStuId(),
 //                                true, videoQuestionLiveEntity.nonce, QuestionBll.this, stuCouId, false);
+
+                        rolePlayMachineBll = (RolePlayMachineBll) rolePlayMachineAction;
+                        if(rolePlayMachineBll == null){
+                            Loger.i("RolePlayerDemoTest","rolePlayAction 为空");
+                            return;
+                        }
+
                         speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo, videoQuestionLiveEntity,
-                                id, QuestionBll.this, stuCouId);
+                                    id, QuestionBll.this, stuCouId,rolePlayMachineBll);
                         speechAssessmentPager.setIse(mIse);
+                        rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
+                        rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                         speechAssessmentPager.initData();
-                        Loger.i("RolePlayerDemoTest", "走人机");
+                        Loger.i("RolePlayerDemoTest", "走人机 END");
+                            //rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+
+
                     }
                     setHaveSpeech(true);
                     rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
-//                    speechAssessmentPager = new SpeechAssAutoPager(activity, true, liveGetInfo.getId(),
-//                            liveGetInfo.getStuId(), QuestionBll.this, id, speechEvalResultUrl);
-//                    setHaveSpeech(true);
-//                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
-// .MATCH_PARENT,
-//                            ViewGroup.LayoutParams.MATCH_PARENT);
-//                    int screenWidth = ScreenUtils.getScreenWidth();
-//                    int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity
-// .VIDEO_WIDTH);
-//                    lp.rightMargin = wradio;
-//                    rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
+
                 } else {
                     XESToastUtils.showToast(activity, "不支持的试题类型，可能需要升级版本");
                     return;
@@ -814,6 +849,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onStopQuestion(String ptype, final String nonce) {
+        Loger.i("RolePlayerDemoTest", "onStopQuestion");
         mLogtf.d("onStopQuestion:ptype=" + ptype);
         boolean havePager = false;
         boolean oldisAnaswer = isAnaswer;
@@ -821,6 +857,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (rolePlayAction != null && mVideoQuestionLiveEntity != null) {
             if (mVideoQuestionLiveEntity.id.equals(rolePlayAction.getQuestionId())) {
                 rolePlayAction.onStopQuestion(mVideoQuestionLiveEntity, nonce);
+            }
+        }
+
+        if (rolePlayMachineAction != null && mVideoQuestionLiveEntity != null) {
+            if (mVideoQuestionLiveEntity.id.equals(rolePlayMachineAction.getQuestionId())) {
+                rolePlayMachineAction.onStopQuestion(mVideoQuestionLiveEntity, nonce);
             }
         }
         if (voiceAnswerPager != null) {
@@ -1360,6 +1402,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         } catch (JSONException e) {
             mErrorVoiceQue.add(videoQuestionLiveEntity.id);
             showQuestion(videoQuestionLiveEntity);
+            Loger.i("RolePlayerDemoTest",  "showQuestion() videoQuestionLiveEntity = "+videoQuestionLiveEntity);
         }
         removeQuestionViews();
         BaseVoiceAnswerPager voiceAnswerPager2 =

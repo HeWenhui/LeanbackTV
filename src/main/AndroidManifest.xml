@@ -90,6 +90,14 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             />
 
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.RolePlayerActivity"
+            android:process=":livevideo"
+            android:theme="@style/style_permission_compat"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="landscape"
+            />
+
         <service
             android:name="com.xueersi.parentsmeeting.modules.livevideo.service.LiveService"
             android:process=":livedaemon" />

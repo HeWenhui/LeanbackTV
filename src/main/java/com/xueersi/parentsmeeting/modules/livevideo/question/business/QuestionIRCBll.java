@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.Constants;
@@ -16,6 +17,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateA
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -53,6 +56,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private SpeechEvaluatorUtils mIse;
     /** RolePlayer功能接口 */
     private RolePlayAction rolePlayAction;
+
+    /** RolePlayer 人机功能接口 */
+    private RolePlayMachineAction rolePlayMachineAction;
 
     public QuestionIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -215,6 +221,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                        if (BuildConfig.DEBUG) {onget
 //                            videoQuestionLiveEntity.isTestUseH5 = true;
 //                        }
+
+//
+//                Loger.e("yzl_roleplay","走人机 end");
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);
                 if ("1".equals(isVoice)) {
@@ -239,6 +248,15 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                 "SENDQUESTION");
                     }
                 }
+                if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay .equals( "1")){
+                    Loger.i("RolePlayerDemoTest","走人机start,拉取试题");
+                    if (rolePlayMachineAction == null) {
+                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                    }
+
+                }
+
             }
             break;
             case XESCODE.STOPQUESTION:
@@ -287,6 +305,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mQuestionAction.setRolePlayAction(rolePlayerBll);
                     rolePlayAction = rolePlayerBll;
                 }
+
+                //在多人的时候，同时设置人机的roleplayaction
+                if (rolePlayMachineAction == null) {
+                    RolePlayMachineBll rolePlayerMachineBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                    mQuestionAction.setRolePlayMachineAction(rolePlayerMachineBll);
+
+                }
+
                 String nonce = object.optString("nonce");
                 rolePlayAction.teacherRead(mLiveId, mLiveBll.getStuCouId(), nonce);
                 break;

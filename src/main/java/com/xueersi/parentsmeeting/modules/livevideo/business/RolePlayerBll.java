@@ -286,7 +286,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                if (bottomContent != null) {
+                if (bottomContent != null && mRolePlayerPager != null) {
                     bottomContent.removeView(mRolePlayerPager.getRootView());
                     mRolePlayerPager.onDestroy();
                     mRolePlayerPager = null;
@@ -319,7 +319,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     @Override
     public void goToRobot() {
         isGoToRobot = true;
-        Loger.d(TAG, "进人机");
+        Loger.d("RolePlayerDemoTest", "进人机");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {

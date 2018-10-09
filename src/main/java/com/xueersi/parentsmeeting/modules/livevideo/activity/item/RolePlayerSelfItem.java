@@ -554,6 +554,14 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     private void changeYuyinClickable() {
         vVoiceMain.setClickable(mIsVideoUnClick ? false : true);
     }
+
+    public void relaseAudioPlay() {
+
+        if(mAudioPlayerManager != null){
+            mAudioPlayerManager.stop();
+            mAudioPlayerManager.release();
+        }
+    }
 }
 
 

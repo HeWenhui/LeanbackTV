@@ -48,4 +48,10 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.okhttp
     //
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
+    compile project(':business:waveform')
+
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.exoplayer)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.exoplayercore)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.exoplayerdash)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.exoplayerui)
 }
