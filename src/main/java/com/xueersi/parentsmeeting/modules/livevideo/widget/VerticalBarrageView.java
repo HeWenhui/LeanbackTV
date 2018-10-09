@@ -103,9 +103,18 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
                 this.removeViewAt(0);
             }
             PraiseMessageEntity messageEntity = barrageQueue.poll();
-            logger.d("message scroll="+messageEntity.getMessageContent());
+            logger.d("message scroll=" + messageEntity.getMessageContent());
             View view = obtainTextView(messageEntity);
             this.addView(view);
+
+            int childCount = this.getChildCount();
+            if (childCount >= 4) {
+                View childAt = getChildAt(0);
+                childAt.setAlpha(0.3f);
+
+                childAt = getChildAt(1);
+                childAt.setAlpha(0.5f);
+            }
             if (listener != null) {
                 listener.onBarrageScrollItem(messageEntity);
             }

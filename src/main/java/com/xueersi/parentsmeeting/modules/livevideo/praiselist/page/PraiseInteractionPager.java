@@ -435,9 +435,8 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             } else if (what == MESSAGE_WHAT_DELAY_SEND_DISMISS) {
                 giftSendView.setVisibility(View.GONE);
             } else if (what == MESSAGE_WHAT_DELAY_CONTINUE_PRAISE) {
-                pushMyPraise();
+                mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
             }
-
         }
     }
 
@@ -455,7 +454,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             if (System.nanoTime() - lastContinueTime > 1000 * NAS) {
                 continuePraiseNum = 0;
                 if (isPush) {
-                    pushMyPraise();
+                    mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
                     isPush = false;
                 }
                 firstContinueTime = lastContinueTime = 0;
@@ -464,7 +463,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                 //如果大于5秒直接发
                 if (continueTime > 5000 * NAS) {
                     firstContinueTime = lastContinueTime = 0;
-                    pushMyPraise();
+                    mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
                 } else if (continueTime > 1000 * NAS) {
                     isPush = true;
                 }
@@ -503,14 +502,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         animatorSet.start();
     }
 
-    private void pushMyPraise() {
-        PraiseMessageEntity praiseMessageEntity = new PraiseMessageEntity();
-        praiseMessageEntity.setMessageType(PraiseMessageEntity.TYPE_PRAISE);
-        praiseMessageEntity.setMessageContent("我:点了" + praiseNumAmount + "个赞!");
-        verticalBarrageView.appendBarrages(praiseMessageEntity);
-        mPraiseInteractionBll.sendPrivateMessage(PraiseMessageEntity.TYPE_PRAISE, praiseNumAmount);
-
-    }
 
     public void appendBarraige(PraiseMessageEntity data) {
         if (verticalBarrageView != null) {
@@ -554,7 +545,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         if (praiseNumAmount == 5 || (praiseNumAmount % 20 == 0) && countDownNum == 10) {
             specialGiftView.setVisibility(View.VISIBLE);
             goldCountView.setText("金币余额:  " + goldCount);
-            currentGiftType = getProbabilityNum()-1;
+            currentGiftType = getProbabilityNum() - 1;
             logger.d("special gift type=" + currentGiftType);
             if (currentGiftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_CHEMISTRY) {
                 //化学

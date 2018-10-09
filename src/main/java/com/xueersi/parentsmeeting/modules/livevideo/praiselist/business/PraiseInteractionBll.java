@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -17,12 +18,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PraiseMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ArtsPraiseHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseInteractionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -131,6 +135,15 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
      */
     private void openPraise() {
         if (!isOpen) {
+            LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
+            if (liveMessageBll != null) {
+                String type="主讲";
+                if("f".equals(from)){
+                    type = "辅导";
+                }
+                liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                        type+"老师开启了点赞功能!");
+            }
             isOpen = true;
             praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll);
             rlPraiseContentView.removeAllViews();
@@ -206,6 +219,18 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     }
 
     /**
+     * 我的点赞
+     */
+    public void pushMyPraise(int praiseNumAmount) {
+        PraiseMessageEntity praiseMessageEntity = new PraiseMessageEntity();
+        praiseMessageEntity.setMessageType(PraiseMessageEntity.TYPE_PRAISE);
+        praiseMessageEntity.setMessageContent(mRoomInitData.getStuName() + ":点了" + praiseNumAmount + "个赞!");
+        praiseInteractionPager.appendBarraige(praiseMessageEntity);
+        sendPrivateMessage(PraiseMessageEntity.TYPE_PRAISE, praiseNumAmount);
+
+    }
+
+    /**
      * 获取同班同学的特效礼物
      */
     public Stack<PraiseMessageEntity> getOtherSpecialGift() {
@@ -251,6 +276,15 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     private void closePraise() {
         if (isOpen == true) {
+            LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
+            if (liveMessageBll != null) {
+                String type="主讲";
+                if("f".equals(from)){
+                    type = "辅导";
+                }
+                liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                        type+"老师关闭了点赞功能!");
+            }
             isOpen = false;
             if (timer != null) {
                 timer.cancel();
@@ -335,7 +369,6 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             case XESCODE.PRAISE_SWITCH:
                 logger.d("data=" + data);
                 from = data.optString("from");
-                logger.d("from " + from);
                 final boolean open = data.optBoolean("open");
                 rlPraiseContentView.post(new Runnable() {
                     @Override
@@ -359,9 +392,11 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         logger.d("onTopic message=" + jsonObject);
         LiveTopic.RoomStatusEntity mainRoomstatus = null;
         if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode()) || "t".equals(from)) {
+            from = "t";
             mainRoomstatus = liveTopic.getMainRoomstatus();
         } else {
             mainRoomstatus = liveTopic.getCoachRoomstatus();
+            from = "f";
         }
         if (mainRoomstatus != null) {
             final boolean openlike = mainRoomstatus.isOpenlike();
