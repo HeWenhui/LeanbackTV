@@ -701,7 +701,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //
 //            }
 //        }
-        //pos->630000
+        //pos
+        //RecommondCourse->630000  roleplay 1252000
         liveBackPlayVideoFragment.seekTo(pos);//跳转到指定位置
 
         logger.d("onPlayOpenSuccess:VisitTimeKey=" + mVideoEntity.getVisitTimeKey() + ",pos=" + pos);

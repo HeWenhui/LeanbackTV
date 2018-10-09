@@ -17,7 +17,7 @@ public class StandExperienceEvaluationPager extends BaseWebviewX5Pager {
 
     @Override
     public View initView() {
-        addJavascriptInterface();
+//        addJavascriptInterface();
 //        wvSubjectWeb.addJavascriptInterface(new StandExperienceEvaluation(), "standExperienceEvaluation");
 
         return super.initView();

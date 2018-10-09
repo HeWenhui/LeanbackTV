@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.event.MiniEvent;
+import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
@@ -116,6 +116,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
         getCourseHttpManager().getRecommondCourseInfo(
                 mVideoEntity.getRecommendClassUrl(),
                 mVideoEntity.getTeacherId(),
+//                "2769",
                 mVideoEntity.getGradId(),
                 mVideoEntity.getSubjectId(),
                 mVideoEntity.getChapterId(),
@@ -158,6 +159,9 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
             mPager.onDestroy();
             mPager = null;
         }
+        if (turnToOrder != null) {
+            turnToOrder.onDestroy();
+        }
     }
 
     @Override
@@ -174,19 +178,19 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public void onEvent(MiniEvent event) {
-        if ("OrderPaySuccess".equals(event.getMin())) {
-            // 添加用户购买成功的日志
+    public void onEvent(AppEvent.OnPaySuccessEvent event) {
+        logger.i("发布到EventBus这里来了");
+//        if ("OrderPaySuccess".equals(event.getMin())) {
+        // 添加用户购买成功的日志
 //            StableLogHashMap logHashMap = new StableLogHashMap("purchaseSucceed");
 //            logHashMap.put("adsid", "" + LiveVideoConfig.LECTUREADID);
 //            logHashMap.addSno("7").addStable("2");
 //            logHashMap.put("orderid", event.getCourseId());
 //            logHashMap.put("extra", "用户支付成功");
 //            liveAndBackDebug.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
-            logger.i("购课成功");
-            buyRecommondCourseComplete(true);
-
-        }
+        logger.i("购课成功");
+        buyRecommondCourseComplete(true);
+//        }
     }
 
     /**
