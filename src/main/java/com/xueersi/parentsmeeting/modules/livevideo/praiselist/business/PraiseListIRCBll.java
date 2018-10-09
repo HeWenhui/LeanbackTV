@@ -20,7 +20,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseListPager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
@@ -53,19 +52,6 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-//        class TestThread extends Thread{
-//            @Override
-//            public void run() {
-//                JSONObject data = null;
-//                try {
-//                    data = new JSONObject("{\"from\":\"t\",\"open\":\"on\",\"zanType\":\"1\",\"voiceId\":\"2567_1533872215382\"}");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                onNotice("","",data,224);
-//            }
-//        }
-//        new TestThread().run();
     }
 
     @Override
@@ -118,8 +104,8 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
                     }
                     JSONArray agreeForms = data.optJSONArray("agreeFroms");
                     boolean isTeacher = data.optBoolean("isTeacher");
-                    Loger.i(TAG, "agreeForms=" + agreeForms.toString());
-                    Loger.i(TAG, "isTeacher=" + isTeacher);
+                    logger.i( "agreeForms=" + agreeForms.toString());
+                    logger.i( "isTeacher=" + isTeacher);
                     if (isTeacher) {
                         if (mPraiseListAction != null && agreeForms.length() != 0) {
                             try {
@@ -137,7 +123,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            Loger.i(TAG, "stuName=" + stuName);
+                            logger.i( "stuName=" + stuName);
                             list.add(stuName);
                         }
                         if (mPraiseListAction != null && list.size() != 0) {
@@ -184,7 +170,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
         if (mPraiseListAction != null) {
 
             LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getCoachRoomstatus();
-            Loger.e(TAG, "listStatus=" + mainRoomstatus.getListStatus());
+            logger.e( "listStatus=" + mainRoomstatus.getListStatus());
             if (mainRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_HONOR) {
                 getHonorList(0);
             } else if (mainRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS) {

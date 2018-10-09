@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.ui.dialog.BaseAlertDialog;
 
 /**

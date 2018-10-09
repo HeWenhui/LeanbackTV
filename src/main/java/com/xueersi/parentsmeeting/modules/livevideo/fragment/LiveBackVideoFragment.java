@@ -42,11 +42,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
-import com.xueersi.parentsmeeting.modules.livevideo.business.KeyboardObserverReg;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -58,7 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5P
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -183,9 +181,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     /** 初始化互动题和竖屏时下方的列表布局 */
     @Override
     public void attachMediaController() {
-        Loger.d(TAG, "attachMediaController:beforeAttach=" + beforeAttach);
+        logger.d( "attachMediaController:beforeAttach=" + beforeAttach);
         if (resultFailed) {
-            Loger.d(TAG, "attachMediaController:resultFailed");
+            logger.d( "attachMediaController:resultFailed");
             return;
         }
         rlQuestionContentBottom.setVisibility(View.VISIBLE);
@@ -249,7 +247,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         mMediaController.setFileName(mDisplayName);
         if (liveBackBll.isShowQuestion()) {
             mMediaController.release();
-            Loger.d(TAG, "attachMediaController:release:isShowQuestion");
+            logger.d( "attachMediaController:release:isShowQuestion");
         } else {
             showLongMediaController();
         }
@@ -291,6 +289,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             } else {
                 PlayErrorCode playErrorCode = PlayErrorCode.getError(arg2);
                 errorInfo.setText("视频播放失败 [" + playErrorCode.getCode() + "]");
+                //统计日志
+                PlayErrorCodeLog.livePlayError(liveBackBll, playErrorCode);
             }
         }
         rlQuestionContent.setVisibility(View.GONE);
@@ -341,7 +341,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         where = intent.getStringExtra("where");
         isArts = intent.getIntExtra("isArts", 0);
 
-        liveBackVideoBll = new LiveBackVideoBll(activity);
+        liveBackVideoBll = new LiveBackVideoBll(activity, islocal);
         liveBackVideoBll.setVideoEntity(mVideoEntity);
         liveBackVideoBll.setLiveBackPlayVideoFragment(liveBackPlayVideoFragment);
         liveBackVideoBll.setvPlayer(vPlayer);
@@ -489,10 +489,21 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (isInitialized() && pausePlay) {
             vPlayer.pause();
         }
+        if (liveBackVideoBll != null) {
+            liveBackVideoBll.onResume();
+        }
+
     }
 
     @Override
     public void onPause() {
+        if (isInitialized()) {
+            if (!onPauseNotStopVideo.get()) {
+                if (liveBackVideoBll != null) {
+                    liveBackVideoBll.onPause(0);
+                }
+            }
+        }
         super.onPause();
     }
 
@@ -522,6 +533,12 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             return 0;
         }
         return liveBackVideoBll.getStartPosition();
+    }
+
+    @Override
+    protected void seekTo(long pos) {
+        super.seekTo(pos);
+        liveBackVideoBll.seekTo(pos);
     }
 
     @Override
@@ -562,7 +579,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     protected void resultFailed(int arg1, int arg2) {
         super.resultFailed(arg1, arg2);
         resultFailed = true;
-        Loger.d(TAG, "resultFailed:arg2=" + arg2);
+        logger.d( "resultFailed:arg2=" + arg2);
         if (arg2 != 0 && mVideoEntity != null) {
             if ("LivePlayBackActivity".equals(where)) {//直播辅导
                 XesMobAgent.onOpenFail(where + ":playback2", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
@@ -704,7 +721,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 }
             }
             final boolean finalPause = pause;
-            Loger.i(TAG, "onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
+            logger.i( "onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
@@ -721,7 +738,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                     cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Loger.i(TAG, "onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
+                            logger.i( "onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
                                     finalPause);
                             if (initialized) {
                                 if (finalPause) {
@@ -762,6 +779,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (liveBackBll != null) {
             liveBackBll.onDestory();
         }
+        if (liveBackVideoBll != null) {
+            liveBackVideoBll.onDestroy();
+        }
         ProxUtil.getProxUtil().clear(activity);
     }
 
@@ -775,7 +795,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         resultFailed = false;
         if (AppBll.getInstance(activity).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
-            Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+            logger.d( "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
             playNewVideo();
         }
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
@@ -806,7 +826,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     /** 重新打开播放器的监听 */
     public void onRestart() {
-        liveBackBll.onRestart();
+        if (liveBackBll != null) {
+            liveBackBll.onRestart();
+        }
     }
 
     @Override
@@ -819,7 +841,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     public void setRequestedOrientation(int requestedOrientation) {
-        Loger.d(TAG, "setRequestedOrientation:requestedOrientation=" + requestedOrientation);
+        logger.d( "setRequestedOrientation:requestedOrientation=" + requestedOrientation);
         super.setRequestedOrientation(requestedOrientation);
     }
 

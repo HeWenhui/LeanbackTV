@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 
 /**
  * @author lyqai
@@ -41,6 +42,8 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     protected float mySpeed = 1.0f;
 
     private OnVideoCreate onVideoCreate;
+    /** 直播帧数统计 */
+    private LivePlayLog livePlayLog;
 
     /**
      * 在VideoFragment的onActivityCreated创建完成以后
@@ -197,9 +200,16 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         }
     }
 
+    public void setLivePlayLog(LivePlayLog livePlayLog) {
+        this.livePlayLog = livePlayLog;
+    }
+
     @Override
     public void onDestroy() {
         logger.d("onDestroy");
+        if (livePlayLog != null) {
+            livePlayLog.destory();
+        }
         // 统计退出
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONDESTROY);
         // 注销广播
@@ -390,4 +400,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         }
     }
 
+    public VideoView getVideoView() {
+        return videoView;
+    }
 }

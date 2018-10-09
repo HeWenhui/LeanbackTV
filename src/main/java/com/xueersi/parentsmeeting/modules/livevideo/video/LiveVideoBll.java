@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -22,11 +23,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,8 +42,8 @@ import okhttp3.Response;
 
 /**
  * Created by linyuqiang on 2018/6/22.
+ * 直播bll
  */
-
 public class LiveVideoBll implements VPlayerListenerReg {
     private final String TAG = "LiveVideoBll";
     private Logger logger = LoggerFactory.getLogger(TAG);
@@ -50,7 +51,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     private PlayServerEntity mServer;
     private LiveGetInfo mGetInfo;
     /** 直播帧数统计 */
-    private TotalFrameStat totalFrameStat;
+    private LivePlayLog livePlayLog;
     private int lastIndex;
     /** 直播服务器选择 */
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
@@ -96,9 +97,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
         this.mLiveBll = liveBll;
         this.mLiveType = liveType;
         mLogtf = new LogToFile(activity, TAG);
-        totalFrameStat = new TotalFrameStat(activity, true);
+        livePlayLog = new LivePlayLog(activity, true);
         liveVideoReportBll = new LiveVideoReportBll(activity, liveBll);
-        liveVideoReportBll.setTotalFrameStat(totalFrameStat);
+        liveVideoReportBll.setLivePlayLog(livePlayLog);
         mPlayStatistics.add(liveVideoReportBll.getVideoListener());
         mLogtf.clear();
         ProxUtil.getProxUtil().put(activity, VPlayerListenerReg.class, this);
@@ -106,7 +107,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     public void setvPlayer(PlayerService vPlayer) {
         this.vPlayer = vPlayer;
-        totalFrameStat.setvPlayer(vPlayer);
+        livePlayLog.setvPlayer(vPlayer);
     }
 
     public void setHttpManager(LiveHttpManager httpManager) {
@@ -137,7 +138,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         liveGetPlayServer = new LiveGetPlayServer(activity, mLiveBll, mLiveType, getInfo, liveTopic);
         liveGetPlayServer.setHttpManager(mHttpManager);
         liveGetPlayServer.setHttpResponseParser(mHttpResponseParser);
-        liveGetPlayServer.setTotalFrameStat(totalFrameStat);
+        liveGetPlayServer.setLivePlayLog(livePlayLog);
         liveGetPlayServer.setVideoAction(mVideoAction);
         liveVideoReportBll.onLiveInit(getInfo, liveTopic);
         liveGetPlayServer(liveTopic.getMode(), false);
@@ -160,6 +161,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     public void setVideoFragment(BasePlayerFragment videoFragment) {
         this.videoFragment = videoFragment;
+        if (videoFragment instanceof LivePlayerFragment) {
+            LivePlayerFragment livePlayerFragment = (LivePlayerFragment) videoFragment;
+            livePlayerFragment.setLivePlayLog(livePlayLog);
+        }
     }
 
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
@@ -173,13 +178,13 @@ public class LiveVideoBll implements VPlayerListenerReg {
      * @param modechange
      */
     public void rePlay(boolean modechange) {
-        if (totalFrameStat != null) {
-            totalFrameStat.onReplay();
+        if (livePlayLog != null) {
+            livePlayLog.onReplay();
         }
         String url;
         String msg = "rePlay:";
         if (mServer == null) {
-            totalFrameStat.setLastPlayserverEntity(null);
+            livePlayLog.setLastPlayserverEntity(null);
             String rtmpUrl = null;
             String[] rtmpUrls = mGetInfo.getRtmpUrls();
             if (rtmpUrls != null) {
@@ -292,7 +297,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             }
             lastPlayserverEntity = entity;
             liveVideoReportBll.setPlayserverEntity(entity);
-            totalFrameStat.setLastPlayserverEntity(entity);
+            livePlayLog.setLastPlayserverEntity(entity);
             if (useFlv) {
                 url = "http://" + entity.getAddress() + ":" + entity.getHttpport() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname() + entity.getFlvpostfix();
             } else {
@@ -323,7 +328,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                             StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
                             stableLogHashMap.put("message", "" + url);
                             stableLogHashMap.put("activity", activity.getClass().getSimpleName());
-                            Loger.e(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData(), true);
+                            UmsAgentManager.umsAgentDebug(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData());
                         }
 
                         @Override
@@ -385,7 +390,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 }
             }
         }
-        Loger.d(TAG, "addBody:method=" + method + ",url=" + url);
+        logger.d("addBody:method=" + method + ",url=" + url);
         return msg;
     }
 
@@ -423,6 +428,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void onPlayError() {
+            mLogtf.d("onPlayError");
             isPlay = false;
             mHandler.removeCallbacks(mOpenTimeOutRun);
             mHandler.removeCallbacks(mBufferTimeOutRun);
@@ -513,6 +519,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     };
 
     public void stopPlay() {
+        livePlayLog.stopPlay();
         if (isInitialized()) {
             vPlayer.releaseSurface();
             vPlayer.stop();
@@ -549,6 +556,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
         @Override
         public void run() {
+            livePlayLog.onBufferTimeOut();
             if (isInitialized()) {
                 vPlayer.releaseSurface();
                 vPlayer.stop();
@@ -577,7 +585,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
     public void stopPlayDuration() {
         mHandler.removeCallbacks(mPlayDuration);
         playTime += (System.currentTimeMillis() - lastPlayTime);
-        Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+        logger.d("onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+        livePlayLog.onPause(0);
     }
 
     /** 播放时长，7分钟统计 */
@@ -587,7 +596,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             if (lastPlayserverEntity != null) {
                 lastPlayTime = System.currentTimeMillis();
                 playTime += mPlayDurTime;
-                Loger.d(TAG, "mPlayDuration:playTime=" + playTime / 1000);
+                logger.d("mPlayDuration:playTime=" + playTime / 1000);
                 liveVideoReportBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "normal");
                 reportPlayStarTime = System.currentTimeMillis();
             }
@@ -624,7 +633,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                         }
                     }
                 });
-                //Loger.i(TAG, "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
+                //logger.i( "onOpenSuccess:videoCachedDuration=" + videoCachedDuration);
             }
         }
     };
@@ -684,7 +693,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         final AbstractBusinessDataCallBack dataCallBack = new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                Loger.d(TAG, "dns_resolve_stream:onDataSucess:haveCall=" + haveCall.get() + ",objData=" + objData[0]);
+                logger.d("dns_resolve_stream:onDataSucess:haveCall=" + haveCall.get() + ",objData=" + objData[0]);
                 if (!haveCall.get()) {
                     haveCall.set(true);
                     callBack.onDataSucess(objData);
@@ -693,7 +702,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
-                Loger.d(TAG, "dns_resolve_stream:onDataFail:haveCall=" + haveCall.get() + ",errStatus=" + errStatus +
+                logger.d("dns_resolve_stream:onDataFail:haveCall=" + haveCall.get() + ",errStatus=" + errStatus +
                         ",failMsg=" + failMsg);
                 if (!haveCall.get()) {
                     haveCall.set(true);
@@ -711,7 +720,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.i(TAG, "dns_resolve_stream:onFailure=", e);
+                logger.i("dns_resolve_stream:onFailure=", e);
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -729,7 +738,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                         String r = "";
                         try {
                             r = response.body().string();
-                            Loger.i(TAG, "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
+                            logger.i("dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
                             if (response.code() >= 200 && response.code() <= 300) {
                                 if ("wangsu".equals(provide)) {
 //                        rtmp://111.202.83.208/live_server/x_3_55873?wsiphost=ipdb&wsHost=livewangsu.xescdn.com
@@ -780,12 +789,6 @@ public class LiveVideoBll implements VPlayerListenerReg {
             return;
         }
         mHandler.postDelayed(r, delayMillis);
-    }
-
-    public void onPause() {
-        if (totalFrameStat != null) {
-            totalFrameStat.onPause();
-        }
     }
 
     public void onNetWorkChange(int netWorkType) {

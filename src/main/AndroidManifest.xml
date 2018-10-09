@@ -94,6 +94,7 @@
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity"
             android:screenOrientation="portrait" />
 
+
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.RolePlayerActivity"
             android:process=":livevideo"

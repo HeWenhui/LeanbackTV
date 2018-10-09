@@ -2,8 +2,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 
 import android.content.Context;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
+
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -12,6 +14,7 @@ import java.util.Set;
  */
 public class ProxUtil {
     private String TAG = "ProxUtil";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private static ProxUtil proxUtil;
     private HashMap<Context, Prox> proxHashMap = new HashMap<>();
 
@@ -25,9 +28,9 @@ public class ProxUtil {
     //**把类和对象按context保存,以实现以后多个直播通知存在的情况*/
     public <T> void put(Context context, Class<T> clazz, T obj) {
         if (context.getClass().getName().contains("CourseDetailActivity")) {
-            Loger.d(TAG, "put:context", new Exception());
+            logger.d( "put:context", new Exception());
         }
-        Loger.d(TAG, "put:context=" + context);
+        logger.d( "put:context=" + context);
         Prox prox = proxHashMap.get(context);
         if (prox == null) {
             prox = new Prox();
@@ -66,7 +69,7 @@ public class ProxUtil {
         if (prox != null) {
             size = prox.clear();
         }
-        Loger.d(TAG, "clear:proxHashMap=" + proxHashMap.size() + ",clear=" + size);
+        logger.d( "clear:proxHashMap=" + proxHashMap.size() + ",clear=" + size);
     }
 
     private class Prox {

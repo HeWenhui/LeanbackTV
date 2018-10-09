@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
@@ -418,7 +419,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 int[] location = new int[2];
                 v.getLocationOnScreen(location);
                 //在控件上方显示
-                Loger.i(TAG, "onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
+                logger.i( "onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
                 rlLivevideoCommonWord.setVisibility(View.VISIBLE);
 //                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_common_word.getLayoutParams();
 //                int left = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
@@ -440,7 +441,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 //                        }
 //                        lp.leftMargin = (location[0] + v.getWidth() / 2) - rl_livevideo_common_word.getWidth() / 2;
 //                        rl_livevideo_common_word.setLayoutParams(lp);
-//                        Loger.i(TAG, "onClick2:Width=" + rl_livevideo_common_word.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
+//                        logger.i( "onClick2:Width=" + rl_livevideo_common_word.getWidth() + ",Height=" + rlLivevideoCommonWord.getHeight());
 //                        return true;
 //                    }
 //                });
@@ -512,7 +513,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         btMessageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Loger.i(TAG, "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
+                logger.i( "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
                 Editable editable = etMessageContent.getText();
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
@@ -566,7 +567,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                         .OnKeyboardShowingListener() {
                     @Override
                     public void onKeyboardShowing(boolean isShowing) {
-                        Loger.i(TAG, "onKeyboardShowing:isShowing=" + isShowing);
+                        logger.i( "onKeyboardShowing:isShowing=" + isShowing);
                         if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
                             onTitleShow(true);
                         }
@@ -600,7 +601,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     public void initData() {
         long before = System.currentTimeMillis();
         super.initData();
-        Loger.i(TAG, "initData:time1=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         new Thread() {
             @Override
@@ -625,7 +626,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
-        Loger.i(TAG, "initData:minisize=" + minisize);
+        logger.i( "initData:minisize=" + minisize);
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
             @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
@@ -665,36 +666,36 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                                 break;
                         }
 
-                            CharacterStyle characterStyle = new ForegroundColorSpan(color);
-                            spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                            // 将字体文件保存在assets/fonts/目录下，在程序中通过如下方式实例化自定义字体：
-                            Typeface typeFace = Typeface.createFromAsset(liveVideoActivity.getAssets(),"fangzhengcuyuan.ttf");
-                            // 应用字体
-                            tvMessageItem.setTypeface(typeFace);
-                            if(LiveMessageEntity.MESSAGE_MINE == entity.getType()){
-                                tvMessageItem.setTextColor(0xffffffff);
-                            } else {
-                                tvMessageItem.setTextColor(0x7Fffffff);
-                            }
-                            if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
-                                tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
-                                tvMessageItem.setText(entity.getText());
-                                urlClick(tvMessageItem);
-                                CharSequence text = tvMessageItem.getText();
-                                tvMessageItem.setText(spanttt);
-                                tvMessageItem.append(text);
-                            } else {
-                                tvMessageItem.setAutoLinkMask(0);
-                                tvMessageItem.setText(spanttt);
-                                tvMessageItem.append(entity.getText());
-                            }
+                        CharacterStyle characterStyle = new ForegroundColorSpan(color);
+                        spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        // 将字体文件保存在assets/fonts/目录下，在程序中通过如下方式实例化自定义字体：
+                        Typeface typeFace = FontCache.getTypeface(liveVideoActivity, "fangzhengcuyuan.ttf");
+                        // 应用字体
+                        tvMessageItem.setTypeface(typeFace);
+                        if (LiveMessageEntity.MESSAGE_MINE == entity.getType()) {
+                            tvMessageItem.setTextColor(0xffffffff);
+                        } else {
+                            tvMessageItem.setTextColor(0x7Fffffff);
+                        }
+                        if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
+                            tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
+                            tvMessageItem.setText(entity.getText());
+                            urlClick(tvMessageItem);
+                            CharSequence text = tvMessageItem.getText();
+                            tvMessageItem.setText(spanttt);
+                            tvMessageItem.append(text);
+                        } else {
+                            tvMessageItem.setAutoLinkMask(0);
+                            tvMessageItem.setText(spanttt);
+                            tvMessageItem.append(entity.getText());
+                        }
 
                     }
                 };
             }
         };
         lvMessage.setAdapter(messageAdapter);
-        Loger.i(TAG, "initData:time2=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mView.post(new Runnable() {
             @Override
@@ -702,10 +703,10 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 initDanmaku();
             }
         });
-        Loger.i(TAG, "initData:time3=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initCommonWord();
-        Loger.i(TAG, "initData:time4=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
 
@@ -744,7 +745,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         mFlowerEntities.add(new FlowerEntity(FLOWERS_MIDDLE, flowsDrawTips[1], "暖心茉莉茶", 50));
         mFlowerEntities.add(new FlowerEntity(FLOWERS_BIG, flowsDrawTips[2], "冰淇淋", 100));
         flowerContentView = View.inflate(mContext, R.layout.pop_livevideo_message_primary_flower, null);
-        PopupWindow flowerWindow = new PopupWindow(flowerContentView,dp2px(liveVideoActivity, 478), dp2px(liveVideoActivity, 347), false);
+        PopupWindow flowerWindow = new PopupWindow(flowerContentView, dp2px(liveVideoActivity, 478), dp2px(liveVideoActivity, 347), false);
         flowerWindow.setBackgroundDrawable(new BitmapDrawable());
         flowerWindow.setOutsideTouchable(true);
         flowerWindow.setFocusable(true);
@@ -757,10 +758,10 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         });
         tvMessageGold = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold);
         tvMessageGoldLable = (TextView) flowerContentView.findViewById(R.id.tv_livevideo_message_gold_lable);
-        Loger.i(TAG, "initFlower:time1=" + (System.currentTimeMillis() - before));
+        logger.i( "initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mFlowerWindow = flowerWindow;
-        Loger.i(TAG, "initFlower:time2=" + (System.currentTimeMillis() - before));
+        logger.i( "initFlower:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         Button flowerSend = flowerContentView.findViewById(R.id.bt_livevideo_message_flowersend);
         mIce = flowerContentView.findViewById(R.id.iv_present_ice);
@@ -847,7 +848,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         });
 //        flowerWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
 //        flowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        Loger.i(TAG, "initFlower:time3=" + (System.currentTimeMillis() - before));
+        logger.i( "initFlower:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
 
@@ -1137,7 +1138,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             int wradio = liveVideoPoint.getRightMargin();
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
             if (wradio != params.width) {
-                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;
 //                rlInfo.setLayoutParams(params);
@@ -1167,7 +1168,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 params.bottomMargin = bottomMargin;
 //                lvMessage.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-                //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
             }
         }
     }
@@ -1184,7 +1185,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
             if (wradio != params.width) {
-                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;
 //                rlInfo.setLayoutParams(params);
@@ -1208,7 +1209,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 params.topMargin = topMargin;
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-                Loger.e(TAG, "setVideoWidthAndHeight:topMargin=" + params.topMargin);
+                logger.e( "setVideoWidthAndHeight:topMargin=" + params.topMargin);
             }
             int bottomMargin = (ScreenUtils.getScreenHeight() - height) / 2;
             params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
@@ -1216,12 +1217,13 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 params.bottomMargin = bottomMargin;
 //                lvMessage.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-                //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
             }
         }
     }
 
     /** 聊天开始连接 */
+    @Override
     public void onStartConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1254,6 +1256,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     /** 聊天连上 */
+    @Override
     public void onConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1276,6 +1279,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     /** 聊天进入房间 */
+    @Override
     public void onRegister() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1287,6 +1291,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     }
 
     /** 聊天断开 */
+    @Override
     public void onDisconnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1305,14 +1310,14 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
 //                    tvMessageCount.setText("班内" + peopleCount + "人");
-                    tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                    tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                 } else {
                     if (ircState.isHaveTeam()) {
 //                        tvMessageCount.setText("组内" + peopleCount + "人");
-                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                     } else {
 //                        tvMessageCount.setText(peopleCount + "人正在上课");
-                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                     }
                 }
             }
@@ -1362,12 +1367,12 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                    tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                    tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                 } else {
                     if (ircState.isHaveTeam()) {
-                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                     } else {
-                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                     }
                 }
             }
@@ -1380,12 +1385,12 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                    tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                    tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                 } else {
                     if (ircState.isHaveTeam()) {
-                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                     } else {
-                        tvMessageCount.setText("本班在线 " +"( "+ peopleCount + " )");
+                        tvMessageCount.setText("本班在线 " + "( " + peopleCount + " )");
                     }
                 }
             }
@@ -1752,14 +1757,14 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         cbMessageClock.setVisibility(View.GONE);
     }
 
-    public Drawable getHeard(int type){
+    public Drawable getHeard(int type) {
         Drawable drawable;
         drawable = mContext.getResources().getDrawable(flowsDrawLittleTips[type]);
         return drawable;
     }
 
-    public String getTips(int type){
-        StringBuffer tip =  new StringBuffer();
+    public String getTips(int type) {
+        StringBuffer tip = new StringBuffer();
         tip.append(getInfo.getStuName());
         tip.append(flowsTips[type]);
         return tip.toString();

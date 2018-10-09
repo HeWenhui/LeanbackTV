@@ -9,7 +9,8 @@ import android.widget.RelativeLayout;
 
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
@@ -23,6 +24,7 @@ import ren.yale.android.cachewebviewlib.utils.NetworkUtils;
  */
 
 public class CachePreLoadService extends Service {
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     public static final String KEY_URL = "preload_url_key";
     public static final String KEY_URL_HEADER = "preload_url_key_header";
     public static final String URL_CACHE_ACTION = "url_cache_action";
@@ -119,7 +121,7 @@ public class CachePreLoadService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Loger.d(TAG, "onDestroy:cacheWebViews=" + cacheWebViews.size());
+        logger.d( "onDestroy:cacheWebViews=" + cacheWebViews.size());
         for (int i = 0; i < cacheWebViews.size(); i++) {
             WebView view = cacheWebViews.get(i);
             view.destroy();

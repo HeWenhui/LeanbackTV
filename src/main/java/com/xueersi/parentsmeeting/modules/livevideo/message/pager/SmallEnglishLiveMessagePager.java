@@ -36,6 +36,7 @@ import android.widget.TextView;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
@@ -57,7 +58,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -71,7 +71,6 @@ import java.util.ArrayList;
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
-import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
 
 /**
  * 小英LiveMessagePager，类似于LiveMessagePager，在其基础上面进行修改
@@ -227,7 +226,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     public void initData() {
         long before = System.currentTimeMillis();
         super.initData();
-        Loger.i(TAG, "initData:time1=" + (System.currentTimeMillis() - before));
+        logger.i("initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
@@ -249,7 +248,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
 
 
-        Loger.i(TAG, "initData:minisize=" + minisize);
+        logger.i("initData:minisize=" + minisize);
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
             @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
@@ -330,7 +329,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             }
         };
         lvMessage.setAdapter(messageAdapter);
-        Loger.i(TAG, "initData:time2=" + (System.currentTimeMillis() - before));
+        logger.i("initData:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mView.post(new Runnable() {
             @Override
@@ -338,10 +337,10 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 initDanmaku();
             }
         });
-        Loger.i(TAG, "initData:time3=" + (System.currentTimeMillis() - before));
+        logger.i("initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         initCommonWord();
-        Loger.i(TAG, "initData:time4=" + (System.currentTimeMillis() - before));
+        logger.i("initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
 
@@ -415,7 +414,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 int[] location = new int[2];
                 v.getLocationOnScreen(location);
                 //在控件上方显示
-                Loger.i(TAG, "onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord
+                logger.i("onClick:Width=" + rlLivevideoCommonWord.getWidth() + ",Height=" + rlLivevideoCommonWord
                         .getHeight());
                 rlLivevideoCommonWord.setVisibility(View.VISIBLE);
             }
@@ -488,7 +487,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         btMessageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Loger.i(TAG, "onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
+                logger.i("onClick:time=" + (System.currentTimeMillis() - lastSendMsg));
                 Editable editable = etMessageContent.getText();
                 String msg = editable.toString();
                 if (!StringUtils.isSpace(msg)) {
@@ -542,7 +541,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         .OnKeyboardShowingListener() {
                     @Override
                     public void onKeyboardShowing(boolean isShowing) {
-                        Loger.i(TAG, "onKeyboardShowing:isShowing=" + isShowing);
+                        logger.i("onKeyboardShowing:isShowing=" + isShowing);
                         if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
                             onTitleShow(true);
                         }
@@ -611,7 +610,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
             if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
-                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;
                 params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
@@ -643,7 +642,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 params.bottomMargin = bottomMargin;
 //                lvMessage.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-                //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
             }
         }
     }
@@ -662,7 +661,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
             wradio += (screenWidth - width) / 2;
             if (wradio != params.width) {
-                //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;
 //                rlInfo.setLayoutParams(params);
@@ -686,7 +685,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 params.topMargin = topMargin;
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-                Loger.e(TAG, "setVideoWidthAndHeight:topMargin=" + params.topMargin);
+                logger.e( "setVideoWidthAndHeight:topMargin=" + params.topMargin);
             }
             int bottomMargin = (ScreenUtils.getScreenHeight() - height) / 2;
             params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
@@ -694,7 +693,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 params.bottomMargin = bottomMargin;
 //                lvMessage.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-                //Loger.e(TAG, "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
             }
         }
     }
@@ -935,7 +934,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 //                .ll_livevideo_message_flower);
 //        final LayoutInflater factory = LayoutInflater.from(mContext);
 //        final CompoundButtonGroup group = new CompoundButtonGroup();
-        Loger.i(TAG, "initFlower:time1=" + (System.currentTimeMillis() - before));
+        logger.i("initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
 
 
@@ -970,11 +969,11 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 //                }
 //            }, i * 10);
 //        }
-        Loger.i(TAG, "initFlower:time2=" + (System.currentTimeMillis() - before));
+        logger.i("initFlower:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         flowerWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         flowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        Loger.i(TAG, "initFlower:time3=" + (System.currentTimeMillis() - before));
+        logger.i("initFlower:time3=" + (System.currentTimeMillis() - before));
     }
 
     FlowerAction commonAction = new CommonDisable();
@@ -1134,7 +1133,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        Loger.e("LiveMessagerPager", "=====>onMessage called");
+        logger.e( "=====>onMessage called");
         if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
             sender = "主讲老师";
         } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
@@ -1381,8 +1380,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         if (messageAdapter != null) {
                             messageAdapter.notifyDataSetChanged();
                         } else {
-                            Loger.e(BaseApplication.getContext(), TAG, "" + mContext + "," + sender + "," + type, e,
-                                    true);
+                            UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + mContext + "," + sender + "," + type, e);
                         }
                         if (!isTouch) {
                             lvMessage.setSelection(lvMessage.getCount() - 1);
@@ -1398,7 +1396,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
             liveAndBackDebug.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
         }
-        Loger.e("Duncan", "sender:" + sender);
+        logger.e( "sender:" + sender);
     }
 
     @Override

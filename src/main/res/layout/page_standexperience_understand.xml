@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true">
+
+    <ImageView
+        android:id="@id/iv_livevideo_stand_exeprience_understand_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/bg_livevideo_stand_exeprience_understand_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@id/tv_livevideo_stand_experience_recommond_course_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:text="1234556612332323434445546"
+        android:textColor="@color/COLOR_FF364A5D"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@id/iv_livevideo_stand_experience_understand_understand_icon"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_stand_exeprience_understand_background"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_stand_exeprience_understand_background" />
+
+    <!--听懂了-->
+    <ImageView
+        android:id="@id/iv_livevideo_stand_experience_understand_understand_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bg_livevideo_stand_experience_understand_understand_icon"
+        app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_stand_exeprience_understand_background"
+        app:layout_constraintHorizontal_bias="0.32"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_stand_exeprience_understand_background"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_stand_exeprience_understand_background"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_stand_exeprience_understand_background"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_stand_experience_understand_understand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/selector_livevideo_stand_experience_understand_understand"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_stand_experience_understand_understand_icon"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_stand_experience_understand_understand_icon"
+        app:layout_constraintTop_toBottomOf="@id/iv_livevideo_stand_experience_understand_understand_icon" />
+    <!--似懂非懂-->
+    <ImageView
+        android:id="@id/iv_livevideo_stand_experience_understand_little_understand_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bg_livevideo_stand_experience_understand_little_understand_icon"
+        app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_stand_exeprience_understand_background"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_stand_exeprience_understand_background"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_stand_exeprience_understand_background"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_stand_exeprience_understand_background"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_stand_experience_understand_little_understand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/selector_livevideo_stand_experience_understand_little_understand"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_stand_experience_understand_little_understand_icon"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_stand_experience_understand_little_understand_icon"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_stand_experience_understand_understand" />
+
+    <!--没懂-->
+    <ImageView
+        android:id="@id/iv_livevideo_stand_experience_understand_no_understand_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bg_livevideo_stand_experience_understand_no_understand_icon"
+        app:layout_constraintHorizontal_bias="0.68"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_stand_exeprience_understand_background"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_stand_exeprience_understand_background"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_stand_experience_understand_little_understand_icon" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_stand_experience_understand_no_understand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/selector_livevideo_stand_experience_understand_no_understand"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_stand_experience_understand_no_understand_icon"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_stand_experience_understand_no_understand_icon"
+        app:layout_constraintTop_toBottomOf="@id/iv_livevideo_stand_experience_understand_no_understand_icon"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_stand_experience_understand_understand" />
+</android.support.constraint.ConstraintLayout>

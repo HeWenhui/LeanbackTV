@@ -67,6 +67,18 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
 
     public void initView(RelativeLayout bottomContent, boolean isLand) {
         rlQuestionContent = bottomContent;
+        if (understandView != null) {
+            ViewGroup.LayoutParams params = (RelativeLayout.LayoutParams) understandView.getLayoutParams();
+            ViewGroup group = (ViewGroup) understandView.getParent();
+            if (group != null) {
+                group.removeView(understandView);
+            }
+            if (params == null) {
+                rlQuestionContent.addView(understandView);
+            } else {
+                rlQuestionContent.addView(understandView, params);
+            }
+        }
     }
 
     @Override
@@ -138,6 +150,8 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                                 smallEnglishUnderstandOnclick(noUnderStand);
                             }
                         });
+                    } else {
+                        understandView = smallEnglishUnderstandPager.getRootView();
                     }
                     params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                             .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -145,9 +159,9 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                 }
                 rlQuestionContent.getHandler().removeCallbacks(closeRedPackage);
                 rlQuestionContent.addView(understandView, params);
-                if(LiveVideoConfig.isPrimary){
+                if (LiveVideoConfig.isPrimary) {
 //                    rlQuestionContent.postDelayed(closeRedPackage, 100000);//十秒之后关闭
-                }else{
+                } else {
                     rlQuestionContent.postDelayed(closeRedPackage, 10000);//十秒之后关闭
                 }
                 activity.getWindow().getDecorView().requestLayout();
@@ -220,6 +234,9 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
     }
 
     private void removeView(ViewGroup viewParent, View view) {
+        if (understandView == view) {
+            understandView = null;
+        }
         if (view != null && viewParent != null && view.getParent() == viewParent) {
             viewParent.removeView(view);
 

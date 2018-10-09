@@ -27,6 +27,8 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnglishSpeekPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
@@ -40,7 +42,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONException;
@@ -52,6 +53,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by linyuqiang on 2017/10/31.
@@ -60,6 +62,7 @@ import java.util.Map;
 public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements EnglishSpeekAction {
     static int staticInt = 0;
     String TAG = "EnglishSpeekBll" + staticInt++;
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     private Activity activity;
     private EnglishSpeekHttp liveBll;
     private LiveAndBackDebug liveAndBackDebug;
@@ -164,22 +167,36 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //        lastSecond = (int) totalOpeningLength.duration;
     }
 
-    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage) {
-        if (!loadSuccess) {
-            mLogtf.d("initView:loadSuccess=false");
-            return false;
-        }
-        long before = System.currentTimeMillis();
-        if (talLanguage == null) {
-            saveFile();
-            if (!initLanuage()) {
+    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest, RelativeLayout mContentView) {
+        if (speakerRecognitioner != null) {
+
+        } else {
+            loadLibrary();
+            if (!loadSuccess) {
+                mLogtf.d("initView:loadSuccess=false");
                 return false;
             }
-            talAsrJni.LangIDReset(0);
+            long before = System.currentTimeMillis();
+            if (talLanguage == null) {
+                saveFile();
+                if (!initLanuage()) {
+                    return false;
+                }
+                talAsrJni.LangIDReset(0);
+            }
+            if (talLanguage == null) {
+                this.talLanguage = new TalLanguage(activity);
+            } else {
+                this.talLanguage = talLanguage;
+            }
+            logger.d( "initView:time1=" + (System.currentTimeMillis() - before));
         }
-        Loger.d(TAG, "initView:time1=" + (System.currentTimeMillis() - before));
         this.bottomContent = bottomContent;
         myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_english_content);
+        //使用Fragment以后 ，这可能为空
+        if (myView == null) {
+            myView = mContentView.findViewById(R.id.rl_livevideo_english_content);
+        }
         myView.setVisibility(View.VISIBLE);
         final View layout_livevideo_stat_gold;
         if (!isSmallEnglish) {
@@ -218,27 +235,35 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
                     @Override
                     public void onGuarantee(String permission, int position) {
-                        if (!initLanuage()) {
-                            return;
+                        if (speakerRecognitioner == null) {
+                            if (!initLanuage()) {
+                                return;
+                            }
+                            talAsrJni.LangIDReset(0);
                         }
-                        talAsrJni.LangIDReset(0);
                         rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
                         rl_livevideo_english_speak_error.setVisibility(View.GONE);
                         isDestory = false;
                         isDestory2 = false;
-                        start();
+                        if (!audioRequest.get()) {
+                            start();
+                        }
                     }
                 }, PermissionConfig.PERMISSION_CODE_AUDIO);
                 if (have) {
-                    if (!initLanuage()) {
-                        return;
+                    if (speakerRecognitioner == null) {
+                        if (!initLanuage()) {
+                            return;
+                        }
+                        talAsrJni.LangIDReset(0);
                     }
-                    talAsrJni.LangIDReset(0);
                     rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
                     rl_livevideo_english_speak_error.setVisibility(View.GONE);
                     isDestory = false;
                     isDestory2 = false;
-                    start();
+                    if (!audioRequest.get()) {
+                        start();
+                    }
                 }
 //                Intent intent = new Intent();
 //                intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
@@ -256,11 +281,6 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                 isDestory2 = true;
             }
         });
-        if (talLanguage == null) {
-            this.talLanguage = new TalLanguage(activity);
-        } else {
-            this.talLanguage = talLanguage;
-        }
         this.mode = mode;
         //辅导态，去掉能量条，开口时长
         if (LiveTopic.MODE_TRANING.equals(mode)) {
@@ -278,8 +298,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //            tv_livevideo_english_time.setVisibility(View.VISIBLE);
 //            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
 //            rl_livevideo_english_stat.setVisibility(View.VISIBLE);
-
-            start();
+            if (!audioRequest.get()) {
+                start();
+            }
         }
         //view或者gone之后需要刷新下界面，因为布局中可能存在相对位置
         activity.getWindow().getDecorView().invalidate();
@@ -365,230 +386,355 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         if (LiveTopic.MODE_TRANING.equals(mode)) {
             return;
         }
-        try {
+        if (speakerRecognitioner != null) {
             isAudioStart = true;
-            talLanguage.start(new LanguageListener() {
-                ValueAnimator lastValueAnimator;
-
-                @Override
-                public void onVolumeUpdate(int volume) {
-//                            sb.append("音量:" + volume);
-//                            tvInfo.setText(sb);
-                }
-
-                //没有权限
-                @Override
-                public void onError(ResultEntity result) {
-                    isAudioStart = false;
-                    mLogtf.d("onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result
-                            .getErrorNo());
-                    isDestory = true;
-                    isDestory2 = true;
-                    rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
-                    //这里不能改为GONE，因为rl_livevideo_english_speak_error布局和rl_livevideo_english_speak_content在同一个高度和底部
-                    rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
-                    if (onAudioRequest != null) {
-                        onAudioRequest.requestSuccess();
-                        onAudioRequest = null;
-                    }
-                    talAsrJni.LangIDFree();
-                }
-
-                @Override
-                public void onProcessData(final String out) {
-                    mLogtf.debugSave("onProcessData:out=" + out);
-                    tv_livevideo_english_time.post(new Runnable() {
-                        String lastduration;
-
-                        @Override
-                        public void run() {
-                            try {
-                                JSONObject jsonObject = new JSONObject("{" + out + "}");
-                                String time_len = jsonObject.getString("time_len");
-                                int en_seg_num = jsonObject.getInt("en_seg_num");
-                                totalEn_seg_num += en_seg_num;
-//                                Loger.d(TAG, "onProcessData:out=" + out);
-                                String duration = getDuration(time_len);
-                                if (duration == null || duration.equals(lastduration)) {
-                                    return;
-                                }
-                                String en_seg_len = jsonObject.optString("en_seg_len");
-                                lastduration = duration;
-//                            Loger.d(TAG, "onProcessData:en_seg_num=" + en_seg_num + ",duration=" + duration);
-                                String[] split = duration.split("\\.");
-                                if (split.length == 2) {
-                                    int totalSecond = Integer.parseInt(split[0]);
-                                    if (dbStart) {
-                                        dbDuration = totalSecond - dbSecond;
-                                        long nowTime = System.currentTimeMillis();
-                                        if (nowTime - lastDBTime >= 3000) {
-                                            sendDbDuration = dbDuration;
-                                            liveBll.sendDBStudent(dbDuration);
-                                            lastDBTime = nowTime;
-                                            Loger.d(TAG, "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
-                                        }
-                                    }
-                                    if (totalOpeningLength.duration == 0) {
-                                        setEnglishTime(totalSecond / 60, totalSecond % 60);
-                                    } else {
-                                        int d = (int) totalOpeningLength.duration;
-                                        setEnglishTime((totalSecond + d) / 60, (totalSecond + d) % 60);
-                                    }
-//                                        Loger.d(TAG, "onProcessData:totalSecond=" + totalSecond);
-                                    second15 += totalSecond - lastSecond;
-                                    int oldProgress = tv_livevideo_english_prog.getProgress();
-                                    if (second15 * 3 != oldProgress) {
-                                        int second = MAX_SECOND - second15;
-                                        final float startProgress = oldProgress;
-                                        float newProgress;
-                                        if (second < 0) {
-//                                                newProgress = (second15 - 15) * 3;
-//                                                setTime(2 * MAX_SECOND - second15);
-                                            newProgress = (second15 % MAX_SECOND) * 3;
-                                            setTime(MAX_SECOND - second15 % MAX_SECOND);
-//                                                        Loger.d(TAG, "onProcessData(<0):oldProgress=" + oldProgress
-// + ",second15=" + second15);
-                                        } else {
-                                            newProgress = second15 * 3;
-                                            if (second15 != 15) {
-                                                setTime(MAX_SECOND - second15);
-                                            } else {
-                                                setTime(MAX_SECOND);
-                                            }
-                                        }
-                                        Loger.d(TAG, "onProcessData:second=" + second + ",oldProgress=" + oldProgress
-                                                + ",newProgress=" + newProgress);
-                                        if (newProgress != 45) {
-                                            final ValueAnimator valueAnimator = ValueAnimator.ofFloat(startProgress,
-                                                    newProgress);
-                                            final float finalNewProgress = newProgress;
-                                            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                                                @Override
-                                                public void onAnimationUpdate(ValueAnimator animation) {
-                                                    float fraction = animation.getAnimatedFraction();
-                                                    float oldProgress = startProgress + (finalNewProgress -
-                                                            startProgress) * fraction;
-                                                    tv_livevideo_english_prog.setProgress((int) oldProgress);
-                                                }
-                                            });
-                                            valueAnimator.addListener(new Animator.AnimatorListener() {
-                                                @Override
-                                                public void onAnimationStart(Animator animation) {
-
-                                                }
-
-                                                @Override
-                                                public void onAnimationEnd(Animator animation) {
-//                                                        Loger.i(TAG, "onAnimationEnd:equal=" + (lastValueAnimator
-// == valueAnimator));
-                                                    if (lastValueAnimator == valueAnimator) {
-                                                        lastValueAnimator = null;
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onAnimationCancel(Animator animation) {
-                                                    Loger.i(TAG, "onAnimationCancel:equal=" + (lastValueAnimator ==
-                                                            valueAnimator));
-                                                }
-
-                                                @Override
-                                                public void onAnimationRepeat(Animator animation) {
-
-                                                }
-                                            });
-                                            valueAnimator.setDuration(80);
-                                            if (lastValueAnimator != null) {
-                                                lastValueAnimator.cancel();
-                                            }
-                                            valueAnimator.start();
-                                            lastValueAnimator = valueAnimator;
-                                        } else {
-                                            if (lastValueAnimator != null) {
-                                                lastValueAnimator.cancel();
-                                                lastValueAnimator = null;
-                                            }
-                                            tv_livevideo_english_prog.setProgress(0);
-                                        }
-                                    }
-                                    if (!"".equals(en_seg_len)) {
-                                        totalEn_seg_len.append(en_seg_len).append(",");
-                                    }
-                                    if (second15 >= 15) {
-                                        second15 = second15 % MAX_SECOND;
-                                        double douduration = Double.parseDouble(duration);
-                                        int location[] = new int[2];
-                                        tv_livevideo_english_prog.getLocationInWindow(location);
-                                        String speakingLen = totalEn_seg_len.toString();
-                                        liveBll.setTotalOpeningLength(1000, "" + (douduration + totalOpeningLength
-                                                        .duration),
-                                                "" + (totalEn_seg_num + totalOpeningLength.speakingNum), speakingLen,
-                                                location[0] + tv_livevideo_english_prog.getWidth(), location[1]);
-                                    }
-                                    lastSecond = totalSecond;
-                                    lastEnSegNum = totalEn_seg_num;
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-
-                private String getDuration(String out) {
-                    int index = out.indexOf("3:");
-                    if (index != -1) {
-                        out = out.substring(index + 2);
-                        return out;
-                    }
-                    return null;
-                }
-
-                @Override
-                public void onProcessEnd(LanguageEncodeThread languageEncodeThread) {
-                    mLogtf.d("onProcessEnd:Free:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
-                    isAudioStart = false;
-                    if (onAudioRequest != null) {
-                        onAudioRequest.requestSuccess();
-                        onAudioRequest = null;
-                    }
-                    if (isDestory && isDestory2) {
-                        talAsrJni.LangIDFree();
-                    }
-                }
-            });
-        } catch (Exception e) {
-            isAudioStart = false;
-            mLogtf.e("start", e);
-            XESToastUtils.showToast(activity, "能量条启动失败，打开录音权限或者关闭其他录音程序");
+            speakerRecognitioner.setSpeakerPredict(this);
+            speakerRecognitioner.start();
+        } else {
+            try {
+                isAudioStart = true;
+                talLanguage.start(new EngLanguageListener());
+            } catch (Exception e) {
+                isAudioStart = false;
+                mLogtf.e("start", e);
+                XESToastUtils.showToast(activity, "能量条启动失败，打开录音权限或者关闭其他录音程序");
+            }
         }
     }
 
     @Override
     public void stop(AudioRequest.OnAudioRequest onAudioRequest) {
-        mLogtf.d("stop:isAudioStart=" + isAudioStart + ",talLanguage=" + (talLanguage == null));
+        mLogtf.d("stop:isAudioStart=" + isAudioStart + ",talLanguage=null?" + (talLanguage == null));
         this.onAudioRequest = onAudioRequest;
         if (!isAudioStart) {
             if (onAudioRequest != null) {
                 onAudioRequest.requestSuccess();
             }
         }
-        if (talLanguage != null) {
-            talLanguage.stop();
-//            talLanguage = null;
-        } else {
+        if (speakerRecognitioner != null) {
+            speakerRecognitioner.setSpeakerPredict(null);
+            speakerRecognitioner.stop();
             if (onAudioRequest != null) {
                 onAudioRequest.requestSuccess();
+            }
+        } else {
+            if (talLanguage != null) {
+                talLanguage.stop();
+//            talLanguage = null;
+            } else {
+                if (onAudioRequest != null) {
+                    onAudioRequest.requestSuccess();
+                }
             }
         }
     }
 
     @Override
     public void destory() {
-        Loger.d(TAG, "destory:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
+        logger.d( "destory:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
         isDestory = true;
         isDestory2 = true;
         stop(null);
+    }
+
+    String lastduration;
+    ValueAnimator lastValueAnimator;
+
+    private class EngLanguageListener implements LanguageListener {
+
+        @Override
+        public void onVolumeUpdate(int volume) {
+//                            sb.append("音量:" + volume);
+//                            tvInfo.setText(sb);
+        }
+
+        //没有权限
+        @Override
+        public void onError(ResultEntity result) {
+            isAudioStart = false;
+            mLogtf.d("onError:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",result=" + result
+                    .getErrorNo());
+            isDestory = true;
+            isDestory2 = true;
+            rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
+            //这里不能改为GONE，因为rl_livevideo_english_speak_error布局和rl_livevideo_english_speak_content在同一个高度和底部
+            rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
+            if (onAudioRequest != null) {
+                onAudioRequest.requestSuccess();
+                onAudioRequest = null;
+            }
+            talAsrJni.LangIDFree();
+        }
+
+        @Override
+        public void onProcessData(final String out) {
+            mLogtf.debugSave("onProcessData:out=" + out);
+            if (totalOpeningLength == null) {
+                return;
+            }
+            tv_livevideo_english_time.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        JSONObject jsonObject = new JSONObject("{" + out + "}");
+                        String time_len = jsonObject.getString("time_len");
+                        int en_seg_num = jsonObject.getInt("en_seg_num");
+                        totalEn_seg_num += en_seg_num;
+//                                logger.d( "onProcessData:out=" + out);
+                        String duration = getDuration(time_len);
+                        if (duration == null || duration.equals(lastduration)) {
+                            return;
+                        }
+                        String en_seg_len = jsonObject.optString("en_seg_len");
+                        lastduration = duration;
+//                            logger.d( "onProcessData:en_seg_num=" + en_seg_num + ",duration=" + duration);
+                        String[] split = duration.split("\\.");
+                        if (split.length == 2) {
+                            int totalSecond = Integer.parseInt(split[0]);
+                            if (dbStart) {
+                                dbDuration = totalSecond - dbSecond;
+                                long nowTime = System.currentTimeMillis();
+                                if (nowTime - lastDBTime >= 3000) {
+                                    sendDbDuration = dbDuration;
+                                    liveBll.sendDBStudent(dbDuration);
+                                    lastDBTime = nowTime;
+                                    logger.d( "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
+                                }
+                            }
+                            if (totalOpeningLength.duration == 0) {
+                                setEnglishTime(totalSecond / 60, totalSecond % 60);
+                            } else {
+                                int d = (int) totalOpeningLength.duration;
+                                setEnglishTime((totalSecond + d) / 60, (totalSecond + d) % 60);
+                            }
+//                                        logger.d( "onProcessData:totalSecond=" + totalSecond);
+                            second15 += totalSecond - lastSecond;
+                            int oldProgress = tv_livevideo_english_prog.getProgress();
+                            if (second15 * 3 != oldProgress) {
+                                int second = MAX_SECOND - second15;
+                                float startProgress = oldProgress;
+                                float newProgress;
+                                if (second < 0) {
+//                                                newProgress = (second15 - 15) * 3;
+//                                                setTime(2 * MAX_SECOND - second15);
+                                    newProgress = (second15 % MAX_SECOND) * 3;
+                                    setTime(MAX_SECOND - second15 % MAX_SECOND);
+//                                                        logger.d( "onProcessData(<0):oldProgress=" + oldProgress
+// + ",second15=" + second15);
+                                } else {
+                                    newProgress = second15 * 3;
+                                    if (second15 != 15) {
+                                        setTime(MAX_SECOND - second15);
+                                    } else {
+                                        setTime(MAX_SECOND);
+                                    }
+                                }
+                                logger.d( "onProcessData:second=" + second + ",oldProgress=" + oldProgress
+                                        + ",newProgress=" + newProgress);
+                                if (newProgress != 45) {
+                                    setProg(startProgress, newProgress);
+                                } else {
+                                    if (lastValueAnimator != null) {
+                                        lastValueAnimator.cancel();
+                                        lastValueAnimator = null;
+                                    }
+                                    tv_livevideo_english_prog.setProgress(0);
+                                }
+                            }
+                            if (!"".equals(en_seg_len)) {
+                                totalEn_seg_len.append(en_seg_len).append(",");
+                            }
+                            if (second15 >= 15) {
+                                second15 = second15 % MAX_SECOND;
+                                double douduration = Double.parseDouble(duration);
+                                int location[] = new int[2];
+                                tv_livevideo_english_prog.getLocationInWindow(location);
+                                String speakingLen = totalEn_seg_len.toString();
+                                liveBll.setTotalOpeningLength(1000, "" + (douduration + totalOpeningLength
+                                                .duration),
+                                        "" + (totalEn_seg_num + totalOpeningLength.speakingNum), speakingLen,
+                                        location[0] + tv_livevideo_english_prog.getWidth(), location[1]);
+                            }
+                            lastSecond = totalSecond;
+                            lastEnSegNum = totalEn_seg_num;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+
+        private String getDuration(String out) {
+            int index = out.indexOf("3:");
+            if (index != -1) {
+                out = out.substring(index + 2);
+                return out;
+            }
+            return null;
+        }
+
+        @Override
+        public void onProcessEnd(LanguageEncodeThread languageEncodeThread) {
+            mLogtf.d("onProcessEnd:Free:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
+            isAudioStart = false;
+            if (onAudioRequest != null) {
+                onAudioRequest.requestSuccess();
+                onAudioRequest = null;
+            }
+            if (isDestory && isDestory2) {
+                talAsrJni.LangIDFree();
+            }
+        }
+    }
+
+    @Override
+    public void onPredict(String predict) {
+        logger.d( "onPredict:predict=" + predict);
+        if (totalOpeningLength == null) {
+            return;
+        }
+        super.onPredict(predict);
+        try {
+            JSONObject jsonObject = new JSONObject(predict);
+            int en_seg_num = 0;
+            totalEn_seg_num += en_seg_num;
+//                                logger.d( "onProcessData:out=" + out);
+            final String duration = jsonObject.getString("time");
+            if (duration == null || duration.equals(lastduration)) {
+                return;
+            }
+            final String en_seg_len = jsonObject.optString("duration");
+            lastduration = duration;
+            double time = Double.parseDouble(duration);
+            final int totalSecond = (int) time;
+            if (dbStart) {
+                dbDuration = totalSecond - dbSecond;
+                long nowTime = System.currentTimeMillis();
+                if (nowTime - lastDBTime >= 3000) {
+                    sendDbDuration = dbDuration;
+                    liveBll.sendDBStudent(dbDuration);
+                    lastDBTime = nowTime;
+                    logger.d( "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
+                }
+            }
+            second15 += totalSecond - lastSecond;
+            final int oldProgress = tv_livevideo_english_prog.getProgress();
+            tv_livevideo_english_time.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (totalOpeningLength.duration == 0) {
+                        setEnglishTime(totalSecond / 60, totalSecond % 60);
+                    } else {
+                        int d = (int) totalOpeningLength.duration;
+                        setEnglishTime((totalSecond + d) / 60, (totalSecond + d) % 60);
+                    }
+                    if (second15 * 3 != oldProgress) {
+                        int second = MAX_SECOND - second15;
+                        float startProgress = oldProgress;
+                        float newProgress;
+                        if (second < 0) {
+//                                                newProgress = (second15 - 15) * 3;
+//                                                setTime(2 * MAX_SECOND - second15);
+                            newProgress = (second15 % MAX_SECOND) * 3;
+                            setTime(MAX_SECOND - second15 % MAX_SECOND);
+//                                                        logger.d( "onProcessData(<0):oldProgress=" + oldProgress
+// + ",second15=" + second15);
+                        } else {
+                            newProgress = second15 * 3;
+                            if (second15 != 15) {
+                                setTime(MAX_SECOND - second15);
+                            } else {
+                                setTime(MAX_SECOND);
+                            }
+                        }
+                        logger.d( "onProcessData:second=" + second + ",oldProgress=" + oldProgress
+                                + ",newProgress=" + newProgress);
+                        if (newProgress != 45) {
+                            setProg(startProgress, newProgress);
+                        } else {
+                            if (lastValueAnimator != null) {
+                                lastValueAnimator.cancel();
+                                lastValueAnimator = null;
+                            }
+                            tv_livevideo_english_prog.setProgress(0);
+                        }
+                    }
+                    if (!"".equals(en_seg_len)) {
+                        totalEn_seg_len.append(en_seg_len).append(",");
+                    }
+                    if (second15 >= 15) {
+                        second15 = second15 % MAX_SECOND;
+                        double douduration = Double.parseDouble(duration);
+                        int location[] = new int[2];
+                        tv_livevideo_english_prog.getLocationInWindow(location);
+                        String speakingLen = totalEn_seg_len.toString();
+                        liveBll.setTotalOpeningLength(1000, "" + (douduration + totalOpeningLength
+                                        .duration),
+                                "" + (totalEn_seg_num + totalOpeningLength.speakingNum), speakingLen,
+                                location[0] + tv_livevideo_english_prog.getWidth(), location[1]);
+                    }
+                    lastSecond = totalSecond;
+                    lastEnSegNum = totalEn_seg_num;
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 设置能量条
+     *
+     * @param startProgress
+     * @param newProgress
+     */
+    private void setProg(final float startProgress, float newProgress) {
+        final ValueAnimator valueAnimator = ValueAnimator.ofFloat(startProgress,
+                newProgress);
+        final float finalNewProgress = newProgress;
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float fraction = animation.getAnimatedFraction();
+                float oldProgress = startProgress + (finalNewProgress -
+                        startProgress) * fraction;
+                tv_livevideo_english_prog.setProgress((int) oldProgress);
+            }
+        });
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+//                                                        logger.i( "onAnimationEnd:equal=" + (lastValueAnimator
+// == valueAnimator));
+                if (lastValueAnimator == valueAnimator) {
+                    lastValueAnimator = null;
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                logger.i( "onAnimationCancel:equal=" + (lastValueAnimator ==
+                        valueAnimator));
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        valueAnimator.setDuration(80);
+        if (lastValueAnimator != null) {
+            lastValueAnimator.cancel();
+        }
+        valueAnimator.start();
+        lastValueAnimator = valueAnimator;
     }
 
     private void saveFile() {
@@ -623,7 +769,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onDBStart() {
-        Loger.d(TAG, "onDBStart:dbStart=" + dbStart);
+        logger.d( "onDBStart:dbStart=" + dbStart);
         if (!dbStart) {
             dbStart = true;
             dbSecond = lastSecond;
@@ -638,7 +784,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onDBStop() {
-        Loger.d(TAG, "onDBStop:dbStart=" + dbStart + ",dbDuration=" + dbDuration + ",sendDbDuration=" + sendDbDuration);
+        logger.d( "onDBStop:dbStart=" + dbStart + ",dbDuration=" + dbDuration + ",sendDbDuration=" + sendDbDuration);
         if (dbStart) {
             dbStart = false;
             LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
@@ -665,7 +811,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onModeChange(final String mode, final boolean audioRequest) {
-        Loger.d(TAG, "onModeChange:mode=" + mode + ",audioRequest=" + audioRequest);
+        logger.d( "onModeChange:mode=" + mode + ",audioRequest=" + audioRequest);
         this.mode = mode;
         myView.post(new Runnable() {
             @Override
@@ -716,7 +862,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     @Override
     public void praise(int answer) {
 
-        Loger.d(TAG, "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
+        logger.d( "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration >= answer) {
             Map<String, String> mData = new HashMap<>();
             mData.put("logtype", "sendPraise");
@@ -809,7 +955,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     @Override
     public void remind(int answer) {
 
-        Loger.d(TAG, "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
+        logger.d( "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
 
         if (sendDbDuration <= answer) {
             Map<String, String> mData = new HashMap<>();

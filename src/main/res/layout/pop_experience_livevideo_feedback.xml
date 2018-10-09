@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/COLOR_CC000000"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="267dp"
+        android:layout_height="359dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_popupwin"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#FA4747" />
+
+        <ImageButton
+            android:id="@+id/imgbtn_experience_feedback_close"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:layout_gravity="right"
+            android:background="@null"
+            android:paddingBottom="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/livevideo_alertview_guanbi_icon_normal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:text="学习反馈"
+            android:textColor="@color/COLOR_666666"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="27dp"
+            android:text="本节课难度合适吗？"
+            android:textColor="@color/COLOR_666666"
+            android:textSize="9sp" />
+
+        <RadioGroup
+            android:id="@+id/rg_experience_feedback_difficulty"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="11dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbtn_difficulty_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="47dp"
+                android:button="@drawable/selector_learn_feedback_item"
+                android:checked="true"
+                android:paddingLeft="3dp"
+                android:text="偏难"
+                android:textColor="@color/COLOR_666666"
+                android:textSize="9sp" />
+
+            <RadioButton
+                android:id="@+id/rbtn_difficulty_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="40dp"
+                android:button="@drawable/selector_learn_feedback_item"
+                android:paddingLeft="3dp"
+                android:text="适中"
+                android:textColor="@color/COLOR_666666"
+                android:textSize="9sp" />
+
+            <RadioButton
+                android:id="@+id/rbtn_difficulty_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@drawable/selector_learn_feedback_item"
+                android:paddingLeft="3dp"
+                android:text="容易"
+                android:textColor="@color/COLOR_666666"
+                android:textSize="9sp" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="27dp"
+            android:text="您对本节课满意吗？"
+            android:textColor="@color/COLOR_666666"
+            android:textSize="9sp" />
+
+        <RadioGroup
+            android:id="@+id/rg_experience_feedback_satisficing"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="11dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbtn_satisficing_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="47dp"
+                android:button="@drawable/selector_learn_feedback_item"
+                android:checked="true"
+                android:paddingLeft="3dp"
+                android:text="满意"
+                android:textColor="@color/COLOR_666666"
+                android:textSize="9sp" />
+
+            <RadioButton
+                android:id="@+id/rbtn_satisficing_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="40dp"
+                android:button="@drawable/selector_learn_feedback_item"
+                android:paddingLeft="3dp"
+                android:text="一般"
+                android:textColor="@color/COLOR_666666"
+                android:textSize="9sp" />
+
+            <RadioButton
+                android:id="@+id/rbtn_satisficing_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@drawable/selector_learn_feedback_item"
+                android:paddingLeft="3dp"
+                android:text="不满意"
+                android:textColor="@color/COLOR_666666"
+                android:textSize="9sp" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="27dp"
+            android:text="其他建议"
+            android:textColor="@color/COLOR_666666"
+            android:textSize="9sp" />
+
+        <EditText
+            android:id="@+id/et_experience_feedback_suggest"
+            android:layout_width="200dp"
+            android:layout_height="73dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/bg_edittext"
+            android:focusable="true"
+            android:gravity="top"
+            android:hint="最多输入200字（选填）"
+            android:inputType="textMultiLine"
+            android:maxLength="200"
+            android:textColor="@color/COLOR_9B9B9B"
+            android:textSize="7sp" />
+
+        <Button
+            android:id="@+id/btn_experience_feedback_submit"
+            android:layout_width="187dp"
+            android:layout_height="21dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/COLOR_DCDCDC"
+            android:enabled="false"
+            android:text="立即提交"
+            android:textColor="@color/COLOR_FFFFFF"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+
+</RelativeLayout>

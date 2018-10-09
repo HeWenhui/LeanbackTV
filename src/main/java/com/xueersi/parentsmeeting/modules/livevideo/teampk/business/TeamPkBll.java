@@ -40,7 +40,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkTeamSelect
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import java.io.IOException;
@@ -275,7 +274,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         final String eventId = getLogEventId(event.getH5Type());
 
         if (LiveVideoConfig.isNewEnglishH5) {
-
             mHttpManager.teamEnergyNumAndContributionmulStar(mLiveBll.getLiveId(),
                     roomInitInfo.getStudentLiveInfo().getTeamId(),
                     roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), LiveVideoConfig.tests,
@@ -362,7 +360,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 开启分队仪式
      */
     public void startTeamSelect() {
-        Loger.e("teamPkBll", "====>startTeamSelect:");
+        logger.e( "====>startTeamSelect:");
         getTeamInfo();
     }
 
@@ -416,7 +414,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     private void showTeamSelectScene() {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkTeamSelectingPager)) {
-            Loger.e("teamPkBll", "====>showTeamSelectScene:" + mFocusPager);
+            logger.e( "====>showTeamSelectScene:" + mFocusPager);
 
             if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager) {
                 return;
@@ -472,10 +470,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * @param isWin
      */
     public void showAwardGetScene(int type, final Object data, final boolean isWin) {
-        Loger.e("teampkBll", "======>showAwardGetScene called");
+        logger.e( "======>showAwardGetScene called");
         //   if (mFocusPager == null || !(mFocusPager instanceof TeamPkAwardPager)) {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkAwardPager)) {
-            Loger.e("teampkBll", "======>showAwardGetScene called 11111");
+            logger.e( "======>showAwardGetScene called 11111");
 
             if (type == CHEST_TYPE_CLASS) {
                 //从pk结果页面直接跳到 贡献之星
@@ -502,7 +500,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                         TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, TeamPkBll.this);
                         addPager(awardGetPager);
                         awardGetPager.showBoxLoop();
-                        Loger.e("teampkBll", "======>showAwardGetScene called 3333");
+                        logger.e( "======>showAwardGetScene called 3333");
                     }
                 }, 1000);
             }
@@ -527,7 +525,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     public void showTeamSelecting() {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkTeamSelectPager)) {
-            Loger.e("teamPkBll", "====>showTeamSelecting:");
+            logger.e( "====>showTeamSelecting:");
             rlTeamPkContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
                     .OnGlobalLayoutListener() {
                 @Override
@@ -623,7 +621,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     }
 
     private void getPkState(final boolean showPopWindow) {
-        Loger.e("TeamPkBll", "=====> getPkState:" + roomInitInfo.getStuId() + ":" + mHttpManager);
+        logger.e( "=====> getPkState:" + roomInitInfo.getStuId() + ":" + mHttpManager);
         mHttpManager.liveStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
@@ -667,7 +665,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 展示 投票加能量 动画
      */
     private void showVoteEnergyAnim(int addEnergy, String voteId) {
-        Loger.e("LiveBll", "========> showVoteEnergyAnim:" + voteId + ":" + addEnergy);
+        logger.e( "========> showVoteEnergyAnim:" + voteId + ":" + addEnergy);
         TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_VOTE,
                 this);
         addPager(aqAwardPager);
@@ -755,14 +753,14 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         if (mFocusPager != null) {
             mFocusPager.onStop();
         }
-        Loger.e("TeamPk", "======>onStop");
+        logger.e( "======>onStop");
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
-        Loger.e("TeamPk", "======>onStop");
+        logger.e( "======>onStop");
     }
 
     @Override
@@ -772,14 +770,14 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             mFocusPager.onResume();
         }
 
-        Loger.e("TeamPk", "======>onResume");
+        logger.e( "======>onResume");
     }
 
 
     @Override
     public void onDestory() {
         super.onDestory();
-        Loger.e("TeamPk", "======>onDestory");
+        logger.e( "======>onDestory");
     }
 
 
@@ -801,7 +799,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
-        Loger.e("TeamPkBll", "=======>:onRoomH5CloseEvent:" + event.getId() + ":"
+        logger.e( "=======>:onRoomH5CloseEvent:" + event.getId() + ":"
                 + event.getmGoldNum() + ":" + event.getmEnergyNum() + ":" + event.isCloseByTeacher());
         if (h5CloseEvents == null) {
             h5CloseEvents = new ArrayList<LiveRoomH5CloseEvent>();
@@ -841,11 +839,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 显示当前的pk 结果
      */
     public void showCurrentPkResult() {
-        Loger.e("TeamPkBll", "======>showCurrentPkResult: called 666669999:"+h5CloseEvents);
+        logger.e( "======>showCurrentPkResult: called 666669999:"+h5CloseEvents);
         if (h5CloseEvents == null || h5CloseEvents.size() == 0) {
             return;
         }
-        Loger.e("TeamPkBll", "======>showCurrentPkResult: called");
+        logger.e( "======>showCurrentPkResult: called");
         LiveRoomH5CloseEvent cacheEvent = h5CloseEvents.remove(0);
         getEnergyNumAndContributionStar(cacheEvent);
     }
@@ -958,7 +956,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
 
-        Loger.e("TeamPkBll", "=======>onNotice :" + type);
+        logger.e( "=======>onNotice :" + type);
 
         if (isAvailable) {
 
@@ -993,7 +991,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     if (OPEN_STATE_OPEN.equals(open)) {
                         startSelectAdversary();
                         TeamPkLog.receiveMatchOpponent(mLiveBll, nonce, true);
-                        Loger.e("LiveBll", "====>onNotice startSelectAdversary:");
+                        logger.e( "====>onNotice startSelectAdversary:");
                     } else if (OPEN_STATE_CLOSE.equals(open)) {
                         stopSelectAdversary();
                         TeamPkLog.receiveMatchOpponent(mLiveBll, nonce, false);
@@ -1035,7 +1033,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     @Override
     public void onTopic(LiveTopic data, JSONObject jsonObject, boolean modeChange) {
 
-        Loger.e("TeamPkBll", "====>onTopic");
+        logger.e( "====>onTopic");
         if (isAvailable) {
             // 战队pk  topic 逻辑
             LiveTopic.TeamPkEntity teamPkEntity = data.getTeamPkEntity();
@@ -1049,14 +1047,14 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     openBoxStateCode = teamPkEntity.getRoomInfo1().getOpenbox();
                     alloteamStateCode = teamPkEntity.getRoomInfo1().getAlloteam();
                     allotpkmanStateCode = teamPkEntity.getRoomInfo1().getAllotpkman();
-                    Loger.e("TeamPkBll", "====>onTopic teampk main_teacher_info:" + openBoxStateCode + ":" +
+                    logger.e( "====>onTopic teampk main_teacher_info:" + openBoxStateCode + ":" +
                             alloteamStateCode + ":" + allotpkmanStateCode);
                 } else {
                     if (teamPkEntity.getRoomInfo2() != null) {
                         openBoxStateCode = teamPkEntity.getRoomInfo2().getOpenbox();
                         alloteamStateCode = teamPkEntity.getRoomInfo2().getAlloteam();
                         allotpkmanStateCode = teamPkEntity.getRoomInfo2().getAllotpkman();
-                        Loger.e("TeamPkBll", "====>onTopic teampk assist_teacher_info:" + openBoxStateCode + ":" +
+                        logger.e( "====>onTopic teampk assist_teacher_info:" + openBoxStateCode + ":" +
                                 alloteamStateCode + ":" + allotpkmanStateCode);
                     }
                 }
@@ -1064,20 +1062,20 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                 if (!isTopicHandled() && alloteamStateCode == 1) {
                     setTopicHandled(true);
                     showTeamSelecting();
-                    Loger.e("TeamPkBll", "====>onTopic showTeamSelecting:");
+                    logger.e( "====>onTopic showTeamSelecting:");
                     return;
                 }
                 if (allotpkmanStateCode == 1 && !isTopicHandled()) {
                     setTopicHandled(true);
                     startSelectAdversary();
-                    Loger.e("TeamPkBll", "====>onTopic startSelectAdversary:");
+                    logger.e( "====>onTopic startSelectAdversary:");
                     return;
                 }
 
                 if (openBoxStateCode == 1 && !isTopicHandled()) {
                     setTopicHandled(true);
                     showPkResult();
-                    Loger.e("TeamPkBll", "====>onTopic showPkResult:");
+                    logger.e( "====>onTopic showPkResult:");
                     return;
                 }
                 setTopicHandled(true);

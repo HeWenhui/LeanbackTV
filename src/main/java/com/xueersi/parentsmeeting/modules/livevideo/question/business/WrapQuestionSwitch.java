@@ -5,7 +5,9 @@ import android.content.Context;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
@@ -62,8 +64,17 @@ public class WrapQuestionSwitch implements QuestionSwitch {
         LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(context, LiveBackBll.ShowQuestion.class);
         showQuestion.onHide(baseVideoQuestionEntity);
         MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
-        mediaPlayerControl.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
-        mediaPlayerControl.start();
+        if (mediaPlayerControl == null){
+            //体验课
+            LiveVideoActivityBase mediaPlayerControl1;
+            mediaPlayerControl1 = ProxUtil.getProxUtil().get(context, LiveVideoActivityBase.class);
+//            mediaPlayerControl1.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
+            mediaPlayerControl1.start();
+        }else {
+            mediaPlayerControl.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
+            mediaPlayerControl.start();
+        }
+
     }
 
     @Override

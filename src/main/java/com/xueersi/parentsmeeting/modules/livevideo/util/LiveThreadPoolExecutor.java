@@ -2,6 +2,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 
 import android.support.annotation.NonNull;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
+
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
@@ -13,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * 直播线程池
  */
 public class LiveThreadPoolExecutor {
-    static String TAG = "LiveThreadPoolExecutor";
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private static LiveThreadPoolExecutor liveThreadPoolExecutor;
 
     public static LiveThreadPoolExecutor getInstance() {
@@ -33,8 +36,14 @@ public class LiveThreadPoolExecutor {
 
             @Override
             public Thread newThread(@NonNull Runnable r) {
-                Thread thread = new Thread(r, "" + r);
-                Loger.d(TAG, "newThread:r=" + r);
+                Thread thread = new Thread(r, "Live-Pool-" + r) {
+                    @Override
+                    public synchronized void start() {
+                        logger.d( "newThread:start");
+                        super.start();
+                    }
+                };
+                logger.d( "newThread:r=" + r);
                 return thread;
             }
         }, new RejectedExecutionHandler() {
@@ -47,7 +56,7 @@ public class LiveThreadPoolExecutor {
 
     public void execute(Runnable command) {
         if (pingPool == null) {
-            Loger.d(TAG, "execute:r=" + command);
+            logger.d( "execute:r=" + command);
             return;
         }
         pingPool.execute(command);

@@ -19,7 +19,9 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
@@ -27,7 +29,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
@@ -35,6 +36,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import ren.yale.android.cachewebviewlib.CacheWebView;
 
 /**
  * @author linyuqiang
@@ -68,18 +71,29 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private int mGoldNum;
     private int mEngerNum;
     private boolean allowTeamPk;
+    private boolean isLive = true;
 
-    public QuestionWebX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, StopWebQuestion questionBll, String testPaperUrl,
+    public QuestionWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, StopWebQuestion questionBll, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
                               String nonce, String isShowRanks, boolean IS_SCIENCE, String stuCouId, boolean allowTeamPk) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
+        if (baseVideoQuestionEntity != null) {
+            isLive = baseVideoQuestionEntity.isLive();
+        }
         this.IS_SCIENCE = IS_SCIENCE;
         this.questionBll = questionBll;
         this.stuId = stuId;
         this.stuName = stuName;
         this.liveid = liveid;
         this.testId = testId;
+        String[] ss = testId.split("-");
+        if (ss.length > 1) {
+            if ("0".equals(ss[1])) {
+                testPaperUrl = LiveVideoConfig.URL_LIVE_TEA_UPLOAD_TEST;
+                jsExamSubmitAll = "javascript:__CLIENT_SUBMIT__()";
+            }
+        }
         this.testPaperUrl = testPaperUrl;
         this.nonce = nonce;
         this.isShowRanks = isShowRanks;
@@ -158,9 +172,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
         examUrl += "&stuCouId=" + stuCouId;
         examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+        examUrl += "&isPlayBack=" + (isLive ? "0" : "1");
         examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
         wvSubjectWeb.loadUrl(examUrl);
-        Loger.e("QuestionWebPager", "======> loadUrl:" + examUrl);
+        logger.e("======> loadUrl:" + examUrl);
 
         mGoldNum = -1;
         mEngerNum = -1;
@@ -175,7 +190,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             public void onViewDetachedFromWindow(View v) {
                 LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEngerNum, LiveRoomH5CloseEvent.H5_TYPE_INTERACTION, testId);
                 if (questionBll != null && questionBll instanceof QuestionBll) {
-                    Loger.e("webViewCloseByTeacher", "=======> postEvent closeByTeacher:" + ((QuestionBll) questionBll).isWebViewCloseByTeacher());
+                    logger.e("=======> postEvent closeByTeacher:" + ((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
                 }
@@ -205,6 +220,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         webSetting.setBuiltInZoomControls(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webSetting.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+        if (wvSubjectWeb instanceof CacheWebView) {
+            CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+            cacheWebView.getWebViewCache().setNeedHttpDns(true);
         }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);
@@ -320,8 +339,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             this.failingUrl = failingUrl;
-            Loger.d(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
-                    "&&," + description, true);
+            UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
+                    "&&," + description);
             mLogtf.i("onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
 //            super.onReceivedError(view, errorCode, description, failingUrl);
             wvSubjectWeb.setVisibility(View.INVISIBLE);
@@ -339,7 +358,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             mLogtf.i("shouldOverrideUrlLoading:url=" + url);
 
-            Loger.e("QuestionWebPager", "======> shouldOverrideUrlLoading:" + url);
+            logger.e("======> shouldOverrideUrlLoading:" + url);
 
             if (url.contains("science/Live/getMultiTestResult")) {
                 if (questionBll instanceof QuestionBll) {

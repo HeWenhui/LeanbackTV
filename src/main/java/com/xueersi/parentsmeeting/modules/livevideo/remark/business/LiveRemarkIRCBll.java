@@ -106,7 +106,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
             if (liveRemarkBll == null) {
                 liveRemarkBll = new LiveRemarkBll(mContext, vPlayer);
                 VideoChatStartChange videoChatBll = getInstance(VideoChatStartChange.class);
-                liveRemarkBll.setGaosan(mGetInfo.getIsSeniorOfHighSchool()==1);
+                liveRemarkBll.setGaosan(mGetInfo.getIsSeniorOfHighSchool() == 1);
                 liveRemarkBll.setBottom(mRootView);
                 if (videoChatBll != null) {
                     videoChatBll.addVideoChatStatrtChange(new VideoChatStartChange.ChatStartChange() {
@@ -119,6 +119,9 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                 if (mLiveBll != null && liveMediaControllerBottom != null) {
                     if (liveTextureView == null) {
                         ViewStub viewStub = (ViewStub) activity.findViewById(R.id.vs_course_video_video_texture);
+                        if (viewStub == null) {
+                            viewStub = mContentView.findViewById(R.id.vs_course_video_video_texture);
+                        }
                         liveTextureView = (LiveTextureView) viewStub.inflate();
                         liveTextureView.vPlayer = vPlayer;
                         liveTextureView.setLayoutParams(videoView.getLayoutParams());
@@ -130,7 +133,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                     liveRemarkBll.setSysTimeOffset(mLiveBll.getSysTimeOffset());
                     mLogtf.i("setlivebll____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()
                             + "   stat:" + mGetInfo.getStat() + "   mode:" + mLiveBll.getLiveTopic().getMode());
-                    if (!mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak() && (LiveTopic.MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode())||mGetInfo.getIsSeniorOfHighSchool()==1)) {
+                    if (!mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak() && (LiveTopic.MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode()) || mGetInfo.getIsSeniorOfHighSchool() == 1)) {
                         liveRemarkBll.setClassReady(true);
                     } else {
                         liveRemarkBll.setClassReady(false);
@@ -155,10 +158,10 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                     logger.i("classBegin____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()
                             + "   mode:" + mLiveBll.getLiveTopic().getMode());
                     if (!mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak() && (liveRemarkBll != null && LiveTopic
-                            .MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode())||mGetInfo.getIsSeniorOfHighSchool()==1)) {
+                            .MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode()) || mGetInfo.getIsSeniorOfHighSchool() == 1)) {
                         liveRemarkBll.setClassReady(true);
                     }
-                    if(liveRemarkBll!=null){
+                    if (liveRemarkBll != null) {
                         liveRemarkBll.showMarkGuide();
                     }
                 } catch (Exception e) {
@@ -166,7 +169,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                 }
                 break;
             case XESCODE.MARK_POINT_TIP:
-                if(liveRemarkBll!=null){
+                if (liveRemarkBll != null) {
                     liveRemarkBll.showMarkTip(object.optInt("markType"));
                 }
                 break;
@@ -183,7 +186,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.CLASSBEGIN,XESCODE.MARK_POINT_TIP};
+        return new int[]{XESCODE.CLASSBEGIN, XESCODE.MARK_POINT_TIP};
     }
 
     @Override
@@ -193,7 +196,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
             logger.i("ontopic____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()
                     + "   mode:" + mLiveBll.getLiveTopic().getMode());
             if (!liveTopic.getMainRoomstatus().isOnbreak() && (liveTopic.getMode().equals(LiveTopic
-                    .MODE_CLASS)||mGetInfo.getIsSeniorOfHighSchool()==1)) {
+                    .MODE_CLASS) || mGetInfo.getIsSeniorOfHighSchool() == 1)) {
                 liveRemarkBll.setClassReady(true);
             } else {
                 liveRemarkBll.setClassReady(false);

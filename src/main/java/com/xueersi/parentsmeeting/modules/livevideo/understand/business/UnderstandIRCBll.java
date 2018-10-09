@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.understand.business;
 
 import android.app.Activity;
+import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -46,7 +47,7 @@ public class UnderstandIRCBll extends LiveBaseBll implements NoticeAction {
                                             mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
                                             mLogtf.d("understand ok");
                                         } catch (Exception e) {
-                                            // Loger.e(TAG, "understand", e);
+                                            // logger.e( "understand", e);
                                             mLogtf.e("understand", e);
                                         }
                                     } else {
@@ -64,6 +65,14 @@ public class UnderstandIRCBll extends LiveBaseBll implements NoticeAction {
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+        if (understandAction != null) {
+            UnderstandBll understandBll = (UnderstandBll) understandAction;
+            understandBll.initView(bottomContent, mIsLand.get());
         }
     }
 

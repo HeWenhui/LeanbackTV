@@ -11,11 +11,14 @@ import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 
 import org.json.JSONArray;
@@ -37,6 +40,7 @@ import java.util.List;
  */
 public class IRCTalkConf {
     private static String TAG = "IRCTalkConf";
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private static String eventId = LiveVideoConfig.LIVE_CHAT_GSLB;
     private LogToFile mLogtf;
     private BaseHttpBusiness baseHttpBusiness;
@@ -65,13 +69,18 @@ public class IRCTalkConf {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Loger.d(TAG, "handleMessage:what=" + msg.what);
+            logger.d( "handleMessage:what=" + msg.what);
             getserver();
         }
     };
 
     public IRCTalkConf(Context context, LiveGetInfo liveGetInfo, int mLiveType, BaseHttpBusiness baseHttpBusiness,
                        ArrayList<TalkConfHost> hosts) {
+//        if (AppConfig.DEBUG) {
+//            TalkConfHost talkConfHost = hosts.remove(hosts.size() - 1);
+//            hosts.add(0, talkConfHost);
+//        }
+
         this.liveId = liveGetInfo.getId();
         this.mLiveType = mLiveType;
         this.baseHttpBusiness = baseHttpBusiness;
@@ -85,6 +94,7 @@ public class IRCTalkConf {
             TalkConfHost talkConfHost = hosts.get(i);
             if (!talkConfHost.isIp()) {
                 baseHost = talkConfHost.getHost();
+                baseHost = DNSUtil.getHost(baseHost);
                 break;
             }
         }
@@ -123,7 +133,12 @@ public class IRCTalkConf {
         params.setWriteAndreadTimeOut(GET_SERVER_TIMEOUT);
         final TalkConfHost talkConfHost = hosts.get(mSelectTalk++ % hosts.size());
         final String host = talkConfHost.getHost();
-        String url = "http://" + host + "/getserver";
+        String url;
+        if (host.startsWith("http")) {
+            url = host + "/getserver";
+        } else {
+            url = "http://" + host + "/getserver";
+        }
         if (talkConfHost.isIp()) {
             params.addHeaderParam("Host", baseHost);
         }
@@ -172,7 +187,7 @@ public class IRCTalkConf {
                 stableLogHashMap.put("errmsg", msg);
                 stableLogHashMap.put("ip", getHostIP());
                 stableLogHashMap.put("netWorkType", "" + netWorkType);
-                Loger.d(BaseApplication.getContext(), eventId, stableLogHashMap.getData(), true);
+                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
                 reTry();
             }
 
@@ -187,7 +202,7 @@ public class IRCTalkConf {
                 stableLogHashMap.put("gslburl", url);
                 stableLogHashMap.put("errmsg", responseEntity.getErrorMsg());
                 stableLogHashMap.put("ip", getHostIP());
-                Loger.d(BaseApplication.getContext(), eventId, stableLogHashMap.getData(), true);
+                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
                 reTry();
             }
 
@@ -263,7 +278,6 @@ public class IRCTalkConf {
                 }
             }
         } catch (SocketException e) {
-            Loger.e("yao", "SocketException");
             e.printStackTrace();
         }
         return hostIp;

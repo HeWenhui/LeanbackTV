@@ -27,7 +27,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageVie
 import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 
 
@@ -107,20 +106,20 @@ public class RolePlayerSelfItem extends RolePlayerItem {
             @Override
             public void onClick(View v) {
                 if (mEntity == null) {
-                    Loger.i("RolePlayerDemoTest", "数据为空");
+                    logger.i( "数据为空");
                     return;
                 }
                 if (mIsPlaying) {
-                    Loger.i("RolePlayerDemoTest", "语音正在播放中，请不要重复点击");
+                    logger.i( "语音正在播放中，请不要重复点击");
                     return;
                 }
                 if (!TextUtils.isEmpty(mEntity.getWebVoiceUrl()) && NetWorkHelper.isNetworkAvailable(mContext)) {
-                    Loger.i("RolePlayerDemoTest", "点击自己语音：url  = " + mEntity.getWebVoiceUrl());
+                    logger.i( "点击自己语音：url  = " + mEntity.getWebVoiceUrl());
                     voiceClick();
                 } else {
                     XESToastUtils.showToast(mContext, "没有检测到音频文件");
                     if (mEntity != null) {
-                        Loger.i("RolePlayerDemoTest", "点击自己语音：url = " + mEntity.getWebVoiceUrl() + " NetWorkHelper" +
+                        logger.i( "点击自己语音：url = " + mEntity.getWebVoiceUrl() + " NetWorkHelper" +
                                 ".isNetworkAvailable(mContext) = " + NetWorkHelper.isNetworkAvailable(mContext));
                     }
                 }
@@ -131,7 +130,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
     private void voiceClick() {
         //点击语音的时候记录日志
-        Loger.i("RolePlayerDemoTestlog", " 点击播放音频，记录日志 ");
+        logger.i( " 点击播放音频，记录日志 ");
         speechPhoneScoreWhenClick();//点击对评测之后的文本变色
         RolePlayLog.sno8(liveAndBackDebug, mEntity, mContext);
         ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
@@ -146,7 +145,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
         mAudioPlayerManager.start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
             @Override
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
-                Loger.i("RolePlayerDemoTest", "完成播放");
+                logger.i( "完成播放");
                 mIsPlaying = false;
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
@@ -156,7 +155,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
             @Override
             public void onStop(Object dataSource, AudioPlayerManager manager) {
                 super.onStop(dataSource, manager);
-                Loger.i("RolePlayerDemoTest", "停止播放");
+                logger.i( "停止播放");
                 mIsPlaying = false;
                 new Handler().post(new Runnable() {
                     @Override
@@ -171,7 +170,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
             @Override
             public void onPreparing(Object dataSource, AudioPlayerManager manager) {
-                Loger.i("RolePlayerDemoTest", "准备播放");
+                logger.i( "准备播放");
                 mIsPlaying = true;
 
             }
@@ -224,18 +223,18 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 //                                            if (type == MessageEntity.MessageViewType.SELF_VOICE) {
 //                                                if (messageEntity.voiceSelfItem != null) {
 //                                                    messageEntity.voiceSelfItem.voiceClick();
-//                                                    Loger.i(TAG, "playComplete:(equals)nextItem=" + (messageEntity
+//                                                    logger.i( "playComplete:(equals)nextItem=" + (messageEntity
 //                                                            .voiceSelfItem.mEntity == messageEntity));
 //                                                } else {
-//                                                    Loger.i(TAG, "playComplete:(equals)nextItem.voiceSelfItem=null");
+//                                                    logger.i( "playComplete:(equals)nextItem.voiceSelfItem=null");
 //                                                }
 //                                            } else if (type == MessageEntity.MessageViewType.COME_VOICE) {
 //
 //                                            } else {
-//                                                Loger.i(TAG, "playComplete:(equals)nextItem.type=" + type);
+//                                                logger.i( "playComplete:(equals)nextItem.type=" + type);
 //                                            }
 //                                        } else {
-//                                            Loger.i(TAG, "playComplete:(equals)last");
+//                                            logger.i( "playComplete:(equals)last");
 //                                        }
 //                                    }
 //                                });
@@ -308,7 +307,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
                                     tvCountTime.setVisibility(View.VISIBLE);
                                 }
-                                Loger.i("RolePlayerSelfItemTest", mPosition + " / " + time);
+                                logger.i( mPosition + " / " + time);
                                 entity.setEndReadTime((int) time);
 
                             }
@@ -317,7 +316,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY:
-                Loger.i("RolePlayerSelfItemTest", "结束roleplay");
+                logger.i( "结束roleplay");
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                 //重置头像
@@ -328,7 +327,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 speechPhoneScore();
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH:
-                Loger.i("RolePlayerSelfItemTest", "测评有得分刚结束");
+                logger.i( "测评有得分刚结束");
                 //测评有得分刚结束
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
@@ -359,14 +358,14 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.EMPTY:
-                Loger.i("RolePlayerSelfItemTest", "空roleplay");
+                logger.i( "空roleplay");
                 rlMain.setVisibility(View.INVISIBLE);
                 //重置头像
                 civUserHead.restore();
                 break;
 
             case RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ:
-                Loger.i("RolePlayerSelfItemTest", "取消点赞");
+                logger.i( "取消点赞");
                 mIsPlaying = false;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
@@ -535,7 +534,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
         mIsPlaying = false;//重置播放标记为未播放状态
         if (mAudioPlayerManager != null) {
             mAudioPlayerManager.stop();
-            Loger.i("RolePlayerDemoTest", "roleplay已结束，停止播放自己音频");
+            logger.i( "roleplay已结束，停止播放自己音频");
         }
     }
 

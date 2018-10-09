@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**
+ * 站立直播回放
  * Created by linyuqiang on 2018/8/3.
  * 新站立直播的控制
  */
