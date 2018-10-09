@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_livevideo_speechbul_close_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bg_livevideo_small_english_dialog"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFFFF"
+            android:textSize="22sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="68dp"
+            android:text="确认关闭语音弹幕？"/>
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFFFF"
+            android:textSize="16sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="102dp"
+            android:text="关闭后将不能发语音弹幕"/>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="61dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_livevideo_speechbul_close_cancel"
+                android:src="@drawable/selector_livevideo_speechbul_cancel"
+                android:layout_width="125dp"
+                android:layout_height="61dp"/>
+            <ImageView
+                android:id="@+id/iv_livevideo_speechbul_close_confim"
+                android:src="@drawable/selector_livevideo_speechbul_confirm"
+                android:layout_width="125dp"
+                android:layout_height="61dp"
+                android:layout_marginLeft="7dp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
