@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
@@ -644,6 +645,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 if (onAnswerReslut != null) {
                                     onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
                                 }
+                                EventBus.getDefault().post(new ArtsAnswerResultEvent(responseEntity.getJsonObject().toString(),ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK));
                             }
 
                             @Override

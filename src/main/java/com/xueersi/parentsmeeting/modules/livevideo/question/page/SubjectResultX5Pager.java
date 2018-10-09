@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -108,6 +109,7 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
 //                + "&stuId=" + stuId + "&stuName=" + stuName;
         if(LiveVideoConfig.isNewArts){
             examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId + "&token=" + AppBll.getInstance().getUserToken();
+            Log.e("Duncan","examUrl:" + examUrl);
         } else {
             examUrl = testPaperUrl + "/" + liveid + "?testId=" + testId
                     + "&stuId=" + stuId + "&stuName=" + stuName + "&stuCouId=" + stuCouId;
