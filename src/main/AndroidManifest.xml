@@ -15,7 +15,7 @@
             android:launchMode="singleTask"
             android:process=":livevideo"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name=".activity.LiveStandPlayBackVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
@@ -85,14 +85,10 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.LivePermissionActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:process=":livevideo"
-            android:theme="@style/style_permission_compat" />
-
-        <activity
-            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity"
-            android:screenOrientation="portrait" />
-
+            android:theme="@style/style_permission_compat"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            />
 
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.RolePlayerActivity"
@@ -109,16 +105,6 @@
         <service
             android:name="ren.yale.android.cachewebviewlib.CachePreLoadService"
             android:process=":livevideo" />
-
-        <receiver
-            android:name=".fragment.standlivevideoexperience.OrderPaySuccessBroadCastReceiver"
-            android:process=":livevideo">
-            <intent-filter>
-                <action android:name="${applicationId}.XesPaySuccess" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>
