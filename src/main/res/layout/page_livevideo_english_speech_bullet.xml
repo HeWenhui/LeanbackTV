@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/rl_livevideo_speechbul_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <master.flame.danmaku.danmaku.ui.widget.DanmakuView
+        android:id="@id/dv_livevideo_speechbul_danmaku"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="17dp" />
+
+    <TextView
+        android:id="@+id/tv_livevideo_speechbul_closetip"
+        android:layout_width="171dp"
+        android:layout_height="32dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        style="@style/text_font14_ffffff_style"
+        android:background="@drawable/shape_livevideo_speechbul_closetip_bg"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_livevideo_speechbul_panelcontent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout
+            android:id="@+id/rl_livevideo_speechbul_panelroot"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/panel_height"
+            android:visibility="gone">
+
+        </cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_speechbul_bottom_content"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_above="@id/rl_livevideo_speechbul_panelcontent"
+        android:background="@drawable/livevideo_alertview_yuyinbeijing_icon_normal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@id/tv_livevideo_speechbul_title"
+            style="@style/text_font16_ffffff_style"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="45dp"
+            android:text="语音输入中，请大声说英语" />
+
+        <com.xueersi.parentsmeeting.widget.VolumeWaveView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_livevideo_speechbul_title"
+            android:layout_marginLeft="48dp"
+            android:layout_marginRight="48dp"
+            android:layout_marginTop="15dp"
+            android:id="@id/vwv_livevideo_speechbul_wave"
+            android:layout_centerVertical="true" />
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_speechbul_input"
+            android:layout_width="match_parent"
+            android:layout_height="41dp"
+            android:layout_alignParentTop="true"
+            android:layout_below="@id/tv_livevideo_speechbul_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="65dp"
+            android:layout_marginRight="65dp"
+            android:layout_marginTop="38dp"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@id/et_livevideo_speechbul_words"
+                style="@style/text_font14_ffffff_style"
+                android:layout_width="462dp"
+                android:layout_height="41dp"
+                android:layout_toLeftOf="@id/tv_livevideo_speechbul_send"
+                android:background="@drawable/shape_livevideo_speechbul_words_bg"
+                android:gravity="center_vertical"
+                android:imeOptions="flagNoFullscreen"
+                android:paddingLeft="21dp"
+                android:singleLine="true"
+                android:maxLength="15"
+                android:hint="请输入文字" />
+            <TextView
+                android:id="@id/tv_livevideo_speechbul_count"
+                android:textSize="13sp"
+                android:textColor="#66FFFFFF"
+                android:layout_width="31dp"
+                android:layout_height="13dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="12dp"
+                android:layout_toLeftOf="@+id/tv_livevideo_speechbul_send"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@id/tv_livevideo_speechbul_send"
+                android:layout_width="75dp"
+                android:layout_height="41dp"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:src="@drawable/selector_livevideo_speechbul_send" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@id/tv_livevideo_speechbul_repeat"
+            android:layout_width="87dp"
+            android:layout_height="37dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="12dp"
+            android:src="@drawable/selector_livevideo_speechbul_repeat"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
