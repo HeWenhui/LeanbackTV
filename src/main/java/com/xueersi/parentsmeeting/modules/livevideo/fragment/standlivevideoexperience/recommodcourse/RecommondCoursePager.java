@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
@@ -109,6 +110,8 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
             @Override
             public void onClick(View v) {
                 if (isWholeShow) {
+                    UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                            .stand_experience_1704002));
                     wholeRecommondCourseLayout.setClickable(false);
                     thumbnailRecommondCourseLayout.setClickable(true);
                     thumbnailRecommondCourseLayout.setVisibility(View.VISIBLE);
@@ -117,25 +120,37 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
                 }
             }
         });
-        ivBuy.setOnTouchListener(new View.OnTouchListener() {
+        ivBuy.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 if (isWholeShow) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            ivBuy.setAlpha(0.8f);
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            if (listener != null) {
-                                listener.clickBuyCourse();
-                            }
-                            ivBuy.setAlpha(1f);
-                            break;
+                    UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                            .stand_experience_1704001));
+                    if (listener != null) {
+                        listener.clickBuyCourse();
                     }
                 }
-                return true;
             }
         });
+//        ivBuy.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (isWholeShow) {
+//                    switch (event.getAction()) {
+//                        case MotionEvent.ACTION_DOWN:
+//                            ivBuy.setAlpha(0.8f);
+//                            break;
+//                        case MotionEvent.ACTION_UP:
+//                            if (listener != null) {
+//                                listener.clickBuyCourse();
+//                            }
+//                            ivBuy.setAlpha(1f);
+//                            break;
+//                    }
+//                }
+//                return true;
+//            }
+//        });
 //        ivBuy.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -148,6 +163,8 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
             @Override
             public void onClick(View v) {
                 if (!isWholeShow) {
+                    UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                            .stand_experience_1704003));
                     wholeRecommondCourseLayout.setClickable(true);
                     thumbnailRecommondCourseLayout.setClickable(false);
                     showWholeSet.start();
