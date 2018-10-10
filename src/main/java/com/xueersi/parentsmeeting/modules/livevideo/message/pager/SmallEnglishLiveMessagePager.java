@@ -68,7 +68,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.CloseConfirmDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicPermissionDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -86,7 +86,6 @@ import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
-import org.apache.log4j.lf5.util.Resource;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -197,11 +196,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     /** 当前音量 */
     private int mVolume = 0;
 
-    /** 日志数据 */
-    String devicestatus = "0";
-    String issend = "0";
-    String ismodify = "0";
-    String isretalk = "0";
+
     String isdirty = "0";
     private TextView tvMessageCount;
 
@@ -502,6 +497,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 liveMediaControllerBottom.onChildViewClick(v);
                 rlMessageContent.setVisibility(View.VISIBLE);
                 rlMessageVoiceInput.setVisibility(View.VISIBLE);
+                btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_keyborad);
+                isVoice = true;
 //                KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
             }
         });
@@ -674,48 +671,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     rlMessageTextContent.setVisibility(View.GONE);
                     btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_keyborad);
                     isVoice = true;
-                    /*
-                    boolean hasPermission = XesPermission.hasSelfPermission(liveVideoActivity,Manifest.permission.RECORD_AUDIO);
-                    if (!hasPermission){
-                        final CloseConfirmDialog getPermissionDialog = new CloseConfirmDialog(mContext);
-                        getPermissionDialog.setOnClickCancelListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                rlMessageTextContent.setVisibility(View.VISIBLE);
-                                rlMessageVoiceInput.setVisibility(View.GONE);
-                                btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_voice);
-                                KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
-                                stopEvaluator();
-                                setSpeechFinishView(mVoiceContent);
-                                isVoice = false;
-                                getPermissionDialog.cancelDialog();
-                            }
-                        });
-                        getPermissionDialog.setOnClickConfirmlListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                getPermissionDialog.cancelDialog();
-                                XesPermission.checkPermissionNoAlert(mContext, new PermissionCallback() {
-                                    @Override
-                                        public void onFinish() {
-
-                                        }
-
-                                    @Override
-                                    public void onDeny(String permission, int position) {
-
-                                    }
-
-                                    @Override
-                                    public void onGuarantee(String permission, int position) {
-
-                                    }
-                                },PermissionConfig.PERMISSION_CODE_AUDIO);
-                            }
-                        });
-                        getPermissionDialog.showDialog();
-                    }
-                    */
                 }
             }
         });
@@ -723,7 +678,12 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         btnMessageStartVoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startVoiceInput();
+                boolean hasPermission = XesPermission.hasSelfPermission(liveVideoActivity,Manifest.permission.RECORD_AUDIO);
+                if (!hasPermission){
+                    inspectMicPermission();
+                }else {
+                    startVoiceInput();
+                }
             }
         });
         lvMessage.setOnTouchListener(new View.OnTouchListener() {
@@ -1678,7 +1638,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     vwvVoiceChatWave.setVisibility(View.GONE);
                     tvVoiceChatCountdown.setText(String.valueOf(millisUntilFinished / 1000));
                 }
-                if (millisUntilFinished == 0){
+                if (millisUntilFinished == 0) {
                     stopEvaluator();
                 }
             }
@@ -1846,8 +1806,48 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     }
 
+    private void inspectMicPermission() {
 
-//        flowerContentView.findViewById(R.id.tv_livevideo_message_gold_word).setVisibility(View.VISIBLE);
+        final SmallEnglishMicPermissionDialog micPermissionDialog = new SmallEnglishMicPermissionDialog(mContext);
+        micPermissionDialog.setTitleText("麦克风权限被禁用了" + '\n' + "无法获取您的声音");
+        micPermissionDialog.setContentText("去设置打开麦克风权限");
+        micPermissionDialog.setOnClickCancelListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rlMessageTextContent.setVisibility(View.VISIBLE);
+                rlMessageVoiceInput.setVisibility(View.GONE);
+                btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_voice);
+                stopEvaluator();
+                setSpeechFinishView(mVoiceContent);
+                isVoice = false;
+                micPermissionDialog.cancelDialog();
+            }
+        });
+        micPermissionDialog.setOnClickConfirmlListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                micPermissionDialog.cancelDialog();
+                XesPermission.checkPermissionNoAlert(mContext, new PermissionCallback() {
+                    @Override
+                    public void onFinish() {
+
+                    }
+
+                    @Override
+                    public void onDeny(String permission, int position) {
+
+                    }
+
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+
+                    }
+                }, PermissionConfig.PERMISSION_CODE_AUDIO);
+            }
+        });
+        micPermissionDialog.showDialog();
+
+    }
 
 
 }/*

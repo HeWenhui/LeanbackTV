@@ -112,7 +112,7 @@
     <RelativeLayout
         android:id="@id/rl_livevideo_small_english_message_content2"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="68dp"
         android:layout_above="@id/rl_livevideo_small_english_message_panelcontent"
         android:background="#cc000000"
         android:visibility="gone">
@@ -128,7 +128,7 @@
         <RelativeLayout
             android:id="@id/rl_livevideo_small_english_voice_message_content"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
+            android:layout_height="68dp"
             android:visibility="gone">
 
             <TextView
@@ -208,7 +208,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="61dp"
                 android:layout_marginRight="16dp"
-                android:background="@drawable/shape_livevideo_smallenglish_message_bg"
+                android:background="@drawable/shape_livevideo_smallenglish_message_edittext_bg"
                 android:hint="请输入文字"
                 android:imeOptions="flagNoExtractUi|actionSend"
                 android:maxLength="40"
