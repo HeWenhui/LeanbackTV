@@ -185,8 +185,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         try {
             JSONObject jsonObject = new JSONObject(result);
             int stat = jsonObject.optInt("stat");
-            if (stat == 1 && jsonObject.has("data")) {
-                JSONObject dataObject = jsonObject.getJSONObject("data");
+            Log.e("ArtsAnswerResultBll","======>onAnswerResult2222:"+stat+":"+jsonObject.has("data"));
+            JSONObject dataObject = null;
+            if(resultFromVoice){
+                dataObject = jsonObject;
+            }else{
+                dataObject = jsonObject.optJSONObject("data");
+            }
+            if ((stat == 1 || resultFromVoice) && dataObject != null) {
                 mAnswerReulst = new AnswerResultEntity();
                 mAnswerReulst.setResultType(AnswerResultEntity.RESULT_TYPE_NEW_COURSE_WARE);
                 if (dataObject.has("total")) {
@@ -206,6 +212,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             idList.add(testIds.getString(i));
                         }
                         mAnswerReulst.setIdArray(idList);
+                        Log.e( "AnswerResultBll","=======>parseAnswerResult:" + idList.size());
                     }
 
                     int type = totalObject.optInt("type");
@@ -388,7 +395,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * 表扬答题全对
      */
     private void praiseAnswerAllRight(JSONArray ids) {
-
+        Log.e( "AnswerResultBll","=======>praiseAnswerAllRight:" + ids+":"+mAnswerReulst+":"+mAnswerReulst.getIdArray().size());
         if (ids != null && ids.length() > 0) {
             if (mAnswerReulst != null && mAnswerReulst.getIdArray() != null && mAnswerReulst.getIdArray().size() != 0) {
                 String id = null;
@@ -401,8 +408,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         break;
                     }
                 }
-
-                Log.e( "008","=======>praiseAllRight:" + showPraise);
+                Log.e( "AnswerResultBll","=======>praiseAllRight:" + showPraise+":"+mAnswerReulst.getIsRight());
                 if (showPraise && mAnswerReulst.getIsRight() == ANSWER_RESULT_ALL_RIGHT) {
                     showPraise();
                 }
@@ -554,10 +560,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             case XESCODE.ARTS_PRAISE_ANSWER_RIGHT_SINGLE:
                 String testId = data.optString("id");
                 if (!TextUtils.isEmpty(testId)) {
-                    Log.e("008","======>notice: pariseSingle 111");
+                    Log.e("AnswerResultBll","======>notice: pariseSingle 111");
                     pariseSingleAnswerRight(testId);
                 } else {
-                    Log.e("008","======>notice: pariseAll");
+                    Log.e("AnswerResultBll","======>notice: pariseAll");
                     JSONArray ids = data.optJSONArray("ids");
                     praiseAnswerAllRight(ids);
                 }
