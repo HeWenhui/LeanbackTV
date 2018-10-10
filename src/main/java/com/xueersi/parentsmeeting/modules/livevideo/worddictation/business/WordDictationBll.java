@@ -14,6 +14,7 @@ import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.endictation.entity.DictationConfig;
+import com.xueersi.parentsmeeting.modules.endictation.entity.DictationQuery;
 import com.xueersi.parentsmeeting.modules.endictation.entity.RecognizeFlow;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -50,9 +51,20 @@ public class WordDictationBll implements WordDictationAction {
     public void onStart(WordStatisticInfo wordStatisticInfo) {
         logger.d("onStart");
         Bundle bundle = new Bundle();
-        RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers);
-        bundle.putParcelable("data", recognizeFlow);
-        XueErSiRouter.startModule(activity, "/dictation/Launch", bundle);
+
+
+        if (DictationQuery.hasSavedRecord(activity,wordStatisticInfo.testid, liveGetInfo.getId())){
+            // 已经有作答记录,直接查看结果
+            RecognizeFlow savedData = DictationQuery.getLastRecord(activity);
+            bundle.putParcelable("data", savedData);
+            XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
+        }else {
+            // 没有作答记录，直接进入引导页
+            RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers);
+            bundle.putParcelable("data", recognizeFlow);
+            XueErSiRouter.startModule(activity, "/dictation/Launch", bundle);
+        }
+
         if (wordReceiver == null) {
             wordReceiver = new WordReceiver();
             IntentFilter filter = new IntentFilter(DictationConfig.ACTION_DICTATION_COMPLETE);
