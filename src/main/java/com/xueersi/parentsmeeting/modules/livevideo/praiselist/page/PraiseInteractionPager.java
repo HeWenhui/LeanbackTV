@@ -9,12 +9,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Message;
+import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
@@ -34,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalBarrageView;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -82,9 +87,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     //点赞按钮按下动画
     private LottieAnimationView pressLottileView;
 
-    //是否点击点赞按钮
-    private boolean isClickPraiseBtn;
-
     //点赞数字
     private TextView praiseNumView;
 
@@ -100,7 +102,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
     private View giftSendView;
     private TextView giftSendText;
-    private TextView giftSendCoin;
+    private TextSwitcher giftSendCoin;
 
     //数学动画
     private LottieAnimationView mathLottileView;
@@ -126,7 +128,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     private int btnMarginRight;
     private int btnMarginBottom;
 
-    private AnimatorSet animatorSet;
 
     //长按首次按下时间
     private long lastPraiseTime = 0;
@@ -140,13 +141,12 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     private TimeHandler timeHandler = new TimeHandler();
     private VerticalBarrageView verticalBarrageView;
 
-    //连续点赞
-    private long firstContinueTime = 0;
-    private long lastContinueTime = 0;
-    private boolean isPush = false;
-
     //金币总数
     private int goldCount;
+
+    //统计每次点赞的时间
+    private List<Long> praiseTimeList = new ArrayList<>();
+    private AnimatorSet animatorSet;
 
 
     public PraiseInteractionPager(Context context, int goldCount, PraiseInteractionBll praiseInteractionBll, LiveBll2
@@ -160,6 +160,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                 .livevideo_praise_interac_praise_btn_margin_right);
         btnMarginBottom = (int) mContext.getResources().getDimension(R.dimen
                 .livevideo_praise_interac_praise_btn_margin_bottom);
+        initData();
     }
 
 
@@ -273,7 +274,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
         giftImg = view.findViewById(R.id.lav_livevideo_praise_interac_special_gift_img);
         goldCountView = view.findViewById(R.id.tv_livevideo_praise_interac_gold_amount);
-        goldCountView.setText("金币余额:  " + goldCount);
 
 
         View sendView = view.findViewById(R.id.rl_livevideo_praise_interac_special_gift_send_group);
@@ -298,7 +298,17 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         });
         giftSendText = view.findViewById(R.id.tv_livevideo_praise_interac_gift_send_text);
         giftSendCoin = view.findViewById(R.id.tv_livevideo_praise_interac_gift_send_coin);
-
+        giftSendCoin.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                TextView textView = new TextView(mContext);
+                textView.setTextSize(10);
+                textView.setTextColor(mContext.getResources().getColor(R.color.COLOR_FFFFFF));
+                return textView;
+            }
+        });
+        giftSendCoin.setInAnimation(AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_fade_in_slide_in));
+        giftSendCoin.setOutAnimation(AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_fade_out_slide_out));
 
         mathLottileView = view.findViewById(R.id.lav_livevideo_praise_interac_math);
 
@@ -318,6 +328,11 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         initPhysicalAnimation();
 
         return view;
+    }
+
+    @Override
+    public void initData() {
+        goldCountView.setText("金币余额:  " + goldCount);
     }
 
     /**
@@ -357,7 +372,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             mPraiseInteractionBll.sendGiftDeductGold(currentGiftType, httpCallBack);
         } else {
             giftSendText.setText("金币不足");
-            giftSendCoin.setText(String.valueOf(goldCount));
             giftSendView.setVisibility(View.VISIBLE);
             specialGiftView.setVisibility(View.GONE);
             timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_SEND_DISMISS, 2000);
@@ -369,8 +383,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     private void startHidePraiseBtnAniamtion() {
         float translationX = praiseBtn.getTranslationX();
         float distance = getRightMargin() + btnWidth + btnMarginRight;
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(pressLottileView, "translationX", -distance,
-                translationX);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(pressLottileView, "translationX", distance);
         objectAnimator.setDuration(1000);
         objectAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -387,6 +400,10 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
      */
     public void closePraise() {
         startHidePraiseBtnAniamtion();
+        praiseTimeList.clear();
+        timeHandler.removeMessages(0);
+        bubbleRepeatView.setVisibility(View.GONE);
+        bubbleView.setVisibility(View.GONE);
         specialGiftView.setVisibility(View.GONE);
         verticalBarrageView.stop();
     }
@@ -427,6 +444,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                 if (countDownNum == 0) {
                     specialGiftView.setVisibility(View.GONE);
                     countDownNum = 10;
+                    timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_BUBBLE, 2000);
                     timeHandler.removeMessages(MESSAGE_WHAT_DELAY_GIFT);
                 } else {
                     countDownNum--;
@@ -435,7 +453,20 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             } else if (what == MESSAGE_WHAT_DELAY_SEND_DISMISS) {
                 giftSendView.setVisibility(View.GONE);
             } else if (what == MESSAGE_WHAT_DELAY_CONTINUE_PRAISE) {
-                mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
+                if (praiseTimeList.size() > 1) {
+                    long lastTime = praiseTimeList.get(praiseTimeList.size() - 1);
+                    long firstTime = praiseTimeList.get(0);
+                    if (lastTime - firstTime > 1000) {
+                        praiseNumView.setText(String.valueOf(praiseNumAmount));
+                        if (animatorSet != null) {
+                            animatorSet.start();
+                        }
+                        continuePraiseNum = 0;
+                        praiseTimeList.clear();
+                        mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
+                    }
+                }
+
             }
         }
     }
@@ -445,44 +476,42 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
      * 点击点赞按钮
      */
     private void onClickPraiseBtn() {
-        isClickPraiseBtn = true;
-
-        //判断连续点赞超过1秒，暂停点赞以后推送，超过5秒直接推送
-        if (firstContinueTime == 0) {
-            firstContinueTime = lastContinueTime = System.nanoTime();
-        } else {
-            if (System.nanoTime() - lastContinueTime > 1000 * NAS) {
-                continuePraiseNum = 0;
-                if (isPush) {
-                    mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
-                    isPush = false;
-                }
-                firstContinueTime = lastContinueTime = 0;
-            } else {
-                long continueTime = lastContinueTime - firstContinueTime;
-                //如果大于5秒直接发
-                if (continueTime > 5000 * NAS) {
-                    firstContinueTime = lastContinueTime = 0;
-                    mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
-                } else if (continueTime > 1000 * NAS) {
-                    isPush = true;
-                }
-                lastContinueTime = System.nanoTime();
-            }
-        }
-
-        continuePraiseNum++;
-        praiseNumAmount++;
         timeHandler.removeMessages(MESSAGE_WHAT_DELAY_BUBBLE);
-
+        timeHandler.removeMessages(MESSAGE_WHAT_DELAY_CONTINUE_PRAISE);
+        praiseTimeList.add(SystemClock.uptimeMillis());
         //暂停冒泡动画
         bubbleView.cancelAnimation();
         bubbleView.setVisibility(View.GONE);
         bubbleRepeatView.cancelAnimation();
         bubbleRepeatView.setVisibility(View.GONE);
 
+        continuePraiseNum++;
+        praiseNumAmount++;
+
+        judgeDisplayNumAnimation();
+
+        if (praiseTimeList.size() > 1) {
+            long lastTime = praiseTimeList.get(praiseTimeList.size() - 1);
+            long firstTime = praiseTimeList.get(0);
+            if (lastTime - firstTime > 5000) {
+                praiseTimeList.clear();
+                mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
+            }
+        }
+
+        //播放按下动画
         pressLottileView.playAnimation();
 
+        displaySpecailGiftAnimation();
+
+        timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_BUBBLE, 2000);
+        timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_CONTINUE_PRAISE, 1000);
+    }
+
+    /**
+     * 判断是否显示数字动画
+     */
+    private void judgeDisplayNumAnimation() {
         //保留2位小数
         String strNum;
         if (continuePraiseNum > 1000) {
@@ -492,14 +521,25 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         } else {
             strNum = String.valueOf(continuePraiseNum);
         }
-
         praiseNumView.setText(strNum);
-        displaySpecailGiftAnimation();
 
-        if (animatorSet.isRunning()) {
-            animatorSet.cancel();
+        long lastPraiseTime = 0;
+        if (praiseTimeList.size() > 1) {
+            lastPraiseTime = praiseTimeList.get(praiseTimeList.size() - 2);
         }
-        animatorSet.start();
+        long currentPraiseTime = praiseTimeList.get(praiseTimeList.size() - 1);
+        if (currentPraiseTime - lastPraiseTime < 500) {
+            if (!animatorSet.isRunning()) {
+                animatorSet.start();
+            }
+        } else {
+            if (animatorSet.isRunning()) {
+                animatorSet.cancel();
+            }
+            animatorSet.start();
+        }
+
+
     }
 
 
@@ -601,10 +641,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 praiseNumView.setTranslationX(translationY);
-                praiseNumView.setAlpha(0);
                 praiseNumView.setVisibility(View.GONE);
-                timeHandler.removeMessages(MESSAGE_WHAT_DELAY_BUBBLE);
-                timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_BUBBLE, 2000);
             }
         });
 
@@ -696,19 +733,17 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         objectAnimator.setDuration(1000);
         objectAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                pressLottileView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 logger.d("prasie btn enter anima end");
                 //等待两秒没有点击事件冒星星
-                praiseBtn.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!isClickPraiseBtn) {
-                            bubbleView.playAnimation();
-                            isClickPraiseBtn = false;
-                        }
-                    }
-                }, 2000);
+                timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_BUBBLE, 2000);
             }
         });
         objectAnimator.start();
@@ -1005,9 +1040,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         breathView.setLayoutParams(breathParams);
     }
 
-    @Override
-    public void initData() {
-    }
 
     private int getRightMargin() {
         return LiveVideoPoint.getInstance().getRightMargin();

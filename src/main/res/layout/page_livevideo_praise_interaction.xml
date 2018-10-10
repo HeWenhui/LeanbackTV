@@ -22,7 +22,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_gravity="center"
-        android:visibility="visible" />
+        android:visibility="invisible" />
 
     <ImageView
         android:id="@+id/iv_livevideo_praise_interac_breath"
@@ -106,17 +106,16 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/livevideo_alert_gold_icon_normal" />
 
-            <TextView
+
+            <TextSwitcher
                 android:id="@+id/tv_livevideo_praise_interac_gift_send_coin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="368"
-                android:textColor="@color/COLOR_FFFFFF"
-                android:textSize="10sp" />
-
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp" />
 
         </LinearLayout>
 
@@ -240,7 +239,6 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/anim_livevido_praise_interaction_chemistry"
         android:visibility="gone" />
-
 
 
     <com.airbnb.lottie.LottieAnimationView

@@ -137,12 +137,12 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         if (!isOpen) {
             LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
             if (liveMessageBll != null) {
-                String type="主讲";
-                if("f".equals(from)){
+                String type = "主讲";
+                if ("f".equals(from)) {
                     type = "辅导";
                 }
                 liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
-                        type+"老师开启了点赞功能!");
+                        type + "老师开启了点赞功能!");
             }
             isOpen = true;
             praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll);
@@ -185,6 +185,10 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             jsonObject.put("id", mRoomInitData.getStuId());
             jsonObject.put("value", value);
             jsonObject.put("type", XESCODE.PRAISE_MESSAGE);
+            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mRoomInitData.getStudentLiveInfo();
+            if (studentLiveInfo != null) {
+                jsonObject.put("classid", studentLiveInfo.getClassId());
+            }
             jsonObject.put("to", from);
             sendMsg(jsonObject);
         } catch (JSONException e) {
@@ -278,12 +282,12 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         if (isOpen == true) {
             LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
             if (liveMessageBll != null) {
-                String type="主讲";
-                if("f".equals(from)){
+                String type = "主讲";
+                if ("f".equals(from)) {
                     type = "辅导";
                 }
                 liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
-                        type+"老师关闭了点赞功能!");
+                        type + "老师关闭了点赞功能!");
             }
             isOpen = false;
             if (timer != null) {
@@ -324,13 +328,13 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     public void closePager() {
         if (rlPraiseContentView != null) {
-            mRootView.post(new Runnable() {
+            praiseInteractionPager.closePraise();
+            rlPraiseContentView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    praiseInteractionPager.closePraise();
                     rlPraiseContentView.removeAllViews();
                 }
-            });
+            }, 1000);
         }
     }
 
