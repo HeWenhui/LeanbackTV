@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
-public class PraiseMessageEntity {
+import android.support.annotation.NonNull;
+
+public class PraiseMessageEntity implements Comparable {
     //特效礼物消息
     public final static int TYPE_SPECIAL_GIFT = 1;
 
@@ -9,6 +11,21 @@ public class PraiseMessageEntity {
 
     //班级
     public final static int TYPE_CLASS = 3;
+
+    //我点赞的总数量
+    public final static int SORT_KEY_MY_PRAISE = 1;
+
+    //我送出的礼物特效
+    public final static int SORT_KEY_MY_GIFT = 2;
+
+    //同班同学送出的礼物特效
+    public final static int SORT_KEY_OTHER_GIFT = 3;
+
+    //班级点赞的数量
+    public final static int SORT_KEY_CLASS_PRAISE = 4;
+
+    //同班同学点赞的数量
+    public final static int SORT_KEY_STUDENT_PRAISE = 5;
 
 
     //数学
@@ -39,6 +56,17 @@ public class PraiseMessageEntity {
 
     //来自主讲或者辅导
     private String from;
+
+    //排序关键字
+    private int sortKey;
+
+    public int getSortKey() {
+        return sortKey;
+    }
+
+    public void setSortKey(int sortKey) {
+        this.sortKey = sortKey;
+    }
 
     public long getPraiseNum() {
         return praiseNum;
@@ -105,5 +133,18 @@ public class PraiseMessageEntity {
             }
         }
         return false;
+    }
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+        if (o instanceof PraiseMessageEntity) {
+            PraiseMessageEntity praiseMessageEntity = (PraiseMessageEntity) o;
+            int sort = this.sortKey - praiseMessageEntity.getSortKey();
+            if (sort == 0) {
+                return 1;
+            }
+            return sort;
+        }
+        return 0;
     }
 }

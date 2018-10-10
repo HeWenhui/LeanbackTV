@@ -500,6 +500,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         }
 
         //播放按下动画
+        pressLottileView.cancelAnimation();
         pressLottileView.playAnimation();
 
         displaySpecailGiftAnimation();
@@ -549,7 +550,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         }
     }
 
-    public void addBarraige(List<PraiseMessageEntity> data) {
+    public void appendBarraiges(List<PraiseMessageEntity> data) {
         if (verticalBarrageView != null) {
             verticalBarrageView.addBarrages(data);
         }

@@ -35,7 +35,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -60,8 +62,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     private Stack<PraiseMessageEntity> otherPraiseStack = new Stack<>();
     //我送出的礼物特效
     private Stack<PraiseMessageEntity> mySpecialGiftStack = new Stack<>();
-    //班级点赞的数量
-    private Stack<PraiseMessageEntity> classPraiseStack = new Stack<>();
+
 
     //是否开启点赞
     private boolean isOpen = false;
@@ -104,28 +105,17 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             } else if (!otherSpecialGiftStack.isEmpty()) {
                 praiseMessageEntity = otherSpecialGiftStack.pop();
             }
+            if (praiseMessageEntity != null && praiseInteractionPager != null) {
+                praiseInteractionPager.appendBarraige(praiseMessageEntity);
+            }
 
             if (!otherPraiseStack.isEmpty()) {
-                praiseMessageEntity = otherPraiseStack.pop();
+                PraiseMessageEntity praiseMessageOtherEntity = otherPraiseStack.pop();
+                if (praiseMessageOtherEntity != null && praiseInteractionPager != null) {
+                    praiseInteractionPager.appendBarraige(praiseMessageOtherEntity);
+                }
             }
-            if (praiseMessageEntity != null && praiseInteractionPager != null) {
-                logger.d("specail gift size=" + classPraiseStack.size() + ",message=" + praiseMessageEntity
-                        .getMessageContent());
-                praiseInteractionPager.appendBarraige(praiseMessageEntity);
-            }
-        }
-    }
 
-    private class ClassPraiseTimerTask extends TimerTask {
-
-        @Override
-        public void run() {
-            if (!classPraiseStack.isEmpty()) {
-                PraiseMessageEntity praiseMessageEntity = classPraiseStack.pop();
-                logger.d("class praise size=" + classPraiseStack.size() + ",message=" + praiseMessageEntity
-                        .getMessageContent());
-                praiseInteractionPager.appendBarraige(praiseMessageEntity);
-            }
         }
     }
 
@@ -157,7 +147,6 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
             timer = new Timer(true);
             timer.schedule(new SpecailGiftTimerTask(), 5000, 5000);
-            timer.schedule(new ClassPraiseTimerTask(), 10000, 10000);
         }
     }
 
@@ -197,18 +186,16 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     }
 
-    public void insetOtherSpecialGift(PraiseMessageEntity praiseMessageEntity) {
-        otherSpecialGiftStack.push(praiseMessageEntity);
-    }
-
-    public void insetOtherPraise(PraiseMessageEntity praiseMessageEntity) {
-        otherPraiseStack.push(praiseMessageEntity);
-    }
-
+    /**
+     * 我自己送出的特效礼物
+     *
+     * @param giftType
+     */
     public void insertMySpecialGift(int giftType) {
         PraiseMessageEntity praiseMessageEntity = new PraiseMessageEntity();
         praiseMessageEntity.setMessageType(PraiseMessageEntity.TYPE_SPECIAL_GIFT);
         praiseMessageEntity.setGiftType(giftType);
+        praiseMessageEntity.setSortKey(PraiseMessageEntity.SORT_KEY_MY_GIFT);
         String messageContent = "";
         if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_PHYSICAL) {
             messageContent = mRoomInitData.getStuName() + "同学给老师点亮了星空!";
@@ -228,6 +215,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     public void pushMyPraise(int praiseNumAmount) {
         PraiseMessageEntity praiseMessageEntity = new PraiseMessageEntity();
         praiseMessageEntity.setMessageType(PraiseMessageEntity.TYPE_PRAISE);
+        praiseMessageEntity.setSortKey(PraiseMessageEntity.SORT_KEY_MY_PRAISE);
         praiseMessageEntity.setMessageContent(mRoomInitData.getStuName() + ":点了" + praiseNumAmount + "个赞!");
         praiseInteractionPager.appendBarraige(praiseMessageEntity);
         sendPrivateMessage(PraiseMessageEntity.TYPE_PRAISE, praiseNumAmount);
@@ -256,14 +244,6 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     public Stack<PraiseMessageEntity> getMySpecialGift() {
 
         return mySpecialGiftStack;
-    }
-
-    /**
-     * 获取班级点赞的数量
-     */
-    public Stack<PraiseMessageEntity> getClassPraise() {
-
-        return classPraiseStack;
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
@@ -470,30 +450,41 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                         messageContent = praiseMessageEntity.getUserName() + "同学为老师放飞了气球!";
                     }
                     praiseMessageEntity.setMessageContent(messageContent);
+                    praiseMessageEntity.setSortKey(PraiseMessageEntity.SORT_KEY_OTHER_GIFT);
                     otherSpecialGiftStack.push(praiseMessageEntity);
                 } else if (praiseMessageEntity.getMessageType() == PraiseMessageEntity.TYPE_PRAISE) {
+                    if (otherPraiseStack.size() > 10) {
+                        otherPraiseStack.remove(0);
+                    }
                     praiseMessageEntity.setPraiseNum(jsonObject.optLong("value"));
                     if (otherPraiseStack.contains(praiseMessageEntity)) {
                         otherPraiseStack.remove(praiseMessageEntity);
                     }
                     praiseMessageEntity.setMessageContent(praiseMessageEntity.getUserName() + ": 点了" +
                             praiseMessageEntity.getPraiseNum() + "个赞!");
+                    praiseMessageEntity.setSortKey(PraiseMessageEntity.SORT_KEY_STUDENT_PRAISE);
                     otherPraiseStack.push(praiseMessageEntity);
+
                 }
             } else if (type == XESCODE.PRAISE_CLASS_NUM) {
                 //{"from":"t/f","type":"267","value":[{"likeNum":2000,"name":"新平台数学啊"},{"likeNum":2000,"name":"教师聊天室"}]}
                 JSONArray jsonArray = jsonObject.optJSONArray("value");
+                //班级点赞的数量
+                List<PraiseMessageEntity> classPraiseStack = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonNumObject = jsonArray.getJSONObject(i);
                     PraiseMessageEntity praiseMessageEntity = new PraiseMessageEntity();
                     praiseMessageEntity.setMessageType(PraiseMessageEntity.TYPE_CLASS);
-
+                    praiseMessageEntity.setSortKey(PraiseMessageEntity.SORT_KEY_CLASS_PRAISE);
                     praiseMessageEntity.setUserName(jsonNumObject.optString("name"));
                     praiseMessageEntity.setPraiseNum(jsonNumObject.optLong("likeNum"));
                     praiseMessageEntity.setFrom(jsonObject.optString("from"));
                     praiseMessageEntity.setMessageContent(praiseMessageEntity.getUserName() + "班共点了" +
                             praiseMessageEntity.getPraiseNum() + "个赞");
-                    classPraiseStack.push(praiseMessageEntity);
+                    classPraiseStack.add(praiseMessageEntity);
+                }
+                if (praiseInteractionPager != null && !classPraiseStack.isEmpty()) {
+                    praiseInteractionPager.appendBarraiges(classPraiseStack);
                 }
             }
         } catch (JSONException e) {

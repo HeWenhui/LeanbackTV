@@ -23,6 +23,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PraiseMessageEntity;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 垂直滚动弹幕
@@ -32,7 +34,7 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
 
     private final int barrageCount = 4;
 
-    private LinkedList<PraiseMessageEntity> barrageQueue = new LinkedList<>();
+    private TreeSet<PraiseMessageEntity> barrageQueue = new TreeSet<>();
 
 
     private final LayoutInflater inflater;
@@ -102,7 +104,7 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
             if (this.getChildCount() >= barrageCount) {
                 this.removeViewAt(0);
             }
-            PraiseMessageEntity messageEntity = barrageQueue.poll();
+            PraiseMessageEntity messageEntity = barrageQueue.pollFirst();
             logger.d("message scroll=" + messageEntity.getMessageContent());
             View view = obtainTextView(messageEntity);
             this.addView(view);
