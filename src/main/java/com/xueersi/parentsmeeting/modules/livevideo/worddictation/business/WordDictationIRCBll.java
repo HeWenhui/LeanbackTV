@@ -76,6 +76,16 @@ public class WordDictationIRCBll extends LiveBaseBll implements NoticeAction, To
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
+
+    }
+
+    @Override
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
+        super.onModeChange(oldMode, mode, isPresent);
+        if (LiveTopic.MODE_CLASS.equals(mode) && wordDictationAction != null) {
+            WordDictationBll bll = (WordDictationBll) wordDictationAction;
+            bll.sendSwtichStream();
+        }
     }
 
     @Override
