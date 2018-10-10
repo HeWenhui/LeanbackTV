@@ -18,11 +18,11 @@ public class StandExperienceEvaluationBll extends StandExperienceEventBaseBll im
         mPager = new StandExperienceEvaluationPager(activity);
     }
 
-    public void showEvaluation() {
-        if (mPager != null) {
-            mRootView.addView(mPager.getRootView());
-        }
-    }
+//    public void showEvaluation() {
+//        if (mPager != null) {
+//            mRootView.addView(mPager.getRootView());
+//        }
+//    }
 
     @Override
     public void showWindow() {
@@ -48,4 +48,5 @@ public class StandExperienceEvaluationBll extends StandExperienceEventBaseBll im
 //    public void resultComplete() {
 //
 //    }
+
 }

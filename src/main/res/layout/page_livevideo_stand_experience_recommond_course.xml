@@ -89,7 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:src="@drawable/bg_livevideo_stand_experience_recommond_course_buy_btn"
+            android:src="@drawable/selector_livevideo_stand_experience_recommond_course_buy_course"
             app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_stand_experience_recommond_course_background"
             app:layout_constraintHorizontal_bias="0.72"
             app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_stand_experience_recommond_course_background"
