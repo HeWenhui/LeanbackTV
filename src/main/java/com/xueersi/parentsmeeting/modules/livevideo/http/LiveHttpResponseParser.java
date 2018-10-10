@@ -43,7 +43,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.worddictation.entity.WordStatisticInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -456,22 +455,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-            if (status.has("wordStatisticInfo")) {
-                try {
-                    JSONObject jsonWordStatisticInfo = status.getJSONObject("wordStatisticInfo");
-                    WordStatisticInfo wordStatisticInfo = new WordStatisticInfo();
-                    int state = jsonWordStatisticInfo.getInt("state");
-                    wordStatisticInfo.state = state;
-                    if (state == 1) {
-                        wordStatisticInfo.testid = jsonWordStatisticInfo.getString("testid");
-                        wordStatisticInfo.pagetype = jsonWordStatisticInfo.getString("pagetype");
-                        wordStatisticInfo.answers = jsonWordStatisticInfo.getString("answers");
-                    }
-                    coachStatusEntity.setWordStatisticInfo(wordStatisticInfo);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
         }
         if (liveTopicJson.has("room_1")) {

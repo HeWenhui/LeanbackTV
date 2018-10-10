@@ -11,12 +11,14 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.route.XueErSiRouter;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.endictation.entity.DictationConfig;
 import com.xueersi.parentsmeeting.modules.endictation.entity.RecognizeFlow;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.worddictation.entity.WordStatisticInfo;
 
 /**
@@ -75,8 +77,11 @@ public class WordDictationBll implements WordDictationAction {
             final RecognizeFlow recognizeFlow = intent.getParcelableExtra("data");
             logger.d("onReceive:recognizeFlow=" + recognizeFlow);
             final View view = LayoutInflater.from(activity).inflate(R.layout.layout_word_dictation_complete, null);
+            LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            logger.d("onReceive:top=" + view.getTop() + ",rightMargin=" + liveVideoPoint.getRightMargin());
+            view.setPadding(view.getLeft(), (int) (50 * ScreenUtils.getScreenDensity()), liveVideoPoint.getRightMargin(), view.getBottom());
             bottomContent.addView(view, lp);
             view.findViewById(R.id.bt_livevideo_worddictation_result).setOnClickListener(new View.OnClickListener() {
                 @Override
