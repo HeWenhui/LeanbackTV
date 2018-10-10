@@ -51,5 +51,6 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.arouterapi
     //
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
-    implementation project(':business:endictation')
+//    implementation project(':business:endictation')
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.endictation)
 }
