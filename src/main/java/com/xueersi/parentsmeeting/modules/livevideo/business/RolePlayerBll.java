@@ -858,7 +858,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     int scores = jsonObject.optInt("scores");
                     mRolePlayerEntity.setGoldCount(gold);
                     // 发送已答过的状态
-                    EventBus.getDefault().post(new ArtsAnswerResultEvent(mRolePlayerEntity.getTestId(),2));
+                    EventBus.getDefault().post(new ArtsAnswerResultEvent(mRolePlayerEntity.getTestId(),ArtsAnswerResultEvent.TYPE_NATIVE_ANSWERRESULT));
                     EventBus.getDefault().post(new VoiceAnswerResultEvent(mRolePlayerEntity.getTestId(),scores));
                     logger.i( "onPmSuccess: gold  =" + gold);
                 }

@@ -639,7 +639,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 // 发送分数和TestId
                 EventBus.getDefault().post(new VoiceAnswerResultEvent(id,score));
                 // 发送已答过的状态
-                EventBus.getDefault().post(new ArtsAnswerResultEvent(id,2));
+                EventBus.getDefault().post(new ArtsAnswerResultEvent(id,ArtsAnswerResultEvent.TYPE_NATIVE_ANSWERRESULT));
                 speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), new OnSpeechEval() {
                     OnSpeechEval onSpeechEval = this;
 

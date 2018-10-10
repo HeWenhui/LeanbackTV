@@ -170,16 +170,17 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         });
     }
 
-    // private static final int TEST_TYPE_SELECT = 2;
-    // private static final int TEST_TYPE_BLANK  = 1;
-
     /**
      * 游戏类型试题
      */
     private static final int TEST_TYPE_GAME = 12;
-
-    private void onAnswerResult(String result) {
-        logger.e( "=======>onAnswerResult:" + result);
+    /**
+     *
+     * @param result
+     * @param resultFromVoice 是否是 本地语音答题（填空、选择）
+     */
+    private void onAnswerResult(String result,boolean resultFromVoice) {
+        Log.e("ArtsAnswerResultBll","======>onAnswerResult:"+result+":"+resultFromVoice);
         boolean showAnswerResult = false;
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -267,7 +268,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         mAnswerReulst.setAnswerList(answerList);
                     }
                     //答题结果里有填空选择 才展示 统计面板 (当前统计面UI 只支持显示 选择、填空题)
-                    if (showAnswerResult) {
+                    if (showAnswerResult && !resultFromVoice) {
                         shoulUpdateGold = true;
                         showAnswerReulst();
                     }
@@ -627,15 +628,16 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAnswerResult(ArtsAnswerResultEvent event) {
-        logger.e("====>ArtsAnswerResultEvent:" + event);
+        Log.e("ArtsAnswerResultBll","======>onAnswerResult:"+event);
         if (event != null && !event.equals(mArtsAnswerResultEvent)) {
             mArtsAnswerResultEvent = event;
-            if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()) {
-                onAnswerResult(event.getDataStr());
+            if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()
+                    || ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK == event.getType()) {
+                boolean resultFromVoice = event.getType() == ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK;
+                onAnswerResult(event.getDataStr(),resultFromVoice);
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_:").append(event.getDataStr());
                 UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" ,stringBuilder.toString());
-
 
             } else if (ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT == event.getType()) {
                 onRolePlayAnswerResult(event.getDataStr());

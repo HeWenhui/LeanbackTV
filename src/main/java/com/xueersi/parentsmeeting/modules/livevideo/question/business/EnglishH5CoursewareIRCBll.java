@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -36,7 +37,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoti
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -643,6 +643,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                     onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
                                 }
                                 EventBus.getDefault().post(new ArtsAnswerResultEvent(responseEntity.getJsonObject().toString(),ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK));
+                                Log.e("EnglisH5IRC","====>send answerResultEvent called:"+responseEntity.getJsonObject());
                             }
 
                             @Override

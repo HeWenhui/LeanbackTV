@@ -882,7 +882,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         int type = 0;
         if (entity != null) {// 提交成功，否则是已经答过题了
             // 发送已答过这道题的标识
-            EventBus.getDefault().post(new ArtsAnswerResultEvent(videoQuestionLiveEntity.id, 2));
+            EventBus.getDefault().post(new ArtsAnswerResultEvent(videoQuestionLiveEntity.id, ArtsAnswerResultEvent.TYPE_NATIVE_ANSWERRESULT));
             boolean isVoice = entity.isVoice();
             if (!isVoice && LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity.type)) {
                 String url = liveGetInfo.getSubjectiveTestAnswerResult() + "?stuId=" + liveGetInfo.getStuId() +
