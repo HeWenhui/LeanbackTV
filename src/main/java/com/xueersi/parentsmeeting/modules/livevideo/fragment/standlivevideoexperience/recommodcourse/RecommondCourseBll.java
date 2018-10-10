@@ -1,12 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
@@ -25,13 +27,24 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class RecommondCourseBll extends StandExperienceEventBaseBll {
     LiveAndBackDebug liveAndBackDebug;
     private RecommondCoursePager mPager;
     private VideoPopView turnToOrder;
+    private SharedPreferences sharedPreferences;
+
+    private final String spFileName = "xes_stand_experience_is_buy_recommond_course";
+    private final String SharedPreferenceKey = "IS_STAND_EXPERIENCE_BUY_RECOMMOND_COURSE";
+
+    private Boolean isBuyRecommondCourse;
 
     public RecommondCourseBll(Activity activity, StandExperienceLiveBackBll liveBackBll, VideoView videoView) {
         super(activity, liveBackBll);
+        sharedPreferences = mContext.getApplicationContext().getSharedPreferences
+                (spFileName, MODE_PRIVATE);
+        isBuyRecommondCourse = sharedPreferences.getBoolean(SharedPreferenceKey, false);
         turnToOrder = new VideoPopView((Activity) mContext, videoView);
         logger.i("注册EventBus");
         EventBus.getDefault().register(this);
@@ -40,7 +53,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     @Override
     public void initView() {
         super.initView();
-        mPager = new RecommondCoursePager(mContext);
+        mPager = new RecommondCoursePager(mContext, isBuyRecommondCourse);
         initListener();
         registerInBllHideView();
     }
@@ -98,7 +111,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
         super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
         logger.i("显示推荐课程");
         if (mPager == null) {
-            mPager = new RecommondCoursePager(mContext);
+            mPager = new RecommondCoursePager(mContext, isBuyRecommondCourse);
         }
         if (livePlayBackHttpResponseParser == null) {
             livePlayBackHttpResponseParser = getCourseHttpResponseParser();
@@ -189,6 +202,9 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
 //            logHashMap.put("extra", "用户支付成功");
 //            liveAndBackDebug.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
         logger.i("购课成功");
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(SharedPreferenceKey, true);
+        editor.commit();
         buyRecommondCourseComplete(true);
 //        }
     }
