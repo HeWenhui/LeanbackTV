@@ -55,8 +55,12 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
 
     private boolean isBuyCourseSuccess = false;
 
-    public RecommondCoursePager(Context context) {
+    public RecommondCoursePager(Context context, boolean isBuyCourseSuccess) {
         super(context);
+        this.isBuyCourseSuccess = isBuyCourseSuccess;
+        if (isBuyCourseSuccess) {
+            buyCourseSuccess();//如果购课已经成功，就隐藏这两个弹窗
+        }
         initData();
         initListener();
     }

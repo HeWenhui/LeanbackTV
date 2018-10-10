@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:mvAnimDuration="2000"
         app:mvDirection="bottom_to_top"
-        app:mvInterval="3000"
+        app:mvInterval="120000"
         app:mvSingleLine="true" />
 
     <android.support.constraint.ConstraintLayout
