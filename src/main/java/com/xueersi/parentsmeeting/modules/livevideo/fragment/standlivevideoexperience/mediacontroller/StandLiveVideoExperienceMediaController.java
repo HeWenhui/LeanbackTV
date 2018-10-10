@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.widget.mediacontroller;
+package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.mediacontroller;
 
 import android.content.Context;
 
