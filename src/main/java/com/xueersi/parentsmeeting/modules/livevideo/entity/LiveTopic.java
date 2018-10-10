@@ -195,6 +195,7 @@ public class LiveTopic {
          * 是否打开语音反馈
          */
         private String onVideoChat = "off";
+        private WordStatisticInfo wordStatisticInfo;
 
         public RoomStatusEntity() {
             classbegin = false;
@@ -229,6 +230,7 @@ public class LiveTopic {
             agoraVoiceChatRoom = roomStatusEntity.agoraVoiceChatRoom;
             onVideoChat = roomStatusEntity.onVideoChat;
             isOnbreak = roomStatusEntity.isOnbreak;
+            wordStatisticInfo = roomStatusEntity.wordStatisticInfo;
         }
 
         public boolean isOnbreak() {
@@ -442,6 +444,14 @@ public class LiveTopic {
 
         public String getLKNoticeMode() {
             return mLKNoticeMode;
+        }
+
+        public WordStatisticInfo getWordStatisticInfo() {
+            return wordStatisticInfo;
+        }
+
+        public void setWordStatisticInfo(WordStatisticInfo wordStatisticInfo) {
+            this.wordStatisticInfo = wordStatisticInfo;
         }
     }
 
