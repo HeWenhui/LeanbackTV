@@ -276,7 +276,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
                 bgView.setBackgroundResource(R.drawable.arts_answer_result_correct_bg);
                 tvState.setTextColor(Color.parseColor("#F13232"));
                 ivHead.setImageResource(R.drawable.arts_answer_correct_head);
-                tvState.setText("完美!完美正确!");
+                tvState.setText("完美!完全正确!");
             } else if (RESULT_TYPE_PART_CORRECT == mReusltType) {
 
                 bgView.setBackgroundResource(R.drawable.arts_answer_result_partcorrect_bg);
