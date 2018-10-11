@@ -5,13 +5,11 @@ import android.os.Build;
 import android.view.ViewGroup;
 
 import com.xueersi.common.event.AppEvent;
-import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -28,8 +26,9 @@ import org.greenrobot.eventbus.ThreadMode;
  * 将VideoView转化为小窗口
  */
 public class VideoPopView {
-
+    private static volatile VideoPopView instance;
     private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+
 
     private VideoView videoView;
 
@@ -39,7 +38,18 @@ public class VideoPopView {
     //是否开启了小窗口
     private Boolean isShow = false;
 
-    public VideoPopView(Activity activity, VideoView videoView) {
+    public static VideoPopView getInstance(Activity activity, VideoView videoView) {
+        if (instance == null) {
+            synchronized (VideoPopView.class) {
+                if (instance == null) {
+                    instance = new VideoPopView(activity, videoView);
+                }
+            }
+        }
+        return instance;
+    }
+
+    private VideoPopView(Activity activity, VideoView videoView) {
         this.activity = activity;
         this.videoView = videoView;
         EventBus.getDefault().register(this);
