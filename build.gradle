@@ -14,9 +14,6 @@ android {
         }
     }
     compileSdkVersion 27
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_1_8
-//    }
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -37,7 +34,7 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.audio)
     //日志
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.logger)
-//    implementation project(':xesijkplayer')
+//    implementation project(':ijkplayer')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.ijkplayer)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.player)
 
@@ -54,4 +51,6 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.arouterapi
     //
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
+//    implementation project(':business:endictation')
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.endictation)
 }

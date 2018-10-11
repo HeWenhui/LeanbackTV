@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.widget.mediacontroller;
+package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.mediacontroller;
 
 import android.content.Context;
 
@@ -19,7 +19,7 @@ public class StandLiveVideoExperienceMediaController extends MediaController2 {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-//            mGestures.setTouchListener(standExperienceListener, true);//设置新手势，抵消掉原来的滑动
+            mGestures.setTouchListener(standExperienceListener, true);//设置新手势，抵消掉原来的滑动
         }
     }
 

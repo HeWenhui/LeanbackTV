@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
@@ -93,18 +94,24 @@ public class StandExperienceUnderstandPager extends BasePager {
         ivUnderStandBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                        .stand_experience_1703001));
                 clickEvent(STAND_EXPERIENCE_UNDERSTAND);
             }
         });
         ivLittleUnderStandBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                        .stand_experience_1703002));
                 clickEvent(STAND_EXPERIENCE_LITTLE_UNDERSTAND);
             }
         });
         ivNoUnderStandBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                        .stand_experience_1703003));
                 clickEvent(STAND_EXPERIENCE_NO_UNDERSTAND);
             }
         });

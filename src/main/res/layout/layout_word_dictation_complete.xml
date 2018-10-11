@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:paddingTop="50dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@id/bt_livevideo_worddictation_result"
+        android:layout_margin="6dp"
+        android:background="@drawable/bt_livevideo_word_result"
+        android:layout_width="188dp"
+        android:layout_height="50dp" />
+
+    <Button
+        android:id="@id/bt_livevideo_worddictation_close"
+        android:layout_gravity="right"
+        android:background="@drawable/app_tingxie_guanbi"
+        android:layout_width="28dp"
+        android:layout_height="28dp" />
+
+</FrameLayout>

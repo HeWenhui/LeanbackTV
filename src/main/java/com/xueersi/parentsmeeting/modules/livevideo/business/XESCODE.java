@@ -171,4 +171,6 @@ public interface XESCODE {
     int ARTS_SEND_PRAISE_NUM =1001;
     /**文科表扬榜接受到点赞数*/
     int ARTS_RECEIVE_PRAISE_NUM = 1002;
+    /**文科单词听写*/
+    int ARTS_WORD_DICTATION = 1003;
 }

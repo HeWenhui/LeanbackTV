@@ -1,14 +1,17 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
@@ -25,13 +28,27 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import static android.content.Context.MODE_PRIVATE;
+
+/**
+ * 课中推荐课程的业务逻辑
+ */
 public class RecommondCourseBll extends StandExperienceEventBaseBll {
     LiveAndBackDebug liveAndBackDebug;
     private RecommondCoursePager mPager;
     private VideoPopView turnToOrder;
+    private SharedPreferences sharedPreferences;
+
+    private final String spFileName = "xes_stand_experience_is_buy_recommond_course";
+    private final String SharedPreferenceKey = "IS_STAND_EXPERIENCE_BUY_RECOMMOND_COURSE";
+
+    private Boolean isBuyRecommondCourse;
 
     public RecommondCourseBll(Activity activity, StandExperienceLiveBackBll liveBackBll, VideoView videoView) {
         super(activity, liveBackBll);
+        sharedPreferences = mContext.getApplicationContext().getSharedPreferences
+                (spFileName, MODE_PRIVATE);
+        isBuyRecommondCourse = sharedPreferences.getBoolean(SharedPreferenceKey, false);
         turnToOrder = new VideoPopView((Activity) mContext, videoView);
         logger.i("注册EventBus");
         EventBus.getDefault().register(this);
@@ -40,7 +57,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     @Override
     public void initView() {
         super.initView();
-        mPager = new RecommondCoursePager(mContext);
+        mPager = new RecommondCoursePager(mContext, isBuyRecommondCourse);
         initListener();
         registerInBllHideView();
     }
@@ -98,7 +115,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
         super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
         logger.i("显示推荐课程");
         if (mPager == null) {
-            mPager = new RecommondCoursePager(mContext);
+            mPager = new RecommondCoursePager(mContext, isBuyRecommondCourse);
         }
         if (livePlayBackHttpResponseParser == null) {
             livePlayBackHttpResponseParser = getCourseHttpResponseParser();
@@ -189,7 +206,13 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
 //            logHashMap.put("extra", "用户支付成功");
 //            liveAndBackDebug.umsAgentDebugSys(LiveVideoConfig.LEC_ADS, logHashMap.getData());
         logger.i("购课成功");
-        buyRecommondCourseComplete(true);
+
+        isBuyRecommondCourse = true;
+        //写入数据库中
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(SharedPreferenceKey, isBuyRecommondCourse);
+        editor.commit();
+        buyRecommondCourseComplete(isBuyRecommondCourse);
 //        }
     }
 
@@ -209,5 +232,16 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
 
     public void onResume() {
         turnToOrder.onResume();
+        //埋点
+        //埋点这里有个小忧患，isBuyRecommondCourse是在EventBus中赋值的，EventBus是接收到支付成功的广播时发送的，
+        // 可能涉及到1.Fragment.onResume()方法和上面2.EventBus的接受方法onEvent的  先后调用顺序
+        //但是在这里用户在支付完成后会停留在支付完成页一段时间才返回到视频中(这段时间足够发送广播和广播中的EventBus)，所以这里认为onEvent会在onResume()前面调用
+        if (isBuyRecommondCourse) {//购课成功，即从支付成功页面回来的
+            UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                    .stand_experience_1706001));
+        } else {//没有支付，即从确认订单页面回来
+            UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                    .stand_experience_1705001));
+        }
     }
 }
