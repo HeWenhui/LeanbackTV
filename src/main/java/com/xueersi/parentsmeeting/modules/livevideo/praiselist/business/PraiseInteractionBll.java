@@ -66,11 +66,10 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     //是否开启点赞
     private boolean isOpen = false;
-    //主讲或者辅导
-    private String from;
 
     private Timer timer;
     private int goldNum;
+    private String mode = LiveTopic.MODE_TRANING;
 
 
     public PraiseInteractionBll(Context context, LiveBll2 liveBll) {
@@ -91,6 +90,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         rlPraiseContentView = new RelativeLayout(mContext);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        params.leftMargin=LiveVideoPoint.getInstance().x2;
         mRootView.addView(rlPraiseContentView, params);
     }
 
@@ -128,7 +128,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
             if (liveMessageBll != null) {
                 String type = "主讲";
-                if ("f".equals(from)) {
+                if (LiveTopic.MODE_TRANING.equals(mode)) {
                     type = "辅导";
                 }
                 liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
@@ -155,7 +155,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         String liveId = mRoomInitData.getId();
         String courseId = mRoomInitData.getStudentLiveInfo().getCourseId();
         String teacherId = mRoomInitData.getMainTeacherId();
-        if ("f".equals(from)) {
+        if (LiveTopic.MODE_TRANING.equals(mode)) {
             teacherId = mRoomInitData.getTeacherId();
         }
         mLiveBll.getHttpManager().praiseSendGift(liveId, mRoomInitData.getStuId(),
@@ -173,12 +173,16 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             jsonObject.put("name", mRoomInitData.getStuName());
             jsonObject.put("id", mRoomInitData.getStuId());
             jsonObject.put("value", value);
-            jsonObject.put("type", XESCODE.PRAISE_MESSAGE);
+            jsonObject.put("type", String.valueOf(XESCODE.PRAISE_MESSAGE));
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mRoomInitData.getStudentLiveInfo();
             if (studentLiveInfo != null) {
                 jsonObject.put("classid", studentLiveInfo.getClassId());
             }
-            jsonObject.put("to", from);
+            String to = "t";
+            if (LiveTopic.MODE_TRANING.equals(mode)) {
+                to = "f";
+            }
+            jsonObject.put("to", to);
             sendMsg(jsonObject);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -263,7 +267,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
             if (liveMessageBll != null) {
                 String type = "主讲";
-                if ("f".equals(from)) {
+                if (LiveTopic.MODE_TRANING.equals(mRoomInitData.getMode())) {
                     type = "辅导";
                 }
                 liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
@@ -333,6 +337,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         if (getInfo != null) {
             mHttpManager = getHttpManager();
             mRoomInitData = getInfo;
+            mode = mRoomInitData.getMode();
             attachToRootView();
         }
     }
@@ -346,6 +351,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         logger.d("oldMode=" + oldMode + ",mode=" + mode);
         if (!TextUtils.isEmpty(mode) && !mode.equals(oldMode)) {
+            this.mode = mode;
             closePraise();
         }
     }
@@ -355,7 +361,10 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         switch (type) {
             case XESCODE.PRAISE_SWITCH:
                 logger.d("data=" + data);
-                from = data.optString("from");
+                String from = data.optString("from");
+                if (isFilterMessage(from)) {
+                    return;
+                }
                 final boolean open = data.optBoolean("open");
                 rlPraiseContentView.post(new Runnable() {
                     @Override
@@ -367,7 +376,6 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                         }
                     }
                 });
-
                 break;
             default:
                 break;
@@ -378,12 +386,10 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         logger.d("onTopic message=" + jsonObject);
         LiveTopic.RoomStatusEntity mainRoomstatus = null;
-        if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode()) || "t".equals(from)) {
-            from = "t";
+        if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
             mainRoomstatus = liveTopic.getMainRoomstatus();
         } else {
             mainRoomstatus = liveTopic.getCoachRoomstatus();
-            from = "f";
         }
         if (mainRoomstatus != null) {
             final boolean openlike = mainRoomstatus.isOpenlike();
@@ -401,6 +407,17 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         }
 
     }
+
+    private boolean isFilterMessage(String from) {
+        if (LiveTopic.MODE_TRANING.equals(mode) && "t".equals(from)) {
+            return true;
+        }
+        if (LiveTopic.MODE_CLASS.equals(mode) && "f".equals(from)) {
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public void onStartConnect() {

@@ -41,11 +41,11 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/iv_livevideo_praise_interac_praise_btn"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
         android:layout_marginRight="@dimen/livevideo_praise_interac_praise_btn_margin_right"
         android:gravity="center_horizontal"
         android:text="123"
-        android:textColor="@color/COLOR_REDBAG"
-        android:layout_marginBottom="5dp"
+        android:textColor="@color/COLOR_F13232"
         android:textSize="12sp"
         android:visibility="invisible" />
 
@@ -259,8 +259,8 @@
         android:id="@+id/lav_livevideo_praise_interac_star_enter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerInside"
         android:layout_centerHorizontal="true"
+        android:scaleType="centerInside"
         android:visibility="gone" />
 
 </RelativeLayout>

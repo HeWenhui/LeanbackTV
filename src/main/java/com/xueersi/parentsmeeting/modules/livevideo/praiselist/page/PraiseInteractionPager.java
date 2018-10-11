@@ -337,7 +337,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         initPraiseBtnPressAnimation();
         initBubbleEnterAnimation();
         initPraiseNumDisplayAnimation();
-        initBubbleRepeatAnimation();
         initMathAnimation();
         initPhysicalAnimation();
 
@@ -811,10 +810,9 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         bubbleView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                Object animatedValue = animation.getAnimatedValue();
                 float animatedFraction = animation.getAnimatedFraction();
                 if (animatedFraction > 0.8) {
-                    bubbleRepeatView.playAnimation();
+
                 }
 
             }
@@ -829,10 +827,46 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                bubbleView.setVisibility(View.INVISIBLE);
+                initBubbleRepeatAnimation();
+
             }
         });
 
+    }
+
+    /**
+     * 点赞按钮连续冒泡星星动画
+     */
+    private void initBubbleRepeatAnimation() {
+        String bubbleRepeatResPath = LOTTIE_RES_ASSETS_ROOTDIR + "bubble_repeat/images";
+        String bubbleRepeatJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "bubble_repeat/data.json";
+        final LottieEffectInfo bubbleRepeatEffectInfo = new LottieEffectInfo(bubbleRepeatResPath, bubbleRepeatJsonPath);
+        bubbleRepeatView.setAnimationFromJson(bubbleRepeatEffectInfo.getJsonStrFromAssets(mContext), "bubble_repeat");
+        bubbleRepeatView.useHardwareAcceleration(true);
+        bubbleRepeatView.setRepeatCount(-1);
+        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                String fileName = lottieImageAsset.getFileName();
+                return bubbleRepeatEffectInfo.fetchBitmapFromAssets(bubbleRepeatView, lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
+            }
+        };
+        bubbleRepeatView.setImageAssetDelegate(imageAssetDelegate);
+        bubbleRepeatView.addAnimatorListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                bubbleView.setVisibility(View.GONE);
+                bubbleRepeatView.setVisibility(View.VISIBLE);
+
+            }
+        });
+        bubbleRepeatView.playAnimation();
     }
 
     /**
@@ -899,38 +933,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         });
     }
 
-
-    /**
-     * 点赞按钮连续冒泡星星动画
-     */
-    private void initBubbleRepeatAnimation() {
-        String bubbleRepeatResPath = LOTTIE_RES_ASSETS_ROOTDIR + "bubble_repeat/images";
-        String bubbleRepeatJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "bubble_repeat/data.json";
-        final LottieEffectInfo bubbleRepeatEffectInfo = new LottieEffectInfo(bubbleRepeatResPath, bubbleRepeatJsonPath);
-        bubbleRepeatView.setAnimationFromJson(bubbleRepeatEffectInfo.getJsonStrFromAssets(mContext), "bubble_repeat");
-        bubbleRepeatView.useHardwareAcceleration(true);
-        bubbleRepeatView.setRepeatCount(-1);
-        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
-            @Override
-            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                String fileName = lottieImageAsset.getFileName();
-                return bubbleRepeatEffectInfo.fetchBitmapFromAssets(bubbleRepeatView, lottieImageAsset.getFileName(),
-                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
-            }
-        };
-        bubbleRepeatView.setImageAssetDelegate(imageAssetDelegate);
-        bubbleRepeatView.addAnimatorListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                bubbleRepeatView.setVisibility(View.VISIBLE);
-            }
-        });
-    }
 
     private void caculatePraiseTotalNumPosition() {
         int fontWidth = (int) praiseTotalNumView.getPaint().measureText(String.valueOf(praiseNumAmount));
