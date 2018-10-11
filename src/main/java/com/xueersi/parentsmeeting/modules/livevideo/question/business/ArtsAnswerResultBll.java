@@ -162,12 +162,17 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         mRootView.post(new Runnable() {
             @Override
             public void run() {
-                if (remindView != null) {
-                    remindView.setVisibility(View.GONE);
-                }
+                closeRemindUI();
                 addPager();
             }
         });
+    }
+
+    private void closeRemindUI() {
+        if (remindView != null) {
+            rlAnswerResultLayout.removeView(remindView);
+            remindView = null;
+        }
     }
 
     /**
@@ -342,19 +347,18 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private Runnable autoCloseTask = new Runnable() {
         @Override
         public void run() {
-            if (remindView != null) {
-                remindView.setVisibility(View.GONE);
-            }
+            closeRemindUI();
         }
     };
 
     public void remindSubmit() {
-        logger.e("======>remindSubmit:" + mDsipalyer + ":" + this);
+        logger.e("======>remindSubmit:" + mArtsAnswerResultEvent + ":" + this);
         //没有答题结果页时才展示
         if (mArtsAnswerResultEvent == null) {
             rlAnswerResultLayout.post(new Runnable() {
                 @Override
                 public void run() {
+                    logger.e("======>remindSubmit:" + 000000);
                     if (remindView == null) {
                         if (isPse) {
                             remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_pse, null);
@@ -365,13 +369,15 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                         rlAnswerResultLayout.addView(remindView, params);
                     }
-                    remindView.setVisibility(View.VISIBLE);
+                    logger.e("======>remindSubmit:" + 11111);
+                   // remindView.setVisibility(View.VISIBLE);
                     AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
                             .anim_livevido_arts_answer_result_alpha_in);
                     remindView.startAnimation(alphaAnimation);
-
                     rlAnswerResultLayout.removeCallbacks(autoCloseTask);
                     rlAnswerResultLayout.postDelayed(autoCloseTask, REMIND_UI_CLOSE_DELAY);
+                    logger.e("======>remindSubmit:" + 222222);
+
                 }
             });
         }
