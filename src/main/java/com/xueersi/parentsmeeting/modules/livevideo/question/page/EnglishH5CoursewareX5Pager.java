@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
@@ -159,10 +160,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     public void submitData() {
         isFinish = true;
-        if(isNewArtsCourseware && "17".equals(detailInfo.type)){
+        if(isNewArtsCourseware && !"17".equals(detailInfo.type)){
             wvSubjectWeb.loadUrl(jsArtsForceSubmit);
+            Log.e("Duncan","js:");
         } else {
             String command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
+            Log.e("Duncan","command:" + command);
             wvSubjectWeb.loadUrl(command);
         }
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareEnd");
