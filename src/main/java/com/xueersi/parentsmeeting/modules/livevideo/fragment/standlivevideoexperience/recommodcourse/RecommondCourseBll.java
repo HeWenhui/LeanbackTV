@@ -43,8 +43,6 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     private final String SharedPreferenceKey = "IS_STAND_EXPERIENCE_BUY_RECOMMOND_COURSE";
     //是否购买成功
     private Boolean isBuyRecommondCourse;
-    //视频是否结束了
-    private boolean isResultComplete = false;
 
     public RecommondCourseBll(Activity activity, StandExperienceLiveBackBll liveBackBll, VideoView videoView) {
         super(activity, liveBackBll);
@@ -193,7 +191,6 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     public void resultComplete() {
         super.resultComplete();
         if (mPager != null && mPager.getRootView().getParent() == mRootView) {
-            isResultComplete = true;
             mRootView.removeView(mPager.getRootView());
         }
     }
