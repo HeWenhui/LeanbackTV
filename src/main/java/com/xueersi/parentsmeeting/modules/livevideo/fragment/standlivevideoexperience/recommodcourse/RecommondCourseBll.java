@@ -41,8 +41,10 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
 
     private final String spFileName = "xes_stand_experience_is_buy_recommond_course";
     private final String SharedPreferenceKey = "IS_STAND_EXPERIENCE_BUY_RECOMMOND_COURSE";
-
+    //是否购买成功
     private Boolean isBuyRecommondCourse;
+    //视频是否结束了
+    private boolean isResultComplete = false;
 
     public RecommondCourseBll(Activity activity, StandExperienceLiveBackBll liveBackBll, VideoView videoView) {
         super(activity, liveBackBll);
@@ -116,10 +118,12 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
         HttpCallBack httpCallBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                mRecommondCourseEntity = livePlayBackHttpResponseParser.parseRecommondCourseInfo(responseEntity);
-                mPager.updateView(mRecommondCourseEntity);
-                mRootView.addView(mPager.getRootView(), RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout
-                        .LayoutParams.MATCH_PARENT);
+                if (!isResultComplete) {
+                    mRecommondCourseEntity = livePlayBackHttpResponseParser.parseRecommondCourseInfo(responseEntity);
+                    mPager.updateView(mRecommondCourseEntity);
+                    mRootView.addView(mPager.getRootView(), RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout
+                            .LayoutParams.MATCH_PARENT);
+                }
             }
         };
         //发送http请求，得到推荐课程数据
@@ -180,6 +184,18 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
                 LocalCourseConfig.CATEGORY_RECOMMOND_COURSE
         };
 
+    }
+
+    /**
+     * 任务完成后去掉
+     */
+    @Override
+    public void resultComplete() {
+        super.resultComplete();
+        if (mPager != null && mPager.getRootView().getParent() == mRootView) {
+            isResultComplete = true;
+            mRootView.removeView(mPager.getRootView());
+        }
     }
 
     /**
