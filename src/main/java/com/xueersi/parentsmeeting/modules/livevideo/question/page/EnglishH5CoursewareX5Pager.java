@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
@@ -79,6 +80,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private String mLoadUrls;
     private String releasedPageInfos;
     private boolean allowTeamPk;
+    private VideoQuestionLiveEntity detailInfo;
 
     private boolean isNewArtsCourseware;
 
@@ -105,6 +107,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         this.allowTeamPk = allowTeamPk;
         this.isNewArtsCourseware = englishH5Entity.isArtsNewH5Courseware();
         LiveVideoConfig.englishH5Entity = englishH5Entity;
+        this.detailInfo = (VideoQuestionLiveEntity)baseVideoQuestionEntity;
         initWebView();
         setErrorTip("H5课件加载失败，请重试");
         setLoadTip("H5课件正在加载，请稍候");
@@ -156,7 +159,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     public void submitData() {
         isFinish = true;
-        if(isNewArtsCourseware){
+        if(isNewArtsCourseware && "17".equals(detailInfo.type)){
             wvSubjectWeb.loadUrl(jsArtsForceSubmit);
         } else {
             String command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
