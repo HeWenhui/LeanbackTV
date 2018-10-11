@@ -87,8 +87,10 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     //点赞按钮按下动画
     private LottieAnimationView pressLottileView;
 
-    //点赞数字
+    //连续点赞数字
     private TextView praiseNumView;
+    //点赞总数
+    private TextView praiseTotalNumView;
 
     private View specialGiftView;
 
@@ -237,6 +239,19 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             }
         });
 
+        praiseTotalNumView = view.findViewById(R.id.lav_livevideo_praise_interac_totalnum);
+        praiseTotalNumView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                .OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int width = praiseTotalNumView.getWidth();
+                if (width > 0) {
+                    caculatePraiseTotalNumPosition();
+                    praiseTotalNumView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
+
         praiseNumView = view.findViewById(R.id.lav_livevideo_praise_interac_num);
         praiseNumView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -293,7 +308,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                     caculateSendGiftPosition();
                     giftSendView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
-                giftSendView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
         giftSendText = view.findViewById(R.id.tv_livevideo_praise_interac_gift_send_text);
@@ -453,14 +467,14 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             } else if (what == MESSAGE_WHAT_DELAY_SEND_DISMISS) {
                 giftSendView.setVisibility(View.GONE);
             } else if (what == MESSAGE_WHAT_DELAY_CONTINUE_PRAISE) {
+                praiseNumView.setVisibility(View.GONE);
                 if (praiseTimeList.size() > 1) {
                     long lastTime = praiseTimeList.get(praiseTimeList.size() - 1);
                     long firstTime = praiseTimeList.get(0);
                     if (lastTime - firstTime > 1000) {
-                        praiseNumView.setText(String.valueOf(praiseNumAmount));
-                        if (animatorSet != null) {
-                            animatorSet.start();
-                        }
+                        caculatePraiseTotalNumPosition();
+                        praiseTotalNumView.setVisibility(View.VISIBLE);
+                        praiseTotalNumView.setText(String.valueOf(praiseNumAmount));
                         continuePraiseNum = 0;
                         praiseTimeList.clear();
                         mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
@@ -495,6 +509,9 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             long firstTime = praiseTimeList.get(0);
             if (lastTime - firstTime > 5000) {
                 praiseTimeList.clear();
+                caculatePraiseTotalNumPosition();
+                praiseTotalNumView.setVisibility(View.VISIBLE);
+                praiseTotalNumView.setText(String.valueOf(praiseNumAmount));
                 mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
             }
         }
@@ -522,7 +539,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         } else {
             strNum = String.valueOf(continuePraiseNum);
         }
-        praiseNumView.setText(strNum);
+        praiseNumView.setText("+" + strNum);
 
         long lastPraiseTime = 0;
         if (praiseTimeList.size() > 1) {
@@ -530,9 +547,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         }
         long currentPraiseTime = praiseTimeList.get(praiseTimeList.size() - 1);
         if (currentPraiseTime - lastPraiseTime < 500) {
-            if (!animatorSet.isRunning()) {
-                animatorSet.start();
-            }
+            praiseNumView.setVisibility(View.VISIBLE);
         } else {
             if (animatorSet.isRunning()) {
                 animatorSet.cancel();
@@ -917,6 +932,16 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         });
     }
 
+    private void caculatePraiseTotalNumPosition() {
+        int fontWidth = (int) praiseTotalNumView.getPaint().measureText(String.valueOf(praiseNumAmount));
+        int numMarginRight = btnMarginRight + btnWidth / 2 - fontWidth / 2;
+
+        RelativeLayout.LayoutParams breathParams = (RelativeLayout.LayoutParams) praiseTotalNumView.getLayoutParams();
+        breathParams.rightMargin = numMarginRight;
+
+        praiseTotalNumView.setLayoutParams(breathParams);
+    }
+
     private void caculatePraiseNumPosition() {
         int numMarginRight = btnMarginRight + btnWidth / 2 - praiseNumView.getWidth() / 2;
 
@@ -953,7 +978,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     }
 
     private void caculateSendGiftPosition() {
-        int bubbleMarginRight = btnMarginRight + btnWidth / 2 - giftSendView.getWidth() / 2;
+        int bubbleMarginRight = btnMarginRight + btnWidth / 2 - giftSendView.getWidth();
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) giftSendView.getLayoutParams();
         params.rightMargin = Math.abs(bubbleMarginRight);

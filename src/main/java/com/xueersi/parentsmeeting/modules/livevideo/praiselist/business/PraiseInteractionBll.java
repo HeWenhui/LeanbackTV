@@ -344,7 +344,10 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
-
+        logger.d("oldMode=" + oldMode + ",mode=" + mode);
+        if (!TextUtils.isEmpty(mode) && !mode.equals(oldMode)) {
+            closePraise();
+        }
     }
 
     @Override
