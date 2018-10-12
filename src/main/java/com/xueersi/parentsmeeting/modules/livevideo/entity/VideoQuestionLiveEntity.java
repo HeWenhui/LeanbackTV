@@ -59,7 +59,8 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     private String answerDay;
     /** 体验课订单ID*/
     private String termId;
-
+    /** H5语音答题的题型*/
+    public String voiceType;
     /**
      * 1.在线教研
      * 2 设计组
@@ -85,6 +86,14 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public void setIsVoice(String isVoice) {
         //isVoice = "0";
         this.isVoice = isVoice;
+    }
+
+    public String getVoiceType() {
+        return voiceType;
+    }
+
+    public void setVoiceType(String voiceType) {
+        this.voiceType = voiceType;
     }
 
     @Override
@@ -196,6 +205,7 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public void setOnlineTechEntity(H5OnlineTechEntity onlineTechEntity) {
         this.onlineTechEntity = onlineTechEntity;
     }
+
     public H5OnlineTechEntity getOnlineTechEntity() {
         return onlineTechEntity;
     }

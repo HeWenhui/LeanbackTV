@@ -489,6 +489,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         videoQuestionLiveEntity.questiontype = object.optString("questiontype");
                         videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
                         videoQuestionLiveEntity.type = object.optString("questiontype");
+                        videoQuestionLiveEntity.voiceType = object.optString("ptype");
                     }
                 } else {
                     if (mAnswerRankBll != null) {
@@ -624,7 +625,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             }
             if (LiveVideoConfig.isNewArts) {
                 Loger.d("Duncan", "onPutQuestionResultNewArts3");
-                if("15".equals(videoQuestionLiveEntity.type) || "16".equals(videoQuestionLiveEntity.type)){
+                if("15".equals(videoQuestionLiveEntity.voiceType) || "16".equals(videoQuestionLiveEntity.voiceType)){
                     getHttpManager().liveSubmitNewArtsRealH5Answer(videoQuestionLiveEntity.type,
                             videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
                             isRight, new HttpCallBack() {
