@@ -10,6 +10,10 @@ public class ArtsAnswerResultEvent {
    /**h5 js回调待会的原始数据*/
    private String dataStr;
 
+
+   private String testId;
+   private int isRight;
+
    private int mType;
    /**js回调 传回答案*/
    public static final int TYPE_H5_ANSWERRESULT = 1;
@@ -39,6 +43,23 @@ public class ArtsAnswerResultEvent {
 
     public int getType(){
        return  this.mType;
+    }
+
+    public void setTestId(String testId) {
+        this.testId = testId;
+    }
+
+    public String getTestId() {
+        return testId;
+    }
+
+
+    public void setIsRight(int isRight) {
+        this.isRight = isRight;
+    }
+
+    public int getIsRight() {
+        return isRight;
     }
 
     @Override
