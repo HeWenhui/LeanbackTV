@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.XesActivity;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.DeviceDetectionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
@@ -88,6 +89,11 @@ public class DeviceDetectionActivity extends XesActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_livevideo_device_detection);
+        UmsAgentManager.umsAgentCustomerBusiness(this, this.getString(com
+                        .xueersi
+                        .parentsmeeting.base.R
+                        .string.app_09902006),
+                1);
         EventBus.getDefault().register(this);
         initView();
         initData();

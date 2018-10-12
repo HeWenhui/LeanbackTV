@@ -192,11 +192,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 ShareDataManager.SHAREDATA_USER)) {
             Intent intent = new Intent(context, DeviceDetectionActivity.class);
             context.startActivity(intent);
-            UmsAgentManager.umsAgentCustomerBusiness(context, context.getString(com
-                            .xueersi
-                            .parentsmeeting.base.R
-                            .string.app_09902006),
-                    1);
             return;
         }
 
