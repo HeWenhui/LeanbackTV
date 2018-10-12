@@ -123,9 +123,9 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
             .ShowQuestion showQuestion) {
         super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
         logger.i("显示推荐课程");
-        if (getIsResultComplete()) {
-            return;
-        }
+//        if (getIsResultComplete()) {
+//            return;
+//        }
         if (mPager == null) {
             mPager = new RecommondCoursePager(mContext, isBuyRecommondCourse, liveGetInfo.getUname());
             initListener();
@@ -136,12 +136,12 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
         HttpCallBack httpCallBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                if (!getIsResultComplete()) {
-                    mRecommondCourseEntity = livePlayBackHttpResponseParser.parseRecommondCourseInfo(responseEntity);
-                    mPager.updateView(mRecommondCourseEntity);
-                    mRootView.addView(mPager.getRootView(), RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout
-                            .LayoutParams.MATCH_PARENT);
-                }
+//                if (!getIsResultComplete()) {
+                mRecommondCourseEntity = livePlayBackHttpResponseParser.parseRecommondCourseInfo(responseEntity);
+                mPager.updateView(mRecommondCourseEntity);
+                mRootView.addView(mPager.getRootView(), RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout
+                        .LayoutParams.MATCH_PARENT);
+//                }
             }
         };
         //发送http请求，得到推荐课程数据
@@ -158,9 +158,9 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
         final HttpCallBack bannerMessageHttpCallBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                if (getIsResultComplete()) {
-                    return;
-                }
+//                if (getIsResultComplete()) {
+//                    return;
+//                }
                 bannerBuyCourseEntity = livePlayBackHttpResponseParser.parseBannerBuyCourseEntity(responseEntity);
                 if (bannerBuyCourseEntity.getBannerMessages() != null) {
                     if (mPager != null) {
@@ -214,7 +214,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     @Override
     public void resultComplete() {
         super.resultComplete();
-        removeView();
+//        removeView();
     }
 
     private void removeView() {
