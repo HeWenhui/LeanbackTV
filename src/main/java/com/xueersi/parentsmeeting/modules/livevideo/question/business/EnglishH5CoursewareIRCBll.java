@@ -611,6 +611,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                            String testAnswer, String courseware_type, String isSubmit, double
                                                    voiceTime, boolean isRight, final QuestionSwitch
                 .OnAnswerReslut onAnswerReslut) {
+            final Boolean isRights = isRight;
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             mLogtf.d("liveSubmitTestH5Answer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                     videoQuestionLiveEntity.id + ",liveId=" + mLiveId + ",testAnswer="
@@ -643,7 +644,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                     if (onAnswerReslut != null) {
                                         onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
                                     }
-//                                    EventBus.getDefault().post(new ArtsAnswerResultEvent(responseEntity.getJsonObject().toString(),ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK));
+                                    ArtsAnswerResultEvent detail = new ArtsAnswerResultEvent(null,ArtsAnswerResultEvent.TYPE_NATIVE_UPLOAD_VOICE_SELECT_BLANK);
+                                    detail.setIsRight(isRights ? 2 : 0);
+                                    detail.setTestId(videoQuestionLiveEntity.id);
+                                    EventBus.getDefault().post(detail);
                                     Log.e("Duncan","====>newH5voiceanswerpager" + responseEntity.getJsonObject());
                                 }
 
