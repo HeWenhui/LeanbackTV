@@ -90,7 +90,7 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
         mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
-                mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp,SpeechBulletScreenBll.this);
+                mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp);
                 rlSpeechBulContent.removeAllViews();
                 rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 rlSpeechBulContent.setVisibility(View.VISIBLE);
@@ -116,7 +116,7 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
         mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp,SpeechBulletScreenBll.this);
+                mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp);
                 rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 rlSpeechBulContent.setVisibility(View.VISIBLE);
                 mSpeechBulPager.ShowSpeechBulletScreen();
@@ -203,7 +203,7 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
             mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp,SpeechBulletScreenBll.this);
+                    mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp);
                     rlSpeechBulContent.removeAllViews();
                     rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                     rlSpeechBulContent.setVisibility(View.VISIBLE);
