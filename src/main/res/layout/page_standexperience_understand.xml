@@ -50,13 +50,13 @@
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_stand_exeprience_understand_background"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_stand_exeprience_understand_background"
         app:layout_constraintTop_toTopOf="@id/iv_livevideo_stand_exeprience_understand_background"
-        app:layout_constraintVertical_bias="0.43" />
+        app:layout_constraintVertical_bias="0.45" />
 
     <ImageView
         android:id="@id/iv_livevideo_stand_experience_understand_understand"
         android:layout_width="73dp"
         android:layout_height="31dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:src="@drawable/selector_livevideo_stand_experience_understand_understand"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_stand_experience_understand_understand_icon"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_stand_experience_understand_understand_icon"

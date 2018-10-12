@@ -6,7 +6,9 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.text.SpannableString;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -39,6 +41,11 @@ public class CustomVerticalBannerView extends RelativeLayout {
         super(context, attrs, defStyleAttr);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public CustomVerticalBannerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
     Queue<SpannableString> list;
 
     final int layoutHeight = 40;
@@ -64,6 +71,9 @@ public class CustomVerticalBannerView extends RelativeLayout {
         }
         if (getVisibility() == GONE) {//当前页面处于GONE，即处于上一个动画结束和下一个动画开始之间
             setVisibility(VISIBLE);
+            if (backGround != null) {
+                backGround.setVisibility(true);
+            }
             removeCallbacks(visibilty);
             removeCallbacks(runnable);
             //满足碰撞的条件，先展示这一条，再展示下一条
@@ -140,6 +150,9 @@ public class CustomVerticalBannerView extends RelativeLayout {
                 if (!isOwn) {//不是自己买课
                     if (!isShowTwo) {//如果不展示两次
                         setVisibility(GONE);
+                        if (backGround != null) {
+                            backGround.setVisibility(false);
+                        }
 //                    removeCallbacks(runnable);
                         postDelayed(visibilty, pauseTime);
                         postDelayed(runnable, pauseTime);
@@ -175,6 +188,9 @@ public class CustomVerticalBannerView extends RelativeLayout {
         public void run() {
             if (getVisibility() == GONE) {
                 setVisibility(VISIBLE);
+                if (backGround != null) {
+                    backGround.setVisibility(false);
+                }
             }
             TextView tv = null;
             if (outAnimotor != null &&
@@ -188,7 +204,7 @@ public class CustomVerticalBannerView extends RelativeLayout {
                 SpannableString text = list.poll();
                 TextView view = createView(text);
 
-                view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
                 Paint mPaint = view.getPaint();
                 mPaint.getTextBounds(text.toString(), 0, text.length(), rect);
 
@@ -221,6 +237,9 @@ public class CustomVerticalBannerView extends RelativeLayout {
         @Override
         public void run() {
             setVisibility(VISIBLE);
+            if (backGround != null) {
+                backGround.setVisibility(true);
+            }
         }
     };
 
@@ -231,4 +250,14 @@ public class CustomVerticalBannerView extends RelativeLayout {
         tv.setCompoundDrawablePadding(Dp2Px(getContext(), 3));
         return tv;
     }
+
+    public interface IbackGround {
+        void setVisibility(boolean isShow);
+    }
+
+    public void setBackGround(IbackGround backGround) {
+        this.backGround = backGround;
+    }
+
+    private IbackGround backGround;
 }
