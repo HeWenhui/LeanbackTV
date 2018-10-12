@@ -473,8 +473,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         //推荐课程信息
         liveBackBll.addBusinessBll(new RecommondCourseBll(activity, liveBackBll, getVideoView()));
         //播放完成后的反馈弹窗
-        liveBackBll.addBusinessBll(ExperienceBuyCoursePresenter.getInstance(activity, liveBackBll));
-        liveBackBll.addBusinessBll(ExperienceLearnFeedbackBll.getInstance(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new ExperienceBuyCoursePresenter(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
     }
 
     @Override
