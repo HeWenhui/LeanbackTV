@@ -6,12 +6,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
 import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.ImageSpan;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,12 +16,10 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.MarqueeView;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.CustomVerticalBannerView;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Queue;
 
 public class RecommondCoursePager extends BasePager implements QuestionShowAction {
@@ -50,15 +44,21 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
 
     private ClickListener listener;
     //轮播消息View
-    private MarqueeView mvBannerMessage;
+//    private MarqueeView mvBannerMessage;
+    private CustomVerticalBannerView cvbView;
+
     //展开的推荐课程是否处于显示状态
     private boolean isWholeShow = true;
 
     private boolean isBuyCourseSuccess = false;
 
-    public RecommondCoursePager(Context context, boolean isBuyCourseSuccess) {
+    //    private VideoLivePlayBackEntity mVideoEntity;
+    String userName;
+
+    public RecommondCoursePager(Context context, boolean isBuyCourseSuccess, String userName) {
         super(context);
         this.isBuyCourseSuccess = isBuyCourseSuccess;
+        this.userName = userName;
         if (isBuyCourseSuccess) {
             buyCourseSuccess();//如果购课已经成功，就隐藏这两个弹窗
         }
@@ -77,7 +77,8 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
 //        ivTeacherThumbnail = view.findViewById(R.id.iv_livevideo_stand_experience_recommod_course_teacher_thumbnail);
         wholeRecommondCourseLayout = view.findViewById(R.id.ctl_recommod_course);
         thumbnailRecommondCourseLayout = view.findViewById(R.id.ctl_recommod_course_thumbnail);
-        mvBannerMessage = view.findViewById(R.id.mv_livevideo_stand_experience_banner_message);
+//        mvBannerMessage = view.findViewById(R.id.mv_livevideo_stand_experience_banner_message);
+        cvbView = view.findViewById(R.id.cvbv_recommond_course);
         return view;
     }
 
@@ -132,33 +133,6 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
                 }
             }
         });
-//        ivBuy.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (isWholeShow) {
-//                    switch (event.getAction()) {
-//                        case MotionEvent.ACTION_DOWN:
-//                            ivBuy.setAlpha(0.8f);
-//                            break;
-//                        case MotionEvent.ACTION_UP:
-//                            if (listener != null) {
-//                                listener.clickBuyCourse();
-//                            }
-//                            ivBuy.setAlpha(1f);
-//                            break;
-//                    }
-//                }
-//                return true;
-//            }
-//        });
-//        ivBuy.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (listener != null) {
-//                    listener.clickBuyCourse();
-//                }
-//            }
-//        });
         thumbnailRecommondCourseLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,22 +170,23 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
     private void showThumbnailAnimation() {
         if (thumbnailShowAnimator == null) {
             thumbnailShowAnimator = ObjectAnimator.ofFloat(thumbnailRecommondCourseLayout, "alpha", 0f, 1f);
-//            thumbnailShowAnimator.setDuration(Duration);
         }
-//        thumbnailShowAnimator.start();
     }
 
     private void hideThumbnailAnimation() {
         if (thumbnailHideAnimator == null) {
             thumbnailHideAnimator = ObjectAnimator.ofFloat(thumbnailRecommondCourseLayout, "alpha", 1f, 0f);
-//            thumbnailHideAnimator.setDuration(Duration);
         }
-//        thumbnailHideAnimator.start();
     }
 
+    /**
+     * 推荐课程的课程信息
+     */
+    private RecommondCourseEntity recommondCourseEntity;
 
     public void updateView(RecommondCourseEntity mRecommondCourseEntity) {
         logger.i(mRecommondCourseEntity.getCourseName() + " " + mRecommondCourseEntity.getCoursePrice());
+        recommondCourseEntity = mRecommondCourseEntity;
         if (mRecommondCourseEntity != null) {
             if (!TextUtils.isEmpty(mRecommondCourseEntity.getCourseName())) {
                 tvCourseName.setText(mRecommondCourseEntity.getCourseName());
@@ -222,59 +197,38 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
         }
     }
 
+    private LinkedList<SpannableString> queMessages;
 
-    //延迟2分钟发射
-    private final int delayTime = 60 * 2 * 1000;
-
-    /**
-     * 设置滚动
-     */
-//    private Runnable messageRunnable;
-
-//    public Runnable getBannerMessageRunnable(final Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage) {
-//        this.queMessage = queMessage;
-//        if (messageRunnable == null) {
-//            messageRunnable = new Runnable() {
-//                @Override
-//                public void run() {
-//                    if (mView != null) {
-//                        VideoBannerBuyCourseEntity.BannerMessage bannerMessage = queMessage.poll();
-//                        SpannableString spannableString = new SpannableString("喇叭 欢迎" + bannerMessage.getUserName() +
-//                                "加入" + bannerMessage.getCourseName());
-//                        ImageSpan imageSpan = new ImageSpan(mContext.getResources().getDrawable(R.drawable
-//                                .bg_livevideo_stand_experience_advertise_horn));
-//                        spannableString.setSpan(imageSpan, 0, 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-//
-//
-////                        mvBannerMessage.next();
-//                        mView.postDelayed(this, delayTime);
-//                    }
-//                }
-//            };
-//        }
-//        return messageRunnable;
-//    }
     public void startBanner(final Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage) {
-        if (mvBannerMessage.getVisibility() == View.GONE) {
-            mvBannerMessage.setVisibility(View.VISIBLE);
-        }
+//        if (mvBannerMessage.getVisibility() == View.GONE) {
+//            mvBannerMessage.setVisibility(View.VISIBLE);
+//        }
+//        if (mView != null) {
+//            mvBannerMessage.startWithList(getBannerList(queMessage));
+//        }
+//        this.bannerMessages = queMessage;
+//        if (cvbView.getVisibility() == View.GONE) {
+//            cvbView.setVisibility(View.VISIBLE);
+//        }
         if (mView != null) {
-            mvBannerMessage.startWithList(getBannerList(queMessage));
+            this.queMessages = getBannerList(queMessage);
+            cvbView.setList(queMessages);
+            cvbView.startAnim();
         }
     }
 
-    private List<SpannableString> getBannerList(Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage) {
+    private LinkedList<SpannableString> getBannerList(Queue<VideoBannerBuyCourseEntity.BannerMessage> queMessage) {
         //设置左边Left
         Drawable drawable = mContext.getResources().getDrawable(R.drawable
                 .bg_livevideo_stand_experience_advertise_horn);
         drawable.setBounds(0, 0, 60, 48);
-        mvBannerMessage.setLeftDrawable(drawable);
+        cvbView.setLeftDrawable(drawable);
 
-        List<SpannableString> list = new ArrayList<>();
+        LinkedList<SpannableString> list = new LinkedList<>();
         while (!queMessage.isEmpty()) {
             VideoBannerBuyCourseEntity.BannerMessage bannerMessage = queMessage.poll();
-            SpannableString spannableString = new SpannableString(" 欢迎" + bannerMessage.getUserName() +
-                    "加入" + bannerMessage.getCourseName());
+            SpannableString spannableString = new SpannableString(" 欢迎 " + bannerMessage.getUserName() +
+                    "加入 " + bannerMessage.getCourseName());
             list.add(spannableString);
         }
         return list;
@@ -307,9 +261,13 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
         wholeHideAnimator = null;
     }
 
+    //    private final String ownInfoMessage;
     //购买课程成功
     public void buyCourseSuccess() {
         isBuyCourseSuccess = true;
+        SpannableString spannableString = new SpannableString("恭喜 " + userName + "购买 " + "Amazing English");
+        queMessages.add(0, spannableString);
+        cvbView.setOwn(true);
         wholeRecommondCourseLayout.setVisibility(View.GONE);
         thumbnailRecommondCourseLayout.setVisibility(View.GONE);
     }

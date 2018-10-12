@@ -97,7 +97,9 @@ public class VideoPopView {
 //            }
                 PauseNotStopVideoInter onPauseNotStopVideo = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter
                         .class);
-                onPauseNotStopVideo.setPause(true);
+                if (onPauseNotStopVideo != null) {
+                    onPauseNotStopVideo.setPause(true);
+                }
                 // 添加点击立即报名的日志
                 StableLogHashMap logHashMap = new StableLogHashMap("clickEnroll");
 //            logHashMap.put("adsid", "" + event.getAdId());
@@ -135,6 +137,8 @@ public class VideoPopView {
             //开启悬浮窗
             FloatWindowManager.addView(activity, videoView, FloatLayout.INTENT_TO_LivePlaybackVideoActivity);
             isShow = true;
+        }else{
+            logger.i("没有权限并且系统大于等于24");
         }
 
     }

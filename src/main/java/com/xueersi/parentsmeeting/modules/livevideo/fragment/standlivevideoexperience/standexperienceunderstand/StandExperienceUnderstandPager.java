@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,9 +11,6 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
-
-import java.util.HashMap;
-import java.util.Iterator;
 
 public class StandExperienceUnderstandPager extends BasePager implements QuestionShowAction {
 
@@ -81,7 +79,9 @@ public class StandExperienceUnderstandPager extends BasePager implements Questio
 
     @Override
     public void initData() {
-        tvTitle.setText(mVideoEntity.getUnderStandDifficultyTitle());
+//        if (!TextUtils.isEmpty(mVideoEntity.getUnderStandDifficultyTitle())) {
+//            tvTitle.setText(mVideoEntity.getUnderStandDifficultyTitle());
+//        }
 //        map = mVideoEntity.getUnderStandDifficulty();
 //        Iterator<String> iterator = map.keySet().iterator();
 //
