@@ -49,6 +49,8 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_SUBMIT_TEST_H5_ANSWER = HTTP_HOST + "/LiveCourse/sumitCourseWareH5AnswerUseVoice";
         /** 直播课的文科新版课件对接新提交接口-*/
         public String URL_LIVE_SUBMIT_NEWARTS_ANSWER = "https://app.arts.xueersi.com/v2/commonTest/submitMultiTest";
+        /** 直播课的文科新版课件对接课件语音答题新提交接口-*/
+        public String URL_LIVE_SUBMIT_NEWARTSH5_ANSWER = "https://app.arts.xueersi.com/v2/CourseH5Test/submitH5Voice";
         /** 直播献花 */
         public String URL_LIVE_PRAISE_TEACHER = HTTP_HOST + "/LiveCourse/praiseTeacher";
         /** 学生答题排名信息接口 */

@@ -509,6 +509,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(url, params, requestCallBack);
     }
 
+    // 普通语音答题的提交
     public void liveSubmitNewArtsH5Answer(String srcType, String testId, String liveId, String
             testAnswer, String type, String userMode, String isSubmit,
                                        double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
@@ -520,6 +521,26 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("isPlayBack", "1");
         params.addBodyParam("isForce", "1");
         params.addBodyParam("Cookie", AppBll.getInstance().getUserToken());
+        sendPost(url, params, requestCallBack);
+    }
+
+    // H5语音答题的提交
+    public void liveSubmitNewArtsRealH5Answer(String srcType, String testId, String liveId, String
+            testAnswer, String type, String userMode, String isSubmit,
+                                          double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSH5_ANSWER;
+        setDefaultParameter(params);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("type", srcType);
+        params.addBodyParam("isRight", isRight ? "1" : "0");
+        params.addBodyParam("isPlayBack", "1");
+        params.addBodyParam("isSubmit", isSubmit);
+        params.addBodyParam("voiceUrl", "");
+        params.addBodyParam("voiceTime", "" + voiceTime);
+        params.addBodyParam("url", "");
+        params.addBodyParam("imageUrl", "");
         sendPost(url, params, requestCallBack);
     }
 

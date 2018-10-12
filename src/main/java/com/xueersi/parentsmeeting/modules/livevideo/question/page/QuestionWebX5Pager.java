@@ -283,6 +283,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         webSetting.setDomStorageEnabled(true);
         webSetting.setLoadWithOverviewMode(true);
         webSetting.setBuiltInZoomControls(false);
+        webSetting.setAllowUniversalAccessFromFileURLs(true);
+        webSetting.setAllowFileAccessFromFileURLs(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webSetting.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
@@ -408,6 +410,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            logger.e( "shouldInterceptRequestnew:totalurl=" + request.getUrl().toString());
             if("0".equals(type)){
                 File file;
                 int index = request.getUrl().toString().indexOf("courseware_pages");
@@ -418,7 +421,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         url2 = url2.substring(0, index2);
                     }
                     file = new File(mMorecacheout, url2);
-                    logger.e( "shouldInterceptRequestnew:fileone=" + file + ",fileone=" + file.exists() + "||||||sourceexists:" + mMorecacheout.exists());
+                    logger.e( "shouldInterceptRequestnew:fileone=" + file + ",fileone=" + file.exists());
+                    logger.e( "shouldInterceptRequestnew:realurl=" + request.getUrl().toString());
                 } else {
                     file = new File(mMorecacheout, MD5Utils.getMD5(request.getUrl().toString()));
                     index = request.getUrl().toString().lastIndexOf("/");
@@ -426,7 +430,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                     if (index != -1) {
                         name = request.getUrl().toString().substring(index);
                     }
-                    logger.e( "shouldInterceptRequestnew:filetwo=" + file.getName() + ",name=" + name + ",filetwo=" + file.exists() + "||||||sourceexists:" + mMorecacheout.exists());
+                    logger.e( "shouldInterceptRequestnew:filetwo=" + file.getName() + ",name=" + name + ",filetwo=" + file.exists());
+                    logger.e( "shouldInterceptRequestnew:ttfurl=" + request.getUrl().toString());
                 }
                 if (file.exists()) {
                     FileInputStream inputStream = null;
@@ -435,7 +440,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         String extension = MimeTypeMap.getFileExtensionFromUrl(request.getUrl().toString().toLowerCase());
                         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                         WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
-                        logger.e( "读取本地资源了new");
+                        HashMap map = new HashMap();
+                        map.put("Access-Control-Allow-Origin","*");
+                        webResourceResponse.setResponseHeaders(map);
+                        logger.e( "读取本地资源了new" + webResourceResponse.getResponseHeaders());
                         return webResourceResponse;
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -443,6 +451,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 }
             }
             logger.e( "没有本地资源就去网络请求咯咯咯new");
+            logger.e( "shouldInterceptRequestnew:lasturl=" + request.getUrl().toString());
             return super.shouldInterceptRequest(view, request);
         }
 

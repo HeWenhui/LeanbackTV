@@ -623,50 +623,98 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             }
             if (LiveVideoConfig.isNewArts) {
                 Loger.d("Duncan", "onPutQuestionResultNewArts3");
-                getHttpManager().liveSubmitNewArtsH5Answer(videoQuestionLiveEntity.srcType,
-                        videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
-                        isRight, new HttpCallBack() {
-                            @Override
-                            public void onPmSuccess(ResponseEntity responseEntity) {
-                                Loger.d("Duncan", "onPutQuestionResultNewArts4");
-                                mLogtf.d("liveSubmitTestH5Answer:onPmSuccess=" + responseEntity.getJsonObject()
-                                        .toString() +
-                                        "," + videoQuestionLiveEntity);
-                                VideoResultEntity entity = getHttpResponseParser().parseNewArtsPlatformQuestionAnswer
-                                        (responseEntity,
-                                                true);
-                                entity.setVoice(true);
-                                if (StringUtils.isSpace(entity.getTestId())) {
-                                    entity.setTestId(videoQuestionLiveEntity.id);
-                                }
-                                if (onAnswerReslut != null) {
-                                    onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
-                                }
-                                EventBus.getDefault().post(new ArtsAnswerResultEvent(responseEntity.getJsonObject().toString(),ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK));
-                                Log.e("EnglisH5IRC","====>send answerResultEvent called:"+responseEntity.getJsonObject());
-                            }
-
-                            @Override
-                            public void onPmFailure(Throwable error, String msg) {
-                                mLogtf.d("liveSubmitTestH5Answer:onPmFailure=" + msg + ",testId=" +
-                                        videoQuestionLiveEntity.id);
-                                if (onAnswerReslut != null) {
-                                    onAnswerReslut.onAnswerFailure();
-                                }
-                            }
-
-                            @Override
-                            public void onPmError(ResponseEntity responseEntity) {
-                                mLogtf.d("liveSubmitTestH5Answer:onPmError=" + responseEntity.getErrorMsg() + "," +
-                                        "testId=" +
-                                        videoQuestionLiveEntity.id);
-                                if (!responseEntity.isJsonError()) {
+                if("15".equals(videoQuestionLiveEntity.type) || "16".equals(videoQuestionLiveEntity.type)){
+                    getHttpManager().liveSubmitNewArtsRealH5Answer(videoQuestionLiveEntity.type,
+                            videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
+                            isRight, new HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) {
+                                    Loger.d("Duncan", "onPutQuestionResultNewArts4");
+                                    mLogtf.d("liveSubmitTestH5Answer:onPmSuccess=" + responseEntity.getJsonObject()
+                                            .toString() +
+                                            "," + videoQuestionLiveEntity);
+                                    VideoResultEntity entity = getHttpResponseParser().parseNewArtsH5PlatformQuestionAnswer
+                                            (responseEntity,
+                                                    true);
+                                    entity.setVoice(true);
+                                    if (StringUtils.isSpace(entity.getTestId())) {
+                                        entity.setTestId(videoQuestionLiveEntity.id);
+                                    }
                                     if (onAnswerReslut != null) {
-                                        onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
+                                        onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
+                                    }
+//                                    EventBus.getDefault().post(new ArtsAnswerResultEvent(responseEntity.getJsonObject().toString(),ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK));
+                                    Log.e("Duncan","====>newH5voiceanswerpager" + responseEntity.getJsonObject());
+                                }
+
+                                @Override
+                                public void onPmFailure(Throwable error, String msg) {
+                                    mLogtf.d("liveSubmitTestH5Answer:onPmFailure=" + msg + ",testId=" +
+                                            videoQuestionLiveEntity.id);
+                                    if (onAnswerReslut != null) {
+                                        onAnswerReslut.onAnswerFailure();
                                     }
                                 }
-                            }
-                        });
+
+                                @Override
+                                public void onPmError(ResponseEntity responseEntity) {
+                                    mLogtf.d("liveSubmitTestH5Answer:onPmError=" + responseEntity.getErrorMsg() + "," +
+                                            "testId=" +
+                                            videoQuestionLiveEntity.id);
+                                    if (!responseEntity.isJsonError()) {
+                                        if (onAnswerReslut != null) {
+                                            onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
+                                        }
+                                    }
+                                }
+                            });
+                } else {
+                    getHttpManager().liveSubmitNewArtsH5Answer(videoQuestionLiveEntity.srcType,
+                            videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
+                            isRight, new HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) {
+                                    Loger.d("Duncan", "onPutQuestionResultNewArts4");
+                                    mLogtf.d("liveSubmitTestH5Answer:onPmSuccess=" + responseEntity.getJsonObject()
+                                            .toString() +
+                                            "," + videoQuestionLiveEntity);
+                                    VideoResultEntity entity = getHttpResponseParser().parseNewArtsPlatformQuestionAnswer
+                                            (responseEntity,
+                                                    true);
+                                    entity.setVoice(true);
+                                    if (StringUtils.isSpace(entity.getTestId())) {
+                                        entity.setTestId(videoQuestionLiveEntity.id);
+                                    }
+                                    if (onAnswerReslut != null) {
+                                        onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
+                                    }
+                                    EventBus.getDefault().post(new ArtsAnswerResultEvent(responseEntity.getJsonObject().toString(),ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK));
+                                    Log.e("EnglisH5IRC","====>send answerResultEvent called:"+responseEntity.getJsonObject());
+                                }
+
+                                @Override
+                                public void onPmFailure(Throwable error, String msg) {
+                                    mLogtf.d("liveSubmitTestH5Answer:onPmFailure=" + msg + ",testId=" +
+                                            videoQuestionLiveEntity.id);
+                                    if (onAnswerReslut != null) {
+                                        onAnswerReslut.onAnswerFailure();
+                                    }
+                                }
+
+                                @Override
+                                public void onPmError(ResponseEntity responseEntity) {
+                                    mLogtf.d("liveSubmitTestH5Answer:onPmError=" + responseEntity.getErrorMsg() + "," +
+                                            "testId=" +
+                                            videoQuestionLiveEntity.id);
+                                    if (!responseEntity.isJsonError()) {
+                                        if (onAnswerReslut != null) {
+                                            onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
+                                        }
+                                    }
+                                }
+                            });
+                }
+
             } else {
                 getHttpManager().liveSubmitTestH5Answer(enstuId, videoQuestionLiveEntity.srcType,
                         videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,

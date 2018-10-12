@@ -830,6 +830,21 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     }
 
     /**
+     * 解析文科新课件H5语音答题
+     *
+     * @param responseEntity
+     * @return
+     */
+    public VideoResultEntity parseNewArtsH5PlatformQuestionAnswer(ResponseEntity responseEntity, boolean isVoice) {
+        VideoResultEntity entity = new VideoResultEntity();
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        entity.setGoldNum(Integer.parseInt(jsonObject.optString("gold")));
+        entity.setTestId(jsonObject.optString("testId"));
+
+        return entity;
+    }
+
+    /**
      * 解析学习报告
      *
      * @param responseEntity
