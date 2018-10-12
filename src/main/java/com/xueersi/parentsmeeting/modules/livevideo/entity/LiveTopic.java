@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 
 import org.json.JSONArray;
 
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public class LiveTopic {
     private String TAG = "LiveTopicLog";
-
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     /**
      * disable_speaking : [] id : 1360 mode : in-class status :
      * {"classbegin":false,"openbarrage":true,"openchat":true} topic :
@@ -21,7 +22,7 @@ public class LiveTopic {
      * :1452407139656,"status":1,"time":3,"type":""}
      */
     public LiveTopic() {
-        Loger.i(TAG, "LiveTopic");
+        logger.i( "LiveTopic");
     }
 
     /**
@@ -65,7 +66,7 @@ public class LiveTopic {
 
     public void setVideoQuestionLiveEntity(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         if (this.videoQuestionLiveEntity == null && videoQuestionLiveEntity == null) {
-            Loger.d(TAG, "setVideoQuestionLiveEntity,extra");
+            logger.d( "setVideoQuestionLiveEntity,extra");
         }
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
     }
@@ -104,15 +105,17 @@ public class LiveTopic {
 
     /**
      * 设置理科notice时候“from”字段的返回值
+     *
      * @param lKNoticeMode
      */
     public void setLKNoticeMode(String lKNoticeMode) {
         coachRoomstatus.setLKNoticeMode(lKNoticeMode);
     }
 
-    public String getLKNoticeMode(){
+    public String getLKNoticeMode() {
         return coachRoomstatus.getLKNoticeMode();
     }
+
     public void copy(LiveTopic liveTopic) {
         topic = liveTopic.topic;
         isDisable = liveTopic.isDisable;
@@ -225,6 +228,7 @@ public class LiveTopic {
             isOpenFeedback = roomStatusEntity.isOpenFeedback;
             agoraVoiceChatRoom = roomStatusEntity.agoraVoiceChatRoom;
             onVideoChat = roomStatusEntity.onVideoChat;
+            isOnbreak = roomStatusEntity.isOnbreak;
         }
 
         public boolean isOnbreak() {
@@ -258,6 +262,7 @@ public class LiveTopic {
 
         /**
          * 理科设置主讲老师是否开启了礼物，数据来自教师端返回
+         *
          * @param openZJLKbarrage
          */
         public void setZJLKOpenbarrage(boolean openZJLKbarrage) {
@@ -270,6 +275,7 @@ public class LiveTopic {
 
         /**
          * 理科设置辅导老师是否开启了礼物，数据来自教师端返回
+         *
          * @param openFDLKbarrage
          */
         public void setFDLKOpenbarrage(boolean openFDLKbarrage) {
@@ -427,6 +433,7 @@ public class LiveTopic {
 
         /**
          * 设置理科notice时候“from”字段的返回值 保存到辅导老师的状态里room2
+         *
          * @param lKNoticeMode
          */
         public void setLKNoticeMode(String lKNoticeMode) {

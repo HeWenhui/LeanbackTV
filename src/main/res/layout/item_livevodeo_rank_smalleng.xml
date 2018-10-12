@@ -37,7 +37,6 @@
         android:text="zyafja" />
 
     <TextView
-
         android:id="@id/tv_livevideo_rank_item_right"
         style="@style/text_font11_ffffff_style"
         android:layout_width="40dp"

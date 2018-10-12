@@ -2,13 +2,21 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandLiveVideoExperienceFragment;
 
 /**
  * Created by linyuqiang on 2018/7/23.
  * 新直播回放
  */
 public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
+
+    /**
+     * 用来判断是否是站立直播体验课
+     */
+    private Boolean isExperience = false;
 
     @Override
     protected LiveBackVideoFragmentBase getFragment() {
@@ -17,10 +25,16 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
             return new LecBackVideoFragment();
         }
         int pattern = getIntent().getIntExtra("pattern", 0);
-        if (pattern == 2) {
-            return new StandBackVideoFragment();
+
+        isExperience = getIntent().getBooleanExtra("isExperience", false);
+        if (!isExperience) {
+            if (pattern == 2) {
+                return new StandBackVideoFragment();
+            }
+            return new LiveBackVideoFragment();
         }
-        return new LiveBackVideoFragment();
+//        setRequestedOrientation(Configuration.ORIENTATION_LANDSCAPE);
+        return StandLiveVideoExperienceFragment.newInstance(isExperience);
     }
 
     @Override
@@ -61,7 +75,12 @@ public class LivePlaybackVideoActivity extends LiveBackVideoActivityBase {
         Intent intent = new Intent(context, LivePlaybackVideoActivity.class);
         intent.putExtras(bundle);
         intent.putExtra("where", where);
-        context.startActivityForResult(intent, requestCode);
+        try {
+            context.startActivityForResult(intent, requestCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

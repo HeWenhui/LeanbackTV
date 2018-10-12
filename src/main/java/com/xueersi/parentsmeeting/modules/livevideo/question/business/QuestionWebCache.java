@@ -11,7 +11,6 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import ren.yale.android.cachewebviewlib.CacheWebView;
 
@@ -31,6 +30,7 @@ public class QuestionWebCache {
         CacheWebView webView = new CacheWebView(context);
         webView.setWebViewClient(new MyWebViewClient());
         webView.loadUrl("https://live.xueersi.com/science/Live/getMultiTestPaper?liveId=119740&testId=365160-1&stuId=-111&stuName=test@talwx.com&stuCouId=12345654&isArts=0&nonce=45645dasf&isTowall=0");
+        webView.getWebViewCache().setNeedHttpDns(true);
     }
 
     public class MyWebViewClient extends ErrorWebViewClient {
@@ -48,7 +48,7 @@ public class QuestionWebCache {
         public void onPageFinished(WebView webView, String s) {
             super.onPageFinished(webView, s);
             webView.destroy();
-            Loger.d(TAG, "onPageFinished:s=" + s);
+            logger.d( "onPageFinished:s=" + s);
         }
     }
 }

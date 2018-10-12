@@ -4,10 +4,12 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.event.AppEvent;
+import com.xueersi.common.http.HttpCall;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.log.FileLogger;
@@ -59,6 +61,11 @@ public class LiveBackVideoActivityBase extends XesActivity {
     }
 
     @Override
+    public void addHttpRequest(HttpCall httpCall) {
+        //去掉
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         FileLogger.runActivity = this;
@@ -78,6 +85,17 @@ public class LiveBackVideoActivityBase extends XesActivity {
     public void onStop() {
         super.onStop();
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONSTOP);
+    }
+
+    @Override
+    public <T extends View> T findViewById(int id) {
+        T t = super.findViewById(id);
+        if (t == null) {
+            if (liveVideoFragmentBase != null) {
+                t = liveVideoFragmentBase.getContentView().findViewById(id);
+            }
+        }
+        return t;
     }
 
     @Override

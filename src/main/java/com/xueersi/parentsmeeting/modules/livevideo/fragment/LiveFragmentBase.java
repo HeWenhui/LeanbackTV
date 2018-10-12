@@ -33,7 +33,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
@@ -153,6 +152,11 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     }
 
+    public void stopPlayer() {
+        super.stopPlayer();
+        mLiveVideoBll.stopPlay();
+    }
+
     @Override
     protected void onUserBackPressed() {
         boolean userBackPressed = mLiveBll.onUserBackPressed();
@@ -172,7 +176,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                         if (videoView.getWidth() <= 0) {
                             return;
                         }
-                        boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+                        boolean isLand = activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
                         if (!isLand) {
                             return;
                         }
@@ -241,13 +245,14 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         LiveFragmentBase liveFragmentBase;
 
         public LiveLivePlayerPlayFragment() {
-            Loger.d(TAG, "LiveLivePlayerPlayFragment");
+            logger.d( "LiveLivePlayerPlayFragment");
         }
 
         @Override
         protected void onPlayOpenStart() {
             liveFragmentBase.setFirstBackgroundVisible(View.VISIBLE);
             liveFragmentBase.mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
+            liveFragmentBase.openSuccess = false;
         }
 
         @Override
@@ -267,6 +272,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                     });
                 }
             }, 1200);
+            liveFragmentBase.openSuccess = false;
         }
 
         @Override
@@ -275,6 +281,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             if (tvFail != null) {
                 tvFail.setVisibility(View.INVISIBLE);
             }
+            liveFragmentBase.openSuccess = true;
             liveFragmentBase.setFirstBackgroundVisible(View.GONE);
 //            if (mGetInfo != null && mGetInfo.getIsShowMarkPoint().equals("1")) {
 //                if (liveRemarkBll == null) {
@@ -320,6 +327,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                     });
                 }
             }, 200);
+            liveFragmentBase.openSuccess = false;
         }
 
         @Override
@@ -327,6 +335,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             if (liveFragmentBase.liveVideoAction != null) {
                 liveFragmentBase.liveVideoAction.onPlayError();
             }
+            liveFragmentBase.openSuccess = false;
         }
 
         @Override
@@ -393,6 +402,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         if (liveVideoAction == null) {
             return;
         }
+        mLogtf.d("onLiveStart:mHaveStop=" + mHaveStop);
         liveVideoAction.onLiveStart(server, cacheData, modechange);
         mLiveVideoBll.onLiveStart(server, cacheData, modechange);
         AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
@@ -514,7 +524,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
         if (event.getClass() == AppEvent.class) {
-            Loger.i(TAG, "onEvent:netWorkType=" + event.netWorkType);
+            logger.i( "onEvent:netWorkType=" + event.netWorkType);
             mLiveVideoBll.onNetWorkChange(event.netWorkType);
         }
     }
@@ -522,6 +532,9 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     @Override
     public void onDestroy() {
         isPlay = false;
+        if (mLiveVideoBll != null) {
+            mLiveVideoBll.onDestroy();
+        }
         if (userOnline != null) {
             userOnline.stop();
         }

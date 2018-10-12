@@ -18,6 +18,8 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -27,7 +29,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveLottieAnimationView;
 
@@ -44,6 +45,7 @@ import java.util.Map;
  */
 public class LiveStandAchievementBll implements StarInteractAction {
     private String TAG = "LiveStandAchievementBll";
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private String eventId;
     private int liveType;
     private Activity activity;
@@ -131,12 +133,12 @@ public class LiveStandAchievementBll implements StarInteractAction {
         LineMath line1 = getAandB(starScaleStep1, 1.0f, starScaleStep2, starScaleMax);
         starInLine1a = line1.a;
         starInLine1b = line1.b;
-        Loger.d(TAG, "StarInteractBll:starInLine1a=(" + starInLine1a + "," + starInLine1b + ")");
+        logger.d( "StarInteractBll:starInLine1a=(" + starInLine1a + "," + starInLine1b + ")");
         //第二条线
         LineMath line2 = getAandB(starScaleStep2, starScaleMax, 1.0f, 1.0f);
         starInLine2a = line2.a;
         starInLine2b = line2.b;
-        Loger.d(TAG, "StarInteractBll:starInLine2a=(" + starInLine2a + "," + starInLine2b + ")");
+        logger.d( "StarInteractBll:starInLine2a=(" + starInLine2a + "," + starInLine2b + ")");
         LineMath line3 = getAandB(0.25f, 1f, 0.75f, -1f);
         starRotateLine1a = line3.a;
         starRotateLine1b = line3.b;
@@ -156,7 +158,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
         this.liveAndBackDebug = liveAndBackDebug;
     }
 
-    public void initView(RelativeLayout bottomContent) {
+    public void initView(RelativeLayout bottomContent, RelativeLayout mContentView) {
         this.bottomContent = bottomContent;
 //        if (myView != null) {
 //            ViewGroup group = (ViewGroup) myView.getParent();
@@ -173,6 +175,9 @@ public class LiveStandAchievementBll implements StarInteractAction {
 //        }
 //        myView = activity.getLayoutInflater().inflate(R.layout.item_livevideo_stat, bottomContent, false);
         myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_star_content);
+        if (myView == null) {
+            myView = mContentView.findViewById(R.id.rl_livevideo_star_content);
+        }
         myView.setVisibility(View.VISIBLE);
         View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_stand_stat_gold, myView, false);
         myView.addView(layout_livevideo_stat_gold);
@@ -211,7 +216,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
         LottieComposition.Factory.fromAssetFileName(activity, fileName, new OnCompositionLoadedListener() {
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                Loger.d(TAG, "onCompositionLoaded:composition=" + composition);
+                logger.d( "onCompositionLoaded:composition=" + composition);
                 if (composition == null) {
 //                    Toast.makeText(activity, "加载失败", Toast.LENGTH_SHORT).show();
                     return;
@@ -407,8 +412,8 @@ public class LiveStandAchievementBll implements StarInteractAction {
 //                float scale = 1;
 //                iv_livevideo_starinteract_stat.setScaleX(scale);
 //                iv_livevideo_starinteract_stat.setScaleY(scale);
-//                Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
-////                    Loger.i(TAG, "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float) ivStarInteractStat.getWidth() / (float) width));
+//                logger.i( "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
+////                    logger.i( "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float) ivStarInteractStat.getWidth() / (float) width));
 //            }
 //        });
 //        translateValueAnimator.start();

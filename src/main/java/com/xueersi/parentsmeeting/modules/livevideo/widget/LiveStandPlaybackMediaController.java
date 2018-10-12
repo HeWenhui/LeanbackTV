@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -19,7 +21,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
@@ -32,6 +33,7 @@ import java.util.List;
  */
 public class LiveStandPlaybackMediaController extends MediaController2 {
     private String TAG = "LivePlaybackMediaController";
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     public MediaControllerBottom2 mediaControllerBottom;
     private RelativeLayout rlKeyPoints;
     private RelativeLayout rlKeytip;
@@ -112,7 +114,7 @@ public class LiveStandPlaybackMediaController extends MediaController2 {
             float screenDensity = ScreenUtils.getScreenDensity();
             MarginLayoutParams rlKeytipLp = (MarginLayoutParams) rlKeytip.getLayoutParams();
             rlKeytip.setLayoutParams(rlKeytipLp);
-            Loger.i(TAG, "setVideoQuestions:pointWidth=" + pointWidth + ",rlKeytip=" + rlKeytip.getWidth()
+            logger.i("setVideoQuestions:pointWidth=" + pointWidth + ",rlKeytip=" + rlKeytip.getWidth()
                     + ",duration=" + duration + ",bitmap=" + bitmap.getWidth());
             int index = 1;
             LayoutInflater inflater = activity.getLayoutInflater();
@@ -149,7 +151,7 @@ public class LiveStandPlaybackMediaController extends MediaController2 {
                 final int insretTime = videoQuestionEntity.getvQuestionInsretTime();
                 long pos = 1000000L * insretTime / (duration);//按SeekBar的算法，算出比例
                 lp.leftMargin = (int) ((pointWidth * pos / 1000) - width / 2 + 3 * screenDensity);//位置显示居中，3 * screenDensity是SeekBar居左
-                Loger.i(TAG, "setVideoQuestions:" + videoQuestionEntity.getvCategory()
+                logger.i("setVideoQuestions:" + videoQuestionEntity.getvCategory()
                         + ",insretTime=" + TimeUtils.generateTime(insretTime * 1000) + ",pos=" + pos
                         + ",leftMargin=" + lp.leftMargin);
                 //rlClick.setBackgroundColor(0x99000000);
@@ -235,7 +237,7 @@ public class LiveStandPlaybackMediaController extends MediaController2 {
                     //下面箭头
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivArrow.getLayoutParams();
                     lp.leftMargin = (int) ((pointWidth * pos / 1000) - ivArrow.getWidth() / 2 + 3 * screenDensity + loction[0]);//位置显示居中，3 * screenDensity是SeekBar居左
-                    Loger.i(TAG, "showTip:category=" + videoQuestionEntity.getvCategory()
+                    logger.i("showTip:category=" + videoQuestionEntity.getvCategory()
                             + ",insretTime=" + TimeUtils.generateTime(insretTime * 1000)
                             + ",pointWidth=" + pointWidth + ",leftMargin=" + lp.leftMargin + ",getWidth=" + ivPlay.getWidth());
                     ivArrow.setLayoutParams(lp);
@@ -243,7 +245,7 @@ public class LiveStandPlaybackMediaController extends MediaController2 {
                 {//上面文字和播放
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlPointTop.getLayoutParams();
                     int leftMargin = (int) ((pointWidth * pos / 1000) - rlPointTop.getWidth() / 2 + 3 * screenDensity + loction[0]);//位置显示居中，3 * screenDensity是SeekBar居左
-                    Loger.i(TAG, "showTip:leftMargin=" + leftMargin + ",getWidth=" + rlPointTop.getWidth());
+                    logger.i("showTip:leftMargin=" + leftMargin + ",getWidth=" + rlPointTop.getWidth());
                     if (leftMargin <= 0) {//目前调整SeekBar，字数少，不会出现
                         leftMargin = 12;
                     } else {

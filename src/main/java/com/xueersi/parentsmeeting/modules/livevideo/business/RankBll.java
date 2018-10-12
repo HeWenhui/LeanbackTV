@@ -488,7 +488,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) relativeLayout.getLayoutParams();
         int wradio = liveVideoPoint.getRightMargin();
         if (wradio != params.width) {
-            //Loger.e(TAG, "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+            //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
             // + ",wradio=" + wradio + "," + params.width);
             params.width = wradio;
 //                relativeLayout.setLayoutParams(params);

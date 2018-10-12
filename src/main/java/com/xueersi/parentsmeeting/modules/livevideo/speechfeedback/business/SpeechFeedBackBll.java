@@ -17,6 +17,8 @@ import com.xueersi.component.cloud.config.XesCloudConfig;
 import com.xueersi.component.cloud.entity.CloudUploadEntity;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -36,7 +38,6 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
@@ -57,6 +58,7 @@ import io.agora.rtc.RtcEngine;
  */
 public class SpeechFeedBackBll implements SpeechFeedBackAction {
     String TAG = "SpeechFeedBackBll";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     LogToFile logToFile;
     boolean isStart = false;
     Activity activity;
@@ -105,13 +107,6 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         mAudioRecord = new AudioRecord(DEFAULT_AUDIO_SOURCE,
                 DEFAULT_SAMPLING_RATE, DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT.getAudioFormat(),
                 mBufferSize);
-    }
-
-    public SpeechFeedBackBll(Activity activity, LiveBll liveBll) {
-        this.activity = activity;
-        this.liveBll = liveBll;
-        liveAndBackDebug = liveBll;
-        logToFile = new LogToFile(activity, TAG);
     }
 
     public SpeechFeedBackBll(Activity activity, SpeechFeedBackHttp liveBll) {
@@ -188,7 +183,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                 int screenWidth = ScreenUtils.getScreenWidth();
                 int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
                 params.rightMargin = wradio;
-                Loger.i(TAG, "start:addView");
+                logger.i( "start:addView");
                 bottomContent.addView(speechFeedBackPager.getRootView(), params);
             }
         });
@@ -196,7 +191,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             @Override
             public void run() {
                 try {
-                    Loger.d(TAG, "start:startRecording:mAudioRecord=" + (mAudioRecord == null));
+                    logger.d( "start:startRecording:mAudioRecord=" + (mAudioRecord == null));
                     //initAudioRecorder();
                     int stuid = Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId());
                     long time = System.currentTimeMillis();
@@ -233,7 +228,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                             }
                         });
                     } catch (Exception e) {
-                        Loger.d(TAG, "start:setOnEngineCreate", e);
+                        logger.d( "start:setOnEngineCreate", e);
                     }
                     mWorkerThread.eventHandler().addEventHandler(agEventHandler);
                     mWorkerThread.start();
@@ -267,9 +262,9 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                             }
                         }
                     }*/
-                    Loger.d(TAG, "start:startRecording:end;time=" + (System.currentTimeMillis() - time));
+                    logger.d( "start:startRecording:end;time=" + (System.currentTimeMillis() - time));
                 } catch (Exception e) {
-                    Loger.e(TAG, "initAudioRecorder", e);
+                    logger.e( "initAudioRecorder", e);
                 }
             }
         });
@@ -290,10 +285,10 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         @Override
         public void onUserJoined(int uid, int elapsed) {
 //                            String mainTeacherId = mGetInfo.getMainTeacherId();
-//                            Loger.i(TAG, "onUserJoined:uid=" + uid + ",mainTeacherId=" + mainTeacherId);
+//                            logger.i( "onUserJoined:uid=" + uid + ",mainTeacherId=" + mainTeacherId);
 //                            if (!("" + uid).equals(mainTeacherId)) {
 //                                int mute = mWorkerThread.getRtcEngine().muteRemoteAudioStream(uid, true);
-//                                Loger.i(TAG, "onUserJoined:uid=" + uid + ",mute=" + mute);
+//                                logger.i( "onUserJoined:uid=" + uid + ",mute=" + mute);
 //                            }
         }
 
@@ -348,7 +343,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             try {
                 outputStream.close();
             } catch (IOException e) {
-                Loger.d(TAG, "stop:close", e);
+                logger.d( "stop:close", e);
             }
             outputStream = null;
             long time = System.currentTimeMillis() - startTime;
@@ -374,7 +369,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                     @Override
                     public void onSuccess(XesCloudResult result) {
                         finalFile.delete();
-                        Loger.d(TAG, "asyncUpload:onSuccess=" + result.getHttpPath());
+                        logger.d( "asyncUpload:onSuccess=" + result.getHttpPath());
                         String service = DeviceInfo.getDeviceName();
                         liveBll.saveStuTalkSource(result.getHttpPath(), service);
 //                    http://testmv.xesimg.com/app/live_feed_back/2018/04/27/31203_1524811986079_ise1524811975319.mp3
@@ -382,7 +377,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 
                     @Override
                     public void onError(XesCloudResult result) {
-                        Loger.d(TAG, "asyncUpload:onError=" + result);
+                        logger.d( "asyncUpload:onError=" + result);
                     }
                 });
             }
@@ -395,7 +390,7 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
             bottomContent.post(new Runnable() {
                 @Override
                 public void run() {
-                    Loger.i(TAG, "remove view");
+                    logger.i( "remove view");
                     bottomContent.removeView(speechFeedBackPager.getRootView());
                     speechFeedBackPager = null;
                 }

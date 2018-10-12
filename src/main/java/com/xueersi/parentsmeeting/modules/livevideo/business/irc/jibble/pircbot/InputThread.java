@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright Paul James Mutton, 2001-2007, http://www.jibble.org/
 
 This file is part of PircBot.
@@ -15,7 +15,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot
 
 import android.util.Log;
 
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -29,18 +30,18 @@ import java.net.Socket;
  * the PircBot without changing them. This running Thread also detects
  * disconnection from the server and is thus used by the OutputThread to send
  * lines to the server.
- * 
+ *
  * @author Paul James Mutton, <a
  *         href="http://www.jibble.org/">http://www.jibble.org/</a>
  * @version 1.4.6 (Build time: Wed Apr 11 19:20:59 2007)
  */
 public class InputThread extends Thread {
 	String TAG = "InputThreadLog";
-
+	protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 	/**
 	 * The InputThread reads lines from the IRC server and allows the PircBot to
 	 * handle them.
-	 * 
+	 *
 	 * @param bot
 	 *            An instance of the underlying PircBot.
 	 * @param breader
@@ -59,7 +60,7 @@ public class InputThread extends Thread {
 	/**
 	 * Sends a raw line to the IRC server as soon as possible, bypassing the
 	 * outgoing message queue.
-	 * 
+	 *
 	 * @param line
 	 *            The raw line to send to the IRC server.
 	 */
@@ -71,7 +72,7 @@ public class InputThread extends Thread {
 	 * Returns true if this InputThread is connected to an IRC server. The
 	 * result of this method should only act as a rough guide, as the result may
 	 * not be valid by the time you act upon it.
-	 * 
+	 *
 	 * @return True if still connected.
 	 */
 	boolean isConnected() {
@@ -88,6 +89,7 @@ public class InputThread extends Thread {
 	 * after such a problem, but the existance of any uncaught exceptions in
 	 * your code is something you should really fix.
 	 */
+	@Override
 	public void run() {
 		try {
 			boolean running = true;
@@ -121,7 +123,7 @@ public class InputThread extends Thread {
 			}
 		} catch (Exception e) {
 			// Do nothing.
-			Loger.e(TAG, "run", e);
+			logger.e( "run", e);
 		}
 
 		// If we reach this point, then we must have disconnected.
@@ -130,7 +132,7 @@ public class InputThread extends Thread {
 		} catch (Exception e) {
 			// Just assume the socket was already closed.
 		}
-		Loger.d(TAG, "run:_disposed=" + _disposed);
+		logger.d( "run:_disposed=" + _disposed);
 		if (!_disposed) {
 			_isConnected = false;
 

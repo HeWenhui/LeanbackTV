@@ -24,6 +24,8 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
@@ -40,7 +42,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -60,6 +61,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class LecBackAdvertPopBll {
     private String TAG = "LecBackAdvertPopBll";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private LecBackAdvertHttp lecBackAdvertHttp;
     private WeakHandler handler = new WeakHandler(null);
     private Activity activity;
@@ -169,7 +171,7 @@ public class LecBackAdvertPopBll {
 
     public void onConfigurationChanged(Configuration newConfig) {
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlQuestionContent.getLayoutParams();
-        Loger.d(TAG, "onConfigurationChanged:mIsLand=" + mIsLand);
+        logger.d( "onConfigurationChanged:mIsLand=" + mIsLand);
         if (mIsLand.get()) {
             lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
             lp.addRule(RelativeLayout.BELOW, 0);
@@ -220,7 +222,7 @@ public class LecBackAdvertPopBll {
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MiniEvent event) {
-        Loger.d("onEvent:mIsLand=" + mIsLand.get());
+        logger.d("onEvent:mIsLand=" + mIsLand.get());
         if ("Order".equals(event.getMin())) {
             if (mIsLand.get()) {
                 final String courseId = event.getCourseId();

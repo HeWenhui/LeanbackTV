@@ -47,7 +47,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
@@ -192,7 +191,7 @@ public class LiveRemarkBll {
         } else {
             offSet = time - frameInfo.pkt / 1000;
         }
-        Loger.i(TAG, "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
+        logger.i( "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
                 + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration()
                 + " systime:" + (System.currentTimeMillis() / 1000 + sysTimeOffset) + "   nettime:" + time);
         //setBtEnable(true);
@@ -211,9 +210,13 @@ public class LiveRemarkBll {
                     mLiveMediaControllerBottom.getvMarkGuide().setVisibility(View.GONE);
                 }
                 if (isGaosan) {
-                    mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.VISIBLE);
+                    if (mLiveMediaControllerBottom.getLlMarkPopMenu() != null) {
+                        mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.VISIBLE);
+                    }
                 } else {
-                    mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.GONE);
+                    if (mLiveMediaControllerBottom.getLlMarkPopMenu() != null) {
+                        mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.GONE);
+                    }
                     final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
 
                     if (liveTextureView == null) {
@@ -262,59 +265,61 @@ public class LiveRemarkBll {
                 }
             }
         });
-        for (int i = 0; i < mLiveMediaControllerBottom.getLlMarkPopMenu().getChildCount(); i++) {
-            mLiveMediaControllerBottom.getLlMarkPopMenu().getChildAt(i).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
+        if (isGaosan && mLiveMediaControllerBottom.getLlMarkPopMenu() != null) {
+            for (int i = 0; i < mLiveMediaControllerBottom.getLlMarkPopMenu().getChildCount(); i++) {
+                mLiveMediaControllerBottom.getLlMarkPopMenu().getChildAt(i).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
 
-                    mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.GONE);
-                    final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
+                        mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.GONE);
+                        final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
 
-                    if (liveTextureView == null) {
-                        return;
-                    }
-                    if (mPlayerService.getPlayer() == null) {
-                        XESToastUtils.showToast(mContext, "标记失败");
-                        return;
-                    }
-                    isMarking = true;
-                    final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
-//                liveVideoView.setVisibility(View.INVISIBLE);
-                    ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
-                    v.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
-                            v.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
-                                    v.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Bitmap bitmap = liveTextureView.getBitmap();
-                                            if (bitmap == null) {
-                                                markFail();
-                                                return;
-                                            }
-                                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) videoWidth, displayHeight);
-                                            bitmap = Bitmap.createScaledBitmap(bitmap, 320, 240, true);
-                                            File saveDir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/save");
-                                            if (!saveDir.exists()) {
-                                                saveDir.mkdirs();
-                                            }
-                                            File file = new File(saveDir, "" + System.currentTimeMillis() + ".png");
-                                            ImageUtils.save(bitmap, file, Bitmap.CompressFormat.JPEG);
-                                            reMark(file, (String) v.getTag());
-                                            ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
-                                        }
-                                    }, 100);
-                                }
-                            }, 100);
+                        if (liveTextureView == null) {
+                            return;
                         }
-                    }, 100);
-                }
-            });
+                        if (mPlayerService.getPlayer() == null) {
+                            XESToastUtils.showToast(mContext, "标记失败");
+                            return;
+                        }
+                        isMarking = true;
+                        final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
+//                liveVideoView.setVisibility(View.INVISIBLE);
+                        ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
+                        v.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
+                                v.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
+                                        v.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Bitmap bitmap = liveTextureView.getBitmap();
+                                                if (bitmap == null) {
+                                                    markFail();
+                                                    return;
+                                                }
+                                                bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) videoWidth, displayHeight);
+                                                bitmap = Bitmap.createScaledBitmap(bitmap, 320, 240, true);
+                                                File saveDir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/save");
+                                                if (!saveDir.exists()) {
+                                                    saveDir.mkdirs();
+                                                }
+                                                File file = new File(saveDir, "" + System.currentTimeMillis() + ".png");
+                                                ImageUtils.save(bitmap, file, Bitmap.CompressFormat.JPEG);
+                                                reMark(file, (String) v.getTag());
+                                                ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
+                                            }
+                                        }, 100);
+                                    }
+                                }, 100);
+                            }
+                        }, 100);
+                    }
+                });
+            }
         }
     }
 
@@ -410,7 +415,11 @@ public class LiveRemarkBll {
         englishH5Num = 0;
         markNum = 0;
         for (VideoPointEntity entity : lst) {
-            switch (entity.getNewType()) {
+            String newType = entity.getNewType();
+            if (newType == null) {
+                continue;
+            }
+            switch (newType) {
                 case "1":
                 case "6":
                     entity.setNumone(++questionNum);
@@ -464,9 +473,9 @@ public class LiveRemarkBll {
             final long pkt = ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000;
             final long cache = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000;
             final long time = pkt - cache + offSet - 8;
-            Loger.i(TAG, "frameTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000);
-            Loger.i(TAG, "cacheTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000);
-            Loger.i(TAG, "offset:" + offSet + "  time:" + time + "   sysTime:" + System.currentTimeMillis());
+            logger.i( "frameTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000);
+            logger.i( "cacheTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000);
+            logger.i( "offset:" + offSet + "  time:" + time + "   sysTime:" + System.currentTimeMillis());
             if (!TextUtils.isEmpty(fileName)) {
                 CloudUploadEntity entity = new CloudUploadEntity();
                 entity.setFilePath(fileName);
@@ -475,12 +484,12 @@ public class LiveRemarkBll {
                 mCloudUploadBusiness.asyncUpload(entity, new XesStsUploadListener() {
                     @Override
                     public void onProgress(XesCloudResult result, int percent) {
-                        Loger.i(TAG, "progress " + percent);
+                        logger.i( "progress " + percent);
                     }
 
                     @Override
                     public void onSuccess(XesCloudResult result) {
-                        Loger.i(TAG, "upCloud Sucess");
+                        logger.i( "upCloud Sucess");
                         mHttpManager.saveLiveMark(liveId, type, "" + time, result.getHttpPath(), new HttpCallBack(false) {
                             @Override
                             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -503,9 +512,9 @@ public class LiveRemarkBll {
                                             break;
                                     }
                                 }
-                                if(isGaosan) {
+                                if (isGaosan) {
                                     XESToastUtils.showToast(mContext, sb.toString());
-                                }else{
+                                } else {
                                     XESToastUtils.showToast(mContext, "标记成功");
                                 }
                                 isMarking = false;
@@ -529,7 +538,7 @@ public class LiveRemarkBll {
 
                     @Override
                     public void onError(XesCloudResult result) {
-                        Loger.i(TAG, result.getErrorMsg());
+                        logger.i( result.getErrorMsg());
                     }
                 });
             } else {
@@ -545,14 +554,14 @@ public class LiveRemarkBll {
         CountDownTimer timer = new CountDownTimer(15200, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                Loger.i(TAG, "onTick:" + millisUntilFinished);
+                logger.i( "onTick:" + millisUntilFinished);
                 mLiveMediaControllerBottom.getBtMark().setText(((millisUntilFinished) / 1000) + "");
                 mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.shape_oval_black);
             }
 
             @Override
             public void onFinish() {
-                Loger.i(TAG, "onFinish");
+                logger.i( "onFinish");
                 mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.bg_bt_live_mark);
                 mLiveMediaControllerBottom.getBtMark().setText("");
                 setIsCounting(false);
@@ -769,7 +778,7 @@ public class LiveRemarkBll {
     }
 
     public void setBtEnable(final boolean enable) {
-        Loger.i(TAG, "setBtEnable  " + "video:" + isVideoReady + "   class:" + isClassReady
+        logger.i( "setBtEnable  " + "video:" + isVideoReady + "   class:" + isClassReady
                 + "   onchat:" + isOnChat);
         if (mLiveMediaControllerBottom == null) {
             return;

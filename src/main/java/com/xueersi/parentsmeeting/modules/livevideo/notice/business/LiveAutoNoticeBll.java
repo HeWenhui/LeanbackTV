@@ -29,7 +29,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SlowHorizontalScrollView;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 
@@ -170,11 +169,11 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             }
             String content = null;
             int i = ShareDataManager.getInstance().getInt("LiveAutoNotice_" + liveId, -1, ShareDataManager.SHAREDATA_USER);
-            if (grade >= 2 && grade <= 3) {
+            /*if (grade >= 2 && grade <= 3) {
                 content = noticeLowLevel[(i + 1) % 4];
             } else if (grade >= 4 && grade <= 7) {
                 content = noticeHighLevel[(i + 1) % 4];
-            } else if (grade == 13) {
+            } else*/ if (grade == 13) {
                 content = noticeGaosan[(i + 1) % 3];
             } else {
                 return;
@@ -230,7 +229,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
         }
         try {
             if (root == null) {
-                if(LiveVideoConfig.isPrimary){
+                if (LiveVideoConfig.isPrimary) {
                     root = View.inflate(mContext, R.layout.layout_live_auto_psnotice, null);
                 } else {
                     root = View.inflate(mContext, R.layout.layout_live_auto_notice, null);
@@ -240,6 +239,8 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
                 vRight = root.findViewById(R.id.v_live_auto_notice_right);
                 ivAvatar = (ImageView) root.findViewById(R.id.iv_live_auto_notice_avatar);
                 tvContent = (TextView) root.findViewById(R.id.tv_live_auto_notice_content);
+            } else {
+                bottom.removeView(root);
             }
             ImageLoader.with(mContext).load(head).error(R.drawable.ic_default_head_square).into(ivAvatar);
             SpannableString content = new SpannableString(name + "@你  " + s);
@@ -253,10 +254,11 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             RelativeLayout.LayoutParams rootParam = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             rootParam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             rootParam.setMargins(0, 0, 0, 40);
-            if (!isShowing) {
-                bottom.addView(root, 1, rootParam);
-                isShowing = true;
-            }
+//            if (!isShowing) {
+//                bottom.addView(root, 1, rootParam);
+//                isShowing = true;
+//            }
+            bottom.addView(root, rootParam);
             LinearLayout.LayoutParams svParam = new LinearLayout.LayoutParams(videoWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
             mSlowHorizontalScrollView.setLayoutParams(svParam);
             LinearLayout.LayoutParams vParam = new LinearLayout.LayoutParams(videoWidth, 1);
@@ -289,7 +291,6 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
     /**
      * 显示送礼物成功的文案提示
      *
-     *
      * @param s
      * @param head
      */
@@ -298,7 +299,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
 //            return;
 //        }
 //        isShowing = true;
-        if(mRunnable == null){
+        if (mRunnable == null) {
             mRunnable = new Runnable() {
                 @Override
                 public void run() {
@@ -369,7 +370,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
      * @param type
      */
     public void getAutoNotice(int isForce, int type) {
-        Loger.i(TAG, "getAutoNotice");
+        logger.i( "getAutoNotice");
         try {
             if (Integer.parseInt(classId) < 0) {
                 return;
@@ -382,7 +383,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 try {
                     JSONObject object = (JSONObject) responseEntity.getJsonObject();
-                    Loger.i(TAG, "getAutoNotice success" + object.toString());
+                    logger.i( "getAutoNotice success" + object.toString());
 
                     int type = object.optInt("type", -1);
                     int choose = object.optInt("choose", -1);
@@ -401,7 +402,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                Loger.i(TAG, "getAutoNotice fail" + msg);
+                logger.i( "getAutoNotice fail" + msg);
                 umsAgent(0, false);
                 //showNotice("老师",notice[1][1],"");
             }
@@ -409,7 +410,7 @@ public class LiveAutoNoticeBll extends LiveBaseBll {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.i(TAG, "getAutoNotice fail" + responseEntity.getErrorMsg());
+                logger.i( "getAutoNotice fail" + responseEntity.getErrorMsg());
                 umsAgent(0, false);
                 //showNotice("老师",notice[1][1],"");
             }

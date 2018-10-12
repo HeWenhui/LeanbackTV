@@ -7,8 +7,9 @@ import android.media.SoundPool;
 import android.os.Build;
 import android.util.Log;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SoundInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 public class SoundPoolHelper {
 
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private List<SoundPlayTask> playTasks;
     /**
      * 当前是否正在加载音效资源
@@ -186,10 +188,10 @@ public class SoundPoolHelper {
     private void doSetVolume(Object key, float volume) {
         if (mSoundInfoMap != null && mSoundPool != null) {
             SoundInfo soundInfo = mSoundInfoMap.get(key);
-            Loger.e("SoundPoolHelper", "=====>setVolume:" + key);
+            logger.e( "=====>setVolume:" + key);
             if (soundInfo != null) {
                 mSoundPool.setVolume(soundInfo.getStreamId(), volume, volume);
-                Loger.e("SoundPoolHelper", "======>setVolume:" + soundInfo.getStreamId());
+                logger.e( "======>setVolume:" + soundInfo.getStreamId());
             }
         }
     }
@@ -198,10 +200,10 @@ public class SoundPoolHelper {
     private void doPauseMusic(Object key) {
         if (mSoundInfoMap != null && mSoundPool != null) {
             SoundInfo soundInfo = mSoundInfoMap.get(key);
-            Loger.e("SoundPoolHelper", "=====>pauseMusic:" + key);
+            logger.e( "=====>pauseMusic:" + key);
             if (soundInfo != null) {
                 mSoundPool.pause(soundInfo.getStreamId());
-                Loger.e("SoundPoolHelper", "======>pauseMusic:" + soundInfo.getStreamId());
+                logger.e( "======>pauseMusic:" + soundInfo.getStreamId());
             }
         }
     }
@@ -210,10 +212,10 @@ public class SoundPoolHelper {
     private void doStopMusic(Object key) {
         if (mSoundInfoMap != null && mSoundPool != null) {
             SoundInfo soundInfo = mSoundInfoMap.get(key);
-            Loger.e("SoundPoolHelper", "=====>stopMusic:" + key);
+            logger.e( "=====>stopMusic:" + key);
             if (soundInfo != null) {
                 mSoundPool.stop(soundInfo.getStreamId());
-                Loger.e("SoundPoolHelper", "======>stopMusic:" + soundInfo.getStreamId());
+                logger.e( "======>stopMusic:" + soundInfo.getStreamId());
             }
         }
     }
@@ -270,7 +272,6 @@ public class SoundPoolHelper {
                 attrBuilder.setLegacyStreamType(mStreamTYpe);
                 builder.setAudioAttributes(attrBuilder.build());
                 mSoundPool = builder.build();
-                Log.e("SoundPoolHelper", "=========> create soundPool by builder");
             } else {
                 mSoundPool = new SoundPool(mMaxStreamNum, mStreamTYpe, 0);
             }
@@ -290,13 +291,11 @@ public class SoundPoolHelper {
         }
         if (mSoundPool != null) {
             mSoundPool.release();
-            Log.e("SoundPoolHelper", "=======>release called 22222");
         }
         if (mSoundInfoMap != null) {
             mSoundInfoMap.clear();
         }
         mContext = null;
-        Log.e("SoundPoolHelper", "=======>release called ");
 
     }
 }

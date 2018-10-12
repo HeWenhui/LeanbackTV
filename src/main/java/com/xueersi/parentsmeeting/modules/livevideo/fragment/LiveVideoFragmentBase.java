@@ -255,6 +255,10 @@ public class LiveVideoFragmentBase extends Fragment {
         return mContentView;
     }
 
+    public RelativeLayout getContentView() {
+        return mContentView;
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

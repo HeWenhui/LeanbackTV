@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -10,13 +11,18 @@ import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.log.Loger;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
 import org.xutils.xutils.common.Callback;
 import org.xutils.xutils.common.Callback.CancelledException;
@@ -25,6 +31,7 @@ import org.xutils.xutils.ex.HttpException;
 import org.xutils.xutils.http.RequestParams;
 import org.xutils.xutils.x;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -32,11 +39,15 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 
+import okhttp3.Call;
+import okhttp3.Response;
+
 /**
  * 直播网络访问类
  */
 public class LiveHttpManager extends BaseHttpBusiness {
     String TAG = "LiveHttpManager";
+    private final Logger logger = LoggerFactory.getLogger(TAG);
     HashMap<String, String> defaultKey = new HashMap<>();
     LiveVideoSAConfig.Inner liveVideoSAConfigInner;
     private LiveVideoSAConfig liveVideoSAConfig;
@@ -111,22 +122,18 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     int getTimes = 1;
 
-    public Callback.Cancelable liveGetPlayServer(final StringBuilder ipsb, final String url2, final CommonRequestCallBack<String>
+    public Callback.Cancelable liveGetPlayServer(final URLDNS urldns, final String url2, final CommonRequestCallBack<String>
             requestCallBack) {
         final HttpURLConnectionCancelable cancelable = new HttpURLConnectionCancelable();
         LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
         liveThreadPoolExecutor.execute(new Runnable() {
             Handler handler = new Handler(Looper.getMainLooper());
+
             @Override
             public void run() {
                 try {
-                    URL url = new URL(url2);
-                    InetAddress inetAddress = InetAddress.getByName(url.getHost());
-                    ipsb.append(inetAddress.getHostAddress());
-                    Loger.d(TAG, "liveGetPlayServer:host=" + url.getHost() + ",ip=" + inetAddress.getHostAddress());
+                    DNSUtil.getDns(urldns, url2);
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
                 HttpURLConnection connection = null;
@@ -165,6 +172,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
                         });
                     }
                 } catch (final Exception e) {
+                    logger.d( "liveGetPlayServer:disconnect=" + (connection != null));
+                    try {
+                        if (connection != null) {
+                            connection.disconnect();
+                        }
+                    } catch (Exception e2) {
+
+                    }
                     handler.post(new Runnable() {
 
                         @Override
@@ -174,21 +189,36 @@ public class LiveHttpManager extends BaseHttpBusiness {
                             }
                         }
                     });
-                } finally {
-                    Loger.d(TAG, "liveGetPlayServer:disconnect=" + (connection != null));
-                    try {
-                        if (connection != null) {
-                            connection.disconnect();
-                        }
-                    } catch (Exception e) {
-
-                    }
                 }
             }
         });
         return cancelable;
     }
 
+    public Callback.Cancelable liveGetPlayServer2(final URLDNS urldns, final String url2, final CommonRequestCallBack<String>
+            requestCallBack) {
+        final HttpURLConnectionCancelable cancelable = new HttpURLConnectionCancelable();
+        HttpRequestParams params = new HttpRequestParams();
+        params.addHeaderParam("Connection", "Keep-Alive");
+        baseSendPostNoBusiness(url2, params, new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                if (cancelable.isCancelled()) {
+                    return;
+                }
+                requestCallBack.onError(e, false);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (cancelable.isCancelled()) {
+                    return;
+                }
+                requestCallBack.onSuccess(response.body().string());
+            }
+        });
+        return cancelable;
+    }
 
     class HttpURLConnectionCancelable implements Callback.Cancelable {
         HttpURLConnection connection;
@@ -570,7 +600,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("entranceTime", "" + entranceTime);
         params.addBodyParam("type", "1");
         setDefaultParameter(params);
-        Loger.i(TAG, "sendSpeechEvalResult:enstuId=" + enstuId + ",liveId=" + liveId);
+        logger.i( "sendSpeechEvalResult:enstuId=" + enstuId + ",liveId=" + liveId);
         sendPost(LiveVideoConfig.URL_LIVE_SEND_SPEECHEVAL, params, requestCallBack);
     }
 
@@ -583,7 +613,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("answers", "" + stuAnswer);
         params.addBodyParam("type", "1");
         setDefaultParameter(params);
-        Loger.i(TAG, "sendSpeechEvalResult2:enstuId=" + enstuId + ",liveId=" + liveId);
+        logger.i( "sendSpeechEvalResult2:enstuId=" + enstuId + ",liveId=" + liveId);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
     }
 
@@ -592,7 +622,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("testId", id);
         setDefaultParameter(params);
-        Loger.i(TAG, "getSpeechEvalAnswerTeamRank:id=" + id);
+        logger.i( "getSpeechEvalAnswerTeamRank:id=" + id);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM_RAND, params, requestCallBack);
     }
 
@@ -603,7 +633,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", id);
         params.addBodyParam("type", "1");
         setDefaultParameter(params);
-        Loger.i(TAG, "speechEval42IsAnswered:enstuId=" + enstuId + ",liveId=" + liveId);
+        logger.i( "speechEval42IsAnswered:enstuId=" + enstuId + ",liveId=" + liveId);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42_ANSWER, params, requestCallBack);
     }
 
@@ -879,14 +909,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param url
      * @param callBack
      */
-    public void saveLiveMark(String liveId,String type,String time, String url, HttpCallBack callBack) {
+    public void saveLiveMark(String liveId, String type, String time, String url, HttpCallBack callBack) {
         HttpRequestParams params = new HttpRequestParams();
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("curTime", time);
         params.addBodyParam("imageUrl", url);
-        params.addBodyParam("liveId",liveId);
-        params.addBodyParam("markType",type);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("markType", type);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SAVE_MARK_POINT, params, callBack);
     }
@@ -1035,15 +1065,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param classId
      * @param teamId
      * @param stuId
-     * @param isAIPartner  是否是 Ai伴侣直播间
+     * @param isAIPartner 是否是 Ai伴侣直播间
      */
-    public void getStuChest(int isWin, String classId, String teamId, String stuId, String liveId,boolean isAIPartner, HttpCallBack requestCallBack) {
+    public void getStuChest(int isWin, String classId, String teamId, String stuId, String liveId, boolean isAIPartner, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("isWin", isWin + "");
         params.addBodyParam("stuId", stuId);
-        params.addBodyParam("isAIPartner",isAIPartner?"1":"0");
+        params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_GETSTUCHESTURL + "/" + liveId, params, requestCallBack);
 
@@ -1058,12 +1088,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param classId
      * @param isAIPartner
      */
-    public void getClassChestResult(String liveId, String stuId, String teamId, String classId,boolean isAIPartner, HttpCallBack requestCallBack) {
+    public void getClassChestResult(String liveId, String stuId, String teamId, String classId, boolean isAIPartner, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        params.addBodyParam("isAIPartner",isAIPartner?"1":"0");
+        params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_GETCLASSCHESTRESULT + "/" + liveId, params, requestCallBack);
     }
@@ -1138,11 +1168,11 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param classId
      * @param stuId
      * @param tests
-     * @param ctId        互动课件或者互动题时 testPlan= ''; 测试卷请求时testId= ' '
+     * @param ctId            互动课件或者互动题时 testPlan= ''; 测试卷请求时testId= ' '
      * @param requestCallBack
      */
     public void teamEnergyNumAndContributionmulStar(String liveId, String teamId, String classId, String stuId, String tests,
-                                                 String ctId, String pSrc ,HttpCallBack requestCallBack) {
+                                                    String ctId, String pSrc, HttpCallBack requestCallBack) {
 
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
@@ -1185,12 +1215,13 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 文科表扬榜
-     * @param rankId         榜单id
-     * @param liveId         直播id
-     * @param courseId       课程id
-     * @param counselorId    辅导老师id
+     *
+     * @param rankId      榜单id
+     * @param liveId      直播id
+     * @param courseId    课程id
+     * @param counselorId 辅导老师id
      */
-    public void getArtsRankData(String rankId,String liveId,String courseId,String counselorId,HttpCallBack requestCallBack){
+    public void getArtsRankData(String rankId, String liveId, String courseId, String counselorId, HttpCallBack requestCallBack) {
 
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("rankId", rankId);
@@ -1200,7 +1231,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         //setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_ARTS_PRAISE_LIST, params, requestCallBack);
     }
-
 
 
     /**
@@ -1216,5 +1246,18 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("msg", msg);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_UPLOAD_VOICE_BARRAGE, params, requestCallBack);
+    }
+
+    /**
+     * 低端设备检测信息
+     *
+     * @param requestCallBack
+     */
+    public void getDeviceDetectionInfo(HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("deviceMemory", Integer.toString(DeviceUtils.getTotalRam(mContext)));
+        params.addBodyParam("apiLevel", Build.VERSION.SDK_INT + "");
+        setDefaultParameter(params);
+        sendPost(LiveVideoConfig.URL_CHECK_DEVICE, params, requestCallBack);
     }
 }

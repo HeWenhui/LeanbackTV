@@ -17,6 +17,8 @@ import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.log.Loger;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.player.R;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController;
@@ -29,12 +31,14 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * 三分屏回放
  * 我的课程中看课的控制栏，完成指定业务 1、竖屏时上方系统栏永远只显示左上角的箭头，没有背景 2、竖屏时单击只对下方控制栏起作用
  *
  * @author ZouHao
  */
 public class LivePlaybackMediaController extends MediaController2 {
     private String TAG = "LivePlaybackMediaController";
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     protected MediaControllerBottom2 mediaControllerBottom;
     protected RelativeLayout rlKeyPoints;
     protected RelativeLayout rlKeytip;
@@ -139,7 +143,7 @@ public class LivePlaybackMediaController extends MediaController2 {
             float screenDensity = ScreenUtils.getScreenDensity();
             MarginLayoutParams rlKeytipLp = (MarginLayoutParams) rlKeytip.getLayoutParams();
             rlKeytip.setLayoutParams(rlKeytipLp);
-            Loger.i(TAG, "setVideoQuestions:pointWidth=" + pointWidth + ",rlKeytip=" + rlKeytip.getWidth()
+            logger.i( "setVideoQuestions:pointWidth=" + pointWidth + ",rlKeytip=" + rlKeytip.getWidth()
                     + ",duration=" + duration + ",bitmap=" + bitmap.getWidth());
             int index = 1;
             LayoutInflater inflater = activity.getLayoutInflater();
@@ -164,7 +168,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                     }
                 } else {
                     if (!videoQuestionEntity.isAnswered()) {
-                        if( videoQuestionEntity.getvCategory()== LocalCourseConfig.CATEGORY_BULLETSCREEN) {
+                        if (videoQuestionEntity.getvCategory() == LocalCourseConfig.CATEGORY_BULLETSCREEN) {
                             continue;
                         }
                         key = "" + videoQuestionEntity.getvCategory();
@@ -182,7 +186,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                 long pos = 1000000L * insretTime / (duration);//按SeekBar的算法，算出比例
                 lp.leftMargin = (int) ((pointWidth * pos / 1000) - width / 2 + 3 * screenDensity);//位置显示居中，3 *
                 // screenDensity是SeekBar居左
-                Loger.i(TAG, "setVideoQuestions:" + videoQuestionEntity.getvCategory()
+                logger.i( "setVideoQuestions:" + videoQuestionEntity.getvCategory()
                         + ",insretTime=" + TimeUtils.generateTime(insretTime * 1000) + ",pos=" + pos
                         + ",leftMargin=" + lp.leftMargin);
                 //rlClick.setBackgroundColor(0x99000000);
@@ -277,7 +281,8 @@ public class LivePlaybackMediaController extends MediaController2 {
                 int loction[] = new int[2];
                 rlKeyPoints.getLocationInWindow(loction);//rlKeytip的宽度是全屏，rlKeyPoints在中间
                 contentView.getViewTreeObserver().removeOnPreDrawListener(this);
-                RelativeLayout rlPointTop = (RelativeLayout) contentView.findViewById(R.id.rl_liveplayback_point_top);//上面的提示
+                RelativeLayout rlPointTop = (RelativeLayout) contentView.findViewById(R.id.rl_liveplayback_point_top)
+                        ;//上面的提示
                 ImageView ivArrow = (ImageView) contentView.findViewById(R.id.iv_liveplayback_point_arrow);//下面的箭头
                 int pointWidth = rlKeyPoints.getWidth();
                 float screenDensity = ScreenUtils.getScreenDensity();
@@ -287,7 +292,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivArrow.getLayoutParams();
                     lp.leftMargin = (int) ((pointWidth * pos / 1000) - ivArrow.getWidth() / 2 + 3 * screenDensity +
                             loction[0]);//位置显示居中，3 * screenDensity是SeekBar居左
-                    Loger.i(TAG, "showTip:category=" + videoQuestionEntity.getvCategory()
+                    logger.i( "showTip:category=" + videoQuestionEntity.getvCategory()
                             + ",insretTime=" + TimeUtils.generateTime(insretTime * 1000)
                             + ",pointWidth=" + pointWidth + ",leftMargin=" + lp.leftMargin + ",getWidth=" + ivPlay
                             .getWidth());
@@ -297,7 +302,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlPointTop.getLayoutParams();
                     int leftMargin = (int) ((pointWidth * pos / 1000) - rlPointTop.getWidth() / 2 + 3 * screenDensity
                             + loction[0]);//位置显示居中，3 * screenDensity是SeekBar居左
-                    Loger.i(TAG, "showTip:leftMargin=" + leftMargin + ",getWidth=" + rlPointTop.getWidth());
+                    logger.i( "showTip:leftMargin=" + leftMargin + ",getWidth=" + rlPointTop.getWidth());
                     if (leftMargin <= 0) {//目前调整SeekBar，字数少，不会出现
                         leftMargin = 12;
                     } else {

@@ -10,6 +10,8 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -24,7 +26,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.rollcall.page.ClassSignPager
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.page.ClassmateSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.page.SmallEnglishClassSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONObject;
 
@@ -33,6 +34,8 @@ import org.json.JSONObject;
  * Created by linyuqiang on 2016/9/23.
  */
 public class RollCallBll implements RollCallAction, Handler.Callback {
+
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     /**
      * 可签到时间  课前15 分钟
@@ -143,7 +146,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
 
     public void initView(final RelativeLayout bottomContent) {
-        Loger.e("RollCallBll", "======>:bottomContent" + bottomContent);
+        logger.e( "======>:bottomContent" + bottomContent);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -273,6 +276,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                         params.addRule(RelativeLayout.CENTER_IN_PARENT);
+
                         rlRollCallContent.addView(smallEnglishClassSignPager.getRootView(), params);
                     }
 
@@ -413,7 +417,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
      * @return
      */
     public boolean isTimeAvaliable(long classBeginTime, long nowTime) {
-        Loger.e("RollCallBll", "====>isTimeAvaliable:" + classBeginTime);
+        logger.e( "====>isTimeAvaliable:" + classBeginTime);
         boolean result = false;
         try {
             if (classBeginTime > 0 && nowTime > 0) {
@@ -424,7 +428,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                 //自动关闭时间
                 autoCloseSignDelay = classBeginTime - nowTime < 0 ? 0 : classBeginTime - nowTime;
                 //autoCloseSignDelay = 2*60*1000;
-                Loger.e("RollCallBll", "====> isTimeAvaliable :+ " + result + ":" + autoShowSignDelay + ":" +
+                logger.e( "====> isTimeAvaliable :+ " + result + ":" + autoShowSignDelay + ":" +
                         autoCloseSignDelay);
             }
         } catch (Exception e) {
@@ -530,7 +534,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
     public void onLiveInited(LiveGetInfo data, RelativeLayout rootView, int liveType) {
         this.mRootView = rootView;
-        Loger.e("RollCallBll", "======>onLiveInited called:" + data + ":" + mRootView);
+        logger.e( "======>onLiveInited called:" + data + ":" + mRootView);
         mGetInfo = data;
         if (mGetInfo != null) {
             isSmallEnglish = mGetInfo.getSmallEnglish();

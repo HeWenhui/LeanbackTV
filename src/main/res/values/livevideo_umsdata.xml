@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-->说明: 文科直播-弹出声纹认证-弹窗UV/PV</!-->
+    <string name="personal_1701001">{"levelone":\"17\","leveltwo":\"01\","levelthree":\"001\","businessinfo$json":{}}</string>
+    <!-->说明: 文科直播-弹出声纹认证-去认证</!-->
+    <string name="personal_1701002">{"levelone":\"17\","leveltwo":\"01\","levelthree":\"002\","businessinfo$json":{}}</string>
+    <!-->说明: 文科直播-弹出声纹认证-取消</!-->
+    <string name="personal_1701003">{"levelone":\"17\","leveltwo":\"01\","levelthree":\"003\","businessinfo$json":{}}</string>
+
+
+    <!-->说明: 直播-课中调查弹框-都能听懂</!-->
+    <string name="stand_experience_1703001">{"levelone":\"17\","leveltwo":\"03\","levelthree":\"001\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-课中调查弹框-部分听懂</!-->
+    <string name="stand_experience_1703002">{"levelone":\"17\","leveltwo":\"03\","levelthree":\"002\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-课中调查弹框-很多不懂</!-->
+    <string name="stand_experience_1703003">{"levelone":\"17\","leveltwo":\"03\","levelthree":\"003\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-广告弹窗-立即购买</!-->
+    <string name="stand_experience_1704001">{"levelone":\"17\","leveltwo":\"04\","levelthree":\"001\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-广告弹窗-关闭</!-->
+    <string name="stand_experience_1704002">{"levelone":\"17\","leveltwo":\"04\","levelthree":\"002\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-广告弹窗-关闭后的浮窗</!-->
+    <string name="stand_experience_1704003">{"levelone":\"17\","leveltwo":\"04\","levelthree":\"003\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-确认订单-视频小窗</!-->
+    <string name="stand_experience_1705001">{"levelone":\"17\","leveltwo":\"05\","levelthree":\"001\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-支付完成页-视频小窗</!-->
+    <string name="stand_experience_1706001">{"levelone":\"17\","leveltwo":\"06\","levelthree":\"001\","businessinfo$json":{}}</string>
+</resources>

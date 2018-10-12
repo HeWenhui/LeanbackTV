@@ -23,6 +23,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenBll;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenHttp;
@@ -168,7 +170,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
             }
         }, mDanmakuContext);
         dvSpeechbulDanmaku.showFPS(false);
-        dvSpeechbulDanmaku.enableDanmakuDrawingCache(true);
+        dvSpeechbulDanmaku.enableDanmakuDrawingCache(false);
     }
 
     /**
@@ -253,13 +255,13 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
     };
 
     public void addDanmaKuFlowers(final String name, final String msg, final String headImgUrl , final boolean isGuest) {
-        if (mDanmakuContext == null) {
+        if (mDanmakuContext == null || !dvSpeechbulDanmaku.isPrepared()) {
             mWeakHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     addDanmaKuFlowers(name, msg, headImgUrl, isGuest);
                 }
-            }, 20);
+            }, 100);
             return;
         }
         final BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
@@ -267,37 +269,39 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
             return;
         }
         danmaku.isGuest = isGuest;
-        Glide.with(mContext).load(headImgUrl).into(new SimpleTarget<Drawable>() {
+        ImageLoader.with(mContext).load(headImgUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
-            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                Drawable drawable = resource;
+            public void onSuccess(Drawable drawable) {
+                Drawable circleDrawable = drawable;
                 if (isGuest) {
-                    drawable.setBounds(0, 0, BITMAP_WIDTH_GUEST, BITMAP_WIDTH_GUEST);
+                    circleDrawable.setBounds(0, 0, BITMAP_WIDTH_GUEST, BITMAP_WIDTH_GUEST);
                     danmaku.textColor = Color.WHITE;
                     danmaku.priority = 0;
                     danmaku.padding = DANMU_PADDING;
-                }
-                else {
-                    drawable.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
+                } else {
+                    circleDrawable.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
                     danmaku.textColor = Color.YELLOW;
                     danmaku.priority = 0;  // 1:一定会显示, 一般用于本机发送的弹幕,但会导致限制行数和禁止堆叠失效
                     danmaku.padding = DANMU_PADDING - (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2;
                 }
-                SpannableStringBuilder spannable = createSpannable(name, msg, drawable ,isGuest);
+                SpannableStringBuilder spannable = createSpannable(name, msg, circleDrawable, isGuest);
                 danmaku.text = spannable;
-
                 danmaku.isLive = false;
                 danmaku.time = dvSpeechbulDanmaku.getCurrentTime() + 1200;
-                danmaku.textSize = SizeUtils.Dp2Px(mContext,14f);
+                danmaku.textSize = SizeUtils.Dp2Px(mContext, 14f);
                 danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
-//                danmaku.underlineColor = Color.GREEN;
                 dvSpeechbulDanmaku.addDanmaku(danmaku);
+            }
+
+            @Override
+            public void onFail() {
+
             }
         });
     }
 
     protected SpannableStringBuilder createSpannable(String name, String msg, Drawable drawable, boolean isGuest) {
-//        Loger.i(TAG, "createSpannable:name=" + name + ",ftype=" + ftype);
+//        logger.i( "createSpannable:name=" + name + ",ftype=" + ftype);
 
         String text = " " + name + " : " + msg + "  ";
         SpannableStringBuilder spannable = new SpannableStringBuilder(text);

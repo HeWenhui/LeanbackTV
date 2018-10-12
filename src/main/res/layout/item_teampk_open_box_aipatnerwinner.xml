@@ -54,7 +54,7 @@
             android:gravity="center_vertical"
             android:text="+15"
             android:textStyle="bold"
-            android:textColor="@color/white"
+            android:textColor="@color/COLOR_FF8F24"
             android:maxWidth="100dp"
             android:ellipsize="end"
             android:singleLine="true"
@@ -95,6 +95,7 @@
             android:layout_alignBottom="@id/tv_teampk_open_box_winner_coin"
             android:layout_toRightOf="@id/fl_teampk_aipatner_chip_contanier"
             android:id="@id/tv_teampk_lucky_start_patch"
+            android:layout_marginLeft="5dp"
             />
 
     </RelativeLayout>

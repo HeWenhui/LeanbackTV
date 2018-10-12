@@ -7,12 +7,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -22,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LecBackAdvertBll {
     String TAG = "LecBackAdvertBll";
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     LecBackAdvertHttp lecBackAdvertHttp;
     WeakHandler handler = new WeakHandler(null);
     Activity activity;
@@ -78,7 +80,7 @@ public class LecBackAdvertBll {
                             lecAdvertPager.onDestroy();
                             rlQuestionContent.removeView(lecAdvertPager.getRootView());
                         }
-                        Loger.d(TAG, "showLecAdvertPager:close=" + (questionEntity == null));
+                        logger.d("showLecAdvertPager:close=" + (questionEntity == null));
                         lecAdvertPager = null;
                         if (land) {
                             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

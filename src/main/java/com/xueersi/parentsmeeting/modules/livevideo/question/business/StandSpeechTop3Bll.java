@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -15,7 +17,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechTop
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import java.util.HashMap;
 
@@ -25,7 +26,7 @@ import java.util.HashMap;
  */
 public class StandSpeechTop3Bll implements SpeechEndAction {
     String TAG = "StandSpeechTop3Bll";
-    LiveBll liveBll;
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     QuestionIRCBll questionIRCBll;
     LiveAndBackDebug liveAndBackDebug;
     StandSpeechTop3Pager standSpeechTop3Pager;
@@ -35,13 +36,6 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
     HashMap<String, GoldTeamStatus> goldTeamStatusHashMap = new HashMap<>();
     HashMap<String, OnTop3End> top3EndHashMap = new HashMap<>();
     LogToFile logToFile;
-
-    @Deprecated
-    public StandSpeechTop3Bll(LiveBll liveBll) {
-        this.liveBll = liveBll;
-        logToFile = new LogToFile(TAG);
-        liveAndBackDebug = liveBll;
-    }
 
     public StandSpeechTop3Bll(Context context, QuestionIRCBll questionIRCBll, LiveAndBackDebug liveAndBackDebug) {
         this.questionIRCBll = questionIRCBll;
@@ -146,7 +140,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
 
     private void initTop(final String num, GoldTeamStatus entity, final OnTop3End top3End) {
         if (standSpeechTop3Pager != null && num.equals(standSpeechTop3Pager.getId())) {
-            Loger.d(TAG, "initTop:num=" + num);
+            logger.d("initTop:num=" + num);
             return;
         }
         standSpeechTop3Pager = new StandSpeechTop3Pager(bottomContent.getContext(), entity);

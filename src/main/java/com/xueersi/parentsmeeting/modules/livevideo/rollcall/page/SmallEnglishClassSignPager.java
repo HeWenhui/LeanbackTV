@@ -143,9 +143,10 @@ public class SmallEnglishClassSignPager extends BasePager {
 
         @Override
         public void onPmError(ResponseEntity responseEntity) {
-            String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "网络异常" : responseEntity
-                    .getErrorMsg();
-            XESToastUtils.showToast(mContext, errorMsg);
+            logToFile.d("onPmError:msg=" + responseEntity.getErrorMsg());
+//            String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "网络异常" : responseEntity
+//                    .getErrorMsg();
+//            XESToastUtils.showToast(mContext, errorMsg);
         }
     };
 

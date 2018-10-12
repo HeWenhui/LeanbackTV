@@ -40,10 +40,11 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.video.TotalFrameStat;
+import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayFailCode;
+import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,7 +53,6 @@ import org.xutils.xutils.common.Callback;
 import org.xutils.xutils.ex.HttpException;
 import org.xutils.xutils.http.RequestParams;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -106,7 +106,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     private Callback.Cancelable mCataDataCancle;
     private Callback.Cancelable mGetPlayServerCancle, mGetStudentPlayServerCancle;
     /** 直播帧数统计 */
-    private TotalFrameStat totalFrameStat;
+    private LivePlayLog livePlayLog;
     /** 学习记录提交时间间隔 */
     private int mHbTime = 300, mHbCount = 0;
     private AtomicInteger mOpenCount = new AtomicInteger(0);
@@ -192,8 +192,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         }
     }
 
-    public void setTotalFrameStat(TotalFrameStat totalFrameStat) {
-        this.totalFrameStat = totalFrameStat;
+    public void setLivePlayLog(LivePlayLog livePlayLog) {
+        this.livePlayLog = livePlayLog;
     }
 
     @Override
@@ -284,6 +284,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         }
 
+        @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
 
@@ -461,8 +462,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             return isMyTeam;
         }
 
+        @Override
         public void onJoin(String target, String sender, String login, String hostname) {
-            Loger.d(TAG, "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+            logger.d( "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
             if (sender.startsWith(TEACHER_PREFIX)) {
                 synchronized (mIRCcallback) {
                     mMainTeacher = new Teacher(sender);
@@ -492,8 +494,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         }
 
+        @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-            Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+            logger.d( "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
             if (sourceNick.startsWith(TEACHER_PREFIX)) {
                 synchronized (mIRCcallback) {
@@ -523,6 +526,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         }
 
+        @Override
         public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname,
                            String recipientNick, String reason) {
             mLogtf.d("onKick:target=" + target + ",kickerNick=" + kickerNick + ",kickerLogin=" + kickerLogin
@@ -532,6 +536,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         }
 
+        @Override
         public void onUnknown(String line) {
         }
     };
@@ -598,15 +603,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         if (mVideoAction != null) {
             mVideoAction.onLiveInit(mGetInfo);
         }
-        NewTalkConfEntity talkConfEntity = new NewTalkConfEntity();
-        talkConfEntity.setHost(mGetInfo.getTalkHost());
-        talkConfEntity.setPort(mGetInfo.getTalkPort());
-        talkConfEntity.setPwd(mGetInfo.getTalkPwd());
-        List<NewTalkConfEntity> newTalkConf = new ArrayList<NewTalkConfEntity>();
-        newTalkConf.add(talkConfEntity);
-        if (mGetInfo.getNewTalkConf() != null) {
-            newTalkConf.addAll(mGetInfo.getNewTalkConf());
-        }
         String channel = "";
         if (mLiveType == LIVE_TYPE_TUTORIAL) {
             channel = "1" + ROOM_MIDDLE + mGetInfo.getId();
@@ -624,13 +620,11 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         String nickname = mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         mIRCMessage = new AuditIRCMessage(netWorkType, channel, mGetInfo.getStuName(), nickname, this);
-        mIRCMessage.setNewTalkConf(newTalkConf);
         IRCTalkConf ircTalkConf = new IRCTalkConf(null, mGetInfo, mLiveType, mHttpManager, mGetInfo.getNewTalkConfHosts());
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
-        s += ",newTalkConf=" + newTalkConf.size();
-        // Loger.d(TAG, s);
+        // logger.d( s);
         mLogtf.d(s);
         mLogtf.d("onGetInfoSuccess:mode=" + mLiveTopic.getMode());
         liveGetPlayServerFirst();
@@ -662,12 +656,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                Loger.e(TAG, "getStudentLiveInfo:onPmFailure:msg=" + msg, error);
+                logger.e( "getStudentLiveInfo:onPmFailure:msg=" + msg, error);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                Loger.e(TAG, "getStudentLiveInfo:onPmError:errorMsg=" + responseEntity.getErrorMsg());
+                logger.e( "getStudentLiveInfo:onPmError:errorMsg=" + responseEntity.getErrorMsg());
             }
         });
     }
@@ -729,8 +723,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
                     + mGetInfo.getTeacherId());
         }
-        if (totalFrameStat != null) {
-            totalFrameStat.setChannelname(mGetInfo.getChannelname());
+        if (livePlayLog != null) {
+            livePlayLog.setChannelname(mGetInfo.getChannelname());
         }
         final String serverurl = mGetInfo.getGslbServerUrl() + "?cmd=live_get_playserver&userid=" + mGetInfo.getStuId()
                 + "&username=" + mGetInfo.getUname() + "&channelname=" + mGetInfo.getChannelname();
@@ -740,8 +734,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             mGetPlayServerCancle = null;
         }
         mLogtf.d("liveGetPlayServer:modeTeacher=" + getModeTeacher());
-        final StringBuilder ipsb = new StringBuilder();
-        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(ipsb, serverurl, new CommonRequestCallBack<String>() {
+        final URLDNS urldns = new URLDNS();
+        mGetPlayServerCancle = mHttpManager.liveGetPlayServer(urldns, serverurl, new CommonRequestCallBack<String>() {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
@@ -750,7 +744,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                 if (ex instanceof HttpException) {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
-                        totalFrameStat.liveGetPlayServer(time, 3, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode20, 20, "", urldns, serverurl);
                         mLogtf.d("liveGetPlayServer:onError:code=" + error.getCode() + ",time=" + time);
                         if (time < 15000) {
                             if (mVideoAction != null && mLiveTopic != null) {
@@ -761,10 +755,10 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                     }
                 } else {
                     if (ex instanceof UnknownHostException) {
-                        totalFrameStat.liveGetPlayServer(time, 1, "", ipsb, serverurl);
+                        livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode10, 10, "", urldns, serverurl);
                     } else {
                         if (ex instanceof SocketTimeoutException) {
-                            totalFrameStat.liveGetPlayServer(time, 2, "", ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode15, PlayFailCode.TIME_OUT, "", urldns, serverurl);
                         }
                     }
                     mLogtf.e("liveGetPlayServer:onError:isOnCallback=" + isOnCallback, ex);
@@ -792,15 +786,15 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
             @Override
             public void onSuccess(String result) {
-//                Loger.i(TAG, "liveGetPlayServer:onSuccess:result=" + result);
+//                logger.i( "liveGetPlayServer:onSuccess:result=" + result);
                 String s = "liveGetPlayServer:onSuccess";
                 try {
                     JSONObject object = new JSONObject(result);
                     PlayServerEntity server = mHttpResponseParser.parsePlayerServer(object);
                     if (server != null) {
-                        if (totalFrameStat != null) {
+                        if (livePlayLog != null) {
                             long time = System.currentTimeMillis() - before;
-                            totalFrameStat.liveGetPlayServer(time, 0, server.getCipdispatch(), ipsb, serverurl);
+                            livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode0, 0, server.getCipdispatch(), urldns, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -825,7 +819,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                     mLogtf.d(s);
                 } catch (JSONException e) {
                     MobAgent.httpResponseParserError(TAG, "liveGetPlayServer", result + "," + e.getMessage());
-                    // Loger.e(TAG, "liveGetPlayServer", e);
+                    // logger.e( "liveGetPlayServer", e);
                     mLogtf.e("liveGetPlayServer", e);
                     onLiveFailure("直播调度失败", new Runnable() {
 
@@ -913,7 +907,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         @Override
         public void onOpenFailed(int arg1, int arg2) {
             if (isOpenSuccess) {
-                streamReport(MegId.MEGID_12103, mGetInfo.getChannelname(), -1);
+                MegId megId = MegId.MEGID_12103;
+                megId.msgid = "fail " + LivePlayLog.getErrorCodeInt(arg2) + " ";
+                streamReport(megId, mGetInfo.getChannelname(), -1);
             }
             long openTime = System.currentTimeMillis() - openStartTime;
             mLogtf.d("onOpenFailed:openTime=" + openTime + "," + getModeTeacher()
@@ -1057,7 +1053,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     public void getToken(final LicodeToken licodeToken) {
         final String id = "x_" + mLiveType + "_" + mGetInfo.getId();
         String roomid = channelAndRoomid.get(id);
-        Loger.i(TAG, "getToken:id=" + id + ",roomid=null?" + (roomid == null));
+        logger.i( "getToken:id=" + id + ",roomid=null?" + (roomid == null));
         if (roomid != null) {
             mHttpManager.getToken(roomid, mGetInfo.getStuId(), new Callback.CacheCallback<String>() {
 
@@ -1107,7 +1103,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                 if (roomidIndex != -1) {
                     result = result.substring(0, roomidIndex);
                 }
-                Loger.i(TAG, "getToken:getRoomid:onSuccess:result=" + result);
+                logger.i( "getToken:getRoomid:onSuccess:result=" + result);
                 channelAndRoomid.put(id, result);
                 mHttpManager.getToken(result, mGetInfo.getStuId(), new CacheCallback<String>() {
 
@@ -1140,7 +1136,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                Loger.e(TAG, "getToken:getRoomid:onError", ex);
+                logger.e( "getToken:getRoomid:onError", ex);
                 licodeToken.onError(ex);
             }
 
@@ -1159,7 +1155,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
         if (netWorkType != NetWorkHelper.NO_NETWORK) {
-            Loger.i(TAG, "onNetWorkChange:liveGetPlayServerError=" + liveGetPlayServerError);
+            logger.i( "onNetWorkChange:liveGetPlayServerError=" + liveGetPlayServerError);
             if (liveGetPlayServerError) {
                 liveGetPlayServerError = false;
                 liveGetPlayServer(mLiveTopic.getMode(), false);
@@ -1224,9 +1220,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         String url = mGetInfo.getLogServerUrl();
         HttpRequestParams entity = new HttpRequestParams();
         if (MegId.MEGID_12102 == msgid) {
-            if (totalFrameStat != null) {
-                String cpuName = totalFrameStat.getCpuName();
-                String memsize = totalFrameStat.getMemsize();
+            if (livePlayLog != null) {
+                String cpuName = livePlayLog.getCpuName();
+                String memsize = livePlayLog.getMemsize();
                 String ua = Build.VERSION.SDK_INT + ";" + cpuName + ";" + memsize;
                 entity.addBodyParam("UA", ua);
             }
@@ -1258,12 +1254,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.i(TAG, "streamReport:onFailure=", e);
+                logger.i( "streamReport:onFailure=", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Loger.i(TAG, "streamReport:onResponse:response=" + response.message());
+                logger.i( "streamReport:onResponse:response=" + response.message());
             }
         });
     }
@@ -1303,7 +1299,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         final AbstractBusinessDataCallBack dataCallBack = new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                Loger.d(TAG, "dns_resolve_stream:onDataSucess:haveCall=" + haveCall.get() + ",objData=" + objData[0]);
+                logger.d( "dns_resolve_stream:onDataSucess:haveCall=" + haveCall.get() + ",objData=" + objData[0]);
                 if (!haveCall.get()) {
                     haveCall.set(true);
                     callBack.onDataSucess(objData);
@@ -1312,7 +1308,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
-                Loger.d(TAG, "dns_resolve_stream:onDataFail:haveCall=" + haveCall.get() + ",errStatus=" + errStatus + ",failMsg=" + failMsg);
+                logger.d( "dns_resolve_stream:onDataFail:haveCall=" + haveCall.get() + ",errStatus=" + errStatus + ",failMsg=" + failMsg);
                 if (!haveCall.get()) {
                     haveCall.set(true);
                     callBack.onDataFail(errStatus, failMsg);
@@ -1329,7 +1325,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
             @Override
             public void onFailure(Call call, IOException e) {
-                Loger.i(TAG, "dns_resolve_stream:onFailure=", e);
+                logger.i( "dns_resolve_stream:onFailure=", e);
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -1347,7 +1343,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                         String r = "";
                         try {
                             r = response.body().string();
-                            Loger.i(TAG, "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
+                            logger.i( "dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
                             if (response.code() >= 200 && response.code() <= 300) {
                                 if ("wangsu".equals(provide)) {
 //                        rtmp://111.202.83.208/live_server/x_3_55873?wsiphost=ipdb&wsHost=livewangsu.xescdn.com
