@@ -23,6 +23,8 @@ public class ArtsAnswerResultEvent {
    /**js回传rolePlay答题结果*/
    public static final int TYPE_ROLEPLAY_ANSWERRESULT = 3;
 
+   /**本地上传语音答题 填空选择*/
+   public static final int TYPE_NATIVE_UPLOAD_VOICE_SELECT_BLANK = 5;
     /**
      * @param dataStr   结果数据   type 为1时  dataStr 为答案原始数据  type为2时  为试题id
      * @param type   答题结果类型
