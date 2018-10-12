@@ -190,6 +190,7 @@
     <item name="rl_livevideo_info" type="id" />
     <item name="v_livevideo_mediacontrol_bottom" type="id" />
     <item name="bt_livevideo_message_open" type="id" />
+    <item name="bt_livevideo_message_voice_open" type="id" />
     <item name="bt_livevideo_message_common" type="id" />
     <item name="v_livevideo_message_common_left" type="id" />
     <item name="v_livevideo_message_common_right" type="id" />
@@ -233,6 +234,7 @@
     <item name="tv_livevideo_message_gold_word" type="id" />
     <item name="bt_livevideo_message_flowersend" type="id" />
     <item name="rl_livevideo_message_root" type="id" />
+    <item name="rl_livevideo_text_message_content" type="id" />
     <!--语音聊天-->
     <item name="vwv_livevideo_voicechat_wave" type="id" />
     <item name="tv_livevideo_voicechat_content" type="id" />
@@ -243,6 +245,7 @@
     <item name="btn_livevideo_small_english_message_switch" type="id" />
     <item name="btn_livevideo_small_english_start_voice" type="id" />
     <item name="tv_livevideo_voicechat_countdown" type="id" />
+    <item name="rl_livevideo_voice_message_content" type="id" />
 
     <!--直播-公开表扬-->
     <item name="iv_livevideo_public_praise_bg" type="id" />

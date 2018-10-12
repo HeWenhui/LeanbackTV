@@ -301,7 +301,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             @Override
             public void onGlobalLayout() {
                 vwvVoiceChatWave.setLinearGradient(new LinearGradient(0, 0, vwvVoiceChatWave.getMeasuredWidth(), 0,
-                        new int[]{0xFFFF00FF, 0xFF00FFFF}, new float[]{0, 1.0f}, Shader.TileMode.CLAMP));
+                        new int[]{0xFFEA9CF9, 0xFF9DBBFA,0xFF80F9FD}, new float[]{0, 0.5f,1.0f}, Shader.TileMode.CLAMP));
             }
         });
         vwvVoiceChatWave.setBackColor(Color.TRANSPARENT);

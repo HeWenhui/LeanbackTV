@@ -187,7 +187,7 @@
                 android:layout_marginLeft="61dp"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="16dp"
-                android:background="@drawable/shape_livevideo_smallenglish_message_bg"
+                android:background="@drawable/shape_livevideo_smallenglish_message_edittext_bg"
                 android:text="大声说英语啦"
                 android:textColor="@color/white"
                 android:textSize="17sp"
