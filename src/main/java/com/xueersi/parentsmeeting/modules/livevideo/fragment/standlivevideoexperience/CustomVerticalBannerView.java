@@ -189,7 +189,7 @@ public class CustomVerticalBannerView extends RelativeLayout {
             if (getVisibility() == GONE) {
                 setVisibility(VISIBLE);
                 if (backGround != null) {
-                    backGround.setVisibility(false);
+                    backGround.setVisibility(true);
                 }
             }
             TextView tv = null;
