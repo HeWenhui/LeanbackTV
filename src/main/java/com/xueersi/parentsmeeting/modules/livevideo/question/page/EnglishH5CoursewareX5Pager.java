@@ -41,6 +41,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -75,6 +76,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private String mLoadUrls;
     private String releasedPageInfos;
     private boolean allowTeamPk;
+    private HashMap header;
 
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
@@ -116,6 +118,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         final File todayLiveCacheDir = new File(todayCacheDir, liveId);
         mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
         initData();
+        header = new HashMap();
+        header.put("Access-Control-Allow-Origin", "*");
     }
 
     @Override
@@ -312,6 +316,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                             String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
                             String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                             WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                            webResourceResponse.setResponseHeaders(header);
                             return webResourceResponse;
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
