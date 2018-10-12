@@ -24,7 +24,8 @@ dependencies {
     compile 'org.java-websocket:Java-WebSocket:1.3.4'
     //glide库
     implementation rootProject.ext.thirdlibraries.glide
-    implementation(rootProject.ext.xeslibraries.speechrecognizer) { changing = true }
+    implementation project(':taldemo:speechrecognizer')
+//    implementation(rootProject.ext.xeslibraries.speechrecognizer) { changing = true }
     implementation(rootProject.ext.xeslibraries.ldnetdiagnoservice) { changing = true }
     //uicomponent
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.uicomponent)
