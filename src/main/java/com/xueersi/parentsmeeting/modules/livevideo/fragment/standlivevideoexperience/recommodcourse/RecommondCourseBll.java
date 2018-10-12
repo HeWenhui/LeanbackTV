@@ -123,8 +123,12 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
             .ShowQuestion showQuestion) {
         super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
         logger.i("显示推荐课程");
+        if (getIsResultComplete()) {
+            return;
+        }
         if (mPager == null) {
             mPager = new RecommondCoursePager(mContext, isBuyRecommondCourse, liveGetInfo.getUname());
+            initListener();
         }
         if (livePlayBackHttpResponseParser == null) {
             livePlayBackHttpResponseParser = getCourseHttpResponseParser();
@@ -132,7 +136,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
         HttpCallBack httpCallBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                if (!isResultComplete) {
+                if (!getIsResultComplete()) {
                     mRecommondCourseEntity = livePlayBackHttpResponseParser.parseRecommondCourseInfo(responseEntity);
                     mPager.updateView(mRecommondCourseEntity);
                     mRootView.addView(mPager.getRootView(), RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout
@@ -154,6 +158,9 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
         final HttpCallBack bannerMessageHttpCallBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                if (getIsResultComplete()) {
+                    return;
+                }
                 bannerBuyCourseEntity = livePlayBackHttpResponseParser.parseBannerBuyCourseEntity(responseEntity);
                 if (bannerBuyCourseEntity.getBannerMessages() != null) {
                     if (mPager != null) {
@@ -183,6 +190,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
         super.onDestory();
         logger.i("移出EventBus");
         EventBus.getDefault().unregister(this);
+        removeView();
         if (mPager != null) {
             mPager.onDestroy();
             mPager = null;
@@ -206,6 +214,10 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     @Override
     public void resultComplete() {
         super.resultComplete();
+        removeView();
+    }
+
+    private void removeView() {
         if (mPager != null && mPager.getRootView().getParent() == mRootView) {
             mRootView.removeView(mPager.getRootView());
         }
