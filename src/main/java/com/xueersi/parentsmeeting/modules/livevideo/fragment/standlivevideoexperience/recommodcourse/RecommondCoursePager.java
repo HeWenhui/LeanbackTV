@@ -52,7 +52,7 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
 
     private boolean isBuyCourseSuccess = false;
 
-    private ImageView ivBannerBackground;
+//    private ImageView ivBannerBackground;
     //    private VideoLivePlayBackEntity mVideoEntity;
     String userName;
 
@@ -80,7 +80,7 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
         thumbnailRecommondCourseLayout = view.findViewById(R.id.ctl_recommod_course_thumbnail);
 //        mvBannerMessage = view.findViewById(R.id.mv_livevideo_stand_experience_banner_message);
         cvbView = view.findViewById(R.id.cvbv_recommond_course);
-        ivBannerBackground = view.findViewById(R.id.tv_recommond_course_banner_background);
+//        ivBannerBackground = view.findViewById(R.id.tv_recommond_course_banner_background);
         return view;
     }
 
@@ -149,16 +149,16 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
                 }
             }
         });
-        cvbView.setBackGround(new CustomVerticalBannerView.IbackGround() {
-            @Override
-            public void setVisibility(boolean isShow) {
-                if (isShow) {
-                    ivBannerBackground.setVisibility(View.VISIBLE);
-                } else {
-                    ivBannerBackground.setVisibility(View.GONE);
-                }
-            }
-        });
+//        cvbView.setBackGround(new CustomVerticalBannerView.IbackGround() {
+//            @Override
+//            public void setVisibility(boolean isShow) {
+//                if (isShow) {
+//                    ivBannerBackground.setVisibility(View.VISIBLE);
+//                } else {
+//                    ivBannerBackground.setVisibility(View.GONE);
+//                }
+//            }
+//        });
     }
 
     private ObjectAnimator wholeShowAnimator, wholeHideAnimator, thumbnailShowAnimator, thumbnailHideAnimator;

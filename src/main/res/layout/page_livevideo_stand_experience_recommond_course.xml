@@ -21,19 +21,19 @@
     <!--app:mvDirection="bottom_to_top"-->
     <!--app:mvInterval="5000"-->
     <!--app:mvSingleLine="true" />-->
-    <ImageView
-        android:id="@+id/tv_recommond_course_banner_background"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginLeft="13dp"
-        android:layout_marginTop="10dp"
-        android:alpha="0.6"
-        android:background="@drawable/shape_livevideo_stand_experience_recommond_course_banner_message_background"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!--<ImageView-->
+        <!--android:id="@+id/tv_recommond_course_banner_background"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:layout_marginLeft="13dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:alpha="0.6"-->
+        <!--android:background="@drawable/shape_livevideo_stand_experience_recommond_course_banner_message_background"-->
+        <!--android:paddingLeft="20dp"-->
+        <!--android:paddingRight="20dp"-->
+        <!--android:visibility="gone"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent" />-->
 
     <com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.CustomVerticalBannerView
         android:id="@+id/cvbv_recommond_course"

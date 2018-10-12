@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 import java.util.Queue;
 
@@ -71,9 +72,9 @@ public class CustomVerticalBannerView extends RelativeLayout {
         }
         if (getVisibility() == GONE) {//当前页面处于GONE，即处于上一个动画结束和下一个动画开始之间
             setVisibility(VISIBLE);
-            if (backGround != null) {
-                backGround.setVisibility(true);
-            }
+//            if (backGround != null) {
+//                backGround.setVisibility(true);
+//            }
             removeCallbacks(visibilty);
             removeCallbacks(runnable);
             //满足碰撞的条件，先展示这一条，再展示下一条
@@ -136,6 +137,16 @@ public class CustomVerticalBannerView extends RelativeLayout {
 
         outAnimotor.setDuration(animotorTime);
 
+
+//        leftDrawable = getContext().getResources().getDrawable(R.drawable
+//                .bg_livevideo_stand_experience_advertise_horn);
+
+        Drawable backGround = getResources().getDrawable(R.drawable
+                .shape_livevideo_stand_experience_recommond_course_banner_message_background);
+
+        backGround.setAlpha(153);
+
+        setBackgroundDrawable(backGround);
 //        leftDrawable = getContext().getResources().getDrawable(R.drawable
 //                .bg_livevideo_stand_experience_advertise_horn);
 //        leftDrawable.setBounds(0, 0, 60, 48);
@@ -150,9 +161,9 @@ public class CustomVerticalBannerView extends RelativeLayout {
                 if (!isOwn) {//不是自己买课
                     if (!isShowTwo) {//如果不展示两次
                         setVisibility(GONE);
-                        if (backGround != null) {
-                            backGround.setVisibility(false);
-                        }
+//                        if (backGround != null) {
+//                            backGround.setVisibility(false);
+//                        }
 //                    removeCallbacks(runnable);
                         postDelayed(visibilty, pauseTime);
                         postDelayed(runnable, pauseTime);
@@ -188,9 +199,9 @@ public class CustomVerticalBannerView extends RelativeLayout {
         public void run() {
             if (getVisibility() == GONE) {
                 setVisibility(VISIBLE);
-                if (backGround != null) {
-                    backGround.setVisibility(true);
-                }
+//                if (backGround != null) {
+//                    backGround.setVisibility(true);
+//                }
             }
             TextView tv = null;
             if (outAnimotor != null &&
@@ -237,9 +248,9 @@ public class CustomVerticalBannerView extends RelativeLayout {
         @Override
         public void run() {
             setVisibility(VISIBLE);
-            if (backGround != null) {
-                backGround.setVisibility(true);
-            }
+//            if (backGround != null) {
+//                backGround.setVisibility(true);
+//            }
         }
     };
 
@@ -251,13 +262,13 @@ public class CustomVerticalBannerView extends RelativeLayout {
         return tv;
     }
 
-    public interface IbackGround {
-        void setVisibility(boolean isShow);
-    }
+//    public interface IbackGround {
+//        void setVisibility(boolean isShow);
+//    }
 
-    public void setBackGround(IbackGround backGround) {
-        this.backGround = backGround;
-    }
+//    public void setBackGround(IbackGround backGround) {
+//        this.backGround = backGround;
+//    }
 
-    private IbackGround backGround;
+//    private IbackGround backGround;
 }
