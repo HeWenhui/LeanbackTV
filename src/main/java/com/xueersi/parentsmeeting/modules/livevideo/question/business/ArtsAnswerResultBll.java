@@ -336,6 +336,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mDsipalyer = null;
             EventBus.getDefault().post(new AnswerResultCplShowEvent());
         }
+
         logger.e("=====>closeAnswerResult:" + forceSumbmit + ":" + this);
         this.forceSumbmit = forceSumbmit;
     }
@@ -588,12 +589,32 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 mArtsAnswerResultEvent = null;
                 if ("off".equals(status)) {
                     closeAnswerResult(true);
+                    int ptype = data.optInt("ptype");
+                    //ptype 为12 的游戏题 不再跳转 百度页面  所以直接关闭h5答题结果页面
+                    if(ptype == TEST_TYPE_GAME){
+                       forceCloseGamePage();
+                    }
                 } else if ("on".equals(status)) {
                     forceSumbmit = false;
                 }
                 break;
             default:
                 break;
+        }
+    }
+
+
+    /**
+     * 强制关闭ptype 为12的游戏题
+     */
+    private void forceCloseGamePage() {
+        if(mRootView != null){
+            mRootView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    EventBus.getDefault().post(new AnswerResultCplShowEvent());
+                }
+            }, AUTO_CLOSE_DELAY);
         }
     }
 
