@@ -26,7 +26,7 @@ import org.greenrobot.eventbus.ThreadMode;
  * 将VideoView转化为小窗口
  */
 public class VideoPopView {
-    private static volatile VideoPopView instance;
+//    private static volatile VideoPopView instance;
     private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
 
@@ -37,19 +37,19 @@ public class VideoPopView {
     //    private MiniEvent event;
     //是否开启了小窗口
     private Boolean isShow = false;
+//
+//    public static VideoPopView getInstance(Activity activity, VideoView videoView) {
+//        if (instance == null) {
+//            synchronized (VideoPopView.class) {
+//                if (instance == null) {
+//                    instance = new VideoPopView(activity, videoView);
+//                }
+//            }
+//        }
+//        return instance;
+//    }
 
-    public static VideoPopView getInstance(Activity activity, VideoView videoView) {
-        if (instance == null) {
-            synchronized (VideoPopView.class) {
-                if (instance == null) {
-                    instance = new VideoPopView(activity, videoView);
-                }
-            }
-        }
-        return instance;
-    }
-
-    private VideoPopView(Activity activity, VideoView videoView) {
+    public VideoPopView(Activity activity, VideoView videoView) {
         this.activity = activity;
         this.videoView = videoView;
         EventBus.getDefault().register(this);

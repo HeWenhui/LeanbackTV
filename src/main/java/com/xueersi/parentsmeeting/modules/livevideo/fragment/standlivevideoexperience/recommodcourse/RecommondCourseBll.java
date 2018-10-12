@@ -52,7 +52,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
         super(activity, liveBackBll);
 
 
-        turnToOrder = VideoPopView.getInstance((Activity) mContext, videoView);
+        turnToOrder = new VideoPopView((Activity) mContext, videoView);
         logger.i("注册EventBus");
         EventBus.getDefault().register(this);
     }
