@@ -54,10 +54,11 @@ dependencies {
 //    implementation project(':xesijkplayer')
     implementation(rootProject.ext.xeslibraries.ijkplayer) { changing = true }
 //    implementation project(':business-base:player')
-    implementation(rootProject.ext.businesslibraries.player) {
-        changing = true
-    }
+//    implementation(rootProject.ext.businesslibraries.player) {
+//        changing = true
+//    }
 //    implementation project(':business-base:cloud')
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.player)
     implementation(rootProject.ext.businesslibraries.cloud) {
         changing = true
     }
