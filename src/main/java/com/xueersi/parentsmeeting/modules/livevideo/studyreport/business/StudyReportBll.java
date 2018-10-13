@@ -18,6 +18,7 @@ import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
@@ -75,7 +76,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                             File saveFile = new File(agoradir, System.currentTimeMillis() + ".jpg");
                             LiveCutImage.saveImage(bitmap, saveFile.getPath());
                             bitmap.recycle();
-                            uploadWonderMoment(2, saveFile.getPath());
+                            uploadWonderMoment(LiveVideoConfig.STUDY_REPORT.TYPE_AGORA, saveFile.getPath());
                         }
                     });
                 }

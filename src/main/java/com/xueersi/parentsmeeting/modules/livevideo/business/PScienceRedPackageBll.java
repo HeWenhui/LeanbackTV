@@ -17,9 +17,11 @@ import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -222,6 +224,10 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
                 rlRedpacketContent.removeAllViews();
             }
         });
+        StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
+        if (studyReportAction != null) {
+            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_RED_PACKAGE, view, false);
+        }
     }
 
     /**

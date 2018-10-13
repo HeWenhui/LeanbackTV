@@ -294,4 +294,25 @@ public class LiveVideoConfig {
     public static String URL_CHECK_DEVICE = HTTP_HOST + "/Users/checkDevice";
 //    public static String URL_CHECK_DEVICE = "https://www.easy-mock.com/mock/5b57f6919ddd1140ec2eb47b/xueersi.wx.android.app" + "/Users/checkDevice";
 
+    /** 学习报告精彩瞬间 */
+    public interface STUDY_REPORT {
+        /** 贡献之星 */
+        int TYPE_PK_RESULT = 1;
+        /** 被选接麦 */
+        int TYPE_AGORA = 2;
+        /** 语音表扬 */
+        int TYPE_3 = 3;
+        /** 进步榜 */
+        int TYPE_4 = 4;
+        /** 优秀榜 */
+        int TYPE_5 = 5;
+        /** 获赞榜 */
+        int TYPE_6 = 6;
+        /** pk获胜 */
+        int TYPE_7 = 7;
+        /** pk开宝箱 */
+        int TYPE_8 = 8;
+        /** 抢红包 */
+        int TYPE_RED_PACKAGE = 9;
+    }
 }
