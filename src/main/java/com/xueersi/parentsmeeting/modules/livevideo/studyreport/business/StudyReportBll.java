@@ -4,6 +4,14 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.component.cloud.XesCloudUploadBusiness;
+import com.xueersi.component.cloud.config.CloudDir;
+import com.xueersi.component.cloud.config.XesCloudConfig;
+import com.xueersi.component.cloud.entity.CloudUploadEntity;
+import com.xueersi.component.cloud.entity.XesCloudResult;
+import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -51,6 +59,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                         @Override
                         public void onRenderVideoShot(String path) {
                             mLogtf.d("onRenderVideoShot:path=" + path);
+                            uploadWonderMoment(path, 2);
                         }
                     });
                 }
@@ -76,6 +85,50 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             public void run() {
                 createPlugin();
                 mediaDataObserverPlugin.removeDecodeBuffer(uid);
+            }
+        });
+    }
+
+    private void uploadWonderMoment(String path, final int type) {
+        final File finalFile = new File(path);
+        XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(activity);
+        CloudUploadEntity uploadEntity = new CloudUploadEntity();
+        uploadEntity.setFilePath(path);
+        uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
+        uploadEntity.setCloudPath(CloudDir.LIVE_STUDY_REPORT);
+        xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesStsUploadListener() {
+            @Override
+            public void onProgress(XesCloudResult result, int percent) {
+
+            }
+
+            @Override
+            public void onSuccess(XesCloudResult result) {
+                finalFile.delete();
+                logger.d("asyncUpload:onSuccess=" + result.getHttpPath());
+                getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new HttpCallBack(false) {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        logger.d("onPmSuccess:type=" + type + ",responseEntity=" + responseEntity.getJsonObject());
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        logger.d("onPmError:type=" + type + ",responseEntity=" + responseEntity.getErrorMsg());
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        logger.d("onPmFailure:type=" + type + ",msg=" + msg, error);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(XesCloudResult result) {
+                logger.d("asyncUpload:onError=" + result);
             }
         });
     }
