@@ -11,7 +11,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
 import java.io.File;
 
+import io.agora.rtc.plugin.rawdata.MediaDataAudioObserver;
 import io.agora.rtc.plugin.rawdata.MediaDataObserverPlugin;
+import io.agora.rtc.plugin.rawdata.MediaDataVideoObserver;
 import io.agora.rtc.plugin.rawdata.MediaPreProcessing;
 
 /**
@@ -38,15 +40,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (mediaDataObserverPlugin == null) {
-                        mediaDataObserverPlugin = MediaDataObserverPlugin.the();
-                        MediaPreProcessing.setCallback(mediaDataObserverPlugin);
-//                        MediaPreProcessing.setVideoCaptureByteBUffer(mediaDataObserverPlugin.byteBufferCapture);
-//                        MediaPreProcessing.setAudioRecordByteBUffer(mediaDataObserverPlugin.byteBufferAudioRecord);
-//                        MediaPreProcessing.setAudioPlayByteBUffer(mediaDataObserverPlugin.byteBufferAudioPlay);
-//                        MediaPreProcessing.setBeforeAudioMixByteBUffer(mediaDataObserverPlugin.byteBufferBeforeAudioMix);
-//                        MediaPreProcessing.setAudioMixByteBUffer(mediaDataObserverPlugin.byteBufferAudioMix);
-                    }
+                    createPlugin();
                     File alldir = LiveCacheFile.geCacheFile(activity, "agora/" + uid);
                     if (!alldir.exists()) {
                         alldir.mkdirs();
@@ -59,6 +53,72 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                             mLogtf.d("onRenderVideoShot:path=" + path);
                         }
                     });
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onUserJoined(final int uid, int elapsed) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                createPlugin();
+                mediaDataObserverPlugin.addDecodeBuffer(uid, 1382400);//720P
+            }
+        });
+    }
+
+    @Override
+    public void onUserOffline(final int uid, int reason) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                createPlugin();
+                mediaDataObserverPlugin.removeDecodeBuffer(uid);
+            }
+        });
+    }
+
+    private void createPlugin() {
+        if (mediaDataObserverPlugin == null) {
+            mediaDataObserverPlugin = MediaDataObserverPlugin.the();
+            MediaPreProcessing.setCallback(mediaDataObserverPlugin);
+            MediaPreProcessing.setVideoCaptureByteBUffer(mediaDataObserverPlugin.byteBufferCapture);
+            MediaPreProcessing.setAudioRecordByteBUffer(mediaDataObserverPlugin.byteBufferAudioRecord);
+            MediaPreProcessing.setAudioPlayByteBUffer(mediaDataObserverPlugin.byteBufferAudioPlay);
+            MediaPreProcessing.setBeforeAudioMixByteBUffer(mediaDataObserverPlugin.byteBufferBeforeAudioMix);
+            MediaPreProcessing.setAudioMixByteBUffer(mediaDataObserverPlugin.byteBufferAudioMix);
+            mediaDataObserverPlugin.addVideoObserver(new MediaDataVideoObserver() {
+                @Override
+                public void onCaptureVideoFrame(byte[] data, int frameType, int width, int height, int bufferLength, int yStride, int uStride, int vStride, int rotation, long renderTimeMs) {
+
+                }
+
+                @Override
+                public void onRenderVideoFrame(int uid, byte[] data, int frameType, int width, int height, int bufferLength, int yStride, int uStride, int vStride, int rotation, long renderTimeMs) {
+
+                }
+            });
+            mediaDataObserverPlugin.addAudioObserver(new MediaDataAudioObserver() {
+                @Override
+                public void onRecordAudioFrame(byte[] data, int videoType, int samples, int bytesPerSample, int channels, int samplesPerSec, long renderTimeMs, int bufferLength) {
+
+                }
+
+                @Override
+                public void onPlaybackAudioFrame(byte[] data, int videoType, int samples, int bytesPerSample, int channels, int samplesPerSec, long renderTimeMs, int bufferLength) {
+
+                }
+
+                @Override
+                public void onPlaybackAudioFrameBeforeMixing(byte[] data, int videoType, int samples, int bytesPerSample, int channels, int samplesPerSec, long renderTimeMs, int bufferLength) {
+
+                }
+
+                @Override
+                public void onMixedAudioFrame(byte[] data, int videoType, int samples, int bytesPerSample, int channels, int samplesPerSec, long renderTimeMs, int bufferLength) {
+
                 }
             });
         }

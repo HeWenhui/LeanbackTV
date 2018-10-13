@@ -7,4 +7,8 @@ public interface StudyReportAction {
      * @param uid
      */
     void onFirstRemoteVideoDecoded(int uid);
+
+    void onUserJoined(int uid, int elapsed);
+
+    void onUserOffline(int uid, int reason);
 }

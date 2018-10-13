@@ -115,12 +115,19 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
 
         @Override
         public void onUserJoined(int uid, int elapsed) {
-
+            StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
+            if (studyReportAction != null) {
+                studyReportAction.onUserJoined(uid, elapsed);
+            }
         }
 
         @Override
         public void onUserOffline(int uid, int reason) {
             mLogtf.d("onUserOffline:uid=" + uid + ",reason=" + reason);
+            StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
+            if (studyReportAction != null) {
+                studyReportAction.onUserOffline(uid, reason);
+            }
         }
 
         @Override
