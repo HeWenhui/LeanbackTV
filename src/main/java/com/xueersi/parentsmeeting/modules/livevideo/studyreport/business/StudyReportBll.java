@@ -1,9 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.studyreport.business;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.view.ViewTreeObserver;
 
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
@@ -16,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
 
 import java.io.File;
 
@@ -34,6 +39,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     Handler handler = new Handler(Looper.getMainLooper());
     private LogToFile mLogtf;
     private MediaDataObserverPlugin mediaDataObserverPlugin;
+    File alldir = LiveCacheFile.geCacheFile(activity, "studyreport");
 
     public StudyReportBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -49,17 +55,27 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                 @Override
                 public void run() {
                     createPlugin();
-                    File alldir = LiveCacheFile.geCacheFile(activity, "agora/" + uid);
-                    if (!alldir.exists()) {
-                        alldir.mkdirs();
+                    final File agoradir = new File(alldir, "type-2/" + uid);
+                    if (!agoradir.exists()) {
+                        agoradir.mkdirs();
                     }
-                    File saveFile = new File(alldir, System.currentTimeMillis() + ".jpg");
+                    final File saveFile = new File(agoradir, System.currentTimeMillis() + ".jpg");
                     mLogtf.d("onFirstRemoteVideoDecoded:saveFile=" + saveFile);
                     mediaDataObserverPlugin.saveRenderVideoShot(saveFile.getPath(), uid, new MediaDataObserverPlugin.OnRenderVideoShot() {
                         @Override
                         public void onRenderVideoShot(String path) {
-                            mLogtf.d("onRenderVideoShot:path=" + path);
-                            uploadWonderMoment(path, 2);
+                            Bitmap bitmap = LiveCutImage.cutBitmap(path);
+                            mLogtf.d("onRenderVideoShot:path=" + path + ",bitmap=null?" + (bitmap == null));
+                            if (!AppConfig.DEBUG) {
+                                new File(path).delete();
+                            }
+                            if (bitmap == null) {
+                                return;
+                            }
+                            File saveFile = new File(agoradir, System.currentTimeMillis() + ".jpg");
+                            LiveCutImage.saveImage(bitmap, saveFile.getPath());
+                            bitmap.recycle();
+                            uploadWonderMoment(2, saveFile.getPath());
                         }
                     });
                 }
@@ -89,7 +105,39 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         });
     }
 
-    private void uploadWonderMoment(String path, final int type) {
+    @Override
+    public void cutImage(final int type, final View view, final boolean cut) {
+        mLogtf.d("cutImage:type=" + type);
+        view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                view.getViewTreeObserver().removeOnPreDrawListener(this);
+                view.setDrawingCacheEnabled(true);
+                view.buildDrawingCache();
+                Bitmap bmpScreen = view.getDrawingCache();
+                if (cut) {
+                    bmpScreen = LiveCutImage.cutBitmap(bmpScreen);
+                }
+                File savedir = new File(alldir, "type-" + type);
+                if (!savedir.exists()) {
+                    savedir.mkdirs();
+                }
+                File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
+                LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
+                view.destroyDrawingCache();
+                mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath());
+                uploadWonderMoment(type, saveFile.getPath());
+                if (cut) {
+                    bmpScreen.recycle();
+                }
+                return false;
+            }
+        });
+
+    }
+
+    private void uploadWonderMoment(final int type, String path) {
+        mLogtf.d("uploadWonderMoment:type=" + type + ",path=" + path);
         final File finalFile = new File(path);
         XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(activity);
         CloudUploadEntity uploadEntity = new CloudUploadEntity();
@@ -104,7 +152,9 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
 
             @Override
             public void onSuccess(XesCloudResult result) {
-                finalFile.delete();
+                if (!AppConfig.DEBUG) {
+                    finalFile.delete();
+                }
                 logger.d("asyncUpload:onSuccess=" + result.getHttpPath());
                 getHttpManager().uploadWonderMoment(type, result.getHttpPath(), new HttpCallBack(false) {
                     @Override

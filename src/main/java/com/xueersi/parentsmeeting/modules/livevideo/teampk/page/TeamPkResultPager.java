@@ -32,11 +32,13 @@ import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkResultLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ContributionLayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView;
@@ -169,6 +171,10 @@ public class TeamPkResultPager extends BasePager {
         timeCountDowTextView = view.findViewById(R.id.tv_teampk_pkresult_time_countdow);
 
         rclContributionRank = view.findViewById(R.id.rcl_teampk_pkresult_contribution_rank);
+        StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
+        if (studyReportAction != null) {
+            studyReportAction.cutImage(1, view, false);
+        }
         return view;
     }
 
