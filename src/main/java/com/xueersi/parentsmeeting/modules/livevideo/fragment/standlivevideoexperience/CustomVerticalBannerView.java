@@ -258,6 +258,7 @@ public class CustomVerticalBannerView extends RelativeLayout {
         TextView tv = new TextView(getContext());
         tv.setText(text);
         tv.setTextColor(0xFFFFFFFF);
+        tv.setIncludeFontPadding(false);//尽量消除padding
         tv.setCompoundDrawables(leftDrawable, null, null, null);
         tv.setCompoundDrawablePadding(Dp2Px(getContext(), 3));
         return tv;
