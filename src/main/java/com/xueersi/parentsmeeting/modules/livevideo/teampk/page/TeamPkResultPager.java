@@ -52,7 +52,6 @@ import com.xueersi.lib.imageloader.SingleConfig;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 战队 pk 结果页
@@ -241,18 +240,14 @@ public class TeamPkResultPager extends BasePager {
 
         int pkResult = (int) (data.getMyTeamResultInfo().getEnergy() - data.getCompetitorResultInfo().getEnergy());
         if (pkResult == 0) {
-            showDrawAnim();
+            showDrawAnim(pkResult);
             logger.e("======> ResultPager show showDraw");
         } else if (pkResult > 0) {
-            showWinAnim();
+            showWinAnim(pkResult);
             logger.e("======> ResultPager show showWin");
         } else {
-            showLoseAnim();
+            showLoseAnim(pkResult);
             logger.e("======> ResultPager show showLose");
-        }
-        StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
-        if (studyReportAction != null) {
-            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_WIN, mView, false, true);
         }
     }
 
@@ -647,7 +642,7 @@ public class TeamPkResultPager extends BasePager {
     /**
      * 显示平局 lottie anim
      */
-    private void showDrawAnim() {
+    private void showDrawAnim(int pkResult) {
         // 播放胜利音效
         playMusic(R.raw.win, SOUND_VOLUME_FRONT, false);
         final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "draw/images";
@@ -691,13 +686,13 @@ public class TeamPkResultPager extends BasePager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        lottieAnimationView.addAnimatorListener(new PkAnimListener(ANIM_TYPE_PK_REUSLT));
+        lottieAnimationView.addAnimatorListener(new PkAnimListener(ANIM_TYPE_PK_REUSLT, pkResult));
     }
 
     /**
      * 展示pk 失败lottie 动画
      */
-    private void showLoseAnim() {
+    private void showLoseAnim(int pkResult) {
 
         // 播放胜利音效
         playMusic(R.raw.lose, SOUND_VOLUME_FRONT, false);
@@ -743,10 +738,10 @@ public class TeamPkResultPager extends BasePager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        lottieAnimationView.addAnimatorListener(new PkAnimListener(ANIM_TYPE_PK_REUSLT));
+        lottieAnimationView.addAnimatorListener(new PkAnimListener(ANIM_TYPE_PK_REUSLT, pkResult));
     }
 
-    public void showWinAnim() {
+    public void showWinAnim(int pkResult) {
 
         // 播放胜利音效
         playMusic(R.raw.win, SOUND_VOLUME_FRONT, false);
@@ -794,7 +789,7 @@ public class TeamPkResultPager extends BasePager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        lottieAnimationView.addAnimatorListener(new PkAnimListener(ANIM_TYPE_PK_REUSLT));
+        lottieAnimationView.addAnimatorListener(new PkAnimListener(ANIM_TYPE_PK_REUSLT, pkResult));
     }
 
 
@@ -856,9 +851,11 @@ public class TeamPkResultPager extends BasePager {
 
     private class PkAnimListener implements Animator.AnimatorListener {
         private int animType;
+        private int pkResult;
 
-        PkAnimListener(int animType) {
+        PkAnimListener(int animType, int pkResult) {
             this.animType = animType;
+            this.pkResult = pkResult;
         }
 
         @Override
@@ -884,6 +881,12 @@ public class TeamPkResultPager extends BasePager {
                     break;
                 default:
                     break;
+            }
+            if (pkResult > 0) {
+                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
+                if (studyReportAction != null) {
+                    studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_WIN, mView, false, false);
+                }
             }
         }
 
