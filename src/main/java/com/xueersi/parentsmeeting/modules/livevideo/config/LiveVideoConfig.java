@@ -301,7 +301,7 @@ public class LiveVideoConfig {
         /** 被选接麦 */
         int TYPE_AGORA = 2;
         /** 语音表扬 */
-        int TYPE_3 = 3;
+        int TYPE_PRAISE = 3;
         /** 进步榜 */
         int TYPE_4 = 4;
         /** 优秀榜 */

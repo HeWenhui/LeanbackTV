@@ -226,7 +226,7 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
         });
         StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
         if (studyReportAction != null) {
-            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_RED_PACKAGE, view, false, true);
+            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_RED_PACKAGE, view, false, false);
         }
     }
 
