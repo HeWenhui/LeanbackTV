@@ -309,9 +309,9 @@ public class LiveVideoConfig {
         /** 获赞榜 */
         int TYPE_6 = 6;
         /** pk获胜 */
-        int TYPE_7 = 7;
+        int TYPE_PK_WIN = 7;
         /** pk开宝箱 */
-        int TYPE_8 = 8;
+        int TYPE_PK_GOLD = 8;
         /** 抢红包 */
         int TYPE_RED_PACKAGE = 9;
     }

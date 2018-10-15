@@ -52,6 +52,7 @@ import com.xueersi.lib.imageloader.SingleConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 战队 pk 结果页
@@ -172,10 +173,6 @@ public class TeamPkResultPager extends BasePager {
         timeCountDowTextView = view.findViewById(R.id.tv_teampk_pkresult_time_countdow);
 
         rclContributionRank = view.findViewById(R.id.rcl_teampk_pkresult_contribution_rank);
-        StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
-        if (studyReportAction != null) {
-            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, view, false);
-        }
         return view;
     }
 
@@ -253,6 +250,10 @@ public class TeamPkResultPager extends BasePager {
             showLoseAnim();
             logger.e("======> ResultPager show showLose");
         }
+        StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
+        if (studyReportAction != null) {
+            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_WIN, mView, false, true);
+        }
     }
 
     /**
@@ -274,6 +275,15 @@ public class TeamPkResultPager extends BasePager {
                         mContributions.clear();
                         mContributions.addAll(data.getContributionStarList());
                         pkResultAdapter.notifyDataSetChanged();
+                        mView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
+                                if (studyReportAction != null) {
+                                    studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView, false, false);
+                                }
+                            }
+                        }, 200);
                     }
                 }, 200);
             }
@@ -631,7 +641,6 @@ public class TeamPkResultPager extends BasePager {
                 }
             }
         });
-
     }
 
 

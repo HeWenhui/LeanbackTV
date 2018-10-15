@@ -107,12 +107,11 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     }
 
     @Override
-    public void cutImage(final int type, final View view, final boolean cut) {
-        mLogtf.d("cutImage:type=" + type);
-        view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+    public void cutImage(final int type, final View view, final boolean cut, boolean predraw) {
+        mLogtf.d("cutImage:type=" + type + ",cut=" + cut + ",predraw=" + predraw);
+        final Runnable runnable = new Runnable() {
             @Override
-            public boolean onPreDraw() {
-                view.getViewTreeObserver().removeOnPreDrawListener(this);
+            public void run() {
                 view.setDrawingCacheEnabled(true);
                 view.buildDrawingCache();
                 Bitmap bmpScreen = view.getDrawingCache();
@@ -131,10 +130,20 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                 if (cut) {
                     bmpScreen.recycle();
                 }
-                return false;
             }
-        });
-
+        };
+        if (predraw) {
+            view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    view.getViewTreeObserver().removeOnPreDrawListener(this);
+                    runnable.run();
+                    return false;
+                }
+            });
+        } else {
+            runnable.run();
+        }
     }
 
     private void uploadWonderMoment(final int type, String path) {
