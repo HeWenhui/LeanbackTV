@@ -4,7 +4,6 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -153,7 +152,7 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
             return rolePlayerEntity;
         } catch (Exception e) {
             MobAgent.httpResponseParserError(TAG, "parserRolePlayTestInfos", e.getMessage());
-            Loger.i("RolePlayerDemoTest"," e.getMessage():"+ e.getMessage());
+            logger.i(" e.getMessage():"+ e.getMessage());
             return null;
         }
 
