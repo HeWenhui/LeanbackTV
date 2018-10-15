@@ -184,67 +184,6 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         }
 
 
-        /*  Loger.i("RolePlayerDemoTest", "isHasVideo "+isHasVideo+" SpeechEvaluatorUtils.isOfflineFail() "
-        +SpeechEvaluatorUtils.isOfflineFail());
-          if (isHasVideo && !SpeechEvaluatorUtils.isOfflineFail()) {
-                Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo+" 拍照，录音，权限授予；离线加载成功，请求分组");
-                beginConWebSocket();
-                mIsBeginSocket = true;
-            } else {
-                Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo+" 拍照，录音，权限未授予；或离线加载失败，不再请求分组，进人机");
-                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        XesPermission.checkPermission(mContext, PermissionConfig.PERMISSION_CODE_AUDIO,
-                        PermissionConfig.PERMISSION_CODE_CAMERA);
-                        if (mIsBeginSocket) {
-                            Loger.i("RolePlayerDemoTest", "延迟了3秒去再次请求权限");
-                            beginConWebSocket();
-                        }
-                    }
-                }, 3000);
-            }*/
-
-       /* boolean isHasVideo = XesPermission.checkPermission(mContext, new PermissionCallback() {
-
-            @Override
-            public void onFinish() {
-                Loger.i("RolePlayerDemoTest", "没开启录音权限无法参与RolePlayer");
-            }
-
-            @Override
-            public void onDeny(String permission, int position) {
-                XESToastUtils.showToast(mContext, "没开启录音权限无法参与RolePlayer");
-                Loger.i("RolePlayerDemoTest", "没开启录音权限无法参与RolePlayer");
-            }
-
-            @Override
-            public void onGuarantee(String permission, int position) {
-                Loger.i("RolePlayerDemoTest", "开启了录音权限，开始去请求分组");
-                //beginConWebSocket();
-            }
-        }, PermissionConfig.PERMISSION_CODE_AUDIO,PermissionConfig.PERMISSION_CODE_CAMERA);
-        Loger.i("RolePlayerDemoTest", "isHasVideo "+isHasVideo+" SpeechEvaluatorUtils.isOfflineFail() "
-        +SpeechEvaluatorUtils.isOfflineFail());
-        if (isHasVideo && !SpeechEvaluatorUtils.isOfflineFail()) {
-            Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo+" 拍照，录音，权限授予；离线加载成功，请求分组");
-            beginConWebSocket();
-            mIsBeginSocket = true;
-        } else {
-            Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo+" 拍照，录音，权限未授予；或离线加载失败，不再请求分组，进人机");
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    XesPermission.checkPermission(mContext, PermissionConfig.PERMISSION_CODE_AUDIO,PermissionConfig
-                    .PERMISSION_CODE_CAMERA);
-                    if (mIsBeginSocket) {
-                        Loger.i("RolePlayerDemoTest", "延迟了3秒去再次请求权限");
-                        beginConWebSocket();
-                    }
-                }
-            }, 3000);
-        }*/
-
     }
 
     /**

@@ -42,7 +42,7 @@ public class QuestionWebCache {
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-            Loger.d(TAG, "shouldInterceptRequest:url=" + url);
+            logger.d( "shouldInterceptRequest:url=" + url);
             return super.shouldInterceptRequest(view, url);
         }
 

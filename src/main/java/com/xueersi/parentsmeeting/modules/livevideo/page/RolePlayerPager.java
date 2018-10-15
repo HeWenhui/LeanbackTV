@@ -359,6 +359,8 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                 logger.i( "离开连麦界面，清除数据");
                 mReadHandler.removeMessages(READ_MESSAGE);
                 mRolePlayBll.realease();
+                //释放所有正在播放的音频
+                relaseAllAudioPlay();
                 if (mEntity != null) {
                     mEntity = null;//防止结果页数据错乱，尤其点赞个数
                 }
@@ -370,6 +372,17 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         return view;
     }
 
+    /**
+     * 释放所有正在播放的音频
+     */
+    private void relaseAllAudioPlay() {
+        if(mRolePlayerOtherItem != null){
+            mRolePlayerOtherItem.relaseAudioPlay();
+        }
+        if(mRolePlayerSelfItem != null){
+            mRolePlayerSelfItem.relaseAudioPlay();
+        }
+    }
     @Override
     public void initData() {
         //默认MATCH_WAIT_SECOND 后，匹配页消失
@@ -459,7 +472,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         if (tFace != null) {
             tvBeginTipMsg.setTypeface(getTypeface(mContext));
         }
-        if (mEntity.getLstRolePlayerMessage().get(0).getRolePlayer().isSelfRole()) {
+        if (mEntity != null && mEntity.getLstRolePlayerMessage().get(0).getRolePlayer().isSelfRole()) {
             tvBeginTipMsg.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "你先开始.准备好了吗？" : "You" +
                     " go first. Are you ready?");
             tvBeginTipMsg.postDelayed(new Runnable() {
@@ -509,6 +522,11 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
             }
         }, 1000);
 //
+
+        if(mEntity == null){
+            //防止此时，老师结束答题，程序闪退的问题
+            return;
+        }
         //填充对话内容
         mRolePlayerAdapter = new CommonAdapter<RolePlayerEntity.RolePlayerMessage>(mEntity.getLstRolePlayerMessage(),
                 2) {

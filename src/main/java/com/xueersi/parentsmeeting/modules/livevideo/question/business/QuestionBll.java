@@ -677,14 +677,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             rolePlayAction.onGoToRobot();
                         }
 
-                        logger.i("RolePlayerDemoTest","走人机 START");
-//                        speechAssessmentPager = new SpeechAssessmentWebPager(activity,
-//                                liveGetInfo.getId(), id, liveGetInfo.getStuId(),
-//                                true, videoQuestionLiveEntity.nonce, QuestionBll.this, stuCouId, false);
+                        logger.i("走人机 START");
 
                         rolePlayMachineBll = (RolePlayMachineBll) rolePlayMachineAction;
                         if(rolePlayMachineBll == null){
-                            logger.i("RolePlayerDemoTest","rolePlayAction 为空");
+                            logger.i("rolePlayAction 为空");
                             return;
                         }
 
@@ -696,22 +693,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager.initData();
                         logger.i("走人机 END");
                             //rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
-
-
                     }
                     setHaveSpeech(true);
                     rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
-//                    speechAssessmentPager = new SpeechAssAutoPager(activity, true, liveGetInfo.getId(),
-//                            liveGetInfo.getStuId(), QuestionBll.this, id, speechEvalResultUrl);
-//                    setHaveSpeech(true);
-//                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
-// .MATCH_PARENT,
-//                            ViewGroup.LayoutParams.MATCH_PARENT);
-//                    int screenWidth = ScreenUtils.getScreenWidth();
-//                    int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity
-// .VIDEO_WIDTH);
-//                    lp.rightMargin = wradio;
-//                    rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
+
                 } else {
                     XESToastUtils.showToast(activity, "不支持的试题类型，可能需要升级版本");
                     return;

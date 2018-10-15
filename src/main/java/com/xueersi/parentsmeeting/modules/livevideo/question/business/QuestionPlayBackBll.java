@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -18,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
@@ -155,6 +157,16 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         }
                     }
                 }
+
+                //todo:
+                videoQuestionLiveEntity.roles = "test_role_name";
+                if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && ! "1".equals(videoQuestionLiveEntity.multiRolePlay) ){
+                    logger.i("走人机start,拉取试题");
+                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
+                    questionBll.setRolePlayMachineAction(rolePlayerBll);
+
+                }
+
                 questionBll.showQuestion(videoQuestionLiveEntity);
                 showQuestion.onShow(true, videoQuestionLiveEntity);
             }

@@ -1,3 +1,4 @@
+/*
 package com.xueersi.parentsmeeting.modules.livevideo.manager;
 
 import android.content.Context;
@@ -20,9 +21,11 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.xueersi.lib.log.Loger;
 
 
+*/
 /**
  * Created by yzl on 2018/7/9.
- */
+ *//*
+
 
 public class ExoPlayerManager {
     private ExoPlayerManager() {
@@ -42,12 +45,14 @@ public class ExoPlayerManager {
         return mInstance;
     }
 
-    /**
+    */
+/**
      * @param playCorrectVoiceUrl 音频的地址（网络，本地都可以播放）
      * @param speed               播放的速度
      * @param pitch               播放的音调
      * @param playerCallback      播放回调
-     */
+     *//*
+
     public SimpleExoPlayer startWithSpeed(Context context, final String playCorrectVoiceUrl, float speed, float
             pitch, long curPos) {
 
@@ -81,14 +86,16 @@ public class ExoPlayerManager {
         return mExoplayer;
     }
 
-    /**
+    */
+/**
      * 默认1.0速度的播放器
      * @param context
      * @param absolutePath
      * @param curpos
      * @param playerCallback
      * @return
-     */
+     *//*
+
     public SimpleExoPlayer startWithSpeed(Context context, String absolutePath, int curpos, final OnPlayCallback playerCallback) {
         mExoplayer =  startWithSpeed(context,absolutePath,1.0f,1.0f,curpos);
         mExoplayer.addListener(new Player.EventListener() {
@@ -176,3 +183,4 @@ public class ExoPlayerManager {
         void onIdle();
     }
 }
+*/

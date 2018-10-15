@@ -8,6 +8,11 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.permission.PermissionItem;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
@@ -17,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpResponseP
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -25,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -56,6 +63,16 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
 
     RolePlayMachinePager mRolePlayMachinePager;
 
+    /**
+     * 是否开始了人机
+     */
+    private boolean isGoToRobot;
+
+    /**
+     * 标记是否有权限进人机
+     */
+    private boolean isCanRolePlay = true;
+
     public RolePlayMachineBll(Context context, RelativeLayout bottomContent, LiveAndBackDebug liveBll, LiveGetInfo liveGetInfo) {
         super(context, bottomContent, liveBll, liveGetInfo);
 
@@ -70,10 +87,82 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
         mBottomContent = bottomContent;
 
     }
+    /**
+     * 领读指令触发
+     */
+    @Override
+    public void teacherRead(String liveId, String stuCouId, final String nonce) {
+        logger.i( TAG+"人机领读");
+        isGoToRobot = false;
+        mRolePlayerEntity = null;
+        this.mLiveId = liveId;
+        this.mStuCouId = stuCouId;
 
+        final List<PermissionItem> unList = new ArrayList<>();
+
+        List<PermissionItem> unPermissionItems = XesPermission.checkPermissionUnPerList(mContext, new
+                LiveActivityPermissionCallback() {
+
+                    @Override
+                    public void onFinish() {
+                        logger.i( "onFinish");
+
+                    }
+
+                    @Override
+                    public void onDeny(String permission, int position) {
+                        isCanRolePlay = false;
+                        XESToastUtils.showToast(mContext, "没开启录音权限无法参与RolePlayer");
+
+                    }
+
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+                        logger.i( "开启了" + permission + "权限");
+                        unList.remove(0);
+                        if (unList.isEmpty()) {
+                            if (SpeechEvaluatorUtils.isOfflineSuccess()) {
+                                isCanRolePlay = true;
+                                logger.i( "开启了录音权限，且离线加载成功开始去人机");
+                                if (isGoToRobot) {
+                                    return;
+                                }
+                                goToRobot();
+                            }else {
+                                isCanRolePlay = false;
+                            }
+                        }
+
+                    }
+                }, PermissionConfig.PERMISSION_CODE_AUDIO);
+
+        logger.i( "unpermissionItems " + unPermissionItems.size() + "  SpeechEvaluatorUtils" +
+                ".isOfflineSuccess() = " + SpeechEvaluatorUtils.isOfflineSuccess());
+
+        unList.addAll(unPermissionItems);
+        if (unList.isEmpty()) {
+            if (SpeechEvaluatorUtils.isOfflineSuccess()) {
+                logger.i( "开启了录音拍照权限，且离线加载成功开始去人机");
+                isCanRolePlay = true;
+                if (isGoToRobot) {
+                    return;
+                }
+                goToRobot();
+            } else {
+                isCanRolePlay = false;
+                logger.i( "没有权限或者离线包失败,不能进行roleplay");
+            }
+        }
+
+
+    }
     @Override
     public void teacherPushTest(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         //super.teacherPushTest(videoQuestionLiveEntity);
+        if(!isCanRolePlay){
+            logger.i( "没有权限或者离线包失败,不能进行roleplay");
+            return;
+        }
 
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         //拉取试题
@@ -250,6 +339,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
             public void run() {
                 if (mBottomContent != null && mRolePlayMachinePager != null) {
                     mBottomContent.removeView(mRolePlayMachinePager.getRootView());
+                    mRolePlayMachinePager.closeCurrentPage();
                     mRolePlayMachinePager.onDestroy();
                     mRolePlayMachinePager = null;
                     AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);

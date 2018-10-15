@@ -112,6 +112,10 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
                     return;
                 }
 
+                if(mEntity.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ){
+                    Loger.i("RolePlayerDemoTest", "roleplay还未结束，不可点击对话");
+                    return;
+                }
                 if (mIsPlaying) {
                     Loger.i("RolePlayerDemoTest", "语音正在播放中，请不要重复点击");
                     return;
@@ -164,6 +168,7 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
                 Loger.i("RolePlayerDemoTest", "先停掉正在播放的音频，优先播放现在的");
                 mAudioPlayerManager.stop();
                 mAudioPlayerManager.release();
+                mAudioPlayerManager = null;
             }
 
         }
@@ -174,6 +179,8 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
             @Override
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
                 Loger.i("RolePlayerDemoTest", "完成播放");
+                mAudioPlayerManager.release();
+                mAudioPlayerManager = null;
                 if(isRolePlay){
                     Loger.i("RolePlayerDemoTest", "机器播完，开启下一条");
                     nextMsg();
@@ -209,9 +216,11 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
                 super.onError(msg, dataSource, manager);
                 if(isRolePlay){
                     Loger.i("RolePlayerDemoTest", "机器播完出错:msg = "+msg+" dataSource = "+dataSource);
+                    nextMsg();
                 }
                 mIsPlaying = false;
                 recoverMsgUiStatus();
+                mAudioPlayerManager = null;
             }
         });
     }
@@ -280,13 +289,8 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
                 vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
                 tvMessageContent.setTextColor(Color.WHITE);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_other_voice_white_anim);
-//                AnimationDrawable animationDrawable = null;
-//                animationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
-//                if (animationDrawable != null && !animationDrawable.isRunning()) {
-//                    animationDrawable.start();
-                    //正在roleplay中
-                    playAudio(true);
-//                }
+                //正在roleplay中
+                playAudio(true);
 
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY:

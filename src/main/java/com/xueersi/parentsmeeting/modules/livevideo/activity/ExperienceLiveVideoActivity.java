@@ -676,9 +676,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     jsonObject.put("from", "android_" + teamId);
                     jsonObject.put("to", teamId);
                 }
-                lectureLivePlayBackBll.sendRecordInteract(mVideoEntity.getInteractUrl(), mVideoEntity.getChapterId(),
-                        1);
-                mIRCMessage.sendMessage(jsonObject.toString());
+//                lectureLivePlayBackBll.sendRecordInteract(mVideoEntity.getInteractUrl(), mVideoEntity.getChapterId(),
+//                        1);
+//                mIRCMessage.sendMessage(jsonObject.toString());
 
 
             } catch (Exception e) {
@@ -1070,7 +1070,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mFeedbackWindow.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
         mFeedbackWindow.setOutsideTouchable(false);
         mFeedbackWindow.setFocusable(true);
-        mFeedbackWindow.setSoftInputMode(PopupWindow.INPUT_METHOD_NEEDED);
+        //mFeedbackWindow.setSoftInputMode(PopupWindow.INPUT_METHOD_NEEDED);
         mFeedbackWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         mFeedbackWindow.showAtLocation(expFeedbackPager.getRootView(), Gravity.CENTER, 0, 0);
         mFeedbackWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {

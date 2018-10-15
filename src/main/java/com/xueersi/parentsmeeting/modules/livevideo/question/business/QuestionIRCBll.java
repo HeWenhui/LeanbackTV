@@ -251,7 +251,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 }
                 if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay .equals( "1")){
-                    Loger.i("RolePlayerDemoTest","走人机start,拉取试题");
+                    logger.i("走人机start,拉取试题");
                     if (rolePlayMachineAction == null) {
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
                         mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
