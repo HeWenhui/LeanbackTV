@@ -919,7 +919,6 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 //isShowResult = false;
             }
         }, 5000);
-        // leaveChannel();
     }
 
 
