@@ -74,7 +74,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="11dp"
-                android:src="@drawable/selector_livevideo_speechbul_repeat" />
+                android:src="@drawable/selector_livevideo_english_speechbul_repeat" />
 
             <EditText
                 android:id="@id/et_livevideo_speechbul_words"
