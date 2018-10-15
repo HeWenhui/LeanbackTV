@@ -251,6 +251,10 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     private ImageView iv_live_roleplayer_title;//roleplay标题icon
     private boolean mIsListViewUnSroll;//listview是否可滑动
 
+    /**
+     * ture 直播，false 回放
+     */
+    private boolean mIsLive;
     private RolePlayerHttpManager mRolePlayerHttpManager;
     private RolePlayerHttpResponseParser mRolePlayerHttpResponseParser;
 
@@ -272,6 +276,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
     public RolePlayMachinePager(Context context, VideoQuestionLiveEntity videoQuestionLiveEntity, String id, String testId, String stuId, boolean islive, String nonce, SpeechEvalAction speechEvalAction, String stuCouId, boolean isSilence, LivePagerBack livePagerBack, RolePlayMachineBll rolePlayMachineBll, LiveGetInfo liveGetInfo) {
         super(context);
+        this.mIsLive = islive;
         mRolePlayBll = rolePlayMachineBll;
         this.mLiveGetInfo = liveGetInfo;
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
@@ -894,7 +899,22 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         rlResult.postDelayed(new Runnable() {
             @Override
             public void run() {
-                recoverListScrollAndCancelDZ();
+                if(!mIsLive){
+                    //回放，在弹窗消失的同时，离开连麦界面
+                    logger.i("liveback leave roleplay");
+                    recoverListScrollAndCancelDZ();
+                    if(mReadHandler != null){
+                        mReadHandler.removeMessages(READ_MESSAGE);
+                    }
+                    //释放所有正在播放的音频
+                    relaseAllAudioPlay();
+                    mRolePlayBll.onStopQuestion(null,null);
+                }else {
+                    //直播
+                    logger.i("live not leave roleplay");
+                    recoverListScrollAndCancelDZ();
+                }
+
 
                 //isShowResult = false;
             }
