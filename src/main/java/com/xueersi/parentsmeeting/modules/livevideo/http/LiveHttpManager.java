@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -10,6 +11,7 @@ import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -1253,6 +1255,8 @@ public class LiveHttpManager extends BaseHttpBusiness {
      */
     public void getDeviceDetectionInfo(HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("deviceMemory", Integer.toString(DeviceUtils.getTotalRam(mContext)));
+        params.addBodyParam("apiLevel", Build.VERSION.SDK_INT + "");
         setDefaultParameter(params);
         sendPost(LiveVideoConfig.URL_CHECK_DEVICE, params, requestCallBack);
     }

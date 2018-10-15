@@ -91,7 +91,6 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         wrapQuestionWebStop.setStopWebQuestion(questionBll);
         liveBackSubjectResultCreat.setWrapQuestionWebStop(wrapQuestionWebStop);
         questionBll.setBaseSubjectResultCreat(liveBackSubjectResultCreat);
-        questionBll.setQuestionWebCreate(new LiveBackQuestionWebCreate());
         QuestionWebCache webCache = new QuestionWebCache(activity);
         webCache.startCache();
     }

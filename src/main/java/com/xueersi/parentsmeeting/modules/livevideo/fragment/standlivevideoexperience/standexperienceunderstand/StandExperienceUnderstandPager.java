@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,11 +10,9 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 
-import java.util.HashMap;
-import java.util.Iterator;
-
-public class StandExperienceUnderstandPager extends BasePager {
+public class StandExperienceUnderstandPager extends BasePager implements QuestionShowAction {
 
 //    private static StandExperienceUnderstandPager mPager;
     /**
@@ -45,7 +44,8 @@ public class StandExperienceUnderstandPager extends BasePager {
     /**
      * 懂了么点击事件监听器
      */
-    private IUnderStandListener iUnderStandListener;
+    private IUnderStandContract.IUnderStandListener iUnderStandListener;
+    private IUnderStandContract.IUnderStandPresenter iUnderStandPresenter;
 
     private VideoLivePlayBackEntity mVideoEntity;
 
@@ -56,9 +56,11 @@ public class StandExperienceUnderstandPager extends BasePager {
 //        return mPager;
 //    }
 
-    public StandExperienceUnderstandPager(Context context, VideoLivePlayBackEntity mVideoEntity) {
+    public StandExperienceUnderstandPager(Context context, VideoLivePlayBackEntity mVideoEntity, IUnderStandContract
+            .IUnderStandPresenter iUnderStandPresenter) {
         super(context);
         this.mVideoEntity = mVideoEntity;
+        this.iUnderStandPresenter = iUnderStandPresenter;
         initData();
         initListener();
     }
@@ -77,7 +79,9 @@ public class StandExperienceUnderstandPager extends BasePager {
 
     @Override
     public void initData() {
-        tvTitle.setText(mVideoEntity.getUnderStandDifficultyTitle());
+//        if (!TextUtils.isEmpty(mVideoEntity.getUnderStandDifficultyTitle())) {
+//            tvTitle.setText(mVideoEntity.getUnderStandDifficultyTitle());
+//        }
 //        map = mVideoEntity.getUnderStandDifficulty();
 //        Iterator<String> iterator = map.keySet().iterator();
 //
@@ -123,11 +127,15 @@ public class StandExperienceUnderstandPager extends BasePager {
         }
     }
 
-    public interface IUnderStandListener {
-        void onClick(int sign);
+
+    public void setUnderStandListener(IUnderStandContract.IUnderStandListener iUnderStandListener) {
+        this.iUnderStandListener = iUnderStandListener;
     }
 
-    public void setUnderStandListener(IUnderStandListener iUnderStandListener) {
-        this.iUnderStandListener = iUnderStandListener;
+    @Override
+    public void onQuestionShow(boolean isShow) {
+        if (iUnderStandPresenter != null) {
+            iUnderStandPresenter.removeView();
+        }
     }
 }

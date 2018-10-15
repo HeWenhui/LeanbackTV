@@ -5,13 +5,11 @@ import android.os.Build;
 import android.view.ViewGroup;
 
 import com.xueersi.common.event.AppEvent;
-import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -28,8 +26,9 @@ import org.greenrobot.eventbus.ThreadMode;
  * 将VideoView转化为小窗口
  */
 public class VideoPopView {
-
+//    private static volatile VideoPopView instance;
     private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+
 
     private VideoView videoView;
 
@@ -38,6 +37,17 @@ public class VideoPopView {
     //    private MiniEvent event;
     //是否开启了小窗口
     private Boolean isShow = false;
+//
+//    public static VideoPopView getInstance(Activity activity, VideoView videoView) {
+//        if (instance == null) {
+//            synchronized (VideoPopView.class) {
+//                if (instance == null) {
+//                    instance = new VideoPopView(activity, videoView);
+//                }
+//            }
+//        }
+//        return instance;
+//    }
 
     public VideoPopView(Activity activity, VideoView videoView) {
         this.activity = activity;
@@ -87,7 +97,9 @@ public class VideoPopView {
 //            }
                 PauseNotStopVideoInter onPauseNotStopVideo = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter
                         .class);
-                onPauseNotStopVideo.setPause(true);
+                if (onPauseNotStopVideo != null) {
+                    onPauseNotStopVideo.setPause(true);
+                }
                 // 添加点击立即报名的日志
                 StableLogHashMap logHashMap = new StableLogHashMap("clickEnroll");
 //            logHashMap.put("adsid", "" + event.getAdId());
@@ -125,6 +137,8 @@ public class VideoPopView {
             //开启悬浮窗
             FloatWindowManager.addView(activity, videoView, FloatLayout.INTENT_TO_LivePlaybackVideoActivity);
             isShow = true;
+        }else{
+            logger.i("没有权限并且系统大于等于24");
         }
 
     }
