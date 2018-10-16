@@ -22,7 +22,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.common.business.UserBll;
@@ -112,11 +111,11 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 }
 
                 if(mEntity.getMsgStatus() == RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY){
-                    Loger.i("RolePlayerDemoTest", "正在roleplay,不可点击自己对话");
+                    logger.i("正在roleplay,不可点击自己对话");
                     return;
                 }
                 if(mEntity.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ){
-                    Loger.i("RolePlayerDemoTest", "roleplay还未结束，不可点击对话");
+                    logger.i( "roleplay还未结束，不可点击对话");
                     return;
                 }
                 if (mIsPlaying) {
@@ -264,7 +263,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 //                        public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
 //                            super.onError(msg, dataSource, manager);
 //                            if (msg != null) {
-//                                IMLoger.info(mContext, "语音播放错误：" + msg + "  语音地址：" + mEntity.getSmallResourceUrl());
+//                                IMlogger.info(mContext, "语音播放错误：" + msg + "  语音地址：" + mEntity.getSmallResourceUrl());
 //                            }
 //                        }
 //                    }

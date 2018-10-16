@@ -20,7 +20,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 import com.xueersi.lib.framework.are.ContextManager;
@@ -116,7 +115,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                     return;
                 }
                 if(mEntity.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ){
-                    Loger.i("RolePlayerDemoTest", "roleplay还未结束，不可点击对话");
+                    logger.i("roleplay还未结束，不可点击对话");
                     return;
                 }
                 if (mIsPlaying) {
