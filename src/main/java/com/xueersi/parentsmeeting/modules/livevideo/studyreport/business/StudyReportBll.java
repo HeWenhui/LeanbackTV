@@ -58,7 +58,11 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        initData();
+        if (getInfo.getAllowSnapshot() == 1) {
+            initData();
+        } else {
+            mLiveBll.removeBusinessBll(this);
+        }
     }
 
     private void initData() {

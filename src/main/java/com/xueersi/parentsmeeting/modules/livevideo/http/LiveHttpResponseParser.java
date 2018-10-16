@@ -78,6 +78,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } else {
             LiveVideoConfig.isPrimary = false;
         }
+        getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
         LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
         LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
