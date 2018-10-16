@@ -241,7 +241,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                             }
                             talAsrJni.LangIDReset(0);
                         }
-                        rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+//                        rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
                         rl_livevideo_english_speak_error.setVisibility(View.GONE);
                         isDestory = false;
                         isDestory2 = false;
@@ -257,7 +257,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         }
                         talAsrJni.LangIDReset(0);
                     }
-                    rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+//                    rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
                     rl_livevideo_english_speak_error.setVisibility(View.GONE);
                     isDestory = false;
                     isDestory2 = false;
@@ -294,7 +294,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
         } else {
 
-            rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+//            rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
 //            tv_livevideo_english_time.setVisibility(View.VISIBLE);
 //            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
 //            rl_livevideo_english_stat.setVisibility(View.VISIBLE);
@@ -825,7 +825,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //                    tv_livevideo_english_prog.setVisibility(View.VISIBLE);
 //                    rl_livevideo_english_stat.setVisibility(View.VISIBLE);
                     if (rl_livevideo_english_speak_error.getVisibility() != View.VISIBLE) {
-                        rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+//                        rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
                     }
                     if (!showTip) {
                         showTip = true;
