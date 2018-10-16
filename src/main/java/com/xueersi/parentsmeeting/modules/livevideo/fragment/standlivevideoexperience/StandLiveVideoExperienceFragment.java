@@ -45,7 +45,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBack
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
-import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
@@ -147,10 +146,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     public static StandLiveVideoExperienceFragment newInstance(boolean isExperience) {
 //        Bundle arguments = new Bundle();
 //        arguments.putBoolean(experience, isExperience);
-//        StandLiveVideoExperienceFragment standLiveVideoExperienceFragment = ;
 //        standLiveVideoExperienceFragment.setArguments(arguments);
-
-
         return new StandLiveVideoExperienceFragment();
     }
 
@@ -191,8 +187,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         // 加载竖屏时显示更多课程广告的布局
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
         //为
-//        videoPopView = new VideoPopView(activity, liveBackPlayVideoFragment.getVideoView());
-//        videoPopView.setVideoView(liveBackPlayVideoFragment.getVideoView());
     }
 
     protected void updateLoadingImage() {
@@ -441,9 +435,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 }
             });
         }
-
     }
-
 
     protected void initBusiness() {
         liveBackBll.addBusinessShareParam("videoView", videoView);
@@ -636,7 +628,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      */
     private long startTime = -1;
     /**
-     * 每次进入直播时的时间
+     * 每次开始统计一段播放时长(5分钟)的起始时间
      */
     private long everyTime = 0L;
     /**
@@ -674,6 +666,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                             mVideoEntity.getCourseId() + "-" + mVideoEntity.getLiveId(), mWebPath, arg2);
                 }
             }
+//            XesMobAgent.onOpenFail(where+"playback7",);
         }
         continuedMTime += System.currentTimeMillis() - everyTime;//得到这次观看的时间
     }
@@ -692,7 +685,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             startTime = System.currentTimeMillis();
         }
 
-//        continuedMTime =
         long pos = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime);
 
 

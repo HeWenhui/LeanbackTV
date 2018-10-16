@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.xueersi.common.base.BaseBll;
@@ -49,8 +48,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -58,8 +55,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick,
         LiveOnLineLogs {
-    private String TAG = "LiveBackBll";
-    Logger logger = LoggerFactory.getLogger(TAG);
+    protected String TAG = "LiveBackBll";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     Activity activity;
     private LiveGetInfo mGetInfo;
     LiveHttpManager mHttpManager;
@@ -67,7 +64,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     /** 购课id */
     protected String stuCourId;
     /** 视频节对象 */
-    VideoLivePlayBackEntity mVideoEntity;
+    protected VideoLivePlayBackEntity mVideoEntity;
     /** 从哪个页面跳转 */
     String where;
     int isArts;
@@ -87,8 +84,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     private static final int NO_QUESTION = 1;
     /** 当前是否正在显示互动题 */
     private boolean mIsShowQuestion = false;
-    ArrayList<LiveBackBaseBll> liveBackBaseBlls = new ArrayList<>();
-    SparseArray<LiveBackBaseBll> array = new SparseArray<>();
+    protected ArrayList<LiveBackBaseBll> liveBackBaseBlls = new ArrayList<>();
+    protected SparseArray<LiveBackBaseBll> array = new SparseArray<>();
     /** 直播间内模块间 数据共享池 */
     private HashMap<String, Object> businessShareParamMap = new HashMap<String, Object>();
     private AtomicBoolean mIsLand = new AtomicBoolean(true);
@@ -100,7 +97,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
      * 2 代表全身直播
      */
     private int pattern = 1;
-    ShowQuestion showQuestion;
+    protected ShowQuestion showQuestion;
     private LiveUidRx liveUidRx;
     LogToFile logToFile;
     /**

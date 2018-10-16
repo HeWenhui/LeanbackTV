@@ -9,7 +9,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
@@ -17,18 +17,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexper
         .ExperienceLearnFeedbackBll;
 
 public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll implements IPresenter {
-
+    //第一次拿到数据才暂时，第二次再请求就不展示了
     private boolean isFirstGetResult = true;
+
     private ExperienceBuyCourseView mPager;
-
-    private static ExperienceBuyCoursePresenter instance;
-
-//    public static ExperienceBuyCoursePresenter getInstance(Activity activity, StandExperienceLiveBackBll liveBackBll) {
-//        if (instance == null) {
-//            instance = new ExperienceBuyCoursePresenter(activity, liveBackBll);
-//        }
-//        return instance;
-//    }
 
     /**
      * 0 liveback
