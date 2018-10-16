@@ -221,6 +221,7 @@ public class LiveVideoConfig {
     public static String URL_AUTO_LIVE_FEAD_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/learnFeedback";
     /** 语文主观题获取答案的地址 */
     public static String URL_NEWARTS_SUBMITRESULT_H5 = "https://app.arts.xueersi.com/v2/SubjectiveTest/subjectiveTestAnswerResult";
+//    public static String URL_NEWARTS_SUBMITRESULT_H5 = "https://laoshi.xueersi.com/libarts/v2/SubjectiveTest/subjectiveTestAnswerResult";
     /**提交体验课学习反馈*/
     public static String URL_AUTO_LIVE_LEARN_FEED_BACK =LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitFeedback";
     /** 直播云平台日志统计 */

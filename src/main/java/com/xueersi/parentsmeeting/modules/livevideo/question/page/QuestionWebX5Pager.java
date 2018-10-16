@@ -411,7 +411,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             logger.e( "shouldInterceptRequestnew:totalurl=" + request.getUrl().toString());
-            if("0".equals(type)){
+            if(isNewArtsTest){
                 File file;
                 int index = request.getUrl().toString().indexOf("courseware_pages");
                 if (index != -1) {

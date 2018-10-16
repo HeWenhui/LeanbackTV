@@ -108,7 +108,8 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
 //        examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
 //                + "&stuId=" + stuId + "&stuName=" + stuName;
         if(LiveVideoConfig.isNewArts){
-            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId + "&token=" + AppBll.getInstance().getUserToken();
+//            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId + "&token=" + AppBll.getInstance().getUserToken();
+            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId;
             Log.e("Duncan","examUrl:" + examUrl);
         } else {
             examUrl = testPaperUrl + "/" + liveid + "?testId=" + testId
