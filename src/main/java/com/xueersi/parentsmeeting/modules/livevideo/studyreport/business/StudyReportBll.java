@@ -10,6 +10,7 @@ import android.view.ViewTreeObserver;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
@@ -20,10 +21,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.util.ArrayList;
 
 import io.agora.rtc.plugin.rawdata.MediaDataAudioObserver;
 import io.agora.rtc.plugin.rawdata.MediaDataObserverPlugin;
@@ -41,6 +47,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     private LogToFile mLogtf;
     private MediaDataObserverPlugin mediaDataObserverPlugin;
     File alldir = LiveCacheFile.geCacheFile(activity, "studyreport");
+    ArrayList<String> types = new ArrayList<>();
 
     public StudyReportBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -48,7 +55,35 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         putInstance(StudyReportAction.class, this);
     }
 
+    @Override
+    public void onLiveInited(LiveGetInfo getInfo) {
+        super.onLiveInited(getInfo);
+        initData();
+    }
+
+    private void initData() {
+        String str = mShareDataManager.getString(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+        try {
+            mLogtf.d("initData:jsonObject=" + str);
+            JSONObject jsonObject = new JSONObject(str);
+            if (jsonObject.has("liveId")) {
+                String liveid = jsonObject.getString("liveId");
+                if (mLiveId.equals(liveid)) {
+                    JSONArray jsonArray = jsonObject.getJSONArray("types");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        types.add(jsonArray.getString(i));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            mLogtf.e("initData", e);
+        }
+    }
+
     public void onFirstRemoteVideoDecoded(final int uid) {
+        if (types.contains("" + LiveVideoConfig.STUDY_REPORT.TYPE_AGORA)) {
+            return;
+        }
         boolean load = MediaPreProcessing.isLoad();
         mLogtf.d("onFirstRemoteVideoDecoded:load=" + load);
         if (load) {
@@ -109,6 +144,9 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     @Override
     public void cutImage(final int type, final View view, final boolean cut, boolean predraw) {
         mLogtf.d("cutImage:type=" + type + ",cut=" + cut + ",predraw=" + predraw);
+        if (types.contains("" + type)) {
+            return;
+        }
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -170,6 +208,25 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         logger.d("onPmSuccess:type=" + type + ",responseEntity=" + responseEntity.getJsonObject());
+                        String str = mShareDataManager.getString(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+                        try {
+                            JSONObject jsonObject = new JSONObject(str);
+                            String liveid = jsonObject.optString("liveId");
+                            JSONArray jsonArray;
+                            if (mLiveId.equals(liveid)) {
+                                jsonArray = jsonObject.getJSONArray("types");
+                            } else {
+                                jsonObject.put("liveId", mLiveId);
+                                jsonArray = new JSONArray();
+                                jsonObject.put("types", jsonArray);
+                            }
+                            jsonArray.put("" + type);
+                            mShareDataManager.put(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, jsonObject.toString(), ShareDataManager.SHAREDATA_USER);
+                            logger.d("onPmSuccess:jsonObject=" + jsonObject);
+                        } catch (Exception e) {
+                            mShareDataManager.put(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+                            mLogtf.e("onPmSuccess", e);
+                        }
                     }
 
                     @Override

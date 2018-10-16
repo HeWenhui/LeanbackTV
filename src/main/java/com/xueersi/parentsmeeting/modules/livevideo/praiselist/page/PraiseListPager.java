@@ -54,6 +54,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListBll;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView;
 import com.xueersi.ui.adapter.RCommonAdapter;
 import com.xueersi.ui.adapter.RItemViewInterface;
@@ -288,7 +290,6 @@ public class PraiseListPager extends LiveBasePager {
                 }
             }
         });
-
 //        preloadBitmap();
         return mView;
     }
@@ -606,7 +607,6 @@ public class PraiseListPager extends LiveBasePager {
                 if (animatedFraction > 0.8) {
                     contentGroup.setVisibility(View.VISIBLE);
                 }
-
             }
         });
         lottieAnimationBGView.addAnimatorListener(new BGAnimatorListener(ANIMATOR_TYPE_MAIN));
@@ -620,7 +620,42 @@ public class PraiseListPager extends LiveBasePager {
         lottieAnimationLoopBGView.useHardwareAcceleration(true);
         lottieAnimationLoopBGView.setRepeatCount(-1);
         lottieAnimationLoopBGView.setImageAssetDelegate(imageAssetDelegate);
+        //截屏
+        StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
+        if (studyReportAction != null) {
+            lottieAnimationLoopBGView.addAnimatorListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    logger.d("lottieAnimationLoopBGView:onAnimationStart");
+                }
 
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    logger.d("lottieAnimationLoopBGView:onAnimationEnd");
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                    lottieAnimationLoopBGView.removeAnimatorListener(this);
+                    logger.d("lottieAnimationLoopBGView:onAnimationRepeat");
+                    StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
+                    if (studyReportAction != null) {
+                        if (mPraiseListType == PRAISE_LIST_TYPE_HONOR) {
+                            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_5, mView, false, false);
+                        } else if (mPraiseListType == PRAISE_LIST_TYPE_PROGRESS) {
+                            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_4, mView, false, false);
+                        } else if (mPraiseListType == PRAISE_LIST_TYPE_THUMBS_UP) {
+                            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_6, mView, false, false);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -838,11 +873,11 @@ public class PraiseListPager extends LiveBasePager {
         liveBll.sendThumbsUp();
 
         StableLogHashMap logHashMap = new StableLogHashMap("praisePraiseList");
-        logHashMap.put("listtype",mPraiseListType+"");
-        logHashMap.put("stable","2");
-        logHashMap.put("expect","1");
-        logHashMap.put("sno","5");
-        logHashMap.put("ex","Y");
+        logHashMap.put("listtype", mPraiseListType + "");
+        logHashMap.put("stable", "2");
+        logHashMap.put("expect", "1");
+        logHashMap.put("sno", "5");
+        logHashMap.put("ex", "Y");
         umsAgentDebugInter(LiveVideoConfig.LIVE_PRAISE_LIST, logHashMap.getData());
     }
 
