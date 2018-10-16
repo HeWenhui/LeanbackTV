@@ -1,0 +1,57 @@
+apply plugin: 'com.android.library'
+apply from: rootDir.absolutePath + '/buildscript/module_extra_config.gradle'
+apply from: rootDir.absolutePath + '/buildscript/module_upload_config.gradle'
+
+android {
+    defaultConfig {
+        ndk {
+            abiFilters "armeabi-v7a"
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+    compileSdkVersion 27
+}
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+
+    compile 'org.java-websocket:Java-WebSocket:1.3.4'
+    //glide库
+    implementation rootProject.ext.thirdlibraries.glide
+    implementation(rootProject.ext.xeslibraries.speechrecognizer) { changing = true }
+    implementation(rootProject.ext.xeslibraries.ldnetdiagnoservice) { changing = true }
+    //uicomponent
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.uicomponent)
+    //framework
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.framework)
+    //统计
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.analytics)
+    //图片处理
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.imageloader)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.audio)
+    //日志
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.logger)
+//    implementation project(':ijkplayer')
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.ijkplayer)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.player)
+
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.cloud)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.share)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.browser)
+
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.xeslottie)
+    implementation rootProject.ext.thirdlibraries.arouterapi
+    implementation rootProject.ext.thirdlibraries.appcompat
+    implementation rootProject.ext.thirdlibraries.recyclerview
+    implementation rootProject.ext.thirdlibraries.okhttp
+    implementation rootProject.ext.thirdlibraries.constraint
+    implementation rootProject.ext.thirdlibraries.arouterapi
+    //
+    annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
+    implementation project(':business:endictation')
+//    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.endictation)l
+    implementation project(':library:agora')
+}
