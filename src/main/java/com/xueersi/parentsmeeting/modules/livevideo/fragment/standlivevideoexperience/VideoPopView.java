@@ -26,7 +26,7 @@ import org.greenrobot.eventbus.ThreadMode;
 /**
  * 将VideoView转化为小窗口
  */
-public class VideoPopView  {
+public class VideoPopView {
     private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
     private VideoView videoView;
@@ -148,8 +148,7 @@ public class VideoPopView  {
         }
     }
 
-//    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-//    public void onDestroy() {
-//        EventBus.getDefault().unregister(this);
-//    }
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+    }
 }
