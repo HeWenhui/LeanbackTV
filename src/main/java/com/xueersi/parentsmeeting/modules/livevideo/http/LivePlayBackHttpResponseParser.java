@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.VoiceBarrageMsgEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -15,6 +17,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * 直播回放网络数据解析类
@@ -96,7 +100,7 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
 //                date.setTime(id / 1000);
 //                Calendar calendar = Calendar.getInstance();
 //                calendar.setTime(date);
-//                Loger.i(TAG, "liveMessagesParser:id=" + id + ",calendar,Y=" + calendar.get(Calendar.YEAR)
+//                logger.i( "liveMessagesParser:id=" + id + ",calendar,Y=" + calendar.get(Calendar.YEAR)
 //                        + ",M=" + calendar.get(Calendar.MONTH) + ",d=" + calendar.get(Calendar.DAY_OF_MONTH)
 //                        + ",h=" + calendar.get(Calendar.HOUR_OF_DAY)
 //                        + ",m=" + calendar.get(Calendar.MINUTE)
@@ -143,7 +147,7 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
         ArrayList<VoiceBarrageMsgEntity> arrayList = new ArrayList<>();
         try {
             JSONArray jsonArray = new JSONArray(data.toString());
-            for (int i=0;i<jsonArray.length();i++){
+            for (int i = 0; i < jsonArray.length(); i++) {
                 VoiceBarrageMsgEntity voiceBarrageMsgEntity = new VoiceBarrageMsgEntity();
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 voiceBarrageMsgEntity.setVoiceId(jsonObject.optString("voiceId"));
@@ -151,7 +155,8 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
                 JSONArray itemArray = jsonObject.getJSONArray("msgData");
                 for (int j = 0; j < itemArray.length(); j++) {
                     JSONObject itemObject = itemArray.getJSONObject(j);
-                    VoiceBarrageMsgEntity.VoiceBarrageItemEntity voiceBarrageItemEntity = voiceBarrageMsgEntity.new VoiceBarrageItemEntity();
+                    VoiceBarrageMsgEntity.VoiceBarrageItemEntity voiceBarrageItemEntity = voiceBarrageMsgEntity.new
+                            VoiceBarrageItemEntity();
                     voiceBarrageItemEntity.setStuId(itemObject.optString("stuId"));
                     voiceBarrageItemEntity.setMsg(itemObject.optString("msg"));
                     voiceBarrageItemEntity.setRelativeTime(itemObject.optInt("relativeTime"));
@@ -164,8 +169,53 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
             }
 
         } catch (Exception e) {
-           return null;
+            return null;
         }
         return arrayList;
+    }
+
+    /**
+     * 解析站立直播体验课推荐课程信息
+     *
+     * @param responseEntity
+     * @return
+     */
+    public RecommondCourseEntity parseRecommondCourseInfo(ResponseEntity responseEntity) {
+        RecommondCourseEntity recommondCourseEntity = new RecommondCourseEntity();
+        try {
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            recommondCourseEntity.setCourseName(jsonObject.optString("courseName"));
+            recommondCourseEntity.setCoursePrice(jsonObject.optString("coursePrice"));
+            recommondCourseEntity.setCourseId(jsonObject.optString("courseId"));
+            recommondCourseEntity.setClassId(jsonObject.optString("classId"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return recommondCourseEntity;
+    }
+
+    /**
+     * 解析站立直播体验课课中购买推荐课程后的轮播消息(假的)
+     *
+     * @param responseEntity
+     * @return
+     */
+    public VideoBannerBuyCourseEntity parseBannerBuyCourseEntity(ResponseEntity responseEntity) {
+        VideoBannerBuyCourseEntity bannerBuyCourseEntity = new VideoBannerBuyCourseEntity();
+        try {
+            Queue<VideoBannerBuyCourseEntity.BannerMessage> messageList = new LinkedList<>();
+            JSONArray jsonArray = (JSONArray) responseEntity.getJsonObject();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                VideoBannerBuyCourseEntity.BannerMessage bannerMessage = new VideoBannerBuyCourseEntity.BannerMessage();
+                JSONObject itemJSON = jsonArray.getJSONObject(i);
+                bannerMessage.setCourseName(itemJSON.optString("courseName"));
+                bannerMessage.setUserName(itemJSON.optString("userName"));
+                messageList.add(bannerMessage);
+            }
+            bannerBuyCourseEntity.setBannerMessages(messageList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bannerBuyCourseEntity;
     }
 }

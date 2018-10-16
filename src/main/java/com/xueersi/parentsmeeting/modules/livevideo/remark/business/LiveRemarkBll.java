@@ -47,7 +47,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
@@ -192,7 +191,7 @@ public class LiveRemarkBll {
         } else {
             offSet = time - frameInfo.pkt / 1000;
         }
-        Loger.i(TAG, "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
+        logger.i( "nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
                 + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration()
                 + " systime:" + (System.currentTimeMillis() / 1000 + sysTimeOffset) + "   nettime:" + time);
         //setBtEnable(true);
@@ -474,9 +473,9 @@ public class LiveRemarkBll {
             final long pkt = ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000;
             final long cache = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000;
             final long time = pkt - cache + offSet - 8;
-            Loger.i(TAG, "frameTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000);
-            Loger.i(TAG, "cacheTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000);
-            Loger.i(TAG, "offset:" + offSet + "  time:" + time + "   sysTime:" + System.currentTimeMillis());
+            logger.i( "frameTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000);
+            logger.i( "cacheTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000);
+            logger.i( "offset:" + offSet + "  time:" + time + "   sysTime:" + System.currentTimeMillis());
             if (!TextUtils.isEmpty(fileName)) {
                 CloudUploadEntity entity = new CloudUploadEntity();
                 entity.setFilePath(fileName);
@@ -485,12 +484,12 @@ public class LiveRemarkBll {
                 mCloudUploadBusiness.asyncUpload(entity, new XesStsUploadListener() {
                     @Override
                     public void onProgress(XesCloudResult result, int percent) {
-                        Loger.i(TAG, "progress " + percent);
+                        logger.i( "progress " + percent);
                     }
 
                     @Override
                     public void onSuccess(XesCloudResult result) {
-                        Loger.i(TAG, "upCloud Sucess");
+                        logger.i( "upCloud Sucess");
                         mHttpManager.saveLiveMark(liveId, type, "" + time, result.getHttpPath(), new HttpCallBack(false) {
                             @Override
                             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -539,7 +538,7 @@ public class LiveRemarkBll {
 
                     @Override
                     public void onError(XesCloudResult result) {
-                        Loger.i(TAG, result.getErrorMsg());
+                        logger.i( result.getErrorMsg());
                     }
                 });
             } else {
@@ -555,14 +554,14 @@ public class LiveRemarkBll {
         CountDownTimer timer = new CountDownTimer(15200, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                Loger.i(TAG, "onTick:" + millisUntilFinished);
+                logger.i( "onTick:" + millisUntilFinished);
                 mLiveMediaControllerBottom.getBtMark().setText(((millisUntilFinished) / 1000) + "");
                 mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.shape_oval_black);
             }
 
             @Override
             public void onFinish() {
-                Loger.i(TAG, "onFinish");
+                logger.i( "onFinish");
                 mLiveMediaControllerBottom.getBtMark().setBackgroundResource(R.drawable.bg_bt_live_mark);
                 mLiveMediaControllerBottom.getBtMark().setText("");
                 setIsCounting(false);
@@ -779,7 +778,7 @@ public class LiveRemarkBll {
     }
 
     public void setBtEnable(final boolean enable) {
-        Loger.i(TAG, "setBtEnable  " + "video:" + isVideoReady + "   class:" + isClassReady
+        logger.i( "setBtEnable  " + "video:" + isVideoReady + "   class:" + isClassReady
                 + "   onchat:" + isOnChat);
         if (mLiveMediaControllerBottom == null) {
             return;

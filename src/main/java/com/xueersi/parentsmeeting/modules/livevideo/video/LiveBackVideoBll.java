@@ -39,6 +39,7 @@ public class LiveBackVideoBll {
     protected String mShareKey = "LiveBack";
     /** 直播帧数统计 */
     private LivePlayLog livePlayLog;
+    boolean playbackComplete = false;
     boolean islocal;
 
     public LiveBackVideoBll(Activity activity, boolean islocal) {
@@ -121,6 +122,9 @@ public class LiveBackVideoBll {
     }
 
     public void savePosition(long fromStart) {
+        if (playbackComplete) {
+            return;
+        }
         if (vPlayer != null && mUri != null) {
             ShareDataManager.getInstance().put(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, fromStart,
                     ShareDataManager.SHAREDATA_USER);
@@ -172,6 +176,7 @@ public class LiveBackVideoBll {
             if (livePlayLog != null) {
                 livePlayLog.onOpenStart();
             }
+            playbackComplete = false;
         }
 
         @Override
@@ -198,6 +203,8 @@ public class LiveBackVideoBll {
             if (livePlayLog != null) {
                 livePlayLog.onPlaybackComplete();
             }
+            savePosition(0);
+            playbackComplete = true;
         }
 
         @Override

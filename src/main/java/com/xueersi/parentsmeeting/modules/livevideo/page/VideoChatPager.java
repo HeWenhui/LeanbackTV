@@ -54,7 +54,7 @@
 //    @Override
 //    public void startRecord(String method, String room, String nonce) {
 ////        https://test-rtc.xesimg.com:12443/room?id=x_3_40233&userId=1434&name=aa&role=admin&url=http://head03.xesimg.com/0/1434.jpg
-//        Loger.i(TAG, "startRecord:url=" + url);
+//        logger.i( "startRecord:url=" + url);
 //        loadUrl(url);
 //    }
 //
@@ -81,7 +81,7 @@
 //    @Override
 //    public void onNetWorkChange(int netWorkType) {
 //        this.netWorkType = netWorkType;
-//        Loger.i(TAG, "onNetWorkChange:netWorkType=" + netWorkType + ",isFail=" + isFail);
+//        logger.i( "onNetWorkChange:netWorkType=" + netWorkType + ",isFail=" + isFail);
 //        if (netWorkType == NetWorkHelper.NO_NETWORK) {
 //            isFail = true;
 //        } else {

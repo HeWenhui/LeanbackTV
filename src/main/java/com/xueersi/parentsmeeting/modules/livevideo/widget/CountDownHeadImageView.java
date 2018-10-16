@@ -7,11 +7,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
-import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.ui.widget.CircleImageView;
 
 
@@ -20,7 +19,7 @@ import com.xueersi.ui.widget.CircleImageView;
  * Created by zouhao on 2018/4/2.
  */
 public class CountDownHeadImageView extends CircleImageView {
-
+    Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     /** 倒计时时长 */
     private long countDownTime;
 
@@ -68,7 +67,7 @@ public class CountDownHeadImageView extends CircleImageView {
     }
 
     public void restore() {
-        Loger.i("RolePlayerSelfItemTest", "重置头像");
+        logger.i("重置头像");
         isBeginCountdownTime = false;
         tempCountDownTime = 0;
         postInvalidate();
@@ -88,7 +87,7 @@ public class CountDownHeadImageView extends CircleImageView {
     public void setBeginCountdownTime(boolean beginCountdownTime) {
         isBeginCountdownTime = beginCountdownTime;
         countDownTime = 0;
-        allCountDownTime=0;
+        allCountDownTime = 0;
     }
 
     /** 是否开启倒计时 */
@@ -147,7 +146,6 @@ public class CountDownHeadImageView extends CircleImageView {
         mGreyPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
 
-
         invalidate();
     }
 
@@ -176,7 +174,7 @@ public class CountDownHeadImageView extends CircleImageView {
         mTextPaint.setStyle(Paint.Style.FILL);
         mTextPaint.setStrokeWidth(mBorderWidth);
         mTextPaint.setTextSize(50);
-        mTextPaint.getTextBounds(String.valueOf(remainTime),0,String.valueOf(remainTime).length(),mBound);
+        mTextPaint.getTextBounds(String.valueOf(remainTime), 0, String.valueOf(remainTime).length(), mBound);
 
         invalidate();
     }
@@ -190,7 +188,7 @@ public class CountDownHeadImageView extends CircleImageView {
 //        if (mBorderWidth > 0 && countDownTime == 0) {
 //            canvas.drawCircle(getWidth() / 2, getHeight() / 2, mBorderRadius, mBorderPaint);
 //        } else
-        if (mBorderWidth > 0 && countDownTime > 0 && countDownTime<=3000) {
+        if (mBorderWidth > 0 && countDownTime > 0 && countDownTime <= 3000) {
             //画倒计时的圆弧
 
 //            rectF.left = strokeWidth / 2;
@@ -209,8 +207,8 @@ public class CountDownHeadImageView extends CircleImageView {
             int x = (int) (Math.cos(arg) * ((getWidth() - piding * 2 - mBorderWidth) / 2) + (getWidth()) / 2);
             int y = (int) (Math.sin(arg) * ((getHeight() - piding * 2 - mBorderWidth) / 2) + (getHeight()) / 2);
 
-            float startX = getWidth()/2 - mBound.width()/2;
-            float startY = getHeight()*2/3 - mBound.height()/5;
+            float startX = getWidth() / 2 - mBound.width() / 2;
+            float startY = getHeight() * 2 / 3 - mBound.height() / 5;
 
             canvas.drawCircle(x, y, mBorderWidth, mUnFinishCirclePaint);//进度小滑块
             canvas.drawCircle(getWidth() / 2, getHeight() / 2, mDrawableRadius, mGreyPaint);//画灰色蒙板

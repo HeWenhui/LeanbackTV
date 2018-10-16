@@ -9,7 +9,6 @@ import android.view.ViewTreeObserver;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.KeyboardPopWindow;
 
@@ -64,7 +63,7 @@ public class KeyboardObserverReg {
                 if (isShowing) {
                     height = KeyboardUtil.getValidPanelHeight(activity);
                 }
-                Loger.d("onKeyboardShowing:isShowing=" + isShowing + ",height=" + height);
+                logger.d("onKeyboardShowing:isShowing=" + isShowing + ",height=" + height);
                 for (int i = 0; i < observers.size(); i++) {
                     observers.get(i).onKeyboardHeightChanged(height, Configuration.ORIENTATION_LANDSCAPE);
                 }

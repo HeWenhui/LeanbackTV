@@ -150,6 +150,8 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                                 smallEnglishUnderstandOnclick(noUnderStand);
                             }
                         });
+                    } else {
+                        understandView = smallEnglishUnderstandPager.getRootView();
                     }
                     params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                             .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);

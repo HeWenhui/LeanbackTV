@@ -21,6 +21,7 @@ import com.xueersi.common.entity.AppInfoEntity;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -30,7 +31,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -219,12 +219,14 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
 
     public class MyWebViewClient extends ErrorWebViewClient {
         String failingUrl;
+
         public MyWebViewClient() {
             super(TAG);
         }
+
         @Override
         public void onPageFinished(WebView view, String url) {
-            Loger.i(TAG, "onPageFinished:url=" + url + ",failingUrl=" + failingUrl);
+            logger.i("onPageFinished:url=" + url + ",failingUrl=" + failingUrl);
             if (failingUrl == null) {
                 wvSubjectWeb.setVisibility(View.VISIBLE);
                 errorView.setVisibility(View.GONE);
@@ -236,7 +238,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             this.failingUrl = null;
             if (!url.equals(examUrl)) {
-                Loger.i(TAG, "onPageStarted:setInitialScale");
+                logger.i("onPageStarted:setInitialScale");
                 int scale = ScreenUtils.getScreenWidth() * 100 / 878;
                 wvSubjectWeb.setInitialScale(scale);
             }
@@ -246,9 +248,9 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             this.failingUrl = failingUrl;
-            Loger.d(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
-                    "&&," + description, true);
-            Loger.i(TAG, "onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
+            UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
+                    "&&," + description);
+            logger.i("onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
 //            super.onReceivedError(view, errorCode, description, failingUrl);
             wvSubjectWeb.setVisibility(View.INVISIBLE);
             errorView.setVisibility(View.VISIBLE);
@@ -258,7 +260,7 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if ("xueersi://livevideo/examPaper/close".equals(url) || "http://baidu.com/".equals(url)) {
                 examStop.stopExam(ExamQuestionX5PlaybackPager.this, (VideoQuestionLiveEntity) getBaseVideoQuestionEntity());
-                Loger.i(TAG, "shouldOverrideUrlLoading:stopExam");
+                logger.i("shouldOverrideUrlLoading:stopExam");
             } else {
                 if (url.contains("xueersi.com")) {
                     view.loadUrl(url);

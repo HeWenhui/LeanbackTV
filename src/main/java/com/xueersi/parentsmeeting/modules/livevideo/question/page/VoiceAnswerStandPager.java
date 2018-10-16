@@ -55,7 +55,6 @@ import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
@@ -184,7 +183,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
     @Override
     public void setAudioRequest() {
-        Loger.d(TAG, "setAudioRequest:mIse=" + (mIse == null));
+        logger.d( "setAudioRequest:mIse=" + (mIse == null));
         mView.post(new Runnable() {
             @Override
             public void run() {
@@ -419,16 +418,16 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View view) {
-                Loger.d(TAG, "onViewAttachedToWindow");
+                logger.d( "onViewAttachedToWindow");
             }
 
             @Override
             public void onViewDetachedFromWindow(View view) {
-                Loger.d(TAG, "onViewDetachedFromWindow:frameAnimations=" + frameAnimations.size());
+                logger.d( "onViewDetachedFromWindow:frameAnimations=" + frameAnimations.size());
                 for (int i = 0; i < frameAnimations.size(); i++) {
                     FrameAnimation animation = frameAnimations.get(i);
                     int destory = animation.destory();
-                    Loger.d(TAG, "onViewDetachedFromWindow:animation=" + animation.path + ",destory=" + destory);
+                    logger.d( "onViewDetachedFromWindow:animation=" + animation.path + ",destory=" + destory);
                 }
                 if (liveSoundPool != null) {
                     liveSoundPool.release();
@@ -511,7 +510,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     public void initData() {
         entranceTime = System.currentTimeMillis();
         final String questionID = baseVideoQuestionEntity.getvQuestionID();
-        Loger.d(TAG, "initData:questionID=" + questionID);
+        logger.d( "initData:questionID=" + questionID);
         fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
@@ -526,7 +525,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 //                    @Override
 //                    public void run() {
 //                        XESToastUtils.showToast(mContext, "得到试题");
-//                        Loger.d(TAG, "initData:audioRequest=" + audioRequest);
+//                        logger.d( "initData:audioRequest=" + audioRequest);
 //                        quesRequest = true;
 //                        if (audioRequest) {
 //                            mIse = new SpeechEvaluatorUtils(mContext);
@@ -584,7 +583,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         isEnd = true;
         endnonce = nonce;
         ViewGroup group = (ViewGroup) mView.getParent();
-        Loger.d(TAG, "examSubmitAll:method=" + method + ",group=" + (group == null) + ",error=" + isSpeechError + ",success=" + isSpeechSuccess);
+        logger.d( "examSubmitAll:method=" + method + ",group=" + (group == null) + ",error=" + isSpeechError + ",success=" + isSpeechSuccess);
         if (isSpeechError || isSpeechSuccess) {
             questionSwitch.stopSpeech(VoiceAnswerStandPager.this, baseVideoQuestionEntity);
         } else {
@@ -611,12 +610,12 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         @Override
         public void onBeginOfSpeech() {
             isSpeechError = false;
-            Loger.d(TAG, "onBeginOfSpeech");
+            logger.d( "onBeginOfSpeech");
         }
 
         @Override
         public void onResult(ResultEntity resultEntity) {
-            Loger.d(TAG, "onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd);
+            logger.d( "onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd);
             if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
                 onEvaluatorSuccess(resultEntity);
             } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
@@ -727,7 +726,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         List<PhoneScore> phoneScores = resultEntity.getLstPhonemeScore();
         int[] scores = resultEntity.getScores();
         if (phoneScores.isEmpty()) {
-            Loger.d(TAG, "onResult(SUCCESS):phoneScores.isEmpty");
+            logger.d( "onResult(SUCCESS):phoneScores.isEmpty");
         } else {
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
                 int rightIndex = -1;
@@ -743,7 +742,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         rightCount++;
                     }
                 }
-                Loger.d(TAG, "onResult(SUCCESS):scores=" + sss + ",rightIndex=" + rightIndex + ",rightCount=" + rightCount + ",isEnd=" + isEnd);
+                logger.d( "onResult(SUCCESS):scores=" + sss + ",rightIndex=" + rightIndex + ",rightCount=" + rightCount + ",isEnd=" + isEnd);
                 if (rightCount > 1) {
                     errorSetVisible();
 //                    tvSpeectevalTip.setText("认真些，\n再来一次吧（" + resultEntity.getCurStatus() + ")");
@@ -756,7 +755,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             rlSpeectevalTipGone();
                         }
                     }, 1500);
-                    Loger.d(TAG, "onResult(SUCCESS):more");
+                    logger.d( "onResult(SUCCESS):more");
                     mView.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -801,7 +800,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                             rlSpeectevalTipGone();
                                         }
                                     }, 1500);
-                                    Loger.d(TAG, "onResult(SUCCESS):onAnswerFailure");
+                                    logger.d( "onResult(SUCCESS):onAnswerFailure");
                                     mView.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
@@ -829,7 +828,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                                 rlSpeectevalTipGone();
                             }
                         }, 1500);
-                        Loger.d(TAG, "onResult(SUCCESS):reread");
+                        logger.d( "onResult(SUCCESS):reread");
                         mView.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -841,7 +840,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             } else {
                 int score = phoneScores.get(0).getScore();
                 boolean isRight = score > 0;
-                Loger.d(TAG, "onResult(SUCCESS):score=" + score);
+                logger.d( "onResult(SUCCESS):score=" + score);
                 if (!isEnd && !isRight && resultEntity.getCurStatus() == 5) {
                     errorSetVisible();
 //                    tvSpeectevalTip.setText("认真些，\n再来一次吧");
@@ -853,7 +852,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             rlSpeectevalTipGone();
                         }
                     }, 1500);
-                    Loger.d(TAG, "onResult(SUCCESS):reread");
+                    logger.d( "onResult(SUCCESS):reread");
                     mView.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -889,7 +888,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             } else {
                                 ivVoiceansSwitch.setVisibility(View.VISIBLE);
                                 XESToastUtils.showToast(mContext, "提交失败，请重读");
-                                Loger.d(TAG, "onResult(SUCCESS):onAnswerFailure");
+                                logger.d( "onResult(SUCCESS):onAnswerFailure");
                                 mView.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -1123,7 +1122,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 //        }
 //        int[] scores = resultEntity.getScores();
 //        if (scores == null) {
-//            Loger.d(TAG, "onResult(SUCCESS):scores.null");
+//            logger.d( "onResult(SUCCESS):scores.null");
 //        } else {
 //            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
 //                String sss = "";
@@ -1152,7 +1151,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 //                        }
 //                    }
 //                }
-//                Loger.d(TAG, "onResult(SUCCESS):scores=" + sss + ",max=" + maxScoreAndIndex + ",sec=" + secScoreAndIndex + ",isEnd=" + isEnd);
+//                logger.d( "onResult(SUCCESS):scores=" + sss + ",max=" + maxScoreAndIndex + ",sec=" + secScoreAndIndex + ",isEnd=" + isEnd);
 //                if (maxScoreAndIndex != null) {
 //                    boolean isAnswer = false;
 //                    if (secScoreAndIndex == null) {
@@ -1178,7 +1177,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 //                                            rlSpeectevalTip.setVisibility(View.GONE);
 //                                        }
 //                                    }, 1500);
-//                                    Loger.d(TAG, "onResult(SUCCESS):more");
+//                                    logger.d( "onResult(SUCCESS):more");
 //                                    mView.postDelayed(new Runnable() {
 //                                        @Override
 //                                        public void run() {
@@ -1221,7 +1220,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 //                                                rlSpeectevalTip.setVisibility(View.GONE);
 //                                            }
 //                                        }, 1500);
-//                                        Loger.d(TAG, "onResult(SUCCESS):onAnswerFailure");
+//                                        logger.d( "onResult(SUCCESS):onAnswerFailure");
 //                                        mView.postDelayed(new Runnable() {
 //                                            @Override
 //                                            public void run() {
@@ -1249,7 +1248,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 //                                rlSpeectevalTip.setVisibility(View.GONE);
 //                            }
 //                        }, 1500);
-//                        Loger.d(TAG, "onResult(SUCCESS):reread");
+//                        logger.d( "onResult(SUCCESS):reread");
 //                        mView.postDelayed(new Runnable() {
 //                            @Override
 //                            public void run() {
@@ -1260,7 +1259,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 //                }
 //            } else {
 //                int score = scores[0];
-//                Loger.d(TAG, "onResult(SUCCESS):score=" + score);
+//                logger.d( "onResult(SUCCESS):score=" + score);
 //                try {
 //                    JSONArray options = assess_ref.getJSONArray("options");
 //                    JSONObject jsonObject = options.getJSONObject(0);
@@ -1283,7 +1282,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 //                            } else {
 //                                tvVoiceansSwitch.setVisibility(View.VISIBLE);
 //                                XESToastUtils.showToast(mContext, "提交失败，请重读");
-//                                Loger.d(TAG, "onResult(SUCCESS):onAnswerFailure");
+//                                logger.d( "onResult(SUCCESS):onAnswerFailure");
 //                                mView.postDelayed(new Runnable() {
 //                                    @Override
 //                                    public void run() {

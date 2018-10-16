@@ -34,7 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PsState;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.MyGradView;
 
@@ -191,7 +191,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
 
     @Override
     public void voteJoin(final LiveTopic.VoteEntity voteEntity, int answer) {
-        Loger.d(TAG, "voteJoin:choiceId=" + voteEntity + ",answer=" + answer);
+        logger.d( "voteJoin:choiceId=" + voteEntity + ",answer=" + answer);
         this.answer = answer;
         idAndAnswer.put(voteEntity, answer);
         if (0 == answer && !LiveVideoConfig.isPrimary) {
@@ -204,7 +204,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
 
     @Override
     public void voteStart(final LiveTopic.VoteEntity voteEntity) {
-        Loger.d(TAG, "voteStart:voteEntity=" + voteEntity);
+        logger.d( "voteStart:voteEntity=" + voteEntity);
         this.voteEntity = voteEntity;
         this.answer = 0;
         StableLogHashMap logHashMap = new StableLogHashMap("receiveVote");
@@ -525,7 +525,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
 
     @Override
     public void voteStop(final LiveTopic.VoteEntity voteEntity) {
-        Loger.d(TAG, "voteStop:voteEntity=" + voteEntity);
+        logger.d( "voteStop:voteEntity=" + voteEntity);
         this.voteEntity = null;
         mRootView.post(new Runnable() {
             @Override
@@ -715,7 +715,7 @@ public class LiveVoteBll extends LiveBaseBll implements NoticeAction, LiveVoteAc
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        Loger.e("LiveVoteBll", "=====>onNotice =:" + type);
+        logger.e( "=====>onNotice =:" + type);
         try {
             switch (type) {
                 case XESCODE.VOTE_START: {

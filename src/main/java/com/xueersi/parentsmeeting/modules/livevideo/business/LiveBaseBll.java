@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *         created  at 2018/6/20 9:34
  */
 public class LiveBaseBll extends BaseBll {
-    protected Logger logger = LoggerFactory.getLogger(TAG);
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected RelativeLayout mRootView;
     protected RelativeLayout mContentView;
     protected LiveBll2 mLiveBll;

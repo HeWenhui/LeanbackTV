@@ -8,7 +8,11 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
@@ -192,6 +196,14 @@ public class LiveVideoEnter {
      * @param vSectionID
      */
     public static boolean intentToAuditClassActivity(Activity context, String stuCouId, String vSectionID) {
+        //低端机设备检测页拦截
+        if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
+                        .SP_APP_DEVICE_NOTICE, false,
+                ShareDataManager.SHAREDATA_USER)) {
+            Intent intent = new Intent(context, DeviceDetectionActivity.class);
+            context.startActivity(intent);
+            return false;
+        }
         AuditClassLiveActivity.intentTo(context, stuCouId, vSectionID);
         return true;
     }
@@ -253,6 +265,14 @@ public class LiveVideoEnter {
     public static Intent setLiveCourseLiveIntent(JSONObject jsonObject, Context context) {
         if (TextUtils.isEmpty(jsonObject.optString("vSectionId"))) {
             return null;
+        }
+        //低端机设备检测页拦截
+        if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
+                        .SP_APP_DEVICE_NOTICE, false,
+                ShareDataManager.SHAREDATA_USER)) {
+            Intent intent = new Intent(context, DeviceDetectionActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            return intent;
         }
         Intent intent = new Intent(context, LiveVideoLoadActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -328,6 +348,13 @@ public class LiveVideoEnter {
 ////            com.xueersi.parentsmeeting.modules.livevideo.activity.LivePlayBackVideoActivity.intentTo(context,
 /// bundle, where, VIDEO_REQUEST);
 //        }
+        if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
+                        .SP_APP_DEVICE_NOTICE, false,
+                ShareDataManager.SHAREDATA_USER)) {
+            Intent intent = new Intent(context, DeviceDetectionActivity.class);
+            context.startActivity(intent);
+            return false;
+        }
         com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
                 where, VIDEO_REQUEST);
         return true;

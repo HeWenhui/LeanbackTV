@@ -219,7 +219,7 @@
 //
 //        @Override
 //        public void onPageFinished(WebView view, String url) {
-//            Loger.i(TAG, "onPageFinished:url=" + url + ",failingUrl=" + failingUrl);
+//            logger.i( "onPageFinished:url=" + url + ",failingUrl=" + failingUrl);
 //            if (failingUrl == null) {
 //                wvSubjectWeb.setVisibility(View.VISIBLE);
 //                errorView.setVisibility(View.GONE);
@@ -231,7 +231,7 @@
 //        public void onPageStarted(WebView view, String url, Bitmap favicon) {
 //            this.failingUrl = null;
 //            if (!url.equals(examUrl)) {
-//                Loger.i(TAG, "onPageStarted:setInitialScale");
+//                logger.i( "onPageStarted:setInitialScale");
 //                int scale = ScreenUtils.getScreenWidth() * 100 / 878;
 //                wvSubjectWeb.setInitialScale(scale);
 //            }
@@ -243,7 +243,7 @@
 //            this.failingUrl = failingUrl;
 //            Loger.d(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
 //                    "&&," + description, true);
-//            Loger.i(TAG, "onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
+//            logger.i( "onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
 ////            super.onReceivedError(view, errorCode, description, failingUrl);
 //            wvSubjectWeb.setVisibility(View.INVISIBLE);
 //            errorView.setVisibility(View.VISIBLE);
@@ -257,7 +257,7 @@
 //                    group.removeView(mView);
 //                    examStop.stopExam();
 //                }
-//                Loger.i(TAG, "shouldOverrideUrlLoading:stopExam");
+//                logger.i( "shouldOverrideUrlLoading:stopExam");
 //            } else {
 //                if (url.contains("xueersi.com")) {
 //                    view.loadUrl(url);

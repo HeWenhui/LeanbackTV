@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnerg
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
@@ -25,7 +26,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.FollowTypeEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.TestInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -42,7 +42,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.common.http.ResponseEntity;
 
 import org.json.JSONArray;
@@ -214,7 +213,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         for (int i = 0; i < teamStuIdArray.length(); i++) {
                             teamStuIds.add(teamStuIdArray.getString(i));
                         }
-                        Loger.d(TAG, "parseLiveGetInfo:teamStuIds=" + teamStuIds.size());
+                        logger.d("parseLiveGetInfo:teamStuIds=" + teamStuIds.size());
                     } catch (Exception e) {
                         MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.teamStuIds", e.getMessage());
                     }
@@ -243,26 +242,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
                 getInfo.setRtmpUrls(rtmpUrls);
             }
-            getInfo.setTalkHost(data.getString("talkHost"));
-            getInfo.setTalkPort(data.getString("talkPort"));
-            getInfo.setTalkPwd(data.optString("talkPwd"));
             getInfo.setRoomId(data.optString("roomId"));
-            if (data.has("newTalkConf")) {
-                List<NewTalkConfEntity> newTalkConf = new ArrayList<NewTalkConfEntity>();
-                JSONArray newTalkarray = data.getJSONArray("newTalkConf");
-                for (int i = 0; i < newTalkarray.length(); i++) {
-                    NewTalkConfEntity talkConfEntity = new NewTalkConfEntity();
-                    JSONObject talkConfobj = newTalkarray.getJSONObject(i);
-                    talkConfEntity.setHost(talkConfobj.getString("host"));
-                    talkConfEntity.setPort(talkConfobj.getString("port"));
-                    talkConfEntity.setPwd(talkConfobj.optString("pwd"));
-                    newTalkConf.add(talkConfEntity);
-                }
-                getInfo.setNewTalkConf(newTalkConf);
-            }
             ArrayList<TalkConfHost> newTalkConfHosts = new ArrayList<>();
-            if (data.has("liveChatDispatchUrl")) {
-                JSONArray array = data.optJSONArray("liveChatDispatchUrl");
+            if (data.has("httpsLiveChatDispatchUrl")) {
+                JSONArray array = data.optJSONArray("httpsLiveChatDispatchUrl");
                 if (array != null) {
                     for (int i = 0; i < array.length(); i++) {
                         String host = array.getString(i);
@@ -287,14 +270,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
                 }
             }
-            Loger.i(TAG, "parseLiveGetInfo:headImgUrl=" + headImgUrl.size());
+            logger.i("parseLiveGetInfo:headImgUrl=" + headImgUrl.size());
             getInfo.setHeadImgUrl(headImgUrl);
             try {
                 getInfo.setHeadImgPath(data.optString("headImgPath"));
                 getInfo.setImgSizeType(data.optString("imgSizeType"));
                 getInfo.setHeadImgVersion(data.optString("headImgVersion"));
             } catch (Exception e) {
-                Loger.e(TAG, "parseLiveGetInfo.Head", e);
+                logger.e("parseLiveGetInfo.Head", e);
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.Head", e.getMessage());
             }
             getInfo.setCloseChat(data.optInt("isCloseChat", 0) == 1);
@@ -312,7 +295,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setUrlClick(data.optInt("urlClick", 0));
             getInfo.setAllowLinkMic(data.optInt("allowLinkMic", 1) == 1);
             getInfo.setStuLinkMicNum(data.optInt("stuLinkMicNum", 0));
-            getInfo.setTestPaperUrl(data.optString("testPaperUrl", "https://live.xueersi.com/Live/getMultiTestPaper"));
+            getInfo.setTestPaperUrl(data.optString("testPaperUrl", LiveVideoConfig.URL_LIVE_MULTI_TEST));
             getInfo.setBlockChinese(data.optInt("blockChinese", 0) == 1);
             getInfo.setSubjectiveTestAnswerResult(data.optString("getSubjectiveTestResultUrl", "https://live.xueersi" +
                     ".com/Live/subjectiveTestAnswerResult/" + getInfo.getId()));
@@ -343,7 +326,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             return getInfo;
         } catch (JSONException e) {
-            Loger.e(TAG, "parseLiveGetInfo", e);
+            logger.e("parseLiveGetInfo", e);
             MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", e.getMessage());
         }
         return null;
@@ -412,12 +395,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             coachStatusEntity.setListStatus(status.optInt("listStatus"));
 
             if (status.has("openbarrage")) {
-                Loger.i("yzl_fd", "room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = " + status.getBoolean("openbarrage") + " " + status.toString());
+                logger.i("room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = " + status.getBoolean("openbarrage") + " " + status.toString());
                 //新增字段，辅导老师开启礼物与否 true开启
                 coachStatusEntity.setFDLKOpenbarrage(status.getBoolean("openbarrage"));
 
             } else {
-                Loger.i("yzl_fd", "room2中没有openbarrage字段 文科" + status.toString());
+                logger.i("room2中没有openbarrage字段 文科" + status.toString());
             }
 
             // 解析辅讲老师信息
@@ -428,7 +411,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             teamPkEntity.setRoomInfo2(roomInfo2);
 
             if (status.has("link_mic")) {
-                Loger.i("yzl_fd", "辅导老师 parseLiveTopic status = " + status.toString());
+                logger.i("辅导老师 parseLiveTopic status = " + status.toString());
                 JSONObject link_mic = status.getJSONObject("link_mic");
                 coachStatusEntity.setOnmic(link_mic.optString("onmic", "off"));
                 coachStatusEntity.setOpenhands(link_mic.optString("openhands", "off"));
@@ -475,7 +458,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         if (liveTopicJson.has("room_1")) {
-            Loger.i("yzl_fd", "主讲老师 parseLiveTopic liveTopicJson = " + liveTopicJson.toString());
+            logger.i("主讲老师 parseLiveTopic liveTopicJson = " + liveTopicJson.toString());
             JSONObject status = liveTopicJson.getJSONObject("room_1");
             RoomStatusEntity mainStatusEntity = liveTopic.getMainRoomstatus();
             mainStatusEntity.setOnbreak(status.optBoolean("isOnBreak"));
@@ -584,7 +567,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     liveTopic.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
                 }
             } catch (JSONException e) {
-                Loger.e(TAG, "parseLiveTopic", e);
+                logger.e("parseLiveTopic", e);
             }
         }
         try {
@@ -597,7 +580,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             liveTopic.setDisableSpeaking(disableSpeaking);
         } catch (JSONException e) {
             MobAgent.httpResponseParserError(TAG, "parseLiveTopic", e.getMessage());
-            Loger.e(TAG, "parseLiveTopic", e);
+            logger.e("parseLiveTopic", e);
         }
         return liveTopic;
     }
@@ -1118,7 +1101,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //            }
 //        }
 
-        Loger.i(TAG, "parseHonorList: " + responseEntity.getJsonObject());
+        logger.i("parseHonorList: " + responseEntity.getJsonObject());
         HonorListEntity honorListEntity = new HonorListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1168,7 +1151,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //            thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
 //        }
 
-        Loger.i(TAG, "parseThumbsUpList: " + responseEntity.getJsonObject());
+        logger.i("parseThumbsUpList: " + responseEntity.getJsonObject());
         ThumbsUpListEntity thumbsUpListEntity = new ThumbsUpListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1217,7 +1200,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //            }
 //            progressListEntity.getProgressEntities().add(progressEntity);
 //        }
-        Loger.i(TAG, "parseProgressList: " + responseEntity.getJsonObject());
+        logger.i("parseProgressList: " + responseEntity.getJsonObject());
         ProgressListEntity progressListEntity = new ProgressListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1243,6 +1226,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         }
         return progressListEntity;
     }
+
     /**
      * 解析点赞概率
      *
@@ -1250,7 +1234,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public ThumbsUpProbabilityEntity parseThumbsUpProbability(ResponseEntity responseEntity) {
-        Loger.i(TAG, "parseThumbsUpProbability: " + responseEntity.getJsonObject());
+        logger.i("parseThumbsUpProbability: " + responseEntity.getJsonObject());
         ThumbsUpProbabilityEntity thumbsUpProbabilityEntity = new ThumbsUpProbabilityEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1649,5 +1633,29 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         moreChoice.setRows(data.optString("rows"));
         return moreChoice;
 
+    }
+
+    /**
+     * 解析低端设备检测信息
+     */
+    public DeviceDetectionEntity parseDeviceDetectionInfo(ResponseEntity responseEntity) {
+        JSONObject data = (JSONObject) responseEntity.getJsonObject();
+        DeviceDetectionEntity entity = new DeviceDetectionEntity();
+        entity.setUnMatchCount(data.optInt("unMatchCount"));
+        entity.setUnMatchDesc(data.optString("unMatchDesc"));
+        JSONArray array = data.optJSONArray("unMatchList");
+        for (int i = 0; i < array.length(); i++) {
+            // type = 1：系统版本    type = 3： 设备内存
+            JSONObject jsonObject = array.optJSONObject(i);
+            int type = jsonObject.optInt("type");
+            if (type == 1) {
+                entity.setVersionCurrent(jsonObject.optString("current"));
+                entity.setVersionNotice(jsonObject.optString("notice"));
+            } else if (type == 3) {
+                entity.setMemoryCurrent(jsonObject.optString("current"));
+                entity.setMemoryNotice(jsonObject.optString("notice"));
+            }
+        }
+        return entity;
     }
 }

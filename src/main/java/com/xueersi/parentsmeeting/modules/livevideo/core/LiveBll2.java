@@ -44,7 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 
@@ -425,15 +425,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         mLogtf.d("onGetInfoSuccess:old=" + businessBlls + ",new=" + businessBllTemps.size());
         businessBllTemps.clear();
         logger.d("=======>onGetInfoSuccess 333333333");
-        LiveGetInfo.NewTalkConfEntity talkConfEntity = new LiveGetInfo.NewTalkConfEntity();
-        talkConfEntity.setHost(mGetInfo.getTalkHost());
-        talkConfEntity.setPort(mGetInfo.getTalkPort());
-        talkConfEntity.setPwd(mGetInfo.getTalkPwd());
-        List<LiveGetInfo.NewTalkConfEntity> newTalkConf = new ArrayList<LiveGetInfo.NewTalkConfEntity>();
-        newTalkConf.add(talkConfEntity);
-        if (mGetInfo.getNewTalkConf() != null) {
-            newTalkConf.addAll(mGetInfo.getNewTalkConf());
-        }
         String channel = "";
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
             channel = "1" + ROOM_MIDDLE + mGetInfo.getId();
@@ -458,12 +449,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, channel, mGetInfo.getStuName(), nickname);
-        mIRCMessage.setNewTalkConf(newTalkConf);
         IRCTalkConf ircTalkConf = new IRCTalkConf(null, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
-        s += ",newTalkConf=" + newTalkConf.size();
         logger.e("=======>mIRCMessage.create()");
         mLogtf.d(s);
         liveVideoBll.onLiveInit(getInfo, mLiveTopic);
@@ -582,7 +571,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
             }
-            Loger.e(Tag, "======>onTopic:" + topicstr);
+            logger.e( "======>onTopic:" + topicstr);
             if (TextUtils.isEmpty(topicstr)) {
                 return;
             }
@@ -651,7 +640,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
 
         @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-            Loger.d(TAG, "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+            logger.d( "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
             if (mMessageActions != null && mMessageActions.size() > 0) {
                 for (MessageAction mesAction : mMessageActions) {

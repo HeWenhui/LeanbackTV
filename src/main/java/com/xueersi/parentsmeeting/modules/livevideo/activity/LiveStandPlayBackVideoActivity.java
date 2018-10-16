@@ -265,7 +265,7 @@
 //    public void onConfigurationChanged(Configuration newConfig) {
 //        super.onConfigurationChanged(newConfig);
 //        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlQuestionContent.getLayoutParams();
-//        Loger.d(TAG, "onConfigurationChanged:mIsLand=" + mIsLand);
+//        logger.d( "onConfigurationChanged:mIsLand=" + mIsLand);
 //        if (mIsLand.get()) {
 //            lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
 //            lp.addRule(RelativeLayout.BELOW, 0);
@@ -279,9 +279,9 @@
 //    /** 初始化互动题和竖屏时下方的列表布局 */
 //    @Override
 //    protected void attachMediaController() {
-//        Loger.d(TAG, "attachMediaController:beforeAttach=" + beforeAttach);
+//        logger.d( "attachMediaController:beforeAttach=" + beforeAttach);
 //        if (resultFailed) {
-//            Loger.d(TAG, "attachMediaController:resultFailed");
+//            logger.d( "attachMediaController:resultFailed");
 //            return;
 //        }
 //        if (mMediaController != null) {
@@ -316,7 +316,7 @@
 //        showLongMediaController();
 //        if (mIsShowQuestion || mIsShowDialog) {
 //            mMediaController.release();
-//            Loger.d(TAG, "attachMediaController:release:mIsShowQuestion=" + mIsShowQuestion
+//            logger.d( "attachMediaController:release:mIsShowQuestion=" + mIsShowQuestion
 //                    + "," + mIsShowDialog);
 //        }
 //        List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
@@ -390,12 +390,12 @@
 ////        rlQuestionContent.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
 ////            @Override
 ////            public void onChildViewAdded(View parent, View child) {
-////                Loger.d(TAG, "onChildViewAdded");
+////                logger.d( "onChildViewAdded");
 ////            }
 ////
 ////            @Override
 ////            public void onChildViewRemoved(View parent, View child) {
-////                Loger.d(TAG, "onChildViewRemoved");
+////                logger.d( "onChildViewRemoved");
 ////            }
 ////        });
 //    }
@@ -615,12 +615,12 @@
 ////
 ////            @Override
 ////            public void getLiveExperienceMsgs(ExPerienceLiveMessage liveMessageGroupEntity) {
-////                Loger.d(TAG, "getLiveExperienceMsgs");
+////                logger.d( "getLiveExperienceMsgs");
 ////            }
 ////
 ////            @Override
 ////            public void onPmFailure() {
-////                Loger.d(TAG, "onPmFailure");
+////                logger.d( "onPmFailure");
 ////            }
 ////        });
 //    }
@@ -666,7 +666,7 @@
 //            rlFirstBackgroundView.setVisibility(View.GONE);
 //        }
 //        if (mQuestionEntity != null) {
-//            Loger.d(TAG, "onPlayOpenSuccess:showQuestion:isAnswered=" + mQuestionEntity.isAnswered() + "," +
+//            logger.d( "onPlayOpenSuccess:showQuestion:isAnswered=" + mQuestionEntity.isAnswered() + "," +
 //                    "mIsShowQuestion=" + mIsShowQuestion);
 ////            showQuestion(mQuestionEntity);
 //        }
@@ -705,7 +705,7 @@
 //        super.resultFailed(arg1, arg2);
 //        resultFailed = true;
 //        mIsShowQuestion = mIsShowRedpacket = false;
-//        Loger.d(TAG, "resultFailed:arg2=" + arg2);
+//        logger.d( "resultFailed:arg2=" + arg2);
 //        if (arg2 != 0 && mVideoEntity != null) {
 //            if ("LivePlayBackActivity".equals(where)) {//直播辅导
 //                XesMobAgent.onOpenFail(where + ":playback2", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
@@ -799,7 +799,7 @@
 //                mPlayVideoControlHandler.sendMessage(msg);
 //                if (voiceAnswerPager != null) {
 //                    if (voiceAnswerPager.getBaseVideoQuestionEntity().getvQuestionID().equals(mQuestionEntity.getvQuestionID())) {
-//                        Loger.d(TAG, "scanQuestion:stopVoiceAnswerPager1");
+//                        logger.d( "scanQuestion:stopVoiceAnswerPager1");
 //                        voiceAnswerPager.setEnd();
 //                        voiceAnswerPager.stopPlayer();
 //                        voiceAnswerPager = null;
@@ -812,7 +812,7 @@
 //        getPlayQuetion(TimeUtils.gennerSecond(position));
 //        if (mQuestionEntity != null && voiceAnswerPager != null) {
 //            if (!voiceAnswerPager.getBaseVideoQuestionEntity().getvQuestionID().equals(mQuestionEntity.getvQuestionID())) {
-//                Loger.d(TAG, "scanQuestion:stopVoiceAnswerPager2");
+//                logger.d( "scanQuestion:stopVoiceAnswerPager2");
 //                voiceAnswerPager.setEnd();
 //                stopVoiceAnswerPager();
 //            }
@@ -1008,7 +1008,7 @@
 //        mPlayVideoControlHandler.post(new Runnable() {
 //            @Override
 //            public void run() {
-//                Loger.i(TAG, "showQestion:time=" + (System.currentTimeMillis() - before));
+//                logger.i( "showQestion:time=" + (System.currentTimeMillis() - before));
 //                String type;
 //                if (rlQuestionContent != null && mQuestionEntity != null) {
 //                    //暂时没有。这个是文科回放，还没有这种题
@@ -1250,7 +1250,7 @@
 //        lectureLivePlayBackBll.getAdOnLL(mVideoEntity.getLiveId(), lecAdvertEntity, new AbstractBusinessDataCallBack() {
 //            @Override
 //            public void onDataSucess(Object... objData) {
-//                Loger.d(TAG, "showLecAdvertPager:mQuestionEntity=" + (mQuestionEntity == null));
+//                logger.d( "showLecAdvertPager:mQuestionEntity=" + (mQuestionEntity == null));
 //                if (mQuestionEntity != questionEntity) {
 //                    return;
 //                }
@@ -1264,7 +1264,7 @@
 //                        if (lecAdvertPager != null) {
 //                            rlQuestionContent.removeView(lecAdvertPager.getRootView());
 //                        }
-//                        Loger.d(TAG, "showLecAdvertPager:close=" + (mQuestionEntity == null));
+//                        logger.d( "showLecAdvertPager:close=" + (mQuestionEntity == null));
 //                        setQuestionEntity(null);
 //                        lecAdvertPager = null;
 //                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -1397,14 +1397,14 @@
 //                        if (voiceAnswerPager != null) {
 //                            stopVoiceAnswerPager();
 //                        }
-//                        Loger.d(TAG, "questionSwitch:showSelectQuestion");
+//                        logger.d( "questionSwitch:showSelectQuestion");
 //                        return baseQuestionPager;
 //                    } else {
 //                        BaseLiveQuestionPager baseQuestionPager = showMulitSelectQuestion(videoQuestionLiveEntity1);
 //                        if (voiceAnswerPager != null) {
 //                            stopVoiceAnswerPager();
 //                        }
-//                        Loger.d(TAG, "questionSwitch:showMulitSelectQuestion");
+//                        logger.d( "questionSwitch:showMulitSelectQuestion");
 //                        return baseQuestionPager;
 //                    }
 //                } else if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.getvQuestionType())) {
@@ -1412,7 +1412,7 @@
 //                    if (voiceAnswerPager != null) {
 //                        stopVoiceAnswerPager();
 //                    }
-//                    Loger.d(TAG, "questionSwitch:showFillBlankQuestion");
+//                    logger.d( "questionSwitch:showFillBlankQuestion");
 //                    return baseQuestionPager;
 //                }
 //            }
@@ -1718,7 +1718,7 @@
 //////                testAnswer = result + ":" + sorce;
 ////                testAnswer = result;
 ////            }
-////            Loger.d(TAG, "saveQuestionResult:testAnswer=" + testAnswer);
+////            logger.d( "saveQuestionResult:testAnswer=" + testAnswer);
 ////            lectureLivePlayBackBll.saveQuestionResult(loadEntity, questionEntity, testAnswer, mVideoEntity.getLiveId(), mVideoEntity.getvLivePlayBackType(), true, isRight, callBack);
 ////        }
 ////        XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.QUESTION_LIVEPLAYBACK, MobEnumUtil.QUESTION_ANSWER,
@@ -1782,7 +1782,7 @@
 //                }
 //            }
 //            final boolean finalPause = pause;
-//            Loger.i(TAG, "onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
+//            logger.i( "onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
 //            Handler handler = new Handler(Looper.getMainLooper());
 //            handler.post(new Runnable() {
 //                @Override
@@ -1799,7 +1799,7 @@
 //                    cancelDialog.setVerifyBtnListener(new OnClickListener() {
 //                        @Override
 //                        public void onClick(View v) {
-//                            Loger.i(TAG, "onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
+//                            logger.i( "onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
 //                                    finalPause);
 //                            if (initialized) {
 //                                if (finalPause) {
@@ -1829,7 +1829,7 @@
 //     * 创建弹起互动题按钮
 //     */
 //    protected void initPopuptWindow() {
-//        Loger.d(TAG, "initPopuptWindow");
+//        logger.d( "initPopuptWindow");
 //        View popupWindow_view = getLayoutInflater().inflate(R.layout.pop_question_visible, null, false);
 //        // 创建PopupWindow
 //        mPopupWindow = new PopupWindow(popupWindow_view, RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -1898,11 +1898,11 @@
 //     * @param method
 //     */
 //    private void questionViewGone(final String method) {
-//        Loger.d(TAG, "questionViewGone:method=" + method);
+//        logger.d( "questionViewGone:method=" + method);
 //        mPlayVideoControlHandler.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
-//                Loger.d(TAG, "questionViewGone2");
+//                logger.d( "questionViewGone2");
 //                mIsShowQuestion = false;
 //                if (rlQuestionContent != null) {
 //                    if (subjectResultPager != null) {
@@ -1937,7 +1937,7 @@
 //                    beforeAttach = "redPacketViewGone";
 //                    attachMediaController();
 //                } else {
-//                    Loger.d(TAG, "redPacketViewGone:mQuestionEntity=" + mQuestionEntity, true);
+//                    logger.d( "redPacketViewGone:mQuestionEntity=" + mQuestionEntity, true);
 //                }
 //            }
 //        }.sendEmptyMessageDelayed(0, 1000); // 延迟1秒钟消失
@@ -2094,7 +2094,7 @@
 //                }
 //            }
 //        }
-////        Loger.i(TAG, "getPlayQuetion:playPosition=" + playPosition + ",hasQuestionShow=" + hasQuestionShow + ",
+////        logger.i( "getPlayQuetion:playPosition=" + playPosition + ",hasQuestionShow=" + hasQuestionShow + ",
 //// mQuestionEntity=" + (mQuestionEntity != null));
 //        if (mQuestionEntity != null) {
 //            if (LocalCourseConfig.CATEGORY_EXAM == mQuestionEntity.getvCategory()) {
@@ -2104,7 +2104,7 @@
 //                        if (vPlayer != null) {
 //                            vPlayer.pause();
 //                        }
-//                        Loger.i(TAG, "getPlayQuetion:examSubmitAll:playPosition=" + playPosition);
+//                        logger.i( "getPlayQuetion:examSubmitAll:playPosition=" + playPosition);
 //                    }
 //                }
 //                return;
@@ -2116,7 +2116,7 @@
 //                            if (vPlayer != null) {
 //                                vPlayer.pause();
 //                            }
-//                            Loger.i(TAG, "getPlayQuetion:examSubmitAll:playPosition=" + playPosition);
+//                            logger.i( "getPlayQuetion:examSubmitAll:playPosition=" + playPosition);
 //                        }
 //                    }
 //                    return;
@@ -2128,7 +2128,7 @@
 //                            if (vPlayer != null) {
 //                                vPlayer.pause();
 //                            }
-//                            Loger.i(TAG, "getPlayQuetion:examSubmitAll2:playPosition=" + playPosition);
+//                            logger.i( "getPlayQuetion:examSubmitAll2:playPosition=" + playPosition);
 //                            return;
 //                        }
 //                    }
@@ -2145,7 +2145,7 @@
 //                        if (vPlayer != null) {
 //                            vPlayer.pause();
 //                        }
-//                        Loger.i(TAG, "getPlayQuetion:submitData:playPosition=" + playPosition);
+//                        logger.i( "getPlayQuetion:submitData:playPosition=" + playPosition);
 //                    }
 //                }
 //                return;
@@ -2155,7 +2155,7 @@
 //        if (!hasQuestionShow && mQuestionEntity != null) {
 //            startTime = mQuestionEntity.getvQuestionInsretTime();
 //            //播放器seekto的误差
-//            Loger.i(TAG, "getPlayQuetion:isClick=" + mQuestionEntity.isClick() + ",playPosition=" + playPosition + "," +
+//            logger.i( "getPlayQuetion:isClick=" + mQuestionEntity.isClick() + ",playPosition=" + playPosition + "," +
 //                    "startTime=" + startTime);
 //            if (mQuestionEntity.isClick()) {
 //                if (startTime - playPosition >= 0 && startTime - playPosition < 5) {
@@ -2506,14 +2506,14 @@
 //            switch (msg.what) {
 //                case SHOW_QUESTION:
 //                    if (resultFailed) {
-//                        Loger.d(TAG, "handleMessage:SHOW_QUESTION.msg=" + msg.obj + ",resultFailed=" + resultFailed);
+//                        logger.d( "handleMessage:SHOW_QUESTION.msg=" + msg.obj + ",resultFailed=" + resultFailed);
 //                        return;
 //                    }
 //                    mIsShowQuestion = true;
 //                    if (mMediaController != null) {
 ////                        mMediaController.setWindowLayoutType();
 //                        mMediaController.release();
-//                        Loger.d(TAG, "handleMessage:SHOW_QUESTION:msg=" + msg.obj);
+//                        logger.d( "handleMessage:SHOW_QUESTION:msg=" + msg.obj);
 //                    }
 //                    break;
 //                case NO_QUESTION:
@@ -2521,7 +2521,7 @@
 //                        mVideoCourseQuestionPager.hideInputMode();
 //                    }
 //                    Object obj = msg.obj;
-//                    Loger.d(TAG, "handleMessage:NO_QUESTION=" + msg.arg1 + "," + (obj == mQuestionEntity));
+//                    logger.d( "handleMessage:NO_QUESTION=" + msg.arg1 + "," + (obj == mQuestionEntity));
 //                    setQuestionEntity(null);
 //                    questionViewGone("NO_QUESTION");
 //                    if (mPopupWindow != null) {
@@ -2537,7 +2537,7 @@
 //        resultFailed = false;
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
 //            videoBackgroundRefresh.setVisibility(View.GONE);
-//            Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+//            logger.d( "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
 //            if (rlQuestionContent.getChildCount() > 0) {
 //                rlQuestionContent.setVisibility(View.VISIBLE);
 //            }

@@ -57,7 +57,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionPl
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -182,9 +181,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     /** 初始化互动题和竖屏时下方的列表布局 */
     @Override
     public void attachMediaController() {
-        Loger.d(TAG, "attachMediaController:beforeAttach=" + beforeAttach);
+        logger.d( "attachMediaController:beforeAttach=" + beforeAttach);
         if (resultFailed) {
-            Loger.d(TAG, "attachMediaController:resultFailed");
+            logger.d( "attachMediaController:resultFailed");
             return;
         }
         rlQuestionContentBottom.setVisibility(View.VISIBLE);
@@ -248,7 +247,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         mMediaController.setFileName(mDisplayName);
         if (liveBackBll.isShowQuestion()) {
             mMediaController.release();
-            Loger.d(TAG, "attachMediaController:release:isShowQuestion");
+            logger.d( "attachMediaController:release:isShowQuestion");
         } else {
             showLongMediaController();
         }
@@ -580,7 +579,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     protected void resultFailed(int arg1, int arg2) {
         super.resultFailed(arg1, arg2);
         resultFailed = true;
-        Loger.d(TAG, "resultFailed:arg2=" + arg2);
+        logger.d( "resultFailed:arg2=" + arg2);
         if (arg2 != 0 && mVideoEntity != null) {
             if ("LivePlayBackActivity".equals(where)) {//直播辅导
                 XesMobAgent.onOpenFail(where + ":playback2", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
@@ -722,7 +721,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 }
             }
             final boolean finalPause = pause;
-            Loger.i(TAG, "onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
+            logger.i( "onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
@@ -739,7 +738,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                     cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Loger.i(TAG, "onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
+                            logger.i( "onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
                                     finalPause);
                             if (initialized) {
                                 if (finalPause) {
@@ -796,7 +795,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         resultFailed = false;
         if (AppBll.getInstance(activity).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
-            Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+            logger.d( "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
             playNewVideo();
         }
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
@@ -842,7 +841,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     public void setRequestedOrientation(int requestedOrientation) {
-        Loger.d(TAG, "setRequestedOrientation:requestedOrientation=" + requestedOrientation);
+        logger.d( "setRequestedOrientation:requestedOrientation=" + requestedOrientation);
         super.setRequestedOrientation(requestedOrientation);
     }
 

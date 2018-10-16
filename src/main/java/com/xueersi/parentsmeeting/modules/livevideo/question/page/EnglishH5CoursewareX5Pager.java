@@ -41,6 +41,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -75,6 +76,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private String mLoadUrls;
     private String releasedPageInfos;
     private boolean allowTeamPk;
+    private HashMap header;
 
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
@@ -116,6 +118,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         final File todayLiveCacheDir = new File(todayCacheDir, liveId);
         mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
         initData();
+        header = new HashMap();
+        header.put("Access-Control-Allow-Origin", "*");
     }
 
     @Override
@@ -219,8 +223,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @Override
     protected boolean shouldOverrideUrlLoading(WebView view, String url) {
         //      if ("http://baidu.com/".equals(url)) {
-        Loger.d(TAG, "shouldOverrideUrlLoading:url=" + url);
-        Loger.e(TAG, "======> shouldOverrideUrlLoading:" + url);
+        logger.d( "shouldOverrideUrlLoading:url=" + url);
+        logger.e( "======> shouldOverrideUrlLoading:" + url);
 
         reloadurl = url;
         if (url.contains("baidu.com")) {
@@ -250,7 +254,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     if (!TextUtils.isEmpty(goldNUmStr)) {
                         mGoldNum = Integer.parseInt(goldNUmStr.trim());
                     }
-                    Loger.e(TAG, "======> shouldOverrideUrlLoading: mGoldNum=" + mGoldNum);
+                    logger.e( "======> shouldOverrideUrlLoading: mGoldNum=" + mGoldNum);
                 }
                 int satrIndex2 = url.indexOf("energyNum=") + "energyNum=".length();
                 if (satrIndex2 != -1) {
@@ -264,7 +268,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     if (!TextUtils.isEmpty(energyNumStr)) {
                         mEnergyNum = Integer.parseInt(energyNumStr.trim());
                     }
-                    Loger.e(TAG, "======> shouldOverrideUrlLoading: mEnergyNum=" + mEnergyNum);
+                    logger.e( "======> shouldOverrideUrlLoading: mEnergyNum=" + mEnergyNum);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -272,8 +276,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             return true;
         }
 
-        Loger.e(TAG, "======> reloadUrlLivedshouldurl:" + url);
-        Loger.e(TAG, "======> reloadUrlLivedshouldreloadurl:" + reloadurl);
+        logger.e( "======> reloadUrlLivedshouldurl:" + url);
+        logger.e( "======> reloadUrlLivedshouldreloadurl:" + reloadurl);
         return super.shouldOverrideUrlLoading(view, url);
     }
 
@@ -295,7 +299,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                             url2 = url2.substring(0, index2);
                         }
                         file = new File(mMorecacheout, url2);
-                        Loger.d(TAG, "shouldInterceptRequest:file=" + file + ",file=" + file.exists());
+                        logger.d( "shouldInterceptRequest:file=" + file + ",file=" + file.exists());
                     } else {
                         file = new File(mMorecacheout, MD5Utils.getMD5(s));
                         index = s.lastIndexOf("/");
@@ -303,7 +307,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         if (index != -1) {
                             name = s.substring(index);
                         }
-                        Loger.d(TAG, "shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
+                        logger.d( "shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
                     }
                     if (file.exists()) {
                         FileInputStream inputStream = null;
@@ -312,6 +316,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                             String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
                             String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                             WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                            webResourceResponse.setResponseHeaders(header);
                             return webResourceResponse;
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -383,9 +388,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 mLoadUrls += "&isShowTeamPk=1";
             }
             loadUrl(mLoadUrls);
-            Loger.e(TAG, "======> mulloadUrlLives:" + mLoadUrls);
+            logger.e( "======> mulloadUrlLives:" + mLoadUrls);
             reloadurl = mLoadUrls;
-            Loger.e(TAG, "======> mulloadUrlLive:" + reloadurl);
+            logger.e( "======> mulloadUrlLive:" + reloadurl);
         } else {
             String loadUrl = url + "?t=" + System.currentTimeMillis();
             if (!url.isEmpty() && url.substring(url.length() - 1).equals("&")) {
@@ -399,12 +404,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 loadUrl += "&nonce=" + nonce;
             }
             loadUrl += "&isTowall=" + isShowRanks;
-            Loger.i(TAG, "initData:loadUrl=" + loadUrl);
+            logger.i( "initData:loadUrl=" + loadUrl);
             loadUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
             loadUrl(loadUrl);
-            Loger.e(TAG, "======> loadUrl:" + loadUrl);
+            logger.e( "======> loadUrl:" + loadUrl);
             reloadurl = loadUrl;
-            Loger.e(TAG, "======> loadUrlLive:" + reloadurl);
+            logger.e( "======> loadUrlLive:" + reloadurl);
         }
         if (mLogtf != null) {
             mLogtf.d("initData:reloadurl=" + reloadurl);
@@ -415,16 +420,16 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             @Override
             public void onClick(final View v) {
 //                newWebView();
-                Loger.e(TAG, "======> reloadUrlLives:" + mLoadUrls);
-                Loger.e(TAG, "======> reloadUrlLive:" + reloadurl);
+                logger.e( "======> reloadUrlLives:" + mLoadUrls);
+                logger.e( "======> reloadUrlLive:" + reloadurl);
                 if ((englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack) && LiveVideoConfig.isPrimary) {
                     loadUrl(mLoadUrls);
-                    Loger.e(TAG, "======> reloadUrlLiveds:" + mLoadUrls);
+                    logger.e( "======> reloadUrlLiveds:" + mLoadUrls);
                 } else {
                     String url = reloadurl + "&time=" + System.currentTimeMillis();
                     loadUrl(url);
                     reloadUrl();
-                    Loger.e(TAG, "======> reloadUrlLived:" + url);
+                    logger.e( "======> reloadUrlLived:" + url);
                 }
                 v.setVisibility(View.GONE);
                 v.postDelayed(new Runnable() {

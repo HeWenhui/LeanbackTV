@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerBottomInter;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
  */
 public class BaseLiveMediaControllerBottom extends FrameLayout implements ControllerBottomInter {
     String TAG = "MediaControllerBottom";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     /** 播放器的控制监听 */
     protected MediaPlayerControl mPlayer;
     protected LiveMediaController controller;

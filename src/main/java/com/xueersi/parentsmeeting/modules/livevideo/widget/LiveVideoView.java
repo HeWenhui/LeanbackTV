@@ -72,7 +72,7 @@ public class LiveVideoView extends VideoView {
 //            lp.width = paramsWidth;
 //            lp.height = paramsHeight;
 //            setLayoutParams(lp);
-//            //Loger.e(TAG, "setSurfaceLayout:paramsWidth=" + paramsWidth + ",paramsHeight=" + paramsHeight);
+//            //logger.e( "setSurfaceLayout:paramsWidth=" + paramsWidth + ",paramsHeight=" + paramsHeight);
 //        }
 //        // 固定surface的大小
 //        getHolder().setFixedSize(mSurfaceWidth, mSurfaceHeight);

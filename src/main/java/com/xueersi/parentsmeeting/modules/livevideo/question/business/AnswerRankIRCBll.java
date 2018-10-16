@@ -11,7 +11,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONObject;
 
@@ -71,7 +70,7 @@ public class AnswerRankIRCBll extends LiveBaseBll implements NoticeAction {
                         mAnswerRankBll.showRankList(lst, -1);
                     }
                 } catch (Exception e) {
-                    Loger.i("=====notice " + e.getMessage());
+                    logger.i("=====notice " + e.getMessage());
                 }
             }
             break;

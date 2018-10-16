@@ -9,10 +9,13 @@ import android.os.Looper;
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -40,9 +43,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         LogToFile.LIVE_TIME++;
-        if (LogToFile.LIVE_TIME > 4) {
-            LogToFile.LIVE_TIME = 0;
-        }
         initData();
     }
 
@@ -185,6 +185,16 @@ public class LiveVideoLoadActivity extends BaseActivity {
      * @param requestCode
      */
     public static void intentTo(Activity context, Bundle bundle, int requestCode) {
+
+        //低端机设备检测页拦截
+        if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
+                        .SP_APP_DEVICE_NOTICE, false,
+                ShareDataManager.SHAREDATA_USER)) {
+            Intent intent = new Intent(context, DeviceDetectionActivity.class);
+            context.startActivity(intent);
+            return;
+        }
+
         Intent intent = new Intent(context, LiveVideoLoadActivity.class);
         intent.putExtras(bundle);
         context.startActivityForResult(intent, requestCode);

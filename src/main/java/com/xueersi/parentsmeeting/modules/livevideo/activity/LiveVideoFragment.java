@@ -48,7 +48,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
@@ -56,6 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChat
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.worddictation.business.WordDictationIRCBll;
 
 import java.util.List;
 
@@ -158,6 +158,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new ArtsPraiseListBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new WordDictationIRCBll(activity, mLiveBll));
         } else {
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -329,12 +330,12 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                         if (isInitialized()) {
                             if (openSuccess) {
                                 mLiveVideoBll.stopPlayDuration();
-                                Loger.d(TAG, "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+                                logger.d("onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
                             }
                             vPlayer.releaseSurface();
                             vPlayer.stop();
                         } else {
-                            Loger.d(TAG, "onPause:isInitialized=false");
+                            logger.d("onPause:isInitialized=false");
                         }
                         isPlay = false;
                     }
@@ -360,7 +361,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
         long before = System.currentTimeMillis();
         mMediaController.setFileName(getInfo.getName());
-        Loger.d(TAG, "onLiveInit:time3=" + (System.currentTimeMillis() - before));
+        logger.d("onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 
     @Override
@@ -376,7 +377,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     vPlayer.stop();
                 }
                 isPlay = false;
-                liveVideoAction.onModeChange(mode, isPresent);
+                if (liveVideoAction != null) {
+                    liveVideoAction.onModeChange(mode, isPresent);
+                }
             }
         });
     }
@@ -395,6 +398,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      */
     @Override
     public void rePlay(boolean modechange) {
+        mLogtf.d("rePlay:mHaveStop=" + mHaveStop);
         if (mGetInfo == null || liveVideoAction == null) {//上次初始化尚未完成
             return;
         }
