@@ -54,6 +54,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexper
         .ExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.livemessage
         .StandExperienceMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.mediacontroller
+        .StandLiveVideoExperienceMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse
         .ExperienceBuyCoursePresenter;
@@ -66,7 +68,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPacka
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.mediacontroller.StandLiveVideoExperienceMediaController;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -472,8 +473,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         //推荐课程信息
         liveBackBll.addBusinessBll(new RecommondCourseBll(activity, liveBackBll, getVideoView()));
         //播放完成后的反馈弹窗
-        liveBackBll.addBusinessBll(ExperienceBuyCoursePresenter.getInstance(activity, liveBackBll));
-        liveBackBll.addBusinessBll(ExperienceLearnFeedbackBll.getInstance(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new ExperienceBuyCoursePresenter(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
     }
 
     @Override

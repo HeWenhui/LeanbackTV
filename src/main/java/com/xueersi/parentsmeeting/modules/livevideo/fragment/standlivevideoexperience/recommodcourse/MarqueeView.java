@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience;
+package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -307,6 +307,10 @@ public class MarqueeView extends ViewFlipper {
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     position++;
+                    //当前位置大于notices.size之后，从头开始,这里可以采用链表解决
+                    if (notices.size() > 0) {
+                        notices.remove(0);
+                    }
                     if (position >= notices.size()) {
                         position = 0;
                     }

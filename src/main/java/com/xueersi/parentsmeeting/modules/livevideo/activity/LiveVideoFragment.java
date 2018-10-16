@@ -379,7 +379,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     vPlayer.stop();
                 }
                 isPlay = false;
-                liveVideoAction.onModeChange(mode, isPresent);
+                if (liveVideoAction != null) {
+                    liveVideoAction.onModeChange(mode, isPresent);
+                }
             }
         });
     }

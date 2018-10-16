@@ -18,14 +18,14 @@ public class ExperienceLearnFeedbackBll extends StandExperienceEventBaseBll impl
 
     private static ExperienceLearnFeedbackBll instance;
 
-    public static ExperienceLearnFeedbackBll getInstance(Activity activity, StandExperienceLiveBackBll liveBackBll) {
-        if (instance == null) {
-            instance = new ExperienceLearnFeedbackBll(activity, liveBackBll);
-        }
-        return instance;
-    }
+//    public static ExperienceLearnFeedbackBll getInstance(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+//        if (instance == null) {
+//            instance = new ExperienceLearnFeedbackBll(activity, liveBackBll);
+//        }
+//        return instance;
+//    }
 
-    private ExperienceLearnFeedbackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    public ExperienceLearnFeedbackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         initListener();
     }

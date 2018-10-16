@@ -23,12 +23,12 @@ public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll im
 
     private static ExperienceBuyCoursePresenter instance;
 
-    public static ExperienceBuyCoursePresenter getInstance(Activity activity, StandExperienceLiveBackBll liveBackBll) {
-        if (instance == null) {
-            instance = new ExperienceBuyCoursePresenter(activity, liveBackBll);
-        }
-        return instance;
-    }
+//    public static ExperienceBuyCoursePresenter getInstance(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+//        if (instance == null) {
+//            instance = new ExperienceBuyCoursePresenter(activity, liveBackBll);
+//        }
+//        return instance;
+//    }
 
     /**
      * 0 liveback
@@ -37,7 +37,7 @@ public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll im
      * @param activity
      * @param liveBackBll
      */
-    private ExperienceBuyCoursePresenter(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    public ExperienceBuyCoursePresenter(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         mPager = new ExperienceBuyCourseView(activity, this);
     }
