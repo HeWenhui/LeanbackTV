@@ -1,16 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 
-import com.tencent.smtt.export.external.interfaces.WebResourceError;
-import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
-import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebView;
-import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 
 import ren.yale.android.cachewebviewlib.CacheWebView;
@@ -21,6 +16,7 @@ import ren.yale.android.cachewebviewlib.CacheWebView;
  */
 public class QuestionWebCache {
     private String TAG = "QuestionWebCache";
+    Logger logger = LoggerFactory.getLogger(TAG);
     private Context context;
 
     public QuestionWebCache(Context context) {
@@ -42,7 +38,7 @@ public class QuestionWebCache {
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-            Loger.d(TAG, "shouldInterceptRequest:url=" + url);
+            logger.d("shouldInterceptRequest:url=" + url);
             return super.shouldInterceptRequest(view, url);
         }
 
@@ -50,7 +46,7 @@ public class QuestionWebCache {
         public void onPageFinished(WebView webView, String s) {
             super.onPageFinished(webView, s);
             webView.destroy();
-            logger.d( "onPageFinished:s=" + s);
+            logger.d("onPageFinished:s=" + s);
         }
     }
 }
