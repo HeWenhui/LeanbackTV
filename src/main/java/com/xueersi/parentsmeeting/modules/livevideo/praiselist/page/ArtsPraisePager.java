@@ -69,7 +69,7 @@ public class ArtsPraisePager extends BasePager {
 
     private static final String TAG = "ArtsPraisePager";
     private static final int SPAN_COUNT = 3;
-    private static final float RECYCLVIEW_ENTER_FRACTION = 0.48f;
+    private static final float RECYCLVIEW_ENTER_FRACTION = 0.47f;
 
     private static final int TEN_THOUSAND = 10000;
     private static final int HUNDRED = 100;
@@ -222,10 +222,12 @@ public class ArtsPraisePager extends BasePager {
             recyclerView.setLayoutManager(prasieLayoutManager);
             adapter = new PraiseListAdapter(mData.getRankEntities());
             recyclerView.setAdapter(adapter);
-            GridLayoutAnimationController animationController = (GridLayoutAnimationController) AnimationUtils.
+
+           /* GridLayoutAnimationController animationController = (GridLayoutAnimationController) AnimationUtils.
                     loadLayoutAnimation(mContext, R.anim.anim_livevido_arts_praiselist);
             recyclerView.setLayoutAnimation(animationController);
-            recyclerView.scheduleLayoutAnimation();
+            recyclerView.scheduleLayoutAnimation(); // 无淡入效果
+            */
 
             recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
                 @Override
@@ -291,7 +293,8 @@ public class ArtsPraisePager extends BasePager {
 
         ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.
                 loadAnimation(mContext, R.anim.anim_livevido_artspraise_praise_text);
-        scaleAnimation.setInterpolator(new SpringScaleInterpolator(SCALE_ANIM_FACTOR));
+        scaleAnimation.setDuration(2000);
+        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.4f));
 
         titleContainer = praiseMsgLayout.findViewById(R.id.ll_livevideo_arts_praise_teacherhead_container);
         ivTeahcerHead = praiseMsgLayout.findViewById(R.id.iv_livevideo_arts_praise_teacherhead);
@@ -349,7 +352,8 @@ public class ArtsPraisePager extends BasePager {
         tvMsg.setVisibility(View.VISIBLE);
         ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R.anim
                 .anim_livevido_teampk_aq_award);
-        scaleAnimation.setInterpolator(new SpringScaleInterpolator(SCALE_ANIM_FACTOR));
+        scaleAnimation.setDuration(2000);
+        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.4f));
         tvMsg.startAnimation(scaleAnimation);
 
         scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -784,7 +788,7 @@ public class ArtsPraisePager extends BasePager {
         }
 
         public void bindData(ArtsRraiseEntity.RankEntity data) {
-            tvName.setTextColor(data.getInList() == 1 ? Color.parseColor("#FF957C") : Color.parseColor("#707070"));
+            tvName.setTextColor(data.getInList() == 1 ? Color.parseColor("#FFBC2D") : Color.parseColor("#707070"));
             tvName.setText(data.getRealName());
         }
     }
