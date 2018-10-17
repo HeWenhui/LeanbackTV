@@ -272,7 +272,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
                     ".getTestId() = " + mRolePlayerEntity.getTestId()
                     + " obj = " + obj.toString());
 
-            mRolePlayerHttpManager.requestResult(mStuCouId, mLiveId, mRolePlayerEntity.getTestId(), roleName, obj
+            mRolePlayerHttpManager.requestResult(mStuCouId, mLiveId, videoQuestionLiveEntity.id, roleName, obj
                     .toString(), new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
