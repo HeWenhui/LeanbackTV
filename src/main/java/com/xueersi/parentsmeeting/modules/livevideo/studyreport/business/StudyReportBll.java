@@ -212,6 +212,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         logger.d("onPmSuccess:type=" + type + ",responseEntity=" + responseEntity.getJsonObject());
+                        types.add("" + type);
                         String str = mShareDataManager.getString(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
                         try {
                             JSONObject jsonObject = new JSONObject(str);
