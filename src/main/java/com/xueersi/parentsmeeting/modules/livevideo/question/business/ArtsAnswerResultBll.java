@@ -632,6 +632,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     }
 
 
+
     /**
      * 强制关闭ptype 为12的游戏题
      */
