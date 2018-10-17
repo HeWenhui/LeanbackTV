@@ -58,11 +58,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private RelativeLayout rlAnswerResultLayout;
 
     /**
-     * 语文跟读
-     */
-    private static final int ARTS_FOLLOW_UP = 6;
-
-    /**
      * 强制收卷 答题结果展示 时间
      **/
     private final long AUTO_CLOSE_DELAY = 2000;
@@ -579,18 +574,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         switch (type) {
             case XESCODE.ARTS_REMID_SUBMIT:
                 int pType = data.optInt("ptype");
-                // 语文跟读不支持 提醒答题
-                if (ARTS_FOLLOW_UP != pType) {
                     remindSubmit();
-                }
                 break;
             case XESCODE.ARTS_PARISE_ANSWER_RIGHT:
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("Arts_Praise_Answer_right:").append(data.toString());
                 UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" + "loadLibrary", stringBuilder.toString());
-
-                // 语文跟读不支持 表扬
-                if (ARTS_FOLLOW_UP != data.optInt("ptype")) {
                     String praiseType = data.optString("praiseType");
                     if ("0".equals(praiseType)) {
                         JSONArray ids = data.optJSONArray("id");
@@ -607,7 +596,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             }
                         }
                     }
-                }
                 break;
             case XESCODE.ARTS_PRAISE_ANSWER_RIGHT_SINGLE:
                 String testId = data.optString("id");
@@ -762,10 +750,15 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     JSONObject dataJsonObj = jsonObject.optJSONObject("data");
                     if (dataJsonObj != null && dataJsonObj.has("total")) {
                         JSONObject totalObject = dataJsonObj.getJSONObject("total");
-                        String testId = totalObject.optString("testIds");
+                        JSONArray idJsonArray = totalObject.optJSONArray("testIds");
+                        String testId = "";//totalObject.optString("testIds");
+                        if(idJsonArray != null && idJsonArray.length() > 0){
+                            testId = idJsonArray.optString(0);
+                        }
                         int type = totalObject.optInt("type");
                         int score = totalObject.optInt("score");
                         VoiceAnswerResultEvent voiceAnswerResultEvent = new VoiceAnswerResultEvent(testId, score);
+                        voiceAnswerResultEvent.setType(type);
                         logger.e("========>onRolePlayAnswerResult:" + voiceAnswerResultEvent
                                 .getScore() + ":" + voiceAnswerResultEvent.getTestId());
                         saveVoiceAnswerResult(voiceAnswerResultEvent);
