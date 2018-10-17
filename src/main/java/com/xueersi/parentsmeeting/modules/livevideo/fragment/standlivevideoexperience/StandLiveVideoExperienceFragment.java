@@ -49,6 +49,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination
+        .StandExperienceEvaluationBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback
         .ExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.livemessage
@@ -56,8 +58,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexper
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.mediacontroller
         .StandLiveVideoExperienceMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse
-        .ExperienceBuyCoursePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand
         .StandExperienceUnderstandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -464,8 +464,11 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         liveBackBll.addBusinessBll(new StandExperienceUnderstandBll(activity, liveBackBll));
         //推荐课程信息
         liveBackBll.addBusinessBll(new RecommondCourseBll(activity, liveBackBll, getVideoView()));
+        //播放完成后的定级卷
+        liveBackBll.addBusinessBll(new StandExperienceEvaluationBll(activity, liveBackBll));
+        //定级完成后的结果页
+//        liveBackBll.addBusinessBll(new ExperienceBuyCoursePresenter(activity, liveBackBll));
         //播放完成后的反馈弹窗
-        liveBackBll.addBusinessBll(new ExperienceBuyCoursePresenter(activity, liveBackBll));
         liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
     }
 
@@ -717,7 +720,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     private final int mPlayDurTime = 300000;
 
     //    private long errorContinuedmTime = 0L;
-    private long delaymTime = 0L;
+    private long delaymTime = 300000L;
 
     private long continuedMTime = 0L;
     private Runnable mPlayDuration = new Runnable() {
@@ -730,6 +733,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 if (isPlay) {//处于播放状态
                     nowContinuedMTime = System.currentTimeMillis() - everyTime;
                     if (continuedMTime + nowContinuedMTime >= mPlayDurTime) {//持续时间大于定义的发送间隔
+                        logger.i("发送/science/AutoLive/visitTime请求");
                         sendVideoContinuedFlop();
                         continuedMTime = 0L;
                         delaymTime = mPlayDurTime;
@@ -739,10 +743,12 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                     }
                 } else {
                     if (continuedMTime >= mPlayDurTime) {//如果持续时间大于定义的发送间隔
+                        logger.i("发送/science/AutoLive/visitTime请求");
                         sendVideoContinuedFlop();
                     } else {//
                         delaymTime = mPlayDurTime - continuedMTime;
                     }
+                    continuedMTime = 0L;
                 }
                 mHandler.postDelayed(this, delaymTime);
             }

@@ -8,6 +8,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination
+        .StandExperienceEvaluationBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse
         .ExperienceBuyCoursePresenter;
@@ -148,6 +150,9 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 //                ((ExperienceBuyCoursePresenter) liveBackBaseBll).showNextWindow();
                 showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
             }
+            if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
+                showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
+            }
         }
 //        showNextWindow(new ExperienceBuyCoursePresenter(activity, this));
 //        showNextWindow(ProxUtil.getProxUtil().get(activity, ExperienceBuyCoursePresenter
@@ -155,36 +160,6 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 
 //        showNextWindow(iPresenter);
     }
-
-    //    购课完成后专用
-//    public void buyCourseComplete(boolean isSuccess) {
-//        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
-//            if (liveBackBaseBll instanceof RecommondCourseBll) {//只有推荐课程才使用这个方法
-//                ((RecommondCourseBll) liveBackBaseBll).buyRecommondCourseComplete(isSuccess);
-//            }
-//        }
-//    }
-    //学习反馈弹窗bll
-//    private ExperienceLearnFeedbackBll experienceLearnFeedbackBll;
-
-    //展示学习反馈弹窗
-//    public void showFeedBackWindow() {
-//        if (experienceLearnFeedbackBll == null) {
-//            experienceLearnFeedbackBll = new ExperienceLearnFeedbackBll(activity, this);
-//        }
-//        experienceLearnFeedbackBll.showFeedBackPager();
-//    }
-
-    //定级卷Bll
-//    private StandExperienceEvaluationBll standExperienceEvaluationBll;
-
-    //展现定级卷
-//    public void showEvaluation() {
-//        if (standExperienceEvaluationBll == null) {
-//            standExperienceEvaluationBll = new StandExperienceEvaluationBll(activity, this);
-//        }
-//
-//    }
 
     /**
      * 展示下一个View的页面,这里可以做一些下一个View展示前的逻辑处理
