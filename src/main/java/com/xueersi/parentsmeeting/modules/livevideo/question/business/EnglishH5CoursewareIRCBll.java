@@ -641,6 +641,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                             (responseEntity,
                                                     true);
                                     entity.setVoice(true);
+                                    entity.setResultType(isRights ? 2 : 0);
                                     if (StringUtils.isSpace(entity.getTestId())) {
                                         entity.setTestId(videoQuestionLiveEntity.id);
                                     }
