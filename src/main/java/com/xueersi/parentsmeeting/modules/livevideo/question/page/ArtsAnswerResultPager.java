@@ -38,11 +38,10 @@ import java.util.List;
  */
 
 public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsultDisplayer {
-
-
+    /**游戏试题类型*/
+    private static final int TYPE_GAME = 12;
     private View resultStateRootView;
     private View resultDetailRootView;
-
     private static final long ANSWER_DETAIL_SHOW_DELAY = 3000;
     private ImageView ivClose;
     private RecyclerView recyclerView;
@@ -254,10 +253,17 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
      * 展示答案详情
      */
     private void disPlayDetailUI() {
-
+        // 游戏题不展示 统计面板 只展示 获得金币UI
+        if(isGameResult()){
+            if(getRootView() != null && getRootView().getParent() != null){
+                ((ViewGroup)getRootView().getParent()).removeView(getRootView());
+            }
+            mStateListenr.onCompeletShow();
+            return;
+        }
+        resultStateRootView.setVisibility(View.GONE);
         mView.setBackgroundColor(Color.parseColor(BG_COLOR));
         ivResultBtn.setVisibility(View.GONE);
-        resultStateRootView.setVisibility(View.GONE);
         resultDetailRootView.setVisibility(View.VISIBLE);
 
         if (recyclerView == null) {
@@ -322,6 +328,11 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
             mAdapter.notifyDataSetChanged();
         }
         mStateListenr.onCompeletShow();
+    }
+
+    private boolean isGameResult() {
+
+        return mData != null && mData.getType() == TYPE_GAME;
     }
 
 

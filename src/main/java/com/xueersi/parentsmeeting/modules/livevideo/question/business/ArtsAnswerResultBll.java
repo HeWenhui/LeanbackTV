@@ -197,7 +197,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      */
     private void onAnswerResult(String result,boolean resultFromVoice) {
         Log.e("AnswerResultBll","======>onAnswerResult:"+result+":"+resultFromVoice);
-        boolean showAnswerResult = false;
+        //boolean showAnswerResult = false;
         try {
             JSONObject jsonObject = new JSONObject(result);
             int stat = jsonObject.optInt("stat");
@@ -234,7 +234,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
                     int type = totalObject.optInt("type");
                     //不是游戏类型的试题 就显示 统计面板  (仿照pc端处理逻辑)
-                    showAnswerResult = (type != TEST_TYPE_GAME);
+                    //showAnswerResult = (type != TEST_TYPE_GAME);
+                    mAnswerReulst.setType(type);
 
                     if (dataObject.has("split")) {
                         JSONArray splitArray = dataObject.getJSONArray("split");
@@ -292,10 +293,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         mAnswerReulst.setAnswerList(answerList);
                     }
                     //答题结果里有填空选择 才展示 统计面板 (当前统计面UI 只支持显示 选择、填空题)
-                    if (showAnswerResult && !resultFromVoice) {
+                    if (!resultFromVoice) {
                         shoulUpdateGold = true;
                         showAnswerReulst();
                     }
+
                 } else {
                     // TODO: 2018/9/18 新平台老课件
                     mAnswerReulst.setResultType(AnswerResultEntity.RESULT_TYPE_OLD_COURSE_WARE);
@@ -338,6 +340,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             XESToastUtils.showToast(mContext, "答题结果数据解析失败");
         }
     }
+
 
     private boolean forceSumbmit;
 
@@ -631,11 +634,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 mArtsAnswerResultEvent = null;
                 if ("off".equals(status)) {
                     closeAnswerResult(true);
-                    int ptype = data.optInt("ptype");
-                    //ptype 为12 的游戏题 不再跳转 百度页面  所以直接关闭h5答题结果页面
-                    if(ptype == TEST_TYPE_GAME){
-                       forceCloseGamePage();
-                    }
                 } else if ("on".equals(status)) {
                     forceSumbmit = false;
                 }
@@ -765,6 +763,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     if (dataJsonObj != null && dataJsonObj.has("total")) {
                         JSONObject totalObject = dataJsonObj.getJSONObject("total");
                         String testId = totalObject.optString("testIds");
+                        int type = totalObject.optInt("type");
                         int score = totalObject.optInt("score");
                         VoiceAnswerResultEvent voiceAnswerResultEvent = new VoiceAnswerResultEvent(testId, score);
                         logger.e("========>onRolePlayAnswerResult:" + voiceAnswerResultEvent

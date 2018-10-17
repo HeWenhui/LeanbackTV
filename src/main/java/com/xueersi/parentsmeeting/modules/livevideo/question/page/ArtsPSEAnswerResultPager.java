@@ -52,6 +52,8 @@ import java.util.List;
 public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRsultDisplayer, View.OnClickListener {
 
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result/";
+    /**游戏试题类型*/
+    private static final int TYPE_GAME = 12;
     private final String TAG = "ArtsPSEAnswerResultPager";
     protected Logger logger = LoggerFactory.getLogger("ArtsPSEAnswerResultPager");
 
@@ -146,7 +148,6 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         String titleBgPath = null;
 
         if(resultType == RESULT_TYPE_CORRECT){
-
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/data.json";
             titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_15.png";
             titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_16.png";
@@ -178,7 +179,6 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             }
         });
 
-
         animationView.playAnimation();
         animationView.addAnimatorListener(new AnimatorListenerAdapter() {
             @Override
@@ -187,13 +187,24 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 animationView.setImageAssetDelegate(null);
                 animationView.removeAllAnimatorListeners();
                 animationView.removeAllUpdateListeners();
-                displayDetailUi();
+                if(isGameResult()){
+                    //游戏答题结果 只展示金币UI
+                    if(getRootView() != null && getRootView().getParent() != null){
+                        ((ViewGroup)getRootView().getParent()).removeView(getRootView());
+                   }
+                   mStateListener.onCompeletShow();
+                }else{
+                    displayDetailUi();
+                }
             }
         });
 
     }
 
-
+    /**是否是新课件平台的 游戏答题结果*/
+    private boolean isGameResult() {
+        return mData!= null && mData.getType() == TYPE_GAME;
+    }
 
 
     /**

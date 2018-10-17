@@ -29,6 +29,16 @@ public class AnswerResultEntity {
     /**正确率*/
     private double rightRate;
     private long createTime;
+    /**答题结果对应的试题类型*/
+    private int type;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public List<String> getIdArray() {
         return idArray;
