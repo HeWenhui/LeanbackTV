@@ -737,24 +737,26 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 long nowContinuedMTime = 0L;
                 if (isPlay) {//处于播放状态
                     nowContinuedMTime = System.currentTimeMillis() - everyTime;
-                    if (continuedMTime + nowContinuedMTime >= mPlayDurTime) {//持续时间大于定义的发送间隔
+                    if (continuedMTime + nowContinuedMTime >= delaymTime) {//持续时间大于定义的发送间隔
                         sendVideoContinuedFlop();
                         continuedMTime = 0L;
                         delaymTime = mPlayDurTime;
                         everyTime = System.currentTimeMillis();
                     } else {
                         delaymTime = mPlayDurTime - continuedMTime - nowContinuedMTime;
+                        continuedMTime = 0L;
                     }
                 } else {
-                    if (continuedMTime >= mPlayDurTime) {//如果持续时间大于定义的发送间隔
+                    if (continuedMTime >= delaymTime) {//如果持续时间大于定义的发送间隔
                         sendVideoContinuedFlop();
                         delaymTime = mPlayDurTime;
+                        continuedMTime = 0L;
                     } else {//
                         delaymTime = mPlayDurTime - continuedMTime;
+                        continuedMTime = 0L;
                     }
-
                 }
-                continuedMTime = 0L;
+//                continuedMTime = 0L;
                 mHandler.postDelayed(this, delaymTime);
             }
         }
