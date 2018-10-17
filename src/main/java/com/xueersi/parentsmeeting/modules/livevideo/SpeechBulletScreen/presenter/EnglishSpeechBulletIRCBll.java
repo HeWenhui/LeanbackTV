@@ -66,13 +66,45 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
             }
         }
 
-        JSONObject data = null;
-        try {
-            data = new JSONObject("{\"from\":\"f\",\"open\":true,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        onNotice("", "", data, 260);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                JSONObject data = null;
+                try {
+                    data = new JSONObject("{\"from\":\"t\",\"open\":true,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                onNotice("", "", data, 260);
+            }
+        },1000);
+
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                JSONObject data = null;
+//                try {
+//                    data = new JSONObject("{\"from\":\"t\",\"open\":true,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                onNotice("", "", data, 260);
+//            }
+//        },10000);
+
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                JSONObject data = null;
+//                try {
+//                    data = new JSONObject("{\"from\":\"t\",\"open\":false,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                onNotice("", "", data, 260);
+//            }
+//        },5000);
+
     }
 
     @Override

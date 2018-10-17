@@ -4,12 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <master.flame.danmaku.danmaku.ui.widget.DanmakuView
-        android:id="@id/dv_livevideo_speechbul_danmaku"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="17dp" />
-
     <TextView
         android:id="@+id/tv_livevideo_speechbul_closetip"
         style="@style/text_font14_ffffff_style"
@@ -87,20 +81,20 @@
                 android:layout_toRightOf="@id/tv_livevideo_speechbul_repeat"
                 android:background="@drawable/shape_livevideo_english_speechbul_words_bg"
                 android:gravity="center_vertical"
-                android:hint="请输入文字"
-                android:imeOptions="flagNoFullscreen"
-                android:maxLength="40"
+                android:imeOptions="flagNoFullscreen|actionSend"
+                android:maxLength="60"
                 android:paddingLeft="20dp"
+                android:paddingRight="54dp"
                 android:singleLine="true" />
 
             <TextView
                 android:id="@id/tv_livevideo_speechbul_count"
-                android:layout_width="31dp"
-                android:layout_height="13dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="12dp"
+                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/tv_livevideo_speechbul_send"
-                android:gravity="center"
+                android:gravity="right|center_vertical"
                 android:textColor="#66FFFFFF"
                 android:textSize="13sp" />
 
@@ -114,6 +108,27 @@
                 android:src="@drawable/selector_livevideo_small_english_chat_send" />
         </RelativeLayout>
 
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/tv_livevideo_speechbul_tips"
+        android:layout_above="@id/rl_livevideo_speechbul_bottom_content"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/voiceinput_tips_english_bg"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawableStart="@drawable/voiceinput_tips_english_icon"
+            android:drawableLeft="@drawable/voiceinput_tips_english_icon"
+            android:gravity="center"
+            android:textColor="#F67B14"
+            android:textSize="18sp"
+            android:text="请用英文回答问题哦"/>
     </RelativeLayout>
 
 </RelativeLayout>
