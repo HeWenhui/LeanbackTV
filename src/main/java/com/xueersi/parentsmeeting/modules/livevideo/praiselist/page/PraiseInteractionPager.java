@@ -37,10 +37,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalBarrageView;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import okhttp3.Call;
 
 /**
  * 初高中点赞互动
@@ -352,6 +355,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
      * 送出礼物
      */
     private void sendGift() {
+        specialGiftView.setVisibility(View.GONE);
         if (goldCount - 5 > 0) {
             HttpCallBack httpCallBack = new HttpCallBack() {
                 @Override
@@ -377,16 +381,23 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                     goldCount = goldCount - gold;
                     giftSendCoin.setText(String.valueOf(goldCount));
                     giftSendView.setVisibility(View.VISIBLE);
-                    specialGiftView.setVisibility(View.GONE);
 
                     timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_SEND_DISMISS, 2000);
+                }
+
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    super.onFailure(call, e);
+                    giftSendText.setText("发送失败");
+                    giftSendView.setVisibility(View.VISIBLE);
+                    timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_SEND_DISMISS, 2000);
+
                 }
             };
             mPraiseInteractionBll.sendGiftDeductGold(currentGiftType, httpCallBack);
         } else {
             giftSendText.setText("金币不足");
             giftSendView.setVisibility(View.VISIBLE);
-            specialGiftView.setVisibility(View.GONE);
             timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_SEND_DISMISS, 2000);
         }
 

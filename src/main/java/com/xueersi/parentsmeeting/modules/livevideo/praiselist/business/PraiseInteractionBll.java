@@ -53,7 +53,6 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     private RelativeLayout rlPraiseContentView;
     private PraiseInteractionPager praiseInteractionPager;
     private LiveHttpManager mHttpManager;
-    private LiveGetInfo mRoomInitData;
     private ArtsPraiseHttpResponseParser mParser;
 
     //同班同学特效礼物
@@ -69,7 +68,6 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     private Timer timer;
     private int goldNum;
-    private String mode = LiveTopic.MODE_TRANING;
 
 
     public PraiseInteractionBll(Context context, LiveBll2 liveBll) {
@@ -90,7 +88,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         rlPraiseContentView = new RelativeLayout(mContext);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        params.leftMargin=LiveVideoPoint.getInstance().x2;
+        params.leftMargin = LiveVideoPoint.getInstance().x2;
         mRootView.addView(rlPraiseContentView, params);
     }
 
@@ -125,15 +123,6 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
      */
     private void openPraise() {
         if (!isOpen) {
-            LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
-            if (liveMessageBll != null) {
-                String type = "主讲";
-                if (LiveTopic.MODE_TRANING.equals(mode)) {
-                    type = "辅导";
-                }
-                liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
-                        type + "老师开启了点赞功能!");
-            }
             isOpen = true;
             praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll);
             rlPraiseContentView.removeAllViews();
@@ -152,14 +141,14 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     public void sendGiftDeductGold(int type, HttpCallBack httpCallBack) {
         logger.d("type=" + type);
-        String liveId = mRoomInitData.getId();
-        String courseId = mRoomInitData.getStudentLiveInfo().getCourseId();
-        String teacherId = mRoomInitData.getMainTeacherId();
-        if (LiveTopic.MODE_TRANING.equals(mode)) {
-            teacherId = mRoomInitData.getTeacherId();
+        String liveId = mGetInfo.getId();
+        String courseId = mGetInfo.getStudentLiveInfo().getCourseId();
+        String teacherId = mGetInfo.getMainTeacherId();
+        if (LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())) {
+            teacherId = mGetInfo.getTeacherId();
         }
-        mLiveBll.getHttpManager().praiseSendGift(liveId, mRoomInitData.getStuId(),
-                mRoomInitData.getStuCouId(), type, teacherId, httpCallBack);
+        mLiveBll.getHttpManager().praiseSendGift(liveId, mGetInfo.getStuId(),
+                mGetInfo.getStuCouId(), type, teacherId, httpCallBack);
     }
 
     /**
@@ -170,16 +159,16 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             logger.d("messageType=" + messageType + ",value=" + value);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("ltype", messageType);
-            jsonObject.put("name", mRoomInitData.getStuName());
-            jsonObject.put("id", mRoomInitData.getStuId());
+            jsonObject.put("name", mGetInfo.getStuName());
+            jsonObject.put("id", mGetInfo.getStuId());
             jsonObject.put("value", value);
             jsonObject.put("type", String.valueOf(XESCODE.PRAISE_MESSAGE));
-            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mRoomInitData.getStudentLiveInfo();
+            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
             if (studentLiveInfo != null) {
                 jsonObject.put("classid", studentLiveInfo.getClassId());
             }
             String to = "t";
-            if (LiveTopic.MODE_TRANING.equals(mode)) {
+            if (LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())) {
                 to = "f";
             }
             jsonObject.put("to", to);
@@ -202,12 +191,12 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         praiseMessageEntity.setSortKey(PraiseMessageEntity.SORT_KEY_MY_GIFT);
         String messageContent = "";
         if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_PHYSICAL) {
-            messageContent = mRoomInitData.getStuName() + "同学给老师点亮了星空!";
+            messageContent = mGetInfo.getStuName() + "同学给老师点亮了星空!";
         } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_CHEMISTRY) {
-            messageContent = mRoomInitData.getStuName() + "同学送老师一瓶魔法水!";
+            messageContent = mGetInfo.getStuName() + "同学送老师一瓶魔法水!";
 
         } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_MATH) {
-            messageContent = mRoomInitData.getStuName() + "同学为老师放飞了气球!";
+            messageContent = mGetInfo.getStuName() + "同学为老师放飞了气球!";
         }
         praiseMessageEntity.setMessageContent(messageContent);
         mySpecialGiftStack.push(praiseMessageEntity);
@@ -220,7 +209,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         PraiseMessageEntity praiseMessageEntity = new PraiseMessageEntity();
         praiseMessageEntity.setMessageType(PraiseMessageEntity.TYPE_PRAISE);
         praiseMessageEntity.setSortKey(PraiseMessageEntity.SORT_KEY_MY_PRAISE);
-        praiseMessageEntity.setMessageContent(mRoomInitData.getStuName() + ":点了" + praiseNumAmount + "个赞!");
+        praiseMessageEntity.setMessageContent(mGetInfo.getStuName() + ":点了" + praiseNumAmount + "个赞!");
         praiseInteractionPager.appendBarraige(praiseMessageEntity);
         sendPrivateMessage(PraiseMessageEntity.TYPE_PRAISE, praiseNumAmount);
 
@@ -264,15 +253,6 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     private void closePraise() {
         if (isOpen == true) {
-            LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
-            if (liveMessageBll != null) {
-                String type = "主讲";
-                if (LiveTopic.MODE_TRANING.equals(mRoomInitData.getMode())) {
-                    type = "辅导";
-                }
-                liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
-                        type + "老师关闭了点赞功能!");
-            }
             isOpen = false;
             if (timer != null) {
                 timer.cancel();
@@ -334,12 +314,8 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         logger.d("onLiveInited");
-        if (getInfo != null) {
-            mHttpManager = getHttpManager();
-            mRoomInitData = getInfo;
-            mode = mRoomInitData.getMode();
-            attachToRootView();
-        }
+        mHttpManager = getHttpManager();
+        attachToRootView();
     }
 
     @Override
@@ -348,23 +324,12 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     }
 
     @Override
-    public void onModeChange(String oldMode, String mode, boolean isPresent) {
-        logger.d("oldMode=" + oldMode + ",mode=" + mode);
-        if (!TextUtils.isEmpty(mode) && !mode.equals(oldMode)) {
-            this.mode = mode;
-            closePraise();
-        }
-    }
-
-    @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
+        logger.d("onNotice data=" + data);
+
         switch (type) {
             case XESCODE.PRAISE_SWITCH:
-                logger.d("data=" + data);
                 String from = data.optString("from");
-                if (isFilterMessage(from)) {
-                    return;
-                }
                 final boolean open = data.optBoolean("open");
                 rlPraiseContentView.post(new Runnable() {
                     @Override
@@ -376,6 +341,22 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                         }
                     }
                 });
+
+                LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
+                if (liveMessageBll != null) {
+                    String teacherType = "主讲";
+                    if ("f".equals(from)) {
+                        teacherType = "辅导";
+                    }
+                    String status = "关闭";
+                    if (open) {
+                        status = "开启";
+                    }
+                    String message = teacherType + "老师" + status + "了点赞功能!";
+                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                            message);
+
+                }
                 break;
             default:
                 break;
@@ -385,6 +366,12 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         logger.d("onTopic message=" + jsonObject);
+        //如果是切流，原来模式是主讲，需要主动关闭点赞功能
+        if (modeChange) {
+            if (LiveTopic.MODE_TRANING.equals(liveTopic.getMode())) {
+                closePraise();
+            }
+        }
         LiveTopic.RoomStatusEntity mainRoomstatus = null;
         if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
             mainRoomstatus = liveTopic.getMainRoomstatus();
@@ -409,10 +396,10 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     }
 
     private boolean isFilterMessage(String from) {
-        if (LiveTopic.MODE_TRANING.equals(mode) && "t".equals(from)) {
+        if (LiveTopic.MODE_TRANING.equals(mGetInfo.getMode()) && "t".equals(from)) {
             return true;
         }
-        if (LiveTopic.MODE_CLASS.equals(mode) && "f".equals(from)) {
+        if (LiveTopic.MODE_CLASS.equals(mGetInfo.getMode()) && "f".equals(from)) {
             return true;
         }
         return false;
