@@ -193,6 +193,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = coursewareH5
                                 .optString("questiontype");
                         videoQuestionLiveEntity.assess_ref = coursewareH5.optString("assess_ref");
+                        videoQuestionLiveEntity.voiceType = coursewareH5.optString("ptype");
                     }
                 }
                 if (jsonObject.has("coursewareOnlineTech")) {
@@ -224,6 +225,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                             videoQuestionLiveEntity.type = onlineTechObj
                                     .optString("questiontype");
                             videoQuestionLiveEntity.assess_ref = onlineTechObj.optString("assess_ref");
+                            videoQuestionLiveEntity.voiceType = onlineTechObj.optString("ptype");
                         }
                     }
                 }
@@ -624,14 +626,14 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
             }
             if (LiveVideoConfig.isNewArts) {
-                Loger.d("Duncan", "onPutQuestionResultNewArts3");
+                Log.d("Duncan", "onPutQuestionResultNewArts3");
                 if("15".equals(videoQuestionLiveEntity.voiceType) || "16".equals(videoQuestionLiveEntity.voiceType)){
                     getHttpManager().liveSubmitNewArtsRealH5Answer(videoQuestionLiveEntity.type,
                             videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
                             isRight, new HttpCallBack() {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) {
-                                    Loger.d("Duncan", "onPutQuestionResultNewArts4");
+                                    Log.d("Duncan", "onPutQuestionResultNewArts4");
                                     mLogtf.d("liveSubmitTestH5Answer:onPmSuccess=" + responseEntity.getJsonObject()
                                             .toString() +
                                             "," + videoQuestionLiveEntity);
@@ -654,6 +656,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
                                 @Override
                                 public void onPmFailure(Throwable error, String msg) {
+                                    Log.d("Duncan", "onPmFailure4:" + msg);
                                     mLogtf.d("liveSubmitTestH5Answer:onPmFailure=" + msg + ",testId=" +
                                             videoQuestionLiveEntity.id);
                                     if (onAnswerReslut != null) {
@@ -663,6 +666,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
                                 @Override
                                 public void onPmError(ResponseEntity responseEntity) {
+                                    Log.d("Duncan", "onPmError4" + responseEntity.getErrorMsg());
                                     mLogtf.d("liveSubmitTestH5Answer:onPmError=" + responseEntity.getErrorMsg() + "," +
                                             "testId=" +
                                             videoQuestionLiveEntity.id);
