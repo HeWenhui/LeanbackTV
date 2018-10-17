@@ -60,4 +60,6 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.arouterapi
     //
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
+
+    implementation rootProject.ext.thirdlibraries.ticker
 }
