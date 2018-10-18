@@ -18,8 +18,8 @@ import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
@@ -30,7 +30,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
@@ -153,7 +152,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         examUrl += "&isTowall=" + isShowRankList;
         examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
         examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
-        Loger.e("ExamQuestionPager", "======> loadUrl:" + examUrl);
+        logger.e( "======> loadUrl:" + examUrl);
         wvSubjectWeb.loadUrl(examUrl);
         mLogtf.d("initData:examUrl=" + examUrl);
         mGoldNum = -1;
@@ -316,8 +315,8 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             this.failingUrl = failingUrl;
-            Loger.d(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
-                    "&&," + description, true);
+            UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
+                    "&&," + description);
             mLogtf.i("onReceivedError:failingUrl=" + failingUrl + ",errorCode=" + errorCode);
 //            super.onReceivedError(view, errorCode, description, failingUrl);
             wvSubjectWeb.setVisibility(View.INVISIBLE);
@@ -333,7 +332,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Loger.e("ExamQuestionPager", "======> shouldOverrideUrlLoading:" + url);
+            logger.e( "======> shouldOverrideUrlLoading:" + url);
 
             if (url.contains("/LiveExam/examResult")) {
                 if (questionBll instanceof QuestionBll) {

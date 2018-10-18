@@ -42,7 +42,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.StartProgress;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -331,7 +330,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         public void onAnimationStart(Animation animation) {
 //            textView.setX(0.8f);
 //            textView.setY(0.8f);
-            Loger.d(TAG, "onAnimationStart:" + textView.getText());
+            logger.d( "onAnimationStart:" + textView.getText());
             textView.setVisibility(View.VISIBLE);
         }
 
@@ -351,7 +350,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 rl_livevideo_speecteval_countdown.removeAllViews();
                 ViewGroup group = (ViewGroup) rl_livevideo_speecteval_countdown.getParent();
                 group.removeView(rl_livevideo_speecteval_countdown);
-                Loger.d(TAG, "onAnimationEnd:isEnd=" + isEnd);
+                logger.d( "onAnimationEnd:isEnd=" + isEnd);
                 if (!isEnd) {
                     isSpeechStart = true;
                     setAudioRequest();
@@ -367,7 +366,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     public void setAudioRequest() {
-        Loger.d(TAG, "setAudioRequest:userBack=" + userBack + ",isEnd=" + isEnd);
+        logger.d( "setAudioRequest:userBack=" + userBack + ",isEnd=" + isEnd);
         if (userBack) {
             return;
         }
@@ -385,7 +384,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
             @Override
             public void onBeginOfSpeech() {
-                Loger.d(TAG, "onBeginOfSpeech");
+                logger.d( "onBeginOfSpeech");
                 isSpeechError = false;
             }
 
@@ -417,7 +416,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
             @Override
             public void onVolumeUpdate(final int volume) {
-//                Loger.d(TAG, "onVolumeUpdate:volume=" + volume);
+//                logger.d( "onVolumeUpdate:volume=" + volume);
                 vwvSpeectevalWave.setVolume(volume * 3);
                 lastVolume = volume;
             }
@@ -865,7 +864,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 } else {
                     if (point90_6 != null) {
-                        Loger.d(TAG, "onEvaluatorIng:point90_61=" + point90_6);
+                        logger.d( "onEvaluatorIng:point90_61=" + point90_6);
                         if (point90_6.right - point90_6.left >= 5) {
                             arrayList90_6.add(point90_6);
                         }
@@ -874,7 +873,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
                 if (i == lstPhonemeScore.size() - 1) {
                     if (point90_6 != null) {
-                        Loger.d(TAG, "onEvaluatorIng:point90_62=" + point90_6);
+                        logger.d( "onEvaluatorIng:point90_62=" + point90_6);
                         if (point90_6.right - point90_6.left >= 5) {
                             arrayList90_6.add(point90_6);
                         }
@@ -891,7 +890,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 } else {
                     if (point90_3 != null) {
-                        Loger.d(TAG, "onEvaluatorIng:point90_31=" + point90_3);
+                        logger.d( "onEvaluatorIng:point90_31=" + point90_3);
                         if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
                             arrayList90_3.add(point90_3);
                         }
@@ -900,14 +899,14 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
                 if (i == lstPhonemeScore.size() - 1) {
                     if (point90_3 != null) {
-                        Loger.d(TAG, "onEvaluatorIng:point90_32=" + point90_3);
+                        logger.d( "onEvaluatorIng:point90_32=" + point90_3);
                         if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
                             arrayList90_3.add(point90_3);
                         }
                     }
                 }
             }
-            Loger.d(TAG, "onResult:onEvaluatorIng:arrayList90_6=" + arrayList90_6.size() + ",arrayList90_3=" + arrayList90_3.size());
+            logger.d( "onResult:onEvaluatorIng:arrayList90_6=" + arrayList90_6.size() + ",arrayList90_3=" + arrayList90_3.size());
 //            ArrayList<Point90> point90_6s = new ArrayList<Point90>();
 //            ArrayList<Point90> point90_3s = new ArrayList<Point90>();
             ArrayList<Point90> point90_6s = arrayList90_6;
@@ -960,7 +959,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
                 mLogtf.d("onEvaluatorIng(great):nbest=" + nbest);
             }
-            Loger.d(TAG, "onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
+            logger.d( "onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
         }
     }
 

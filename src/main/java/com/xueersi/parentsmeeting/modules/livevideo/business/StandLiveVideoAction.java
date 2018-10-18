@@ -17,7 +17,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 /**
  * Created by linyuqiang on 2018/7/18.
@@ -62,7 +61,7 @@ public class StandLiveVideoAction extends LiveVideoAction {
         Rect r = new Rect();
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
-        Loger.d(TAG, "setFirstParam:mode=" + mode);
+        logger.d( "setFirstParam:mode=" + mode);
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             if (first) {
                 //主讲模式去掉外层的RelativeLayout换回FrameLayout
@@ -121,7 +120,7 @@ public class StandLiveVideoAction extends LiveVideoAction {
                 params.height = ScreenUtils.getScreenHeight();
                 LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
                 LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
-                Loger.d(TAG, "setFirstParam:width=" + params.width);
+                logger.d( "setFirstParam:width=" + params.width);
             }
 
             int rightMargin = liveVideoPoint.getRightMargin();
@@ -131,13 +130,13 @@ public class StandLiveVideoAction extends LiveVideoAction {
                 params.bottomMargin = params.topMargin = topMargin;
                 LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
                 LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
-                Loger.d(TAG, "setFirstParam:rightMargin=" + rightMargin);
+                logger.d( "setFirstParam:rightMargin=" + rightMargin);
             }
             ll_course_video_loading.setVisibility(View.VISIBLE);
             iv_course_video_loading_bg.setVisibility(View.VISIBLE);
             rlFirstBackgroundView.setBackgroundColor(0xff000000);
         }
-        //Loger.e(TAG, "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
+        //logger.e( "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
     }
 
     @Override
@@ -237,23 +236,23 @@ public class StandLiveVideoAction extends LiveVideoAction {
                         dwTeacherNotpresenBefore = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_before);
                     }
                     view.setBackgroundDrawable(dwTeacherNotpresenBefore);
-                    Loger.d(TAG, "setTeacherNotpresent:before");
+                    logger.d( "setTeacherNotpresent:before");
                 } else if (now > mGetInfo.geteTime()) {
                     if (dwTeacherNotpresenAfter == null) {
                         dwTeacherNotpresenAfter = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_after);
                     }
                     view.setBackgroundDrawable(dwTeacherNotpresenAfter);
-                    Loger.d(TAG, "setTeacherNotpresent:after");
+                    logger.d( "setTeacherNotpresent:after");
                 } else {
                     if (dwTeacherNotpresenDoing == null) {
                         dwTeacherNotpresenDoing = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_before_doing);
                     }
                     view.setBackgroundDrawable(dwTeacherNotpresenDoing);
-                    Loger.d(TAG, "setTeacherNotpresent:doing");
+                    logger.d( "setTeacherNotpresent:doing");
                 }
             }
         } else {
-            Loger.d(TAG, "setTeacherNotpresent:mode=training");
+            logger.d( "setTeacherNotpresent:mode=training");
             if (view == rlFirstBackgroundView) {
                 rlFirstBackgroundView.setBackgroundColor(0xff000000);
                 return;

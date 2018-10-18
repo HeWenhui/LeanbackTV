@@ -498,4 +498,67 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_GET_VOICE_BARRAGE_MSG, params, requestCallBack);
     }
 
+    /**
+     * 发送课中体验课懂了吗
+     *
+     * @param url
+     * @param userId       学生id
+     * @param gradeId      年级id
+     * @param planId       场次id
+     * @param subjectId    学科id
+     * @param orderId      订单id
+     * @param optionTpye   选项：1听懂了，很简单,2似懂非懂,3没听懂，太难了
+     * @param httpCallBack
+     */
+    public void sendStandExperienceUnderStand(
+            String url,
+            String userId,
+            String gradeId,
+            String planId,
+            String subjectId,
+            String orderId,
+            String optionTpye,
+            HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("userId", userId);
+        params.addBodyParam("orderId", orderId);
+        params.addBodyParam("gradeId", gradeId);
+        params.addBodyParam("planId", planId);
+        params.addBodyParam("subjectId", subjectId);
+        params.addBodyParam("optionType", optionTpye);
+        sendPost(url, params, httpCallBack);
+    }
+
+    /**
+     * 获取课中推荐课程信息
+     *
+     * @param url
+     * @param teacherId    主讲老师id
+     * @param gradeId      年级id
+     * @param subjectId    学科id
+     * @param orderId      订单id
+     * @param httpCallBack
+     */
+    public void getRecommondCourseInfo(String url, String teacherId, String gradeId, String subjectId, String
+            orderId, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("teacherId", teacherId);
+        params.addBodyParam("gradeId", gradeId);
+        params.addBodyParam("subjectId", subjectId);
+        params.addBodyParam("orderId", orderId);
+        sendPost(url, params, httpCallBack);
+    }
+
+    /**
+     * @param url
+     * @param liveId       场次id
+     * @param orderId      订单id
+     * @param httpCallBack
+     */
+    public void getBuyCourseBannerInfo(String url, String liveId, String orderId, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("orderId", orderId);
+        sendPost(url, params, httpCallBack);
+    }
 }

@@ -85,7 +85,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  */
 public class LiveBackVideoFragmentBase extends Fragment {
     private String TAG = "LiveBackVideoFragmentBase";
-    Logger logger = LoggerFactory.getLogger(TAG);
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected BaseActivity activity;
     /** 布局默认资源 */
     protected int mLayoutVideo = R.layout.liveback_video_fragment;
@@ -424,6 +424,9 @@ public class LiveBackVideoFragmentBase extends Fragment {
         return mContentView;
     }
 
+    public RelativeLayout getContentView() {
+        return mContentView;
+    }
 
     /** 加载界面 */
     protected void loadView(int id) {
@@ -978,7 +981,14 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
     }
 
-//    PopupWindow mWindow;
+    public VideoView getVideoView() {
+        return videoView;
+    }
+
+    public void setVideoView(VideoView videoView) {
+        this.videoView = videoView;
+    }
+    //    PopupWindow mWindow;
 //    PopupWindow mFeedbackWindow;
 //    String mDifficulty = "-1";
 //    String mSatisficing = "-1";

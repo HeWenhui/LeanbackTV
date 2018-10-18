@@ -90,11 +90,11 @@
             android:theme="@style/style_permission_compat" />
 
         <activity
-            android:name=".activity.PraiseTestActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:launchMode="singleTask"
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.RolePlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:process=":livevideo"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+            android:theme="@style/style_permission_compat" />
 
         <service
             android:name="com.xueersi.parentsmeeting.modules.livevideo.service.LiveService"

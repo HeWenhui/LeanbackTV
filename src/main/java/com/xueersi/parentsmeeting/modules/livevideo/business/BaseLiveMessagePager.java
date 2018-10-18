@@ -42,7 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.parentsmeeting.widget.expressionView.ExpressionView;
 import com.xueersi.parentsmeeting.widget.expressionView.adapter.ExpressionListAdapter;
@@ -322,12 +322,12 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         dvMessageDanmaku.setOnDanmakuClickListener(new IDanmakuView.OnDanmakuClickListener() {
             @Override
             public void onDanmakuClick(BaseDanmaku latest) {
-                Loger.i("DFM", "onDanmakuClick text:" + latest.text);
+                logger.i( "onDanmakuClick text:" + latest.text);
             }
 
             @Override
             public void onDanmakuClick(IDanmakus danmakus) {
-                Loger.i("DFM", "onDanmakuClick danmakus size:" + danmakus.size());
+                logger.i( "onDanmakuClick danmakus size:" + danmakus.size());
             }
         });
         dvMessageDanmaku.prepare(mParser, mDanmakuContext);
@@ -407,7 +407,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
                         if (danmaku.text instanceof TypeSpannableStringBuilder) {
                             TypeSpannableStringBuilder spannableStringBuilder = (TypeSpannableStringBuilder) danmaku
                                     .text;
-//                            Loger.i(TAG, "prepareDrawing:ftype=" + spannableStringBuilder.ftype);
+//                            logger.i( "prepareDrawing:ftype=" + spannableStringBuilder.ftype);
                             switch (spannableStringBuilder.ftype) {
                                 case FLOWERS_SMALL:
                                 case FLOWERS_MIDDLE:
@@ -546,7 +546,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
 
 
     protected SpannableStringBuilder createSpannable(int ftype, String name, Drawable drawable) {
-//        Loger.i(TAG, "createSpannable:name=" + name + ",ftype=" + ftype);
+//        logger.i( "createSpannable:name=" + name + ",ftype=" + ftype);
         String tip = "";
         switch (ftype) {
             case FLOWERS_SMALL:
@@ -708,7 +708,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
             if (index != -1) {
                 kc = kc.substring(0, index);
             }
-            Loger.i(TAG, "startCourseDetail:kc=" + kc);
+            logger.i( "startCourseDetail:kc=" + kc);
             String courseId = "";
             String groupId = "";
             String[] courseIds = kc.split("-");
@@ -726,7 +726,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
             OtherModulesEnter.intentTo((Activity) mContext, courseId, groupId, "", url);
             return true;
         } catch (Exception e) {
-            Loger.e(TAG, "startCourseDetail", e);
+            logger.e( "startCourseDetail", e);
             return false;
         }
     }

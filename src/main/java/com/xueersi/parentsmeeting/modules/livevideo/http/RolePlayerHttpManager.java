@@ -20,6 +20,22 @@ public class RolePlayerHttpManager extends BaseHttpBusiness {
 
 
     /**
+     * 请求分组
+     *
+     * @param liveId
+     * @param stuCouId
+     * @param testId
+     */
+    public void requestRolePlayGroupInfos(String liveId, String stuCouId, String testId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("testId", testId);
+        sendPost(LiveVideoConfig.URL_ROLEPLAY_TESTINFOS, params, requestCallBack);
+    }
+
+
+    /**
      * 请求试题
      *
      * @param liveId

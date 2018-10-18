@@ -22,7 +22,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
@@ -193,7 +192,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
-                        Loger.d(TAG, "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity
+                        logger.d( "saveQuestionResult:onPmSuccess:responseEntity=" + responseEntity
                                 .getJsonObject());
                         VideoResultEntity entity = getCourseHttpResponseParser().parseQuestionAnswer
                                 (responseEntity,

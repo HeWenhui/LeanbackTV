@@ -12,7 +12,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONObject;
 
@@ -86,7 +85,7 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
         getHttpManager().getAdOnLL(lecAdvertEntity.course_id, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Loger.d(TAG, "getAdOnLL:onPmSuccess=" + responseEntity.getJsonObject());
+                logger.d( "getAdOnLL:onPmSuccess=" + responseEntity.getJsonObject());
                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                 int isLearn = jsonObject.optInt("isLearn", 0);
                 lecAdvertEntity.isLearn = isLearn;
@@ -103,7 +102,7 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.d(TAG, "getAdOnLL:onPmError=" + responseEntity.getErrorMsg());
+                logger.d( "getAdOnLL:onPmError=" + responseEntity.getErrorMsg());
 //                if(AppConfig.DEBUG){
 //                    callBack.onDataSucess();
 //                }
@@ -114,7 +113,7 @@ public class LecAdvertIRCBll extends LiveBaseBll implements NoticeAction, LecAdv
             @Override
             public void onFailure(Call call, IOException e) {
                 super.onFailure(call, e);
-                Loger.d(TAG, "getAdOnLL:onFailure", e);
+                logger.d( "getAdOnLL:onFailure", e);
 //                if(AppConfig.DEBUG){
 //                    callBack.onDataSucess();
 //                }

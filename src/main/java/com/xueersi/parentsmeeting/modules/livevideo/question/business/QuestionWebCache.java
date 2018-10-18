@@ -1,17 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 
-import com.tencent.smtt.export.external.interfaces.WebResourceError;
-import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
-import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import ren.yale.android.cachewebviewlib.CacheWebView;
 
@@ -21,6 +16,7 @@ import ren.yale.android.cachewebviewlib.CacheWebView;
  */
 public class QuestionWebCache {
     private String TAG = "QuestionWebCache";
+    Logger logger = LoggerFactory.getLogger(TAG);
     private Context context;
 
     public QuestionWebCache(Context context) {
@@ -31,9 +27,10 @@ public class QuestionWebCache {
         CacheWebView webView = new CacheWebView(context);
         webView.setWebViewClient(new MyWebViewClient());
         webView.loadUrl("https://live.xueersi.com/science/Live/getMultiTestPaper?liveId=119740&testId=365160-1&stuId=-111&stuName=test@talwx.com&stuCouId=12345654&isArts=0&nonce=45645dasf&isTowall=0");
+        webView.getWebViewCache().setNeedHttpDns(true);
     }
 
-    public class MyWebViewClient extends ErrorWebViewClient {
+    private class MyWebViewClient extends ErrorWebViewClient {
 
         public MyWebViewClient() {
             super(TAG);
@@ -41,6 +38,7 @@ public class QuestionWebCache {
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            logger.d("shouldInterceptRequest:url=" + url);
             return super.shouldInterceptRequest(view, url);
         }
 
@@ -48,7 +46,7 @@ public class QuestionWebCache {
         public void onPageFinished(WebView webView, String s) {
             super.onPageFinished(webView, s);
             webView.destroy();
-            Loger.d(TAG, "onPageFinished:s=" + s);
+            logger.d("onPageFinished:s=" + s);
         }
     }
 }

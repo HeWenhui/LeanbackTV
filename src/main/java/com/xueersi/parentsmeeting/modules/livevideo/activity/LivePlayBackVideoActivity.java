@@ -57,7 +57,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LecAdvertPager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -184,9 +183,9 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
     /** 初始化互动题和竖屏时下方的列表布局 */
     @Override
     public void attachMediaController() {
-        Loger.d(TAG, "attachMediaController:beforeAttach=" + beforeAttach);
+        logger.d( "attachMediaController:beforeAttach=" + beforeAttach);
         if (resultFailed) {
-            Loger.d(TAG, "attachMediaController:resultFailed");
+            logger.d( "attachMediaController:resultFailed");
             return;
         }
         if (mMediaController != null) {
@@ -240,7 +239,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         setFileName(); // 设置视频显示名称
         if (liveBackBll.isShowQuestion()) {
             mMediaController.release();
-            Loger.d(TAG, "attachMediaController:release:mIsShowQuestion=" + mIsShowQuestion + "," + mIsShowRedpacket
+            logger.d( "attachMediaController:release:mIsShowQuestion=" + mIsShowQuestion + "," + mIsShowRedpacket
                     + "," + mIsShowDialog);
         } else {
             showLongMediaController();
@@ -327,12 +326,12 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
 //        rlQuestionContent.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
 //            @Override
 //            public void onChildViewAdded(View parent, View child) {
-//                Loger.d(TAG, "onChildViewAdded");
+//                logger.d( "onChildViewAdded");
 //            }
 //
 //            @Override
 //            public void onChildViewRemoved(View parent, View child) {
-//                Loger.d(TAG, "onChildViewRemoved");
+//                logger.d( "onChildViewRemoved");
 //            }
 //        });
     }
@@ -521,7 +520,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
             rlFirstBackgroundView.setVisibility(View.GONE);
         }
         if (mQuestionEntity != null) {
-            Loger.d(TAG, "onPlayOpenSuccess:showQuestion:isAnswered=" + mQuestionEntity.isAnswered() + "," +
+            logger.d( "onPlayOpenSuccess:showQuestion:isAnswered=" + mQuestionEntity.isAnswered() + "," +
                     "mIsShowQuestion=" + mIsShowQuestion);
 //            showQuestion(mQuestionEntity);
         }
@@ -560,7 +559,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         super.resultFailed(arg1, arg2);
         resultFailed = true;
         mIsShowQuestion = mIsShowRedpacket = false;
-        Loger.d(TAG, "resultFailed:arg2=" + arg2);
+        logger.d( "resultFailed:arg2=" + arg2);
         if (arg2 != 0 && mVideoEntity != null) {
             if ("LivePlayBackActivity".equals(where)) {//直播辅导
                 XesMobAgent.onOpenFail(where + ":playback2", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
@@ -690,7 +689,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
                 }
             }
             final boolean finalPause = pause;
-            Loger.i(TAG, "onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
+            logger.i( "onNowMobileEvent:initialized=" + initialized + ",pause=" + pause);
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
@@ -707,7 +706,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
                     cancelDialog.setVerifyBtnListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Loger.i(TAG, "onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
+                            logger.i( "onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
                                     finalPause);
                             if (initialized) {
                                 if (finalPause) {
@@ -762,7 +761,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
         resultFailed = false;
         if (AppBll.getInstance(this).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
-            Loger.d(TAG, "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+            logger.d( "onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
             if (rlQuestionContent.getChildCount() > 0) {
                 rlQuestionContent.setVisibility(View.VISIBLE);
             }
@@ -836,7 +835,7 @@ public class LivePlayBackVideoActivity extends VideoViewActivity implements Live
 
     @Override
     public void setRequestedOrientation(int requestedOrientation) {
-        Loger.d(TAG, "setRequestedOrientation:requestedOrientation=" + requestedOrientation);
+        logger.d( "setRequestedOrientation:requestedOrientation=" + requestedOrientation);
         super.setRequestedOrientation(requestedOrientation);
     }
 

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.Constants;
@@ -16,6 +17,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateA
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -32,7 +35,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONObject;
 
@@ -53,6 +55,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private SpeechEvaluatorUtils mIse;
     /** RolePlayer功能接口 */
     private RolePlayAction rolePlayAction;
+
+    /** RolePlayer 人机功能接口 */
+    private RolePlayMachineAction rolePlayMachineAction;
 
     public QuestionIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -158,6 +163,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             });
         }
+        QuestionWebCache webCache = new QuestionWebCache(activity);
+        webCache.startCache();
     }
 
     @Override
@@ -215,6 +222,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                        if (BuildConfig.DEBUG) {onget
 //                            videoQuestionLiveEntity.isTestUseH5 = true;
 //                        }
+
+//
+//                Loger.e("yzl_roleplay","走人机 end");
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);
                 if ("1".equals(isVoice)) {
@@ -235,10 +245,19 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
-                        Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: " +
+                        logger.e("======>LiveBll setWebViewCloseByTeacher: " +
                                 "SENDQUESTION");
                     }
                 }
+                if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay .equals( "1")){
+                    logger.i("走人机start,拉取试题");
+                    if (rolePlayMachineAction == null) {
+                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                    }
+
+                }
+
             }
             break;
             case XESCODE.STOPQUESTION:
@@ -248,7 +267,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
                         if (mQuestionAction instanceof QuestionBll) {
                             ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
-                            Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: " +
+                            logger.e("======>LiveBll setWebViewCloseByTeacher: " +
                                     "STOPQUESTION");
                         }
                     } catch (Exception e) {
@@ -266,7 +285,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
-                        Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: EXAM_START");
+                        logger.e("======>LiveBll setWebViewCloseByTeacher: EXAM_START");
                     }
                 }
                 break;
@@ -276,7 +295,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mQuestionAction.onExamStop(num);
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
-                        Loger.e("webViewCloseByTeacher", "======>LiveBll setWebViewCloseByTeacher: EXAM_STOP");
+                        logger.e("======>LiveBll setWebViewCloseByTeacher: EXAM_STOP");
                     }
                 }
                 break;
@@ -287,6 +306,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mQuestionAction.setRolePlayAction(rolePlayerBll);
                     rolePlayAction = rolePlayerBll;
                 }
+
+                //在多人的时候，同时设置人机的roleplayaction
+                if (rolePlayMachineAction == null) {
+                    RolePlayMachineBll rolePlayerMachineBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                    mQuestionAction.setRolePlayMachineAction(rolePlayerMachineBll);
+
+                }
+
                 String nonce = object.optString("nonce");
                 rolePlayAction.teacherRead(mLiveId, mLiveBll.getStuCouId(), nonce);
                 break;
@@ -339,20 +366,20 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        Loger.d(TAG, "getQuestion:onPmSuccess" + responseEntity.getJsonObject());
+                        logger.d("getQuestion:onPmSuccess" + responseEntity.getJsonObject());
                         callBack.onDataSucess();
                     }
 
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        Loger.e(TAG, "getQuestion:onFailure", e);
+                        logger.e("getQuestion:onFailure", e);
                         super.onFailure(call, e);
                         callBack.onDataSucess();
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        Loger.d(TAG, "getQuestion:onPmError" + responseEntity.getErrorMsg());
+                        logger.d("getQuestion:onPmError" + responseEntity.getErrorMsg());
                         super.onPmError(responseEntity);
                         callBack.onDataSucess();
                     }
@@ -644,14 +671,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                Loger.d(TAG, "getRolePlayAnswerTeamRank:msg=" + msg);
+                logger.d("getRolePlayAnswerTeamRank:msg=" + msg);
                 callBack.onDataFail(0, msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                Loger.d(TAG, "getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
+                logger.d("getRolePlayAnswerTeamRank:onPmError=" + responseEntity.getErrorMsg());
                 callBack.onDataFail(1, responseEntity.getErrorMsg());
             }
 

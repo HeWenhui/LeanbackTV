@@ -17,6 +17,8 @@ import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.log.Loger;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.player.R;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController;
@@ -36,6 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class LivePlaybackMediaController extends MediaController2 {
     private String TAG = "LivePlaybackMediaController";
+    protected Logger logger = LoggerFactory.getLogger(TAG);
     protected MediaControllerBottom2 mediaControllerBottom;
     protected RelativeLayout rlKeyPoints;
     protected RelativeLayout rlKeytip;
@@ -140,7 +143,7 @@ public class LivePlaybackMediaController extends MediaController2 {
             float screenDensity = ScreenUtils.getScreenDensity();
             MarginLayoutParams rlKeytipLp = (MarginLayoutParams) rlKeytip.getLayoutParams();
             rlKeytip.setLayoutParams(rlKeytipLp);
-            Loger.i(TAG, "setVideoQuestions:pointWidth=" + pointWidth + ",rlKeytip=" + rlKeytip.getWidth()
+            logger.i( "setVideoQuestions:pointWidth=" + pointWidth + ",rlKeytip=" + rlKeytip.getWidth()
                     + ",duration=" + duration + ",bitmap=" + bitmap.getWidth());
             int index = 1;
             LayoutInflater inflater = activity.getLayoutInflater();
@@ -183,7 +186,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                 long pos = 1000000L * insretTime / (duration);//按SeekBar的算法，算出比例
                 lp.leftMargin = (int) ((pointWidth * pos / 1000) - width / 2 + 3 * screenDensity);//位置显示居中，3 *
                 // screenDensity是SeekBar居左
-                Loger.i(TAG, "setVideoQuestions:" + videoQuestionEntity.getvCategory()
+                logger.i( "setVideoQuestions:" + videoQuestionEntity.getvCategory()
                         + ",insretTime=" + TimeUtils.generateTime(insretTime * 1000) + ",pos=" + pos
                         + ",leftMargin=" + lp.leftMargin);
                 //rlClick.setBackgroundColor(0x99000000);
@@ -289,7 +292,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivArrow.getLayoutParams();
                     lp.leftMargin = (int) ((pointWidth * pos / 1000) - ivArrow.getWidth() / 2 + 3 * screenDensity +
                             loction[0]);//位置显示居中，3 * screenDensity是SeekBar居左
-                    Loger.i(TAG, "showTip:category=" + videoQuestionEntity.getvCategory()
+                    logger.i( "showTip:category=" + videoQuestionEntity.getvCategory()
                             + ",insretTime=" + TimeUtils.generateTime(insretTime * 1000)
                             + ",pointWidth=" + pointWidth + ",leftMargin=" + lp.leftMargin + ",getWidth=" + ivPlay
                             .getWidth());
@@ -299,7 +302,7 @@ public class LivePlaybackMediaController extends MediaController2 {
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlPointTop.getLayoutParams();
                     int leftMargin = (int) ((pointWidth * pos / 1000) - rlPointTop.getWidth() / 2 + 3 * screenDensity
                             + loction[0]);//位置显示居中，3 * screenDensity是SeekBar居左
-                    Loger.i(TAG, "showTip:leftMargin=" + leftMargin + ",getWidth=" + rlPointTop.getWidth());
+                    logger.i( "showTip:leftMargin=" + leftMargin + ",getWidth=" + rlPointTop.getWidth());
                     if (leftMargin <= 0) {//目前调整SeekBar，字数少，不会出现
                         leftMargin = 12;
                     } else {

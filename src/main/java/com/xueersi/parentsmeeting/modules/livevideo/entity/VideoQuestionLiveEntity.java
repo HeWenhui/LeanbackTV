@@ -57,8 +57,9 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     private int vEndTime;
     /** 测试题日期 */
     private String answerDay;
-    /** 体验课订单ID*/
+    /** 体验课订单ID */
     private String termId;
+    private boolean isLive = true;
 
     public VideoQuestionLiveEntity() {
     }
@@ -114,8 +115,8 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
         }
     }
 
-    public void addAnswerEntity(AnswerEntity answerEntity){
-        if(answerEntity != null){
+    public void addAnswerEntity(AnswerEntity answerEntity) {
+        if (answerEntity != null) {
             mAnswerEntityLst.add(answerEntity);
         }
     }
@@ -163,5 +164,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setTermId(String termId) {
         this.termId = termId;
+    }
+
+    public boolean isLive() {
+        return isLive;
+    }
+
+    public void setLive(boolean live) {
+        isLive = live;
     }
 }

@@ -231,6 +231,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         } else if (!StringUtils.isEmpty(mMyInfo.getNickName())) {
             liveGetInfo.setNickname(mMyInfo.getNickName());
         }
+        //解析性别
+        liveGetInfo.setStuSex(mMyInfo.getSex() + "");
         liveGetInfo.setHeadImgPath(mMyInfo.getHeadImg());
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = new LiveGetInfo.StudentLiveInfoEntity();
@@ -243,6 +245,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             if (getInfoStr != null) {
                 JSONObject liveInfo = new JSONObject(getInfoStr);
                 liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
+                //解析学科id
+                if (liveInfo.has("subject_ids")) {
+                    String strSubjIds = liveInfo.getString("subject_ids");
+                    String[] arrSubjIds = strSubjIds.split(",");
+                    liveGetInfo.setSubjectIds(arrSubjIds);
+                }
             }
         } catch (Exception e) {
             logger.e("onCreate", e);
@@ -255,7 +263,6 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
-
     }
 
     public ArrayList<LiveBackBaseBll> getLiveBackBaseBlls() {
@@ -374,6 +381,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
      *
      * @param playPosition
      */
+    private boolean standexperienceRecommondCourseIsShow = false;
+
     private VideoQuestionEntity getPlayQuetion(int playPosition) {
         List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
         if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
@@ -460,6 +469,24 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     mQuestionEntity = videoQuestionEntity;
                     hasQuestionShow = true;
                     index = i;
+                    break;
+                }
+            } else if (LocalCourseConfig.CATEGORY_UNDERSTAND == videoQuestionEntity.getvCategory()) {//懂了吗
+                if (startTime == playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
+            } else if (LocalCourseConfig.CATEGORY_RECOMMOND_COURSE == videoQuestionEntity.getvCategory()) {//推荐课程
+                if (standexperienceRecommondCourseIsShow) {
+                    continue;
+                }
+                if (startTime <= playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    standexperienceRecommondCourseIsShow = true;
                     break;
                 }
             }

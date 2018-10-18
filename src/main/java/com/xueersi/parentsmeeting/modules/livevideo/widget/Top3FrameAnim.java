@@ -16,13 +16,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tencent.cos.xml.utils.StringUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 
@@ -36,6 +37,7 @@ import java.util.HashMap;
  */
 public class Top3FrameAnim {
     String TAG = "Top3FrameAnim";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private String file15 = "live_stand/frame_anim/15_top3_enter";
     private String file16 = "live_stand/frame_anim/16_top3_looper";
     private Context mContext;
@@ -66,7 +68,7 @@ public class Top3FrameAnim {
     public void start(final FrameAnimation.AnimationListener animationListener, final ArrayList<GoldTeamStatus.Student> students) {
         liveSoundPool = LiveSoundPool.createSoundPool();
         final int size = students.size();
-        Loger.d(TAG, "start:size=" + size);
+        logger.d( "start:size=" + size);
         if (size < 3) {
             for (int i = size; i < 3; i++) {
                 GoldTeamStatus.Student student = new GoldTeamStatus.Student();
@@ -383,7 +385,7 @@ public class Top3FrameAnim {
                         textLeft = left + scalHeadWidth[i] / 2 - measuredWidth / 2;
                     }
                     canvas.translate(textLeft, top);
-                    Loger.d(TAG, "initTeamRankHeadAndGold:measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
+                    logger.d( "initTeamRankHeadAndGold:measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
                     layout_live_stand_red_mine1.draw(canvas);
                     canvas.restore();
                 }

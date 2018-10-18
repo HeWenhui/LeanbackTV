@@ -730,13 +730,13 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
 //    @Override
 //    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        Loger.i(TAG, "onKeyDown:keyCode=" + event.getKeyCode());
+//        logger.i( "onKeyDown:keyCode=" + event.getKeyCode());
 //        return super.onKeyDown(keyCode, event);
 //    }
 //
 //    @Override
 //    public boolean dispatchKeyEvent(KeyEvent event) {
-//        Loger.i(TAG, "dispatchKeyEvent:keyCode=" + event.getKeyCode());
+//        logger.i( "dispatchKeyEvent:keyCode=" + event.getKeyCode());
 //        return super.dispatchKeyEvent(event);
 //    }
 

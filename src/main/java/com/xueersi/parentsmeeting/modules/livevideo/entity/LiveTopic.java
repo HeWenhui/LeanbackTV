@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 
 import org.json.JSONArray;
 
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public class LiveTopic {
     private String TAG = "LiveTopicLog";
-
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     /**
      * disable_speaking : [] id : 1360 mode : in-class status :
      * {"classbegin":false,"openbarrage":true,"openchat":true} topic :
@@ -21,7 +22,7 @@ public class LiveTopic {
      * :1452407139656,"status":1,"time":3,"type":""}
      */
     public LiveTopic() {
-        Loger.i(TAG, "LiveTopic");
+        logger.i( "LiveTopic");
     }
 
     /**
@@ -65,7 +66,7 @@ public class LiveTopic {
 
     public void setVideoQuestionLiveEntity(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         if (this.videoQuestionLiveEntity == null && videoQuestionLiveEntity == null) {
-            Loger.d(TAG, "setVideoQuestionLiveEntity,extra");
+            logger.d( "setVideoQuestionLiveEntity,extra");
         }
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
     }

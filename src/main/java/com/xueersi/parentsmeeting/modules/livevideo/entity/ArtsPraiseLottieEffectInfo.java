@@ -28,7 +28,7 @@ public class ArtsPraiseLottieEffectInfo extends LottieEffectInfo {
 
     private static final int TEXT_SIZE = 32;
     private static final String TEXT_COLOR = "#FFF3D1";
-    private static final String SHADOW_COLOR = "#B3000000";
+    private static final String SHADOW_COLOR = "#A6000000";
     /**
      * 弧型文字 垂直方向上 偏移
      */
@@ -68,7 +68,7 @@ public class ArtsPraiseLottieEffectInfo extends LottieEffectInfo {
             Typeface typeface = Typeface.createFromAsset(animationView.getContext().getAssets(), "fangzhengcuyuan.ttf");
             paint.setTypeface(typeface);
             paint.setColor(Color.parseColor(TEXT_COLOR));
-            paint.setShadowLayer(7, 3, 3, Color.parseColor(SHADOW_COLOR));
+            paint.setShadowLayer(7, 1, 1, Color.parseColor(SHADOW_COLOR));
             paint.setFakeBoldText(true);
             Path path = new Path();
 

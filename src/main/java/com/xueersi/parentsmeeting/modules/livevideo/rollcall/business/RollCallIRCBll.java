@@ -13,7 +13,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +46,7 @@ public class RollCallIRCBll extends LiveBaseBll implements NoticeAction, RollCal
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        Loger.e("=====>RollCallBll", "=======>onNotice:" + type);
+        logger.e( "=======>onNotice:" + type);
         try {
             switch (type) {
                 case XESCODE.CLASSBEGIN:

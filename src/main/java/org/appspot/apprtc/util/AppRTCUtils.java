@@ -35,7 +35,7 @@
 //
 //  /** Information about the current build, taken from system properties. */
 //  public static void logDeviceInfo(String tag) {
-//    Loger.d(tag, "Android SDK: " + Build.VERSION.SDK_INT + ", "
+//    logger.d( "Android SDK: " + Build.VERSION.SDK_INT + ", "
 //            + "Release: " + Build.VERSION.RELEASE + ", "
 //            + "Brand: " + Build.BRAND + ", "
 //            + "Device: " + Build.DEVICE + ", "

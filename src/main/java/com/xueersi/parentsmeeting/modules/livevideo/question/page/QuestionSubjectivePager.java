@@ -124,7 +124,7 @@ public class QuestionSubjectivePager extends BaseLiveQuestionPager {
             public void afterTextChanged(Editable edit) {
                 //TODO removeTextChangedListener后，应该不会发生了
 //                        if (!holder.etFillBlank.getTag().equals(position)) {
-//                            Loger.i(TAG, "getView:position=" + position + "," + holder.etFillBlank.getTag() + ",afterTextChanged:edit=" + edit);
+//                            logger.i( "getView:position=" + position + "," + holder.etFillBlank.getTag() + ",afterTextChanged:edit=" + edit);
 //                            return;
 //                        }
                 // 保存答案

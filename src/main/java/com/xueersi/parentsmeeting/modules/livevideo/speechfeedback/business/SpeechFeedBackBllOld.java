@@ -10,12 +10,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.PCMFormat;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Loger;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.io.IOException;
  * 语音反馈
  */
 public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     String TAG = "SpeechFeedBackBll";
     boolean isStart = false;
     Activity activity;
@@ -78,13 +80,13 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
         if (isStart) {
             return;
         }
-        Loger.d(TAG, "start:roomId=" + roomId);
+        logger.d( "start:roomId=" + roomId);
         isStart = true;
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Loger.d(TAG, "start:startRecording:mAudioRecord=" + (mAudioRecord == null));
+                    logger.d( "start:startRecording:mAudioRecord=" + (mAudioRecord == null));
                     initAudioRecorder();
                     bottomContent.post(new Runnable() {
                         @Override
@@ -108,9 +110,9 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
                             }
                         }
                     }
-                    Loger.d(TAG, "start:startRecording:end;time=" + (System.currentTimeMillis() - time));
+                    logger.d( "start:startRecording:end;time=" + (System.currentTimeMillis() - time));
                 } catch (IOException e) {
-                    Loger.e(TAG, "initAudioRecorder", e);
+                    logger.e( "initAudioRecorder", e);
                 }
             }
         });
@@ -121,7 +123,7 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
         if (!isStart) {
             return;
         }
-        Loger.d(TAG, "stop:mAudioRecord=" + (mAudioRecord == null));
+        logger.d( "stop:mAudioRecord=" + (mAudioRecord == null));
         isStart = false;
         if (mAudioRecord != null) {
             mAudioRecord.release();
