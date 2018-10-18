@@ -53,4 +53,6 @@ dependencies {
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
 //    implementation project(':business:endictation')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.endictation)
+
+    implementation rootProject.ext.thirdlibraries.ticker
 }
