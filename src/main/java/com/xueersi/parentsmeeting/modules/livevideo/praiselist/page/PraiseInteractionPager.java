@@ -10,19 +10,20 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Message;
 import android.os.SystemClock;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.animation.AnimationUtils;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
+import com.robinhood.ticker.TickerUtils;
+import com.robinhood.ticker.TickerView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -107,7 +108,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
     private View giftSendView;
     private TextView giftSendText;
-    private TextSwitcher giftSendCoin;
+    private TickerView giftSendCoin;
 
     //数学动画
     private LottieAnimationView mathLottileView;
@@ -315,17 +316,10 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         });
         giftSendText = view.findViewById(R.id.tv_livevideo_praise_interac_gift_send_text);
         giftSendCoin = view.findViewById(R.id.tv_livevideo_praise_interac_gift_send_coin);
-        giftSendCoin.setFactory(new ViewSwitcher.ViewFactory() {
-            @Override
-            public View makeView() {
-                TextView textView = new TextView(mContext);
-                textView.setTextSize(10);
-                textView.setTextColor(mContext.getResources().getColor(R.color.COLOR_FFFFFF));
-                return textView;
-            }
-        });
-        giftSendCoin.setInAnimation(AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_fade_in_slide_in));
-        giftSendCoin.setOutAnimation(AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_fade_out_slide_out));
+        giftSendCoin.setCharacterLists(TickerUtils.provideNumberList());
+        giftSendCoin.setAnimationDuration(500);
+        giftSendCoin.setAnimationInterpolator(new OvershootInterpolator());
+        giftSendCoin.setGravity(Gravity.CENTER);
 
         mathLottileView = view.findViewById(R.id.lav_livevideo_praise_interac_math);
 
@@ -349,6 +343,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     @Override
     public void initData() {
         goldCountView.setText("金币余额:  " + goldCount);
+        giftSendCoin.setText(String.valueOf(goldCount));
     }
 
     /**
