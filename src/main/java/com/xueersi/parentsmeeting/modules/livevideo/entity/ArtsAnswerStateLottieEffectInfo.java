@@ -7,9 +7,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.text.TextUtils;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 
@@ -121,6 +124,11 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
             paint.setColor(Color.parseColor(TEXTCOLOR));
             paint.setTextSize(TEXTSIZE);
             paint.setTextAlign(Paint.Align.LEFT);
+
+            Typeface fontFace = FontCache.getTypeface(BaseApplication.getContext(), "fangzhengcuyuan.ttf");
+            if(fontFace != null){
+                paint.setTypeface(fontFace);
+            }
 
             Rect fontRect = new Rect();
             paint.getTextBounds(mCoinStr, 0, mCoinStr.length(), fontRect);

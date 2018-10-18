@@ -57,7 +57,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="61dp"
-        android:layout_marginRight="22dp"
+        android:layout_marginRight="20dp"
         android:scaleType="centerCrop"
         android:src="@drawable/selector_live_artspse_answer_result"
         android:visibility="gone"
