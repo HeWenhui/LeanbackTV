@@ -2,6 +2,6 @@
 <selector
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true" android:drawable="@drawable/play_chat_respeak_btn_click" />//压下效果图片
-    <item android:state_enabled="true" android:drawable="@drawable/play_chat_respeak_btn_nor" />    //未按压作图片
+    <item android:drawable="@drawable/play_chat_respeak_btn_nor" />    //未按压作图片
 
 </selector>

@@ -21,24 +21,28 @@ public interface EnglishSpeechBulletContract {
          * @param hasTip 是否弹关闭提示
          */
         void closeSpeechBullet(boolean hasTip);
+        /**
+         * 弹幕消息
+         * @param name 名字
+         * @param msg 内容
+         * @param headImgUrl 头像Url
+         */
+        void receiveDanmakuMsg(String name, String msg,String headImgUrl);
+        /**
+         * 表扬消息
+         * @param msg 内容
+         */
+        void receivePraiseMsg(String msg);
     }
 
     interface EnglishSpeechBulletPresenter extends BasePresenter {
         /**
-         * 发送语音弹幕
-         */
-        void sendDanmakuMessage(String msg);
-        /**
-         * 上传发言语句
+         * 上传弹幕消息
          */
         void uploadSpeechBulletScreen(String msg, HttpCallBack requestCallBack);
         /**
          * 获取头像url
          */
         String getHeadImgUrl();
-        /**
-         * 获取语音弹幕场次ID
-         */
-        String getVoiceId();
     }
 }

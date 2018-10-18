@@ -101,9 +101,10 @@
             <ImageView
                 android:id="@id/tv_livevideo_speechbul_send"
                 android:layout_width="75dp"
-                android:layout_height="41dp"
+                android:layout_height="40dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
                 android:gravity="center"
                 android:src="@drawable/selector_livevideo_small_english_chat_send" />
         </RelativeLayout>

@@ -45,6 +45,7 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.SizeUtils;
@@ -57,6 +58,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.Contract.
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CircleDrawable;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
@@ -185,10 +187,10 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      * 是不是评测成功
      */
     private boolean isSpeechSuccess = false;
-
     /**
-     * 日志数据
+     * 是否拥有麦克风权限
      */
+    private boolean hasAudioPermission = false;
 
     /**
      * MVP:Presenter层接口
@@ -271,14 +273,29 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         if (!dir.exists()) {
             dir.mkdirs();
         }
+        hasAudioPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO); // 检查用户麦克风权限
+        if (!hasAudioPermission) {
+            XesPermission.checkPermissionNoAlert(mContext, new LiveActivityPermissionCallback() {
+                @Override
+                public void onFinish() {
 
-        boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO); // 检查用户麦克风权限
-        if (hasAudidoPermission) {
-            startEvaluator();
+                }
+
+                @Override
+                public void onDeny(String permission, int position) {
+                    tvSpeechbulRepeat.setEnabled(false);
+                    tvSpeechbulRepeat.setAlpha(0.6f);
+                    startTextInput("");
+                    return;
+                }
+
+                @Override
+                public void onGuarantee(String permission, int position) {
+                    startEvaluator();
+                }
+            }, PermissionConfig.PERMISSION_CODE_AUDIO);
         } else {
-            tvSpeechbulCount.setEnabled(false);
-            tvSpeechbulCount.setAlpha(0.6f);
-            startTextInput("");
+            startEvaluator();
         }
     }
 
@@ -318,7 +335,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     return;
                 }
                 String subTemp = temp.substring(temp.length() - 1, temp.length());
-                char tempC= subTemp.toCharArray()[0];
+                char tempC = subTemp.toCharArray()[0];
                 if (isChineseChar(tempC)) {
                     editable.delete(temp.length() - 1, temp.length());
                     rlSpeechbulTips.setVisibility(View.VISIBLE);
@@ -370,8 +387,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             public void onClick(View view) {
                 KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
                 closeSpeechBullet(false);
-                addDanmaKuFlowers("我", etSpeechbulWords.getText().toString(), presenter.getHeadImgUrl(), false);
-                presenter.sendDanmakuMessage(etSpeechbulWords.getText().toString());
+                addDanmaKuSpeech("我", etSpeechbulWords.getText().toString(), presenter.getHeadImgUrl(), false);
                 presenter.uploadSpeechBulletScreen(etSpeechbulWords.getText().toString(), new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
@@ -471,6 +487,32 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     stopEvaluator();
                 }
             });
+        }
+    }
+
+    /**
+     * 添加弹幕
+     *
+     * @param name       名字
+     * @param msg        内容
+     * @param headImgUrl 头像Url
+     */
+    @Override
+    public void receiveDanmakuMsg(String name, String msg, String headImgUrl) {
+        if (!StringUtils.isEmpty(name) && !StringUtils.isEmpty(msg) & !StringUtils.isEmpty(headImgUrl)) {
+            addDanmaKuSpeech(name, msg, headImgUrl, true);
+        }
+    }
+
+    /**
+     * 表扬消息
+     *
+     * @param msg 内容
+     */
+    @Override
+    public void receivePraiseMsg(String msg) {
+        if (!StringUtils.isEmpty(msg)) {
+
         }
     }
 
@@ -717,7 +759,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     mWeakHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            addDanmaKuFlowers(time + "", time + "", "http://xesfile.xesimg.com/user/h/def10002.png", true);
+                            addDanmaKuSpeech(time + "", time + "", "http://xesfile.xesimg.com/user/h/def10002.png", true);
                         }
                     });
                     try {
@@ -808,12 +850,12 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         }
     };
 
-    public void addDanmaKuFlowers(final String name, final String msg, final String headImgUrl, final boolean isGuest) {
+    public void addDanmaKuSpeech(final String name, final String msg, final String headImgUrl, final boolean isGuest) {
         if (mDanmakuContext == null || dvSpeechbulDanmaku == null || !dvSpeechbulDanmaku.isPrepared()) {
             mWeakHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    addDanmaKuFlowers(name, msg, headImgUrl, isGuest);
+                    addDanmaKuSpeech(name, msg, headImgUrl, isGuest);
                 }
             }, 100);
             return;
@@ -845,7 +887,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     drawable.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
                 }
                 danmaku.text = createSpannable(name, msg, drawable, isGuest);
-                ;
+                dvSpeechbulDanmaku.addDanmaku(danmaku);
             }
 
             @Override
@@ -855,10 +897,9 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                 } else {
                     danmaku.text = createSpannable(name, msg, defaultHeadMe, isGuest);
                 }
-
+                dvSpeechbulDanmaku.addDanmaku(danmaku);
             }
         });
-        dvSpeechbulDanmaku.addDanmaku(danmaku);
     }
 
     protected SpannableStringBuilder createSpannable(String name, String msg, Drawable drawable, boolean isGuest) {

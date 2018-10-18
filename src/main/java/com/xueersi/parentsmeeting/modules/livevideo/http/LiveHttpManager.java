@@ -1256,4 +1256,19 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(LiveVideoConfig.URL_CHECK_DEVICE, params, requestCallBack);
     }
+
+    /**
+     * 弹幕推送
+     *
+     * @param op              命令
+     * @param data            数据
+     * @param requestCallBack
+     */
+    public void pushSpeechBullet(int op, String data, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("op", op+"");
+        params.addBodyParam("data", data);
+        setDefaultParameter(params);
+        sendPost("http://10.99.2.31:8777/v1/push", params, requestCallBack);
+    }
 }
