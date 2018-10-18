@@ -109,6 +109,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         LiveSubjectResultCreat baseSubjectResultCreat = new LiveSubjectResultCreat();
         baseSubjectResultCreat.setLiveGetInfo(data);
         mQuestionAction.setBaseSubjectResultCreat(baseSubjectResultCreat);
+        mQuestionAction.setQuestionWebCreate(new LiveQuestionWebCreate());
         if (data.getPattern() == 2) {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction));
             mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(this, mLiveBll, mQuestionAction));
