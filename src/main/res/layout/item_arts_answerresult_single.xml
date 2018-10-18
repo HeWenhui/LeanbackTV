@@ -24,9 +24,10 @@
             android:gravity="left"
             android:text="南极洲板块、美洲板块、印度洋板块"
             android:textColor="#333333"
-            android:textSize="15sp"
+            android:textSize="17sp"
             app:drawableLeftMargin="-5dp"
             app:drawableTopMargin="8dp"
+            android:lineSpacingExtra="3dp"
             app:suffixIcon="@drawable/icon_live_prart_correct" />
 
         <!--选择题 标准答案-->
@@ -37,7 +38,7 @@
             android:layout_marginLeft="12dp"
             android:text="C"
             android:textColor="#6CBF4C"
-            android:textSize="15sp"
+            android:textSize="17sp"
             android:visibility="gone" />
 
     </LinearLayout>
@@ -51,7 +52,9 @@
         android:layout_centerHorizontal="true"
         android:text="数字式线段式文字式"
         android:textColor="#6CBF4C"
-        android:textSize="15sp"
-        android:visibility="gone" />
+        android:textSize="17sp"
+        android:visibility="gone"
+        android:lineSpacingExtra="3dp"
+        />
 
 </RelativeLayout>

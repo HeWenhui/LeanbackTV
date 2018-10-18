@@ -25,13 +25,15 @@
             android:text="南极洲板块美洲板块,南极"
             android:textColor="#756565"
             android:textSize="17sp"
-            android:textStyle="bold"
             app:drawableLeftMargin="-5dp"
             app:drawableTopMargin="8dp"
-            app:suffixIcon="@drawable/livevideo_pse_answer_partcorrect" />
+            app:suffixIcon="@drawable/livevideo_pse_answer_partcorrect"
+            app:useDefultTextFont="false"
+            android:lineSpacingExtra="6dp"
+            />
 
         <!--选择题 标准答案-->
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_arts_answer_result_stander_answer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +41,6 @@
             android:text="C"
             android:textColor="#83BD27"
             android:textSize="17sp"
-            android:textStyle="bold"
             android:visibility="gone" />
 
     </LinearLayout>
@@ -54,7 +55,8 @@
         android:text="数字式线段式文字式"
         android:textColor="#83BD27"
         android:textSize="17sp"
-        android:textStyle="bold"
+        app:useDefultTextFont="false"
+        android:lineSpacingExtra="6dp"
         />
 
 

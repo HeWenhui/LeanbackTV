@@ -8,12 +8,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 
@@ -47,6 +49,7 @@ public class ArtsAnswerTextView extends TextView {
         int suffixResId = a.getResourceId(R.styleable.ArtsTextView_suffixIcon, -1);
         drawableLeftMargin = (int) a.getDimension(R.styleable.ArtsTextView_drawableLeftMargin, 0f);
         drawableTopMargin = (int) a.getDimension(R.styleable.ArtsTextView_drawableTopMargin, 0f);
+        boolean useDefualtFont = a.getBoolean(R.styleable.ArtsTextView_useDefultTextFont,true);
         a.recycle();
 
         if (suffixResId > 0) {
@@ -57,6 +60,13 @@ public class ArtsAnswerTextView extends TextView {
             iconPaint = new Paint();
             iconPaint.setFilterBitmap(true);
             iconPaint.setAntiAlias(true);
+        }
+        // 加载字体
+        if(!useDefualtFont){
+            Typeface fontFace = FontCache.getTypeface(getContext(), "fangzhengcuyuan.ttf");
+            if(fontFace != null){
+                setTypeface(fontFace);
+            }
         }
     }
     /**

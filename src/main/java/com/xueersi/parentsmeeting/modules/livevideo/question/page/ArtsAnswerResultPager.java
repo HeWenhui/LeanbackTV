@@ -312,7 +312,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
                         int top = 0;
                         int bottom = 0;
                         if (itemPosition >= SPAN_COUNT) {
-                            top = SizeUtils.Dp2Px(mContext, 15);
+                            top = SizeUtils.Dp2Px(mContext, 8);
                         }
                         outRect.set(left, top, right, bottom);
                     }else{
