@@ -195,7 +195,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         CloudUploadEntity uploadEntity = new CloudUploadEntity();
         uploadEntity.setFilePath(path);
         uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
-        uploadEntity.setCloudPath(CloudDir.LIVE_STUDY_REPORT);
+        uploadEntity.setCloudPath(CloudDir.LIVE_SCIENCE_MOMENT);
         xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesStsUploadListener() {
             @Override
             public void onProgress(XesCloudResult result, int percent) {
