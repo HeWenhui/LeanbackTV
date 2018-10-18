@@ -58,6 +58,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private RelativeLayout rlAnswerResultLayout;
 
     /**
+     * 语文跟读
+     */
+    private static final int ARTS_FOLLOW_UP = 6;
+
+    /**
      * 强制收卷 答题结果展示 时间
      **/
     private final long AUTO_CLOSE_DELAY = 2000;
@@ -574,7 +579,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         switch (type) {
             case XESCODE.ARTS_REMID_SUBMIT:
                 int pType = data.optInt("ptype");
+                //语文跟读不支持 提醒答题
+                if(ARTS_FOLLOW_UP != pType){
                     remindSubmit();
+                }
                 break;
             case XESCODE.ARTS_PARISE_ANSWER_RIGHT:
                 StringBuilder stringBuilder = new StringBuilder();
