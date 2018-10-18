@@ -95,6 +95,17 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      * 准备开始朗读前的提示文案
      */
     private TextView tvBeginTipMsg;
+
+    /**
+     * roleplay回放的时候，增加关闭按钮
+     */
+    TextView tv_close_role_play;
+
+    /**
+     * 倒计时整体布局
+     */
+    View ll_live_roleplayer_countdown_main;
+
     /**
      * 倒计时器
      */
@@ -253,9 +264,6 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      * ture 直播，false 回放
      */
     private boolean mIsLive;
-    private RolePlayerHttpManager mRolePlayerHttpManager;
-    private RolePlayerHttpResponseParser mRolePlayerHttpResponseParser;
-
 
     /**
      * 开始朗读下一条
@@ -280,6 +288,10 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         this.speechEvalAction = speechEvalAction;
         dir = LiveCacheFile.geCacheFile(context, "liveSpeech");
+
+        //由于先执行initView，所以mIsLive的值在构造完成以后才赋值，需要在此判断是否是直播，是否需要显示关闭按钮
+        ifShowCloseBt();
+
         requestTestInfos();
     }
 
@@ -298,7 +310,13 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         rlMatchLottie = view.findViewById(R.id.rl_live_roleplayer_match_lottie);
         rlMatchRoleList = view.findViewById(R.id.rl_live_roleplayer_rolelist);
         rlMatchPager.setVisibility(View.VISIBLE);
+
+        tv_close_role_play = view.findViewById(R.id.tv_close_role_play);
+        //倒计时整体布局,在回放的时候隐藏显示
+        ll_live_roleplayer_countdown_main = view.findViewById(R.id.ll_live_roleplayer_countdown_main);
+        //倒计时textview
         tvCountTime = view.findViewById(R.id.tv_live_roleplayer_countdown);
+
         gvRoleHeadShow = view.findViewById(R.id.gv_live_roleplayer_headshow);
         rlRoleReadMain = view.findViewById(R.id.rl_live_roleplayer_read_main);
         tvBeginTipMsg = view.findViewById(R.id.tv_live_roleplayer_countdown_tip);
@@ -382,6 +400,26 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         return view;
     }
 
+    private void ifShowCloseBt() {
+        if(mIsLive){
+            //只在直播的时候显示倒计时布局
+            ll_live_roleplayer_countdown_main.setVisibility(View.VISIBLE);
+            tv_close_role_play.setVisibility(View.GONE);
+        }else {
+            //只在回放的时候显示关闭按钮的布局
+            ll_live_roleplayer_countdown_main.setVisibility(View.GONE);
+            tv_close_role_play.setVisibility(View.VISIBLE);
+            tv_close_role_play.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mRolePlayBll != null){
+                        mRolePlayBll.closeCurPage();
+                    }
+                }
+            });
+        }
+    }
+
     @Override
     public void onPause() {
         logger.i("界面失去焦点");
@@ -397,7 +435,11 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     @Override
     public boolean onUserBackPressed() {
         logger.i("点击返回");
-        return super.onUserBackPressed();
+        if(mRolePlayBll != null){
+            mRolePlayBll.closeCurPage();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -904,9 +946,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                     if(mReadHandler != null){
                         mReadHandler.removeMessages(READ_MESSAGE);
                     }
-                    //释放所有正在播放的音频
-                    relaseAllAudioPlay();
-                    mRolePlayBll.onStopQuestion(null,null);
+
                 }else {
                     //直播
                     logger.i("live not leave roleplay");
@@ -1048,7 +1088,11 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         rlMatchPager.setVisibility(View.GONE);
         rlRoleReadMain.setVisibility(View.VISIBLE);
 
-        tvCountTime.setText(getCountDownTime());
+        //只在直播的时候显示倒计时
+        if(mIsLive){
+            tvCountTime.setText(getCountDownTime());
+        }
+
         rlRoleReadMain.setVisibility(View.VISIBLE);
         Typeface tFace = getTypeface(mContext);
         if (tFace != null) {
@@ -1087,23 +1131,23 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             tvBeginTipMsg.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "别着急.还没到你." : "Don't" +
                     " hurry. Not your turn yet.");
         }
-        //开始倒计时，1秒更新一次
-        tvCountTime.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                if (mEntity.getCountDownSecond() == 0) {
-//                    //倒计时结束，时钟正走
-//                    return;
-//                }
-                if (mEntity == null) {
-                    return;
+        //只在直播的时候，有倒计时的逻辑
+        if(mIsLive){
+            //开始倒计时，1秒更新一次
+            tvCountTime.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    if (mEntity == null) {
+                        return;
+                    }
+                    mEntity.setCountDownSecond(mEntity.getCountDownSecond() - 1);
+                    tvCountTime.setText(getCountDownTime());
+                    tvCountTime.postDelayed(this, 1000);
                 }
-                mEntity.setCountDownSecond(mEntity.getCountDownSecond() - 1);
-                tvCountTime.setText(getCountDownTime());
-                tvCountTime.postDelayed(this, 1000);
-            }
-        }, 1000);
-//
+            }, 1000);
+        }
+
         //填充对话内容
         mRolePlayerAdapter = new CommonAdapter<RolePlayerEntity.RolePlayerMessage>(mEntity.getLstRolePlayerMessage(),
                 2) {
@@ -1201,7 +1245,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     /**
      * 关闭当前页面
      */
-    public void closeCurrentPage() {
+    public void relaseCurrentPage() {
         if (mIse != null) {
             mIse.stop();
         }

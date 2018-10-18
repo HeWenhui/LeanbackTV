@@ -31,6 +31,7 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerSelfItem;
@@ -1376,4 +1377,15 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
     interface RoleEvaluatorListener extends EvaluatorListenerWithPCM, EvaluatorListener {
 
     }
+
+    @Override
+    public boolean onUserBackPressed() {
+        logger.i("点击返回");
+        if(mRolePlayBll != null){
+            mRolePlayBll.closeCurPage();
+            return true;
+        }
+        return false;
+    }
+
 }
