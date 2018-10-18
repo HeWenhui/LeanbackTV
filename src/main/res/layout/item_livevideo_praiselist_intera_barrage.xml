@@ -17,11 +17,21 @@
         android:src="@drawable/ic_livevideo_praise_intera_gift" />
 
     <TextView
+        android:id="@+id/tv_praise_intera_barrage_item_stuname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#c3f7ff"
+        android:visibility="gone"
+        android:textSize="14sp" />
+
+    <TextView
         android:id="@+id/tv_praise_intera_barrage_item_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="5dp" />
+        android:layout_marginLeft="5dp"
+        android:textColor="@color/COLOR_FFFFFF"
+        android:textSize="14sp" />
 
     <ImageView
         android:id="@+id/iv_praise_intera_barrage_item_gift_type"

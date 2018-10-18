@@ -139,6 +139,7 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
             holder.typeIcon = view.findViewById(R.id.iv_praise_intera_barrage_item_type);
             holder.messageContentView = view.findViewById(R.id.tv_praise_intera_barrage_item_content);
             holder.giftType = view.findViewById(R.id.iv_praise_intera_barrage_item_gift_type);
+            holder.stuName = view.findViewById(R.id.tv_praise_intera_barrage_item_stuname);
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -160,13 +161,17 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
         } else if (messageType == PraiseMessageEntity.TYPE_PRAISE) {
             holder.typeIcon.setVisibility(View.GONE);
             holder.giftType.setVisibility(View.GONE);
+            holder.stuName.setVisibility(View.VISIBLE);
+            holder.stuName.setText(messageEntity.getUserName()+"同学:");
         } else if (messageType == PraiseMessageEntity.TYPE_CLASS) {
             holder.typeIcon.setVisibility(View.VISIBLE);
             holder.giftType.setVisibility(View.GONE);
+            holder.stuName.setVisibility(View.GONE);
             holder.typeIcon.setImageResource(R.drawable.ic_livevideo_praise_intera_class);
         } else {
             holder.typeIcon.setVisibility(View.GONE);
             holder.giftType.setVisibility(View.GONE);
+            holder.stuName.setVisibility(View.GONE);
         }
         holder.messageContentView.setText(messageEntity.getMessageContent());
 
@@ -176,6 +181,7 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
     static class ViewHolder {
         ImageView typeIcon;
         TextView messageContentView;
+        TextView stuName;
         ImageView giftType;
     }
 

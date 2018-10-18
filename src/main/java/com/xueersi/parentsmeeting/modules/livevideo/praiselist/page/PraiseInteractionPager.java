@@ -65,6 +65,9 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     //连续点击计时器
     private static final int MESSAGE_WHAT_DELAY_CONTINUE_PRAISE = 4;
 
+    //每秒计数三次及时
+    private static final int MESSAGE_WHAT_DELAY_PRAISE_COUNT = 5;
+
     //礼物倒计时
 
 
@@ -135,8 +138,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     private int btnMarginBottom;
 
 
-    //长按首次按下时间
-    private long lastPraiseTime = 0;
     //是否是长按
     private boolean isLongPress = false;
 
@@ -196,21 +197,16 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        lastPraiseTime = System.nanoTime();
                         isLongPress = false;
+                        timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_PRAISE_COUNT, 333);
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        long interval = System.nanoTime() - lastPraiseTime;
-                        //长按每秒三次点赞
-                        if (interval > 1000 * NAS / 3) {
-                            lastPraiseTime = System.nanoTime();
-                            isLongPress = true;
-                            onClickPraiseBtn();
-                        }
                         break;
                     case MotionEvent.ACTION_UP:
+                        timeHandler.removeMessages(MESSAGE_WHAT_DELAY_PRAISE_COUNT);
                         break;
                     case MotionEvent.ACTION_CANCEL:
+                        timeHandler.removeMessages(MESSAGE_WHAT_DELAY_PRAISE_COUNT);
                         break;
                 }
                 return isLongPress;
@@ -486,6 +482,9 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                     }
                 }
 
+            } else if (what == MESSAGE_WHAT_DELAY_PRAISE_COUNT) {
+                onClickPraiseBtn();
+                timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_PRAISE_COUNT, 333);
             }
         }
     }
@@ -497,29 +496,15 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     private void onClickPraiseBtn() {
         timeHandler.removeMessages(MESSAGE_WHAT_DELAY_BUBBLE);
         timeHandler.removeMessages(MESSAGE_WHAT_DELAY_CONTINUE_PRAISE);
-        praiseTimeList.add(SystemClock.uptimeMillis());
         //暂停冒泡动画
         bubbleView.cancelAnimation();
         bubbleView.setVisibility(View.GONE);
         bubbleRepeatView.cancelAnimation();
         bubbleRepeatView.setVisibility(View.GONE);
 
-        continuePraiseNum++;
         praiseNumAmount++;
 
         judgeDisplayNumAnimation();
-
-        if (praiseTimeList.size() > 1) {
-            long lastTime = praiseTimeList.get(praiseTimeList.size() - 1);
-            long firstTime = praiseTimeList.get(0);
-            if (lastTime - firstTime > 5000) {
-                praiseTimeList.clear();
-                caculatePraiseTotalNumPosition();
-                praiseTotalNumView.setVisibility(View.VISIBLE);
-                praiseTotalNumView.setText(String.valueOf(praiseNumAmount));
-                mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
-            }
-        }
 
         //播放按下动画
         pressLottileView.cancelAnimation();
@@ -535,32 +520,72 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
      * 判断是否显示数字动画
      */
     private void judgeDisplayNumAnimation() {
-        //保留2位小数
+        long currentPraiseTime = SystemClock.uptimeMillis();
+        //首次点赞
+        if (praiseTimeList.isEmpty()) {
+            continuePraiseNum++;
+            //播放动画
+            playPraiseNumAnimation();
+        } else {
+            long lastPraiseTime = praiseTimeList.get(praiseTimeList.size() - 1);
+            long interval = currentPraiseTime - lastPraiseTime;
+            //大于1秒不算连续点赞l
+            if (interval > 1000) {
+                continuePraiseNum = 0;
+                praiseTimeList.clear();
+                continuePraiseNum++;
+                //播放动画
+                playPraiseNumAnimation();
+            } else {
+                continuePraiseNum++;
+                if (currentPraiseTime - praiseTimeList.get(0) > 5000) {
+                    //push总数
+                    praiseTimeList.clear();
+                    caculatePraiseTotalNumPosition();
+                    praiseTotalNumView.setVisibility(View.VISIBLE);
+                    praiseTotalNumView.setText(getDisplayNum(praiseNumAmount));
+                    mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
+                }
+                //圆圈内直接计数
+                if (interval < 500) {
+                    praiseNumView.setVisibility(View.VISIBLE);
+
+                } else {
+                    //计数动画
+                    playPraiseNumAnimation();
+                }
+
+            }
+        }
+        praiseTimeList.add(currentPraiseTime);
+        praiseNumView.setText("+" + getDisplayNum(continuePraiseNum));
+        praiseTotalNumView.setText(getDisplayNum(praiseNumAmount));
+    }
+
+    /**
+     * 保留2位小数
+     *
+     * @param num
+     * @return
+     */
+    private String getDisplayNum(int num) {
         String strNum;
-        if (continuePraiseNum > 1000) {
-            BigDecimal bigDecimal = new BigDecimal(continuePraiseNum / 1000d);
+        if (num > 1000) {
+            BigDecimal bigDecimal = new BigDecimal(num / 1000d);
             double doubleNum = bigDecimal.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
             strNum = String.valueOf(doubleNum) + "k";
         } else {
-            strNum = String.valueOf(continuePraiseNum);
+            strNum = String.valueOf(num);
         }
-        praiseNumView.setText("+" + strNum);
-
-        long lastPraiseTime = 0;
-        if (praiseTimeList.size() > 1) {
-            lastPraiseTime = praiseTimeList.get(praiseTimeList.size() - 2);
-        }
-        long currentPraiseTime = praiseTimeList.get(praiseTimeList.size() - 1);
-        if (currentPraiseTime - lastPraiseTime < 500) {
-            praiseNumView.setVisibility(View.VISIBLE);
-        } else {
-            if (animatorSet.isRunning()) {
-                animatorSet.cancel();
-            }
-            animatorSet.start();
-        }
+        return strNum;
+    }
 
 
+    private void playPraiseNumAnimation() {
+        if (animatorSet.isRunning()) {
+            animatorSet.cancel();
+        }
+        animatorSet.start();
     }
 
 
@@ -662,12 +687,12 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 praiseNumView.setTranslationX(translationY);
-                praiseNumView.setVisibility(View.GONE);
+
             }
         });
 
         animatorSet.play(objectAnimator).with(alphaAnimator);
-        animatorSet.setDuration(1000);
+        animatorSet.setDuration(500);
 
     }
 
@@ -940,6 +965,9 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     }
 
 
+    /**
+     * 动态计算总数的位置
+     */
     private void caculatePraiseTotalNumPosition() {
         int fontWidth = (int) praiseTotalNumView.getPaint().measureText(String.valueOf(praiseNumAmount));
         int numMarginRight = btnMarginRight + btnWidth / 2 - fontWidth / 2;

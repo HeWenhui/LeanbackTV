@@ -191,12 +191,12 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         praiseMessageEntity.setSortKey(PraiseMessageEntity.SORT_KEY_MY_GIFT);
         String messageContent = "";
         if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_PHYSICAL) {
-            messageContent = mGetInfo.getStuName() + "同学给老师点亮了星空!";
+            messageContent = mGetInfo.getStuName() + "同学给老师点亮了星空";
         } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_CHEMISTRY) {
-            messageContent = mGetInfo.getStuName() + "同学送老师一瓶魔法水!";
+            messageContent = mGetInfo.getStuName() + "同学送老师一瓶魔法水";
 
         } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_MATH) {
-            messageContent = mGetInfo.getStuName() + "同学为老师放飞了气球!";
+            messageContent = mGetInfo.getStuName() + "同学为老师放飞了气球";
         }
         praiseMessageEntity.setMessageContent(messageContent);
         mySpecialGiftStack.push(praiseMessageEntity);
@@ -209,7 +209,8 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         PraiseMessageEntity praiseMessageEntity = new PraiseMessageEntity();
         praiseMessageEntity.setMessageType(PraiseMessageEntity.TYPE_PRAISE);
         praiseMessageEntity.setSortKey(PraiseMessageEntity.SORT_KEY_MY_PRAISE);
-        praiseMessageEntity.setMessageContent(mGetInfo.getStuName() + ":点了" + praiseNumAmount + "个赞!");
+        praiseMessageEntity.setUserName(mGetInfo.getStuName());
+        praiseMessageEntity.setMessageContent("点了" + praiseNumAmount + "个赞");
         praiseInteractionPager.appendBarraige(praiseMessageEntity);
         sendPrivateMessage(PraiseMessageEntity.TYPE_PRAISE, praiseNumAmount);
 
@@ -352,7 +353,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                     if (open) {
                         status = "开启";
                     }
-                    String message = teacherType + "老师" + status + "了点赞功能!";
+                    String message = teacherType + "老师" + status + "了点赞功能";
                     liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
                             message);
 
@@ -449,12 +450,12 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                     int giftType = praiseMessageEntity.getGiftType();
                     String messageContent = "";
                     if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_PHYSICAL) {
-                        messageContent = praiseMessageEntity.getUserName() + "同学给老师点亮了星空!";
+                        messageContent = praiseMessageEntity.getUserName() + "同学给老师点亮了星空";
                     } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_CHEMISTRY) {
-                        messageContent = praiseMessageEntity.getUserName() + "同学送老师一瓶魔法水!";
+                        messageContent = praiseMessageEntity.getUserName() + "同学送老师一瓶魔法水";
 
                     } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_MATH) {
-                        messageContent = praiseMessageEntity.getUserName() + "同学为老师放飞了气球!";
+                        messageContent = praiseMessageEntity.getUserName() + "同学为老师放飞了气球";
                     }
                     praiseMessageEntity.setMessageContent(messageContent);
                     praiseMessageEntity.setSortKey(PraiseMessageEntity.SORT_KEY_OTHER_GIFT);
@@ -467,8 +468,8 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                     if (otherPraiseStack.contains(praiseMessageEntity)) {
                         otherPraiseStack.remove(praiseMessageEntity);
                     }
-                    praiseMessageEntity.setMessageContent(praiseMessageEntity.getUserName() + ": 点了" +
-                            praiseMessageEntity.getPraiseNum() + "个赞!");
+                    praiseMessageEntity.setMessageContent("点了" +
+                            praiseMessageEntity.getPraiseNum() + "个赞");
                     praiseMessageEntity.setSortKey(PraiseMessageEntity.SORT_KEY_STUDENT_PRAISE);
                     otherPraiseStack.push(praiseMessageEntity);
 
