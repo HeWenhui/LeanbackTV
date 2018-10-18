@@ -1032,9 +1032,10 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                         rlMatchPager.setVisibility(View.GONE);
                         logger.i("无朗读数据,回到直播界面" + rolePlayerHeads.size() + ":" + rolePlayerMessages.size());
                         XESToastUtils.showToast(mContext, "无朗读数据");
-                        //进入人机
                         //mRolePlayBll.goToRobot();
-                        onDestroy();
+                       if(mRolePlayBll != null){
+                           mRolePlayBll.closeCurPage();
+                       }
                     }
                 } else {
                     rlMatchPager.setVisibility(View.GONE);
