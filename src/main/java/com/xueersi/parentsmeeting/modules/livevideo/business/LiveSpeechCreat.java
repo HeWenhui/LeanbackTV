@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAsse
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.BaseSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 /**
@@ -53,6 +54,18 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
                 true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
         return rolePlayerPager;
     }
+
+
+    @Override
+    public BaseSpeechAssessmentPager createNewRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
+                                                    SpeechEvalAction speechEvalAction, String stuCouId) {
+                SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
+                videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
+
+        return speechAssessmentPager;
+    }
+
 
     @Override
     public void setViewLayoutParams(BaseSpeechAssessmentPager baseVoiceAnswerPager, int rightMargin) {

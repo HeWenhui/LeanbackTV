@@ -730,8 +730,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             rolePlayAction.onGoToRobot();
                         }
                         logger.e("走人机111");
-                        speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo,videoQuestionLiveEntity,
-                                id, QuestionBll.this, stuCouId,rolePlayMachineBll);
+                        speechAssessmentPager = baseSpeechCreat.createNewRolePlay(activity, liveGetInfo,videoQuestionLiveEntity,
+                                id, QuestionBll.this, stuCouId);
                         speechAssessmentPager.setIse(mIse);
                         speechAssessmentPager.initData();
                         logger.i("走人机");
