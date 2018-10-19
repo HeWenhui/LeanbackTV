@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -154,23 +155,28 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                view.setDrawingCacheEnabled(true);
-                view.buildDrawingCache();
-                Bitmap bmpScreen = view.getDrawingCache();
-                if (cut) {
-                    bmpScreen = LiveCutImage.cutBitmap(bmpScreen);
-                }
-                File savedir = new File(alldir, "type-" + type);
-                if (!savedir.exists()) {
-                    savedir.mkdirs();
-                }
-                File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
-                LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
-                view.destroyDrawingCache();
-                mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath());
-                uploadWonderMoment(type, saveFile.getPath());
-                if (cut) {
-                    bmpScreen.recycle();
+                try {
+                    view.setDrawingCacheEnabled(true);
+                    view.buildDrawingCache();
+                    Bitmap bmpScreen = view.getDrawingCache();
+                    if (cut) {
+                        bmpScreen = LiveCutImage.cutBitmap(bmpScreen);
+                    }
+                    File savedir = new File(alldir, "type-" + type);
+                    if (!savedir.exists()) {
+                        savedir.mkdirs();
+                    }
+                    File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
+                    LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
+                    view.destroyDrawingCache();
+                    mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath());
+                    uploadWonderMoment(type, saveFile.getPath());
+                    if (cut) {
+                        bmpScreen.recycle();
+                    }
+                } catch (Exception e) {
+                    logger.e("cutImage", e);
+                    CrashReport.postCatchedException(e);
                 }
             }
         };
