@@ -279,18 +279,18 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
             ImageView ivHead = resultDetailRootView.findViewById(R.id.iv_arts_answer_result_detail_head);
             View bgView = resultDetailRootView.findViewById(R.id.v_arts_answer_result_detail_bg);
             if (RESULT_TYPE_CORRECT == mReusltType) {
-                bgView.setBackgroundResource(R.drawable.arts_answer_result_correct_bg);
+                bgView.setBackgroundResource(R.drawable.arts_answer_result_correct_bg_big);
                 tvState.setTextColor(Color.parseColor("#F13232"));
                 ivHead.setImageResource(R.drawable.arts_answer_correct_head);
                 tvState.setText("完美!完全正确!");
             } else if (RESULT_TYPE_PART_CORRECT == mReusltType) {
 
-                bgView.setBackgroundResource(R.drawable.arts_answer_result_partcorrect_bg);
+                bgView.setBackgroundResource(R.drawable.arts_answer_result_partcorrect_bg_big);
                 tvState.setTextColor(Color.parseColor("#F0773c"));
                 ivHead.setImageResource(R.drawable.arts_answer_partcorrect_head);
                 tvState.setText("哎呀!好可惜!");
             } else {
-                bgView.setBackgroundResource(R.drawable.arts_answer_result_error_bg);
+                bgView.setBackgroundResource(R.drawable.arts_answer_result_error_bg_big);
                 tvState.setTextColor(Color.parseColor("#327AF0"));
                 ivHead.setImageResource(R.drawable.arts_answer_error_head);
                 tvState.setText("加油!再接再厉!");

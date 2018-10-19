@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     >
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_arts_answer_result_sumbit_toast"
         android:layout_width="269dp"
         android:layout_height="83dp"
