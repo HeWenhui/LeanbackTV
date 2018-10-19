@@ -1129,4 +1129,16 @@ public class LiveGetInfo {
     public void setMulh5url(String mulh5url) {
         this.mulh5url = mulh5url;
     }
+
+    /**直播间额外参数信息*/
+    private ArtsExtLiveInfo artsExtLiveInfo;
+
+    public void setArtsExtLiveInfo(ArtsExtLiveInfo artsExtLiveInfo) {
+        this.artsExtLiveInfo = artsExtLiveInfo;
+    }
+
+    public ArtsExtLiveInfo getArtsExtLiveInfo() {
+        return artsExtLiveInfo;
+    }
+
 }

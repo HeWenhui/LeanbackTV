@@ -16,6 +16,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -29,6 +30,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -405,6 +407,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
             logger.d( "onResult(SUCCESS):phoneScores.isEmpty");
         } else {
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
+                logger.e("选择题！！！" + "type:" + type);
                 int rightIndex = -1;
                 int rightCount = 0;
                 String sss = "";
@@ -466,6 +469,8 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                                     entity.setStandardAnswer(answer);
                                     String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
                                     VoiceAnswerLog.sno5(VoiceAnswerPager.this, sourcetype, baseVideoQuestionEntity.getvQuestionID(), baseVideoQuestionEntity.nonce);
+                                    // 发送已答过这题的标识
+//                                    EventBus.getDefault().post(new ArtsAnswerResultEvent(baseVideoQuestionEntity.getvQuestionID(),2));
                                 }
                             }
 
@@ -525,6 +530,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                     }
                 }
             } else {
+                logger.e( "  填空题！！！" + "type:" + type);
                 int score = phoneScores.get(0).getScore();
                 boolean isRight = score > 0;
                 logger.d( "onResult(SUCCESS):score=" + score);
@@ -573,6 +579,8 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                                 entity.setStandardAnswer(answer);
                                 String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
                                 VoiceAnswerLog.sno5(VoiceAnswerPager.this, sourcetype, baseVideoQuestionEntity.getvQuestionID(), baseVideoQuestionEntity.nonce);
+                                // 发送已答过这题的标识
+//                                EventBus.getDefault().post(new ArtsAnswerResultEvent(baseVideoQuestionEntity.getvQuestionID(),ArtsAnswerResultEvent.TYPE_NATIVE_ANSWERRESULT));
                             }
                         }
 
