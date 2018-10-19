@@ -109,7 +109,7 @@
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
             android:id="@id/rcl_arts_answer_result_detail"
-            android:layout_width="360dp"
+            android:layout_width="370dp"
             android:layout_height="130dp"
             android:layout_below="@id/tv_arts_answer_result_detail_title"
             android:layout_centerHorizontal="true"
