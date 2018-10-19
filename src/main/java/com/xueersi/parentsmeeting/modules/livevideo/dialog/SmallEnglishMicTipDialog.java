@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -59,6 +60,11 @@ public class SmallEnglishMicTipDialog extends BaseAlertDialog {
 //            }
 //        }, 3000);
 //    }
+
+    public void setTypeface(Typeface typeface) {
+        tvArtsMic.setTypeface(typeface);
+    }
+
     public boolean setFail(String text, int seconds) {
         setText(text);
         int oldStatus = status;

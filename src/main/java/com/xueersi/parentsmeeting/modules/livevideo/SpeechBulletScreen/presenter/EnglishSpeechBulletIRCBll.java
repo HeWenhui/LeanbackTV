@@ -3,14 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.presente
 import android.app.Activity;
 
 import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.Contract.EnglishSpeechBulletContract;
-import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenBll;
-import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.view.EnglishSpeechBulletPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -33,17 +30,9 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
      */
     private String open;
     /**
-     * 语音弹幕场次ID
+     * 该场次语音弹幕开启次数
      */
-    private String voiceId;
-    /**
-     * 语音弹幕开启老师类型："t" 主讲 "f" 辅导
-     */
-    private String from;
-    /**
-     * 学生有无分组
-     */
-    private boolean haveTeam = false;
+    private String voiceBarrageCount;
     /**
      * MVP模式V层接口
      */
@@ -58,21 +47,20 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-            // teamID不为空&不等于0，说明学生有分组
-            if (!StringUtils.isEmpty(studentLiveInfo.getTeamId()) && !"0".equals(studentLiveInfo.getTeamId())) {
-                haveTeam = true;
-            }
-        }
 
-        JSONObject data = null;
-        try {
-            data = new JSONObject("{\"from\":\"f\",\"open\":true,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        onNotice("", "", data, 260);
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                JSONObject data = null;
+//                try {
+//                    data = new JSONObject("{\"open\":true,\"type\":\"1005\"}");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                onNotice("", "", data, 260);
+//            }
+//        }, 1000);
+
     }
 
     @Override
@@ -90,29 +78,33 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         switch (type) {
-            case XESCODE.XCR_ROOM_DANMU_OPEN: {
-                if (englishSpeechBulletView == null) {
-
-                }
-                open = data.optString("open");
-                voiceId = data.optString("voiceId");
-                from = data.optString("from");
-                //voice不能为空，并且发送notice老师类型的与当前直播的老师类型一致
-                if ((!StringUtils.isEmpty(voiceId)) &&
-                        (LiveTopic.MODE_CLASS.equals(mGetInfo.getMode()) && "t".equals(from) || LiveTopic.MODE_TRANING.equals(mGetInfo.getMode()) && "f".equals(from))) {
-                    if ("true".equals(open)) {
-                        if (englishSpeechBulletView != null) {
-                            englishSpeechBulletView.showSpeechBullet(mRootView);
-                        }
-                    } else if ("false".equals(open)) {
-                        englishSpeechBulletView.closeSpeechBullet(true);
-                    }
-                } else if ("".equals(voiceId)) {
-                    // 教师端退出情况：如果收到的260消息中的voiceId字段为空，学生退出弹幕但不要弹出提示窗口。
+            case XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE: {
+                //开启/关闭弹幕
+                String open = data.optString("open");
+                voiceBarrageCount = data.optString("voiceBarrageCount");
+                if ("true".equals(open)) {
                     if (englishSpeechBulletView != null) {
-                        englishSpeechBulletView.closeSpeechBullet(false);
+                        englishSpeechBulletView.showSpeechBullet(mRootView);
                     }
+                } else if ("false".equals(open)) {
+                    englishSpeechBulletView.closeSpeechBullet(true);
                 }
+                break;
+            }
+            case XESCODE.XCR_ROOM_VOICEBARRAGE: {
+                //弹幕消息
+                String headImg = data.optString("headImg");
+                String context = data.optString("context");
+                String name = data.optString("name");
+                String teamId = data.optString("teamId");
+                englishSpeechBulletView.receiveDanmakuMsg(name, context, headImg);
+                break;
+            }
+
+            case XESCODE.XCR_ROOM_VOICEBARRAGEPRAISE: {
+                //表扬消息
+                String context = data.optString("context");
+                englishSpeechBulletView.receivePraiseMsg(context);
                 break;
             }
             default:
@@ -123,48 +115,59 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     @Override
     public int[] getNoticeFilter() {
         return new int[]{
-                XESCODE.XCR_ROOM_DANMU_OPEN, XESCODE.XCR_ROOM_DANMU_SEND
+                XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE, XESCODE.XCR_ROOM_VOICEBARRAGE, XESCODE.XCR_ROOM_VOICEBARRAGEPRAISE
         };
     }
 
     @Override
-    public void sendDanmakuMessage(String msg) {
+    public void uploadSpeechBulletScreen(String msg, HttpCallBack requestCallBack) {
+        JSONObject data = new JSONObject();
         try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("type", "" + XESCODE.XCR_ROOM_DANMU_SEND);
-            jsonObject.put("name", mGetInfo.getStuName());
-            jsonObject.put("headImg", mGetInfo.getHeadImgPath());
-            jsonObject.put("msg", msg);
-            //不同组的学生互相不能看弹幕
-            if (haveTeam) {
-                LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-                String teamId = studentLiveInfo.getTeamId();
-                jsonObject.put("from", "android_" + teamId);
-                jsonObject.put("to", teamId);
-                //如果teamId小于0，说明该生是临调生
-//                    if (!StringUtils.isEmpty(teamId) && teamId.startsWith("-")) {
-//                        jsonObject.put("temporary", "1");
-//                    }
+            data.put("subjectIds", mGetInfo.getSubjectIds());
+            if (mGetInfo.getMode().equals(LiveTopic.MODE_CLASS)) {
+                data.put("teaSenderId", mLiveBll.getMainTeacherStr());
+            } else {
+                data.put("teaSenderId", mLiveBll.getCounTeacherStr());
+            }
+            data.put("studentId", mGetInfo.getStuId());
+            data.put("courseId", mGetInfo.getStudentLiveInfo().getCourseId());
+            data.put("classId", mGetInfo.getStudentLiveInfo().getCourseId());
+            data.put("liveId", mLiveBll.getLiveId());
+            data.put("liveType", mGetInfo.getLiveType());
+            data.put("liveType", mGetInfo.getStudentLiveInfo().getTeamId());
+            data.put("bulletId", mLiveBll.getLiveId() + voiceBarrageCount);
+            data.put("keywords", "");
+
+            JSONObject content = new JSONObject();
+            content.put("type", XESCODE.XCR_ROOM_VOICEBARRAGE);
+            content.put("senderId", mLiveBll.getConnectNickname());
+            content.put("context", msg);
+            content.put("name", mGetInfo.getStuName());
+            content.put("headmg", mGetInfo.getHeadImgPath());
+            data.put("content", content);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        getHttpManager().pushSpeechBullet(5, data.toString(), new HttpCallBack(false) {
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
             }
 
-            mLiveBll.sendMessage(jsonObject);
-        } catch (Exception e) {
-            logger.e("sendDanmakuMessage", e);
-        }
-    }
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
 
-    @Override
-    public void uploadSpeechBulletScreen(String msg, HttpCallBack requestCallBack) {
-        getHttpManager().uploadVoiceBarrage(mGetInfo.getId(), mGetInfo.getStuId(), voiceId, msg, requestCallBack);
+            }
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
+            }
+        });
     }
 
     @Override
     public String getHeadImgUrl() {
         return mGetInfo.getHeadImgPath();
-    }
-
-    @Override
-    public String getVoiceId() {
-        return voiceId;
     }
 }
