@@ -1110,11 +1110,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onBack(final LiveBasePager liveBasePager) {
-        if(liveBasePager instanceof RolePlayMachinePager){
-            //多人连麦的人机返回事件
-            if (onSpeechPagerBack()) return;
-
-        }
+//        if(liveBasePager instanceof RolePlayMachinePager){
+//            //多人连麦的人机返回事件
+//            if (onSpeechPagerBack()) return;
+//
+//        }
 
         VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, (BaseApplication)
                 BaseApplication.getContext(), false,
