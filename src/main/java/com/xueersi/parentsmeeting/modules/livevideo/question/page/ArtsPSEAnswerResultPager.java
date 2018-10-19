@@ -62,8 +62,8 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     /**
      * 关闭按钮 尺寸
      */
-    private final int CLOSEBTN_HEIGHT = 30;
-    private final int CLOSEBTN_WIDTH = 30;
+    private final int CLOSEBTN_HEIGHT = 37;
+    private final int CLOSEBTN_WIDTH = 37;
 
     /**
      * 单选题 答案 展示item  距离顶部的  距离
@@ -224,8 +224,8 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         int screenHeight = Math.max(point.x, point.y);
 
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width, hieght);
-        layoutParams.topMargin = (int) (screenWidth * 0.128f);
-        layoutParams.rightMargin = (int) (screenHeight * 0.191f);
+        layoutParams.topMargin = (int) (screenWidth * 0.122f);
+        layoutParams.rightMargin = (int) (screenHeight * 0.180f);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         rlAnswerRootLayout.addView(closeBtn, layoutParams);
 
@@ -347,7 +347,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                     int top = 0;
                     int bottom = 0;
                     if (itemPosition >= SPAN_COUNT) {
-                        top = SizeUtils.Dp2Px(mContext, 10);
+                        top = SizeUtils.Dp2Px(mContext, 8);
                     }
                     outRect.set(left, top, right, bottom);
                 } else {
@@ -456,6 +456,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                     }
                 }
             }
+
             return  stringBuilder.toString();
         }
     }

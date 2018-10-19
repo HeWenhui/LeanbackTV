@@ -42,12 +42,12 @@
         <attr name="auto_star" format="boolean"></attr>
     </declare-styleable>
 
-    <!--文科表扬榜答案 展示控件属性-->
     <declare-styleable name="ArtsTextView">
-        <!--滑动头图片资源引用-->
         <attr name="suffixIcon" format="reference"></attr>
         <attr name="drawableTopMargin" format="dimension" />
         <attr name="drawableLeftMargin" format="dimension" />
+        <!--是否使用系统默认字体,false:使用方正粗圆字体-->
+        <attr name="useDefultTextFont" format="boolean"/>
     </declare-styleable>
 
 </resources>

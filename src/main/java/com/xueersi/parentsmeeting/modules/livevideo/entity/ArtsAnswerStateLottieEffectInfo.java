@@ -7,9 +7,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.text.TextUtils;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 
@@ -31,7 +34,7 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
     protected Logger logger = LoggerFactory.getLogger("ArtsAnswerStateLottieEffectInfo");
 
     private static final String TEXTCOLOR = "#FFDB2A";
-    private static final int TEXTSIZE = 25;
+    private static final int TEXTSIZE = 30;
 
     private static final String TITLE_FILE_NAME = "img_15.png";
     private static final String TITLE_BG_FILE_NAME = "img_16.png";
@@ -122,13 +125,18 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
             paint.setTextSize(TEXTSIZE);
             paint.setTextAlign(Paint.Align.LEFT);
 
+            Typeface fontFace = FontCache.getTypeface(BaseApplication.getContext(), "fangzhengcuyuan.ttf");
+            if(fontFace != null){
+                paint.setTypeface(fontFace);
+            }
 
             Rect fontRect = new Rect();
             paint.getTextBounds(mCoinStr, 0, mCoinStr.length(), fontRect);
             int textHeight = fontRect.height();
             logger.e("=====>textHeight:"+textHeight+":"+height);
             Paint.FontMetricsInt fontMetricsInt = paint.getFontMetricsInt();
-            int baseLine = (height - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
+            //int baseLine = (height - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
+            int baseLine = (height -(fontMetricsInt.descent - fontMetricsInt.ascent))/2 - fontMetricsInt.ascent;
             logger.e("=====>baseLine:"+baseLine);
             canvas.drawText(mCoinStr, 0, baseLine, paint);
         }
