@@ -81,6 +81,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     /** 帧数10秒统计,开始时间 */
     private long frame10Start;
     private long lastTrafficStatisticByteCount;
+    private long trafficStatisticByteCount;
     /** 视频是不是再缓冲 */
     private boolean isBuffer = false;
     /** 视频是不是暂停 */
@@ -313,7 +314,16 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             }
                             fistDisaplyCount = disaplyCount;
                             lastTrafficStatisticByteCount = trafficStatisticByteCount;
+                            LivePlayLog.this.trafficStatisticByteCount = lastTrafficStatisticByteCount;
                             lastHeartTime = frame10Start = System.currentTimeMillis();
+                        } else {
+                            try {
+                                if (vPlayer.isInitialized()) {
+                                    trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                         lastDisaplyCount = disaplyCount;
                         if (!isLive) {
@@ -372,13 +382,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             } else {
                 dataJson.put("node", "xrs_back");
             }
-            long trafficStatisticByteCount = lastTrafficStatisticByteCount;
             if (vPlayer.isInitialized()) {
                 IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                 trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
                 logger.d("downCom:trafficStatisticByteCount=" + trafficStatisticByteCount);
             }
-
             long heartTime;
             if (lastHeartTime == 0) {
                 heartTime = 0;
@@ -387,7 +395,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             }
             dataJson.put("hbDur", heartTime);
             dataJson.put("dnDur", heartTime);
-            dataJson.put("bytes", (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+            long bytes = trafficStatisticByteCount - lastTrafficStatisticByteCount;
+            if (bytes < 0) {
+                bytes = 0;
+            }
+            dataJson.put("bytes", bytes);
             dataJson.put("uid", "" + userId);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -430,7 +442,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             dataJson.put("msg", "Success");
             dataJson.put("method", activity.getClass().getSimpleName() + "-" + method);
             long bufferduration = dur;
-            long trafficStatisticByteCount = lastTrafficStatisticByteCount;
             if (vPlayer.isInitialized()) {
                 IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                 bufferduration = ijkMediaPlayer.getVideoCachedDuration();
@@ -456,7 +467,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 heartTime = (System.currentTimeMillis() - this.lastHeartTime);
             }
             dataJson.put("hbDur", heartTime);
-            dataJson.put("bytes", (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+            long bytes = trafficStatisticByteCount - lastTrafficStatisticByteCount;
+            if (bytes < 0) {
+                bytes = 0;
+            }
+            dataJson.put("bytes", bytes);
 //            dataJson.put("allpri", "" + tidAndPri.get(tid));
             dataJson.put("uid", "" + userId);
         } catch (JSONException e) {
@@ -1206,7 +1221,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     dataJson.put("msg", "" + playFailCode.getTip());
                     if (isOpenSuccessfinal) {
                         long bufferduration = 0;
-                        long trafficStatisticByteCount = lastTrafficStatisticByteCount;
                         if (vPlayer.isInitialized()) {
                             IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                             bufferduration = ijkMediaPlayer.getVideoCachedDuration();
@@ -1225,7 +1239,11 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                         dataJson.put("fps", videofps);
                         dataJson.put("playBuf", bufferduration);
                         dataJson.put("hbDur", heartTime);
-                        dataJson.put("bytes", (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+                        long bytes = trafficStatisticByteCount - lastTrafficStatisticByteCount;
+                        if (bytes < 0) {
+                            bytes = 0;
+                        }
+                        dataJson.put("bytes", bytes);
                     } else {
                         URLDNS urldns = new URLDNS();
                         try {
