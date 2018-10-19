@@ -15,7 +15,6 @@
         android:textColor="@color/white"
         android:textSize="9sp"
         android:gravity="center"
-        android:layout_marginTop="2dp"
         />
 
     <LinearLayout
@@ -69,6 +68,7 @@
         android:visibility="gone"
         app:useDefultTextFont="false"
         android:lineSpacingExtra="6dp"
+        android:layout_marginTop="-3dp"
         />
 
 </RelativeLayout>

@@ -54,6 +54,7 @@
         android:textColor="#6CBF4C"
         android:textSize="17sp"
         android:visibility="gone"
+        android:layout_marginTop="-3dp"
         android:lineSpacingExtra="3dp"
         />
 

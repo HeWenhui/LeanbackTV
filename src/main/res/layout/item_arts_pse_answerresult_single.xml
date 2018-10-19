@@ -57,6 +57,7 @@
         android:textSize="17sp"
         app:useDefultTextFont="false"
         android:lineSpacingExtra="6dp"
+        android:layout_marginTop="-3dp"
         />
 
 
