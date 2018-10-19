@@ -331,21 +331,28 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                if (mBottomContent != null && mRolePlayMachinePager != null) {
-                    mBottomContent.removeView(mRolePlayMachinePager.getRootView());
-                    mRolePlayMachinePager.closeCurrentPage();
-                    mRolePlayMachinePager.onDestroy();
-                    mRolePlayMachinePager = null;
-                    AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
-                    if (audioRequest != null) {
-                        audioRequest.release();
-                    }
-                    UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext,UpdateAchievement.class);
-                    if (updateAchievement != null) {
-                        updateAchievement.getStuGoldCount();
-                    }
-                }
+                closeCurPage();
             }
         });
     }
+
+    @Override
+    public void closeCurPage() {
+        if (mBottomContent != null && mRolePlayMachinePager != null) {
+            mBottomContent.removeView(mRolePlayMachinePager.getRootView());
+            mRolePlayMachinePager.relaseCurrentPage();
+            mRolePlayMachinePager.onDestroy();
+            mRolePlayMachinePager = null;
+            AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
+            if (audioRequest != null) {
+                audioRequest.release();
+            }
+            UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext,UpdateAchievement.class);
+            if (updateAchievement != null) {
+                updateAchievement.getStuGoldCount();
+            }
+        }
+    }
+
+
 }

@@ -185,24 +185,22 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
         }
 
-        if(mQuestionAction != null){
-            //解决，老师发题后，学生后进来，无法进入roleplay的问题
-            //人机的回调
-            if (rolePlayMachineAction == null) {
-                RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
-            }
-
-            //多人的回调
-            if (rolePlayAction == null) {
-                RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
-                mQuestionAction.setRolePlayAction(rolePlayerBll);
-                rolePlayAction = rolePlayerBll;
-            }
-        }
 
         if (liveTopic.getVideoQuestionLiveEntity() != null) {
             if (mQuestionAction != null) {
+                //解决，老师发题后，学生后进来，无法进入roleplay的问题
+                //人机的回调
+                if (rolePlayMachineAction == null) {
+                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                    mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                }
+
+                //多人的回调
+                if (rolePlayAction == null) {
+                    RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
+                    mQuestionAction.setRolePlayAction(rolePlayerBll);
+                    rolePlayAction = rolePlayerBll;
+                }
                 mQuestionAction.showQuestion(liveTopic.getVideoQuestionLiveEntity());
                 if (mAnswerRankBll != null) {
                     mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());

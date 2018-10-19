@@ -140,8 +140,6 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
     private void voiceClick() {
         //点击语音的时候记录日志
         logger.i( " 点击播放音频，记录日志 ");
-        mIsPlaying = true;
-
 
         RolePlayLog.sno8(mLiveBll, mEntity, mContext);
         playAudio(false);

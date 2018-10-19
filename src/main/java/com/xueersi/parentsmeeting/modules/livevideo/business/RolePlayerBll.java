@@ -223,21 +223,28 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                if (bottomContent != null && mRolePlayerPager != null) {
-                    bottomContent.removeView(mRolePlayerPager.getRootView());
-                    mRolePlayerPager.onDestroy();
-                    mRolePlayerPager = null;
-                    AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
-                    if (audioRequest != null) {
-                        audioRequest.release();
-                    }
-                    UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext,UpdateAchievement.class);
-                    if (updateAchievement != null) {
-                        updateAchievement.getStuGoldCount();
-                    }
-                }
+                closeCurPage();
             }
         });
+    }
+
+    /**
+     * 关掉当前页面
+     */
+    public void closeCurPage() {
+        if (bottomContent != null && mRolePlayerPager != null) {
+            bottomContent.removeView(mRolePlayerPager.getRootView());
+            mRolePlayerPager.onDestroy();
+            mRolePlayerPager = null;
+            AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
+            if (audioRequest != null) {
+                audioRequest.release();
+            }
+            UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext,UpdateAchievement.class);
+            if (updateAchievement != null) {
+                updateAchievement.getStuGoldCount();
+            }
+        }
     }
 
     /**

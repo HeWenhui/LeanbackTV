@@ -31,6 +31,7 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerSelfItem;
@@ -103,6 +104,18 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
      * 准备开始朗读前的提示文案
      */
     private TextView tvBeginTipMsg;
+
+    /**
+     * roleplay回放的时候，增加关闭按钮
+     */
+    TextView tv_close_role_play;
+
+    /**
+     * 倒计时整体布局
+     */
+    View ll_live_roleplayer_countdown_main;
+
+
     /**
      * 倒计时器
      */
@@ -288,7 +301,16 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         rlMatchLottie = view.findViewById(R.id.rl_live_roleplayer_match_lottie);
         rlMatchRoleList = view.findViewById(R.id.rl_live_roleplayer_rolelist);
         rlMatchPager.setVisibility(View.VISIBLE);
+        tv_close_role_play = view.findViewById(R.id.tv_close_role_play);
+        //倒计时整体布局,在回放的时候隐藏显示
+        ll_live_roleplayer_countdown_main = view.findViewById(R.id.ll_live_roleplayer_countdown_main);
+        //倒计时textview
         tvCountTime = view.findViewById(R.id.tv_live_roleplayer_countdown);
+
+        //只在直播的时候显示倒计时布局
+        ll_live_roleplayer_countdown_main.setVisibility(View.VISIBLE);
+        tv_close_role_play.setVisibility(View.GONE);
+
         gvRoleHeadShow = view.findViewById(R.id.gv_live_roleplayer_headshow);
         rlRoleReadMain = view.findViewById(R.id.rl_live_roleplayer_read_main);
         tvBeginTipMsg = view.findViewById(R.id.tv_live_roleplayer_countdown_tip);
@@ -1376,4 +1398,15 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
     interface RoleEvaluatorListener extends EvaluatorListenerWithPCM, EvaluatorListener {
 
     }
+
+    @Override
+    public boolean onUserBackPressed() {
+        logger.i("点击返回");
+        if(mRolePlayBll != null){
+            mRolePlayBll.closeCurPage();
+            return true;
+        }
+        return false;
+    }
+
 }
