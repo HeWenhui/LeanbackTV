@@ -506,10 +506,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
             return;
         }
-
-
         logger.e("======> showQuestion 11111");
-
         //不是语音评测
         if (IS_SCIENCE && !"4".equals(videoQuestionLiveEntity.type)) {
             if (videoQuestionLiveEntity.isTestUseH5) {
@@ -617,8 +614,148 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 baseSpeechCreat.receiveRolePlay(videoQuestionLiveEntity);
             }
         }
-        mVPlayVideoControlHandler.post(new Runnable() {
 
+        logger.e("======> showQuestion 55555:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
+        if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
+            doNewArtsAnswerQuetion(videoQuestionLiveEntity);
+        } else {
+            doArtsAnswerQuestion(videoQuestionLiveEntity);
+        }
+        mVPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
+    }
+
+
+
+
+    /**
+     * 文科课件平台改版后 文科答题 处理逻辑
+     * 1 选择 填空  不再走本地  统一由走h5
+     * 2 rolepaly，语音答题等 走新接口
+     *
+     * @param videoQuestionLiveEntity
+     */
+    private void doNewArtsAnswerQuetion(final VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        mVPlayVideoControlHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                // 文科选择 填空题
+                if ("0".equals(videoQuestionLiveEntity.type) || "1".equals(videoQuestionLiveEntity.type)
+                        || "2".equals(videoQuestionLiveEntity.type)) {
+                    mVPlayVideoControlHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (questionWebPager != null && questionWebPager.getTestId().equals(videoQuestionLiveEntity
+                                    .getvQuestionID())) {
+                                return;
+                            }
+                            if (questionWebPager != null) {
+                                mLogtf.d("showQuestion:oldTestId=" + questionWebPager.getTestId());
+                                questionWebPager.onDestroy();
+                                rlQuestionContent.removeView(questionWebPager.getRootView());
+                                questionWebPager = null;
+                            }
+                            logger.e("====>" + "type:" + videoQuestionLiveEntity.type);
+                            QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this,
+                                    videoQuestionLiveEntity, liveGetInfo.getId());
+                            questionWebPager.setLivePagerBack(QuestionBll.this);
+                            rlQuestionContent.addView(questionWebPager.getRootView());
+                            QuestionBll.this.questionWebPager = questionWebPager;
+                            setHaveWebQuestion(true);
+                            activity.getWindow().getDecorView().requestLayout();
+                            activity.getWindow().getDecorView().invalidate();
+                        }
+                    });
+                } else if ("4".equals(videoQuestionLiveEntity.type) || "5".equals(videoQuestionLiveEntity.type) ||
+                        "6".equals(videoQuestionLiveEntity.type)) {
+                    String id = videoQuestionLiveEntity.id;
+                    if (speechAssessmentPager != null && id.equals(speechAssessmentPager.getId())) {
+                        return;
+                    }
+                    if (speechAssessmentPager != null) {
+                        mLogtf.d("showQuestion:examSubmitAll:id=" + speechAssessmentPager.getId());
+                        speechAssessmentPager.onDestroy();
+                        speechAssessmentPager.examSubmitAll();
+                        if (speechAssessmentPager != null) {
+                            rlQuestionContent.removeView(speechAssessmentPager.getRootView());
+                        }
+                    }
+                    AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+                    if (audioRequest != null) {
+                        audioRequest.request(new AudioRequest.OnAudioRequest() {
+                            @Override
+                            public void requestSuccess() {
+                                if (voiceAnswerPager != null) {
+                                    voiceAnswerPager.setAudioRequest();
+                                }
+                            }
+                        });
+                    } else {
+                        if (voiceAnswerPager != null) {
+                            voiceAnswerPager.setAudioRequest();
+                        }
+                    }
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
+                            .MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT);
+                    if ("1".equals(videoQuestionLiveEntity.isAllow42)) {
+                        /** 已经作答 */
+                        boolean haveAnswer = mQueAndBool.contains(videoQuestionLiveEntity.id);
+                        LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
+                        String learning_stage = null;
+                        if (studentLiveInfo != null) {
+                            learning_stage = studentLiveInfo.getLearning_stage();
+                        }
+                        BaseSpeechAssessmentPager speechAssAutoPager = baseSpeechCreat.createSpeech(activity,
+                                liveGetInfo.getId(), videoQuestionLiveEntity.nonce,
+                                videoQuestionLiveEntity,
+                                haveAnswer, QuestionBll.
+                                        this, lp, liveGetInfo, learning_stage);
+                        speechAssessmentPager = speechAssAutoPager;
+                        speechAssessmentPager.setIse(mIse);
+                        speechAssessmentPager.initData();
+
+                    } else {
+                        logger.e("走人机000");
+                        if ("1".equals(videoQuestionLiveEntity.multiRolePlay)) {
+                            if (rolePlayAction != null) {
+                                mQueAndBool.add(id);
+                                rolePlayAction.teacherPushTest(videoQuestionLiveEntity);
+                                return;
+                            }
+                            logger.e("走人机010");
+                        }
+                        if (rolePlayAction != null && id.equals(rolePlayAction.getQuestionId())) {
+                            return;
+                        }
+                        if (rolePlayAction != null) {
+                            //走人机也通知多人的关掉WebSocket
+                            rolePlayAction.onGoToRobot();
+                        }
+                        logger.e("走人机111");
+                        speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo,videoQuestionLiveEntity,
+                                id, QuestionBll.this, stuCouId,rolePlayMachineBll);
+                        speechAssessmentPager.setIse(mIse);
+                        speechAssessmentPager.initData();
+                        logger.i("走人机");
+                    }
+                    setHaveSpeech(true);
+                    rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
+                } else if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity.type)) {
+                    showSubjectiveQuestion(videoQuestionLiveEntity);
+                }
+            }
+        });
+
+    }
+
+
+    /**
+     * 旧版文科课件本地 答题
+     *
+     * @param videoQuestionLiveEntity
+     */
+    private void doArtsAnswerQuestion(final VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
                 mLogtf.d("showQuestion:type=" + videoQuestionLiveEntity.type);
@@ -687,15 +824,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             voiceAnswerPager.setAudioRequest();
                         }
                     }
-//                    speechAssessmentPager = new SpeechAssessmentPager(activity, QuestionBll.this, speechEvalUrl,
-// liveGetInfo.getStuId(), liveGetInfo.getId(), id);
-//                    speechAssessmentPager = new SpeechAssessmentPager(activity, true, liveGetInfo.getId(),
-//                            liveGetInfo.getStuId(), QuestionBll.this, id, speechEvalResultUrl);
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
                             .MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT);
                     if ("1".equals(videoQuestionLiveEntity.isAllow42)) {
-                        /** 已经作答 */
+                        //已作答
                         boolean haveAnswer = mQueAndBool.contains(videoQuestionLiveEntity.id);
                         LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
                         String learning_stage = null;
@@ -709,21 +842,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                         this, lp, liveGetInfo, learning_stage);
                         speechAssessmentPager = speechAssAutoPager;
                         speechAssessmentPager.setIse(mIse);
-//                        if (speechAssAutoPager instanceof SpeechAssAutoPager) {
-//                            int screenWidth = ScreenUtils.getScreenWidth();
-//                            int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth /
-// LiveVideoActivity.VIDEO_WIDTH);
-//                            lp.rightMargin = wradio;
-//                        }
                         speechAssessmentPager.initData();
-//                        rlQuestionContent.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                if (speechAssessmentPager != null) {
-//                                    speechAssessmentPager.examSubmitAll();
-//                                }
-//                            }
-//                        }, 3000);
                     } else {
                         if ("1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                             if (rolePlayAction != null) {
@@ -750,15 +869,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             logger.i("rolePlayAction 为空");
                             return;
                         }
-
                         speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo, videoQuestionLiveEntity,
-                                    id, QuestionBll.this, stuCouId,rolePlayMachineBll);
+                                id, QuestionBll.this, stuCouId,rolePlayMachineBll);
                         speechAssessmentPager.setIse(mIse);
                         rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
                         rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                         speechAssessmentPager.initData();
                         logger.i("走人机 END");
-                            //rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+                        //rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                     }
                     setHaveSpeech(true);
                     rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
@@ -771,8 +889,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 activity.getWindow().getDecorView().invalidate();
             }
         });
-        mVPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
     }
+
+
 
     /**
      * 互动题结果解析

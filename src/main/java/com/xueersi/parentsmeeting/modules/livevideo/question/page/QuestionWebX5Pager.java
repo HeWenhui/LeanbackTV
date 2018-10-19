@@ -242,7 +242,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             examUrl += "&isPlayBack=" + (isLive ? "0" : "1");
             examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
             wvSubjectWeb.loadUrl(examUrl);
-            logger.e( "======> loadUrl:" + examUrl)
+            logger.e( "======> loadUrl:" + examUrl);
         }
         mGoldNum = -1;
         mEngerNum = -1;
