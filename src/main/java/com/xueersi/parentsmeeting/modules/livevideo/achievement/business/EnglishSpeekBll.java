@@ -182,7 +182,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                 if (!initLanuage()) {
                     return false;
                 }
-                talAsrJni.LangIDReset(0);
+//                talAsrJni.LangIDReset(0);
             }
             if (talLanguage == null) {
                 this.talLanguage = new TalLanguage(activity);
@@ -239,7 +239,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                             if (!initLanuage()) {
                                 return;
                             }
-                            talAsrJni.LangIDReset(0);
+//                            talAsrJni.LangIDReset(0);
                         }
                         rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
                         rl_livevideo_english_speak_error.setVisibility(View.GONE);
@@ -255,7 +255,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         if (!initLanuage()) {
                             return;
                         }
-                        talAsrJni.LangIDReset(0);
+//                        talAsrJni.LangIDReset(0);
                     }
                     rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
                     rl_livevideo_english_speak_error.setVisibility(View.GONE);
@@ -761,10 +761,12 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         if (s_language == null) {
             return false;
         }
-        talAsrJni.LangIDSetParam(1);
-        int AssessInitial = talAsrJni.LangIDInitial(s_language.getPath());
-        mLogtf.d("initLanuage:AssessInitial=" + AssessInitial);
-        return AssessInitial == 0;
+//        talAsrJni.LangIDSetParam(1);
+        s_language = new File("/storage/emulated/0/record/s_shurufa_1011");
+//        int AssessInitial = talAsrJni.LangIDInitial(s_language.getPath());
+//        mLogtf.d("initLanuage:AssessInitial=" + AssessInitial);
+//        return AssessInitial == 0;
+        return true;
     }
 
     @Override

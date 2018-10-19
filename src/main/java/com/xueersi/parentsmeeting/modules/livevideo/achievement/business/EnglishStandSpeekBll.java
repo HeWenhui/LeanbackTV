@@ -166,7 +166,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
                 if (!initLanuage()) {
                     return false;
                 }
-                talAsrJni.LangIDReset(0);
+//                talAsrJni.LangIDReset(0);
             }
             logger.d( "initView:time1=" + (System.currentTimeMillis() - before));
             if (talLanguage == null) {
@@ -560,10 +560,12 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
         if (s_language == null) {
             return false;
         }
-        talAsrJni.LangIDSetParam(1);
-        int AssessInitial = talAsrJni.LangIDInitial(s_language.getPath());
-        logger.d( "initLanuage:AssessInitial=" + AssessInitial);
-        return AssessInitial == 0;
+//        talAsrJni.LangIDSetParam(1);
+////        s_language = new File("/storage/emulated/0/record/s_shurufa_1011");
+////        int AssessInitial = talAsrJni.LangIDInitial(s_language.getPath());
+////        logger.d( "initLanuage:AssessInitial=" + AssessInitial);
+////        return AssessInitial == 0;
+        return true;
     }
 
     @Override

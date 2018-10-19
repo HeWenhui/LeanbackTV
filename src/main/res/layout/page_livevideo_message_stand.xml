@@ -93,8 +93,8 @@
 
         <Button
             android:id="@id/bt_livevideo_message_voice_open"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/bt_livevideo_message_open"
             android:background="@drawable/bg_livevideo_message_open"
             android:layout_above="@id/rl_livevideo_message_panelcontent"

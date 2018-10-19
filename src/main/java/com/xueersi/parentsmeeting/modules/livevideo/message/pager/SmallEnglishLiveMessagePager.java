@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Rect;
 import android.graphics.Shader;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -86,7 +87,6 @@ import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -301,11 +301,21 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             @Override
             public void onGlobalLayout() {
                 vwvVoiceChatWave.setLinearGradient(new LinearGradient(0, 0, vwvVoiceChatWave.getMeasuredWidth(), 0,
-                        new int[]{0xFFEA9CF9, 0xFF9DBBFA,0xFF80F9FD}, new float[]{0, 0.5f,1.0f}, Shader.TileMode.CLAMP));
+                        new int[]{0xFFEA9CF9, 0xFF9DBBFA, 0xFF80F9FD}, new float[]{0, 0.5f, 1.0f}, Shader.TileMode
+                        .CLAMP));
             }
         });
         vwvVoiceChatWave.setBackColor(Color.TRANSPARENT);
+        mView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                vwvVoiceChatWave.start();
+            }
+        }, 100);
 
+        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+        btnMessageStartVoice.setTypeface(fontFace);
+        etMessageContent.setTypeface(fontFace);
         return mView;
     }
 
@@ -331,7 +341,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
         mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
         if (mSpeechEvaluatorUtils == null) {
-            mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
+            mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(true);
         }
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
@@ -678,10 +688,11 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         btnMessageStartVoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean hasPermission = XesPermission.hasSelfPermission(liveVideoActivity,Manifest.permission.RECORD_AUDIO);
-                if (!hasPermission){
+                boolean hasPermission = XesPermission.hasSelfPermission(liveVideoActivity, Manifest.permission
+                        .RECORD_AUDIO);
+                if (!hasPermission) {
                     inspectMicPermission();
-                }else {
+                } else {
                     startVoiceInput();
                 }
             }
@@ -745,14 +756,10 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         }
         tvMessageVoiceContent.setText("语音录入中，请大声说英语");
         tvMessageVoiceCount.setText("");
+//        OfflineAssess.autoTestShurufa();
         startEvaluator();
-        mView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                vwvVoiceChatWave.setVisibility(View.VISIBLE);
-                vwvVoiceChatWave.start();
-            }
-        }, 100);
+        vwvVoiceChatWave.setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -1638,14 +1645,15 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     vwvVoiceChatWave.setVisibility(View.GONE);
                     tvVoiceChatCountdown.setText(String.valueOf(millisUntilFinished / 1000));
                 }
-                if (millisUntilFinished == 0) {
-                    stopEvaluator();
-                }
+            }
+            if (millisUntilFinished <= 0) {
+//                    stopEvaluator();
             }
         }
 
         @Override
         public void onFinish() {
+            btnMessageSwitch.performClick();
             tvVoiceChatCountdown.setVisibility(View.GONE);
         }
     };
@@ -1654,8 +1662,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     private void startEvaluator() {
         Log.d(TAG, "startEvaluator()");
         File saveFile = new File(dir, "voicechat" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startSpeechBulletScreenRecognize(saveFile.getPath(), SpeechEvaluatorUtils
-                        .RECOGNIZE_CHINESE,
+        mSpeechEvaluatorUtils.startSpeechRecognitionOffline(saveFile.getPath(), "5", "30",
                 new EvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
@@ -1702,54 +1709,35 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         tvVoiceChatCountdown.setVisibility(View.GONE);
     }
 
-    private void onEvaluatorSuccess(String str, boolean isSpeechFinished) {
+    private void onEvaluatorSuccess(String content, boolean isSpeechFinished) {
         Log.d(TAG, "onEvaluatorSuccess():isSpeechFinish=" + isSpeechFinished);
-        try {
-            JSONObject jsonObject = new JSONObject(str);
-            String content = jsonObject.optString("nbest");
-            JSONArray array = jsonObject.optJSONArray("sensitiveWords");
-            if (array != null && array.length() > 0) {
-                isdirty = "1";
+        //语音录入，限制40字以内
+        if (content.length() > 40) {
+            content = content.substring(0, 40);
+        }
+        mVoiceContent = content;
+        Log.d(TAG, "=====speech evaluating" + content);
+        if (isSpeechFinished) {
+            noSpeechTimer.cancel();
+            tvVoiceChatCountdown.setVisibility(View.GONE);
+            if (!TextUtils.isEmpty(content)) {
+                stopEvaluator();
+                setSpeechFinishView(content);
+                btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_voice);
+                isVoice = false;
             }
-            if (array != null && array.length() > 0) {
-                for (int i = array.length() - 1; i >= 0; i--) {
-                    StringBuilder star = new StringBuilder();
-                    for (int j = 0; j < array.getString(i).length(); j++) {
-                        star.append("*");
-                    }
-                    content = content.replaceAll(array.getString(i), star.toString());
-                }
-            }
-            content = content.replaceAll("。", "");
-            //语音录入，限制15字以内
-            if (content.length() > 40) {
-                content = content.substring(0, 40);
-            }
-            mVoiceContent = content;
-            Log.d(TAG, "=====speech evaluating" + content);
-            if (isSpeechFinished) {
-                noSpeechTimer.cancel();
-                tvVoiceChatCountdown.setVisibility(View.GONE);
-                if (!TextUtils.isEmpty(content)) {
-                    stopEvaluator();
-                    setSpeechFinishView(content);
-                    btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_voice);
-                    isVoice = false;
-                }
 //                else {
 //                    tvMessageVoiceContent.setText("没听清，请重说");
 //                    vwvVoiceChatWave.setVisibility(View.GONE);
 //                }
-            } else {
-                if (!TextUtils.isEmpty(content)) {
-                    tvMessageVoiceContent.setText(content);
-                    tvMessageVoiceCount.setText("(" + tvMessageVoiceContent.getText().toString().length() + "/40)");
-                }
+        } else {
+            if (!TextUtils.isEmpty(content)) {
+                tvMessageVoiceContent.setText(content);
+                tvMessageVoiceCount.setText("(" + tvMessageVoiceContent.getText().toString().length() + "/40)");
             }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
+
+
     }
 
     private void setSpeechFinishView(String content) {

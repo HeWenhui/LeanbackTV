@@ -24,6 +24,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -40,6 +42,7 @@ import android.widget.TextView;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
@@ -77,7 +80,6 @@ import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.ui.widget.button.CompoundButtonGroup;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -233,10 +235,17 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             @Override
             public void onGlobalLayout() {
                 vwvVoiceChatWave.setLinearGradient(new LinearGradient(0, 0, vwvVoiceChatWave.getMeasuredWidth(), 0,
-                        new int[]{0xFFEA9CF9, 0xFF9DBBFA,0xFF80F9FD}, new float[]{0, 0.5f,1.0f}, Shader.TileMode.CLAMP));
+                        new int[]{0xFFEA9CF9, 0xFF9DBBFA, 0xFF80F9FD}, new float[]{0, 0.5f, 1.0f}, Shader.TileMode
+                        .CLAMP));
             }
         });
         vwvVoiceChatWave.setBackColor(Color.TRANSPARENT);
+        mView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                vwvVoiceChatWave.start();
+            }
+        }, 100);
         return mView;
     }
 
@@ -251,9 +260,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             String fileName;
             if (isVoice) {
                 if (open) {
-                    fileName = "live_stand/frame_anim/openvoicemsg/voice_press.png";
+                    fileName = "live_stand/frame_anim/openvoicemsg/polie_00082.png";
                 } else {
-                    fileName = "live_stand/frame_anim/openvoicemsg/voice_normal.png";
+                    fileName = "live_stand/frame_anim/openvoicemsg/polie_00074.png";
                 }
             } else {
                 if (open) {
@@ -296,7 +305,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
             startOpenAnimation(isvoice);
             rlMessageContent.setVisibility(View.VISIBLE);
             lvMessage.setVisibility(View.VISIBLE);
-            if (isvoice){
+            if (isvoice) {
                 startVoiceInput();
             }
         } else {
@@ -305,15 +314,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //                rlMessageBackground.setVisibility(View.VISIBLE);
 //            }
             stopEvaluator();
-            if (isvoice){
-                if (rlMessageVoice.getVisibility() == View.VISIBLE){
+            if (isvoice) {
+                if (rlMessageVoice.getVisibility() == View.VISIBLE) {
                     clearMsgView();
                 } else {
                     startOpenAnimation(true);
                     startVoiceInput();
                 }
             } else {
-                if (rlMessageText.getVisibility() == View.VISIBLE){
+                if (rlMessageText.getVisibility() == View.VISIBLE) {
                     clearMsgView();
                 } else {
                     startOpenAnimation(false);
@@ -323,17 +332,17 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         }
     }
 
-    private void clearMsgView(){
+    private void clearMsgView() {
         rlMessageContent.setVisibility(View.GONE);
         lvMessage.setVisibility(View.GONE);
         rlMessageText.setVisibility(View.GONE);
         rlMessageVoice.setVisibility(View.GONE);
-        initOpenBt(false,true);
-        initOpenBt(false,false);
+        initOpenBt(false, true);
+        initOpenBt(false, false);
         onTitleShow(true);
     }
 
-    private void startOpenAnimation(final boolean isvoice){
+    private void startOpenAnimation(final boolean isvoice) {
         btMesOpen.setEnabled(false);
         btnVoiceMesOpen.setEnabled(false);
         ivMessageClose.setEnabled(false);
@@ -360,11 +369,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 btnVoiceMesOpen.setEnabled(true);
                 btMesOpen.setEnabled(true);
                 ivMessageClose.setEnabled(true);
-                if (isvoice){
+                if (isvoice) {
                     initOpenBt(true, isvoice);
                     initOpenBt(false, false);
 
-                }else {
+                } else {
                     initOpenBt(false, true);
                     initOpenBt(true, false);
                 }
@@ -377,10 +386,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                 logger.d("onAnimationRepeat");
             }
         });
-        if (isvoice){
+        if (isvoice) {
             rlMessageVoice.setVisibility(View.VISIBLE);
             rlMessageText.setVisibility(View.GONE);
-        } else{
+        } else {
             rlMessageText.setVisibility(View.VISIBLE);
             rlMessageVoice.setVisibility(View.GONE);
         }
@@ -442,7 +451,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         .INPUT_METHOD_SERVICE);
                 mInputMethodManager.hideSoftInputFromWindow(etMessageContent.getWindowToken(), 0);
 //                btMesOpen.performClick();
-                if (rlMessageVoice.getVisibility() == View.VISIBLE){
+                if (rlMessageVoice.getVisibility() == View.VISIBLE) {
                     stopEvaluator();
                 }
                 clearMsgView();
@@ -628,7 +637,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
         mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
         if (mSpeechEvaluatorUtils == null) {
-            mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
+            mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(true, 1);
         }
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
@@ -1127,6 +1136,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
                         btnVoiceMesOpen.setVisibility(View.VISIBLE);
+                        Animation animation;
+                        animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_live_stand_speech_voice);
+                        btnVoiceMesOpen.startAnimation(animation);
                         logger.i("显示聊天框");
                     } else {
                         liveStandMessageContent.setVisibility(View.GONE);
@@ -1378,59 +1390,56 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         @Override
         public void onTick(long millisUntilFinished) {
             if (!liveVideoActivity.isFinishing()) {
-                System.out.println("NOSPEECHTIMER:"+String.valueOf(millisUntilFinished / 1000));
+                System.out.println("NOSPEECHTIMER:" + String.valueOf(millisUntilFinished / 1000));
                 if (millisUntilFinished < 6000) {
                     tvVoiceChatCountdown.setVisibility(View.VISIBLE);
                     vwvVoiceChatWave.setVisibility(View.GONE);
                     tvVoiceChatCountdown.setText(String.valueOf(millisUntilFinished / 1000));
-                }
-                if (millisUntilFinished == 0) {
-                    stopEvaluator();
                 }
             }
         }
 
         @Override
         public void onFinish() {
+            btMesOpen.performClick();
             tvVoiceChatCountdown.setVisibility(View.GONE);
         }
     };
 
 
     private void startEvaluator() {
-        Log.d(TAG, "startEvaluator()");
+        Log.d(TAG, "startEvaluator()" + mSpeechEvaluatorUtils.toString());
         File saveFile = new File(dir, "voicechat" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startSpeechBulletScreenRecognize(saveFile.getPath(), SpeechEvaluatorUtils
-                        .RECOGNIZE_CHINESE,
-                new EvaluatorListener() {
-                    @Override
-                    public void onBeginOfSpeech() {
-                        Log.d(TAG, "onBeginOfSpeech");
-                        isSpeechError = false;
-                        noSpeechTimer.start();
-                    }
+        SpeechEvaluatorInter speechEvaluatorInter = mSpeechEvaluatorUtils.startSpeechRecognitionOffline(saveFile
+                .getPath(), "5", "30", new EvaluatorListener() {
+            @Override
+            public void onBeginOfSpeech() {
+                Log.d(TAG, "onBeginOfSpeech");
+                isSpeechError = false;
+                noSpeechTimer.start();
+            }
 
-                    @Override
-                    public void onResult(ResultEntity resultEntity) {
-                        Log.d(TAG, "onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity
-                                .getErrorNo());
-                        if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                            onEvaluatorSuccess(resultEntity.getCurString(), true);
-                        } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                            onEvaluatorError(resultEntity);
-                        } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                            if (resultEntity.getCurString() != null) {
-                                onEvaluatorSuccess(resultEntity.getCurString(), false);
-                            }
-                        }
+            @Override
+            public void onResult(ResultEntity resultEntity) {
+                Log.d(TAG, "onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity
+                        .getErrorNo());
+                if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+                    onEvaluatorSuccess(resultEntity.getCurString(), true);
+                } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+                    onEvaluatorError(resultEntity);
+                } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+                    if (resultEntity.getCurString() != null) {
+                        onEvaluatorSuccess(resultEntity.getCurString(), false);
                     }
+                }
+            }
 
-                    @Override
-                    public void onVolumeUpdate(int volume) {
-                        logger.d("onVolumeUpdate:volume=" + volume);
-                        vwvVoiceChatWave.setVolume(volume);
-                    }
-                });
+            @Override
+            public void onVolumeUpdate(int volume) {
+                logger.d("onVolumeUpdate:volume=" + volume);
+                vwvVoiceChatWave.setVolume(volume);
+            }
+        });
         int v = (int) (0.1f * mMaxVolume);
         mAM.setStreamVolume(AudioManager.STREAM_MUSIC, v, 0);
     }
@@ -1448,54 +1457,34 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         tvVoiceChatCountdown.setVisibility(View.GONE);
     }
 
-    private void onEvaluatorSuccess(String str, boolean isSpeechFinished) {
+    private void onEvaluatorSuccess(String content, boolean isSpeechFinished) {
         Log.d(TAG, "onEvaluatorSuccess():isSpeechFinish=" + isSpeechFinished);
-        try {
-            JSONObject jsonObject = new JSONObject(str);
-            String content = jsonObject.optString("nbest");
-            JSONArray array = jsonObject.optJSONArray("sensitiveWords");
-            if (array != null && array.length() > 0) {
-                isdirty = "1";
+        if (content.length() > 40) {
+            content = content.substring(0, 40);
+        }
+        mVoiceContent = content;
+        Log.d(TAG, "=====speech evaluating" + content);
+        if (isSpeechFinished) {
+            noSpeechTimer.cancel();
+            tvVoiceChatCountdown.setVisibility(View.GONE);
+            if (!TextUtils.isEmpty(content)) {
+                stopEvaluator();
+                setSpeechFinishView(content);
+                btMesOpen.performClick();
+                isVoice = false;
             }
-            if (array != null && array.length() > 0) {
-                for (int i = array.length() - 1; i >= 0; i--) {
-                    StringBuilder star = new StringBuilder();
-                    for (int j = 0; j < array.getString(i).length(); j++) {
-                        star.append("*");
-                    }
-                    content = content.replaceAll(array.getString(i), star.toString());
-                }
-            }
-            content = content.replaceAll("。", "");
-            //语音录入，限制15字以内
-            if (content.length() > 40) {
-                content = content.substring(0, 40);
-            }
-            mVoiceContent = content;
-            Log.d(TAG, "=====speech evaluating" + content);
-            if (isSpeechFinished) {
-                noSpeechTimer.cancel();
-                tvVoiceChatCountdown.setVisibility(View.GONE);
-                if (!TextUtils.isEmpty(content)) {
-                    stopEvaluator();
-                    setSpeechFinishView(content);
-                    btMesOpen.performClick();
-                    isVoice = false;
-                }
 //                else {
 //                    tvMessageVoiceContent.setText("没听清，请重说");
 //                    vwvVoiceChatWave.setVisibility(View.GONE);
 //                }
-            } else {
-                if (!TextUtils.isEmpty(content)) {
-                    tvVoiceContent.setText(content);
-                    tvVoiceCount.setText("(" + tvVoiceContent.getText().toString().length() + "/40)");
-                }
+        } else {
+            if (!TextUtils.isEmpty(content)) {
+                tvVoiceContent.setText(content);
+                tvVoiceCount.setText("(" + tvVoiceContent.getText().toString().length() + "/40)");
             }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
+
+
     }
 
     private void setSpeechFinishView(String content) {
@@ -1545,20 +1534,26 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 //        }
 
     }
+
     private void startVoiceInput() {
         if (mSpeechEvaluatorUtils != null) {
             mSpeechEvaluatorUtils.cancel();
         }
+        InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
+                .INPUT_METHOD_SERVICE);
+        mInputMethodManager.hideSoftInputFromWindow(etMessageContent.getWindowToken(), 0);
+        if (!keyboardShowing && switchFSPanelLinearLayout.getVisibility() != View.GONE) {
+            switchFSPanelLinearLayout.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    switchFSPanelLinearLayout.setVisibility(View.GONE);
+                }
+            }, 10);
+        }
         tvVoiceContent.setText("语音录入中，请大声说英语");
         tvVoiceCount.setText("");
         startEvaluator();
-        mView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                vwvVoiceChatWave.setVisibility(View.VISIBLE);
-                vwvVoiceChatWave.start();
-            }
-        }, 100);
+        vwvVoiceChatWave.setVisibility(View.VISIBLE);
     }
 
 
