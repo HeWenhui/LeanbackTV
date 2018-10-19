@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -2939,7 +2940,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             return;
         }
         liveGetPlayServerError = false;
-        final long before = System.currentTimeMillis();
+        final long before = SystemClock.elapsedRealtime();
         // http://gslb.xueersi.com/xueersi_gslb/live?cmd=live_get_playserver&userid=000041&username=xxxxxx
         // &channelname=88&remote_ip=116.76.97.244
         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -2972,7 +2973,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
                 mLogtf.d("liveGetPlayServer:onError:ex=" + ex + ",isOnCallback=" + isOnCallback + "," + urldns);
-                long time = System.currentTimeMillis() - before;
+                long time = SystemClock.elapsedRealtime() - before;
                 if (ex instanceof HttpException) {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
@@ -3027,7 +3028,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     PlayServerEntity server = mHttpResponseParser.parsePlayerServer(object);
                     if (server != null) {
                         if (livePlayLog != null) {
-                            long time = System.currentTimeMillis() - before;
+                            long time = SystemClock.elapsedRealtime() - before;
                             livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode0, 0, server.getCipdispatch(), null, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();

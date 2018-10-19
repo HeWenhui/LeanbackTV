@@ -709,6 +709,17 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         int totalRam = HardWareUtil.getTotalRam();
         long availMemory = HardWareUtil.getAvailMemory(activity) / 1024;
         double memRate = (double) ((totalRam - availMemory) * 100) / (double) totalRam;
+        boolean error = false;
+        if (memRate > 100) {
+            memRate = 100;
+            error = true;
+        } else if (memRate < 0) {
+            memRate = 0;
+            error = false;
+        }
+        if (error) {
+            logger.d("getMemRate:totalRam=" + totalRam + ",availMemory=" + availMemory);
+        }
         return memRate;
     }
 
