@@ -282,8 +282,9 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
     public RolePlayMachinePager(Context context, VideoQuestionLiveEntity videoQuestionLiveEntity, String id, String testId, String stuId, boolean islive, String nonce, SpeechEvalAction speechEvalAction, String stuCouId, boolean isSilence, LivePagerBack livePagerBack, RolePlayMachineBll rolePlayMachineBll, LiveGetInfo liveGetInfo) {
         super(context);
-        this.mIsLive = islive;
+         this.mIsLive = islive;
         mRolePlayBll = rolePlayMachineBll;
+        this.livePagerBack = livePagerBack;
         this.mLiveGetInfo = liveGetInfo;
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         this.speechEvalAction = speechEvalAction;
@@ -412,9 +413,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             tv_close_role_play.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mRolePlayBll != null){
-                        mRolePlayBll.closeCurPage();
-                    }
+                   onUserBackPressed();
                 }
             });
         }
@@ -434,12 +433,14 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
     @Override
     public boolean onUserBackPressed() {
-        logger.i("点击返回");
-        if(mRolePlayBll != null){
-            mRolePlayBll.closeCurPage();
-            return true;
-        }
-        return false;
+        //走返回的大逻辑，回放时候，答题结束，才不会卡顿
+        return super.onUserBackPressed();
+       // logger.i("点击返回");
+//        if(mRolePlayBll != null){
+//            mRolePlayBll.onStopQuestion(null,null);
+//            return true;
+//        }
+//        return false;
     }
 
     /**
@@ -1034,7 +1035,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                         XESToastUtils.showToast(mContext, "无朗读数据");
                         //mRolePlayBll.goToRobot();
                        if(mRolePlayBll != null){
-                           mRolePlayBll.closeCurPage();
+                           mRolePlayBll.onStopQuestion(null,null);
                        }
                     }
                 } else {
@@ -1243,6 +1244,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         }
     }
 
+
     /**
      * 关闭当前页面
      */
@@ -1250,19 +1252,17 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         if (mIse != null) {
             mIse.stop();
         }
-        if (AudioPlayer.isPlaying()) {
-            new Thread() {
-                @Override
-                public void run() {
-                    AudioPlayer.releaseAudioPlayer(mContext);
-                }
-            }.start();
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                AudioPlayer.releaseAudioPlayer(mContext); }
+        }.start();
         ViewGroup group = (ViewGroup) mView.getParent();
         if (group != null) {
             logger.i("关闭roleplay界面");
             group.removeView(mView);
             speechEvalAction.stopSpeech(RolePlayMachinePager.this, getBaseVideoQuestionEntity(), videoQuestionLiveEntity.id);
+            //speechEvalAction = null;
         }
     }
 
@@ -1360,9 +1360,12 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         return videoQuestionLiveEntity.id;
     }
 
+    /**
+     * 用户手动返回，提交评测
+     */
     @Override
     public void jsExamSubmit() {
-
+        logger.i("用户手动返回，提交评测");
     }
 
     @Override
