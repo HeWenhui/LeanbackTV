@@ -228,9 +228,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     boolean isLand;
     AtomicBoolean isAbLand = new AtomicBoolean();
     private KeyBordAction keyBordAction;
-    /**
-     * 是不是在显示互动题,结果页或者语音评测top3
-     */
+    /** 是不是在显示互动题,结果页或者语音评测top3 */
     private boolean isAnaswer = false;
     private ArrayList<QuestionShowAction> questionShowActions = new ArrayList<>();
     private AnswerRankBll mAnswerRankBll;
@@ -1300,6 +1298,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onBack(final LiveBasePager liveBasePager) {
+        if(liveBasePager instanceof RolePlayMachinePager){
+            //多人连麦的人机返回事件
+            if (onSpeechPagerBack()) return;
+
+        }
+
         VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(activity, (BaseApplication)
                 BaseApplication.getContext(), false,
                 VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
@@ -1307,40 +1311,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             @Override
             public void onClick(View v) {
                 if (liveBasePager instanceof BaseSpeechAssessmentPager) {
-                    boolean isNotNull = speechAssessmentPager != null;
-                    if (speechAssessmentPager != null) {
-                        speechAssessmentPager.onDestroy();
-                        rlQuestionContent.removeView(speechAssessmentPager.getRootView());
-                        mQueAndBool.add("" + speechAssessmentPager.getId());
-                        onPause();
-                    }
-                    if (speechAssessmentPager != null) {
-                        speechAssessmentPager.jsExamSubmit();
-                    }
-                    if (speechAssessmentPager != null) {
-                        speechAssessmentPager.onDestroy();
-                    }
-                    speechAssessmentPagerUserBack = speechAssessmentPager;
-                    setHaveSpeech(false);
-                    if (speechAssessmentPagerUserBack != null && speechEndAction != null) {
-                        final String num = speechAssessmentPagerUserBack.getId();
-                        speechEndAction.onStopSpeech(speechAssessmentPagerUserBack, speechAssessmentPagerUserBack
-                                        .getId(),
-                                new SpeechEndAction.OnTop3End() {
-                                    @Override
-                                    public void onShowEnd() {
-                                        mLogtf.d("onBack:onShowEnd=" + num + ",isAnaswer=" + isAnaswer + ",UserBack="
-                                                + (speechAssessmentPagerUserBack == null));
-                                        speechAssessmentPagerUserBack = null;
-                                        if (!isAnaswer) {
-                                            onQuestionShow(false, "stopSpeech:onShowEnd");
-                                        }
-                                    }
-                                });
-                    }
-                    if (isNotNull) {
-                        return;
-                    }
+                    if (onSpeechPagerBack()) return;
                 } else if (liveBasePager instanceof BaseExamQuestionInter) {
                     if (examQuestionPager != null) {
                         rlQuestionContent.removeView(examQuestionPager.getRootView());
@@ -1410,6 +1381,42 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         });
         cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo("您正在答题，是否结束作答？",
                 VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
+    }
+
+    private boolean onSpeechPagerBack() {
+        boolean isNotNull = speechAssessmentPager != null;
+        if (speechAssessmentPager != null) {
+            speechAssessmentPager.onDestroy();
+            rlQuestionContent.removeView(speechAssessmentPager.getRootView());
+            mQueAndBool.add("" + speechAssessmentPager.getId());
+            onPause();
+        }
+        if (speechAssessmentPager != null) {
+            speechAssessmentPager.jsExamSubmit();
+        }
+        if (speechAssessmentPager != null) {
+            speechAssessmentPager.onDestroy();
+        }
+        speechAssessmentPagerUserBack = speechAssessmentPager;
+        setHaveSpeech(false);
+        if (speechAssessmentPagerUserBack != null && speechEndAction != null) {
+            final String num = speechAssessmentPagerUserBack.getId();
+            speechEndAction.onStopSpeech(speechAssessmentPagerUserBack, speechAssessmentPagerUserBack.getId(),
+                    new SpeechEndAction.OnTop3End() {
+                        @Override
+                        public void onShowEnd() {
+                            mLogtf.d("onBack:onShowEnd=" + num + ",isAnaswer=" + isAnaswer + ",UserBack=" + (speechAssessmentPagerUserBack == null));
+                            speechAssessmentPagerUserBack = null;
+                            if (!isAnaswer) {
+                                onQuestionShow(false, "stopSpeech:onShowEnd");
+                            }
+                        }
+                    });
+        }
+        if (isNotNull) {
+            return true;
+        }
+        return false;
     }
 
     public boolean onBack() {

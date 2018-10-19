@@ -193,6 +193,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
                         logger.i( "onPmError:" + responseEntity.getErrorMsg());
+                        onStopQuestion(null,null);
                     }
 
                     @Override
