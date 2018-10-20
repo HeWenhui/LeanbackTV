@@ -756,4 +756,9 @@
     <!--单词听写-->
     <item name="bt_livevideo_worddictation_result" type="id" />
     <item name="bt_livevideo_worddictation_close" type="id" />
+    <!--2018接麦-->
+    <item name="tv_livevideo_chat_people" type="id" />
+    <item name="bt_livevideo_chat_raisehand" type="id" />
+    <item name="bt_livevideo_chat_small" type="id" />
+    <item name="bt_livevideo_chat_big" type="id" />
 </resources>
