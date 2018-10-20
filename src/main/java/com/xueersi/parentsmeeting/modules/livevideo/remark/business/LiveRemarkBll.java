@@ -100,7 +100,6 @@ public class LiveRemarkBll {
     private LinearLayout llPoints;
     private RelativeLayout rlMask;
     private CommonAdapter mAdapter;
-    private TextureView mTextureView;
     private MediaController2 mController;
     private AbstractBusinessDataCallBack mCallBack;
     private String liveId;
@@ -139,10 +138,6 @@ public class LiveRemarkBll {
     public void setLiveMediaControllerBottom(LiveMediaControllerBottom liveMediaControllerBottom) {
         mLiveMediaControllerBottom = liveMediaControllerBottom;
 
-    }
-
-    public void setTextureView(TextureView textureView) {
-        mTextureView = textureView;
     }
 
     public void initData() {

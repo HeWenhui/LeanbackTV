@@ -644,7 +644,7 @@ public class PraiseListPager extends LiveBasePager {
                     lottieAnimationLoopBGView.removeAnimatorListener(this);
                     logger.d("lottieAnimationLoopBGView:onAnimationRepeat");
                     StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
-                    if (studyReportAction != null) {
+                    if (studyReportAction != null && 1 == honorListEntity.getIsMy()) {
                         if (mPraiseListType == PRAISE_LIST_TYPE_HONOR) {
                             studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_5, mView, false, false);
                         } else if (mPraiseListType == PRAISE_LIST_TYPE_PROGRESS) {

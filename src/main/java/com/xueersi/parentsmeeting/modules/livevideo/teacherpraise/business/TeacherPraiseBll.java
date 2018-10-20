@@ -93,7 +93,7 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
                 public void onAnimationEnd(Animator animation) {
                     StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
                     if (studyReportAction != null) {
-                        studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE, praiseRootView, false, false);
+                        studyReportAction.cutImageAndVideo(LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE, decorView, false, false);
                     }
                     closeTeacherPriase();
                 }

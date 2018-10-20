@@ -38,4 +38,14 @@ public interface StudyReportAction {
      * @param predraw
      */
     void cutImage(int type, View view, boolean cut, boolean predraw);
+
+    /**
+     * 截图带视频
+     *
+     * @param type
+     * @param view
+     * @param cut
+     * @param predraw
+     */
+    void cutImageAndVideo(int type, View view, boolean cut, boolean predraw);
 }

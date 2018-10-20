@@ -274,7 +274,7 @@ public class TeamPkResultPager extends BasePager {
                             @Override
                             public void run() {
                                 StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
-                                if (studyReportAction != null) {
+                                if (studyReportAction != null && data.isMe()) {
                                     studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView, false, false);
                                 }
                             }

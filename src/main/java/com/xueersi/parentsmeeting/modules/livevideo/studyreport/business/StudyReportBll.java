@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.studyreport.business;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
@@ -18,6 +20,7 @@ import com.xueersi.component.cloud.config.XesCloudConfig;
 import com.xueersi.component.cloud.entity.CloudUploadEntity;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -175,7 +178,89 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                         bmpScreen.recycle();
                     }
                 } catch (Exception e) {
-                    logger.e("cutImage", e);
+                    mLogtf.e("cutImage", e);
+                    CrashReport.postCatchedException(e);
+                }
+            }
+        };
+        if (predraw) {
+            view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    view.getViewTreeObserver().removeOnPreDrawListener(this);
+                    runnable.run();
+                    return false;
+                }
+            });
+        } else {
+            runnable.run();
+        }
+    }
+
+    @Override
+    public void cutImageAndVideo(final int type, final View view, final boolean cut, boolean predraw) {
+        mLogtf.d("cutImageAndVideo:type=" + type + ",cut=" + cut + ",predraw=" + predraw);
+        if (types.contains("" + type)) {
+            return;
+        }
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    view.setDrawingCacheEnabled(true);
+                    view.buildDrawingCache();
+                    Bitmap bmpScreen = view.getDrawingCache();
+                    if (cut) {
+                        bmpScreen = LiveCutImage.cutBitmap(bmpScreen);
+                    }
+                    final File savedir = new File(alldir, "type-" + type);
+                    if (!savedir.exists()) {
+                        savedir.mkdirs();
+                    }
+                    final File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
+                    LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
+                    view.destroyDrawingCache();
+                    mLogtf.d("cutImageAndVideo:type=" + type + ",path=" + saveFile.getPath());
+                    {
+                        PlayerService vPlayer = (PlayerService) mLiveBll.getBusinessShareParam("vPlayer");
+                        new PlayerView().getBitmap(vPlayer, activity, new PlayerView.OnGetBitmap() {
+                            @Override
+                            public void onGetBitmap(Bitmap videoBitmap) {
+                                mLogtf.d("onGetBitmap:videoBitmap=null?" + (videoBitmap == null));
+                                if (videoBitmap == null) {
+                                    uploadWonderMoment(type, saveFile.getPath());
+                                } else {
+                                    try {
+                                        Bitmap oldBitmap = BitmapFactory.decodeFile(saveFile.getPath());
+                                        Bitmap createBitmap = Bitmap.createBitmap(videoBitmap.getWidth(), videoBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+                                        Canvas canvas = new Canvas(createBitmap);
+                                        int left = (oldBitmap.getWidth() - videoBitmap.getWidth()) / 2;
+                                        int top = (oldBitmap.getHeight() - videoBitmap.getHeight()) / 2;
+                                        canvas.drawBitmap(videoBitmap, 0, 0, null);
+                                        canvas.drawBitmap(oldBitmap, -left, -top, null);
+                                        File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
+                                        LiveCutImage.saveImage(createBitmap, saveFile.getPath());
+                                        uploadWonderMoment(type, saveFile.getPath());
+                                        if (AppConfig.DEBUG) {
+                                            File videoSaveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
+                                            LiveCutImage.saveImage(videoBitmap, videoSaveFile.getPath());
+                                        }
+                                        createBitmap.recycle();
+                                        videoBitmap.recycle();
+                                        logger.d("onGetBitmap:width=" + oldBitmap.getWidth() + ",height=" + oldBitmap.getHeight() + ",left=" + left + ",top=" + top);
+                                    } catch (Exception e) {
+                                        CrashReport.postCatchedException(e);
+                                        uploadWonderMoment(type, saveFile.getPath());
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    if (cut) {
+                        bmpScreen.recycle();
+                    }
+                } catch (Exception e) {
+                    mLogtf.e("cutImageAndVideo", e);
                     CrashReport.postCatchedException(e);
                 }
             }
@@ -256,7 +341,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
 
             @Override
             public void onError(XesCloudResult result) {
-                logger.d("asyncUpload:onError=" + result);
+                logger.d("asyncUpload:onError=" + result.getErrorCode() + "," + result.getErrorMsg());
             }
         });
     }
