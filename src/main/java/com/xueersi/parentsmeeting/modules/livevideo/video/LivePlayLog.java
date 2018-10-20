@@ -393,6 +393,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             long bytes = trafficStatisticByteCount - lastTrafficStatisticByteCount;
             if (bytes < 0) {
                 bytes = 0;
+                logger.d("downCom:now=" + trafficStatisticByteCount + ",last=" + lastTrafficStatisticByteCount);
             }
             dataJson.put("bytes", bytes);
             dataJson.put("uid", "" + userId);
@@ -464,6 +465,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             long bytes = trafficStatisticByteCount - lastTrafficStatisticByteCount;
             if (bytes < 0) {
                 bytes = 0;
+                logger.d("send:now=" + trafficStatisticByteCount + ",last=" + lastTrafficStatisticByteCount);
             }
             dataJson.put("bytes", bytes);
 //            dataJson.put("allpri", "" + tidAndPri.get(tid));
@@ -1235,6 +1237,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                         long bytes = trafficStatisticByteCount - lastTrafficStatisticByteCount;
                         if (bytes < 0) {
                             bytes = 0;
+                            logger.d("onOpenFailed:now=" + trafficStatisticByteCount + ",last=" + lastTrafficStatisticByteCount);
                         }
                         dataJson.put("bytes", bytes);
                     } else {
