@@ -202,7 +202,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             if (h5CoursewarePager != null) {
                 if (h5CoursewarePager.isFinish()) {
                     h5CoursewarePager.close();
-                    onQuestionShow(false);
+                    onQuestionShow(false, "onBack");
                 } else {
                     VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(context, (BaseApplication)
                             BaseApplication.getContext(), false,
@@ -308,7 +308,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         return;
                     }
                     if (!isAnaswer) {
-                        onQuestionShow(true);
+                        onQuestionShow(true, "onH5Courseware:start");
                     }
                     isAnaswer = true;
                     if (!"1".equals(videoQuestionLiveEntity.getIsVoice()) || mErrorVoiceQue.contains(videoQuestionLiveEntity.getUrl())) {
@@ -383,7 +383,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         isForce = 1;
                     }
                     if (isAnaswer && !havePager) {
-                        onQuestionShow(false);
+                        onQuestionShow(false, "onH5Courseware:end");
                     }
                     isAnaswer = false;
                     if (hasQuestion) {
@@ -448,12 +448,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 }
                 baseEnglishH5CoursewarePager.destroy();
                 bottomContent.removeView(baseEnglishH5CoursewarePager.getRootView());
-                logger.d( "onH5ResultClose:pager=" + baseEnglishH5CoursewarePager + ",old=" + h5CoursewarePager);
+                logger.d("onH5ResultClose:pager=" + baseEnglishH5CoursewarePager + ",old=" + h5CoursewarePager);
                 if (baseEnglishH5CoursewarePager == h5CoursewarePager) {
                     h5CoursewarePager = null;
                 }
                 if (!isAnaswer) {
-                    onQuestionShow(false);
+                    onQuestionShow(false, "onH5ResultClose");
                 }
                 mLiveBll.getStuGoldCount();
 
@@ -545,7 +545,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
         logToFile.d("stopVoiceAnswerPager:isAnaswer=" + isAnaswer);
         if (isEnd) {
-            onQuestionShow(false);
+            onQuestionShow(false, "stopVoiceAnswerPager");
         }
     }
 
@@ -560,7 +560,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 audioRequest.release();
             }
             if (isEnd) {
-                onQuestionShow(false);
+                onQuestionShow(false, "switchVoiceAnswerPager");
             }
         }
     }
@@ -626,7 +626,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 voiceAnswerPager2.onDestroy();
                 bottomContent.removeView(voiceAnswerPager2.getRootView());
                 voiceAnswerPager = null;
-                onQuestionShow(false);
+                onQuestionShow(false, "removeBaseVoiceAnswerPager");
             }
         } else {
             voiceAnswerPager2.onDestroy();
@@ -738,7 +738,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                                     h5CoursewarePager = null;
                                     curPager = null;
                                     if (oldh5CoursewarePager.isFinish()) {
-                                        onQuestionShow(false);
+                                        onQuestionShow(false, "getFullMarkList");
                                     }
                                 } else if (curPager != null) {
                                     curPager.destroy();
@@ -1018,8 +1018,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
      * 试题隐藏显示
      *
      * @param isShow true显示
+     * @param method
      */
-    private void onQuestionShow(boolean isShow) {
+    private void onQuestionShow(boolean isShow, String method) {
+        logToFile.d("onQuestionShow:isShow=" + isShow + ",method=" + method);
         for (QuestionShowAction questionShowAction : questionShowActions) {
             questionShowAction.onQuestionShow(isShow);
         }
