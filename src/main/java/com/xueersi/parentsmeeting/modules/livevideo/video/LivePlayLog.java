@@ -382,11 +382,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             } else {
                 dataJson.put("node", "xrs_back");
             }
-            if (vPlayer.isInitialized()) {
-                IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-                trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
-                logger.d("downCom:trafficStatisticByteCount=" + trafficStatisticByteCount);
-            }
             long heartTime;
             if (lastHeartTime == 0) {
                 heartTime = 0;
@@ -445,7 +440,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             if (vPlayer.isInitialized()) {
                 IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                 bufferduration = ijkMediaPlayer.getVideoCachedDuration();
-                trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
                 logger.d("send:method=" + method + ",bufferduration=" + bufferduration);
             }
             dataJson.put("bufType", bufType);
@@ -1224,7 +1218,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                         if (vPlayer.isInitialized()) {
                             IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                             bufferduration = ijkMediaPlayer.getVideoCachedDuration();
-                            trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
                         }
                         dataJson.put("bufType", bufType);
                         if (isBuffer) {
