@@ -757,8 +757,18 @@
     <item name="bt_livevideo_worddictation_result" type="id" />
     <item name="bt_livevideo_worddictation_close" type="id" />
     <!--2018接麦-->
+    <item name="rl_livevideo_chat_content" type="id" />
+    <item name="rl_livevideo_chat_content_left" type="id" />
     <item name="tv_livevideo_chat_people" type="id" />
     <item name="bt_livevideo_chat_raisehand" type="id" />
+    <item name="ll_livevideo_chat_people" type="id" />
     <item name="bt_livevideo_chat_small" type="id" />
     <item name="bt_livevideo_chat_big" type="id" />
+
+    <item name="rl_livevideo_chat_head1" type="id" />
+    <item name="civ_livevideo_chat_head1" type="id" />
+    <item name="tv_livevideo_chat_head1" type="id" />
+    <item name="rl_livevideo_chat_head2" type="id" />
+    <item name="civ_livevideo_chat_head2" type="id" />
+    <item name="tv_livevideo_chat_head2" type="id" />
 </resources>

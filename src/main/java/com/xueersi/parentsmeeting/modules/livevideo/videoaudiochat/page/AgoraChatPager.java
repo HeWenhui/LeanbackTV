@@ -5,11 +5,14 @@ import android.graphics.Rect;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -23,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
+import com.xueersi.ui.widget.CircleImageView;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -35,7 +39,7 @@ import io.agora.rtc.video.VideoCanvas;
  * Created by linyuqiang on 2018/10/17.
  */
 public class AgoraChatPager extends BasePager implements VideoChatInter {
-    private String TAG = "AgoraVideoChatPager";
+    private String TAG = "AgoraChatPager";
     private LiveAndBackDebug liveBll;
     private LiveGetInfo getInfo;
     private int netWorkType;
@@ -56,15 +60,14 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
         this.getInfo = getInfo;
         netWorkType = NetWorkHelper.getNetWorkState(activity);
         mLogtf = new LogToFile(activity, TAG);
-        mLogtf.d("AgoraVideoChatPager:netWorkType=" + netWorkType);
+        mLogtf.d("AgoraChatPager:netWorkType=" + netWorkType);
         initView();
         initData();
     }
 
     @Override
     public View initView() {
-        mView = new View(activity);
-        mView.setVisibility(View.GONE);
+        mView = View.inflate(activity, R.layout.pager_live_video_chat_people, null);
         return mView;
     }
 
@@ -202,13 +205,47 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
 
     @Override
     public void updateUser(boolean classmateChange, ArrayList<ClassmateEntity> classmateEntities) {
-
+        RelativeLayout rl_livevideo_chat_head1 = mView.findViewById(R.id.rl_livevideo_chat_head1);
+        RelativeLayout rl_livevideo_chat_head2 = mView.findViewById(R.id.rl_livevideo_chat_head2);
+        int size = classmateEntities.size();
+        mLogtf.d("updateUser:size=" + size);
+        if (size == 0) {
+            rl_livevideo_chat_head1.setVisibility(View.GONE);
+            rl_livevideo_chat_head2.setVisibility(View.GONE);
+        } else if (size == 1) {
+            rl_livevideo_chat_head1.setVisibility(View.VISIBLE);
+            rl_livevideo_chat_head2.setVisibility(View.GONE);
+            {
+                ClassmateEntity classmateEntity1 = classmateEntities.get(0);
+                CircleImageView civ_livevideo_chat_head1 = rl_livevideo_chat_head1.findViewById(R.id.civ_livevideo_chat_head1);
+                TextView tv_livevideo_chat_head1 = rl_livevideo_chat_head1.findViewById(R.id.tv_livevideo_chat_head1);
+                ImageLoader.with(activity).load(classmateEntity1.getImg()).into(civ_livevideo_chat_head1);
+                tv_livevideo_chat_head1.setText("1=林玉强" + classmateEntity1.getName());
+            }
+        } else {
+            rl_livevideo_chat_head1.setVisibility(View.VISIBLE);
+            rl_livevideo_chat_head2.setVisibility(View.VISIBLE);
+            {
+                ClassmateEntity classmateEntity1 = classmateEntities.get(0);
+                CircleImageView civ_livevideo_chat_head1 = rl_livevideo_chat_head1.findViewById(R.id.civ_livevideo_chat_head1);
+                TextView tv_livevideo_chat_head1 = rl_livevideo_chat_head1.findViewById(R.id.tv_livevideo_chat_head1);
+                ImageLoader.with(activity).load(classmateEntity1.getImg()).into(civ_livevideo_chat_head1);
+                tv_livevideo_chat_head1.setText("1=林玉强" + classmateEntity1.getName());
+            }
+            {
+                ClassmateEntity classmateEntity2 = classmateEntities.get(1);
+                CircleImageView civ_livevideo_chat_head2 = rl_livevideo_chat_head1.findViewById(R.id.civ_livevideo_chat_head2);
+                TextView tv_livevideo_chat_head2 = rl_livevideo_chat_head1.findViewById(R.id.tv_livevideo_chat_head2);
+                ImageLoader.with(activity).load(classmateEntity2.getImg()).into(civ_livevideo_chat_head2);
+                tv_livevideo_chat_head2.setText("2=余婧" + classmateEntity2.getName());
+            }
+        }
     }
 
     @Override
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
-        logger.i( "onNetWorkChange:netWorkType=" + netWorkType + ",isFail=" + isFail);
+        logger.i("onNetWorkChange:netWorkType=" + netWorkType + ",isFail=" + isFail);
         if (netWorkType == NetWorkHelper.NO_NETWORK) {
             isFail = true;
         } else {

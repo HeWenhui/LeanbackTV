@@ -73,7 +73,6 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     private String onMic = "off";
     /** 房间号 */
     private String room = "";
-    private static int nativeLibLoaded = 2;
     /*举麦耳机提示*/
     private boolean headsetPrompt = false;
     /** 连麦人数 */
@@ -109,6 +108,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
             }
         });
         chatTipBll = new ChatTipBll(activity);
+        chatTipBll.setVideoChatEvent(videoChatEvent);
     }
 
     public void setVideoChatHttp(VideoChatHttp videoChatHttp) {
@@ -122,7 +122,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
 
     public void initView(RelativeLayout bottomContent) {
         this.bottomContent = bottomContent;
-        chatTipBll.initView(bottomContent);
+        chatTipBll.setRootView(bottomContent);
 //        videoChatPager = new VideoChatPager(activity);
 //        bottomContent.addView(videoChatPager.getRootView());
     }
@@ -134,6 +134,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
             wiredHeadsetReceiver = new WiredHeadsetReceiver();
             activity.registerReceiver(wiredHeadsetReceiver, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
         }
+        chatTipBll.setGetInfo(getInfo);
 //        startRecord();
     }
 
@@ -164,46 +165,16 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
             videoChatInter.updateUser(classmateChange, classmateEntities);
             return;
         }
-        AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
-        if (audioRequest != null) {
-            audioRequest.request(null);
-        }
-        for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
-            chatStatusChange.onVideoChatStartChange(true);
-        }
-        if (mLiveRemarkBll != null) {
-            mLiveRemarkBll.setOnChat(true);
-        }
-        if (nativeLibLoaded != 2) {
-            videoChatEvent.setVolume(0, 0);
-        }
+
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (nativeLibLoaded == 1) {
-//            videoChatInter = new LicodeVideoChatPager(activity, this, classmateEntities, getInfo, liveBll,
-// baseLiveMediaControllerBottom);
-                } else if (nativeLibLoaded == 0) {
-                    //不会发生
-//                    videoChatInter = new VideoChatPager(activity, liveBll, getInfo);
-                    return;
-                } else {
-                    videoChatInter = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent);
-                }
+                videoChatInter = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent);
                 startTime = System.currentTimeMillis();
                 int height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                int screenWidth = ScreenUtils.getScreenWidth();
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         height);
                 lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                final View rootView = videoChatInter.getRootView();
-                if (nativeLibLoaded == 2) {
-
-                } else {
-                    int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
-                    lp.rightMargin = wradio;
-                    bottomContent.addView(rootView, lp);
-                }
                 getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
                 if (isHasPermission) {
                     videoChatInter.startRecord("onLiveInit", room, nonce);
@@ -247,8 +218,11 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                        ArrayList<ClassmateEntity> classmateEntities, final String from) {
         boolean change = false;
         boolean openhandsStatusChange = false;
+        boolean containMeChange = false;
+        boolean onMicChange = false;
         if (!onMic.equals(onmic)) {
             change = true;
+            onMicChange = true;
             onMic = onmic;
         }
         if (!openhandsStatus.equals(openhands)) {
@@ -267,13 +241,36 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
             change = true;
             this.from = from;
         }
+        boolean contain = false;
+        for (ClassmateEntity classmateEntity : classmateEntities) {
+            if (classmateEntity.getId().equals(getInfo.getStuId())) {
+                contain = true;
+                break;
+            }
+        }
+        if (containMe != contain) {
+            containMe = contain;
+            change = true;
+            containMeChange = true;
+        }
         String log = "onmic=" + onmic + ",openhands=" + openhands + ",room=" + room + ",classmateChange=" + classmateChange + ",from=" + from;
         if (change) {
             mLogtf.d("onJoin1:" + log);
             if ("off".equals(onMic)) {
-                if (openhandsStatusChange) {
-                    chatTipBll.raisehand(openhandsStatus, from, "");
+                if (containMeChange) {
+                    requestAccept(from, "");
+                } else {
+                    if (openhandsStatusChange) {
+                        chatTipBll.raisehand(openhandsStatus, from, "");
+                    }
                 }
+            } else {
+                if (onMicChange) {
+                    startMicro(onMic, "", contain, room, from);
+                }
+            }
+            if (classmateChange) {
+                chatTipBll.onClassmateChange(classmateEntities);
             }
 //            chatTipBll.onJoin(onmic, openhands, room, classmateChange, classmateEntities, from);
         } else {
@@ -284,11 +281,26 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     @Override
     public void requestAccept(String from, String nonce) {
         logger.d("requestAccept:from=" + from + ",nonce=" + nonce);
+        containMe = true;
+        chatTipBll.requestAccept(from, nonce);
     }
 
     @Override
     public void startMicro(String status, String nonce, boolean contain, String room, String from) {
         logger.d("startMicro:status=" + status + ",nonce=" + nonce + ",contain=" + contain + ",from=" + from);
+        getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+        if (audioRequest != null) {
+            audioRequest.request(null);
+        }
+        for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
+            chatStatusChange.onVideoChatStartChange(true);
+        }
+        if (mLiveRemarkBll != null) {
+            mLiveRemarkBll.setOnChat(true);
+        }
+        chatTipBll.startMicro(status, nonce, contain, room, from);
+
     }
 
     @Override
@@ -309,18 +321,12 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     }
 
     public void stopRecord() {
-        if (videoChatInter != null) {
-            videoChatInter.stopRecord();
-            AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
-            if (audioRequest != null) {
-                audioRequest.release();
-            }
-            if (mLiveRemarkBll != null) {
-                mLiveRemarkBll.setOnChat(false);
-            }
-            for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
-                chatStatusChange.onVideoChatStartChange(false);
-            }
+        chatTipBll.stopRecord();
+        if (mLiveRemarkBll != null) {
+            mLiveRemarkBll.setOnChat(false);
+        }
+        for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
+            chatStatusChange.onVideoChatStartChange(false);
         }
     }
 
@@ -418,7 +424,6 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
 
     interface OnPermissionFinish {
         void onFinish();
-
     }
 
     private void checkPermissionUnPerList(final OnPermissionFinish onPermissionFinish) {

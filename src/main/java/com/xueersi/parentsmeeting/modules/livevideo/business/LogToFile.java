@@ -7,9 +7,9 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -37,7 +37,7 @@ public class LogToFile {
     }
 
     public LogToFile(String tag) {
-        logger = LoggerFactory.getLogger(tag);
+        logger = LiveLoggerFactory.getLogger(tag);
         this.TAG = "OL:" + tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
@@ -54,7 +54,7 @@ public class LogToFile {
     }
 
     public LogToFile(String tag, LiveOnLineLogs liveOnLineLogs) {
-        logger = LoggerFactory.getLogger(tag);
+        logger = LiveLoggerFactory.getLogger(tag);
         this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
@@ -71,7 +71,7 @@ public class LogToFile {
     }
 
     public LogToFile(LiveOnLineLogs liveBll2, String tag) {
-        logger = LoggerFactory.getLogger(tag);
+        logger = LiveLoggerFactory.getLogger(tag);
         this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
@@ -84,7 +84,7 @@ public class LogToFile {
     }
 
     public LogToFile(Context context, String tag) {
-        logger = LoggerFactory.getLogger(tag);
+        logger = LiveLoggerFactory.getLogger(tag);
         this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
