@@ -296,8 +296,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 if (englishH5CoursewareBll != null) {
                     VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                     LiveVideoConfig.isSend = object.optBoolean("open");
-//                            String status = "";
-                    String status = object.optString("status", "off");
+//                    String status = object.optString("status", "off");
+                    String status = LiveVideoConfig.isSend ? "on": "off";
                     String nonce = object.optString("nonce");
                     LiveVideoConfig.nonce = nonce;
                     LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
