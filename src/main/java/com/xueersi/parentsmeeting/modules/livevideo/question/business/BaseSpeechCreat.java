@@ -30,4 +30,10 @@ public interface BaseSpeechCreat {
                                              SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll);
 
     void setViewLayoutParams(BaseSpeechAssessmentPager baseSpeechAssessmentPager, int rightMargin);
+
+
+    /** 文科新课件平台RolePlay*/
+    BaseSpeechAssessmentPager createNewRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId, SpeechEvalAction speechEvalAction, String stuCouId);
+
+
 }

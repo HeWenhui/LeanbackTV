@@ -1,17 +1,23 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
+import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
+import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
@@ -21,6 +27,10 @@ import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
@@ -34,10 +44,18 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import ren.yale.android.cachewebviewlib.CacheWebView;
+
+import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
 /**
  * @author linyuqiang
@@ -72,6 +90,13 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private int mEngerNum;
     private boolean allowTeamPk;
     private boolean isLive = true;
+    private File mMorecacheout;
+    private File cacheFile;
+    private String type;
+    /**
+     * 文科新课件平台 试题
+     **/
+    private boolean isNewArtsTest;
 
     public QuestionWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, StopWebQuestion questionBll, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
@@ -102,6 +127,40 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         mLogtf.i("QuestionWebX5Pager:liveid=" + liveid + ",testId=" + testId);
         initData();
     }
+
+
+    /**
+     * 重载构造方法 支持 文科新课件平台 H5 题
+     *
+     * @param context
+     * @param questionBll
+     * @param testInfo    试题信息
+     */
+    public QuestionWebX5Pager(Context context, StopWebQuestion questionBll, VideoQuestionLiveEntity testInfo,String liveid) {
+        super(context);
+        this.questionBll = questionBll;
+        examUrl = testInfo.getUrl();
+        isNewArtsTest = testInfo.isNewArtsH5Courseware();
+        testId = testInfo.getvQuestionID();
+        type = testInfo.type;
+        liveid = liveid;
+        mLogtf.i("QuestionWebX5Pager:liveid=" + liveid + ",testId=" + testId);
+        cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
+        if (cacheFile == null) {
+            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
+        }
+        if (!cacheFile.exists()) {
+            cacheFile.mkdirs();
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        Date date = new Date();
+        final String today = dateFormat.format(date);
+        final File todayCacheDir = new File(cacheFile, today);
+        final File todayLiveCacheDir = new File(todayCacheDir, liveid);
+        mMorecacheout = new File(todayLiveCacheDir, liveid + "artschild");
+        initData();
+    }
+
 
     @Override
     public String getTestId() {
@@ -143,6 +202,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     @Override
     public void initData() {
+
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,23 +220,30 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient());
-//        wvSubjectWeb.loadUrl("file:///android_asset/testjs.html");
-        ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
-        ((AnimationDrawable) ivLoading.getBackground()).start();
-        examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
-                + "&stuId=" + stuId + "&stuName=" + stuName + "&isTowall=" + isShowRanks;
-//        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
-//        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
-        if (!StringUtils.isEmpty(nonce)) {
-            examUrl += "&nonce=" + nonce;
+        logger.e("=======> isNewArtsTest:"+isNewArtsTest);
+        // 文科新课件平台 填空选择题
+        if (isNewArtsTest) {
+            WebSettings webSetting = wvSubjectWeb.getSettings();
+            webSetting.setBuiltInZoomControls(true);
+            webSetting.setJavaScriptEnabled(true);
+            wvSubjectWeb.addJavascriptInterface(this,"wx_xesapp");
+            logger.e("=======> loadUrl:"+examUrl);
+            wvSubjectWeb.loadUrl(examUrl);
+        } else {
+            ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
+            ((AnimationDrawable) ivLoading.getBackground()).start();
+            examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
+                    + "&stuId=" + stuId + "&stuName=" + stuName + "&isTowall=" + isShowRanks;
+            if (!StringUtils.isEmpty(nonce)) {
+                examUrl += "&nonce=" + nonce;
+            }
+            examUrl += "&stuCouId=" + stuCouId;
+            examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+            examUrl += "&isPlayBack=" + (isLive ? "0" : "1");
+            examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
+            wvSubjectWeb.loadUrl(examUrl);
+            logger.e( "======> loadUrl:" + examUrl);
         }
-        examUrl += "&stuCouId=" + stuCouId;
-        examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
-        examUrl += "&isPlayBack=" + (isLive ? "0" : "1");
-        examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
-        wvSubjectWeb.loadUrl(examUrl);
-        logger.e( "======> loadUrl:" + examUrl);
-
         mGoldNum = -1;
         mEngerNum = -1;
 
@@ -199,8 +266,6 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 mEngerNum = -1;
             }
         });
-
-//        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
     }
 
     @Override
@@ -211,6 +276,19 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
     }
 
+
+    /**
+     * 文科 课件 答题结果回调
+     *
+     */
+    @JavascriptInterface
+    public void showAnswerResult_LiveVideo(String data){
+         logger.e("=========>showAnswerResult_LiveVideo:"+data);
+         EventBus.getDefault().post(new ArtsAnswerResultEvent(data,ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
+    }
+
+
+
     @android.webkit.JavascriptInterface
     private void addJavascriptInterface() {
         WebSettings webSetting = wvSubjectWeb.getSettings();
@@ -218,6 +296,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         webSetting.setDomStorageEnabled(true);
         webSetting.setLoadWithOverviewMode(true);
         webSetting.setBuiltInZoomControls(false);
+        webSetting.setAllowUniversalAccessFromFileURLs(true);
+        webSetting.setAllowFileAccessFromFileURLs(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webSetting.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
@@ -243,6 +323,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 //        wvSubjectWeb.loadUrl(String.format("javascript:examSubmitAll(" + code + ")"));
         isEnd = true;
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
+        Log.e("QuestionX5Pager","=======>examSubmitAll called:");
     }
 
     @Override
@@ -253,7 +334,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     public class MyWebChromeClient extends WebChromeClient {
 //        @Override
 //        public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-//            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false, MESSAGE_VERIFY_TYPE);
+//            VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(mContext,
+// mBaseApplication, false, MESSAGE_VERIFY_TYPE);
 //            verifyCancelAlertDialog.initInfo(message);
 //            verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
 //                @Override
@@ -299,13 +381,101 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         public MyWebViewClient() {
             super(TAG);
         }
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
+            if("100000000".equals(type)){
+                File file;
+                int index = s.indexOf("courseware_pages");
+                if (index != -1) {
+                    String url2 = s.substring(index + "courseware_pages".length());
+                    int index2 = url2.indexOf("?");
+                    if (index2 != -1) {
+                        url2 = url2.substring(0, index2);
+                    }
+                    file = new File(mMorecacheout, url2);
+                    logger.e( "shouldInterceptRequest:file=" + file + ",file=" + file.exists());
+                } else {
+                    file = new File(mMorecacheout, MD5Utils.getMD5(s));
+                    index = s.lastIndexOf("/");
+                    String name = s;
+                    if (index != -1) {
+                        name = s.substring(index);
+                    }
+                    logger.e("shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
+                }
+                if (file.exists()) {
+                    FileInputStream inputStream = null;
+                    try {
+                        inputStream = new FileInputStream(file);
+                        String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
+                        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                        WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                        logger.e("读取本地资源了old");
+                        return webResourceResponse;
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return super.shouldInterceptRequest(view, s);
+        }
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            logger.e( "shouldInterceptRequestnew:totalurl=" + request.getUrl().toString());
+            if(isNewArtsTest){
+                File file;
+                int index = request.getUrl().toString().indexOf("courseware_pages");
+                if (index != -1) {
+                    String url2 = request.getUrl().toString().substring(index + "courseware_pages".length());
+                    int index2 = url2.indexOf("?");
+                    if (index2 != -1) {
+                        url2 = url2.substring(0, index2);
+                    }
+                    file = new File(mMorecacheout, url2);
+                    logger.e( "shouldInterceptRequestnew:fileone=" + file + ",fileone=" + file.exists());
+                    logger.e( "shouldInterceptRequestnew:realurl=" + request.getUrl().toString());
+                } else {
+                    file = new File(mMorecacheout, MD5Utils.getMD5(request.getUrl().toString()));
+                    index = request.getUrl().toString().lastIndexOf("/");
+                    String name = request.getUrl().toString();
+                    if (index != -1) {
+                        name = request.getUrl().toString().substring(index);
+                    }
+                    logger.e( "shouldInterceptRequestnew:filetwo=" + file.getName() + ",name=" + name + ",filetwo=" + file.exists());
+                    logger.e( "shouldInterceptRequestnew:ttfurl=" + request.getUrl().toString());
+                }
+                if (file.exists()) {
+                    FileInputStream inputStream = null;
+                    try {
+                        inputStream = new FileInputStream(file);
+                        String extension = MimeTypeMap.getFileExtensionFromUrl(request.getUrl().toString().toLowerCase());
+                        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                        WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                        HashMap map = new HashMap();
+                        map.put("Access-Control-Allow-Origin","*");
+                        webResourceResponse.setResponseHeaders(map);
+                        logger.e( "读取本地资源了new" + webResourceResponse.getResponseHeaders());
+                        return webResourceResponse;
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            logger.e( "没有本地资源就去网络请求咯咯咯new");
+            logger.e( "shouldInterceptRequestnew:lasturl=" + request.getUrl().toString());
+            return super.shouldInterceptRequest(view, request);
+        }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             mLogtf.i("onPageFinished:url=" + url + ",failingUrl=" + failingUrl + ",isEnd=" + isEnd);
-            if (isEnd && url.equals(examUrl)) {
-                wvSubjectWeb.loadUrl(jsExamSubmitAll);
-                mLogtf.i("onPageFinished:examSubmitAll");
+            if(!isNewArtsTest){
+                if (isEnd && url.equals(examUrl)) {
+                    wvSubjectWeb.loadUrl(jsExamSubmitAll);
+                    mLogtf.i("onPageFinished:examSubmitAll");
+                }
             }
             if (failingUrl == null) {
                 wvSubjectWeb.setVisibility(View.VISIBLE);
@@ -331,10 +501,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             super.onPageStarted(view, url, favicon);
         }
 
-        @Override
-        public WebResourceResponse shouldInterceptRequest(WebView webView, String s) {
-            return super.shouldInterceptRequest(webView, s);
-        }
+//        @Override
+//        public WebResourceResponse shouldInterceptRequest(WebView webView, String s) {
+//            return super.shouldInterceptRequest(webView, s);
+//        }
 
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {

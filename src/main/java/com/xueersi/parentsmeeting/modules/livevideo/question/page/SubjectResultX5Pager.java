@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
@@ -105,8 +107,14 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
         ((AnimationDrawable) ivLoading.getBackground()).start();
 //        examUrl = testPaperUrl + "?liveId=" + liveid + "&testId=" + testId
 //                + "&stuId=" + stuId + "&stuName=" + stuName;
-        examUrl = testPaperUrl + "/" + liveid + "?testId=" + testId
-                + "&stuId=" + stuId + "&stuName=" + stuName + "&stuCouId=" + stuCouId;
+        if(LiveVideoConfig.isNewArts){
+            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId + "&token=" + AppBll.getInstance().getUserToken();
+//            examUrl = LiveVideoConfig.URL_NEWARTS_SUBMITRESULT_H5 + "?liveId=" + liveid + "&testId=" + testId;
+            Log.e("Duncan","examUrl:" + examUrl);
+        } else {
+            examUrl = testPaperUrl + "/" + liveid + "?testId=" + testId
+                    + "&stuId=" + stuId + "&stuName=" + stuName + "&stuCouId=" + stuCouId;
+        }
 //        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
 //        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
         mLogtf.d("initData:examUrl=" + examUrl);

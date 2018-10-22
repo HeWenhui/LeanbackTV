@@ -274,12 +274,14 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
     private final LiveAndBackDebug liveAndBackDebug;//只为记录日志调用方便
     private boolean mIsListViewUnSroll;//listview是否可滑动
     //private boolean mIsEvaluatoring;//标记正在测评中
+    private RolePlayerEntity mtype;
 
     public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll,
                            LiveGetInfo liveGetInfo) {
         super(context, obj, isNewView);
         this.mRolePlayBll = rolePlayerBll;
         mLiveGetInfo = liveGetInfo;
+        mtype = obj;
         dir = LiveCacheFile.geCacheFile(context, "liveSpeech");
         if (!dir.exists()) {
             dir.mkdirs();
@@ -631,7 +633,11 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                                 (mCurrentReadIndex - 1);
                         if ((mCurrentReadIndex - 1) == mEntity.getSelfLastIndex()) {
                             logger.i( "提交结果");
-                            mRolePlayBll.requestResult();
+                            if(mtype.isNewArts()){
+                                mRolePlayBll.requestNewArtsResult();
+                            }else{
+                                mRolePlayBll.requestResult();
+                            }
                         }
                         if (upMessage.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH) {
                             upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
@@ -1000,7 +1006,11 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         }
         if (!mEntity.isResult()) {
             logger.i( "结束RolePlayer,结果还未提交，再次提交结果");
-            mRolePlayBll.requestResult();
+            if(mtype.isNewArts()){
+                mRolePlayBll.requestNewArtsResult();
+            }else{
+                mRolePlayBll.requestResult();
+            }
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override

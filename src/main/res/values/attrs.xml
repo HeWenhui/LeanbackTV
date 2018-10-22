@@ -60,4 +60,13 @@
             <enum name="left_to_right" value="3"/>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="ArtsTextView">
+        <attr name="suffixIcon" format="reference"></attr>
+        <attr name="drawableTopMargin" format="dimension" />
+        <attr name="drawableLeftMargin" format="dimension" />
+        <!--是否使用系统默认字体,false:使用方正粗圆字体-->
+        <attr name="useDefultTextFont" format="boolean"/>
+    </declare-styleable>
+
 </resources>

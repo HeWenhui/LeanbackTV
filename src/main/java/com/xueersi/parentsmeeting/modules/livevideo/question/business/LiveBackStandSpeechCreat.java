@@ -97,6 +97,11 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
 //        }
     }
 
+    @Override
+    public BaseSpeechAssessmentPager createNewRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId, SpeechEvalAction speechEvalAction, String stuCouId) {
+        return null;
+    }
+
     class LiveStandSpeechEvalActionImpl implements LiveStandSpeechEvalAction {
         SpeechEvalAction action;
 

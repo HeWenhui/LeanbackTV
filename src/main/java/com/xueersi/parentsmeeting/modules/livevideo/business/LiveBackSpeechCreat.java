@@ -92,4 +92,15 @@ public class LiveBackSpeechCreat implements BaseSpeechCreat {
         }
     }
 
+    @Override
+    public BaseSpeechAssessmentPager createNewRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId, SpeechEvalAction speechEvalAction, String stuCouId) {
+        wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
+        wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
+        SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
+                videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                false, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false, livePagerBack);
+        speechAssessmentPager.setIsExperience(isExperience);
+        return speechAssessmentPager;
+    }
+
 }

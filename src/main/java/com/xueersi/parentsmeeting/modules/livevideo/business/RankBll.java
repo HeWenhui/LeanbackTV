@@ -180,6 +180,44 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     };
 
     public void getAllRanking(final AbstractBusinessDataCallBack callBack) {
+        logger.e("======> rankBll getAllRanking called:"+":"+mGetInfo.getArtsExtLiveInfo());
+        if(mGetInfo.getArtsExtLiveInfo() != null
+                && mGetInfo.getArtsExtLiveInfo().getNewCourseWarePlatform().equals("1")){
+            getArtsNewAllRanking(callBack);
+        }else{
+            getOldRankingData(callBack);
+        }
+    }
+
+    /**
+     * 获取文科新课件平台 排名
+     * @param callBack
+     */
+    private void getArtsNewAllRanking(final AbstractBusinessDataCallBack callBack) {
+        logger.e("======> rankBll getArtsNewAllRanking called:"+":"+mGetInfo.getArtsExtLiveInfo().getNewCourseWarePlatform());
+        getHttpManager().getNewArtsAllRank(mGetInfo.getId(),mGetInfo.getStuCouId(),new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                AllRankEntity allRankEntity = getHttpResponseParser().parseAllRank(responseEntity);
+                callBack.onDataSucess(allRankEntity);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                logger.e("getAllRanking:onPmError" + responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                logger.e("getAllRanking:onPmFailure" + msg);
+            }
+        });
+
+    }
+
+    private void getOldRankingData(final AbstractBusinessDataCallBack callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
@@ -205,6 +243,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
             }
         });
     }
+
 
     public void setGetInfo(LiveGetInfo getInfo) {
         this.mGetInfo = getInfo;

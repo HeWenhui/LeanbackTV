@@ -40,6 +40,7 @@ import ren.yale.android.cachewebviewlib.utils.NetworkUtils;
  */
 
 public class WebViewCache {
+
     String TAG = "WebViewCache";
     protected Logger logger = LoggerFactory.getLogger(TAG);
     private DiskLruCache mDiskLruCache;
