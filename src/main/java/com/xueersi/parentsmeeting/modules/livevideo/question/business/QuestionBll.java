@@ -1034,7 +1034,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onStopQuestion(String ptype, final String nonce) {
-        mLogtf.d("onStopQuestion:ptype=" + ptype);
+        mLogtf.d("onStopQuestion:ptype=" + ptype+" mVideoQuestionLiveEntity = "+mVideoQuestionLiveEntity);
         boolean havePager = false;
         boolean oldisAnaswer = isAnaswer;
         isAnaswer = false;
@@ -1045,9 +1045,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
 
         if (rolePlayMachineAction != null && mVideoQuestionLiveEntity != null) {
+            logger.i("onStopQuestion:"+rolePlayMachineAction.getQuestionId());
             if (mVideoQuestionLiveEntity.id.equals(rolePlayMachineAction.getQuestionId())) {
                 rolePlayMachineAction.onStopQuestion(mVideoQuestionLiveEntity, nonce);
             }
+
         }
         if (voiceAnswerPager != null) {
             havePager = true;

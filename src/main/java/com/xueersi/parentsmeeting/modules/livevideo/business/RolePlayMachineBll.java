@@ -328,7 +328,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
 
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce) {
-        logger.i( "老师收题了,断开socket ");
+        logger.i( "onStopQuestion 老师收题了,断开socket ");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -354,6 +354,12 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
             }
         }
     }
-
+    @Override
+    public String getQuestionId() {
+        if (videoQuestionLiveEntity != null) {
+            return videoQuestionLiveEntity.id;
+        }
+        return "";
+    }
 
 }

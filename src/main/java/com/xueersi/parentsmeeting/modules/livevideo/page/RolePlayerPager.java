@@ -750,6 +750,12 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         mWorkerThread.waitForReady();
         int vProfile = Constants.VIDEO_PROFILE_120P;
         mWorkerThread.configEngine(Constants.CLIENT_ROLE_BROADCASTER, vProfile);
+        if(mEntity == null){
+            if(mRolePlayBll != null){
+                mRolePlayBll.closeCurPage();
+            }
+            return;
+        }
         mWorkerThread.joinChannel(null, mEntity.getLiveId() + "_" + mEntity.getTestId() + "_" + mEntity.getTeamId(),
                 Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId()), new WorkerThread
                         .OnJoinChannel() {

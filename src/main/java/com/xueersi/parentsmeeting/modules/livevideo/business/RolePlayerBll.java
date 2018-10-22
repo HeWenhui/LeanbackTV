@@ -255,7 +255,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce) {
-        logger.i( "老师收题了,断开socket ");
+        logger.i( "onStopQuestion 老师收题了,断开socket ");
         if (mWebSocket != null && mWebSocket.isOpen()) {
             mWebSocket.close();
             mWebSocket = null;
