@@ -10,14 +10,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.PCMFormat;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import java.io.IOException;
 
@@ -50,6 +49,10 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
     private short[] mPCMBuffer;
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
+    public SpeechFeedBackBllOld(Activity activity,SpeechFeedBackIRCBll backIRCBll) {
+        this.activity = activity;
+    }
+
     private void initAudioRecorder() throws IOException {
         mBufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLING_RATE,
                 DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT.getAudioFormat());
@@ -80,22 +83,24 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
         if (isStart) {
             return;
         }
-        logger.d( "start:roomId=" + roomId);
+        logger.d("start:roomId=" + roomId);
         isStart = true;
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    logger.d( "start:startRecording:mAudioRecord=" + (mAudioRecord == null));
+                    logger.d("start:startRecording:mAudioRecord=" + (mAudioRecord == null));
                     initAudioRecorder();
                     bottomContent.post(new Runnable() {
                         @Override
                         public void run() {
                             speechFeedBackPager = new SpeechFeedBackPager(activity);
-                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup
+                                    .LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.WRAP_CONTENT);
                             int screenWidth = ScreenUtils.getScreenWidth();
-                            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
+                            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig
+                                    .VIDEO_WIDTH);
                             params.rightMargin = wradio;
                             bottomContent.addView(speechFeedBackPager.getRootView(), params);
                         }
@@ -110,9 +115,9 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
                             }
                         }
                     }
-                    logger.d( "start:startRecording:end;time=" + (System.currentTimeMillis() - time));
+                    logger.d("start:startRecording:end;time=" + (System.currentTimeMillis() - time));
                 } catch (IOException e) {
-                    logger.e( "initAudioRecorder", e);
+                    logger.e("initAudioRecorder", e);
                 }
             }
         });
@@ -123,7 +128,7 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
         if (!isStart) {
             return;
         }
-        logger.d( "stop:mAudioRecord=" + (mAudioRecord == null));
+        logger.d("stop:mAudioRecord=" + (mAudioRecord == null));
         isStart = false;
         if (mAudioRecord != null) {
             mAudioRecord.release();
@@ -175,7 +180,8 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
             if (width > 0) {
                 int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
                 wradio += (screenWidth - width) / 2;
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) speechFeedBackPager.getRootView().getLayoutParams();
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) speechFeedBackPager.getRootView()
+                        .getLayoutParams();
                 if (wradio != params.rightMargin) {
                     params.rightMargin = wradio;
                     LayoutParamsUtil.setViewLayoutParams(speechFeedBackPager.getRootView(), params);

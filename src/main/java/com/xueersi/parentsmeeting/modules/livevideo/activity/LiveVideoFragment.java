@@ -181,7 +181,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new SpeechBulletScreenIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
+//            mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
         }
         VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
         videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);

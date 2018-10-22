@@ -18,7 +18,7 @@ import org.json.JSONObject;
  * 语音反馈irc
  */
 public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackHttp, NoticeAction, TopicAction {
-    SpeechFeedBackBll speechFeedBackAction;
+    SpeechFeedBackBllOld speechFeedBackAction;
 
     public SpeechFeedBackIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -29,19 +29,19 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
         getHttpManager().saveStuTalkSource(mGetInfo.getStuId(), talkSourcePath, service, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                logger.d( "saveStuTalkSource:onPmSuccess" + responseEntity.getJsonObject());
+                logger.d("saveStuTalkSource:onPmSuccess" + responseEntity.getJsonObject());
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                logger.d( "saveStuTalkSource:onPmFailure" + msg);
+                logger.d("saveStuTalkSource:onPmFailure" + msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                logger.d( "saveStuTalkSource:onPmError" + responseEntity.getErrorMsg());
+                logger.d("saveStuTalkSource:onPmError" + responseEntity.getErrorMsg());
             }
         });
     }
@@ -50,7 +50,8 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
         String status = mainRoomstatus.getOnVideoChat();
-        if ("on".equals(status) && LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
+        final boolean openlike = mainRoomstatus.isOpenlike();
+        if (openlike && LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
             final String roomId = mainRoomstatus.getAgoraVoiceChatRoom();
             if (speechFeedBackAction != null) {
                 speechFeedBackAction.start(roomId);
@@ -74,7 +75,9 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
         if (speechFeedBackAction != null) {
             try {
                 String status = object.getString("status");
-                if ("on".equals(status) && LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
+                final boolean open = object.optBoolean("open");
+                status = "on";
+                if (open) {
                     String roomId = object.getString("roomId");
                     speechFeedBackAction.start(roomId);
                 } else {
@@ -90,10 +93,8 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
         if (speechFeedBackAction != null) {
             return;
         }
-        SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(activity, SpeechFeedBackIRCBll.this);
-        speechFeedBackBll.setGetInfo(mGetInfo);
+        SpeechFeedBackBllOld speechFeedBackBll = new SpeechFeedBackBllOld(activity, SpeechFeedBackIRCBll.this);
         speechFeedBackBll.setBottomContent(mRootView);
-        speechFeedBackBll.setLiveAndBackDebug(mLiveBll);
         speechFeedBackAction = speechFeedBackBll;
     }
 
@@ -101,7 +102,7 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
     public void onNotice(String sourceNick, String target, final JSONObject object, int type) {
         String msg = "onNotice";
         switch (type) {
-            case XESCODE.SPEECH_FEEDBACK: {
+            case XESCODE.PRAISE_SWITCH: {
                 msg += ",SPEECH_FEEDBACK";
                 if (speechFeedBackAction != null) {
                     onStaus(object);
@@ -122,7 +123,7 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
     @Override
     public int[] getNoticeFilter() {
         return new int[]{
-                XESCODE.SPEECH_FEEDBACK};
+                XESCODE.PRAISE_SWITCH};
     }
 
     @Override
