@@ -55,7 +55,6 @@ import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -69,7 +68,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicPermissionDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -1635,8 +1633,11 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     private boolean isSpeechError = false;
     /** 是不是评测成功 */
     private boolean isSpeechSuccess = false;
-    /** 计时器 */
-    CountDownTimer noSpeechTimer = new CountDownTimer(30000, 1000) {
+    private final static String VOICE_RECOG_HINT = "语音录入中，请大声说英语";
+    private final static String VOICE_RECOG_NOVOICE_HINT = "不要害羞，大点声哦";
+    private final static String VOICE_RECOG_NORECOG_HINT = "上课请认真，要说英文哦";
+    /** 计时器 超过三十秒截停 */
+    CountDownTimer noSpeechTimer = new CountDownTimer(31000, 1000) {
         @Override
         public void onTick(long millisUntilFinished) {
             if (!liveVideoActivity.isFinishing()) {
@@ -1645,9 +1646,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     vwvVoiceChatWave.setVisibility(View.GONE);
                     tvVoiceChatCountdown.setText(String.valueOf(millisUntilFinished / 1000));
                 }
-            }
-            if (millisUntilFinished <= 0) {
-//                    stopEvaluator();
             }
         }
 
@@ -1662,13 +1660,40 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     private void startEvaluator() {
         Log.d(TAG, "startEvaluator()");
         File saveFile = new File(dir, "voicechat" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startSpeechRecognitionOffline(saveFile.getPath(), "5", "30",
+        mSpeechEvaluatorUtils.startSpeechRecognitionOffline(saveFile.getPath(), "2", "30",
                 new EvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
                         Log.d(TAG, "onBeginOfSpeech");
                         isSpeechError = false;
                         noSpeechTimer.start();
+                        //3秒没有检测到声音提示
+                        mainHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (VOICE_RECOG_HINT.equals(tvMessageVoiceContent.getText().toString())){
+                                    tvMessageVoiceContent.setText(VOICE_RECOG_NOVOICE_HINT);
+                                }
+                            }
+                        },3000);
+                        //6秒仍没检测到说话
+                        mainHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (VOICE_RECOG_NOVOICE_HINT.equals(tvMessageVoiceContent.getText().toString())){
+                                    tvMessageVoiceContent.setText(VOICE_RECOG_NORECOG_HINT);
+                                }
+                            }
+                        },6000);
+                        //7秒没声音自动停止
+                        mainHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (VOICE_RECOG_NORECOG_HINT.equals(tvMessageVoiceContent.getText().toString())){
+                                    btnMessageSwitch.performClick();
+                                }
+                            }
+                        },7000);
                     }
 
                     @Override
@@ -1677,12 +1702,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                 .getErrorNo());
                         if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
                             onEvaluatorSuccess(resultEntity.getCurString(), true);
-                        } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                            onEvaluatorError(resultEntity);
                         } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                            if (resultEntity.getCurString() != null) {
-                                onEvaluatorSuccess(resultEntity.getCurString(), false);
-                            }
+                            onEvaluatorSuccess(resultEntity.getCurString(), false);
                         }
                     }
 
@@ -1705,7 +1726,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         if (mAM != null) {
             mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
         }
-        noSpeechTimer.cancel();
+        if (noSpeechTimer != null) {
+            noSpeechTimer.cancel();
+        }
         tvVoiceChatCountdown.setVisibility(View.GONE);
     }
 
@@ -1726,10 +1749,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_voice);
                 isVoice = false;
             }
-//                else {
-//                    tvMessageVoiceContent.setText("没听清，请重说");
-//                    vwvVoiceChatWave.setVisibility(View.GONE);
-//                }
         } else {
             if (!TextUtils.isEmpty(content)) {
                 tvMessageVoiceContent.setText(content);
@@ -1740,103 +1759,45 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     }
 
+    //设置识别后的文本状态时显示
     private void setSpeechFinishView(String content) {
         rlMessageVoiceContent.setVisibility(View.GONE);
         vwvVoiceChatWave.setVisibility(View.GONE);
         tvMessageVoiceCount.setText("");
         rlMessageTextContent.setVisibility(View.VISIBLE);
-//                    String old = etMessageContent.getText().toString();
         etMessageContent.setText(content);
-//                    tvMessageVoiceCount.setText(content.length()+"/15");
         etMessageContent.requestFocus();
         etMessageContent.setSelection(etMessageContent.getText().toString().length());
         mVoiceContent = "";
     }
 
-    private void onEvaluatorError(ResultEntity resultEntity) {
-        Log.d(TAG, "onEvaluatorError()");
-        isSpeechError = true;
-        if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode.MUTE) {
-            Log.d(TAG, "声音有点小，再来一次哦！");
-//            Toast.makeText(mContext,"声音有点小，再来一次哦！",Toast.LENGTH_SHORT).show();
-            mView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startEvaluator();
-                    vwvVoiceChatWave.setVisibility(View.VISIBLE);
-                }
-            }, 300);
-            return;
-        } else if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
-            Log.d(TAG, "麦克风不可用，快去检查一下！");
-//            Toast.makeText(mContext,"麦克风不可用，快去检查一下！",Toast.LENGTH_SHORT).show();
-        } else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() ==
-                ResultCode.NETWORK_FAIL
-                || resultEntity.getErrorNo() == ResultCode.WEBSOCKET_CONN_REFUSE) {
-            int netWorkType = NetWorkHelper.getNetWorkState(mContext);
-            if (netWorkType == NetWorkHelper.NO_NETWORK) {
-                Log.d(TAG, "好像没网了，快检查一下");
-            } else {
-                Log.d(TAG, "服务器连接不上");
-            }
-            //Toast.makeText(mContext,"网络环境较差，请直接输入",Toast.LENGTH_SHORT).show();
-
-            stopEvaluator();
-
-
-        }
-//        else {
-//            tvSpeechbulTitle.setText("没听清，请重说");
-//            vwvSpeechbulWave.setVisibility(View.GONE);
-//            ivSpeechbulVoice.setVisibility(View.VISIBLE);
-//            tvSpeechbulRepeat.setVisibility(View.VISIBLE);
-//        }
-
-    }
-
+    /**
+     * Mic权限判定
+     */
     private void inspectMicPermission() {
 
-        final SmallEnglishMicPermissionDialog micPermissionDialog = new SmallEnglishMicPermissionDialog(mContext);
-        micPermissionDialog.setTitleText("麦克风权限被禁用了" + '\n' + "无法获取您的声音");
-        micPermissionDialog.setContentText("去设置打开麦克风权限");
-        micPermissionDialog.setOnClickCancelListener(new View.OnClickListener() {
+        XesPermission.checkPermissionNoAlert(mContext, new PermissionCallback() {
             @Override
-            public void onClick(View view) {
+            public void onFinish() {
+
+            }
+
+            @Override
+            public void onDeny(String permission, int position) {
                 rlMessageTextContent.setVisibility(View.VISIBLE);
                 rlMessageVoiceInput.setVisibility(View.GONE);
                 btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_voice);
                 stopEvaluator();
                 setSpeechFinishView(mVoiceContent);
                 isVoice = false;
-                micPermissionDialog.cancelDialog();
             }
-        });
-        micPermissionDialog.setOnClickConfirmlListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View view) {
-                micPermissionDialog.cancelDialog();
-                XesPermission.checkPermissionNoAlert(mContext, new PermissionCallback() {
-                    @Override
-                    public void onFinish() {
-
-                    }
-
-                    @Override
-                    public void onDeny(String permission, int position) {
-
-                    }
-
-                    @Override
-                    public void onGuarantee(String permission, int position) {
-
-                    }
-                }, PermissionConfig.PERMISSION_CODE_AUDIO);
+            public void onGuarantee(String permission, int position) {
+                startVoiceInput();
             }
-        });
-        micPermissionDialog.showDialog();
-
+        }, PermissionConfig.PERMISSION_CODE_AUDIO);
     }
-
 
 }/*
          "pageid" -> "LiveVideoActivity"
