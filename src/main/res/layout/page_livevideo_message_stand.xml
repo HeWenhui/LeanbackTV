@@ -178,10 +178,76 @@
 
     </RelativeLayout>
 
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_livevideo_star_energy_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="130dp"
+            android:layout_marginTop="13dp"
+            android:src="@drawable/iv_livevideo_star_energy_bar_background"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_star_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="60dp"
+            android:src="@drawable/iv_livevideo_star_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_star_energy_bar"
+            app:layout_constraintRight_toRightOf="@+id/iv_livevideo_star_energy_bar"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_star_energy_bar" />
+
+        <TextView
+            android:id="@+id/tv_livevideo_star_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text=""
+            android:textColor="@color/COLOR_FFFFFFFF"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_star_energy_bar"
+            app:layout_constraintRight_toRightOf="@+id/iv_livevideo_star_energy_bar"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_star_energy_bar" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_gold_enerty_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/iv_livevideo_star_energy_bar_background"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_star_energy_bar" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="60dp"
+            android:src="@drawable/iv_livevideo_gold_icon"
+            app:layout_constraintRight_toRightOf="@+id/iv_livevideo_gold_enerty_bar"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_star_icon" />
+
+        <TextView
+            android:id="@+id/tv_livevideo_gold_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/COLOR_FFFFFFFF"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_gold_enerty_bar"
+            app:layout_constraintRight_toRightOf="@+id/iv_livevideo_gold_enerty_bar"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_gold_enerty_bar" />
+    </android.support.constraint.ConstraintLayout>
+
     <com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveLottieAnimationView
         android:id="@id/lav_livevideo_chievement"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@id/rl_livevideo_english_content"

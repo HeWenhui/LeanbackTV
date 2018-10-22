@@ -9,31 +9,21 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveLottieAnimationView;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,6 +111,18 @@ public class LiveStandAchievementBll implements StarInteractAction {
      * 星星晃动从-20,0
      */
     private float starRotateLine2a, starRotateLine2b;
+    /**
+     * 星星lottie动画是否显示
+     */
+    private boolean isStarLottieVisible = false;
+    /**
+     * 星星数量
+     */
+    private TextView tvStarCount;
+    /**
+     * 金币数量
+     */
+    private TextView tvGoldCount;
 
     public LiveStandAchievementBll(Activity activity, int liveType, int starCount, int goldCount, boolean mIsLand) {
         this.activity = activity;
@@ -182,6 +184,14 @@ public class LiveStandAchievementBll implements StarInteractAction {
         View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_stand_stat_gold, myView, false);
         myView.addView(layout_livevideo_stat_gold);
         lottieAnimationView = activity.findViewById(R.id.lav_livevideo_chievement);
+//        tvStarCount = myView.findViewById(R.id.tv_livevideo_star_count);
+
+//        if (tvStarCount == null) {
+        tvStarCount = activity.findViewById(R.id.tv_livevideo_star_count);
+        tvGoldCount = activity.findViewById(R.id.tv_livevideo_gold_count);
+//        }
+
+
         initlottieAnim();
 //        if (isExpe) {
 //            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) myView.getLayoutParams();
@@ -235,12 +245,20 @@ public class LiveStandAchievementBll implements StarInteractAction {
         if (goldCount2 > 999) {
             goldCount2 = 999;
         }
+        if (isStarLottieVisible) {
         lottieAnimationView.setGoldCount(goldCount2);
+        } else {
+            tvGoldCount.setText(String.valueOf(goldCount2));
+        }
         int starCount2 = starCount;
         if (starCount2 > 999) {
             starCount2 = 999;
         }
+        if (isStarLottieVisible) {
         lottieAnimationView.setStarCount(starCount2);
+        } else {
+            tvStarCount.setText(String.valueOf(starCount2));
+        }
 //        String num = "" + goldCount;
 //        AssetManager manager = activity.getAssets();
 //        Bitmap img_7Bitmap;
