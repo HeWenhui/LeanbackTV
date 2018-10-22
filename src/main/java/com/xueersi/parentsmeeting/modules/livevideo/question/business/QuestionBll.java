@@ -1044,12 +1044,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
         }
 
-        if (rolePlayMachineAction != null && mVideoQuestionLiveEntity != null) {
+        if (rolePlayMachineAction != null) {
             logger.i("onStopQuestion:"+rolePlayMachineAction.getQuestionId());
-            if (mVideoQuestionLiveEntity.id.equals(rolePlayMachineAction.getQuestionId())) {
-                rolePlayMachineAction.onStopQuestion(mVideoQuestionLiveEntity, nonce);
-            }
-
+            rolePlayMachineAction.onStopQuestion(mVideoQuestionLiveEntity, nonce);
         }
         if (voiceAnswerPager != null) {
             havePager = true;

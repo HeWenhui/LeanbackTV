@@ -34,7 +34,7 @@ import java.util.Random;
 
 import okhttp3.Call;
 
-public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
+public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachineAction{
     private RolePlayerHttpManager mRolePlayerHttpManager;
     private RolePlayerHttpResponseParser mRolePlayerHttpResponseParser;
 

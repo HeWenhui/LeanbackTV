@@ -295,6 +295,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     if (rolePlayMachineAction == null) {
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
                         mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                        rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
                     }
 
                     //多人的回调
@@ -498,6 +499,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (rolePlayMachineAction == null) {
                     RolePlayMachineBll rolePlayerMachineBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
                     mQuestionAction.setRolePlayMachineAction(rolePlayerMachineBll);
+                    rolePlayMachineAction = (RolePlayMachineAction) rolePlayerMachineBll;
 
                 }
 
