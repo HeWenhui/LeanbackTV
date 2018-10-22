@@ -184,13 +184,13 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         this.isLive = isLive;
         saveLogDir = LiveCacheFile.geCacheFile(activity, "liveplaylog");
         saveLogDirDebug = LiveCacheFile.geCacheFile(activity, "liveplaylogdebug");
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                uploadOld();
-            }
-        }, 20000);
+//        Handler handler = new Handler(Looper.getMainLooper());
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                uploadOld();
+//            }
+//        }, 20000);
 //        if (AppConfig.DEBUG) {
 //            logurl = "http://10.99.1.251/log";
 //        }
@@ -1102,7 +1102,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             e1.printStackTrace();
                         }
                     }
-                    saveStrToFile(requestJson.toString());
+//                    saveStrToFile(requestJson.toString());
                     if (e instanceof SocketTimeoutException) {
                         final long now = System.currentTimeMillis();
                         if (now - xescdnLog2Before < 5 * 60 * 1000) {
