@@ -243,8 +243,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             }
         } else if (liveBasePager instanceof BaseVoiceAnswerPager) {
             if (voiceAnswerPager != null) {
-                VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(context, (BaseApplication)
-                        BaseApplication.getContext(), false,
+                VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(context, (BaseApplication) BaseApplication.getContext(), false,
                         VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                 cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                     @Override
@@ -278,11 +277,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
     }
 
-    public void destroy() {
-        if (h5CoursewarePager != null) {
-            h5CoursewarePager.destroy();
-        }
-    }
 
     public void onResume() {
         if (h5CoursewarePager != null) {
@@ -859,10 +853,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }, (int) (7000 + Math.random() * 4000));
     }
 
+    @Override
     public void registQuestionShow(QuestionShowAction questionShowAction) {
         questionShowActions.add(questionShowAction);
     }
 
+    @Override
     public void unRegistQuestionShow(QuestionShowAction questionShowAction) {
         questionShowActions.remove(questionShowAction);
     }
@@ -1127,6 +1123,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 //            }
         }
     }
+
 
     public void destroy() {
         if (h5CoursewarePager != null) {
