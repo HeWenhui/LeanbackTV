@@ -1,11 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 
 import com.tencent.smtt.sdk.WebView;
-import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 
@@ -53,9 +51,9 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
         if (url.contains(" www.sina.com")) {
             String courseId = findNumber(url, "courseId");
             String classId = findNumber(url, "classId");
-            //跳转到支付页面
-            OtherModulesEnter.intentToOrderConfirmActivity((Activity) mContext, courseId + "-" + classId, 100,
-                    "LivePlaybackVideoActivity");
+            //跳转到商城的订单详情页面
+//            OtherModulesEnter.intentToOrderConfirmActivity((Activity) mContext, courseId + "-" + classId, 100,
+//                    "LivePlaybackVideoActivity");
         }
         return false;
     }
@@ -120,7 +118,13 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
 
     @Override
     public void showWebView(String url) {
-        wvSubjectWeb.loadUrl(url);
+//        if (!TextUtils.isEmpty(url)) {
+//            wvSubjectWeb.loadUrl(url);
+//        } else {
+        wvSubjectWeb.loadUrl("http://exp-class.xesv5.com/wholeBodyLive/expClassApp/index" +
+                ".html#/index?nowLevel=12&liveId=210285&gradeId=1&subjectId=2&teacherId=2671&orderId=2523&userId" +
+                "=11");
+//        }
     }
 
 

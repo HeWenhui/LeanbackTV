@@ -330,12 +330,12 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                         if (isInitialized()) {
                             if (openSuccess) {
                                 mLiveVideoBll.stopPlayDuration();
-                                logger.d( "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+                                logger.d("onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
                             }
                             vPlayer.releaseSurface();
                             vPlayer.stop();
                         } else {
-                            logger.d( "onPause:isInitialized=false");
+                            logger.d("onPause:isInitialized=false");
                         }
                         isPlay = false;
                     }
@@ -361,7 +361,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
         long before = System.currentTimeMillis();
         mMediaController.setFileName(getInfo.getName());
-        logger.d( "onLiveInit:time3=" + (System.currentTimeMillis() - before));
+        logger.d("onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 
     @Override
@@ -377,7 +377,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     vPlayer.stop();
                 }
                 isPlay = false;
-                liveVideoAction.onModeChange(mode, isPresent);
+                if (liveVideoAction != null) {
+                    liveVideoAction.onModeChange(mode, isPresent);
+                }
             }
         });
     }
