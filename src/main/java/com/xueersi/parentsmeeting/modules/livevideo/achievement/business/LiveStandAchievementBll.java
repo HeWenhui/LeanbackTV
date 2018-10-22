@@ -9,31 +9,21 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveLottieAnimationView;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,6 +111,18 @@ public class LiveStandAchievementBll implements StarInteractAction {
      * 星星晃动从-20,0
      */
     private float starRotateLine2a, starRotateLine2b;
+    /**
+     * 星星lottie动画是否显示
+     */
+    private boolean isStarLottieVisible = false;
+    /**
+     * 星星数量
+     */
+    private TextView tvStarCount;
+    /**
+     * 金币数量
+     */
+    private TextView tvGoldCount;
 
     public LiveStandAchievementBll(Activity activity, int liveType, int starCount, int goldCount, boolean mIsLand) {
         this.activity = activity;
@@ -133,12 +135,12 @@ public class LiveStandAchievementBll implements StarInteractAction {
         LineMath line1 = getAandB(starScaleStep1, 1.0f, starScaleStep2, starScaleMax);
         starInLine1a = line1.a;
         starInLine1b = line1.b;
-        logger.d( "StarInteractBll:starInLine1a=(" + starInLine1a + "," + starInLine1b + ")");
+        logger.d("StarInteractBll:starInLine1a=(" + starInLine1a + "," + starInLine1b + ")");
         //第二条线
         LineMath line2 = getAandB(starScaleStep2, starScaleMax, 1.0f, 1.0f);
         starInLine2a = line2.a;
         starInLine2b = line2.b;
-        logger.d( "StarInteractBll:starInLine2a=(" + starInLine2a + "," + starInLine2b + ")");
+        logger.d("StarInteractBll:starInLine2a=(" + starInLine2a + "," + starInLine2b + ")");
         LineMath line3 = getAandB(0.25f, 1f, 0.75f, -1f);
         starRotateLine1a = line3.a;
         starRotateLine1b = line3.b;
@@ -179,9 +181,18 @@ public class LiveStandAchievementBll implements StarInteractAction {
             myView = mContentView.findViewById(R.id.rl_livevideo_star_content);
         }
         myView.setVisibility(View.VISIBLE);
-        View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_stand_stat_gold, myView, false);
+        View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout
+                .layout_livevideo_stand_stat_gold, myView, false);
         myView.addView(layout_livevideo_stat_gold);
         lottieAnimationView = activity.findViewById(R.id.lav_livevideo_chievement);
+//        tvStarCount = myView.findViewById(R.id.tv_livevideo_star_count);
+
+//        if (tvStarCount == null) {
+        tvStarCount = activity.findViewById(R.id.tv_livevideo_star_count);
+        tvGoldCount = activity.findViewById(R.id.tv_livevideo_gold_count);
+//        }
+
+
         initlottieAnim();
 //        if (isExpe) {
 //            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) myView.getLayoutParams();
@@ -216,15 +227,17 @@ public class LiveStandAchievementBll implements StarInteractAction {
         LottieComposition.Factory.fromAssetFileName(activity, fileName, new OnCompositionLoadedListener() {
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                logger.d( "onCompositionLoaded:composition=" + composition);
+                logger.d("onCompositionLoaded:composition=" + composition);
                 if (composition == null) {
 //                    Toast.makeText(activity, "加载失败", Toast.LENGTH_SHORT).show();
                     return;
                 }
 //                Toast.makeText(activity, "加载成功", Toast.LENGTH_SHORT).show();
                 LiveStandAchievementBll.this.composition = composition;
+//                if (isStarLottieVisible) {
                 lottieAnimationView.setImageAssetsFolder(assetFolders.get(fileName));
                 lottieAnimationView.setComposition(composition);
+//                }
                 setGoldCount();
             }
         });
@@ -235,27 +248,38 @@ public class LiveStandAchievementBll implements StarInteractAction {
         if (goldCount2 > 999) {
             goldCount2 = 999;
         }
-        lottieAnimationView.setGoldCount(goldCount2);
+        if (isStarLottieVisible) {
+            lottieAnimationView.setGoldCount(goldCount2);
+        } else {
+            tvGoldCount.setText(String.valueOf(goldCount2));
+        }
         int starCount2 = starCount;
         if (starCount2 > 999) {
             starCount2 = 999;
         }
-        lottieAnimationView.setStarCount(starCount2);
+        if (isStarLottieVisible) {
+            lottieAnimationView.setStarCount(starCount2);
+        } else {
+            tvStarCount.setText(String.valueOf(starCount2));
+        }
 //        String num = "" + goldCount;
 //        AssetManager manager = activity.getAssets();
 //        Bitmap img_7Bitmap;
 //        try {
 //            img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_9.png"));
 //            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
-//            Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+//            Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config
+// .ARGB_8888);
 //            Canvas canvas = new Canvas(creatBitmap);
 //            canvas.drawBitmap(img_7Bitmap, 0, 0, null);
 //            Paint paint = new Paint();
 //            paint.setTextSize(24);
 //            paint.setColor(Color.WHITE);
 //            float width = paint.measureText(num);
-//            canvas.drawText(num, (img_7Bitmap.getWidth() - img_3Bitmap.getWidth() / 2) / 2 + img_3Bitmap.getWidth() / 2 - width / 2, img_7Bitmap.getHeight() / 2 + paint.measureText("a") / 2, paint);
-////                    canvas.drawRect(img_9Bitmap.getWidth()/2, 0, img_3Bitmap.getWidth(), img_3Bitmap.getHeight(), paint);
+//            canvas.drawText(num, (img_7Bitmap.getWidth() - img_3Bitmap.getWidth() / 2) / 2 + img_3Bitmap.getWidth()
+// / 2 - width / 2, img_7Bitmap.getHeight() / 2 + paint.measureText("a") / 2, paint);
+////                    canvas.drawRect(img_9Bitmap.getWidth()/2, 0, img_3Bitmap.getWidth(), img_3Bitmap.getHeight(),
+/// paint);
 //            img_7Bitmap = creatBitmap;
 //        } catch (IOException e) {
 ////            e.printStackTrace();
@@ -387,13 +411,16 @@ public class LiveStandAchievementBll implements StarInteractAction {
     public void onStarAdd(int star, float x, float y) {
         Point startPoint = new Point(x, y);
         starCount += star;
-//        final View flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_english_stat_fly, bottomContent, false);
+//        final View flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_english_stat_fly,
+// bottomContent, false);
 //        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
 //        params.leftMargin = (int) startPoint.getX();
 //        params.topMargin = (int) startPoint.getY();
 //        bottomContent.addView(flyStat, params);
-//        final ImageView iv_livevideo_starinteract_stat = (ImageView) flyStat.findViewById(R.id.iv_livevideo_starinteract_stat);
-//        ValueAnimator translateValueAnimator = ValueAnimator.ofObject(new LineEvaluator(), new LineEvaluator.PointAndFloat(startPoint), new LineEvaluator.PointAndFloat(endStarPoint));
+//        final ImageView iv_livevideo_starinteract_stat = (ImageView) flyStat.findViewById(R.id
+// .iv_livevideo_starinteract_stat);
+//        ValueAnimator translateValueAnimator = ValueAnimator.ofObject(new LineEvaluator(), new LineEvaluator
+// .PointAndFloat(startPoint), new LineEvaluator.PointAndFloat(endStarPoint));
 //        translateValueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
 //        translateValueAnimator.setDuration(600);
 //        translateValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -413,7 +440,8 @@ public class LiveStandAchievementBll implements StarInteractAction {
 //                iv_livevideo_starinteract_stat.setScaleX(scale);
 //                iv_livevideo_starinteract_stat.setScaleY(scale);
 //                logger.i( "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
-////                    logger.i( "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float) ivStarInteractStat.getWidth() / (float) width));
+////                    logger.i( "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float)
+/// ivStarInteractStat.getWidth() / (float) width));
 //            }
 //        });
 //        translateValueAnimator.start();
@@ -424,8 +452,10 @@ public class LiveStandAchievementBll implements StarInteractAction {
         if (starCount == 0) {
             return;
         }
-//        final View flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly, bottomContent, false);
-//        TextView tv_livevideo_statinteract_count = (TextView) flyStat.findViewById(R.id.tv_livevideo_starinteract_count);
+//        final View flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly, bottomContent,
+// false);
+//        TextView tv_livevideo_statinteract_count = (TextView) flyStat.findViewById(R.id
+// .tv_livevideo_starinteract_count);
 //        tv_livevideo_statinteract_count.setText("×" + starCount);
 //        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
 //        params.leftMargin = (int) startPoint.getX();
