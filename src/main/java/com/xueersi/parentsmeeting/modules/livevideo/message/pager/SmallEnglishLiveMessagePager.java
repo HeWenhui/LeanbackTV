@@ -45,7 +45,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
-import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
@@ -752,7 +751,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         if (mSpeechEvaluatorUtils != null) {
             mSpeechEvaluatorUtils.cancel();
         }
-        tvMessageVoiceContent.setText("语音录入中，请大声说英语");
+        tvMessageVoiceContent.setText(VOICE_RECOG_HINT);
         tvMessageVoiceCount.setText("");
 //        OfflineAssess.autoTestShurufa();
         startEvaluator();
@@ -1633,9 +1632,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     private boolean isSpeechError = false;
     /** 是不是评测成功 */
     private boolean isSpeechSuccess = false;
-    private final static String VOICE_RECOG_HINT = "语音录入中，请大声说英语";
-    private final static String VOICE_RECOG_NOVOICE_HINT = "不要害羞，大点声哦";
-    private final static String VOICE_RECOG_NORECOG_HINT = "上课请认真，要说英文哦";
+    private final static String VOICE_RECOG_HINT = "语音输入中，请大声说英语";
+    private final static String VOICE_RECOG_NOVOICE_HINT = "没听清，请重说";
+    private final static String VOICE_RECOG_NORECOG_HINT = "抱歉没听清，请手动输入或重说";
     /** 计时器 超过三十秒截停 */
     CountDownTimer noSpeechTimer = new CountDownTimer(31000, 1000) {
         @Override
@@ -1671,29 +1670,32 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         mainHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (VOICE_RECOG_HINT.equals(tvMessageVoiceContent.getText().toString())){
+                                if (VOICE_RECOG_HINT.equals(tvMessageVoiceContent.getText().toString()) || View
+                                        .VISIBLE == tvMessageCount.getVisibility()) {
                                     tvMessageVoiceContent.setText(VOICE_RECOG_NOVOICE_HINT);
                                 }
                             }
-                        },3000);
+                        }, 3000);
                         //6秒仍没检测到说话
                         mainHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (VOICE_RECOG_NOVOICE_HINT.equals(tvMessageVoiceContent.getText().toString())){
+                                if (VOICE_RECOG_NOVOICE_HINT.equals(tvMessageVoiceContent.getText().toString()) ||
+                                        View.VISIBLE == tvMessageCount.getVisibility()) {
                                     tvMessageVoiceContent.setText(VOICE_RECOG_NORECOG_HINT);
                                 }
                             }
-                        },6000);
+                        }, 6000);
                         //7秒没声音自动停止
                         mainHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (VOICE_RECOG_NORECOG_HINT.equals(tvMessageVoiceContent.getText().toString())){
+                                if (VOICE_RECOG_NORECOG_HINT.equals(tvMessageVoiceContent.getText().toString()) ||
+                                        View.VISIBLE == tvMessageCount.getVisibility()) {
                                     btnMessageSwitch.performClick();
                                 }
                             }
-                        },7000);
+                        }, 7000);
                     }
 
                     @Override
@@ -1714,6 +1716,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     }
                 });
         int v = (int) (0.1f * mMaxVolume);
+        mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
         mAM.setStreamVolume(AudioManager.STREAM_MUSIC, v, 0);
     }
 

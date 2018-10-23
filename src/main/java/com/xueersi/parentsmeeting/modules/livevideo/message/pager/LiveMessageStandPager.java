@@ -60,6 +60,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -91,6 +92,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
@@ -101,7 +104,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  * @date 2016/8/2
  * 直播聊天横屏-直播课和直播辅导
  */
-public class LiveMessageStandPager extends BaseLiveMessagePager {
+public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveAndBackDebug {
     private String TAG = getClass().getSimpleName();
     /** 聊天，默认开启 */
     private Button btMesOpen;
@@ -161,12 +164,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     /** 当前音量 */
     private int mVolume = 0;
 
-
-    String isdirty = "0";
-
     boolean isVoice = true;
-
+    //当前语音输入转换的文本
     String mVoiceContent = "";
+    //发送聊天数目
+    private int mMessageCount = 0;
+
+
 
     public LiveMessageStandPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                  BaseLiveMediaControllerBottom
@@ -533,6 +537,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                             boolean send = ircState.sendMessage(msg, getInfo.getStandLiveName());
                             if (send) {
+                                mMessageCount ++;
                                 etMessageContent.setText("");
                                 addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, getInfo.getHeadImgPath());
                                 lastSendMsg = System.currentTimeMillis();
@@ -724,6 +729,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
         }
         noSpeechTimer.cancel();
         noSpeechTimer = null;
+        Map<String, String> mData = new HashMap<>();
+        mData.put("userid",getInfo.getStuId());
+        mData.put("liveid",getInfo.getId());
+//        umsAgentDebugSys();
     }
 
     private void initFlower() {
@@ -1395,9 +1404,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
     private boolean isSpeechError = false;
     /** 是不是评测成功 */
     private boolean isSpeechSuccess = false;
-    private final static String VOICE_RECOG_HINT = "语音录入中，请大声说英语";
-    private final static String VOICE_RECOG_NOVOICE_HINT = "不要害羞，大点声哦";
-    private final static String VOICE_RECOG_NORECOG_HINT = "上课请认真，要说英文哦";
+    private final static String VOICE_RECOG_HINT = "语音输入中，请大声说英语";
+    private final static String VOICE_RECOG_NOVOICE_HINT = "没听清，请重说";
+    private final static String VOICE_RECOG_NORECOG_HINT = "抱歉没听清，请手动输入或重说";
     /** 计时器 */
     CountDownTimer noSpeechTimer = new CountDownTimer(30000, 1000) {
         @Override
@@ -1457,7 +1466,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
                         }
                     }
                 },7000);
-
             }
 
             @Override
@@ -1571,5 +1579,22 @@ public class LiveMessageStandPager extends BaseLiveMessagePager {
 
     }
 
+    LiveAndBackDebug mLiveBll;
+    @Override
+    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
+        if (mLiveBll == null){
+            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
+        }
+        mLiveBll.umsAgentDebugSys(eventId, mData);
+    }
 
+    @Override
+    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
+
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+
+    }
 }
