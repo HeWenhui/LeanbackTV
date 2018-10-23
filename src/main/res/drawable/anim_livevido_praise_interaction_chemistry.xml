@@ -4,160 +4,105 @@
 
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear0"
-        android:duration="50" />
+        android:duration="116" />
 
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear1"
-        android:duration="50" />
+        android:duration="116" />
 
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear2"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear3"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear4"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear5"
-        android:duration="50" />
+        android:duration="116" />
 
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear6"
-        android:duration="50" />
+        android:duration="116" />
 
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear7"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear8"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear9"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear10"
-        android:duration="50" />
+        android:duration="116" />
 
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear11"
-        android:duration="50" />
+        android:duration="116" />
 
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear12"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear13"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear14"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear15"
-        android:duration="50" />
+        android:duration="116" />
 
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear16"
-        android:duration="50" />
+        android:duration="116" />
 
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear17"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear18"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear19"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear20"
-        android:duration="50" />
+        android:duration="116" />
 
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear21"
-        android:duration="50" />
+        android:duration="116" />
 
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear22"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear23"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear24"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear25"
-        android:duration="50" />
+        android:duration="116" />
 
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear26"
-        android:duration="50" />
+        android:duration="116" />
 
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear27"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear28"
-        android:duration="50" />
+        android:duration="116" />
     <item
         android:drawable="@drawable/livevideo_praise_chemistry_sear29"
-        android:duration="50" />
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear30"
-        android:duration="50" />
-
-
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear31"
-        android:duration="50" />
-
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear32"
-        android:duration="50" />
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear33"
-        android:duration="50" />
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear34"
-        android:duration="50" />
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear35"
-        android:duration="50" />
-
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear36"
-        android:duration="50" />
-
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear37"
-        android:duration="50" />
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear38"
-        android:duration="50" />
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear39"
-        android:duration="50" />
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear40"
-        android:duration="50" />
-
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear41"
-        android:duration="50" />
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear42"
-        android:duration="50" />
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear43"
-        android:duration="50" />
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear44"
-        android:duration="50" />
-
-    <item
-        android:drawable="@drawable/livevideo_praise_chemistry_sear45"
-        android:duration="50" />
+        android:duration="116" />
 </animation-list>
 

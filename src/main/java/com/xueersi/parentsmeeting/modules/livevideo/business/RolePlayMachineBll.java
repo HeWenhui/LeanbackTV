@@ -81,7 +81,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
         mRolePlayerHttpManager = new RolePlayerHttpManager(mContext);
         mRolePlayerHttpResponseParser = new RolePlayerHttpResponseParser();
 
-        mBottomContent = bottomContent;
+        //mBottomContent = bottomContent;
 
     }
     /**
@@ -339,6 +339,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
     @Override
     public void closeCurPage() {
+        logger.i( "onStopQuestion 关闭当前页面 "+mBottomContent+":"+mRolePlayMachinePager);
         if (mBottomContent != null && mRolePlayMachinePager != null) {
             logger.i( "onStopQuestion 关闭当前页面 ");
             mBottomContent.removeView(mRolePlayMachinePager.getRootView());
@@ -363,4 +364,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
         return "";
     }
 
+    public void setBottomView(RelativeLayout bottomView) {
+        this.mBottomContent = bottomView;
+    }
 }
