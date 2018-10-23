@@ -280,6 +280,22 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      */
 
 
+    /**
+     * initView()先于此构造执行
+     * @param context
+     * @param videoQuestionLiveEntity
+     * @param id
+     * @param testId
+     * @param stuId
+     * @param islive
+     * @param nonce
+     * @param speechEvalAction
+     * @param stuCouId
+     * @param isSilence
+     * @param livePagerBack
+     * @param rolePlayMachineBll
+     * @param liveGetInfo
+     */
     public RolePlayMachinePager(Context context, VideoQuestionLiveEntity videoQuestionLiveEntity, String id, String testId, String stuId, boolean islive, String nonce, SpeechEvalAction speechEvalAction, String stuCouId, boolean isSilence, LivePagerBack livePagerBack, RolePlayMachineBll rolePlayMachineBll, LiveGetInfo liveGetInfo) {
         super(context);
          this.mIsLive = islive;
@@ -293,17 +309,71 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         //由于先执行initView，所以mIsLive的值在构造完成以后才赋值，需要在此判断是否是直播，是否需要显示关闭按钮
         ifShowCloseBt();
 
-        requestTestInfos();
+        //区分英语，语文测评，显示中英文的roleplay标题和布局
+        initRoleplayTitleUi();
+
     }
-
-
 
     /**
-     * 获取分组信息后去请求试题
+     * 区分英语，语文测评，显示中英文的roleplay标题和布局
      */
-    public void requestTestInfos() {
+    private void initRoleplayTitleUi() {
+        if (mLiveGetInfo != null) {
+            if (1 == mLiveGetInfo.getIsEnglish()) {
+                logger.i( "走英语离线测评");
+                //走英语离线测评
+                setEnRoleplayUI();
+            } else {
+                String[] arrSubIds = mLiveGetInfo.getSubjectIds();
+                if(arrSubIds != null){
+                    for (String subId : arrSubIds) {
+                        if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subId)) {
+                            //走语文离线测评
+                            logger.i( "走语文离线测评:"+subId);
+                            setChRoleplayUI();
 
+                            break;
+                        }else{
+                            //走英语离线测评
+                            logger.i( "走英语离线测评:"+subId);
+                            setEnRoleplayUI();
+                        }
+                    }
+                }else {
+                    //走英语离线测评
+                    logger.i( "走英语离线测评:");
+                    setEnRoleplayUI();
+                }
+
+            }
+
+        } else {
+            //默认走英语离线测评
+            logger.i( "走英语离线测评");
+            setEnRoleplayUI();
+        }
     }
+
+    /**
+     * 设置英语标题布局
+     */
+    private void setEnRoleplayUI() {
+        iv_live_roleplayer_title.setImageResource(R.drawable.livevideo_roleplay_title);
+        //记录当前正在走的模型，留给界面更新使用
+        ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig
+                .VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
+    }
+
+    /**
+     * 设置语文标题布局
+     */
+    private void setChRoleplayUI() {
+        iv_live_roleplayer_title.setImageResource(R.drawable.live_role_play_title);
+        //记录当前正在走的模型，留给界面更新使用
+        ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
+                RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
+    }
+
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.pager_roleplayer, null);
@@ -359,24 +429,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         rlResult = view.findViewById(R.id.rl_live_roleplayer_result_main);
 
         iv_live_roleplayer_title = view.findViewById(R.id.iv_live_roleplayer_title);
-        ///获取当前应该走的离线模型
-        final int curSubModEva = ShareDataManager.getInstance().getInt(RolePlayConfig
-                .KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager
-                .SHAREDATA_NOT_CLEAR);
-        switch (curSubModEva) {
-            case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
-                //当前是英语离线测评
-                iv_live_roleplayer_title.setImageResource(R.drawable.livevideo_roleplay_title);
-                break;
-            case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
-                //当前是语文离线测评
-                iv_live_roleplayer_title.setImageResource(R.drawable.live_role_play_title);
-                break;
-            default:
-                //默认走英语离线测评
-                iv_live_roleplayer_title.setImageResource(R.drawable.livevideo_roleplay_title);
-                break;
-        }
+
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View view) {
@@ -400,6 +453,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         });
         return view;
     }
+
 
     private void ifShowCloseBt() {
         if(mIsLive){
@@ -435,12 +489,6 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     public boolean onUserBackPressed() {
         //走返回的大逻辑，回放时候，答题结束，才不会卡顿
         return super.onUserBackPressed();
-       // logger.i("点击返回");
-//        if(mRolePlayBll != null){
-//            mRolePlayBll.onStopQuestion(null,null);
-//            return true;
-//        }
-//        return false;
     }
 
     /**
@@ -609,55 +657,38 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             return;
         }
 
-        /*if(mIsEvaluatoring){
-            logger.i("RolePlayerDemoTest", "正在测评中，不接受新的测评请求");
-            return;
-        }*/
-
         rlSpeechVolumnMain.setVisibility(View.VISIBLE);
         vwvSpeechVolume.setVisibility(View.VISIBLE);
         String spechMsg = message.getReadMsg().replace("\n", "");
         logger.i( "待测评的文本"+spechMsg);
-        mIse = new SpeechEvaluatorUtils(
-                true);
-        if (mLiveGetInfo != null) {
-            if (1 == mLiveGetInfo.getIsEnglish()) {
-                logger.i( "走英语离线测评");
+
+        final int curSubModEva = ShareDataManager.getInstance().getInt(RolePlayConfig
+                .KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager
+                .SHAREDATA_NOT_CLEAR);
+        saveVideoFile = new File(dir, "roleplayer_machine_" + System.currentTimeMillis() + ".mp3");
+        switch (curSubModEva) {
+            case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
                 //走英语离线测评
+                logger.i(TAG+"走英语离线测评");
                 mIse = new SpeechEvaluatorUtils(
                         true);
-                saveVideoFile = new File(dir, "roleplayer_machine_" + System.currentTimeMillis() + ".mp3");
-                //记录当前正在走的模型，留给界面更新使用
-                ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig
-                        .VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
-            } else {
-                String[] arrSubIds = mLiveGetInfo.getSubjectIds();
-                if(arrSubIds != null){
-                    for (String subId : arrSubIds) {
-                        if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subId)) {
-                            //走语文离线测评
-                            mIse = new SpeechEvaluatorUtils(true, com.tal.speech.speechrecognizer.Constants
-                                    .ASSESS_PARAM_LANGUAGE_CH);
-                            //记录当前正在走的模型，留给界面更新使用
-                            ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
-                                    RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
-                            logger.i( "走语文离线测评");
-                            break;
-                        }
-                    }
-                }
 
-            }
-
-        } else {
-            //默认走英语离线测评
-            logger.i( "走英语离线测评");
-            mIse = new SpeechEvaluatorUtils(true);
-            //记录当前正在走的模型，留给界面更新使用
-            ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig
-                    .VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
+                break;
+            case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
+                //走语文离线测评
+                logger.i(TAG+"走语文离线测评");
+                mIse = new SpeechEvaluatorUtils(true, com.tal.speech.speechrecognizer.Constants
+                        .ASSESS_PARAM_LANGUAGE_CH);
+                break;
+            default:
+                //走英语离线测评
+                logger.i(TAG+"走英语离线测评");
+                mIse = new SpeechEvaluatorUtils(
+                        true);
+                break;
         }
-        saveVideoFile = new File(dir, "roleplayer_machine_" + System.currentTimeMillis() + ".mp3");
+
+
         mIse.cancel();
         speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(spechMsg, saveVideoFile.getAbsolutePath(), false,
                 new RolePlayerPager.RoleEvaluatorListener() {

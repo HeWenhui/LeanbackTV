@@ -294,16 +294,16 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     //人机的回调
                     if (rolePlayMachineAction == null) {
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
                         rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
                     }
-
+                    mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction);
                     //多人的回调
                     if (rolePlayAction == null) {
                         RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
-                        mQuestionAction.setRolePlayAction(rolePlayerBll);
                         rolePlayAction = rolePlayerBll;
                     }
+                    mQuestionAction.setRolePlayAction(rolePlayAction);
+
                     mQuestionAction.showQuestion(liveTopic.getVideoQuestionLiveEntity());
                     if (mAnswerRankBll != null) {
                         mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());

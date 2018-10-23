@@ -340,6 +340,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
     @Override
     public void closeCurPage() {
         if (mBottomContent != null && mRolePlayMachinePager != null) {
+            logger.i( "onStopQuestion 关闭当前页面 ");
             mBottomContent.removeView(mRolePlayMachinePager.getRootView());
             mRolePlayMachinePager.relaseCurrentPage();
             mRolePlayMachinePager.onDestroy();
