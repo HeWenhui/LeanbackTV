@@ -56,6 +56,6 @@ dependencies {
 
     implementation rootProject.ext.thirdlibraries.ticker
 
-    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.endictation)l
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
 //    implementation project(':library:agora')
 }
