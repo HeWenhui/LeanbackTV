@@ -47,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPacka
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
@@ -185,6 +186,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new SpeechBulletScreenIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
         }
         VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
         videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);

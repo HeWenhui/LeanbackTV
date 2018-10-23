@@ -178,6 +178,8 @@ public class LiveVideoConfig {
     public static String LIVE_SPEECH_BULLETSCREEN = "voice_barrage";
     /** 直播-错误码 */
     public static String LIVE_PLAY_ERROR = "live_play_error";
+    /** 直播-学习报告截图 */
+    public static String LIVE_STUDY_REPORT_IMG = "live_study_report_img";
 
     /** 体验课互动题提交答案 */
     public static String LIVE_EXPE_SUBMIT = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
@@ -310,4 +312,25 @@ public class LiveVideoConfig {
 
     /** 文科新课件平台的标识*/
     public static Boolean isNewArts = false;
+    /** 学习报告精彩瞬间 */
+    public interface STUDY_REPORT {
+        /** 贡献之星 */
+        int TYPE_PK_RESULT = 1;
+        /** 被选接麦 */
+        int TYPE_AGORA = 2;
+        /** 语音表扬 */
+        int TYPE_PRAISE = 3;
+        /** 进步榜 */
+        int TYPE_4 = 4;
+        /** 优秀榜 */
+        int TYPE_5 = 5;
+        /** 获赞榜 */
+        int TYPE_6 = 6;
+        /** pk获胜 */
+        int TYPE_PK_WIN = 7;
+        /** pk开宝箱 */
+        int TYPE_PK_GOLD = 8;
+        /** 抢红包 */
+        int TYPE_RED_PACKAGE = 9;
+    }
 }

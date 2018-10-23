@@ -1411,4 +1411,16 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_ARTS_TEAM_CLASS_RANK, params, requestCallBack);
     }
 
+    /**
+     * 直播上传精彩瞬间截图接口
+     *
+     * @param requestCallBack
+     */
+    public void uploadWonderMoment(int type, String url, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("type", "" + type);
+        params.addBodyParam("url", url);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_WONDER_MOMENT, params, requestCallBack);
+    }
 }
