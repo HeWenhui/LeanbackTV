@@ -733,6 +733,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager = baseSpeechCreat.createNewRolePlay(activity, liveGetInfo,videoQuestionLiveEntity,
                                 id, QuestionBll.this, stuCouId);
                         speechAssessmentPager.setIse(mIse);
+
                         speechAssessmentPager.initData();
                         logger.i("走人机");
                     }
@@ -871,6 +872,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 id, QuestionBll.this, stuCouId,rolePlayMachineBll);
                         speechAssessmentPager.setIse(mIse);
                         rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
+                        rolePlayMachineBll.setBottomView(rlQuestionContent);
                         rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                         speechAssessmentPager.initData();
                         logger.i("走人机 END");

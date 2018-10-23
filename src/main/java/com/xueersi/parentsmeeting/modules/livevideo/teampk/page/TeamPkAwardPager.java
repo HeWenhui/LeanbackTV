@@ -43,12 +43,17 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
@@ -70,6 +75,7 @@ import okhttp3.Call;
  */
 public class TeamPkAwardPager extends BasePager {
     private static final String TAG = "TeamPkAwardPager";
+    Logger loger= LoggerFactory.getLogger(TAG);
     private CoinAwardDisplayer cadTeamCoin;
     /**
      * 战队获得 ai 碎片
@@ -261,7 +267,6 @@ public class TeamPkAwardPager extends BasePager {
                 lottieAnimationView.playAnimation();
             }
         });
-
         //不再自动关闭
        /* lottieAnimationView.postDelayed(new Runnable() {
             @Override
@@ -364,7 +369,7 @@ public class TeamPkAwardPager extends BasePager {
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
         int realY = Math.min(point.x, point.y);
         int topMargin = (int) (realY * 0.36);
-        logger.e( "=======>showDetailInfo: topMargin="+topMargin);
+        logger.e("=======>showDetailInfo: topMargin=" + topMargin);
         layoutParams.topMargin = topMargin;
         rlLuckyStartRoot.setLayoutParams(layoutParams);
 
@@ -413,7 +418,7 @@ public class TeamPkAwardPager extends BasePager {
                 int top = 0;
                 int bottom = 0;
                 if (itemPosition >= spanCount) {
-                    top = SizeUtils.Dp2Px(mContext,5);
+                    top = SizeUtils.Dp2Px(mContext, 5);
                 }
                 outRect.set(left, top, right, bottom);
             }
@@ -422,6 +427,10 @@ public class TeamPkAwardPager extends BasePager {
         recyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
+                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
+                if (studyReportAction != null) {
+                    studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_GOLD, mView, false, false);
+                }
                 closeAwardPager();
             }
         }, TIME_DELAY_AUTO_FINISH);
@@ -467,7 +476,7 @@ public class TeamPkAwardPager extends BasePager {
      * 注 此处的暂停  只是将音量设置为0  （因为 动画和音效是 同步的）
      */
     private void pauseMusic() {
-        logger.e( "======>pauseMusic called");
+        logger.e("======>pauseMusic called");
         if (soundPoolHelper != null) {
             for (int i = 0; i < soundResArray.length; i++) {
                 soundPoolHelper.setVolume(soundResArray[i], 0);
@@ -481,7 +490,7 @@ public class TeamPkAwardPager extends BasePager {
      * 注释  将音量恢复为暂停之前的状态
      */
     private void resumeMusic() {
-        logger.e( "======>resumeMusic called");
+        logger.e("======>resumeMusic called");
         if (soundPoolHelper != null) {
             for (int i = 0; i < soundResArray.length; i++) {
                 if (soundResArray[i] == R.raw.war_bg) {
@@ -616,7 +625,6 @@ public class TeamPkAwardPager extends BasePager {
                             TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(), studentChestEntity.getGold() + "",
                                     nonce, true);
                         }
-
                     }
 
                     @Override
@@ -763,7 +771,7 @@ public class TeamPkAwardPager extends BasePager {
             if (tvPatch != null) {
                 tvPatch.setText("+" + data.getChipNum());
             }
-            if(ivChip != null){
+            if (ivChip != null) {
                 ImageLoader.with(BaseApplication.getContext()).load(data.getChipUrl()).into(ivChip);
             }
         }
@@ -802,7 +810,7 @@ public class TeamPkAwardPager extends BasePager {
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-             ((ItemHolder) holder).bindData(mData.get(position), position);
+            ((ItemHolder) holder).bindData(mData.get(position), position);
         }
 
         @Override

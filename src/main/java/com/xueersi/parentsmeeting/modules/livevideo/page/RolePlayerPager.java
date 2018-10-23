@@ -1448,11 +1448,11 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
     @Override
     public boolean onUserBackPressed() {
         logger.i("点击返回");
-        if(mRolePlayBll != null){
+        if(mRolePlayBll != null && mRolePlayBll.getRolePlayPager() != null && mRolePlayBll.getBottomView() != null){
             mRolePlayBll.closeCurPage();
             return true;
         }
-        return false;
+        return super.onUserBackPressed();
     }
 
 }
