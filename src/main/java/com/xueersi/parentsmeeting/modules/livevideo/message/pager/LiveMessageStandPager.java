@@ -41,7 +41,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
-import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.xueersi.common.http.HttpCallBack;
@@ -50,7 +49,6 @@ import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -59,6 +57,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -104,7 +103,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  * @date 2016/8/2
  * 直播聊天横屏-直播课和直播辅导
  */
-public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveAndBackDebug {
+public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveAndBackDebug,SpeechEvaluatorUtils.OnFileSuccess {
     private String TAG = getClass().getSimpleName();
     /** 聊天，默认开启 */
     private Button btMesOpen;
@@ -167,8 +166,14 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     boolean isVoice = true;
     //当前语音输入转换的文本
     String mVoiceContent = "";
-    //发送聊天数目
-    private int mMessageCount = 0;
+    /** 语音转文字的聊天是否已发送*/
+    private boolean isVoiceMsgSend = true;
+    /**发送聊天数目*/
+    private int mMsgCount = 0;
+    /**发送语音聊天数目*/
+    private int mVoiceMsgCount = 0;
+    /** 语音识别模型是否初始化成功*/
+    private boolean isInitSpeechSuccess = false;
 
 
 
@@ -450,11 +455,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 }
                 boolean hasPermission = XesPermission.hasSelfPermission(liveVideoActivity, Manifest.permission
                         .RECORD_AUDIO);
-                if (!hasPermission) {
-                    inspectMicPermission();
-                } else {
-                    initBtMesOpenAnimation(true);
+                if (isInitSpeechSuccess){
+                    if (!hasPermission) {
+                        inspectMicPermission();
+                    } else {
+                        initBtMesOpenAnimation(true);
+                    }
+                }else {
+                    XESToastUtils.showToast(mContext,"模型正在启动请稍后");
                 }
+
 
             }
         });
@@ -537,7 +547,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                             boolean send = ircState.sendMessage(msg, getInfo.getStandLiveName());
                             if (send) {
-                                mMessageCount ++;
+                                if (!isVoiceMsgSend){
+                                    isVoiceMsgSend = true;
+                                    mVoiceMsgCount++;
+                                }
+                                mMsgCount++;
                                 etMessageContent.setText("");
                                 addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, getInfo.getHeadImgPath());
                                 lastSendMsg = System.currentTimeMillis();
@@ -654,6 +668,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         if (mSpeechEvaluatorUtils == null) {
             mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(true, 1);
         }
+        SpeechEvaluatorUtils.setOnFileSuccess(this);
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
@@ -732,7 +747,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         Map<String, String> mData = new HashMap<>();
         mData.put("userid",getInfo.getStuId());
         mData.put("liveid",getInfo.getId());
-//        umsAgentDebugSys();
+        mData.put("msgcount",String.valueOf(mMsgCount));
+        mData.put("voicemsgcount",String.valueOf(mVoiceMsgCount));
+        umsAgentDebugSys("",mData);
     }
 
     private void initFlower() {
@@ -1407,6 +1424,30 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     private final static String VOICE_RECOG_HINT = "语音输入中，请大声说英语";
     private final static String VOICE_RECOG_NOVOICE_HINT = "没听清，请重说";
     private final static String VOICE_RECOG_NORECOG_HINT = "抱歉没听清，请手动输入或重说";
+    Runnable mHintRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if ("".equals(mVoiceContent)) {
+                tvVoiceContent.setText(VOICE_RECOG_NOVOICE_HINT);
+            }
+        }
+    };
+    Runnable mNovoiceRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if ("".equals(mVoiceContent)) {
+                tvVoiceContent.setText(VOICE_RECOG_NORECOG_HINT);
+            }
+        }
+    };
+    Runnable mNorecogRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if ("".equals(mVoiceContent)) {
+                tvVoiceContent.performClick();
+            }
+        }
+    };
     /** 计时器 */
     CountDownTimer noSpeechTimer = new CountDownTimer(30000, 1000) {
         @Override
@@ -1440,32 +1481,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 isSpeechError = false;
                 noSpeechTimer.start();
                 //3秒没有检测到声音提示
-                mainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (VOICE_RECOG_HINT.equals(tvVoiceContent.getText().toString())){
-                            tvVoiceContent.setText(VOICE_RECOG_NOVOICE_HINT);
-                        }
-                    }
-                },3000);
+                mainHandler.postDelayed(mHintRunnable,3000);
                 //6秒仍没检测到说话
-                mainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (VOICE_RECOG_NOVOICE_HINT.equals(tvVoiceContent.getText().toString())){
-                            tvVoiceContent.setText(VOICE_RECOG_NORECOG_HINT);
-                        }
-                    }
-                },6000);
+                mainHandler.postDelayed(mNovoiceRunnable, 6000);
                 //7秒没声音自动停止
-                mainHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (VOICE_RECOG_NORECOG_HINT.equals(tvVoiceContent.getText().toString())){
-                            btMesOpen.performClick();
-                        }
-                    }
-                },7000);
+                mainHandler.postDelayed(mNorecogRunnable, 7000);
             }
 
             @Override
@@ -1508,6 +1528,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         Log.d(TAG, "onEvaluatorSuccess():isSpeechFinish=" + isSpeechFinished);
         if (content.length() > 40) {
             content = content.substring(0, 40);
+        }
+        if (!"".equals(content)){
+            isVoiceMsgSend = false;
         }
         mVoiceContent = content;
         Log.d(TAG, "=====speech evaluating" + content);
@@ -1552,7 +1575,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         }
         tvVoiceContent.setText(VOICE_RECOG_HINT);
         tvVoiceCount.setText("");
-        startEvaluator();
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(liveVideoActivity, AudioRequest.class);
+        if (audioRequest != null) {
+            audioRequest.request(new AudioRequest.OnAudioRequest() {
+                @Override
+                public void requestSuccess() {
+                    startEvaluator();
+                }
+            });
+        }
         vwvVoiceChatWave.setVisibility(View.VISIBLE);
     }
 
@@ -1595,6 +1626,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     @Override
     public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+
+    }
+
+    @Override
+    public void onFileSuccess() {
+        isInitSpeechSuccess = true;
+    }
+
+    @Override
+    public void onFileFail() {
 
     }
 }

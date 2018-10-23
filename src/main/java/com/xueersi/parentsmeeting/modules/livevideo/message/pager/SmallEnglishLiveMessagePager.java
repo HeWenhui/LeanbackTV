@@ -63,6 +63,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
@@ -89,6 +90,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
@@ -98,7 +101,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  * 小英LiveMessagePager，类似于LiveMessagePager，在其基础上面进行修改
  * 献花弹窗，弹幕，聊天信息界面，以及发送消息，小英区别于LiveMessagePager。
  */
-public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePager {
+public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePager implements LiveAndBackDebug,SpeechEvaluatorUtils.OnFileSuccess{
     //本组在线人数
     private TextView tvOnlineNum;
     private CommonAdapter<LiveMessageEntity> commonAdapter;
@@ -193,13 +196,19 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     /** 当前音量 */
     private int mVolume = 0;
 
-
-    String isdirty = "0";
     private TextView tvMessageCount;
 
     boolean isVoice = true;
 
     String mVoiceContent = "";
+    /** 语音识别是否初始化成功*/
+    private boolean isInitSpeechSuccess = false;
+    /** 语音转文字的聊天是否已发送*/
+    private boolean isVoiceMsgSend = true;
+    /**发送聊天数目*/
+    private int mMsgCount = 0;
+    /**发送语音聊天数目*/
+    private int mVoiceMsgCount = 0;
 
     public SmallEnglishLiveMessagePager(Context context) {
         super(context);
@@ -340,6 +349,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         if (mSpeechEvaluatorUtils == null) {
             mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(true);
         }
+        SpeechEvaluatorUtils.setOnFileSuccess(this);
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
@@ -625,6 +635,11 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                             boolean send = ircState.sendMessage(msg, "");
                             if (send) {
+                                if (!isVoiceMsgSend){
+                                    isVoiceMsgSend = true;
+                                    mVoiceMsgCount ++;
+                                }
+                                mMsgCount ++;
                                 etMessageContent.setText("");
                                 addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
                                 lastSendMsg = System.currentTimeMillis();
@@ -687,11 +702,16 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             public void onClick(View v) {
                 boolean hasPermission = XesPermission.hasSelfPermission(liveVideoActivity, Manifest.permission
                         .RECORD_AUDIO);
-                if (!hasPermission) {
-                    inspectMicPermission();
+                if (isInitSpeechSuccess){
+                    if (!hasPermission) {
+                        inspectMicPermission();
+                    } else {
+                        startVoiceInput();
+                    }
                 } else {
-                    startVoiceInput();
+                    XESToastUtils.showToast(mContext,"模型正在启动请稍后");
                 }
+
             }
         });
         lvMessage.setOnTouchListener(new View.OnTouchListener() {
@@ -754,7 +774,15 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         tvMessageVoiceContent.setText(VOICE_RECOG_HINT);
         tvMessageVoiceCount.setText("");
 //        OfflineAssess.autoTestShurufa();
-        startEvaluator();
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(liveVideoActivity, AudioRequest.class);
+        if (audioRequest != null) {
+            audioRequest.request(new AudioRequest.OnAudioRequest() {
+                @Override
+                public void requestSuccess() {
+                    startEvaluator();
+                }
+            });
+        }
         vwvVoiceChatWave.setVisibility(View.VISIBLE);
 
     }
@@ -1622,6 +1650,12 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         super.onDestroy();
         noSpeechTimer.cancel();
         noSpeechTimer = null;
+        Map<String, String> mData = new HashMap<>();
+        mData.put("userid",getInfo.getStuId());
+        mData.put("liveid",getInfo.getId());
+        mData.put("msgcount",String.valueOf(mMsgCount));
+        mData.put("voicemsgcount",String.valueOf(mVoiceMsgCount));
+        umsAgentDebugSys("",mData);
     }
     /**
      * ************************************************** 语音识别 **************************************************
@@ -1635,6 +1669,30 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     private final static String VOICE_RECOG_HINT = "语音输入中，请大声说英语";
     private final static String VOICE_RECOG_NOVOICE_HINT = "没听清，请重说";
     private final static String VOICE_RECOG_NORECOG_HINT = "抱歉没听清，请手动输入或重说";
+    Runnable mHintRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if ("".equals(mVoiceContent)) {
+                tvMessageVoiceContent.setText(VOICE_RECOG_NOVOICE_HINT);
+            }
+        }
+    };
+    Runnable mNovoiceRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if ("".equals(mVoiceContent)) {
+                tvMessageVoiceContent.setText(VOICE_RECOG_NORECOG_HINT);
+            }
+        }
+    };
+    Runnable mNorecogRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if ("".equals(mVoiceContent)) {
+                btnMessageSwitch.performClick();
+            }
+        }
+    };
     /** 计时器 超过三十秒截停 */
     CountDownTimer noSpeechTimer = new CountDownTimer(31000, 1000) {
         @Override
@@ -1657,6 +1715,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
 
     private void startEvaluator() {
+
         Log.d(TAG, "startEvaluator()");
         File saveFile = new File(dir, "voicechat" + System.currentTimeMillis() + ".mp3");
         mSpeechEvaluatorUtils.startSpeechRecognitionOffline(saveFile.getPath(), "2", "30",
@@ -1667,35 +1726,11 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         isSpeechError = false;
                         noSpeechTimer.start();
                         //3秒没有检测到声音提示
-                        mainHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (VOICE_RECOG_HINT.equals(tvMessageVoiceContent.getText().toString()) || View
-                                        .VISIBLE == tvMessageCount.getVisibility()) {
-                                    tvMessageVoiceContent.setText(VOICE_RECOG_NOVOICE_HINT);
-                                }
-                            }
-                        }, 3000);
+                        mainHandler.postDelayed(mHintRunnable,3000);
                         //6秒仍没检测到说话
-                        mainHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (VOICE_RECOG_NOVOICE_HINT.equals(tvMessageVoiceContent.getText().toString()) ||
-                                        View.VISIBLE == tvMessageCount.getVisibility()) {
-                                    tvMessageVoiceContent.setText(VOICE_RECOG_NORECOG_HINT);
-                                }
-                            }
-                        }, 6000);
+                        mainHandler.postDelayed(mNovoiceRunnable, 6000);
                         //7秒没声音自动停止
-                        mainHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (VOICE_RECOG_NORECOG_HINT.equals(tvMessageVoiceContent.getText().toString()) ||
-                                        View.VISIBLE == tvMessageCount.getVisibility()) {
-                                    btnMessageSwitch.performClick();
-                                }
-                            }
-                        }, 7000);
+                        mainHandler.postDelayed(mNorecogRunnable, 7000);
                     }
 
                     @Override
@@ -1733,6 +1768,10 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             noSpeechTimer.cancel();
         }
         tvVoiceChatCountdown.setVisibility(View.GONE);
+        mainHandler.removeCallbacks(mHintRunnable);
+        mainHandler.removeCallbacks(mNorecogRunnable);
+        mainHandler.removeCallbacks(mNovoiceRunnable);
+
     }
 
     private void onEvaluatorSuccess(String content, boolean isSpeechFinished) {
@@ -1740,6 +1779,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         //语音录入，限制40字以内
         if (content.length() > 40) {
             content = content.substring(0, 40);
+        }
+        if (!"".equals(content)){
+            isVoiceMsgSend = false;
         }
         mVoiceContent = content;
         Log.d(TAG, "=====speech evaluating" + content);
@@ -1800,6 +1842,34 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 startVoiceInput();
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
+    }
+
+    @Override
+    public void onFileSuccess() {
+        isInitSpeechSuccess = true;
+    }
+
+    @Override
+    public void onFileFail() {
+
+    }
+    LiveAndBackDebug mLiveBll;
+    @Override
+    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
+        if (mLiveBll == null){
+            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
+        }
+        mLiveBll.umsAgentDebugSys(eventId, mData);
+    }
+
+    @Override
+    public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
+
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+
     }
 
 }/*
