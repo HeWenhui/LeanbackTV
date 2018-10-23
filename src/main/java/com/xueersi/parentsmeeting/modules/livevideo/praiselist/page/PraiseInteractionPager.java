@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PraiseMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseInteractionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalBarrageView;
 
@@ -423,6 +424,10 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
      * 关闭点赞
      */
     public void closePraise() {
+        StableLogHashMap logHashMap = new StableLogHashMap("pib_praiseCount");
+        logHashMap.put("praiseCount", String.valueOf(liveBll));
+        liveBll.umsAgentDebugSys(TAG, logHashMap.getData());
+
         startHidePraiseBtnAniamtion();
         praiseTimeList.clear();
         timeHandler.removeMessages(0);

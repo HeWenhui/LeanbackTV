@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PraiseMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ArtsPraiseHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
@@ -89,7 +90,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         params.leftMargin = LiveVideoPoint.getInstance().x2;
-        mRootView.addView(rlPraiseContentView,0, params);
+        mRootView.addView(rlPraiseContentView, 0, params);
     }
 
     private class SpecailGiftTimerTask extends TimerTask {
@@ -123,6 +124,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
      */
     private void openPraise() {
         if (!isOpen) {
+            mHandler.removeCallbacks(delayRemoveRunalbe);
             isOpen = true;
             praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll);
             rlPraiseContentView.removeAllViews();
@@ -290,16 +292,17 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         EventBus.getDefault().unregister(this);
     }
 
+    private Runnable delayRemoveRunalbe = new Runnable() {
+        @Override
+        public void run() {
+            rlPraiseContentView.removeAllViews();
+        }
+    };
 
     public void closePager() {
         if (rlPraiseContentView != null) {
             praiseInteractionPager.closePraise();
-            rlPraiseContentView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    rlPraiseContentView.removeAllViews();
-                }
-            }, 1000);
+            mHandler.postDelayed(delayRemoveRunalbe, 1000);
         }
     }
 
@@ -320,18 +323,33 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     }
 
     @Override
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
+        super.onModeChange(oldMode, mode, isPresent);
+        logger.d("onModeChange oldMode=" + oldMode + ",mode=" + mode);
+        rlPraiseContentView.post(new Runnable() {
+            @Override
+            public void run() {
+                closePraise();
+            }
+        });
+    }
+
+    @Override
     public int[] getNoticeFilter() {
         return noticeCodes;
     }
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        logger.d("onNotice data=" + data);
+        logger.d("onNotice data=" + data + ",mode=" + mGetInfo.getMode());
 
         switch (type) {
             case XESCODE.PRAISE_SWITCH:
                 String from = data.optString("from");
                 final boolean open = data.optBoolean("open");
+                if (isFilterMessage(from)) {
+                    return;
+                }
                 rlPraiseContentView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -366,13 +384,8 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-        logger.d("onTopic message=" + jsonObject);
+        logger.d("onTopic message=" + jsonObject + ",mode=" + mGetInfo.getMode());
         //如果是切流，原来模式是主讲，需要主动关闭点赞功能
-        if (modeChange) {
-            if (LiveTopic.MODE_TRANING.equals(liveTopic.getMode())) {
-                closePraise();
-            }
-        }
         LiveTopic.RoomStatusEntity mainRoomstatus = null;
         if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
             mainRoomstatus = liveTopic.getMainRoomstatus();
