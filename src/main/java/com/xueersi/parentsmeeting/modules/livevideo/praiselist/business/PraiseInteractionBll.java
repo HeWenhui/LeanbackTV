@@ -132,7 +132,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             params.rightMargin = rightMargin;
             rlPraiseContentView.addView(praiseInteractionPager.getRootView(), params);
 
-            praiseInteractionPager.startEnterStarAnimation();
+            praiseInteractionPager.openPraise();
 
             timer = new Timer(true);
             timer.schedule(new SpecailGiftTimerTask(), 5000, 5000);

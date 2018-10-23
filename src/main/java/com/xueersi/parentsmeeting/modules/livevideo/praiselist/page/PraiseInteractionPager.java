@@ -103,8 +103,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
     private TextView countDownView;
 
-    private ImageView closeView;
-
     private ImageView giftImg;
 
     private TextView goldCountView;
@@ -119,10 +117,17 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     //物理动画l
     private LottieAnimationView physicalLottileView;
 
+    //星星进场动画
     private LottieAnimationView starEnterLottileView;
+
+    //弹幕滚动
+    private VerticalBarrageView verticalBarrageView;
 
     //化学
     private ImageView chemistryView;
+
+    //点赞数字移动动画
+    private AnimatorSet animatorSet;
 
     //点赞总数
     private int praiseNumAmount = 0;
@@ -130,9 +135,12 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     //连续点赞次数
     private int continuePraiseNum = 0;
 
+    //弹出送礼物窗口
+    private int displayGiftNum = 0;
+
     private float translationY;
 
-
+    //点赞按钮宽度
     private int btnWidth;
     private int btnMarginRight;
     private int btnMarginBottom;
@@ -141,19 +149,19 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
     //是否是长按
     private boolean isLongPress = false;
 
-    private int countDownNum = 10;//倒计时
+    //特效礼物窗口倒计时
+    private int countDownNum = 0;
 
+    //当前礼物特效类型
     private int currentGiftType = 0;
 
     private TimeHandler timeHandler = new TimeHandler();
-    private VerticalBarrageView verticalBarrageView;
 
     //金币总数
     private int goldCount;
 
     //统计每次点赞的时间
     private List<Long> praiseTimeList = new ArrayList<>();
-    private AnimatorSet animatorSet;
 
 
     public PraiseInteractionPager(Context context, int goldCount, PraiseInteractionBll praiseInteractionBll, LiveBll2
@@ -278,12 +286,13 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             }
         });
         countDownView = view.findViewById(R.id.tv_livevideo_praise_interac_special_gift_countdown);
-        closeView = view.findViewById(R.id.iv_livevideo_praise_interac_special_gift_close);
+        View closeView = view.findViewById(R.id.ll_livevideo_praise_interac_special_gift_close);
         closeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                timeHandler.removeMessages(MESSAGE_WHAT_DELAY_GIFT);
                 specialGiftView.setVisibility(View.GONE);
+                //用户手动关闭特效窗口，过两秒没有点击点赞按钮冒泡动画开始
+                timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_BUBBLE, 2000);
             }
         });
 
@@ -347,7 +356,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
      */
     private void sendGift() {
         specialGiftView.setVisibility(View.GONE);
-        if (goldCount - 5 > 0) {
+        if (goldCount - 5 >= 0) {
             HttpCallBack httpCallBack = new HttpCallBack() {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -444,13 +453,24 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         this.goldCount = goldNum;
     }
 
+    /**
+     * 开启点赞
+     */
+    public void openPraise() {
+        praiseNumAmount = 0;
+        continuePraiseNum = 0;
+        displayGiftNum = 0;
+        countDownNum = 0;
+        startEnterStarAnimation();
+    }
+
 
     private class TimeHandler extends android.os.Handler {
         @Override
         public void handleMessage(Message msg) {
             int what = msg.what;
             if (what == MESSAGE_WHAT_DELAY_BUBBLE) {
-                if (specialGiftView.getVisibility() != View.VISIBLE) {
+                if (specialGiftView.getVisibility() != View.VISIBLE && !bubbleView.isAnimating()) {
                     bubbleView.playAnimation();
                 }
             } else if (what == MESSAGE_WHAT_DELAY_GIFT) {
@@ -458,7 +478,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                 countDownView.setText(countDownNum + "s关闭");
                 if (countDownNum == 0) {
                     specialGiftView.setVisibility(View.GONE);
-                    countDownNum = 10;
                     timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_BUBBLE, 2000);
                     timeHandler.removeMessages(MESSAGE_WHAT_DELAY_GIFT);
                 } else {
@@ -475,7 +494,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                     if (lastTime - firstTime > 1000) {
                         caculatePraiseTotalNumPosition();
                         praiseTotalNumView.setVisibility(View.VISIBLE);
-                        praiseTotalNumView.setText(String.valueOf(praiseNumAmount));
+                        praiseTotalNumView.setText(getDisplayNum(praiseNumAmount));
                         continuePraiseNum = 0;
                         praiseTimeList.clear();
                         mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
@@ -503,6 +522,12 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         bubbleRepeatView.setVisibility(View.GONE);
 
         praiseNumAmount++;
+        //如果正在倒计时不计入显示礼物条件
+        if (countDownNum <= 0) {
+            displayGiftNum++;
+        } else {
+            displayGiftNum = 0;
+        }
 
         judgeDisplayNumAnimation();
 
@@ -514,6 +539,9 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
         timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_BUBBLE, 2000);
         timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_CONTINUE_PRAISE, 1000);
+        logger.d("praiseNumAmount=" + praiseNumAmount
+                + ",continuePraiseNum=" + continuePraiseNum
+                + ",displayGiftNum=" + displayGiftNum);
     }
 
     /**
@@ -628,7 +656,9 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
      */
     private void displaySpecailGiftAnimation() {
         //首次点赞5次出现礼物,20的整数倍并且从弹窗出现后10秒再出现礼物
-        if (praiseNumAmount == 5 || (praiseNumAmount % 20 == 0) && countDownNum == 10) {
+        if (praiseNumAmount == 5 || (displayGiftNum > 0 && (displayGiftNum % 20 == 0))) {
+            displayGiftNum = 0;
+            countDownNum = 10;
             specialGiftView.setVisibility(View.VISIBLE);
             goldCountView.setText("金币余额:  " + goldCount);
             currentGiftType = getProbabilityNum() - 1;
@@ -735,6 +765,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
      * 星星飘落
      */
     public void startEnterStarAnimation() {
+
         String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "star_enter/images";
         String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "star_enter/data.json";
         final LottieEffectInfo repeatEffectInfo = new LottieEffectInfo(resPath, jsonPath);
@@ -770,8 +801,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
      * 点赞按钮进场动画
      */
     private void startPraiseBtnEnterAnimation() {
-        praiseNumAmount = 0;
-        continuePraiseNum = 0;
         float translationX = praiseBtn.getTranslationX();
         float distance = getRightMargin() + btnWidth + btnMarginRight;
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(pressLottileView, "translationX", distance,

@@ -157,6 +157,7 @@
             android:src="@drawable/livevideo_alert_chemistry_icon_normal" />
 
         <LinearLayout
+            android:id="@+id/ll_livevideo_praise_interac_special_gift_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
@@ -174,7 +175,6 @@
                 android:textSize="10sp" />
 
             <ImageView
-                android:id="@+id/iv_livevideo_praise_interac_special_gift_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
