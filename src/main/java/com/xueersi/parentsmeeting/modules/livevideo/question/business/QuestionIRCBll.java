@@ -207,6 +207,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             videoQuestionLiveEntity.answer = onlineTechObj.optString("answer");
                             videoQuestionLiveEntity.speechContent = onlineTechObj.optString("answer");
                             videoQuestionLiveEntity.type = onlineTechObj.optString("ptype");
+                            videoQuestionLiveEntity.num = 1;
                             if("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)){
                                 videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(onlineTechObj.optJSONArray("id")),videoQuestionLiveEntity.type));
                                 videoQuestionLiveEntity.isAllow42 = "0";
@@ -405,6 +406,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 videoQuestionLiveEntity.time = object.optDouble("time");
                 videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay");
                 videoQuestionLiveEntity.speechContent = object.optString("answer");
+                videoQuestionLiveEntity.num = 1;
                 videoQuestionLiveEntity.setNewArtsCourseware(true);
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);
