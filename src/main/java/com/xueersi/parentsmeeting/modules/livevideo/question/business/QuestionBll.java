@@ -733,6 +733,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager = baseSpeechCreat.createNewRolePlay(activity, liveGetInfo,videoQuestionLiveEntity,
                                 id, QuestionBll.this, stuCouId);
                         speechAssessmentPager.setIse(mIse);
+
                         speechAssessmentPager.initData();
                         logger.i("走人机");
                     }

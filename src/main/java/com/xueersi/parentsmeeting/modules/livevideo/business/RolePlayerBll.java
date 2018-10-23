@@ -272,7 +272,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 关掉当前页面
      */
     public void closeCurPage() {
+        logger.i( "onStopQuestion 关闭当前页面 "+bottomContent+":"+mRolePlayerPager);
         if (bottomContent != null && mRolePlayerPager != null) {
+            logger.i( "onStopQuestion 关闭当前页面 ");
             bottomContent.removeView(mRolePlayerPager.getRootView());
             mRolePlayerPager.onDestroy();
             mRolePlayerPager = null;
@@ -967,4 +969,11 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     }
 
 
+    public RolePlayerPager getRolePlayPager() {
+        return mRolePlayerPager;
+    }
+
+    public RelativeLayout getBottomView() {
+        return bottomContent;
+    }
 }
