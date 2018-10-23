@@ -77,7 +77,13 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     boolean isAudioStart = false;
     RelativeLayout bottomContent;
     private ViewGroup myView;
+    /**
+     * 能量条进度
+     */
     private View rl_livevideo_english_speak_content;
+    /**
+     * 没有权限设置提醒
+     */
     private View rl_livevideo_english_speak_error;
     private View rl_livevideo_english_stat;
     private TextView tv_livevideo_english_time;
@@ -112,6 +118,10 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     //用来判断是否是小英
     private LiveGetInfo liveGetInfo;
     boolean isSmallEnglish = false;
+    /**
+     * 是否显示能量条
+     */
+    private boolean isStarLottieVisible = false;
 
     public EnglishSpeekBll(Activity activity, LiveGetInfo liveGetInfo) {
         if (staticInt > 5) {
@@ -241,8 +251,10 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                             }
                             talAsrJni.LangIDReset(0);
                         }
+                        if (isStarLottieVisible) {
                         rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
                         rl_livevideo_english_speak_error.setVisibility(View.GONE);
+                        }
                         isDestory = false;
                         isDestory2 = false;
                         if (!audioRequest.get()) {
@@ -257,8 +269,10 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         }
                         talAsrJni.LangIDReset(0);
                     }
+                    if (isStarLottieVisible) {
                     rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
                     rl_livevideo_english_speak_error.setVisibility(View.GONE);
+                    }
                     isDestory = false;
                     isDestory2 = false;
                     if (!audioRequest.get()) {
@@ -288,13 +302,16 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //            if (isSmallEnglish) {
 //            tv_livevideo_english_time.setVisibility(View.GONE);
 //            }
+            if (isStarLottieVisible) {
             rl_livevideo_english_speak_content.setVisibility(View.GONE);
+            }
 //            tv_livevideo_english_prog.setVisibility(View.GONE);
 //            rl_livevideo_english_stat.setVisibility(View.GONE);
 
         } else {
-
+            if (isStarLottieVisible) {
             rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+            }
 //            tv_livevideo_english_time.setVisibility(View.VISIBLE);
 //            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
 //            rl_livevideo_english_stat.setVisibility(View.VISIBLE);
@@ -456,9 +473,12 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                     .getErrorNo());
             isDestory = true;
             isDestory2 = true;
+            if (isStarLottieVisible) {
             rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
             //这里不能改为GONE，因为rl_livevideo_english_speak_error布局和rl_livevideo_english_speak_content在同一个高度和底部
             rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
+            }
+
             if (onAudioRequest != null) {
                 onAudioRequest.requestSuccess();
                 onAudioRequest = null;
@@ -817,15 +837,20 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             @Override
             public void run() {
                 if (LiveTopic.MODE_TRANING.equals(mode)) {
+                    if (isStarLottieVisible) {
                     rl_livevideo_english_speak_content.setVisibility(View.GONE);
+                    }
 //                    tv_livevideo_english_prog.setVisibility(View.GONE);
 //                    rl_livevideo_english_stat.setVisibility(View.GONE);
                     stop(null);
                 } else {
 //                    tv_livevideo_english_prog.setVisibility(View.VISIBLE);
 //                    rl_livevideo_english_stat.setVisibility(View.VISIBLE);
+                    if (isStarLottieVisible) {
                     if (rl_livevideo_english_speak_error.getVisibility() != View.VISIBLE) {
                         rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+
+                        }
                     }
                     if (!showTip) {
                         showTip = true;

@@ -148,6 +148,10 @@ public class LiveAchievementBll implements StarInteractAction {
     //是否使用小英萌萌哒皮肤
     private boolean isSmallEnglish = false;
     LogToFile logToFile;
+    /**
+     * 右边进度条的星星动画是否显示出来
+     */
+    private boolean isStarVisible = false;
 
     public LiveAchievementBll(Activity activity, int liveType, LiveGetInfo mLiveGetInfo, boolean mIsLand) {
         this.activity = activity;
@@ -567,6 +571,11 @@ public class LiveAchievementBll implements StarInteractAction {
         }
         final View flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_english_stat_fly,
                 bottomContent, false);
+        //隐藏进度条星星动画
+        if (isStarVisible) {
+            flyStat.setVisibility(View.GONE);
+        }
+
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
         params.leftMargin = (int) startPoint.getX();
         params.topMargin = (int) startPoint.getY();

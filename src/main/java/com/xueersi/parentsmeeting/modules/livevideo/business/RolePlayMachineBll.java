@@ -34,7 +34,7 @@ import java.util.Random;
 
 import okhttp3.Call;
 
-public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
+public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachineAction{
     private RolePlayerHttpManager mRolePlayerHttpManager;
     private RolePlayerHttpResponseParser mRolePlayerHttpResponseParser;
 
@@ -340,6 +340,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
     @Override
     public void closeCurPage() {
         if (mBottomContent != null && mRolePlayMachinePager != null) {
+            logger.i( "onStopQuestion 关闭当前页面 ");
             mBottomContent.removeView(mRolePlayMachinePager.getRootView());
             mRolePlayMachinePager.relaseCurrentPage();
             mRolePlayMachinePager.onDestroy();
