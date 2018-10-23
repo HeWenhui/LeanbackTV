@@ -68,8 +68,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="30dp" />
 
 
     <com.airbnb.lottie.LottieAnimationView
@@ -128,10 +128,10 @@
                 android:id="@+id/tv_livevideo_praise_interac_gift_send_coin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="10sp"
-                android:textColor="@color/COLOR_FFFFFF"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp" />
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/COLOR_FFFFFF"
+                android:textSize="10sp" />
 
         </LinearLayout>
 
@@ -238,21 +238,21 @@
         android:id="@+id/lav_livevideo_praise_interac_math"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
         android:visibility="gone" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lav_livevideo_praise_interac_physical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
         android:visibility="gone" />
 
     <ImageView
         android:id="@+id/iv_livevideo_praise_interac_chemistry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
         android:background="@drawable/anim_livevido_praise_interaction_chemistry"
         android:visibility="gone" />
 
