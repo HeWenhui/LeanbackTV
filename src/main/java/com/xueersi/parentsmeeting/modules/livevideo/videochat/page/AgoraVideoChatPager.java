@@ -153,7 +153,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
     }
 
     @Override
-    public void startRecord(String method, final String room, final String nonce) {
+    public void startRecord(String method, final String room, final String nonce, boolean video) {
         int stuid = Integer.parseInt(getInfo.getStuId());
         this.room = room;
         mWorkerThread = new WorkerThread(activity.getApplicationContext(), stuid, false);

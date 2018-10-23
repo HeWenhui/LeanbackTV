@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,6 +25,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
+import com.xueersi.parentsmeeting.widget.AgoraVolumeWaveView;
+import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.ui.widget.CircleImageView;
 
 import java.util.ArrayList;
@@ -51,6 +52,8 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
     private String eventId = LiveVideoConfig.LIVE_LINK_MIRCO;
     private String room;
     private VideoChatEvent videoChatEvent;
+    private AgoraVolumeWaveView vw_livevideo_chat_voice;
+    int stuid;
 
     public AgoraChatPager(Activity activity, LiveAndBackDebug liveBll, LiveGetInfo getInfo, VideoChatEvent videoChatEvent) {
         this.activity = activity;
@@ -68,6 +71,7 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
     @Override
     public View initView() {
         mView = View.inflate(activity, R.layout.pager_live_video_chat_people, null);
+        vw_livevideo_chat_voice = mView.findViewById(R.id.vw_livevideo_chat_voice);
         return mView;
     }
 
@@ -96,6 +100,7 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
     }
 
     private AGEventHandler agEventHandler = new AGEventHandler() {
+
         @Override
         public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
             mLogtf.d("onFirstRemoteVideoDecoded:uid=" + uid);
@@ -111,12 +116,18 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
 
         @Override
         public void onUserJoined(int uid, int elapsed) {
-
+            if (uid == stuid) {
+                mLogtf.d("onUserJoined:uid=" + uid + ",elapsed=" + elapsed);
+                vw_livevideo_chat_voice.start();
+            }
         }
 
         @Override
         public void onUserOffline(int uid, int reason) {
             mLogtf.d("onUserOffline:uid=" + uid + ",reason=" + reason);
+            if (uid == stuid) {
+                vw_livevideo_chat_voice.stop();
+            }
         }
 
         @Override
@@ -130,7 +141,7 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
 
         @Override
         public void onVolume(int volume) {
-
+            vw_livevideo_chat_voice.setVolume(volume/2);
         }
     };
 
@@ -155,10 +166,10 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
     }
 
     @Override
-    public void startRecord(String method, final String room, final String nonce) {
-        int stuid = Integer.parseInt(getInfo.getStuId());
+    public void startRecord(String method, final String room, final String nonce, boolean video) {
+        stuid = Integer.parseInt(getInfo.getStuId());
         this.room = room;
-        mWorkerThread = new WorkerThread(activity.getApplicationContext(), stuid, false);
+        mWorkerThread = new WorkerThread(activity.getApplicationContext(), stuid, true);
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
         mWorkerThread.start();
         mWorkerThread.waitForReady();
@@ -167,6 +178,9 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
         mWorkerThread.joinChannel(null, room, stuid, new WorkerThread.OnJoinChannel() {
             @Override
             public void onJoinChannel(int joinChannel) {
+                int colors[] = {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff};
+                vw_livevideo_chat_voice.setColors(colors);
+                vw_livevideo_chat_voice.start();
                 VideoChatLog.sno8(liveBll, nonce, room, joinChannel);
             }
         });

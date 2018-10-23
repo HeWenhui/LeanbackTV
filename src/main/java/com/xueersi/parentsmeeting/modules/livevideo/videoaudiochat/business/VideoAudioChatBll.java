@@ -5,16 +5,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.permission.PermissionItem;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
@@ -29,11 +26,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionC
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page.AgoraChatPager;
-import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page.ChatTipPage;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStartChange;
-import com.xueersi.parentsmeeting.modules.livevideo.videochat.page.AgoraVideoChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 
 import java.util.ArrayList;
@@ -177,7 +172,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                 lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
                 if (isHasPermission) {
-                    videoChatInter.startRecord("onLiveInit", room, nonce);
+                    videoChatInter.startRecord("startRecord", room, nonce, false);
                 }
             }
         };

@@ -29,7 +29,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipPsDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.PsRaiseHandDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicTipDialog;
@@ -330,7 +329,7 @@ public class VideoChatBll implements VideoChatAction {
                 }
                 getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
                 if (isHasPermission) {
-                    videoChatInter.startRecord("onLiveInit", room, nonce);
+                    videoChatInter.startRecord("onLiveInit", room, nonce, false);
                 }
                 if (nativeLibLoaded != 2) {
                     rootView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {

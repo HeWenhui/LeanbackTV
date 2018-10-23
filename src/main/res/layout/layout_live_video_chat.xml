@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@id/rl_livevideo_chat_content"
     android:layout_width="wrap_content"
-    android:background="@color/COLOR50_7F20ABFF"
     android:layout_height="wrap_content">
 
     <RelativeLayout
@@ -36,11 +35,11 @@
 
     </RelativeLayout>
 
-    <Button
-        android:id="@id/bt_livevideo_chat_small"
+    <ImageView
+        android:id="@id/iv_livevideo_chat_small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/rl_livevideo_chat_content_left"
-        android:text="缩小" />
+        android:src="@drawable/live_task_zuo_icon_normal" />
 </RelativeLayout>

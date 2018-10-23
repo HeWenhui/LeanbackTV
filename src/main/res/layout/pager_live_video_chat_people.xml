@@ -4,6 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+
     <RelativeLayout
         android:id="@id/rl_livevideo_chat_head1"
         android:layout_width="40dp"
@@ -46,4 +47,9 @@
             android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
+    <com.xueersi.parentsmeeting.widget.AgoraVolumeWaveView
+        android:id="@id/vw_livevideo_chat_voice"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_gravity="center_vertical" />
 </LinearLayout>

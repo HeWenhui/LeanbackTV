@@ -7,16 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.toast.XesToast;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
@@ -33,7 +31,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page.AgoraChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatHttp;
-import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStartChange;
 
 import java.util.ArrayList;
 
@@ -159,13 +156,15 @@ public class ChatTipBll {
         });
         tv_livevideo_chat_people = vgRaisehand.findViewById(R.id.tv_livevideo_chat_people);
         tv_livevideo_chat_people.setText("当前直播人数" + raiseHandCount);
-        Button bt_livevideo_chat_small = vgRaisehand.findViewById(R.id.bt_livevideo_chat_small);
-        bt_livevideo_chat_small.setOnClickListener(new View.OnClickListener() {
+        final ImageView iv_livevideo_chat_small = vgRaisehand.findViewById(R.id.iv_livevideo_chat_small);
+        iv_livevideo_chat_small.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (rl_livevideo_content_left.getVisibility() == View.VISIBLE) {
+                    iv_livevideo_chat_small.setImageResource(R.drawable.live_task_zuo_icon_normal);
                     rl_livevideo_content_left.setVisibility(View.GONE);
                 } else {
+                    iv_livevideo_chat_small.setImageResource(R.drawable.live_task_you_icon_normal);
                     rl_livevideo_content_left.setVisibility(View.VISIBLE);
                 }
 //                bottomContent.removeView(vgRaisehand);
@@ -261,7 +260,7 @@ public class ChatTipBll {
         }
         initView();
         videoChatInter = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent);
-        videoChatInter.startRecord("onLiveInit", room, nonce);
+        videoChatInter.startRecord("startRecord", room, nonce, false);
         videoChatInter.updateUser(classmateChange, classmateEntities);
         ll_livevideo_chat_people.addView(videoChatInter.getRootView(), RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
     }
