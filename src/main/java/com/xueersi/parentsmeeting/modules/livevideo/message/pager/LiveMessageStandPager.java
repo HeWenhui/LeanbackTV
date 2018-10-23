@@ -103,7 +103,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  * @date 2016/8/2
  * 直播聊天横屏-直播课和直播辅导
  */
-public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveAndBackDebug,SpeechEvaluatorUtils.OnFileSuccess {
+public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveAndBackDebug {
     private String TAG = getClass().getSimpleName();
     /** 聊天，默认开启 */
     private Button btMesOpen;
@@ -172,8 +172,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     private int mMsgCount = 0;
     /**发送语音聊天数目*/
     private int mVoiceMsgCount = 0;
-    /** 语音识别模型是否初始化成功*/
-    private boolean isInitSpeechSuccess = false;
 
 
 
@@ -455,7 +453,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 }
                 boolean hasPermission = XesPermission.hasSelfPermission(liveVideoActivity, Manifest.permission
                         .RECORD_AUDIO);
-                if (isInitSpeechSuccess){
+                if (SpeechEvaluatorUtils.isRecogOfflineSuccess()){
                     if (!hasPermission) {
                         inspectMicPermission();
                     } else {
@@ -668,7 +666,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         if (mSpeechEvaluatorUtils == null) {
             mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(true, 1);
         }
-        SpeechEvaluatorUtils.setOnFileSuccess(this);
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
@@ -1626,16 +1623,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     @Override
     public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-
-    }
-
-    @Override
-    public void onFileSuccess() {
-        isInitSpeechSuccess = true;
-    }
-
-    @Override
-    public void onFileFail() {
 
     }
 }

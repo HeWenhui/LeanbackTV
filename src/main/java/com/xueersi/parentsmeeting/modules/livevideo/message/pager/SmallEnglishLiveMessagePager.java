@@ -101,7 +101,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  * 小英LiveMessagePager，类似于LiveMessagePager，在其基础上面进行修改
  * 献花弹窗，弹幕，聊天信息界面，以及发送消息，小英区别于LiveMessagePager。
  */
-public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePager implements LiveAndBackDebug,SpeechEvaluatorUtils.OnFileSuccess{
+public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePager implements LiveAndBackDebug{
     //本组在线人数
     private TextView tvOnlineNum;
     private CommonAdapter<LiveMessageEntity> commonAdapter;
@@ -201,8 +201,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     boolean isVoice = true;
 
     String mVoiceContent = "";
-    /** 语音识别是否初始化成功*/
-    private boolean isInitSpeechSuccess = false;
     /** 语音转文字的聊天是否已发送*/
     private boolean isVoiceMsgSend = true;
     /**发送聊天数目*/
@@ -349,7 +347,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         if (mSpeechEvaluatorUtils == null) {
             mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(true);
         }
-        SpeechEvaluatorUtils.setOnFileSuccess(this);
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
@@ -702,7 +699,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             public void onClick(View v) {
                 boolean hasPermission = XesPermission.hasSelfPermission(liveVideoActivity, Manifest.permission
                         .RECORD_AUDIO);
-                if (isInitSpeechSuccess){
+                if (SpeechEvaluatorUtils.isRecogOfflineSuccess()){
                     if (!hasPermission) {
                         inspectMicPermission();
                     } else {
@@ -1844,15 +1841,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
     }
 
-    @Override
-    public void onFileSuccess() {
-        isInitSpeechSuccess = true;
-    }
-
-    @Override
-    public void onFileFail() {
-
-    }
     LiveAndBackDebug mLiveBll;
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
