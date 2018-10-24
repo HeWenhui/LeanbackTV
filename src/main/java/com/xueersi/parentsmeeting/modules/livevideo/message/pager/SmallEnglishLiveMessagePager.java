@@ -1652,7 +1652,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         mData.put("liveid",getInfo.getId());
         mData.put("msgcount",String.valueOf(mMsgCount));
         mData.put("voicemsgcount",String.valueOf(mVoiceMsgCount));
-        umsAgentDebugSys("",mData);
+        umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_RECOG,mData);
     }
     /**
      * ************************************************** 语音识别 **************************************************

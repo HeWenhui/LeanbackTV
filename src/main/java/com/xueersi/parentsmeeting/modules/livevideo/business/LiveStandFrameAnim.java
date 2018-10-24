@@ -46,7 +46,7 @@ public class LiveStandFrameAnim {
     static String TAG = "LiveStandFrameAnim";
     protected static Logger logger = LoggerFactory.getLogger(TAG);
     Activity activity;
-    private final String filePath = "/android_stand_live/" + StandLiveConfig.version + "/frame_anim6.zip";
+    private final String filePath = "/android_stand_live/" + StandLiveConfig.version + "/frame_anim7.zip";
     /** 下载地址，阿里云 */
     private final String aliyun = "http://xesftp.oss-cn-beijing.aliyuncs.com" + filePath;
     /** 下载地址，网校 */

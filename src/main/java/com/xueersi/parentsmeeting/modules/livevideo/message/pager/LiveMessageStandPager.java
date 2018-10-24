@@ -49,6 +49,7 @@ import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -746,7 +747,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mData.put("liveid",getInfo.getId());
         mData.put("msgcount",String.valueOf(mMsgCount));
         mData.put("voicemsgcount",String.valueOf(mVoiceMsgCount));
-        umsAgentDebugSys("",mData);
+        umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_RECOG,mData);
     }
 
     private void initFlower() {
@@ -1624,5 +1625,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     @Override
     public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
 
+    }
+
+    private void uploadCloud(){
+        XesCloudUploadBusiness xcuBusiness = new XesCloudUploadBusiness(mContext);
     }
 }
