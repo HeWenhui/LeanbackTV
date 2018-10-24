@@ -52,7 +52,7 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
 
     private boolean isBuyCourseSuccess = false;
 
-//    private ImageView ivBannerBackground;
+    //    private ImageView ivBannerBackground;
     //    private VideoLivePlayBackEntity mVideoEntity;
     String userName;
 
@@ -201,12 +201,17 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
         logger.i(mRecommondCourseEntity.getCourseName() + " " + mRecommondCourseEntity.getCoursePrice());
         recommondCourseEntity = mRecommondCourseEntity;
         if (mRecommondCourseEntity != null) {
-            if (!TextUtils.isEmpty(mRecommondCourseEntity.getCourseName())) {
+            if (!TextUtils.isEmpty(mRecommondCourseEntity.getCourseName()) && !TextUtils.isEmpty
+                    (mRecommondCourseEntity.getCoursePrice())) {
                 tvCourseName.setText(mRecommondCourseEntity.getCourseName());
-            }
-            if (!TextUtils.isEmpty(mRecommondCourseEntity.getCoursePrice())) {
                 tvCourseMoney.setText("¥" + mRecommondCourseEntity.getCoursePrice());
+            } else {//如果其中任何一个为空，则隐藏掉这个layout
+                wholeRecommondCourseLayout.setVisibility(View.GONE);
+                thumbnailRecommondCourseLayout.setVisibility(View.GONE);
             }
+        } else {
+            wholeRecommondCourseLayout.setVisibility(View.GONE);
+            thumbnailRecommondCourseLayout.setVisibility(View.GONE);
         }
     }
 
