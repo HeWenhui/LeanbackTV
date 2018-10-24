@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -141,9 +142,13 @@ public class ExperienceLearnFeedbackPager extends BasePager {
             @Override
             public void onClick(View v) {
                 JSONObject jsonOption = new JSONObject();
+                JSONArray jsonArray = new JSONArray();
                 try {
+
                     jsonOption.put("1", mDifficulty);
                     jsonOption.put("2", mSatisficing);
+                    jsonArray.put(jsonOption);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -151,7 +156,7 @@ public class ExperienceLearnFeedbackPager extends BasePager {
                     lectureLivePlayBackBll.sendExperienceFeedback(UserBll.getInstance().getMyUserInfoEntity()
                                     .getStuId(), mVideoEntity.getLiveId()
                             , mVideoEntity.getSubjectId(), mVideoEntity.getGradId(), mVideoEntity.getChapterId(),
-                            etSuggest.getText().toString(), jsonOption, new
+                            etSuggest.getText().toString(), jsonArray, new
                                     HttpCallBack() {
 
                                         @Override
