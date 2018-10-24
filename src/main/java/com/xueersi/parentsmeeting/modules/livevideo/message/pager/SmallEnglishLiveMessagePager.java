@@ -25,7 +25,6 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -45,7 +44,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -53,6 +54,12 @@ import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.component.cloud.XesCloudUploadBusiness;
+import com.xueersi.component.cloud.config.CloudDir;
+import com.xueersi.component.cloud.config.XesCloudConfig;
+import com.xueersi.component.cloud.entity.CloudUploadEntity;
+import com.xueersi.component.cloud.entity.XesCloudResult;
+import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -207,6 +214,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     private int mMsgCount = 0;
     /**发送语音聊天数目*/
     private int mVoiceMsgCount = 0;
+
+    private String mFileid;
 
     public SmallEnglishLiveMessagePager(Context context) {
         super(context);
@@ -635,6 +644,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                 if (!isVoiceMsgSend){
                                     isVoiceMsgSend = true;
                                     mVoiceMsgCount ++;
+                                    uploadLOG(msg);
                                 }
                                 mMsgCount ++;
                                 etMessageContent.setText("");
@@ -1710,16 +1720,16 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         }
     };
 
-
+    File mVoiceFile;
     private void startEvaluator() {
-
-        Log.d(TAG, "startEvaluator()");
-        File saveFile = new File(dir, "voicechat" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startSpeechRecognitionOffline(saveFile.getPath(), "2", "30",
+        logger.d("startEvaluator()");
+        mFileid = "voicechat" + System.currentTimeMillis();
+        mVoiceFile = new File(dir, mFileid + ".mp3");
+        mSpeechEvaluatorUtils.startSpeechRecognitionOffline(mVoiceFile.getPath(), "2", "30",
                 new EvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
-                        Log.d(TAG, "onBeginOfSpeech");
+                        logger.d("onBeginOfSpeech");
                         isSpeechError = false;
                         noSpeechTimer.start();
                         //3秒没有检测到声音提示
@@ -1732,12 +1742,14 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
                     @Override
                     public void onResult(ResultEntity resultEntity) {
-                        Log.d(TAG, "onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity
+                        logger.d("onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity
                                 .getErrorNo());
                         if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                            onEvaluatorSuccess(resultEntity.getCurString(), true);
+                            onEvaluatorSuccess(resultEntity, true);
+                        } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+                            onEvaluatorError(resultEntity);
                         } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                            onEvaluatorSuccess(resultEntity.getCurString(), false);
+                            onEvaluatorSuccess(resultEntity, false);
                         }
                     }
 
@@ -1753,7 +1765,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     }
 
     public void stopEvaluator() {
-        Log.d(TAG, "stopEvaluator()");
+        logger.d( "stopEvaluator()");
         if (mSpeechEvaluatorUtils != null) {
             vwvVoiceChatWave.setVisibility(View.GONE);
             mSpeechEvaluatorUtils.cancel();
@@ -1771,8 +1783,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     }
 
-    private void onEvaluatorSuccess(String content, boolean isSpeechFinished) {
-        Log.d(TAG, "onEvaluatorSuccess():isSpeechFinish=" + isSpeechFinished);
+    private void onEvaluatorSuccess(ResultEntity resultEntity, boolean isSpeechFinished) {
+        logger.d("onEvaluatorSuccess():isSpeechFinish=" + isSpeechFinished);
+        String content = resultEntity.getCurString();
         //语音录入，限制40字以内
         if (content.length() > 40) {
             content = content.substring(0, 40);
@@ -1781,7 +1794,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             isVoiceMsgSend = false;
         }
         mVoiceContent = content;
-        Log.d(TAG, "=====speech evaluating" + content);
+        logger.d("=====speech evaluating" + content);
         if (isSpeechFinished) {
             noSpeechTimer.cancel();
             tvVoiceChatCountdown.setVisibility(View.GONE);
@@ -1797,8 +1810,16 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 tvMessageVoiceCount.setText("(" + tvMessageVoiceContent.getText().toString().length() + "/40)");
             }
         }
+    }
 
-
+    private void onEvaluatorError(ResultEntity resultEntity) {
+        logger.d("onEvaluatorError()");
+        isSpeechError = true;
+        if (resultEntity.getErrorNo() == ResultCode.SPEECH_START_FILE ) {
+            logger.d( "识别失败，请检查存储权限！");
+            XESToastUtils.showToast(mContext,"识别失败，请检查存储权限！");
+        }
+        btnMessageSwitch.performClick();
     }
 
     //设置识别后的文本状态时显示
@@ -1852,11 +1873,65 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     @Override
     public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-
+        if (mLiveBll == null){
+            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
+        }
+        mLiveBll.umsAgentDebugInter(eventId, mData);
     }
 
     @Override
     public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+
+    }
+
+    private void uploadLOG (String msg){
+        final Map<String, String> mData = new HashMap<>();
+        mData.put("userid",getInfo.getStuId());
+        mData.put("liveid",getInfo.getId());
+        mData.put("fileid", mFileid);
+        mData.put("voicecontent",mVoiceContent);
+        mData.put("sendmsg",msg);
+        uploadCloud(mVoiceFile.getPath(), new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                mData.put("upload:","success");
+                umsAgentDebugInter(LiveVideoConfig.LIVE_SPEECH_RECOG,mData);
+            }
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                super.onDataFail(errStatus, failMsg);
+                mData.put("upload:","fail");
+                umsAgentDebugInter(LiveVideoConfig.LIVE_SPEECH_RECOG,mData);
+            }
+        });
+    }
+    XesCloudUploadBusiness uploadBusiness;
+    private void uploadCloud(String path, final AbstractBusinessDataCallBack callBack){
+        if (uploadBusiness == null){
+            uploadBusiness = new XesCloudUploadBusiness(mContext);
+        }
+        final CloudUploadEntity entity = new CloudUploadEntity();
+        entity.setFilePath(path);
+        entity.setCloudPath(CloudDir.LIVE_VOICE_CHAT);
+        entity.setType(XesCloudConfig.UPLOAD_OTHER);
+        uploadBusiness.asyncUpload(entity, new XesStsUploadListener() {
+            @Override
+            public void onProgress(XesCloudResult result, int percent) {
+
+            }
+
+            @Override
+            public void onSuccess(XesCloudResult result) {
+                logger.d("upload Success:"+ result.getHttpPath());
+                callBack.onDataSucess(result);
+            }
+
+            @Override
+            public void onError(XesCloudResult result) {
+                logger.e("upload Error:"+result.getErrorMsg());
+                callBack.onDataFail(0,result.getErrorMsg());
+            }
+        });
 
     }
 
