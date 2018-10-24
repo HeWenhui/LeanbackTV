@@ -245,6 +245,12 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             if (getInfoStr != null) {
                 JSONObject liveInfo = new JSONObject(getInfoStr);
                 liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
+                //解析学科id
+                if (liveInfo.has("subject_ids")) {
+                    String strSubjIds = liveInfo.getString("subject_ids");
+                    String[] arrSubjIds = strSubjIds.split(",");
+                    liveGetInfo.setSubjectIds(arrSubjIds);
+                }
             }
         } catch (Exception e) {
             logger.e("onCreate", e);
@@ -303,6 +309,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             LiveBackBaseBll liveBackBaseBll = array.get(oldQuestionEntity.getvCategory());
             if (liveBackBaseBll != null) {
                 logger.d("scanQuestion:onQuestionEnd:id=" + oldQuestionEntity.getvCategory());
+                Log.e("mqtt","关闭上一题" +"position:" + position);
                 liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
             }
             showQuestion.onHide(oldQuestionEntity);
@@ -310,6 +317,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         if (mQuestionEntity != null && oldQuestionEntity != mQuestionEntity && !mQuestionEntity.isAnswered()) {
             mQuestionEntity.setAnswered(true);
             logger.d("scanQuestion:showQuestion");
+            Log.e("Duncan","showQuestion:" + position);
             showQuestion(oldQuestionEntity, showQuestion);
         }
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
@@ -463,6 +471,28 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     mQuestionEntity = videoQuestionEntity;
                     hasQuestionShow = true;
                     index = i;
+                    break;
+                }
+            } else if(LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE == videoQuestionEntity.getvCategory()){
+                // 在开始时间和结束时间之间
+                if (startTime <= playPosition && playPosition < endTime) {
+                    LiveVideoConfig.isMulLiveBack = false;
+//                if (startTime == playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    Log.e("Duncan","i:" + i +"playPosition:" + playPosition);
+                    break;
+                }
+            } else if(LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == videoQuestionEntity.getvCategory()){
+                // 在开始时间和结束时间之间
+                if (startTime <= playPosition && playPosition < endTime) {
+                    LiveVideoConfig.isMulLiveBack = false;
+//                if (startTime == playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    Log.e("Duncan","i:" + i +"playPosition:" + playPosition);
                     break;
                 }
             } else if (LocalCourseConfig.CATEGORY_UNDERSTAND == videoQuestionEntity.getvCategory()) {//懂了吗

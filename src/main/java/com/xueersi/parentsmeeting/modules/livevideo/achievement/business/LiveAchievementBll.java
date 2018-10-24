@@ -47,6 +47,9 @@ public class LiveAchievementBll implements StarInteractAction {
     private Activity activity;
     private View flyStat;
     private View flyLight;
+    /**
+     * 星星图标
+     */
     private ImageView ivStarInteractStat;
     private ImageView ivStarInteractGold;
     /**
@@ -54,7 +57,7 @@ public class LiveAchievementBll implements StarInteractAction {
      */
     private TextView tvStarInteractCount;
     /**
-     * 本场成就星星数量-背后隐藏数量
+     * 能量条上方，本场成就星星数量-背后隐藏数量
      */
     private TextView tvStarInteractCountHind;
     /**
@@ -148,6 +151,10 @@ public class LiveAchievementBll implements StarInteractAction {
     //是否使用小英萌萌哒皮肤
     private boolean isSmallEnglish = false;
     LogToFile logToFile;
+    /**
+     * 右边进度条的星星动画是否显示出来
+     */
+    private boolean isStarVisible = false;
 
     public LiveAchievementBll(Activity activity, int liveType, LiveGetInfo mLiveGetInfo, boolean mIsLand) {
         this.activity = activity;
@@ -567,6 +574,11 @@ public class LiveAchievementBll implements StarInteractAction {
         }
         final View flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_english_stat_fly,
                 bottomContent, false);
+        //隐藏进度条星星动画
+        if (!isStarVisible) {
+            flyStat.setVisibility(View.GONE);
+        }
+
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
         params.leftMargin = (int) startPoint.getX();
         params.topMargin = (int) startPoint.getY();
@@ -576,6 +588,7 @@ public class LiveAchievementBll implements StarInteractAction {
         iv_livevideo_starinteract_stat.setImageResource(isSmallEnglish ?
                 R.drawable.bg_livevideo_small_english_statinteract_stat_big :
                 R.drawable.bg_livevideo_statinteract_stat_big);
+
         if (endGoldPoint == null) {
             logToFile.d("onStarAdd:endGoldPoint=null");
             int[] outLocation = new int[2];
@@ -595,7 +608,9 @@ public class LiveAchievementBll implements StarInteractAction {
                 params.topMargin = (int) currentPoint.point.getY();
                 params.leftMargin = (int) currentPoint.point.getX();
 //                    flyStat.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(flyStat, params);
+                if (isStarVisible) {
+                    LayoutParamsUtil.setViewLayoutParams(flyStat, params);
+                }
                 float fraction = currentPoint.fraction;
                 flyStat.setAlpha(1 - fraction);
                 int width = iv_livevideo_starinteract_stat.getWidth();
@@ -617,6 +632,7 @@ public class LiveAchievementBll implements StarInteractAction {
 
             @Override
             public void onAnimationEnd(Animator animation) {
+
                 tvStarInteractCountHind.startAnimation(mStarCountAnimSlideIn);
                 tvStarInteractCount.startAnimation(mStarCountAnimSlideOut);
                 flyStat.post(new Runnable() {

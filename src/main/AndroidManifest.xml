@@ -90,8 +90,11 @@
             android:theme="@style/style_permission_compat" />
 
         <activity
-            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity"
-            android:screenOrientation="portrait" />
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.RolePlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:process=":livevideo"
+            android:screenOrientation="landscape"
+            android:theme="@style/style_permission_compat" />
 
         <service
             android:name="com.xueersi.parentsmeeting.modules.livevideo.service.LiveService"
@@ -100,16 +103,6 @@
         <service
             android:name="ren.yale.android.cachewebviewlib.CachePreLoadService"
             android:process=":livevideo" />
-
-        <receiver
-            android:name=".fragment.standlivevideoexperience.OrderPaySuccessBroadCastReceiver"
-            android:process=":livevideo">
-            <intent-filter>
-                <action android:name="${applicationId}.XesPaySuccess" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

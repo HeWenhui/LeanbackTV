@@ -178,6 +178,8 @@ public class LiveVideoConfig {
     public static String LIVE_SPEECH_BULLETSCREEN = "voice_barrage";
     /** 直播-错误码 */
     public static String LIVE_PLAY_ERROR = "live_play_error";
+    /** 直播-学习报告截图 */
+    public static String LIVE_STUDY_REPORT_IMG = "live_study_report_img";
 
     /** 体验课互动题提交答案 */
     public static String LIVE_EXPE_SUBMIT = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
@@ -199,8 +201,12 @@ public class LiveVideoConfig {
     public static String URL_PLAYBACKPLAYTIME = LiveVideoConfig.HTTP_HOST + "/ExpPlayback/visitTime";
     /** RolePlay请求对话信息 */
     public static String URL_ROLEPLAY_TESTINFOS = LiveVideoConfig.HTTP_HOST + "/libarts/LiveCourse/getRolePlay";
+    /** 文科新课件平台RolePlay获取题目信息 */
+    public static String URL_ROLEPLAY_NEWARTS_TESTINFOS = "https://app.arts.xueersi.com/v2/MultiRolePlay/getRolePlay";
     /** 提交接口 */
     public static String URL_ROLEPLAY_RESULT = LiveVideoConfig.HTTP_HOST + "/libarts/LiveCourse/submitRolePlay";
+    /** 文科新课件平台提交接口 */
+    public static String URL_ROLEPLAY_NEWARTS_RESULT = "https://app.arts.xueersi.com/v2/MultiRolePlay/submitRolePlay";
     /** 讲座直播获取更多课程 */
     public static String URL_LECTURELIVE_MORE_COURSE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getAdCase";
     /** 获取时时间戳 */
@@ -221,6 +227,9 @@ public class LiveVideoConfig {
     public static String URL_LIVE_MULTI_TEST = "https://live.xueersi.com/Live/getMultiTestPaper";
     /** 理科互动题-老师自传 */
     public static String URL_LIVE_TEA_UPLOAD_TEST = "https://live.xueersi.com/science/Live/teacherUploadTestForAPP/";
+    /** 语文主观题获取答案的地址 */
+    public static String URL_NEWARTS_SUBMITRESULT_H5 = "https://app.arts.xueersi.com/v2/SubjectiveTest/subjectiveTestAnswerResult";
+//    public static String URL_NEWARTS_SUBMITRESULT_H5 = "https://laoshi.xueersi.com/libarts/v2/SubjectiveTest/subjectiveTestAnswerResult";
     /** 直播云平台日志统计 */
     public static String URL_CDN_LOG = "http://log.xescdn.com/log";
     public static String URL_CDN_LOG1 = "http://log1.xescdn.com/log";
@@ -242,10 +251,17 @@ public class LiveVideoConfig {
     /** 一题多发的直播回放的标识 */
     public static Boolean isMulLiveBack = false;
     /** 年级阶段的标识 */
+    /** 文科回放一发多题的标识*/
+    public static Boolean isNewArtsLiveBack = false;
+    /** 年级阶段的标识*/
     public static String educationstage;
     /** 一发多题的日志 */
     public static String nonce;
     /** 直播回放一发多题的拼装参数 */
+    /** 直播回放一发多题的拼装参数 */
+    /** 文理科的标志*/
+    public static Boolean isScience = false;
+    /** 直播回放一发多题的拼装参数*/
     // 直播回放的URL
     public static String LIVEPLAYBACKINFOS;
     // 直播回放的stuCouId
@@ -294,4 +310,27 @@ public class LiveVideoConfig {
     public static String URL_CHECK_DEVICE = HTTP_HOST + "/Users/checkDevice";
 //    public static String URL_CHECK_DEVICE = "https://www.easy-mock.com/mock/5b57f6919ddd1140ec2eb47b/xueersi.wx.android.app" + "/Users/checkDevice";
 
+    /** 文科新课件平台的标识*/
+    public static Boolean isNewArts = false;
+    /** 学习报告精彩瞬间 */
+    public interface STUDY_REPORT {
+        /** 贡献之星 */
+        int TYPE_PK_RESULT = 1;
+        /** 被选接麦 */
+        int TYPE_AGORA = 2;
+        /** 语音表扬 */
+        int TYPE_PRAISE = 3;
+        /** 进步榜 */
+        int TYPE_4 = 4;
+        /** 优秀榜 */
+        int TYPE_5 = 5;
+        /** 获赞榜 */
+        int TYPE_6 = 6;
+        /** pk获胜 */
+        int TYPE_PK_WIN = 7;
+        /** pk开宝箱 */
+        int TYPE_PK_GOLD = 8;
+        /** 抢红包 */
+        int TYPE_RED_PACKAGE = 9;
+    }
 }

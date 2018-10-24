@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.BaseSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.WrapSpeechEvalAction;
@@ -63,13 +64,21 @@ public class LiveBackSpeechCreat implements BaseSpeechCreat {
     @Override
     public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity
             videoQuestionLiveEntity, String testId,
-                                                    SpeechEvalAction speechEvalAction, String stuCouId) {
+                                                    SpeechEvalAction speechEvalAction, String stuCouId,RolePlayMachineBll rolePlayMachineBll) {
         wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
         wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
                 false, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false, livePagerBack);
         speechAssessmentPager.setIsExperience(isExperience);
+
+        if(!isExperience){
+            RolePlayMachinePager rolePlayerPager  = new RolePlayMachinePager(context,
+                    videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                    false, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
+            return rolePlayerPager;
+        }
+
         return speechAssessmentPager;
     }
 
@@ -81,6 +90,17 @@ public class LiveBackSpeechCreat implements BaseSpeechCreat {
             params.rightMargin = rightMargin;
             LayoutParamsUtil.setViewLayoutParams(baseVoiceAnswerPager.getRootView(), params);
         }
+    }
+
+    @Override
+    public BaseSpeechAssessmentPager createNewRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId, SpeechEvalAction speechEvalAction, String stuCouId) {
+        wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
+        wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
+        SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
+                videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                false, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false, livePagerBack);
+        speechAssessmentPager.setIsExperience(isExperience);
+        return speechAssessmentPager;
     }
 
 }

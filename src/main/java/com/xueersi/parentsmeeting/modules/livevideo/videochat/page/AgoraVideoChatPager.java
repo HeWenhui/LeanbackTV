@@ -21,8 +21,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
+import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 
 import java.util.ArrayList;
@@ -100,6 +102,10 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
             startRemote.set(true);
             videoChatEvent.stopPlay();
             doRenderRemoteUi(uid);
+            StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
+            if (studyReportAction != null) {
+                studyReportAction.onFirstRemoteVideoDecoded(uid);
+            }
         }
 
         @Override
@@ -109,12 +115,19 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
 
         @Override
         public void onUserJoined(int uid, int elapsed) {
-
+            StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
+            if (studyReportAction != null) {
+                studyReportAction.onUserJoined(uid, elapsed);
+            }
         }
 
         @Override
         public void onUserOffline(int uid, int reason) {
             mLogtf.d("onUserOffline:uid=" + uid + ",reason=" + reason);
+            StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
+            if (studyReportAction != null) {
+                studyReportAction.onUserOffline(uid, reason);
+            }
         }
 
         @Override
@@ -209,7 +222,7 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
     @Override
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
-        logger.i( "onNetWorkChange:netWorkType=" + netWorkType + ",isFail=" + isFail);
+        logger.i("onNetWorkChange:netWorkType=" + netWorkType + ",isFail=" + isFail);
         if (netWorkType == NetWorkHelper.NO_NETWORK) {
             isFail = true;
         } else {

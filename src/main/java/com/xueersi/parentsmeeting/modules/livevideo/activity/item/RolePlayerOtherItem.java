@@ -114,7 +114,10 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                     logger.i( "数据为空");
                     return;
                 }
-
+                if(mEntity.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ){
+                    logger.i("roleplay还未结束，不可点击对话");
+                    return;
+                }
                 if (mIsPlaying) {
                     logger.i( "语音正在播放中，请不要重复点击");
                     return;
@@ -502,5 +505,14 @@ public class RolePlayerOtherItem extends RolePlayerItem {
 
     private void changeYuyinClickable() {
         vVoiceMain.setClickable(mIsVideoUnClick ? false : true);
+    }
+
+
+    public void relaseAudioPlay() {
+
+        if(mAudioPlayerManager != null){
+            mAudioPlayerManager.stop();
+            mAudioPlayerManager.release();
+        }
     }
 }

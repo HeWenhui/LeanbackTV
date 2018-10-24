@@ -59,6 +59,11 @@ public class RolePlayerEntity {
     private boolean isResult;
 
     /**
+     * 是否是文科新课件平台
+     **/
+    private boolean isNewArts;
+
+    /**
      * 所有的角色信息
      */
     private List<RolePlayerHead> lstRoleInfo = new ArrayList<>();
@@ -155,6 +160,14 @@ public class RolePlayerEntity {
 
     public void setResult(boolean result) {
         isResult = result;
+    }
+
+    public boolean isNewArts() {
+        return isNewArts;
+    }
+
+    public void setNewArts(boolean newArts) {
+        isNewArts = newArts;
     }
 
     /**
@@ -379,6 +392,10 @@ public class RolePlayerEntity {
     public static class RolePlayerMessage {
 
         /**
+         * 对话的音频地址，主要是人机使用到
+         */
+        private String audio;
+        /**
          * 角色信息
          */
         private RolePlayerHead rolePlayer;
@@ -436,6 +453,23 @@ public class RolePlayerEntity {
         private int level;
         private String testId;
         private boolean mUnClick = true;
+
+
+        /**
+         *
+         * @param head
+         * @param msg
+         * @param maxTime
+         * @param audio 对应的音频地址
+         */
+        public RolePlayerMessage(RolePlayerHead head, String msg, int maxTime,String audio) {
+            this.rolePlayer = head;
+            this.readMsg = msg;
+            this.maxReadTime = maxTime;
+            this.endReadTime = maxTime;
+            this.msgStatus = RolePlayerMessageStatus.WAIT_NORMAL;
+            this.audio = audio;
+        }
 
         public RolePlayerMessage(RolePlayerHead head, String msg, int maxTime) {
             this.rolePlayer = head;
@@ -604,6 +638,11 @@ public class RolePlayerEntity {
 
         public boolean getUnClick() {
             return mUnClick;
+        }
+
+
+        public String getAudio(){
+            return audio;
         }
     }
 

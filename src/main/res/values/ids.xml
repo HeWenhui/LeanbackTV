@@ -756,6 +756,41 @@
     <!--单词听写-->
     <item name="bt_livevideo_worddictation_result" type="id" />
     <item name="bt_livevideo_worddictation_close" type="id" />
+
+
+
+    <!--文科答题结果页-->
+    <item name="tv_arts_answer_result_state" type="id"/>
+    <item name="rl_arts_answer_result_state" type="id"/>
+    <item name="rl_arts_answer_result_resultdetail" type="id"/>
+    <item name="v_arts_answer_result_detail_bg" type="id"/>
+    <item name="tv_arts_answer_result_detail_title" type="id"/>
+    <item name="rcl_arts_answer_result_detail" type="id"/>
+    <item name="iv_arts_answer_result_detail_close_btn" type="id"/>
+    <item name="iv_arts_answer_result_state_head" type="id"/>
+    <item name="iv_arts_answer_result_detail_head" type="id"/>
+    <item name="tv_arts_answer_result_answer" type="id"/>
+    <item name="tv_arts_answer_result_stander_answer" type="id"/>
+    <item name="iv_arts_answer_result_state" type="id"/>
+    <item name="tv_arts_answer_result_gold" type="id"/>
+    <item name="ll_arts_answer_result_gold_container" type="id"/>
+    <item name="ll_arts_answer_result_useranswer_container" type="id"/>
+    <item name="tv_arts_answer_result_stander_answer_below" type="id"/>
+    <item name="tv_arts_answer_result_sumbit_toast" type="id"/>
+    <item name="iv_arts_answer_result_answer_btn" type="id"/>
+
+    <item name="tv_arts_answer_result_answer_index" type="id"/>
+    <item name="tvw_arts_answer_result_answer_state" type="id"/>
+
+
+    <item name="lv_arts_answer_state_pse" type="id"/>
+    <item name="lv_arts_answer_result_pse" type="id"/>
+    <item name="rcl_arts_answer_result_result" type="id"/>
+    <item name="v_arts_pse_answer_result_closebtn" type="id"/>
+    <item name="rl_arts_pse_answer_result_root" type="id"/>
+
+    <item name="iv_arts_pse_teacher_praise" type="id"/>
+
     <!--2018接麦-->
     <item name="rl_livevideo_chat_content" type="id" />
     <item name="rl_livevideo_chat_content_left" type="id" />

@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 import android.content.Context;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
@@ -26,7 +27,13 @@ public interface BaseSpeechCreat {
 
     /** 创建roleplay */
     BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
-                                             SpeechEvalAction speechEvalAction, String stuCouId);
+                                             SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll);
 
     void setViewLayoutParams(BaseSpeechAssessmentPager baseSpeechAssessmentPager, int rightMargin);
+
+
+    /** 文科新课件平台RolePlay*/
+    BaseSpeechAssessmentPager createNewRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId, SpeechEvalAction speechEvalAction, String stuCouId);
+
+
 }

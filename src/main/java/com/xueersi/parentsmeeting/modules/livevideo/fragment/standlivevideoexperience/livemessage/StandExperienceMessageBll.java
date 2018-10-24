@@ -86,6 +86,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
 
     protected LivePlayerFragment videoFragment;
 
+
     protected LiveMediaController mMediaController;
 
     private LiveAchievementIRCBll starAction;

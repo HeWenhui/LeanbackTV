@@ -38,12 +38,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
@@ -51,12 +53,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 import org.json.JSONObject;
 import org.xutils.xutils.http.RequestParams;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import okhttp3.Call;
 
 /**
  * 直播间管理类
@@ -457,6 +462,59 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         mLogtf.d(s);
         liveVideoBll.onLiveInit(getInfo, mLiveTopic);
         mShareDataManager.put(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, getInfo.getClientLog(), ShareDataManager.SHAREDATA_NOT_CLEAR);
+        initExtInfo(getInfo);
+    }
+
+
+    private static final long RETRY_DELAY = 3000;
+    private static final long MAX_RETRY_TIME = 4;
+    private Runnable initArtsExtLiveInfoTask = new Runnable() {
+        int retryCount;
+        @Override
+        public void run() {
+            logger.e("======>initArtsExtLiveInfoTask run:");
+            mHttpManager.getArtsExtLiveInfo(LiveBll2.this.mLiveId, LiveBll2.this.mStuCouId, new HttpCallBack() {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                   ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
+                   mGetInfo.setArtsExtLiveInfo(info);
+                }
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    super.onPmFailure(error, msg);
+                    logger.e("======>onPmFailure run:");
+                    retry();
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    super.onPmError(responseEntity);
+                    logger.e("======>onPmError run:");
+                    retry();
+                }
+            });
+        }
+
+        private void retry(){
+            logger.e("======>retry get ArtsExtLiveInfo");
+            if(retryCount < MAX_RETRY_TIME){
+                retryCount ++;
+                postDelayedIfNotFinish(initArtsExtLiveInfoTask,RETRY_DELAY);
+            }
+        }
+    };
+
+    private AtomicBoolean exInfoInited = new AtomicBoolean();
+    /**
+     * 初始化直接间额外参数
+     * @param getInfo
+     */
+    private void initExtInfo(LiveGetInfo getInfo) {
+         if(getInfo != null && getInfo.getIsArts() == 1 && !exInfoInited.get()){
+             logger.e("======>initExtInfo called:");
+             exInfoInited.set(true);
+             postDelayedIfNotFinish(initArtsExtLiveInfoTask,0);
+         }
     }
 
     private final IRCCallback mIRCcallback = new IRCCallback() {
