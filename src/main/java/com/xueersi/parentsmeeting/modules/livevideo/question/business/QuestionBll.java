@@ -481,6 +481,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             public void onError(BaseVideoQuestionEntity testId) {
                 mQueAndBool.remove(testId.getvQuestionID());
                 showQuestion((VideoQuestionLiveEntity) testId);
+                logger.e("======> showQuestionMachine");
             }
         });
     }
@@ -616,8 +617,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         logger.e("======> showQuestion 55555:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
         if (videoQuestionLiveEntity.isNewArtsH5Courseware()) {
             doNewArtsAnswerQuetion(videoQuestionLiveEntity);
+            logger.e("======> showQuestion roleplaynew:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
         } else {
             doArtsAnswerQuestion(videoQuestionLiveEntity);
+            logger.e("======> showQuestion roleplayold:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
         }
         mVPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
     }

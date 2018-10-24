@@ -290,6 +290,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
 
             if (liveTopic.getVideoQuestionLiveEntity() != null) {
+                logger.e("======>QuestionIRCBlle:" + "走了错误的逻辑");
                 if (mQuestionAction != null) {
                     //解决，老师发题后，学生后进来，无法进入roleplay的问题
                     //人机的回调
@@ -315,6 +316,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 }
             } else {
+                logger.e("======>QuestionIRCBlle:" + "正常的逻辑");
                 if (mQuestionAction != null) {
                     mQuestionAction.showQuestion(null);
                 }
@@ -397,6 +399,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
             break;
             case XESCODE.ARTS_SEND_QUESTION: {
+                logger.e("======>QuestionIRCBlle:" + "发题楼");
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.gold = object.optDouble("gold");
                 videoQuestionLiveEntity.id = getIdStr(object.optJSONArray("id"));

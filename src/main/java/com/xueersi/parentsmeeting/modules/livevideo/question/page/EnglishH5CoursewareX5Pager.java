@@ -411,31 +411,32 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             logger.e( "======> mulloadUrlLives:" + mLoadUrls);
             reloadurl = mLoadUrls;
             logger.e( "======> mulloadUrlLive:" + reloadurl);
-        }
-        if(isNewArtsCourseware) {
-            String loadUrl = url;
-            loadUrl(loadUrl);
-            reloadurl = loadUrl;
-            Loger.e(TAG, "======> newArtsH5CourseWare url:" + url);
-        } else {
-            String loadUrl = url + "?t=" + System.currentTimeMillis();
-            if (!url.isEmpty() && url.substring(url.length() - 1).equals("&")) {
-                loadUrl = url + "t=" + System.currentTimeMillis();
+        }else{
+            if(isNewArtsCourseware) {
+                String loadUrl = url;
+                loadUrl(loadUrl);
+                reloadurl = loadUrl;
+                Loger.e(TAG, "======> newArtsH5CourseWare url:" + url);
+            } else {
+                String loadUrl = url + "?t=" + System.currentTimeMillis();
+                if (!url.isEmpty() && url.substring(url.length() - 1).equals("&")) {
+                    loadUrl = url + "t=" + System.currentTimeMillis();
+                }
+                if (isPlayBack) {
+                    loadUrl += "&isPlayBack=1";
+                }
+                loadUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+                if (!StringUtils.isEmpty(nonce)) {
+                    loadUrl += "&nonce=" + nonce;
+                }
+                loadUrl += "&isTowall=" + isShowRanks;
+                logger.i( "initData:loadUrl=" + loadUrl);
+                loadUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
+                loadUrl(loadUrl);
+                logger.e( "======> loadUrl:" + loadUrl);
+                reloadurl = loadUrl;
+                logger.e( "======> loadUrlLive:" + reloadurl);
             }
-            if (isPlayBack) {
-                loadUrl += "&isPlayBack=1";
-            }
-            loadUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
-            if (!StringUtils.isEmpty(nonce)) {
-                loadUrl += "&nonce=" + nonce;
-            }
-            loadUrl += "&isTowall=" + isShowRanks;
-            logger.i( "initData:loadUrl=" + loadUrl);
-            loadUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
-            loadUrl(loadUrl);
-            logger.e( "======> loadUrl:" + loadUrl);
-            reloadurl = loadUrl;
-            logger.e( "======> loadUrlLive:" + reloadurl);
         }
         if (mLogtf != null) {
             mLogtf.d("initData:reloadurl=" + reloadurl);
