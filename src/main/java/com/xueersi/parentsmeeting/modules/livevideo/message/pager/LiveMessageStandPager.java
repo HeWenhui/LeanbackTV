@@ -179,8 +179,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     private int mMsgCount = 0;
     /**发送语音聊天数目*/
     private int mVoiceMsgCount = 0;
-    /** 语音文件名*/
-    private String mFileid;
     /** 语音文件*/
     private  File mVoiceFile;
 
@@ -1479,8 +1477,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     private void startEvaluator() {
         logger.d("startEvaluator()" + mSpeechEvaluatorUtils.toString());
-        mFileid = "voicechat" + System.currentTimeMillis();
-        mVoiceFile = new File(dir, mFileid  + ".mp3");
+        mVoiceFile = new File(dir, "voicechat" + System.currentTimeMillis()  + ".mp3");
         SpeechEvaluatorInter speechEvaluatorInter = mSpeechEvaluatorUtils.startSpeechRecognitionOffline(mVoiceFile
                 .getPath(), "2", "30", new EvaluatorListener() {
             @Override
@@ -1658,19 +1655,21 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         final Map<String, String> mData = new HashMap<>();
         mData.put("userid",getInfo.getStuId());
         mData.put("liveid",getInfo.getId());
-        mData.put("fileid", mFileid);
         mData.put("voicecontent",mVoiceContent);
         mData.put("sendmsg",msg);
         uploadCloud(mVoiceFile.getPath(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                mData.put("upload:","success");
+                XesCloudResult result = (XesCloudResult)objData[0];
+                mData.put("url",result.getHttpPath());
+                mData.put("upload","success");
                 umsAgentDebugInter(LiveVideoConfig.LIVE_SPEECH_RECOG,mData);
             }
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
-                mData.put("upload:","fail");
+                mData.put("url","");
+                mData.put("upload","fail");
                 umsAgentDebugInter(LiveVideoConfig.LIVE_SPEECH_RECOG,mData);
             }
         });

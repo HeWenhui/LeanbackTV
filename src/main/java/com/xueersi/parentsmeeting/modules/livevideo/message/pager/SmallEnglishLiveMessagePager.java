@@ -215,8 +215,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     /**发送语音聊天数目*/
     private int mVoiceMsgCount = 0;
 
-    private String mFileid;
-
     public SmallEnglishLiveMessagePager(Context context) {
         super(context);
     }
@@ -1723,8 +1721,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     File mVoiceFile;
     private void startEvaluator() {
         logger.d("startEvaluator()");
-        mFileid = "voicechat" + System.currentTimeMillis();
-        mVoiceFile = new File(dir, mFileid + ".mp3");
+        mVoiceFile = new File(dir, "voicechat" + System.currentTimeMillis() + ".mp3");
         mSpeechEvaluatorUtils.startSpeechRecognitionOffline(mVoiceFile.getPath(), "2", "30",
                 new EvaluatorListener() {
                     @Override
@@ -1888,19 +1885,21 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         final Map<String, String> mData = new HashMap<>();
         mData.put("userid",getInfo.getStuId());
         mData.put("liveid",getInfo.getId());
-        mData.put("fileid", mFileid);
         mData.put("voicecontent",mVoiceContent);
         mData.put("sendmsg",msg);
         uploadCloud(mVoiceFile.getPath(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                mData.put("upload:","success");
+                XesCloudResult result = (XesCloudResult)objData[0];
+                mData.put("url",result.getHttpPath());
+                mData.put("upload","success");
                 umsAgentDebugInter(LiveVideoConfig.LIVE_SPEECH_RECOG,mData);
             }
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
-                mData.put("upload:","fail");
+                mData.put("upload","fail");
+                mData.put("url","");
                 umsAgentDebugInter(LiveVideoConfig.LIVE_SPEECH_RECOG,mData);
             }
         });
