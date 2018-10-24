@@ -125,8 +125,8 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
 //        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
 //        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
         mLogtf.d("initData:examUrl=" + examUrl);
-        LiveHttpManager liveHttpManager=new LiveHttpManager(mContext);
-        HttpRequestParams params=new HttpRequestParams();
+        LiveHttpManager liveHttpManager = new LiveHttpManager(mContext);
+        HttpRequestParams params = new HttpRequestParams();
         liveHttpManager.sendGetNoBusiness(examUrl, params, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

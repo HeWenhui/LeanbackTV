@@ -221,6 +221,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             }
             break;
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
+                LiveVideoConfig.isNewArts = true;
                 Log.e("Duncan","mqtt+文科新课件平台");
                 MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
