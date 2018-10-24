@@ -13,7 +13,7 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.util.HashMap;
 
@@ -344,7 +344,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 
     //发送体验课学习反馈
     public void sendExperienceFeedback(String user_id, String plan_id, String subject_id, String grade_id, String
-            order_id, String suggest, JSONObject jsonOption, HttpCallBack requestCallBack) {
+            order_id, String suggest, JSONArray jsonOption, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
 //        params.addBodyParam("user_id", user_id);
