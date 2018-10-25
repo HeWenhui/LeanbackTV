@@ -270,6 +270,36 @@ public class LivePlaybackMediaController extends MediaController2 {
             }
         } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == videoQuestionEntity.getvCategory()) {
             textView.setText("购课");
+        } else if(LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE == videoQuestionEntity.getvCategory() || LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == videoQuestionEntity.getvCategory()){
+            String type = videoQuestionEntity.getvQuestionType();
+            switch (type){
+                case "1":
+                case "2":
+                    textView.setText("互动题");
+                    break;
+                case "4":
+                    textView.setText("语音评测");
+                    break;
+                case "5":
+                    textView.setText("人机对话");
+                    break;
+                case "6":
+                    textView.setText("跟读题");
+                    break;
+                case "8":
+                    textView.setText("主观题");
+                    break;
+                case "15":
+                case "16":
+                case "18":
+                case "19":
+                    textView.setText("语音答题");
+                    break;
+                default:
+                    textView.setText("互动课件");
+                    break;
+            }
+
         }
         final ImageView ivPlay = (ImageView) contentView.findViewById(R.id.iv_liveplayback_point_play);
         final int insretTime = videoQuestionEntity.getvQuestionInsretTime();
