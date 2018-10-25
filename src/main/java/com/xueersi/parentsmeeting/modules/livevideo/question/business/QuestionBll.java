@@ -862,20 +862,20 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         logger.i("走人机 START");
 
                         rolePlayMachineBll = (RolePlayMachineBll) rolePlayMachineAction;
-                        if(rolePlayMachineBll == null){
-                            logger.i("rolePlayAction 为空");
-                            return;
-                        }
+
                         speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo, videoQuestionLiveEntity,
                                 id, QuestionBll.this, stuCouId,rolePlayMachineBll);
                         speechAssessmentPager.setIse(mIse);
                         if(speechAssessmentPager instanceof RolePlayMachinePager){
                             logger.i("--------------走rolaplay人机");
                             //人机，roles不为空的题型
-                            rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
-                            rolePlayMachineBll.setBottomView(rlQuestionContent);
-                            rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
-                            speechAssessmentPager.initData();
+                            if(rolePlayMachineBll != null){
+                                rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
+                                rolePlayMachineBll.setBottomView(rlQuestionContent);
+                                rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+                                speechAssessmentPager.initData();
+                            }
+
                         }else {
                             logger.i("--------------走跟读");
                             //跟读之类的题型
