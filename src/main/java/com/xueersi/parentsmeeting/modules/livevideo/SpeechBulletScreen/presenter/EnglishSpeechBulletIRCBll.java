@@ -185,7 +185,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
             data.put("courseId", mGetInfo.getStudentLiveInfo().getCourseId());
             data.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
             data.put("liveId", mLiveBll.getLiveId());
-            data.put("liveType", mGetInfo.getLiveType());
+            data.put("liveType",1);
             data.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
             data.put("bulletId", mLiveBll.getLiveId() + "_" + voiceBarrageCount);
             String[] strings = msg.split(" ");
