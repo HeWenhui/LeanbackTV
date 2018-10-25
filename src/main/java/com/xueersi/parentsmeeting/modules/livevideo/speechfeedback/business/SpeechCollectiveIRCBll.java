@@ -14,13 +14,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import org.json.JSONObject;
 
 /**
- * Created by linyuqiang on 2018/7/11.
- * 语音反馈irc
+ * 语音互动
  */
-public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackHttp, NoticeAction, TopicAction {
-    SpeechFeedBackBll speechFeedBackAction;
+public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBackHttp, NoticeAction, TopicAction {
+    SpeechCollectiveBll speechCollectiveBll;
 
-    public SpeechFeedBackIRCBll(Activity context, LiveBll2 liveBll) {
+    public SpeechCollectiveIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
 
@@ -29,56 +28,55 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
         getHttpManager().saveStuTalkSource(mGetInfo.getStuId(), talkSourcePath, service, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                logger.d( "saveStuTalkSource:onPmSuccess" + responseEntity.getJsonObject());
+                logger.d("saveStuTalkSource:onPmSuccess" + responseEntity.getJsonObject());
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                logger.d( "saveStuTalkSource:onPmFailure" + msg);
+                logger.d("saveStuTalkSource:onPmFailure" + msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                logger.d( "saveStuTalkSource:onPmError" + responseEntity.getErrorMsg());
+                logger.d("saveStuTalkSource:onPmError" + responseEntity.getErrorMsg());
             }
         });
     }
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
+        logger.d("data=" + jsonObject);
         LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
-        String status = mainRoomstatus.getOnVideoChat();
+        String status = mainRoomstatus.getOnGroupSpeech();
         if ("on".equals(status) && LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
-            final String roomId = mainRoomstatus.getAgoraVoiceChatRoom();
-            if (speechFeedBackAction != null) {
-                speechFeedBackAction.start(roomId);
+            final String roomId = mainRoomstatus.getGroupSpeechRoom();
+            if (speechCollectiveBll != null) {
+                speechCollectiveBll.start(roomId);
             } else {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         createBll();
-                        speechFeedBackAction.start(roomId);
+                        speechCollectiveBll.start(roomId);
                     }
                 });
             }
         } else {
-            if (speechFeedBackAction != null) {
-                speechFeedBackAction.stop();
+            if (speechCollectiveBll != null) {
+                speechCollectiveBll.stop();
             }
         }
     }
 
-    private void onStaus(JSONObject object) {
-        if (speechFeedBackAction != null) {
+    private void onStaus(String status, String roomId) {
+        if (speechCollectiveBll != null) {
             try {
-                String status = object.getString("status");
                 if ("on".equals(status) && LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
-                    String roomId = object.getString("roomId");
-                    speechFeedBackAction.start(roomId);
+                    speechCollectiveBll.start(roomId);
                 } else {
-                    speechFeedBackAction.stop();
+                    speechCollectiveBll.stop();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -87,34 +85,32 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
     }
 
     private void createBll() {
-        if (speechFeedBackAction != null) {
+        if (speechCollectiveBll != null) {
             return;
         }
-        SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(activity, SpeechFeedBackIRCBll.this);
-        speechFeedBackBll.setGetInfo(mGetInfo);
+        SpeechCollectiveBll speechFeedBackBll = new SpeechCollectiveBll(activity, SpeechCollectiveIRCBll.this);
         speechFeedBackBll.setBottomContent(mRootView);
-        speechFeedBackBll.setLiveAndBackDebug(mLiveBll);
-        speechFeedBackAction = speechFeedBackBll;
+        speechCollectiveBll = speechFeedBackBll;
     }
 
     @Override
     public void onNotice(String sourceNick, String target, final JSONObject object, int type) {
-        String msg = "onNotice";
+        logger.d("data=" + object);
         switch (type) {
             case XESCODE.SPEECH_FEEDBACK: {
                 final String from = object.optString("roomId");
-                if ("voice_plan_ios".equals(from)) {
+                final String status = object.optString("status");
+                if (!"voice_plan_ios".equals(from)) {
                     return;
                 }
-                msg += ",SPEECH_FEEDBACK";
-                if (speechFeedBackAction != null) {
-                    onStaus(object);
+                if (speechCollectiveBll != null) {
+                    onStaus(status, from);
                 } else {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             createBll();
-                            onStaus(object);
+                            onStaus(status, from);
                         }
                     });
                 }
@@ -122,6 +118,23 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
             }
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (speechCollectiveBll != null) {
+            speechCollectiveBll.onResume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (speechCollectiveBll != null) {
+            speechCollectiveBll.onPause();
+        }
+    }
+
 
     @Override
     public int[] getNoticeFilter() {
@@ -132,8 +145,8 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
     @Override
     public void onDestory() {
         super.onDestory();
-        if (speechFeedBackAction != null) {
-            speechFeedBackAction.stop();
+        if (speechCollectiveBll != null) {
+            speechCollectiveBll.stop();
         }
     }
 }

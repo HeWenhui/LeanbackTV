@@ -3,18 +3,24 @@ package com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business;
 import android.app.Activity;
 import android.graphics.Rect;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
+import android.media.AudioTrack;
 import android.media.MediaRecorder;
+import android.media.audiofx.AcousticEchoCanceler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.PCMFormat;
+import com.xueersi.common.permission.PermissionCallback;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechFeedBackPager;
+import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechCollectivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
@@ -24,13 +30,13 @@ import java.io.IOException;
  * Created by linyuqiang on 2018/1/11.
  * 语音反馈
  */
-public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
+public class SpeechCollectiveBll implements SpeechFeedBackAction {
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     String TAG = "SpeechFeedBackBll";
     boolean isStart = false;
     Activity activity;
     RelativeLayout bottomContent;
-    SpeechFeedBackPager speechFeedBackPager;
+    SpeechCollectivePager speechFeedBackPager;
     /** 每次读取的字节大小 */
     private int mBufferSize;
     /** 采样率 */
@@ -45,15 +51,19 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
     private static final int DEFAULT_AUDIO_SOURCE = MediaRecorder.AudioSource.MIC;
     /** 录音对象 */
     private AudioRecord mAudioRecord = null;
+
+    /** 播放声音对象 */
+    private AudioTrack mAudioTrack = null;
     /** 原始录音数据 */
     private short[] mPCMBuffer;
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+    private AcousticEchoCanceler m_canceler = null;
 
-    public SpeechFeedBackBllOld(Activity activity,SpeechFeedBackIRCBll backIRCBll) {
+    public SpeechCollectiveBll(Activity activity, SpeechCollectiveIRCBll backIRCBll) {
         this.activity = activity;
     }
 
-    private void initAudioRecorder() throws IOException {
+    private void initAudio() throws IOException {
         mBufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLING_RATE,
                 DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT.getAudioFormat());
         int bytesPerFrame = DEFAULT_AUDIO_FORMAT.getBytesPerFrame();
@@ -64,10 +74,21 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
         mBufferSize = frameSize * bytesPerFrame;
         mPCMBuffer = new short[mBufferSize];
 
-        mAudioRecord = new AudioRecord(DEFAULT_AUDIO_SOURCE,
+        mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION,
                 DEFAULT_SAMPLING_RATE, DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT.getAudioFormat(),
                 mBufferSize);
+
+        if (AcousticEchoCanceler.isAvailable()) {
+            m_canceler = AcousticEchoCanceler.create(mAudioRecord.getAudioSessionId());
+            m_canceler.setEnabled(true);
+        }
+
+        mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, DEFAULT_SAMPLING_RATE, DEFAULT_CHANNEL_CONFIG,
+                DEFAULT_AUDIO_FORMAT.getAudioFormat(), mBufferSize, AudioTrack.MODE_STREAM, mAudioRecord
+                .getAudioSessionId());
+
     }
+
 
     public void setBottomContent(RelativeLayout bottomContent) {
         this.bottomContent = bottomContent;
@@ -77,6 +98,7 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
     public void setNonce(String s) {
 
     }
+
 
     @Override
     public void start(String roomId) {
@@ -88,40 +110,68 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    logger.d("start:startRecording:mAudioRecord=" + (mAudioRecord == null));
-                    initAudioRecorder();
-                    bottomContent.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            speechFeedBackPager = new SpeechFeedBackPager(activity);
-                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup
-                                    .LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT);
-                            int screenWidth = ScreenUtils.getScreenWidth();
-                            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig
-                                    .VIDEO_WIDTH);
-                            params.rightMargin = wradio;
-                            bottomContent.addView(speechFeedBackPager.getRootView(), params);
-                        }
-                    });
-                    long time = System.currentTimeMillis();
-                    mAudioRecord.startRecording();
-                    while (isStart) {
-                        if (mAudioRecord != null) {
-                            int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
-                            if (readSize > 0) {
-                                calculateRealVolume(mPCMBuffer, readSize);
+                boolean checkPermission = XesPermission.checkPermission(activity, new PermissionCallback() {
+                            @Override
+                            public void onFinish() {
+
                             }
-                        }
-                    }
-                    logger.d("start:startRecording:end;time=" + (System.currentTimeMillis() - time));
-                } catch (IOException e) {
-                    logger.e("initAudioRecorder", e);
+
+                            @Override
+                            public void onDeny(String permission, int position) {
+                            }
+
+                            @Override
+                            public void onGuarantee(String permission, int position) {
+                                logger.d("thread=" + Thread.currentThread().getName());
+                                initData();
+                            }
+                        },
+                        PermissionConfig.PERMISSION_CODE_AUDIO);
+
+                if (checkPermission) {
+                    initData();
                 }
             }
         });
     }
+
+    private void initData() {
+        try {
+            logger.d("start:startRecording:mAudioRecord=" + (mAudioRecord == null));
+            initAudio();
+            bottomContent.post(new Runnable() {
+                @Override
+                public void run() {
+                    speechFeedBackPager = new SpeechCollectivePager(activity);
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup
+                            .LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                    int screenWidth = ScreenUtils.getScreenWidth();
+                    int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig
+                            .VIDEO_WIDTH);
+                    params.rightMargin = wradio;
+                    bottomContent.addView(speechFeedBackPager.getRootView(), params);
+                }
+            });
+            long time = System.currentTimeMillis();
+            mAudioRecord.startRecording();
+            mAudioTrack.play();
+            while (isStart) {
+                if (mAudioRecord != null) {
+                    int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
+                    if (readSize > 0) {
+                        calculateRealVolume(mPCMBuffer, readSize);
+                    }
+                    mAudioTrack.write(mPCMBuffer, 0, mPCMBuffer.length);
+                }
+            }
+            logger.d("start:startRecording:end;time=" + (System.currentTimeMillis() - time));
+        } catch (IOException e) {
+            logger.e("initAudioRecorder", e);
+        }
+
+    }
+
 
     @Override
     public void stop() {
@@ -133,6 +183,10 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
         if (mAudioRecord != null) {
             mAudioRecord.release();
             mAudioRecord = null;
+        }
+        if (mAudioTrack != null) {
+            mAudioTrack.release();
+            mAudioTrack = null;
         }
         if (speechFeedBackPager != null) {
             bottomContent.post(new Runnable() {
@@ -190,4 +244,18 @@ public class SpeechFeedBackBllOld implements SpeechFeedBackAction {
         }
     }
 
+    public void onResume() {
+        if (mAudioTrack != null) {
+            if (mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PAUSED) {
+                mAudioTrack.play();
+            }
+        }
+    }
+
+    public void onPause() {
+        if (mAudioTrack != null) {
+            mAudioTrack.pause();
+        }
+
+    }
 }

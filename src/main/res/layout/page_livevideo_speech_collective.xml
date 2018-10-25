@@ -6,7 +6,8 @@
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/transparent_80">
+        android:background="@color/transparent_80"
+        android:visibility="gone">
 
         <TextView
             android:id="@id/tv_livevideo_voiceans_title"
@@ -17,11 +18,34 @@
             android:layout_marginTop="10dp"
             android:text="请说出正确答案" />
 
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <FrameLayout
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="14dp">
+
+
         <com.xueersi.parentsmeeting.widget.VolumeWaveView
             android:id="@id/vwv_livevideo_speecteval_wave"
+            android:layout_width="15dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/iv_livevideo_feedback_wave"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="12dp" />
-    </RelativeLayout>
+            android:layout_gravity="center" />
+
+
+    </FrameLayout>
 
 </RelativeLayout>

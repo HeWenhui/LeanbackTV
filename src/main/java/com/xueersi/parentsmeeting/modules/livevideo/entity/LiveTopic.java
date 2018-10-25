@@ -14,6 +14,7 @@ import java.util.List;
 public class LiveTopic {
     private String TAG = "LiveTopicLog";
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+
     /**
      * disable_speaking : [] id : 1360 mode : in-class status :
      * {"classbegin":false,"openbarrage":true,"openchat":true} topic :
@@ -22,7 +23,7 @@ public class LiveTopic {
      * :1452407139656,"status":1,"time":3,"type":""}
      */
     public LiveTopic() {
-        logger.i( "LiveTopic");
+        logger.i("LiveTopic");
     }
 
     /**
@@ -66,7 +67,7 @@ public class LiveTopic {
 
     public void setVideoQuestionLiveEntity(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         if (this.videoQuestionLiveEntity == null && videoQuestionLiveEntity == null) {
-            logger.d( "setVideoQuestionLiveEntity,extra");
+            logger.d("setVideoQuestionLiveEntity,extra");
         }
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
     }
@@ -199,7 +200,17 @@ public class LiveTopic {
         /**
          * 点赞送礼物开关
          */
-        private boolean openlike=false;
+        private boolean openlike = false;
+
+        /**
+         * 集体发言房间id
+         */
+        private String groupSpeechRoom;
+
+        /**
+         * 集体发言开关
+         */
+        private String onGroupSpeech;
 
         public RoomStatusEntity() {
             classbegin = false;
@@ -234,7 +245,9 @@ public class LiveTopic {
             agoraVoiceChatRoom = roomStatusEntity.agoraVoiceChatRoom;
             onVideoChat = roomStatusEntity.onVideoChat;
             isOnbreak = roomStatusEntity.isOnbreak;
-            openlike=roomStatusEntity.openlike;
+            openlike = roomStatusEntity.openlike;
+            groupSpeechRoom = roomStatusEntity.groupSpeechRoom;
+            onGroupSpeech = roomStatusEntity.onGroupSpeech;
         }
 
         public boolean isOnbreak() {
@@ -456,6 +469,22 @@ public class LiveTopic {
 
         public void setOpenlike(boolean openlike) {
             this.openlike = openlike;
+        }
+
+        public String getGroupSpeechRoom() {
+            return groupSpeechRoom;
+        }
+
+        public void setGroupSpeechRoom(String groupSpeechRoom) {
+            this.groupSpeechRoom = groupSpeechRoom;
+        }
+
+        public String getOnGroupSpeech() {
+            return onGroupSpeech;
+        }
+
+        public void setOnGroupSpeech(String onGroupSpeech) {
+            this.onGroupSpeech = onGroupSpeech;
         }
     }
 
