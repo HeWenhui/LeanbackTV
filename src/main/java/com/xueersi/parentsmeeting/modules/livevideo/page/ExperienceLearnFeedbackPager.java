@@ -1,11 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,7 +15,6 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
@@ -28,7 +24,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.zip.Inflater;
 
 import okhttp3.Call;
 
@@ -141,14 +136,14 @@ public class ExperienceLearnFeedbackPager extends BasePager {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONObject jsonOption = new JSONObject();
                 JSONArray jsonArray = new JSONArray();
                 try {
-
+                    JSONObject jsonOption = new JSONObject();
                     jsonOption.put("1", mDifficulty);
-                    jsonOption.put("2", mSatisficing);
                     jsonArray.put(jsonOption);
-
+                    JSONObject jsonObject2 = new JSONObject();
+                    jsonObject2.put("2", mSatisficing);
+                    jsonArray.put(jsonObject2);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -161,47 +156,9 @@ public class ExperienceLearnFeedbackPager extends BasePager {
 
                                         @Override
                                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                            logger.d( "sendFeedbackSuccess");
+                                            logger.d("sendFeedbackSuccess");
                                         }
                                     });
-                } else {
-                    if (learnFeedBackPagerListener != null) {
-                        learnFeedBackPagerListener.submitClick(
-                                UserBll.getInstance().getMyUserInfoEntity().getStuId(),
-                                mVideoEntity.getLiveId(),
-                                mVideoEntity.getSubjectId(),
-                                mVideoEntity.getGradId(),
-                                mVideoEntity.getChapterId(),
-                                etSuggest.getText().toString(),
-                                jsonOption,
-                                new HttpCallBack() {
-
-                                    @Override
-                                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                        if (closeAction != null) {
-                                            closeAction.onClose();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call call, IOException e) {
-                                        super.onFailure(call, e);
-                                    }
-
-
-                                    @Override
-                                    public void onPmFailure(Throwable error, String msg) {
-                                        logger.d( "sendFeedbackFailure:" + msg);
-                                        super.onPmFailure(error, msg);
-                                    }
-
-                                    @Override
-                                    public void onPmError(ResponseEntity responseEntity) {
-                                        logger.d( "sendFeedbackError:" + responseEntity.toString());
-                                        super.onPmError(responseEntity);
-                                    }
-                                });
-                    }
                 }
                 if (closeAction != null) {
                     closeAction.onClose();
