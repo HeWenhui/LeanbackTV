@@ -263,8 +263,11 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     private void closePraise() {
         if (isOpen == true) {
-            logHashMap.getData().clear();
             isOpen = false;
+            logHashMap.getData().clear();
+            otherSpecialGiftStack.clear();
+            otherPraiseStack.clear();
+            mySpecialGiftStack.clear();
             if (timer != null) {
                 timer.cancel();
             }
