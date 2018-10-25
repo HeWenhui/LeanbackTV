@@ -1539,7 +1539,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         }
         if (!"".equals(content)){
             isVoiceMsgSend = false;
-
+            if (content.length()>1){
+                content = content.substring(0,1).toUpperCase()+content.substring(1);
+            } else {
+                content = content.toUpperCase();
+            }
         }
         mVoiceContent = content;
         logger.d("=====speech evaluating" + content);
