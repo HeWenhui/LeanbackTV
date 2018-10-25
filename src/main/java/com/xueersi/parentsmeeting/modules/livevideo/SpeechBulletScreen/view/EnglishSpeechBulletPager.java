@@ -397,15 +397,15 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                 closeSpeechBullet(false);
                 isShowingSpeechBullet = false;
 
-                for (int i = 0; i < 30; i++) {
-                    mWeakHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            addDanmaKuSpeech("我", etSpeechbulWords.getText().toString(), presenter.getHeadImgUrl(), false);
-                        }
-                    }, i * 300);
-
-                }
+//                for (int i = 0; i < 30; i++) {
+//                    mWeakHandler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            addDanmaKuSpeech("我", etSpeechbulWords.getText().toString(), presenter.getHeadImgUrl(), false);
+//                        }
+//                    }, i * 300);
+//
+//                }
                 presenter.uploadSpeechBulletScreen(etSpeechbulWords.getText().toString(), new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {

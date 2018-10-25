@@ -142,18 +142,28 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
             }
             case XESCODE.XCR_ROOM_VOICEBARRAGE: {
                 //弹幕消息
-                String headImg = data.optString("headImg");
-                String context = data.optString("context");
-                String name = data.optString("name");
+                final String headImg = data.optString("headImg");
+                final String context = data.optString("context");
+                final String name = data.optString("name");
                 String teamId = data.optString("teamId");
-                englishSpeechBulletView.receiveDanmakuMsg(name, context, headImg, mRootView);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        englishSpeechBulletView.receiveDanmakuMsg(name, context, headImg, mRootView);
+                    }
+                });
                 break;
             }
 
             case XESCODE.XCR_ROOM_VOICEBARRAGEPRAISE: {
                 //表扬消息
-                String context = data.optString("context");
-                englishSpeechBulletView.receivePraiseMsg(context);
+                final String context = data.optString("context");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        englishSpeechBulletView.receivePraiseMsg(context);
+                    }
+                });
                 break;
             }
             default:
