@@ -1,0 +1,180 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@id/rl_livevideo_message_root"
+    >
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_halfbody_msgcontent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <!--聊天区域UI-->
+        <RelativeLayout
+            android:id="@id/rl_livevideo_info"
+            android:layout_width="220dp"
+            android:layout_height="130dp"
+            android:background="@color/COLOR50_7F20ABFF"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="50dp"
+            >
+            <!--链接状态栏-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:visibility="visible"
+                >
+                <TextView
+                    android:id="@id/tv_livevideo_message_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/white" />
+
+                <ImageView
+                    android:id="@id/iv_livevideo_message_online"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/bg_livevideo_message_offline" />
+            </RelativeLayout>
+
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveEdgeListView
+                android:id="@id/lv_livevideo_message"
+                style="@style/listview_common_style"
+                android:layout_width="match_parent"
+                android:layout_marginTop="25dp"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:listSelector="@color/transparent"
+                android:paddingBottom="15dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:scrollbars="none"
+                android:background="#36E87877"
+                />
+
+        </RelativeLayout>
+
+        <!--表情-->
+        <RelativeLayout
+            android:id="@id/rl_livevideo_message_panelcontent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout
+                android:id="@id/rl_livevideo_message_panelroot"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/panel_height"
+                android:visibility="gone">
+
+                <include
+                    android:id="@id/layout_chat_expression"
+                    layout="@layout/include_livechat_expression"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+            </cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout>
+        </RelativeLayout>
+
+        <!--底部聊天框-->
+        <RelativeLayout
+            android:id="@id/rl_livevideo_message_content2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/rl_livevideo_message_panelcontent"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@id/bt_livevideo_message_open"
+            android:gravity="center"
+            android:paddingBottom="1dp"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:id="@+id/rl_livevideo_message_back"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_live_stand_chat_input" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/rl_livevideo_message_back"
+                android:layout_alignTop="@id/rl_livevideo_message_back"
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:id="@id/bt_livevideo_message_send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="12dp"
+                    android:background="@drawable/selector_live_stand_chat_send"
+                    android:textColor="@color/white" />
+
+                <Button
+                    android:id="@id/bt_livevideo_message_express"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@id/bt_livevideo_message_send"
+                    android:background="@drawable/selector_live_stand_chat_expression"
+                    android:textColor="@color/white" />
+
+                <EditText
+                    android:id="@id/et_livevideo_message_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@id/bt_livevideo_message_express"
+                    android:background="@color/transparent"
+                    android:hint="请输入文字"
+                    android:imeOptions="flagNoExtractUi|actionSend"
+                    android:maxLength="40"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@id/iv_livevideo_message_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/rl_livevideo_message_back"
+                android:layout_alignTop="@id/rl_livevideo_message_back"
+                android:paddingBottom="6dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="6dp"
+                android:src="@drawable/selector_live_stand_chat_close" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <!--战队pk 状态栏-->
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalBodyPkStateLayout
+        android:id="@id/tpkL_teampk_pkstate_root"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+         />
+
+
+</RelativeLayout>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -20,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageLandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePortPager;
@@ -176,6 +178,85 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             }
         });
     }
+
+
+    /**
+     * 半身直播 聊天
+     * @param bottomContent
+     */
+    public void initHalfBodyLive(RelativeLayout bottomContent){
+
+        Log.e("HalfBody","=====>LiveMessageBll initHalfBodyLive called:");
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        if (rlLiveMessageContent == null) {
+            rlLiveMessageContent = new RelativeLayout(activity);
+            bottomContent.addView(rlLiveMessageContent, params);
+        } else {
+            rlLiveMessageContent.removeAllViews();
+        }
+
+
+        String text = null;
+        boolean isRegister = false;
+        boolean isHaveFlowers = false;
+        boolean isCloseChat = false;
+        BaseLiveMessagePager oldLiveMessagePager = mLiveMessagePager;
+        //拷贝状态
+        if (mLiveMessagePager != null) {
+            text = mLiveMessagePager.getMessageContentText();
+            isRegister = mLiveMessagePager.isRegister();
+            isHaveFlowers = mLiveMessagePager.isHaveFlowers();
+            isCloseChat = mLiveMessagePager.isCloseChat();
+            mLiveMessagePager.onDestroy();
+        }
+
+        long before = System.currentTimeMillis();
+        liveMessageLandEntities.clear();
+
+        HalfBodyLiveMessagePager liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
+                null,baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+
+        mLiveMessagePager = liveMessagePager;
+        mLiveMessagePager.setGetInfo(getInfo);
+        mLiveMessagePager.urlclick = urlclick;
+        mLiveMessagePager.setPeopleCount(peopleCount);
+        mLiveMessagePager.setMessageBll(LiveMessageBll.this);
+        mLiveMessagePager.setIrcState(mLiveBll);
+        mLiveMessagePager.onModeChange(mLiveBll.getMode());
+
+        if (text != null) {
+            mLiveMessagePager.setEtMessageContentText(text);
+        } else {
+            mLiveMessagePager.setEtMessageContentText("");
+        }
+        mLiveMessagePager.setIsRegister(isRegister);
+        if (peopleCount.get() > 0) {
+            mLiveMessagePager.onUserList("", new User[peopleCount.get()]);
+        }
+        mLiveMessagePager.closeChat(isCloseChat);
+        if (isAnaswer != -1) {
+            //这表示收到过答题变化
+            mLiveMessagePager.onQuestionShow(isAnaswer == 1);
+        }
+        if (mode != null) {
+            mLiveMessagePager.onopenchat(openchat, mode, false);
+        }
+        final View view = mLiveMessagePager.getRootView();
+        view.setVisibility(View.INVISIBLE);
+        rlLiveMessageContent.addView(view, params);
+
+        Log.e("HalfBody","=====>LiveMessageBll initHalfBodyLive called: RootView add");
+
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                view.setVisibility(View.VISIBLE);
+            }
+        });
+
+    }
+
 
     public void initViewLive(RelativeLayout bottomContent) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams

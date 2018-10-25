@@ -791,4 +791,15 @@
 
     <item name="iv_arts_pse_teacher_praise" type="id"/>
 
+    <!--半身直播-->
+    <item name="iv_livevideo_halfbody_connect_state" type="id"/>
+    <item name="ll_livevideo_halbody_msg_bottom" type="id"/>
+    <item name="iv_livevideo_halfbody_msg_btn" type="id"/>
+    <item name="iv_livevideo_halfbody_hot_wrod" type="id"/>
+    <item name="tv_livevideo_halfbody_msg_onlinenum" type="id"/>
+
+    <item name="rl_livevideo_halfbody_msgcontent" type="id"/>
+    <item name="lv_livevideo_halfbody_common_word" type="id" />
+
+
 </resources>

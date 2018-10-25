@@ -10,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.airbnb.lottie.L;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.framework.utils.Log;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -84,7 +86,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /** 是不是文科 */
     private int isArts;
 
-    BaseLiveMediaControllerTop baseLiveMediaControllerTop;
+    protected BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     protected BaseLiveMediaControllerBottom liveMediaControllerBottom;
 
     /** onPause状态不暂停视频 */
@@ -186,10 +188,12 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
         }
+
         VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
         videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
         videoChatIRCBll.setLiveFragmentBase(this);
         mLiveBll.addBusinessBll(videoChatIRCBll);
+
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }
 
@@ -210,11 +214,17 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         logger.e("========>:initView:" + bottomContent);
         // 预加载布局中退出事件
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
-        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
+        createMediaControlerTop();
+        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
         createMediaControllerBottom();
-        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
-                .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        bottomContent.addView(liveMediaControllerBottom);
+
+        // TODO: 2018/10/23  添加了LayoutParams 是否会有其他异常？
+        bottomContent.addView(liveMediaControllerBottom,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        android.util.Log.e("HalfBody","====>LiveVideoFragment initView:add mediaContriller:"
+                +liveMediaControllerBottom.getClass().getSimpleName());
+
     }
 
     protected void createMediaControllerBottom() {
@@ -223,6 +233,11 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         liveMediaControllerBottom = new LiveMediaControllerBottom(activity, mMediaController, videoFragment);
         liveMediaControllerBottom.setVisibility(View.INVISIBLE);
     }
+
+    protected void createMediaControlerTop(){
+        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
+    }
+
 
     @Override
     public boolean initData() {

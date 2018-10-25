@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent">
+
+    <LinearLayout
+        android:id="@id/ll_livevideo_bottom_controller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@id/bt_livevideo_message_open"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_livevideo_message_open"
+            android:layout_marginRight="15dp"
+            android:layout_gravity="bottom"
+            />
+
+
+        <LinearLayout
+            android:layout_width="98dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginRight="15dp"
+            >
+
+            <com.xueersi.ui.widget.AutohListview
+                android:id="@id/lv_livevideo_common_word"
+                style="@style/listview_common_style"
+                android:background="@drawable/shape_livevideo_commonwordps_bg"
+                android:layout_width="98dp"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:layout_centerHorizontal="true"
+                android:scrollbars="none" />
+
+
+            <Button
+                android:id="@id/bt_livevideo_message_common"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_livevideo_message_common"
+                android:layout_gravity="center_horizontal"
+
+                />
+        </LinearLayout>
+
+        <!--只是为了接入现有框架，让程序不崩溃-->
+        <Button
+            android:id="@id/bt_livevideo_voicechat_raise_hands"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/bg_livevideo_voicechat_raise_hands"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
+
+

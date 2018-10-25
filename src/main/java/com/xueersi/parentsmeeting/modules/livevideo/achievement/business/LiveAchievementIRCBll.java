@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 
 import com.tal.speech.language.TalLanguage;
@@ -23,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -340,9 +342,82 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         }
     }
 
+
+    /**
+     * 半身直播
+     */
+    private class EnglishSpeekModHalfBody implements EnglishSpeekMode{
+
+        @Override
+        public void initAchievement(String mode) {
+            Log.e("LiveHalfBodyAchievement","=====>LiveAchievementIRCBLL called:1111");
+
+            EnglishSpeekAction oldEnglishSpeekAction = LiveAchievementIRCBll.this.englishSpeekAction;
+            TalLanguage talLanguage = null;
+            if (oldEnglishSpeekAction != null) {
+                oldEnglishSpeekAction.stop(null);
+                talLanguage = oldEnglishSpeekAction.getTalLanguage();
+            }
+            StarInteractAction starAction;
+            EnglishSpeekAction englishSpeekAction = null;
+            if (LiveTopic.MODE_CLASS.equals(mode)) {
+                Log.e("LiveHalfBodyAchievement","=====>LiveAchievementIRCBLL called:2222");
+                // 本场成就 ：金币 + 星星
+               LiveHalfBodyAchievementBll starBll = new LiveHalfBodyAchievementBll(activity,mLiveType,mGetInfo
+                       .getStarCount(), mGetInfo.getGoldCount(), true);
+
+                starBll.setLiveBll(LiveAchievementIRCBll.this);
+                starBll.setLiveAndBackDebug(mLiveBll);
+                starBll.initView(mRootView, mContentView);
+                starAction = starBll;
+
+                //能量条
+                EnglishHalfBodySpeekBll englishSpeekBll = new EnglishHalfBodySpeekBll(activity);
+                if (speakerRecognitioner != null) {
+                    englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
+                }
+
+                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(),
+                        talLanguage, audioRequest, mContentView);
+                if (initView) {
+                    englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
+                    englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
+                    starBll.setLiveAndBackDebug(mLiveBll);
+                    englishSpeekBll.setmShareDataManager(mShareDataManager);
+                    englishSpeekAction = englishSpeekBll;
+                }
+
+            } else {
+                LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo,true);
+                starBll.setLiveBll(LiveAchievementIRCBll.this);
+                starBll.setLiveAndBackDebug(mLiveBll);
+                starBll.initView(mRootView, mContentView);
+                starAction = starBll;
+                //能量条
+                EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(activity, mGetInfo);
+                if (speakerRecognitioner != null) {
+                    englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
+                }
+                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
+                if (initView) {
+                    englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
+                    englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
+                    englishSpeekBll.setmShareDataManager(mShareDataManager);
+                    englishSpeekAction = englishSpeekBll;
+                }
+            }
+            LiveAchievementIRCBll.this.starAction = starAction;
+            LiveAchievementIRCBll.this.englishSpeekAction = englishSpeekAction;
+        }
+    }
+
+
+
     private void startAchievement() {
         if (mGetInfo.getPattern() == 2) {
             englishSpeekMode = new EnglishSpeekModeStand();
+        }else if(mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY){
+            englishSpeekMode = new EnglishSpeekModHalfBody();
         } else {
             englishSpeekMode = new EnglishSpeekModeNomal();
         }
@@ -354,6 +429,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    Log.e("LiveHalfBodyAchievement","=====>LiveAchievementIRCBLL initAchievement:000000");
                     englishSpeekMode.initAchievement(mode);
                 }
             });

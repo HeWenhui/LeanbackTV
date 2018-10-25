@@ -11,6 +11,7 @@ import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.Log;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -19,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAch
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -156,6 +158,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (getInfo.getPattern() == 2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initViewLiveStand(mRootView);
+            } else if(getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+                    && LiveTopic.MODE_CLASS.equals(getInfo.getMode())){
+                // TODO: 2018/10/23  初始化 半身直播 聊天
+                mRoomAction.initHalfBodyLive(mRootView);
             } else {
                 mRoomAction.initViewLive(mRootView);
             }
@@ -186,6 +192,25 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     if (view != null) {
                         view.setVisibility(View.VISIBLE);
                     }
+                }else if(mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY){
+
+                    android.util.Log.e("HalfBody","====>LiveIRCMessageBll onModeChange:init HalfBody");
+                    // TODO: 2018/10/23 半身直播
+                    View view = mRoomAction.getView();
+                    if (view != null) {
+                        view.setVisibility(View.INVISIBLE);
+                    }
+
+                    if (LiveTopic.MODE_CLASS.equals(mode)) {
+                        mRoomAction.initHalfBodyLive(mRootView);
+                    } else {
+                        mRoomAction.initViewLive(mRootView);
+                    }
+
+                    if (view != null) {
+                        view.setVisibility(View.VISIBLE);
+                    }
+
                 }
             }
         });
