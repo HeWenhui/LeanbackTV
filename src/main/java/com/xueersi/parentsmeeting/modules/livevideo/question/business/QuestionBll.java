@@ -874,10 +874,19 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo, videoQuestionLiveEntity,
                                 id, QuestionBll.this, stuCouId,rolePlayMachineBll);
                         speechAssessmentPager.setIse(mIse);
-                        rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
-                        rolePlayMachineBll.setBottomView(rlQuestionContent);
-                        rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
-                        speechAssessmentPager.initData();
+                        if(speechAssessmentPager instanceof RolePlayMachinePager){
+                            logger.i("--------------走rolaplay人机");
+                            //人机，roles不为空的题型
+                            rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
+                            rolePlayMachineBll.setBottomView(rlQuestionContent);
+                            rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+                            speechAssessmentPager.initData();
+                        }else {
+                            logger.i("--------------走跟读");
+                            //跟读之类的题型
+                            speechAssessmentPager.initData();
+                        }
+
                         logger.i("走人机 END");
                         //rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                     }
