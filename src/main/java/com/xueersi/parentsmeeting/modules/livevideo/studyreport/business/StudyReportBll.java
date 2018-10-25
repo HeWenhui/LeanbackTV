@@ -56,13 +56,13 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     public StudyReportBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         mLogtf = new LogToFile(activity, TAG);
-        putInstance(StudyReportAction.class, this);
     }
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         if (getInfo.getAllowSnapshot() == 1) {
+            putInstance(StudyReportAction.class, this);
             initData();
         } else {
             mLiveBll.removeBusinessBll(this);
