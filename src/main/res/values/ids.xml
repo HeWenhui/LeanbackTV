@@ -395,8 +395,10 @@
     <item name="rl_livevideo_content_speechbul" type="id" />
     <item name="rl_livevideo_speechbul_root" type="id" />
     <item name="tv_livevideo_speechbul_title" type="id" />
+    <item name="tv_livevideo_speechbul_title_count" type="id" />
     <item name="tv_livevideo_speechbul_close" type="id" />
     <item name="vwv_livevideo_speechbul_wave" type="id" />
+    <item name="tv_livevideo_speechbul_countdown" type="id" />
     <item name="rl_livevideo_speechbul_bottom_content" type="id" />
     <item name="rl_livevideo_speechbul_input" type="id" />
     <item name="et_livevideo_speechbul_words" type="id" />

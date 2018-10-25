@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.Contract.EnglishSpeechBulletContract;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.view.EnglishSpeechBulletPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -14,8 +15,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Created by ZhangYuansun on 2018/9/14
@@ -32,7 +40,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     /**
      * 该场次语音弹幕开启次数
      */
-    private String voiceBarrageCount;
+    private int voiceBarrageCount;
     /**
      * MVP模式V层接口
      */
@@ -53,41 +61,82 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
 //            public void run() {
 //                JSONObject data = null;
 //                try {
-//                    data = new JSONObject("{\"open\":true,\"type\":\"1005\"}");
+//                    data = new JSONObject("{\"open\":true}");
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
-//                onNotice("", "", data, 260);
+//                onNotice("", "", data, 1005);
 //            }
-//        }, 1000);
+//        }, 20000);
+//
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                JSONObject data = null;
+//                try {
+//                    data = new JSONObject("{\"open\":false}");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                onNotice("", "", data, 1005);
+//            }
+//        }, 10000);
 
     }
 
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         if (englishSpeechBulletView != null) {
-            englishSpeechBulletView.closeSpeechBullet(false);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    englishSpeechBulletView.closeSpeechBullet(false);
+                }
+            });
         }
     }
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
+        logger.i("onTopic: jsonObject= " + jsonObject.toString());
         this.liveTopic = liveTopic;
+        if (liveTopic.getMainRoomstatus().isOpenVoiceBarrage()) {
+            voiceBarrageCount = liveTopic.getMainRoomstatus().getVoiceBarrageCount();
+            if (englishSpeechBulletView != null) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        englishSpeechBulletView.showSpeechBullet(mRootView);
+                    }
+                });
+            }
+        }
     }
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
+        logger.i("onNotice: jsonObject= " + data.toString());
         switch (type) {
             case XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE: {
                 //开启/关闭弹幕
                 String open = data.optString("open");
-                voiceBarrageCount = data.optString("voiceBarrageCount");
+                voiceBarrageCount = data.optInt("voiceBarrageCount");
                 if ("true".equals(open)) {
                     if (englishSpeechBulletView != null) {
-                        englishSpeechBulletView.showSpeechBullet(mRootView);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                englishSpeechBulletView.showSpeechBullet(mRootView);
+                            }
+                        });
                     }
                 } else if ("false".equals(open)) {
-                    englishSpeechBulletView.closeSpeechBullet(true);
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            englishSpeechBulletView.closeSpeechBullet(true);
+                        }
+                    });
                 }
                 break;
             }
@@ -97,7 +146,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
                 String context = data.optString("context");
                 String name = data.optString("name");
                 String teamId = data.optString("teamId");
-                englishSpeechBulletView.receiveDanmakuMsg(name, context, headImg);
+                englishSpeechBulletView.receiveDanmakuMsg(name, context, headImg, mRootView);
                 break;
             }
 
@@ -121,9 +170,12 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
 
     @Override
     public void uploadSpeechBulletScreen(String msg, HttpCallBack requestCallBack) {
-        JSONObject data = new JSONObject();
+        JSONObject requestJson = new JSONObject();
         try {
-            data.put("subjectIds", mGetInfo.getSubjectIds());
+            JSONObject data = new JSONObject();
+            if (mGetInfo.getSubjectIds().length != 0) {
+                data.put("subjectIds", Integer.valueOf(mGetInfo.getSubjectIds()[0]).intValue());
+            }
             if (mGetInfo.getMode().equals(LiveTopic.MODE_CLASS)) {
                 data.put("teaSenderId", mLiveBll.getMainTeacherStr());
             } else {
@@ -131,37 +183,40 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
             }
             data.put("studentId", mGetInfo.getStuId());
             data.put("courseId", mGetInfo.getStudentLiveInfo().getCourseId());
-            data.put("classId", mGetInfo.getStudentLiveInfo().getCourseId());
+            data.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
             data.put("liveId", mLiveBll.getLiveId());
             data.put("liveType", mGetInfo.getLiveType());
-            data.put("liveType", mGetInfo.getStudentLiveInfo().getTeamId());
-            data.put("bulletId", mLiveBll.getLiveId() + voiceBarrageCount);
-            data.put("keywords", "");
+            data.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
+            data.put("bulletId", mLiveBll.getLiveId() + "_" + voiceBarrageCount);
+            String[] strings = msg.split(" ");
+            JSONArray keywords = new JSONArray();
+            for (int i = 0; i < strings.length; i++) {
+                keywords.put(strings[i]);
+            }
+            data.put("keywords", keywords);
 
             JSONObject content = new JSONObject();
-            content.put("type", XESCODE.XCR_ROOM_VOICEBARRAGE);
+            content.put("type", XESCODE.XCR_ROOM_VOICEBARRAGE + "");
             content.put("senderId", mLiveBll.getConnectNickname());
             content.put("context", msg);
-            content.put("name", mGetInfo.getStuName());
-            content.put("headmg", mGetInfo.getHeadImgPath());
+            content.put("name", mGetInfo.getStandLiveName());
+            content.put("headImg", mGetInfo.getHeadImgPath());
             data.put("content", content);
+
+            requestJson.put("type", 5);
+            requestJson.put("data", data);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        getHttpManager().pushSpeechBullet(5, data.toString(), new HttpCallBack(false) {
+        getHttpManager().pushSpeechBullet(requestJson.toString(), new Callback() {
             @Override
-            public void onPmFailure(Throwable error, String msg) {
-                super.onPmFailure(error, msg);
+            public void onFailure(Call call, IOException e) {
+                logger.i("onFailure");
             }
 
             @Override
-            public void onPmError(ResponseEntity responseEntity) {
-
-            }
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-
+            public void onResponse(Call call, Response response) throws IOException {
+                logger.i("onPmSuccess: responseEntity = " + response.body().string().toString());
             }
         });
     }

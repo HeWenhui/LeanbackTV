@@ -26,8 +26,9 @@ public interface EnglishSpeechBulletContract {
          * @param name 名字
          * @param msg 内容
          * @param headImgUrl 头像Url
+         * @param rootView 父布局
          */
-        void receiveDanmakuMsg(String name, String msg,String headImgUrl);
+        void receiveDanmakuMsg(String name, String msg,String headImgUrl, RelativeLayout rootView);
         /**
          * 表扬消息
          * @param msg 内容
