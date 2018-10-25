@@ -586,7 +586,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         if (error != null) {
             errorInfo.setVisibility(View.VISIBLE);
             if (error == AvformatOpenInputError.HTTP_NOT_FOUND) {
-                errorInfo.setText("回放视频未生成，请重试[" + mVideoEntity.getLiveId() + "]");
+                errorInfo.setText("视频未生成，请重试[" + mVideoEntity.getLiveId() + "]");
             } else {
                 PlayErrorCode playErrorCode = PlayErrorCode.getError(arg2);
                 errorInfo.setText("视频播放失败 [" + playErrorCode.getCode() + "]");
