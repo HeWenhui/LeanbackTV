@@ -1073,6 +1073,9 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                     rlMatchPager.setVisibility(View.GONE);
                     logger.i( "匹配失败");
                     XESToastUtils.showToast(mContext, "匹配失败");
+                    if(mRolePlayBll != null){
+                        mRolePlayBll.onStopQuestion(null,null);
+                    }
                     //mRolePlayBll.goToRobot();
                 }
 
