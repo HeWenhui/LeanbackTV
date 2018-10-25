@@ -407,7 +407,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
             break;
             case XESCODE.ARTS_SEND_QUESTION: {
-                logger.e("======>QuestionIRCBlle:" + "发题楼");
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.gold = object.optDouble("gold");
                 videoQuestionLiveEntity.id = getIdStr(object.optJSONArray("id"));
