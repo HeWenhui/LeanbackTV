@@ -589,16 +589,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             rlQuestionContent.removeView(questionWebPager.getRootView());
                             questionWebPager = null;
                         }
-                        QuestionWebX5Pager questionWebPager;
-                        if (questionWebCreate != null) {
-                            questionWebPager = questionWebCreate.create(activity, videoQuestionLiveEntity, QuestionBll.this, liveGetInfo, IS_SCIENCE, stuCouId);
-                        } else {
-                            questionWebPager = new QuestionWebX5Pager(activity, videoQuestionLiveEntity, QuestionBll.this, liveGetInfo
-                                    .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
-                                    liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
-                                    videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), IS_SCIENCE, stuCouId,
-                                    "1".equals(liveGetInfo.getIsAllowTeamPk()));
-                        }
+                        QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, videoQuestionLiveEntity, QuestionBll.this, liveGetInfo
+                                .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
+                                liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
+                                videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), IS_SCIENCE, stuCouId,
+                                "1".equals(liveGetInfo.getIsAllowTeamPk()));
                         questionWebPager.setLivePagerBack(QuestionBll.this);
                         rlQuestionContent.addView(questionWebPager.getRootView());
                         QuestionBll.this.questionWebPager = questionWebPager;
