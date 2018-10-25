@@ -55,33 +55,6 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                JSONObject data = null;
-//                try {
-//                    data = new JSONObject("{\"open\":true}");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                onNotice("", "", data, 1005);
-//            }
-//        }, 20000);
-//
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                JSONObject data = null;
-//                try {
-//                    data = new JSONObject("{\"open\":false}");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                onNotice("", "", data, 1005);
-//            }
-//        }, 10000);
-
     }
 
     @Override
@@ -142,6 +115,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
             }
             case XESCODE.XCR_ROOM_VOICEBARRAGE: {
                 //弹幕消息
+                final String senderId = data.optString("senderId");
                 final String headImg = data.optString("headImg");
                 final String context = data.optString("context");
                 final String name = data.optString("name");
@@ -149,7 +123,12 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        englishSpeechBulletView.receiveDanmakuMsg(name, context, headImg, mRootView);
+                        if (senderId.equals(mLiveBll.getConnectNickname())) {
+                            englishSpeechBulletView.receiveDanmakuMsg(name, context, headImg, false, mRootView);
+                        }
+                        else {
+                            englishSpeechBulletView.receiveDanmakuMsg(name, context, headImg, true, mRootView);
+                        }
                     }
                 });
                 break;
@@ -195,12 +174,13 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
             data.put("courseId", mGetInfo.getStudentLiveInfo().getCourseId());
             data.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
             data.put("liveId", mLiveBll.getLiveId());
-            data.put("liveType",1);
+            data.put("liveType", 1);
             data.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
-            data.put("bulletId", mLiveBll.getLiveId() + "_" + voiceBarrageCount);
+            data.put("bulletId", voiceBarrageCount);
             String[] strings = msg.split(" ");
             JSONArray keywords = new JSONArray();
             for (int i = 0; i < strings.length; i++) {
+
                 keywords.put(strings[i]);
             }
             data.put("keywords", keywords);
@@ -232,7 +212,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     }
 
     @Override
-    public String getHeadImgUrl() {
-        return mGetInfo.getHeadImgPath();
+    public String getVoiceId() {
+        return mLiveBll.getLiveId() + "_" + voiceBarrageCount;
     }
 }
