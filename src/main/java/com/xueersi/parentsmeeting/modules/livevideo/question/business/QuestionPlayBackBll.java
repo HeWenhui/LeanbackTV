@@ -175,8 +175,6 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                     }
                 }
 
-                //todo:
-                videoQuestionLiveEntity.roles = "test_role_name";
                 if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && ! "1".equals(videoQuestionLiveEntity.multiRolePlay) ){
                     logger.i("走人机start,拉取试题");
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
