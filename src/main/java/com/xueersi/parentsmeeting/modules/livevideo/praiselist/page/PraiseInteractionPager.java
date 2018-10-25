@@ -525,6 +525,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         bubbleView.setVisibility(View.GONE);
         bubbleRepeatView.cancelAnimation();
         bubbleRepeatView.setVisibility(View.GONE);
+        praiseTotalNumView.setVisibility(View.GONE);
 
         praiseNumAmount++;
         //如果正在倒计时不计入显示礼物条件
@@ -664,7 +665,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
         if (praiseNumAmount == 5 || (displayGiftNum > 0 && (displayGiftNum % 20 == 0))) {
             displayGiftNum = 0;
             countDownNum = 10;
-            specialGiftView.setVisibility(View.VISIBLE);
+            starDisplayGiftAnimation();
             goldCountView.setText("金币余额:  " + goldCount);
             currentGiftType = getProbabilityNum() - 1;
             logger.d("special gift type=" + currentGiftType);
@@ -799,6 +800,29 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             }
         });
         starEnterLottileView.playAnimation();
+    }
+
+    /**
+     * 送礼物弹窗动画
+     */
+    private void starDisplayGiftAnimation() {
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(specialGiftView, "alpha", 0,
+                1);
+        objectAnimator.setDuration(500);
+        objectAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                specialGiftView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+
+            }
+        });
+        objectAnimator.start();
     }
 
 

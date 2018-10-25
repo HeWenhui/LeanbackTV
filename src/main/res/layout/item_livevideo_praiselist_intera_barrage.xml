@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="30dp"
     android:background="@drawable/shape_livevideo_praise_barrage_bg"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="3dp">
+    android:paddingBottom="4dp"
+    android:paddingLeft="4dp"
+    android:paddingRight="10dp"
+    android:paddingTop="4dp">
 
 
     <ImageView
@@ -13,16 +16,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:scaleType="centerCrop"
         android:src="@drawable/ic_livevideo_praise_intera_gift" />
 
     <TextView
         android:id="@+id/tv_praise_intera_barrage_item_stuname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
         android:textColor="#c3f7ff"
-        android:visibility="gone"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_praise_intera_barrage_item_content"
