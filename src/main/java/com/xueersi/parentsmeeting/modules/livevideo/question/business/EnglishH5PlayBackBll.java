@@ -292,6 +292,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 type = questionEntity.getReleaseInfos().get(0).getType();
                 isVoices = questionEntity.getReleaseInfos().get(0).getIsVoice();
                 assess = questionEntity.getReleaseInfos().get(0).getAssess_ref();
+                videoQuestionLiveEntity.id = questionEntity.getReleaseInfos().get(0).getId();
             }
             if ("17".equals(type)) {
                 videoQuestionLiveEntity.setUrl(buildCourseH5Url(getTestIdS(testIds)));
