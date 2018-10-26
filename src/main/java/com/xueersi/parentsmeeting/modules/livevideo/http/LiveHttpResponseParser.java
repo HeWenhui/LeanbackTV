@@ -5,6 +5,7 @@ import android.content.Context;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
@@ -295,7 +296,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             getInfo.setSpeechEvalUrl(data.optString("speechEvalUrl", "https://live.xueersi.com/Live/speechEval/"));
             getInfo.setUrlClick(data.optInt("urlClick", 0));
-            getInfo.setAllowLinkMic(data.optInt("allowLinkMic", 1) == 1);
             getInfo.setStuLinkMicNum(data.optInt("stuLinkMicNum", 0));
             getInfo.setTestPaperUrl(data.optString("testPaperUrl", LiveVideoConfig.URL_LIVE_MULTI_TEST));
             getInfo.setBlockChinese(data.optInt("blockChinese", 0) == 1);
@@ -310,7 +310,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 totalOpeningLength.speakingNum = getTotalOpeningLength.optInt("speaking_num", 0);
             }
             getInfo.setTotalOpeningLength(totalOpeningLength);
-            getInfo.setPattern(data.optInt("pattern", 1));
+
+            // TODO: 2018/10/23 测试代码   当上线时需打开下面代码
+            //getInfo.setPattern(data.optInt("pattern", 1));
+            //getInfo.setAllowLinkMic(data.optInt("allowLinkMic", 1) == 1);
+
+            getInfo.setPattern(HalfBodyLiveConfig.LIVE_TYPE_HALFBODY);
+            getInfo.setAllowLinkMic(false);
+
             getInfo.setRequestTime(data.optString("requestTime"));
             //解析学科id
             if (data.has("subject_ids")) {
