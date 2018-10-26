@@ -177,7 +177,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new SpeechFeedBackIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new SpeechCollectiveIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new LiveRemarkIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));

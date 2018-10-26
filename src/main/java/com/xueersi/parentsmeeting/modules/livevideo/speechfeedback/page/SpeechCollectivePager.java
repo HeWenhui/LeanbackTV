@@ -44,12 +44,13 @@ public class SpeechCollectivePager extends BasePager {
     public void initData() {
         int colors[] = {0x19ffe4aa, 0x32ffe4aa, 0x64ffe4aa, 0x96ffe4aa, 0xFFffe4aa};
         vwvSpeectevalWave.setColors(colors);
-        vwvSpeectevalWave.setBackColor(Color.TRANSPARENT);
+//        vwvSpeectevalWave.setBackColor(Color.TRANSPARENT);
         vwvSpeectevalWave.setIsOnTop(false);
-        vwvSpeectevalWave.setBackColor(Color.parseColor("#a84300"));
+//        vwvSpeectevalWave.setBackColor(Color.parseColor("#a84300"));
         int waveWidth = (int) (SizeUtils.Dp2Px(mContext, 70) * 18f / 57f);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vwvSpeectevalWave.getLayoutParams();
         layoutParams.width = waveWidth;
+        layoutParams.height = waveWidth;
         layoutParams.gravity = Gravity.CENTER;
         vwvSpeectevalWave.setLayoutParams(layoutParams);
 
