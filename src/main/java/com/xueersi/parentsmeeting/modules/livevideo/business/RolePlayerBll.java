@@ -204,10 +204,13 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         }else{
             requestTestInfos();
         }
-        mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo);
-        mRolePlayerPager.initData();
-        if (bottomContent != null) {
-            bottomContent.addView(mRolePlayerPager.getRootView());
+        logger.d( "创建了原生页面");
+        if(mRolePlayerPager == null){
+            mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo);
+            mRolePlayerPager.initData();
+            if (bottomContent != null) {
+                bottomContent.addView(mRolePlayerPager.getRootView());
+            }
         }
         //用户弹出答题框
         logger.i( "用户弹出答题框,记录日志");
@@ -272,7 +275,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 关掉当前页面
      */
     public void closeCurPage() {
+        logger.i( "onStopQuestion 关闭当前页面 "+bottomContent+":"+mRolePlayerPager);
         if (bottomContent != null && mRolePlayerPager != null) {
+            logger.i( "onStopQuestion 关闭当前页面 ");
             bottomContent.removeView(mRolePlayerPager.getRootView());
             mRolePlayerPager.onDestroy();
             mRolePlayerPager = null;
@@ -312,6 +317,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     bottomContent.removeView(mRolePlayerPager.getRootView());
                     mRolePlayerPager.onDestroy();
                     mRolePlayerPager = null;
+                    logger.d( "移除了原生页面");
                 }
             }
         });
@@ -331,7 +337,6 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             mWebSocket.close();
             mWebSocket = null;
         }
-
     }
 
 
@@ -967,4 +972,11 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     }
 
 
+    public RolePlayerPager getRolePlayPager() {
+        return mRolePlayerPager;
+    }
+
+    public RelativeLayout getBottomView() {
+        return bottomContent;
+    }
 }

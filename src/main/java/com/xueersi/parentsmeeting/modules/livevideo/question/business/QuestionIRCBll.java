@@ -207,6 +207,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             videoQuestionLiveEntity.answer = onlineTechObj.optString("answer");
                             videoQuestionLiveEntity.speechContent = onlineTechObj.optString("answer");
                             videoQuestionLiveEntity.type = onlineTechObj.optString("ptype");
+                            videoQuestionLiveEntity.num = 1;
                             if("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)){
                                 videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(onlineTechObj.optJSONArray("id")),videoQuestionLiveEntity.type));
                                 videoQuestionLiveEntity.isAllow42 = "0";
@@ -289,31 +290,41 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
 
             if (liveTopic.getVideoQuestionLiveEntity() != null) {
+                logger.e("======>QuestionIRCBlle:" + "走了错误的逻辑");
                 if (mQuestionAction != null) {
+
+                    VideoQuestionLiveEntity videoQuestionLiveEntity =liveTopic.getVideoQuestionLiveEntity();
+
+                    JSONObject topicObj = jsonObject.optJSONObject("topic");
+                    videoQuestionLiveEntity.roles = topicObj.optString("roles");
+                    videoQuestionLiveEntity.id = topicObj.optString("id");
+
                     //解决，老师发题后，学生后进来，无法进入roleplay的问题
                     //人机的回调
                     if (rolePlayMachineAction == null) {
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
                         rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
                     }
-
+                    mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction);
                     //多人的回调
                     if (rolePlayAction == null) {
-                        RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
-                        mQuestionAction.setRolePlayAction(rolePlayerBll);
-                        rolePlayAction = rolePlayerBll;
+                            RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
+                            rolePlayAction = rolePlayerBll;
                     }
-                    mQuestionAction.showQuestion(liveTopic.getVideoQuestionLiveEntity());
+                    mQuestionAction.setRolePlayAction(rolePlayAction);
+
+
+                    mQuestionAction.showQuestion(videoQuestionLiveEntity);
                     if (mAnswerRankBll != null) {
-                        mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
+                        mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                     }
                     if (mLiveAutoNoticeBll != null) {
-                        mLiveAutoNoticeBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
-                        mLiveAutoNoticeBll.setSrcType(liveTopic.getVideoQuestionLiveEntity().srcType);
+                        mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                        mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
                     }
                 }
             } else {
+                logger.e("======>QuestionIRCBlle:" + "正常的逻辑");
                 if (mQuestionAction != null) {
                     mQuestionAction.showQuestion(null);
                 }
@@ -388,6 +399,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     if (rolePlayMachineAction == null) {
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
                         mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                        rolePlayMachineAction = rolePlayerBll;
                     }
 
                 }
@@ -405,6 +417,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 videoQuestionLiveEntity.time = object.optDouble("time");
                 videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay");
                 videoQuestionLiveEntity.speechContent = object.optString("answer");
+                videoQuestionLiveEntity.num = 1;
                 videoQuestionLiveEntity.setNewArtsCourseware(true);
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);

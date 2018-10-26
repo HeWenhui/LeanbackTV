@@ -8,6 +8,8 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -22,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PraiseMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ArtsPraiseHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
@@ -38,6 +41,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -69,6 +73,12 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     private Timer timer;
     private int goldNum;
 
+    //礼物数量统计
+    StableLogHashMap logHashMap = new StableLogHashMap("pib_giftCount");
+
+    //统计埋点
+    private Map<String, String> userLogMap = new HashMap<String, String>();
+
 
     public PraiseInteractionBll(Context context, LiveBll2 liveBll) {
         super((Activity) context, liveBll);
@@ -89,7 +99,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         params.leftMargin = LiveVideoPoint.getInstance().x2;
-        mRootView.addView(rlPraiseContentView,0, params);
+        mRootView.addView(rlPraiseContentView, 0, params);
     }
 
     private class SpecailGiftTimerTask extends TimerTask {
@@ -123,6 +133,12 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
      */
     private void openPraise() {
         if (!isOpen) {
+            userLogMap.clear();
+            userLogMap.put("openPraise", "goldnum=" + goldNum);
+            logHashMap.put("pysical", String.valueOf(0));
+            logHashMap.put("chemistry", String.valueOf(0));
+            logHashMap.put("math", String.valueOf(0));
+            mHandler.removeCallbacks(delayRemoveRunalbe);
             isOpen = true;
             praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll);
             rlPraiseContentView.removeAllViews();
@@ -132,7 +148,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             params.rightMargin = rightMargin;
             rlPraiseContentView.addView(praiseInteractionPager.getRootView(), params);
 
-            praiseInteractionPager.startEnterStarAnimation();
+            praiseInteractionPager.openPraise();
 
             timer = new Timer(true);
             timer.schedule(new SpecailGiftTimerTask(), 5000, 5000);
@@ -243,6 +259,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent.OnGetGoldUpdateEvent event) {
         if (!TextUtils.isEmpty(event.goldNum)) {
+            userLogMap.put("reciveGoldNum", "goldnum=" + goldNum);
             goldNum = Integer.valueOf(event.goldNum);
             if (praiseInteractionPager != null) {
                 praiseInteractionPager.setGoldNum(goldNum);
@@ -254,7 +271,13 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     private void closePraise() {
         if (isOpen == true) {
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), this.getClass().getSimpleName(),
+                    userLogMap);
             isOpen = false;
+            logHashMap.getData().clear();
+            otherSpecialGiftStack.clear();
+            otherPraiseStack.clear();
+            mySpecialGiftStack.clear();
             if (timer != null) {
                 timer.cancel();
             }
@@ -290,16 +313,17 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         EventBus.getDefault().unregister(this);
     }
 
+    private Runnable delayRemoveRunalbe = new Runnable() {
+        @Override
+        public void run() {
+            rlPraiseContentView.removeAllViews();
+        }
+    };
 
     public void closePager() {
         if (rlPraiseContentView != null) {
             praiseInteractionPager.closePraise();
-            rlPraiseContentView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    rlPraiseContentView.removeAllViews();
-                }
-            }, 1000);
+            mHandler.postDelayed(delayRemoveRunalbe, 1000);
         }
     }
 
@@ -320,18 +344,33 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     }
 
     @Override
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
+        super.onModeChange(oldMode, mode, isPresent);
+        logger.d("onModeChange oldMode=" + oldMode + ",mode=" + mode);
+        rlPraiseContentView.post(new Runnable() {
+            @Override
+            public void run() {
+                closePraise();
+            }
+        });
+    }
+
+    @Override
     public int[] getNoticeFilter() {
         return noticeCodes;
     }
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        logger.d("onNotice data=" + data);
+        logger.d("onNotice data=" + data + ",mode=" + mGetInfo.getMode());
 
         switch (type) {
             case XESCODE.PRAISE_SWITCH:
                 String from = data.optString("from");
                 final boolean open = data.optBoolean("open");
+                if (isFilterMessage(from)) {
+                    return;
+                }
                 rlPraiseContentView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -366,13 +405,8 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-        logger.d("onTopic message=" + jsonObject);
+        logger.d("onTopic message=" + jsonObject + ",mode=" + mGetInfo.getMode());
         //如果是切流，原来模式是主讲，需要主动关闭点赞功能
-        if (modeChange) {
-            if (LiveTopic.MODE_TRANING.equals(liveTopic.getMode())) {
-                closePraise();
-            }
-        }
         LiveTopic.RoomStatusEntity mainRoomstatus = null;
         if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
             mainRoomstatus = liveTopic.getMainRoomstatus();
@@ -449,13 +483,35 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                     praiseMessageEntity.setGiftType(jsonObject.optInt("value"));
                     int giftType = praiseMessageEntity.getGiftType();
                     String messageContent = "";
+                    Map<String, String> data = logHashMap.getData();
                     if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_PHYSICAL) {
                         messageContent = praiseMessageEntity.getUserName() + "同学给老师点亮了星空";
+                        if (data.containsKey("pysical")) {
+                            String pysical = data.get("pysical");
+                            int pysicalInt = Integer.valueOf(pysical);
+                            logHashMap.put("pysical", String.valueOf(++pysicalInt));
+                        } else {
+                            logHashMap.put("pysical", String.valueOf(1));
+                        }
                     } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_CHEMISTRY) {
                         messageContent = praiseMessageEntity.getUserName() + "同学送老师一瓶魔法水";
+                        if (data.containsKey("chemistry")) {
+                            String chemistry = data.get("chemistry");
+                            int chemistryInt = Integer.valueOf(chemistry);
+                            logHashMap.put("chemistry", String.valueOf(++chemistryInt));
+                        } else {
+                            logHashMap.put("chemistry", String.valueOf(1));
+                        }
 
                     } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_MATH) {
                         messageContent = praiseMessageEntity.getUserName() + "同学为老师放飞了气球";
+                        if (data.containsKey("math")) {
+                            String math = data.get("math");
+                            int mathInt = Integer.valueOf(math);
+                            logHashMap.put("math", String.valueOf(++mathInt));
+                        } else {
+                            logHashMap.put("math", String.valueOf(1));
+                        }
                     }
                     praiseMessageEntity.setMessageContent(messageContent);
                     praiseMessageEntity.setSortKey(PraiseMessageEntity.SORT_KEY_OTHER_GIFT);

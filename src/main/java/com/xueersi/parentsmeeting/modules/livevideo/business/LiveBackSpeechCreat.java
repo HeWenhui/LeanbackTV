@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -65,20 +66,19 @@ public class LiveBackSpeechCreat implements BaseSpeechCreat {
     public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity
             videoQuestionLiveEntity, String testId,
                                                     SpeechEvalAction speechEvalAction, String stuCouId,RolePlayMachineBll rolePlayMachineBll) {
+        //老讲义人机走原生
+        if(!isExperience && (!TextUtils.isEmpty(videoQuestionLiveEntity.roles))){
+            RolePlayMachinePager rolePlayerPager  = new RolePlayMachinePager(context,
+                    videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                    false, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
+            return rolePlayerPager;
+        }
         wrapSpeechEvalAction.setSpeechEvalAction(speechEvalAction);
         wrapSpeechEvalAction.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
                 false, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false, livePagerBack);
         speechAssessmentPager.setIsExperience(isExperience);
-
-        if(!isExperience){
-            RolePlayMachinePager rolePlayerPager  = new RolePlayMachinePager(context,
-                    videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                    false, videoQuestionLiveEntity.nonce, wrapSpeechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
-            return rolePlayerPager;
-        }
-
         return speechAssessmentPager;
     }
 

@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,16 +18,23 @@ import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Created by linyuqiang on 2018/6/6.
@@ -118,9 +127,31 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
 //        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
 //        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
         mLogtf.d("initData:examUrl=" + examUrl);
-        wvSubjectWeb.loadUrl(examUrl);
+        LiveHttpManager liveHttpManager = new LiveHttpManager(mContext);
+        HttpRequestParams params = new HttpRequestParams();
+        liveHttpManager.sendGetNoBusiness(examUrl, params, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                logger.d("onFailure",e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String r = response.body().string();
+                logger.d("onResponse:r="+r);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        wvSubjectWeb.loadDataWithBaseURL("",r,"text/html", "UTF-8", "");
+                    }
+                });
+            }
+
+        });
+//        wvSubjectWeb.loadUrl(examUrl);
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
     }
+
 
     @android.webkit.JavascriptInterface
     private void addJavascriptInterface() {

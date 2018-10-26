@@ -221,6 +221,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             }
             break;
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
+                LiveVideoConfig.isNewArts = true;
                 Log.e("Duncan","mqtt+文科新课件平台");
                 MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
@@ -291,6 +292,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 type = questionEntity.getReleaseInfos().get(0).getType();
                 isVoices = questionEntity.getReleaseInfos().get(0).getIsVoice();
                 assess = questionEntity.getReleaseInfos().get(0).getAssess_ref();
+                videoQuestionLiveEntity.id = questionEntity.getReleaseInfos().get(0).getId();
             }
             if ("17".equals(type)) {
                 videoQuestionLiveEntity.setUrl(buildCourseH5Url(getTestIdS(testIds)));

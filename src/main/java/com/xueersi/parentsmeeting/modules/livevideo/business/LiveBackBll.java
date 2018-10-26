@@ -119,6 +119,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         islocal = intent.getBooleanExtra("islocal", false);
         pattern = intent.getIntExtra("pattern", 0);
         isExperience = intent.getBooleanExtra("isExperience", false);
+        where = intent.getStringExtra("where");
         if ("LivePlayBackActivity".equals(where)) {//直播辅导
             mLiveType = LiveVideoConfig.LIVE_TYPE_TUTORIAL;
         } else if ("PublicLiveDetailActivity".equals(where)) {//公开直播

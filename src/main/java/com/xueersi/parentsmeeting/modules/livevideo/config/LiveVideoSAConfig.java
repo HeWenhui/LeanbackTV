@@ -198,6 +198,8 @@ public class LiveVideoSAConfig {
 
         /**文科新课件平台 排名接口*/
         public String URL_ARTS_TEAM_CLASS_RANK="https://app.arts.xueersi.com/v2/LiveRank/getStuGroupTeamClassRanking";
+        /** 直播上传精彩瞬间截图接口 */
+        public String URL_LIVE_WONDER_MOMENT = HTTP_HOST + "/LiveCourse/uploadWonderfulMomentImg";
     }
 
 }

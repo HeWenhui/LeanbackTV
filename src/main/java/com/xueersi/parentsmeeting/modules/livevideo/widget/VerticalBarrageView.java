@@ -4,6 +4,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -163,6 +164,11 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
             holder.giftType.setVisibility(View.GONE);
             holder.stuName.setVisibility(View.VISIBLE);
             holder.stuName.setText(messageEntity.getUserName()+"同学:");
+            if(PraiseMessageEntity.SORT_KEY_MY_PRAISE==messageEntity.getSortKey()){
+                holder.stuName.setTextColor(Color.parseColor("#FFDD96"));
+            }else {
+                holder.stuName.setTextColor(Color.parseColor("#c3f7ff"));
+            }
         } else if (messageType == PraiseMessageEntity.TYPE_CLASS) {
             holder.typeIcon.setVisibility(View.VISIBLE);
             holder.giftType.setVisibility(View.GONE);

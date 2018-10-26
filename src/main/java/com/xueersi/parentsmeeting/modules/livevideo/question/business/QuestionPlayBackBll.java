@@ -175,8 +175,6 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                     }
                 }
 
-                //todo:
-                videoQuestionLiveEntity.roles = "test_role_name";
                 if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && ! "1".equals(videoQuestionLiveEntity.multiRolePlay) ){
                     logger.i("走人机start,拉取试题");
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
@@ -251,6 +249,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                             }
                             videoQuestionLiveEntity.id = getTestIdS(testIds);
                             videoQuestionLiveEntity.type = type;
+                            videoQuestionLiveEntity.num = 1;
                             videoQuestionLiveEntity.setIsVoice(isVoices);
                             videoQuestionLiveEntity.assess_ref = assess;
                             videoQuestionLiveEntity.speechContent = answers;
@@ -558,15 +557,6 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     private String buildRoleplayUrl(String id,String type) {
-//        StringBuilder sb = new StringBuilder();
-//        String falseStr = Base64.encodeBytes("false".getBytes());
-//        sb.append(new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_ARTS_H5_URL).append("?liveId=").append(mVideoEntity.getLiveId())
-//                .append("&testIds=").append(testIds).append("&isPlayBack=").append("2")
-//                .append("&stuCouId=").append(mVideoEntity.getStuCoulId()).append("&stuId=").append(UserBll.getInstance().getMyUserInfoEntity().getStuId())
-//                .append("&cookie=").append(AppBll.getInstance().getUserToken())
-//                .append("&stuClientPath=").append(falseStr)
-//                .append("&fontDir=").append(falseStr);
-//        return sb.toString();
         String isPlayback = "1";
         StringBuilder sb = new StringBuilder();
         String url;
