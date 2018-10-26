@@ -32,7 +32,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.MicTipPsDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.PsRaiseHandDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicTipDialog;
-import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatInter;
@@ -116,7 +115,6 @@ public class VideoChatBll implements VideoChatAction {
     private WiredHeadsetReceiver wiredHeadsetReceiver;
     private String openhandsStatus = "off";
     private String onmicStatus = "off";
-    private LiveRemarkBll mLiveRemarkBll;
     private ArrayList<VideoChatStartChange.ChatStartChange> chatStatusChanges = new ArrayList<>();
     //小英
     private boolean isSmallEnglish = false;
@@ -217,10 +215,6 @@ public class VideoChatBll implements VideoChatAction {
         }
     }
 
-    public void setLiveRemarkBll(LiveRemarkBll liveRemarkBll) {
-        mLiveRemarkBll = liveRemarkBll;
-    }
-
     private int isHasPermission() {
         int sampleRate = 48000;
         int channels = 1;
@@ -293,9 +287,6 @@ public class VideoChatBll implements VideoChatAction {
         }
         for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
             chatStatusChange.onVideoChatStartChange(true);
-        }
-        if (mLiveRemarkBll != null) {
-            mLiveRemarkBll.setOnChat(true);
         }
         if (nativeLibLoaded != 2) {
             videoChatEvent.setVolume(0, 0);
@@ -388,7 +379,7 @@ public class VideoChatBll implements VideoChatAction {
                             @Override
                             public void onPmFailure(Throwable error, String msg) {
                                 super.onPmFailure(error, msg);
-                                logger.e( "chatHandAdd:onPmFailure:responseEntity=" + msg);
+                                logger.e("chatHandAdd:onPmFailure:responseEntity=" + msg);
                             }
                         });
                         BaseApplication baseApplication = (BaseApplication) BaseApplication.getContext();
@@ -1375,9 +1366,6 @@ public class VideoChatBll implements VideoChatAction {
             AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
             if (audioRequest != null) {
                 audioRequest.release();
-            }
-            if (mLiveRemarkBll != null) {
-                mLiveRemarkBll.setOnChat(false);
             }
             for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
                 chatStatusChange.onVideoChatStartChange(false);

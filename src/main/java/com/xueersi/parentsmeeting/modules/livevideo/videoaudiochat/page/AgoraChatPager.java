@@ -12,6 +12,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -24,9 +25,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.AgoraVideoChatInter;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.widget.AgoraVolumeWaveView;
-import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.ui.widget.CircleImageView;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ import io.agora.rtc.video.VideoCanvas;
 /**
  * Created by linyuqiang on 2018/10/17.
  */
-public class AgoraChatPager extends BasePager implements VideoChatInter {
+public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     private String TAG = "AgoraChatPager";
     private LiveAndBackDebug liveBll;
     private LiveGetInfo getInfo;
@@ -53,9 +54,11 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
     private String room;
     private VideoChatEvent videoChatEvent;
     private AgoraVolumeWaveView vw_livevideo_chat_voice;
+    private boolean containMe = false;
     int stuid;
 
     public AgoraChatPager(Activity activity, LiveAndBackDebug liveBll, LiveGetInfo getInfo, VideoChatEvent videoChatEvent) {
+        logger = LoggerFactory.getLogger(TAG);
         this.activity = activity;
         this.videoChatEvent = videoChatEvent;
         this.startRemote = videoChatEvent.getStartRemote();
@@ -72,6 +75,7 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
     public View initView() {
         mView = View.inflate(activity, R.layout.pager_live_video_chat_people, null);
         vw_livevideo_chat_voice = mView.findViewById(R.id.vw_livevideo_chat_voice);
+        vw_livevideo_chat_voice.setVisibility(View.GONE);
         return mView;
     }
 
@@ -141,7 +145,7 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
 
         @Override
         public void onVolume(int volume) {
-            vw_livevideo_chat_voice.setVolume(volume/2);
+            vw_livevideo_chat_voice.setVolume(volume / 2);
         }
     };
 
@@ -168,6 +172,7 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
     @Override
     public void startRecord(String method, final String room, final String nonce, boolean video) {
         stuid = Integer.parseInt(getInfo.getStuId());
+        containMe = true;
         this.room = room;
         mWorkerThread = new WorkerThread(activity.getApplicationContext(), stuid, true);
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
@@ -184,29 +189,33 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
                 VideoChatLog.sno8(liveBll, nonce, room, joinChannel);
             }
         });
+        show();
     }
 
     @Override
     public void stopRecord() {
-        mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
-            @Override
-            public void onLevelChannel(int leaveChannel) {
-                StableLogHashMap logHashMap = new StableLogHashMap("getLeaveChannel");
-                logHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
-                if (leaveChannel != 0) {
-                    logHashMap.put("errcode", "" + leaveChannel);
+        if (mWorkerThread != null) {
+            mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
+                @Override
+                public void onLevelChannel(int leaveChannel) {
+                    StableLogHashMap logHashMap = new StableLogHashMap("getLeaveChannel");
+                    logHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
+                    if (leaveChannel != 0) {
+                        logHashMap.put("errcode", "" + leaveChannel);
+                    }
+                    liveBll.umsAgentDebugSys(eventId, logHashMap.getData());
                 }
-                liveBll.umsAgentDebugSys(eventId, logHashMap.getData());
+            });
+            mWorkerThread.eventHandler().removeEventHandler(agEventHandler);
+            mWorkerThread.exit();
+            try {
+                mWorkerThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        });
-        mWorkerThread.eventHandler().removeEventHandler(agEventHandler);
-        mWorkerThread.exit();
-        try {
-            mWorkerThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            mWorkerThread = null;
         }
-        mWorkerThread = null;
+
         if (startRemote.get()) {
             startRemote.set(false);
             videoChatEvent.rePlay(false);
@@ -215,6 +224,13 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
         if (group != null) {
             group.removeAllViews();
         }
+    }
+
+    @Override
+    public void removeMe() {
+        containMe = false;
+        stopRecord();
+        hind();
     }
 
     @Override
@@ -234,7 +250,7 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
                 CircleImageView civ_livevideo_chat_head1 = rl_livevideo_chat_head1.findViewById(R.id.civ_livevideo_chat_head1);
                 TextView tv_livevideo_chat_head1 = rl_livevideo_chat_head1.findViewById(R.id.tv_livevideo_chat_head1);
                 ImageLoader.with(activity).load(classmateEntity1.getImg()).into(civ_livevideo_chat_head1);
-                tv_livevideo_chat_head1.setText("1=林玉强" + classmateEntity1.getName());
+                tv_livevideo_chat_head1.setText(classmateEntity1.getName());
             }
         } else {
             rl_livevideo_chat_head1.setVisibility(View.VISIBLE);
@@ -244,14 +260,14 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
                 CircleImageView civ_livevideo_chat_head1 = rl_livevideo_chat_head1.findViewById(R.id.civ_livevideo_chat_head1);
                 TextView tv_livevideo_chat_head1 = rl_livevideo_chat_head1.findViewById(R.id.tv_livevideo_chat_head1);
                 ImageLoader.with(activity).load(classmateEntity1.getImg()).into(civ_livevideo_chat_head1);
-                tv_livevideo_chat_head1.setText("1=林玉强" + classmateEntity1.getName());
+                tv_livevideo_chat_head1.setText(classmateEntity1.getName() + "测试2");
             }
             {
                 ClassmateEntity classmateEntity2 = classmateEntities.get(1);
                 CircleImageView civ_livevideo_chat_head2 = rl_livevideo_chat_head1.findViewById(R.id.civ_livevideo_chat_head2);
                 TextView tv_livevideo_chat_head2 = rl_livevideo_chat_head1.findViewById(R.id.tv_livevideo_chat_head2);
                 ImageLoader.with(activity).load(classmateEntity2.getImg()).into(civ_livevideo_chat_head2);
-                tv_livevideo_chat_head2.setText("2=余婧" + classmateEntity2.getName());
+                tv_livevideo_chat_head2.setText(classmateEntity2.getName() + "测试3");
             }
         }
     }
@@ -269,4 +285,19 @@ public class AgoraChatPager extends BasePager implements VideoChatInter {
         }
     }
 
+    public void show() {
+        logger.d("show");
+        vw_livevideo_chat_voice.setVisibility(View.VISIBLE);
+    }
+
+    public void hind() {
+        logger.d("hind");
+        vw_livevideo_chat_voice.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDestroy() {
+        hind();
+        super.onDestroy();
+    }
 }

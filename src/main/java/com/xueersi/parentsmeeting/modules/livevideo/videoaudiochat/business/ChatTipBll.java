@@ -17,7 +17,6 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatInter;
@@ -27,10 +26,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page.AgoraChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatHttp;
 
 import java.util.ArrayList;
 
@@ -40,22 +37,31 @@ public class ChatTipBll {
     private RelativeLayout bottomContent;
     Handler handler = new Handler(Looper.getMainLooper());
     private LiveAndBackDebug liveAndBackDebug;
-    private VideoChatHttp videoChatHttp;
+    private VideoAudioChatHttp videoChatHttp;
     private boolean raisehand = false;
-    /** 举麦包含我 */
+    /**
+     * 举麦包含我
+     */
     private boolean containMe = false;
-    /** 连麦人数变化 */
+    /**
+     * 连麦人数变化
+     */
     private boolean classmateChange = true;
-    /** 连麦人数 */
+    /**
+     * 连麦人数
+     */
     private ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
     ViewGroup vgRaisehand;
     TextView tv_livevideo_chat_people;
     RelativeLayout rl_livevideo_content_left;
     LinearLayout ll_livevideo_chat_people;
-    /** 举手人数 */
+    /**
+     * 举手人数
+     */
     private int raiseHandCount = 0;
     private String msgFrom;
-    private VideoChatInter videoChatInter;
+    private String room;
+    private AgoraVideoChatInter videoChatInter;
     private VideoChatEvent videoChatEvent;
     private LiveGetInfo getInfo;
 
@@ -64,7 +70,7 @@ public class ChatTipBll {
         liveAndBackDebug = new ContextLiveAndBackDebug(activity);
     }
 
-    public void setVideoChatHttp(VideoChatHttp videoChatHttp) {
+    public void setVideoChatHttp(VideoAudioChatHttp videoChatHttp) {
         this.videoChatHttp = videoChatHttp;
     }
 
@@ -82,24 +88,17 @@ public class ChatTipBll {
 //        bottomContent.addView(videoChatPager.getRootView());
     }
 
-    public void onJoin(final String onmic, final String openhands, final String room, final boolean classmateChange,
-                       final
-                       ArrayList<ClassmateEntity> classmateEntities, final String from) {
-        raisehand(openhands, from, "");
-    }
-
-    public void raisehand(String status, String from, String nonce) {
+    public void raisehand(String room, String from, String nonce) {
         this.msgFrom = from;
-        logger.d("raisehand:status=" + status + ",from=" + from + ",nonce=" + nonce);
-        if ("on".equals(status)) {
-            XESToastUtils.showToast(activity, "老师开启了语音连麦，踊跃参与吧");
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    initView();
-                }
-            });
-        }
+        this.room = room;
+        logger.d("raisehand:from=" + from + ",nonce=" + nonce);
+        XESToastUtils.showToast(activity, "老师开启了语音连麦，踊跃参与吧");
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                initView();
+            }
+        });
     }
 
     public void onClassmateChange(final ArrayList<ClassmateEntity> classmateEntities) {
@@ -114,18 +113,18 @@ public class ChatTipBll {
         });
     }
 
-    public void raiseHandStatus(String status, final int num, String from) {
-        if ("on".equals(status)) {
-            raisehand = true;
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    raiseHandCount(num);
-                }
-            });
-        }
-        logger.d("raiseHandStatus:status=" + status + ",num=" + num + ",from=" + from);
-    }
+//    public void raiseHandStatus(String status, final int num, String from) {
+//        if ("on".equals(status)) {
+//            raisehand = true;
+//            handler.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    raiseHandCount(num);
+//                }
+//            });
+//        }
+//        logger.d("raiseHandStatus:status=" + status + ",num=" + num + ",from=" + from);
+//    }
 
     private void initView() {
         if (vgRaisehand != null) {
@@ -150,8 +149,17 @@ public class ChatTipBll {
 //                if (containMe) {
 //                    return;
 //                }
-                raisehand = true;
-                raisehand(msgFrom);
+                if (raisehand) {
+                    v.setBackgroundResource(R.drawable.live_task_jushou_icon_normal);
+                    raisehand(msgFrom);
+                    if (videoChatInter != null) {
+                        stopRecord();
+                    }
+                } else {
+                    v.setBackgroundResource(R.drawable.live_task_fangqi_icon_normal);
+                    videoChatHttp.giveupMicro(msgFrom);
+                }
+                raisehand = !raisehand;
             }
         });
         tv_livevideo_chat_people = vgRaisehand.findViewById(R.id.tv_livevideo_chat_people);
@@ -163,9 +171,17 @@ public class ChatTipBll {
                 if (rl_livevideo_content_left.getVisibility() == View.VISIBLE) {
                     iv_livevideo_chat_small.setImageResource(R.drawable.live_task_zuo_icon_normal);
                     rl_livevideo_content_left.setVisibility(View.GONE);
+                    if (videoChatInter instanceof AgoraChatPager) {
+                        AgoraChatPager agoraChatPager = (AgoraChatPager) videoChatInter;
+                        agoraChatPager.hind();
+                    }
                 } else {
                     iv_livevideo_chat_small.setImageResource(R.drawable.live_task_you_icon_normal);
                     rl_livevideo_content_left.setVisibility(View.VISIBLE);
+                    if (videoChatInter instanceof AgoraChatPager) {
+                        AgoraChatPager agoraChatPager = (AgoraChatPager) videoChatInter;
+                        agoraChatPager.show();
+                    }
                 }
 //                bottomContent.removeView(vgRaisehand);
 //
@@ -206,7 +222,7 @@ public class ChatTipBll {
                 String nonce = StableLogHashMap.creatNonce();
                 VideoChatLog.sno4(liveAndBackDebug, nonce);
                 raisehand = true;
-                videoChatHttp.requestMicro(nonce, from);
+                videoChatHttp.requestMicro(nonce, room, from);
                 videoChatHttp.chatHandAdd(new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -231,48 +247,58 @@ public class ChatTipBll {
         runnable.run();
     }
 
-    public void requestAccept(String from, String nonce) {
-        logger.d("requestAccept:from=" + from + ",nonce=" + nonce);
-        containMe = true;
+    public void startMicro(final String nonce, final String room, String from, final boolean contain) {
+        logger.d("startMicro:nonce=" + nonce + ",from=" + from);
+        if (contain) {
+            raisehand = true;
+        }
         handler.post(new Runnable() {
             @Override
             public void run() {
-                initView();
-                tv_livevideo_chat_people.setText("举手成功，已进入队列");
+                startRecord(room, nonce, contain);
             }
         });
     }
 
-    public void startMicro(String status, final String nonce, boolean contain, final String room, String from) {
-        logger.d("startMicro:status=" + status + ",nonce=" + nonce + ",contain=" + contain + ",from=" + from);
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                startRecord(room, nonce);
-            }
-        });
-    }
-
-    public void startRecord(final String room, final String nonce) {
+    public void startRecord(final String room, final String nonce, boolean contain) {
         if (videoChatInter != null) {
+            if (contain) {
+                videoChatInter.startRecord("startRecord", room, nonce, false);
+            } else {
+                videoChatInter.removeMe();
+            }
             videoChatInter.updateUser(classmateChange, classmateEntities);
             return;
         }
         initView();
         videoChatInter = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent);
-        videoChatInter.startRecord("startRecord", room, nonce, false);
+        if (contain) {
+            videoChatInter.startRecord("startRecord", room, nonce, false);
+        }
         videoChatInter.updateUser(classmateChange, classmateEntities);
         ll_livevideo_chat_people.addView(videoChatInter.getRootView(), RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
     }
 
     public void stopRecord() {
-        if (videoChatInter != null) {
-            videoChatInter.stopRecord();
-            AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
-            if (audioRequest != null) {
-                audioRequest.release();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (vgRaisehand != null) {
+                    bottomContent.removeView(vgRaisehand);
+                    vgRaisehand = null;
+                }
+                if (videoChatInter != null) {
+                    if (videoChatInter instanceof AgoraChatPager) {
+                        AgoraChatPager agoraChatPager = (AgoraChatPager) videoChatInter;
+                        agoraChatPager.onDestroy();
+                        if (ll_livevideo_chat_people != null) {
+                            ll_livevideo_chat_people.removeView(agoraChatPager.getRootView());
+                        }
+                    }
+                    videoChatInter.stopRecord();
+                    videoChatInter = null;
+                }
             }
-
-        }
+        });
     }
 }

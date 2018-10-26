@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.permission.PermissionItem;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
@@ -21,13 +22,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatInter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page.AgoraChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStartChange;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 
@@ -44,46 +43,68 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     private String eventId = LiveVideoConfig.LIVE_LINK_MIRCO;
     private Activity activity;
     private VideoChatEvent videoChatEvent;
-    private VideoChatHttp videoChatHttp;
+    private VideoAudioChatHttp videoChatHttp;
     private LiveAndBackDebug liveAndBackDebug;
     private LiveGetInfo getInfo;
     private boolean raisehand = false;
-    /** 暂时没用 */
+    /**
+     * 暂时没用
+     */
     private int times = 0;
     private LogToFile mLogtf;
     private long startTime;
     private VideoChatInter videoChatInter;
     private ChatTipBll chatTipBll;
     private RelativeLayout bottomContent;
-    /** 麦克风权限 */
+    /**
+     * 麦克风权限
+     */
     private boolean isHasPermission = true;
-    /** 举麦权限提示 */
+    /**
+     * 举麦权限提示
+     */
     private boolean permissionPrompt = false;
-    /** 举麦失败 */
+    /**
+     * 举麦失败
+     */
     private boolean isFail = false;
     private boolean isSuccess = false;
-    /** 举麦包含我 */
+    /**
+     * 举麦包含我
+     */
     private boolean containMe = false;
-    /** 连麦状态 */
+    /**
+     * 连麦状态
+     */
     private String onMic = "off";
-    /** 房间号 */
+    /**
+     * 房间号
+     */
     private String room = "";
     /*举麦耳机提示*/
     private boolean headsetPrompt = false;
-    /** 连麦人数 */
-    private ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
-    /** 连麦人数变化 */
+    /**
+     * 连麦人数
+     */
+    private ArrayList<ClassmateEntity> allClassmateEntities = new ArrayList<>();
+    /**
+     * 连麦人数变化
+     */
     private boolean classmateChange = true;
-    /** 举手人数 */
+    /**
+     * 举手人数
+     */
     private int raiseHandCount = 0;
-    /** 举手来源 */
+    /**
+     * 举手来源
+     */
     private String from = "";
-    /** 接麦耳机判断 */
+    /**
+     * 接麦耳机判断
+     */
     private boolean hasWiredHeadset = false;
     private WiredHeadsetReceiver wiredHeadsetReceiver;
-    private String openhandsStatus = "off";
     private String onmicStatus = "off";
-    private LiveRemarkBll mLiveRemarkBll;
     private ArrayList<VideoChatStartChange.ChatStartChange> chatStatusChanges = new ArrayList<>();
 
     public VideoAudioChatBll(Activity activity, VideoChatEvent videoChatEvent) {
@@ -106,7 +127,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
         chatTipBll.setVideoChatEvent(videoChatEvent);
     }
 
-    public void setVideoChatHttp(VideoChatHttp videoChatHttp) {
+    public void setVideoChatHttp(VideoAudioChatHttp videoChatHttp) {
         this.videoChatHttp = videoChatHttp;
         chatTipBll.setVideoChatHttp(videoChatHttp);
     }
@@ -133,10 +154,6 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
 //        startRecord();
     }
 
-    public void setLiveRemarkBll(LiveRemarkBll liveRemarkBll) {
-        mLiveRemarkBll = liveRemarkBll;
-    }
-
     private class WiredHeadsetReceiver extends BroadcastReceiver {
         private static final int STATE_UNPLUGGED = 0;
         private static final int STATE_PLUGGED = 1;
@@ -157,7 +174,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
 
     public void startRecord(final String room, final String nonce) {
         if (videoChatInter != null) {
-            videoChatInter.updateUser(classmateChange, classmateEntities);
+            videoChatInter.updateUser(classmateChange, allClassmateEntities);
             return;
         }
 
@@ -176,7 +193,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                 }
             }
         };
-        checkPermissionUnPerList(new OnJoinPermissionFinish(onMic, openhandsStatus, room, from, containMe, runnable));
+        checkPermissionUnPerList(new OnJoinPermissionFinish(onMic, room, from, containMe, runnable));
         if (isHasPermission) {
             runnable.run();
         }
@@ -189,41 +206,28 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     }
 
     @Override
-    public void raisehand(String status, String from, String nonce) {
+    public void raisehand(String status, String room, String from, String nonce, int msgFrom) {
         logger.d("raisehand:status=" + status + ",from=" + from + ",nonce=" + nonce);
-        openhandsStatus = status;
+        onmicStatus = status;
         this.from = from;
-        chatTipBll.raisehand(status, from, nonce);
-    }
-
-    @Override
-    public void raiseHandStatus(String status, int num, String from) {
-        logger.d("raiseHandStatus:status=" + status + ",num=" + num + ",from=" + from);
-        this.from = from;
-        openhandsStatus = status;
         if ("on".equals(status)) {
-            raisehand = true;
+            chatTipBll.raisehand(room, from, nonce);
+        } else {
+            chatTipBll.stopRecord();
         }
-        chatTipBll.raiseHandStatus(status, num, from);
     }
 
     @Override
-    public void onJoin(final String onmic, final String openhands, final String room, final boolean classmateChange,
+    public void onJoin(final String onmic, final String room, final boolean classmateChange,
                        final
                        ArrayList<ClassmateEntity> classmateEntities, final String from) {
         boolean change = false;
-        boolean openhandsStatusChange = false;
         boolean containMeChange = false;
         boolean onMicChange = false;
         if (!onMic.equals(onmic)) {
             change = true;
             onMicChange = true;
             onMic = onmic;
-        }
-        if (!openhandsStatus.equals(openhands)) {
-            change = true;
-            openhandsStatusChange = true;
-            openhandsStatus = openhands;
         }
         if (classmateChange) {
             change = true;
@@ -232,15 +236,29 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
             change = true;
             this.room = room;
         }
-        if (!this.from.equals(from)) {
-            change = true;
-            this.from = from;
-        }
+//        if (!this.from.equals(from)) {
+//            change = true;
+//            this.from = from;
+//        }
+
         boolean contain = false;
+        ArrayList<ClassmateEntity> oldclassmateEntities = new ArrayList<>(allClassmateEntities);
+        allClassmateEntities.clear();
         for (ClassmateEntity classmateEntity : classmateEntities) {
-            if (classmateEntity.getId().equals(getInfo.getStuId())) {
+            int index = oldclassmateEntities.indexOf(classmateEntity);
+            if (index != -1) {
+                ClassmateEntity oldClassmateEntity = oldclassmateEntities.get(index);
+                if (StringUtils.isEmpty(classmateEntity.getName())) {
+                    classmateEntity.setName(oldClassmateEntity.getName());
+                }
+                if (StringUtils.isEmpty(classmateEntity.getImg())) {
+                    classmateEntity.setImg(oldClassmateEntity.getImg());
+                }
+            }
+            allClassmateEntities.add(classmateEntity);
+            if ((classmateEntity.getId() + "").equals(getInfo.getStuId())) {
                 contain = true;
-                break;
+//                break;
             }
         }
         if (containMe != contain) {
@@ -248,25 +266,45 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
             change = true;
             containMeChange = true;
         }
-        String log = "onmic=" + onmic + ",openhands=" + openhands + ",room=" + room + ",classmateChange=" + classmateChange + ",from=" + from;
+        String log = "onmic=" + onmic + ",room=" + room + ",containMeChange=" + containMeChange + ",from=" + from;
         if (change) {
             mLogtf.d("onJoin1:" + log);
-            if ("off".equals(onMic)) {
-                if (containMeChange) {
-                    requestAccept(from, "");
-                } else {
-                    if (openhandsStatusChange) {
-                        chatTipBll.raisehand(openhandsStatus, from, "");
+//            if (onMicChange) {
+//                raisehand(onmic, room, from, "", 2);
+//            }
+            if (containMeChange && "on".equals(onMic)) {
+                if (contain) {
+                    getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
+                    AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+                    if (audioRequest != null) {
+                        audioRequest.request(null);
                     }
+                    chatTipBll.startMicro("", room, from, true);
+                } else {
+                    AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+                    if (audioRequest != null) {
+                        audioRequest.release();
+                    }
+                    chatTipBll.startMicro("", room, from, false);
+                }
+                for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
+                    chatStatusChange.onVideoChatStartChange(contain);
                 }
             } else {
                 if (onMicChange) {
-                    startMicro(onMic, "", contain, room, from);
+                    if ("on".equals(onMic)) {
+                        chatTipBll.raisehand("", from, "");
+                    } else {
+                        chatTipBll.stopRecord();
+                    }
                 }
             }
-            if (classmateChange) {
+            if ("on".equals(onMic)) {
                 chatTipBll.onClassmateChange(classmateEntities);
             }
+//            if (classmateChange) {
+//                chatTipBll.onClassmateChange(classmateEntities);
+//            }
 //            chatTipBll.onJoin(onmic, openhands, room, classmateChange, classmateEntities, from);
         } else {
             logger.d("onJoin2:" + log);
@@ -274,33 +312,73 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     }
 
     @Override
-    public void requestAccept(String from, String nonce) {
-        logger.d("requestAccept:from=" + from + ",nonce=" + nonce);
-        containMe = true;
-        chatTipBll.requestAccept(from, nonce);
+    public void onStuMic(String status, final String room, ArrayList<ClassmateEntity> classmateEntities, final String from, int msgFrom) {
+        logger.d("onStuMic:status=" + status + ",room=" + room + ",size=" + classmateEntities.size() + ",msgFrom=" + msgFrom);
+        onMic = status;
+        this.room = room;
+        boolean contain = false;
+        ArrayList<ClassmateEntity> oldclassmateEntities = new ArrayList<>(allClassmateEntities);
+        allClassmateEntities.clear();
+        for (ClassmateEntity classmateEntity : classmateEntities) {
+            int index = oldclassmateEntities.indexOf(classmateEntity);
+            if (index != -1) {
+                ClassmateEntity oldClassmateEntity = oldclassmateEntities.get(index);
+                if (StringUtils.isEmpty(classmateEntity.getName())) {
+                    classmateEntity.setName(oldClassmateEntity.getName());
+                }
+                if (StringUtils.isEmpty(classmateEntity.getImg())) {
+                    classmateEntity.setImg(oldClassmateEntity.getImg());
+                }
+            }
+            allClassmateEntities.add(classmateEntity);
+            if ((classmateEntity.getId() + "").equals(getInfo.getStuId())) {
+                contain = true;
+//                break;
+            }
+        }
+        boolean containMeChange = false;
+        if (containMe != contain) {
+            containMe = contain;
+            containMeChange = true;
+        }
+        if (containMeChange) {
+            if (containMe) {
+                getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
+                AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+                if (audioRequest != null) {
+                    audioRequest.request(null);
+                }
+                chatTipBll.startMicro("", room, from, true);
+            } else {
+                AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+                if (audioRequest != null) {
+                    audioRequest.release();
+                }
+                chatTipBll.startMicro("", room, from, false);
+            }
+        }
+        chatTipBll.onClassmateChange(classmateEntities);
     }
 
-    @Override
-    public void startMicro(String status, String nonce, boolean contain, String room, String from) {
-        logger.d("startMicro:status=" + status + ",nonce=" + nonce + ",contain=" + contain + ",from=" + from);
-        getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
-        AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
-        if (audioRequest != null) {
-            audioRequest.request(null);
+    public void startMicro(String status, String nonce, boolean contain, String room, String from, int msgFrom) {
+        logger.d("startMicro:status=" + status + ",nonce=" + nonce + ",contain=" + contain + ",from=" + from + ",msgFrom=" + msgFrom);
+        if ("on".equals(status)) {
+
+        } else {
+            AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+            if (audioRequest != null) {
+                audioRequest.release();
+            }
         }
         for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
             chatStatusChange.onVideoChatStartChange(true);
         }
-        if (mLiveRemarkBll != null) {
-            mLiveRemarkBll.setOnChat(true);
-        }
-        chatTipBll.startMicro(status, nonce, contain, room, from);
-
     }
 
     @Override
-    public void quit(String status, String room, String from) {
-        logger.d("quit:status=" + status + ",room=" + room + ",from=" + from);
+    public void quit(String status, String room, String from, int msgFrom) {
+        logger.d("quit:status=" + status + ",room=" + room + ",from=" + from + ",msgFrom=" + msgFrom);
+        chatTipBll.stopRecord();
     }
 
     @Override
@@ -317,8 +395,9 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
 
     public void stopRecord() {
         chatTipBll.stopRecord();
-        if (mLiveRemarkBll != null) {
-            mLiveRemarkBll.setOnChat(false);
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
+        if (audioRequest != null) {
+            audioRequest.release();
         }
         for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
             chatStatusChange.onVideoChatStartChange(false);
@@ -372,7 +451,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
 
         @Override
         public void onFinish() {
-            if (status.equals(VideoAudioChatBll.this.openhandsStatus) && from.equals(VideoAudioChatBll.this.from)) {
+            if (status.equals(VideoAudioChatBll.this.onmicStatus) && from.equals(VideoAudioChatBll.this.from)) {
                 if (currentPermission == this) {
                     runnable.run();
                 }
@@ -387,17 +466,15 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
      */
     private class OnJoinPermissionFinish implements OnPermissionFinish {
         String onmic;
-        String openhands;
         String room;
         String from;
         boolean contain;
         Runnable runnable;
 
-        public OnJoinPermissionFinish(String onmic, String openhands, String room, String from, boolean contain,
+        public OnJoinPermissionFinish(String onmic, String room, String from, boolean contain,
                                       Runnable
                                               runnable) {
             this.onmic = onmic;
-            this.openhands = openhands;
             this.room = room;
             this.from = from;
             this.contain = contain;
@@ -407,7 +484,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
 
         @Override
         public void onFinish() {
-            if (onmic.equals(VideoAudioChatBll.this.onMic) && openhands.equals(VideoAudioChatBll.this.openhandsStatus)
+            if (onmic.equals(VideoAudioChatBll.this.onMic)
                     && room.equals(VideoAudioChatBll.this.room) && from.equals(VideoAudioChatBll.this.from) && contain ==
                     containMe) {
                 if (currentPermission2 == this) {
