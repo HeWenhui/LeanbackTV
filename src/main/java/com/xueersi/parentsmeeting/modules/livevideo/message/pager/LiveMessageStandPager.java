@@ -755,7 +755,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mData.put("liveid",getInfo.getId());
         mData.put("msgcount",String.valueOf(mMsgCount));
         mData.put("voicemsgcount",String.valueOf(mVoiceMsgCount));
-        umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_RECOG,mData);
+        umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_CHAT,mData);
     }
 
     private void initFlower() {
@@ -1667,14 +1667,14 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 XesCloudResult result = (XesCloudResult)objData[0];
                 mData.put("url",result.getHttpPath());
                 mData.put("upload","success");
-                umsAgentDebugInter(LiveVideoConfig.LIVE_SPEECH_RECOG,mData);
+                umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_CHAT,mData);
             }
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
                 mData.put("url","");
                 mData.put("upload","fail");
-                umsAgentDebugInter(LiveVideoConfig.LIVE_SPEECH_RECOG,mData);
+                umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_CHAT,mData);
             }
         });
     }

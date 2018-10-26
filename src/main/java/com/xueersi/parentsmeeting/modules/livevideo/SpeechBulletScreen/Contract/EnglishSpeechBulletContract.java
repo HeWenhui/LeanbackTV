@@ -26,9 +26,10 @@ public interface EnglishSpeechBulletContract {
          * @param name 名字
          * @param msg 内容
          * @param headImgUrl 头像Url
+         * @param isGuset true:别人发的 false:自己发的
          * @param rootView 父布局
          */
-        void receiveDanmakuMsg(String name, String msg,String headImgUrl, RelativeLayout rootView);
+        void receiveDanmakuMsg(String name, String msg,String headImgUrl,boolean isGuset, RelativeLayout rootView);
         /**
          * 表扬消息
          * @param msg 内容
@@ -42,8 +43,8 @@ public interface EnglishSpeechBulletContract {
          */
         void uploadSpeechBulletScreen(String msg, HttpCallBack requestCallBack);
         /**
-         * 获取头像url
+         * 获取voiceId
          */
-        String getHeadImgUrl();
+        String getVoiceId();
     }
 }

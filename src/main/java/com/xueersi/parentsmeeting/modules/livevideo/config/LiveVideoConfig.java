@@ -178,8 +178,10 @@ public class LiveVideoConfig {
     public static String LIVE_SPEECH_BULLETSCREEN = "voice_barrage";
     /** 直播-错误码 */
     public static String LIVE_PLAY_ERROR = "live_play_error";
-    /** 直播-语音识别*/
-    public static String LIVE_SPEECH_RECOG = "live_speech_recog";
+    /** 直播-小英语音聊天*/
+    public static String LIVE_VOICE_CHAT = "voicechat";
+    /** 直播-小英语音弹幕*/
+    public static String LIVE_VOICE_BULLET = "voicebullet";
 
     /** 体验课互动题提交答案 */
     public static String LIVE_EXPE_SUBMIT = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
