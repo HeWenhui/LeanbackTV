@@ -11,7 +11,6 @@ import android.graphics.Rect;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -49,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoView;
@@ -88,7 +88,7 @@ public class LiveRemarkBll {
     Logger logger = LoggerFactory.getLogger(TAG);
     private Timer mTimer;
     private long offSet;
-    private LiveMediaControllerBottom mLiveMediaControllerBottom;
+    private BaseLiveMediaControllerBottom mLiveMediaControllerBottom;
     private long sysTimeOffset;
     private int displayHeight;
     //    private int displayWidth;
@@ -136,7 +136,7 @@ public class LiveRemarkBll {
         initData();
     }
 
-    public void setLiveMediaControllerBottom(LiveMediaControllerBottom liveMediaControllerBottom) {
+    public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom liveMediaControllerBottom) {
         mLiveMediaControllerBottom = liveMediaControllerBottom;
 
     }
@@ -693,7 +693,8 @@ public class LiveRemarkBll {
             });
             lvPoints.setAdapter(mAdapter);
 
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(SizeUtils.Dp2Px(mContext, 278), ViewGroup.LayoutParams.MATCH_PARENT);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(SizeUtils.Dp2Px(mContext, 278),
+                    ViewGroup.LayoutParams.MATCH_PARENT);
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             //params.setMargins(0,40,0,0);
             llPoints.setPadding(20, 20, 0, 0);

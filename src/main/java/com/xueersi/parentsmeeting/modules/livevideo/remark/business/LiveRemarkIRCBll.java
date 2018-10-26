@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.SampleLiveVPlayerListener;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStartChange;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 
@@ -34,7 +35,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
     private PlayerService vPlayer;
     private LiveRemarkBll liveRemarkBll;
     LiveTextureView liveTextureView;
-    LiveMediaControllerBottom liveMediaControllerBottom;
+    BaseLiveMediaControllerBottom liveMediaControllerBottom;
     VideoView videoView;
 
     public LiveRemarkIRCBll(Activity context, LiveBll2 liveBll) {
@@ -46,7 +47,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
         super.onCreate(data);
         vPlayer = (PlayerService) data.get("vPlayer");
         this.videoView = (VideoView) data.get("videoView");
-        LiveMediaControllerBottom controllerBottom = (LiveMediaControllerBottom) data.get("liveMediaControllerBottom");
+        BaseLiveMediaControllerBottom controllerBottom = (BaseLiveMediaControllerBottom) data.get("liveMediaControllerBottom");
         this.liveMediaControllerBottom = controllerBottom;
     }
 
