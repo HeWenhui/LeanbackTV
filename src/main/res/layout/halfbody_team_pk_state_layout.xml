@@ -1,10 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="220dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="14dp"
-    android:paddingRight="14dp">
+   >
 
 
     <RelativeLayout
@@ -86,10 +85,10 @@
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
             android:id="@id/tv_teampk_pkstate_coin_num"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="00989"
+            android:text="00989000"
             android:layout_marginLeft="3dp"
             android:layout_toRightOf="@id/iv_teampk_pkstate_coin"
             android:textSize="9sp" />
