@@ -21,9 +21,11 @@ public class LiveVideoConfig {
     /** 公开直播领取金币 */
     public final static String URL_LIVE_LECTURE_GOLD = LiveVideoConfig.HTTP_HOST + "/LiveLecture/receiveGold";
     /** 直播辅导献花 */
-    public final static String URL_LIVE_TUTORIAL_PRAISE_TEACHER = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/praiseTeacher";
+    public final static String URL_LIVE_TUTORIAL_PRAISE_TEACHER = LiveVideoConfig.HTTP_HOST +
+            "/LiveTutorial/praiseTeacher";
     /** 直播讲座献花 */
-    public final static String URL_LIVE_LECTURE_PRAISE_TEACHER = LiveVideoConfig.HTTP_HOST + "/LiveLecture/praiseTeacher";
+    public final static String URL_LIVE_LECTURE_PRAISE_TEACHER = LiveVideoConfig.HTTP_HOST +
+            "/LiveLecture/praiseTeacher";
     /** 得到语音评测试题 */
     public final static String URL_LIVE_GET_SPEECHEVAL = LiveVideoConfig.HTTP_HOST + "/StudyCenter/getSpeechEvalInfo";
     /** 发送语音评测答案 */
@@ -31,7 +33,8 @@ public class LiveVideoConfig {
     public final static String URL_LIVE_TUTORIAL_SUBMIT_TEST_ANSWER = LiveVideoConfig.HTTP_HOST +
             "/LiveTutorial/submitTestAnswer";
     /** 公开直播提交测试题 */
-    public final static String URL_LIVE_LECTURE_SUBMIT_TEST_ANSWER = LiveVideoConfig.HTTP_HOST + "/LiveLecture/submitTestAnswer";
+    public final static String URL_LIVE_LECTURE_SUBMIT_TEST_ANSWER = LiveVideoConfig.HTTP_HOST +
+            "/LiveLecture/submitTestAnswer";
 
     /** 播放器异常日志 */
     public final static String URL_LIVE_ON_LOAD_LOGS = "https://netlive.xesimg.com/10011.gif";
@@ -72,7 +75,8 @@ public class LiveVideoConfig {
     /** 获取学习报告-讲座 */
     public final static String URL_LIVE_GET_FEED_BACK = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getFeedback";
     /** 获取红包金币 */
-    public final static String URL_STUDY_GET_RED_PACKET = LiveVideoConfig.HTTP_HOST + "/MyCourse/receiveLiveTutoringGold";
+    public final static String URL_STUDY_GET_RED_PACKET = LiveVideoConfig.HTTP_HOST +
+            "/MyCourse/receiveLiveTutoringGold";
     /** 直播回放提交答案地址 */
     public final static String URL_STUDY_SAVE_TEST_RECORD = LiveVideoConfig.HTTP_HOST +
             "/MyCourse/submitLiveTutoringTestAnswer";
@@ -186,15 +190,18 @@ public class LiveVideoConfig {
     /**体验课主观题提交答案*/
 //    public static String LIVE_EXPE_SUBMIT_SUBJECT = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/subjectiveSubmit";
     /** 体验课非h5语音互动题提交答案*/
-//    public static String URL_EXPE_SUBMIT_SPEECHEVAL = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/submitSpeechEval";
+//    public static String URL_EXPE_SUBMIT_SPEECHEVAL = AppConfig.HTTP_HOST_TEAMPK +
+// "/science/AutoLive/submitSpeechEval";
     /** 体验课h5语音评测提交答案*/
-//    public static String URL_EXPE_SUBMIT_TEST_H5_ANSWER = AppConfig.HTTP_HOST_TEAMPK+"/science/AutoLive/submitCourseWareH5AnswerUseVoice";
+//    public static String URL_EXPE_SUBMIT_TEST_H5_ANSWER = AppConfig
+// .HTTP_HOST_TEAMPK+"/science/AutoLive/submitCourseWareH5AnswerUseVoice";
     /** 获取标记点列表 */
     public static String URL_LIVE_GET_MARK_POINTS = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/getMarkpoint";
     /** 保存标记点 */
     public static String URL_LIVE_SET_MARK_POINTS = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/setMarkpoint";
     /** 删除标记点 */
-    public static String URL_LIVE_DELETE_MARK_POINTS = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/deleteMarkpoint";
+    public static String URL_LIVE_DELETE_MARK_POINTS = LiveVideoConfig.HTTP_HOST +
+            "/science/LiveCourse/deleteMarkpoint";
     /** 体验课播放器上传心跳时间 */
     public static String URL_EXPERIENCE_LIVE_ONLINETIME = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/visitTime";
     /** 回放式体验课上传心跳时间 */
@@ -216,20 +223,26 @@ public class LiveVideoConfig {
     /** 获取体验课聊天记录 */
     public static String URL_AUTO_LIVE_MSGS = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/getLiveCourseMsgs";
     /** 提交体验课交互记录 */
-    public static String URL_AUTO_LIVE_RECORD_INTERACT = AppConfig.HTTP_HOST_TEAMPK + "/secience/AutoLive/recordInteract";
+    public static String URL_AUTO_LIVE_RECORD_INTERACT = AppConfig.HTTP_HOST_TEAMPK +
+            "/secience/AutoLive/recordInteract";
     /** 获取讲座直播回放中更多课程的广告信息 */
     public static String URL_LEC_AD_CASE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getAdCase";
     /** 获取体验课学习报告 */
     public static String URL_AUTO_LIVE_FEAD_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/learnFeedback";
     /** 提交体验课学习反馈 */
     public static String URL_AUTO_LIVE_LEARN_FEED_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitFeedback";
+
+    public final static String STAND_EXPERIENCE_LIVE_PLAY_ERROR = "stand_experience_live_play_error";
+
     /** 理科互动题 */
     public static String URL_LIVE_MULTI_TEST = "https://live.xueersi.com/Live/getMultiTestPaper";
     /** 理科互动题-老师自传 */
     public static String URL_LIVE_TEA_UPLOAD_TEST = "https://live.xueersi.com/science/Live/teacherUploadTestForAPP/";
     /** 语文主观题获取答案的地址 */
-    public static String URL_NEWARTS_SUBMITRESULT_H5 = "https://app.arts.xueersi.com/v2/SubjectiveTest/subjectiveTestAnswerResult";
-//    public static String URL_NEWARTS_SUBMITRESULT_H5 = "https://laoshi.xueersi.com/libarts/v2/SubjectiveTest/subjectiveTestAnswerResult";
+    public static String URL_NEWARTS_SUBMITRESULT_H5 = "https://app.arts.xueersi" +
+            ".com/v2/SubjectiveTest/subjectiveTestAnswerResult";
+//    public static String URL_NEWARTS_SUBMITRESULT_H5 = "https://laoshi.xueersi
+// .com/libarts/v2/SubjectiveTest/subjectiveTestAnswerResult";
     /** 直播云平台日志统计 */
     public static String URL_CDN_LOG = "http://log.xescdn.com/log";
     public static String URL_CDN_LOG1 = "http://log1.xescdn.com/log";
@@ -251,17 +264,17 @@ public class LiveVideoConfig {
     /** 一题多发的直播回放的标识 */
     public static Boolean isMulLiveBack = false;
     /** 年级阶段的标识 */
-    /** 文科回放一发多题的标识*/
+    /** 文科回放一发多题的标识 */
     public static Boolean isNewArtsLiveBack = false;
-    /** 年级阶段的标识*/
+    /** 年级阶段的标识 */
     public static String educationstage;
     /** 一发多题的日志 */
     public static String nonce;
     /** 直播回放一发多题的拼装参数 */
     /** 直播回放一发多题的拼装参数 */
-    /** 文理科的标志*/
+    /** 文理科的标志 */
     public static Boolean isScience = false;
-    /** 直播回放一发多题的拼装参数*/
+    /** 直播回放一发多题的拼装参数 */
     // 直播回放的URL
     public static String LIVEPLAYBACKINFOS;
     // 直播回放的stuCouId
@@ -308,10 +321,12 @@ public class LiveVideoConfig {
     public static final String SP_LIVEVIDEO_MARK_POINT_COUNT = "sp_livevideo_mark_point_count";
     /** 低端设备检测 */
     public static String URL_CHECK_DEVICE = HTTP_HOST + "/Users/checkDevice";
-//    public static String URL_CHECK_DEVICE = "https://www.easy-mock.com/mock/5b57f6919ddd1140ec2eb47b/xueersi.wx.android.app" + "/Users/checkDevice";
+//    public static String URL_CHECK_DEVICE = "https://www.easy-mock.com/mock/5b57f6919ddd1140ec2eb47b/xueersi.wx
+// .android.app" + "/Users/checkDevice";
 
-    /** 文科新课件平台的标识*/
+    /** 文科新课件平台的标识 */
     public static Boolean isNewArts = false;
+
     /** 学习报告精彩瞬间 */
     public interface STUDY_REPORT {
         /** 贡献之星 */
