@@ -28,6 +28,7 @@ public class LiveHalfBodyMediaControllerBottom extends LiveStandMediaControllerB
     public LiveHalfBodyMediaControllerBottom(Context context, LiveMediaController controller, LiveMediaController
             .MediaPlayerControl player) {
         super(context, controller, player);
+
     }
 
 
