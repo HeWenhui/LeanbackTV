@@ -73,8 +73,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     private Timer timer;
     private int goldNum;
 
-    //礼物数量统计
-    StableLogHashMap logHashMap = new StableLogHashMap("pib_giftCount");
+
 
     //统计埋点
     private Map<String, String> userLogMap = new HashMap<String, String>();
@@ -135,9 +134,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
         if (!isOpen) {
             userLogMap.clear();
             userLogMap.put("openPraise", "goldnum=" + goldNum);
-            logHashMap.put("pysical", String.valueOf(0));
-            logHashMap.put("chemistry", String.valueOf(0));
-            logHashMap.put("math", String.valueOf(0));
+
             mHandler.removeCallbacks(delayRemoveRunalbe);
             isOpen = true;
             praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll);
@@ -274,7 +271,6 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), this.getClass().getSimpleName(),
                     userLogMap);
             isOpen = false;
-            logHashMap.getData().clear();
             otherSpecialGiftStack.clear();
             otherPraiseStack.clear();
             mySpecialGiftStack.clear();
@@ -483,35 +479,15 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                     praiseMessageEntity.setGiftType(jsonObject.optInt("value"));
                     int giftType = praiseMessageEntity.getGiftType();
                     String messageContent = "";
-                    Map<String, String> data = logHashMap.getData();
+
                     if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_PHYSICAL) {
                         messageContent = praiseMessageEntity.getUserName() + "同学给老师点亮了星空";
-                        if (data.containsKey("pysical")) {
-                            String pysical = data.get("pysical");
-                            int pysicalInt = Integer.valueOf(pysical);
-                            logHashMap.put("pysical", String.valueOf(++pysicalInt));
-                        } else {
-                            logHashMap.put("pysical", String.valueOf(1));
-                        }
+
                     } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_CHEMISTRY) {
                         messageContent = praiseMessageEntity.getUserName() + "同学送老师一瓶魔法水";
-                        if (data.containsKey("chemistry")) {
-                            String chemistry = data.get("chemistry");
-                            int chemistryInt = Integer.valueOf(chemistry);
-                            logHashMap.put("chemistry", String.valueOf(++chemistryInt));
-                        } else {
-                            logHashMap.put("chemistry", String.valueOf(1));
-                        }
 
                     } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_MATH) {
                         messageContent = praiseMessageEntity.getUserName() + "同学为老师放飞了气球";
-                        if (data.containsKey("math")) {
-                            String math = data.get("math");
-                            int mathInt = Integer.valueOf(math);
-                            logHashMap.put("math", String.valueOf(++mathInt));
-                        } else {
-                            logHashMap.put("math", String.valueOf(1));
-                        }
                     }
                     praiseMessageEntity.setMessageContent(messageContent);
                     praiseMessageEntity.setSortKey(PraiseMessageEntity.SORT_KEY_OTHER_GIFT);

@@ -205,7 +205,7 @@
                     android:layout_marginLeft="5dp"
                     android:drawableLeft="@drawable/livevideo_alert_gold_icon_normal"
                     android:drawablePadding="5dp"
-                    android:text="5"
+                    android:text="10"
                     android:textColor="@color/COLOR_FFFFFF"
                     android:textSize="10sp" />
 
