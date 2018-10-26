@@ -176,7 +176,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
             data.put("liveId", mLiveBll.getLiveId());
             data.put("liveType", 1);
             data.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
-            data.put("bulletId", voiceBarrageCount);
+            data.put("bulletId", voiceBarrageCount+"");
             String[] strings = msg.split(" ");
             JSONArray keywords = new JSONArray();
             for (int i = 0; i < strings.length; i++) {
