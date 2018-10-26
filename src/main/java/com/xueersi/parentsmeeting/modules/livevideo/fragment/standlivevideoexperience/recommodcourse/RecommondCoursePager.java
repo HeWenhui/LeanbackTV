@@ -286,6 +286,7 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
         SpannableString spannableString = new SpannableString("恭喜 " + userName + "购买 " + "Amazing English");
         queMessages.add(0, spannableString);
         cvbView.setOwn(true);
+        logger.i("隐藏推荐课程，左上角轮播图不隐藏");
         wholeRecommondCourseLayout.setVisibility(View.GONE);
         thumbnailRecommondCourseLayout.setVisibility(View.GONE);
     }
@@ -301,8 +302,10 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
             if (!isBuyCourseSuccess) {
                 if (isShow) {
                     mView.setVisibility(View.GONE);
+                    logger.i("试题开始，结束推荐课程弹窗");
                 } else {
                     mView.setVisibility(View.VISIBLE);
+                    logger.i("试题结束，开启推荐课程弹窗");
                 }
             }
         }

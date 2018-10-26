@@ -301,18 +301,21 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
                     //解决，老师发题后，学生后进来，无法进入roleplay的问题
                     //人机的回调
-                    if (rolePlayMachineAction == null) {
-                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                        rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
-                    }
-                    mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction);
-                    //多人的回调
-                    if (rolePlayAction == null) {
+
+                    if(!TextUtils.isEmpty( videoQuestionLiveEntity.roles)){
+                        if (rolePlayMachineAction == null) {
+                            RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                            rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
+                        }
+
+                        //多人的回调
+                        if (rolePlayAction == null) {
                             RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
                             rolePlayAction = rolePlayerBll;
+                        }
+                        mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction);
+                        mQuestionAction.setRolePlayAction(rolePlayAction);
                     }
-                    mQuestionAction.setRolePlayAction(rolePlayAction);
-
 
                     mQuestionAction.showQuestion(videoQuestionLiveEntity);
                     if (mAnswerRankBll != null) {
