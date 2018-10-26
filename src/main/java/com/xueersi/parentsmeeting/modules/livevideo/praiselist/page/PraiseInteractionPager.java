@@ -504,12 +504,12 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                 giftSendView.setVisibility(View.GONE);
             } else if (what == MESSAGE_WHAT_DELAY_CONTINUE_PRAISE) {
                 praiseNumView.setVisibility(View.GONE);
+                praiseTotalNumView.setVisibility(View.VISIBLE);
                 if (praiseTimeList.size() > 1) {
                     long lastTime = praiseTimeList.get(praiseTimeList.size() - 1);
                     long firstTime = praiseTimeList.get(0);
                     if (lastTime - firstTime > 1000) {
                         caculatePraiseTotalNumPosition();
-                        praiseTotalNumView.setVisibility(View.VISIBLE);
                         praiseTotalNumView.setText(getDisplayNum(praiseNumAmount));
                         continuePraiseNum = 0;
                         praiseTimeList.clear();
@@ -587,7 +587,6 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                     //push总数
                     praiseTimeList.clear();
                     caculatePraiseTotalNumPosition();
-                    praiseTotalNumView.setVisibility(View.VISIBLE);
                     praiseTotalNumView.setText(getDisplayNum(praiseNumAmount));
                     mPraiseInteractionBll.pushMyPraise(praiseNumAmount);
                 }
@@ -603,7 +602,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             }
         }
         praiseTimeList.add(currentPraiseTime);
-        praiseNumView.setText("+" + getDisplayNum(continuePraiseNum));
+        praiseNumView.setText(getDisplayNum(continuePraiseNum));
         praiseTotalNumView.setText(getDisplayNum(praiseNumAmount));
     }
 
