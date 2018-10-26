@@ -97,6 +97,7 @@ public class LiveHalfBodyAchievementBll implements StarInteractAction {
         tvGoldCount.setText(String.valueOf(goldCount));
         Log.e("LiveHalfBodyAchievement","=====>initView called:"+goldCount);
 
+
     }
 
 
