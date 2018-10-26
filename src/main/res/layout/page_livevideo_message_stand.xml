@@ -180,7 +180,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/cl_stand_experience_temp_gold_star">
 
         <ImageView
             android:id="@+id/iv_livevideo_star_energy_bar"
