@@ -55,4 +55,5 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.arouterapi
     //
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
 }
