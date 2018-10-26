@@ -151,7 +151,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     private PopupWindow mCommonWordWindow;
 
 
-
     public HalfBodyLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                     LiveAndBackDebug ums, BaseLiveMediaControllerBottom
                                             liveMediaControllerBottom, ArrayList<LiveMessageEntity>
@@ -173,7 +172,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         btMsgCommon = liveMediaControllerBottom.getBtMsgCommon();
 
         if(liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom){
-
             ((LiveHalfBodyMediaControllerBottom)liveMediaControllerBottom).setControllerStateListener
                     (new LiveHalfBodyMediaControllerBottom.ControllerStateListener(){
 
@@ -357,22 +355,17 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
                if(mCommonWordWindow.isShowing()){
                    mCommonWordWindow.dismiss();
+                   return;
                }
 
                 int[] location = new int[2];
                 btMsgCommon.getLocationInWindow(location);
-                //在控件上方显示
-                //Log.e(TAG,"=======>showCommonWord:"+location[0]+":"+location[1]);
-            /*    Log.e(TAG,"=======>showCommonWord2222:"+mCommonWordWindow.getContentView().getMeasuredHeight()
-                        +":"+mCommonWordWindow.getContentView().getMeasuredWidth());*/
-
-                int offX = location[0] - (mPopWindWidth-btMsgCommon.getMeasuredWidth()) / 2;
-                int offY = location[1]- mPopWindHeight;
+                int offX = location[0] - (mCommonWordWindow.getContentView().getMeasuredWidth()-btMsgCommon.getMeasuredWidth()) / 2;
+                int offY = location[1] -  mCommonWordWindow.getContentView().getMeasuredHeight();
                 mCommonWordWindow.showAtLocation(btMsgCommon,Gravity.NO_GRAVITY,offX,offY);
 
             }
         });
-
     }
 
 
@@ -478,22 +471,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
 
 
-
-
-
-
-    int mPopWindWidth;
-    int mPopWindHeight;
-
-    private static final int POPWIN_W_DP = 98;
-
-    private static final int POPWIN_H_DP = 162;
-
     /**初始化 热词*/
     private void initCommonWord() {
-
-        mPopWindWidth = SizeUtils.Dp2Px(mContext,POPWIN_W_DP);
-        mPopWindHeight = SizeUtils.Dp2Px(mContext,POPWIN_H_DP);
 
         final ArrayList<String> words = new ArrayList<>();
         words.add("[e]em_1[e]");
@@ -504,7 +483,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         words.add("1");
 
         View contentView = View.inflate(mContext,R.layout.layout_live_commonwrod_popwindow,null);
-
         mCommonWordWindow = new PopupWindow(contentView
                 ,ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,false);
@@ -532,9 +510,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                             addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
                             lastSendMsg = System.currentTimeMillis();
                             onTitleShow(true);
-
                             mCommonWordWindow.dismiss();
-
                         } else {
                             XESToastUtils.showToast(mContext, "你已被禁言!");
                         }
@@ -549,11 +525,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                 }
             }
         });
-
-
-
-
-
+        //提前测量 一次尺寸信息，用于 popWindow 显示定位
+        contentView.measure(View.MeasureSpec.UNSPECIFIED,View.MeasureSpec.UNSPECIFIED);
     }
 
     @Override

@@ -93,7 +93,7 @@ public class LiveHalfBodyAchievementBll implements StarInteractAction {
 
     public void initView(RelativeLayout bottomContent, RelativeLayout mContentView) {
         this.bottomContent = bottomContent;
-        tvGoldCount = activity.findViewById(R.id.iv_teampk_pkstate_coin);
+        tvGoldCount = activity.findViewById(R.id.tv_teampk_pkstate_coin_num);
         tvGoldCount.setText(String.valueOf(goldCount));
         Log.e("LiveHalfBodyAchievement","=====>initView called:"+goldCount);
 

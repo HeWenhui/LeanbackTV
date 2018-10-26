@@ -123,14 +123,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                                 interval <= 60 * 1000) {
                                             allow = false;
                                         }
-//                                        handler.post(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-//                                                if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
-//                                                    recognizeDialog.showDialog();
-//                                                }
-//                                            }
-//                                        });
+
                                         if (allow) {
                                             handler.post(new Runnable() {
                                                 @Override
@@ -143,12 +136,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                                 }
                                             });
                                         } else {
-                                            if (mGetInfo.getPattern() == 2) {
-                                                englishSpeekMode = new EnglishSpeekModeStand();
-                                            } else {
-                                                englishSpeekMode = new EnglishSpeekModeNomal();
-                                            }
-                                            initAchievement(mGetInfo.getMode());
+                                            startAchievement();
                                         }
                                     } else {
                                         speakerRecognitioner = new SpeakerRecognitioner(activity);
@@ -365,27 +353,12 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 // 本场成就 ：金币 + 星星
                LiveHalfBodyAchievementBll starBll = new LiveHalfBodyAchievementBll(activity,mLiveType,mGetInfo
                        .getStarCount(), mGetInfo.getGoldCount(), true);
-
                 starBll.setLiveBll(LiveAchievementIRCBll.this);
                 starBll.setLiveAndBackDebug(mLiveBll);
                 starBll.initView(mRootView, mContentView);
                 starAction = starBll;
 
-                //能量条
-                EnglishHalfBodySpeekBll englishSpeekBll = new EnglishHalfBodySpeekBll(activity);
-                if (speakerRecognitioner != null) {
-                    englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
-                }
-
-                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(),
-                        talLanguage, audioRequest, mContentView);
-                if (initView) {
-                    englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
-                    englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
-                    starBll.setLiveAndBackDebug(mLiveBll);
-                    englishSpeekBll.setmShareDataManager(mShareDataManager);
-                    englishSpeekAction = englishSpeekBll;
-                }
+                englishSpeekAction = null;
 
             } else {
                 LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo,true);

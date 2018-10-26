@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -110,4 +111,12 @@ public class LiveHalfBodyMediaControllerBottom extends LiveStandMediaControllerB
         void onHide();
     }
 
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        //super.onVisibilityChanged(changedView, visibility);
+        if(changedView == this && controllerStateListener != null){
+            controllerStateListener.onHide();
+        }
+        Log.e(TAG,"=====>onVisibilityChanged:"+visibility);
+    }
 }
