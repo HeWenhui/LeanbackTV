@@ -8,6 +8,8 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -74,6 +76,9 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     //礼物数量统计
     StableLogHashMap logHashMap = new StableLogHashMap("pib_giftCount");
 
+    //统计埋点
+    private Map<String, String> userLogMap = new HashMap<String, String>();
+
 
     public PraiseInteractionBll(Context context, LiveBll2 liveBll) {
         super((Activity) context, liveBll);
@@ -128,6 +133,8 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
      */
     private void openPraise() {
         if (!isOpen) {
+            userLogMap.clear();
+            userLogMap.put("openPraise", "goldnum=" + goldNum);
             logHashMap.put("pysical", String.valueOf(0));
             logHashMap.put("chemistry", String.valueOf(0));
             logHashMap.put("math", String.valueOf(0));
@@ -252,6 +259,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent.OnGetGoldUpdateEvent event) {
         if (!TextUtils.isEmpty(event.goldNum)) {
+            userLogMap.put("reciveGoldNum", "goldnum=" + goldNum);
             goldNum = Integer.valueOf(event.goldNum);
             if (praiseInteractionPager != null) {
                 praiseInteractionPager.setGoldNum(goldNum);
@@ -263,6 +271,8 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     private void closePraise() {
         if (isOpen == true) {
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), this.getClass().getSimpleName(),
+                    userLogMap);
             isOpen = false;
             logHashMap.getData().clear();
             otherSpecialGiftStack.clear();
