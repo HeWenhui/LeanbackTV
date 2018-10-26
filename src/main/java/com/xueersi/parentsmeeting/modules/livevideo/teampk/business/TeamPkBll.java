@@ -15,6 +15,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -159,6 +160,32 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         showPkStateLayout();
         registLayotListener();
 
+    }
+
+    @Override
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
+        super.onModeChange(oldMode, mode, isPresent);
+
+        Log.e("teamPk","=====>onModeChange called1111:"+mode);
+        // TODO: 2018/10/26
+        if(isHalfBodyLiveRoom()){
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.e("teamPk","=====>onModeChange called2222:");
+                    showPkStateLayout();
+                }
+            },100);
+        }
+    }
+
+    /**
+     * 是否是半身直播 直播间
+     * @return
+     */
+    private boolean isHalfBodyLiveRoom() {
+        Log.e("teamPk","========>isHalfBodyLiveRoom:"+roomInitInfo+":"+roomInitInfo.getPattern());
+        return roomInitInfo != null && roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY;
     }
 
     /**
@@ -592,6 +619,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         // step 1
         ViewGroup viewGroup = (ViewGroup) mActivity.getWindow().getDecorView();
         pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
+        Log.e("teamPk","=====>onModeChange called333:"+pkStateRootView);
         if (pkStateRootView != null) {
             pkStateRootView.setVisibility(View.VISIBLE);
             pkStateRootView.setTeamPkBll(this);

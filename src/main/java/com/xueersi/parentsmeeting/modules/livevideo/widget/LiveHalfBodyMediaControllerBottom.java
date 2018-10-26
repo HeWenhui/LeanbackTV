@@ -1,13 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
@@ -47,11 +47,16 @@ public class LiveHalfBodyMediaControllerBottom extends LiveStandMediaControllerB
             Log.e(TAG,"=====>inflateLayout called 2222222:");
         } else {
             Log.e(TAG,"=====>inflateLayout called 33333333:"+tranLiveView);
-            if (tranLiveView == null) {
-                tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom,
-                        this, false);
+
+            if(tranLiveView == null){
+                if (LiveVideoConfig.isPrimary) {
+                    tranLiveView  = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom, this,false);
+                } else {
+                    tranLiveView  = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this,false);
+                }
             }
             view = tranLiveView;
+
             addView(view);
             Log.e(TAG,"=====>inflateLayout called 444444:");
         }
@@ -111,12 +116,4 @@ public class LiveHalfBodyMediaControllerBottom extends LiveStandMediaControllerB
         void onHide();
     }
 
-    @Override
-    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
-        //super.onVisibilityChanged(changedView, visibility);
-        if(changedView == this && controllerStateListener != null){
-            controllerStateListener.onHide();
-        }
-        Log.e(TAG,"=====>onVisibilityChanged:"+visibility);
-    }
 }
