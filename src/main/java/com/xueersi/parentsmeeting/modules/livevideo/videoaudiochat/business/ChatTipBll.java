@@ -301,6 +301,7 @@ public class ChatTipBll {
                     rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
                 }
                 changeRaisehand(contain);
+                raisehand = contain;
                 if (contain) {
                     rl_livevideo_chat_raisehand.setVisibility(View.GONE);
                 } else {

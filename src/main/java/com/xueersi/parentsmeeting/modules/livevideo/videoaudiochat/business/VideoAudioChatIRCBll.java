@@ -23,12 +23,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControl
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import okhttp3.Call;
 
 /**
  * Created by lyqai on 2018/7/11.
@@ -242,7 +239,8 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                     String room = object.optString("room");
                     int micType = object.optInt("type", 0);
                     msg += ",STUDY_ONMIC:from=" + from + ",mode=" + mLiveBll.getMode();
-                    ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
+                    ArrayList<ClassmateEntity> onmicClassmateEntities = new ArrayList<>();
+                    ArrayList<ClassmateEntity> offmicClassmateEntities = new ArrayList<>();
                     if ("on".equals(status)) {
                         JSONArray students = object.getJSONArray("onmic");
                         for (int i = 0; i < students.length(); i++) {
@@ -251,11 +249,21 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                             classmateEntity.setId(jsonObject.optString("id"));
                             classmateEntity.setName(jsonObject.optString("name"));
                             classmateEntity.setImg(jsonObject.optString("img"));
-                            classmateEntities.add(classmateEntity);
+                            onmicClassmateEntities.add(classmateEntity);
+                        }
+                    } else {
+                        JSONArray students = object.getJSONArray("offmic");
+                        for (int i = 0; i < students.length(); i++) {
+                            ClassmateEntity classmateEntity = new ClassmateEntity();
+                            JSONObject jsonObject = students.getJSONObject(i);
+                            classmateEntity.setId(jsonObject.optString("id"));
+                            classmateEntity.setName(jsonObject.optString("name"));
+                            classmateEntity.setImg(jsonObject.optString("img"));
+                            offmicClassmateEntities.add(classmateEntity);
                         }
                     }
                     if (videoChatAction != null) {
-                        videoChatAction.onStuMic(status, room, classmateEntities, from, 1);
+                        videoChatAction.onStuMic(status, room, onmicClassmateEntities, offmicClassmateEntities, from, 1);
                     }
                 } catch (Exception e) {
 

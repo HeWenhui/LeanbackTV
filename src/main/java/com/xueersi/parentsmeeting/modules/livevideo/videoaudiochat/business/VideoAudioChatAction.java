@@ -29,5 +29,5 @@ public interface VideoAudioChatAction {
     void raiseHandCount(int num);
 
     void onStuMic(String status, String room, ArrayList<ClassmateEntity>
-            classmateEntities, String from, int msgFrom);
+            onmicClassmateEntities, ArrayList<ClassmateEntity> offmicClassmateEntities, String from, int msgFrom);
 }

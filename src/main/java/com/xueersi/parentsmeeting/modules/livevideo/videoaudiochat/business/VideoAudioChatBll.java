@@ -328,30 +328,50 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     }
 
     @Override
-    public void onStuMic(String status, final String room, ArrayList<ClassmateEntity> classmateEntities, final String from, int msgFrom) {
-        logger.d("onStuMic:status=" + status + ",room=" + room + ",size=" + classmateEntities.size() + ",msgFrom=" + msgFrom);
-        onMic = status;
-        this.room = room;
-        boolean contain = false;
-        ArrayList<ClassmateEntity> oldclassmateEntities = new ArrayList<>(allClassmateEntities);
-        allClassmateEntities.clear();
-        for (ClassmateEntity classmateEntity : classmateEntities) {
-            int index = oldclassmateEntities.indexOf(classmateEntity);
-            if (index != -1) {
-                ClassmateEntity oldClassmateEntity = oldclassmateEntities.get(index);
-                if (StringUtils.isEmpty(classmateEntity.getName())) {
-                    classmateEntity.setName(oldClassmateEntity.getName());
-                }
-                if (StringUtils.isEmpty(classmateEntity.getImg())) {
-                    classmateEntity.setImg(oldClassmateEntity.getImg());
+    public void onStuMic(String status, final String room, ArrayList<ClassmateEntity> onmicClassmateEntities, ArrayList<ClassmateEntity> offmicClassmateEntities, final String from, int msgFrom) {
+        logger.d("onStuMic:status=" + status + ",room=" + room + ",onmic=" + onmicClassmateEntities.size() + ",offmic=" + offmicClassmateEntities.size());
+        boolean contain;
+        if ("off".equals(status)) {
+            contain = containMe;
+            for (ClassmateEntity classmateEntity : offmicClassmateEntities) {
+                int index = allClassmateEntities.indexOf(classmateEntity);
+                if (index != -1) {
+                    allClassmateEntities.remove(index);
+                    if ((classmateEntity.getId() + "").equals(getInfo.getStuId())) {
+                        contain = false;
+                    }
                 }
             }
-            allClassmateEntities.add(classmateEntity);
-            if ((classmateEntity.getId() + "").equals(getInfo.getStuId())) {
-                contain = true;
+        } else {
+            contain = false;
+            ArrayList<ClassmateEntity> oldclassmateEntities = new ArrayList<>(allClassmateEntities);
+            allClassmateEntities.clear();
+            for (ClassmateEntity classmateEntity : onmicClassmateEntities) {
+                int index = oldclassmateEntities.indexOf(classmateEntity);
+                if (index != -1) {
+                    ClassmateEntity oldClassmateEntity = oldclassmateEntities.get(index);
+                    if (StringUtils.isEmpty(classmateEntity.getName())) {
+                        classmateEntity.setName(oldClassmateEntity.getName());
+                    }
+                    if (StringUtils.isEmpty(classmateEntity.getImg())) {
+                        classmateEntity.setImg(oldClassmateEntity.getImg());
+                    }
+                }
+                allClassmateEntities.add(classmateEntity);
+                if ((classmateEntity.getId() + "").equals(getInfo.getStuId())) {
+                    contain = true;
 //                break;
+                }
             }
         }
+        logger.d("onStuMic:status=" + status + ",room=" + room + ",all=" + allClassmateEntities.size());
+        if (allClassmateEntities.size() == 0) {
+            onMic = "off";
+        } else {
+            onMic = "on";
+        }
+        this.room = room;
+
         boolean containMeChange = false;
         if (containMe != contain) {
             containMe = contain;
@@ -373,7 +393,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                 chatTipBll.startMicro(onMic, "", room, from, false, micType);
             }
         }
-        chatTipBll.onClassmateChange(classmateEntities, false);
+        chatTipBll.onClassmateChange(onmicClassmateEntities, false);
     }
 
     public void startMicro(String status, String nonce, boolean contain, String room, String from, int msgFrom) {
