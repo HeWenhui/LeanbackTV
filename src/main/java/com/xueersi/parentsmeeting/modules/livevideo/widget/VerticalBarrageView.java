@@ -132,7 +132,7 @@ public class VerticalBarrageView extends LinearLayout implements Handler.Callbac
         if (view == null) {
             view = inflater.inflate(R.layout.item_livevideo_praiselist_intera_barrage, null);
             LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT);
+                   SizeUtils.Dp2Px(getContext(),30));
             params.topMargin = SizeUtils.Dp2Px(getContext(), 10);
             view.setLayoutParams(params);
 
