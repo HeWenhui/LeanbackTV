@@ -21,13 +21,19 @@ import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
 
 import static io.agora.rtc.Constants.RAW_AUDIO_FRAME_OP_MODE_READ_WRITE;
-import static io.agora.rtc.Constants.RAW_AUDIO_FRAME_OP_MODE_WRITE_ONLY;
 
 public class WorkerThread extends Thread {
     private final static String TAG = "WorkerThread";
     protected static Logger logger = LoggerFactory.getLogger(TAG);
     private final Context mContext;
-    boolean feadback = false;
+    /**
+     * 是否声音回调
+     */
+    boolean audioCallBack = false;
+    /**
+     * 是否有本地视频
+     */
+    boolean enableLocalVideo = false;
     private static final int ACTION_WORKER_THREAD_QUIT = 0X1010; // quit this thread
 
     private static final int ACTION_WORKER_JOIN_CHANNEL = 0X2010;
@@ -165,7 +171,7 @@ public class WorkerThread extends Thread {
      */
     public final void joinChannel(String channelKey, final String channel, int uid, OnJoinChannel onJoinChannel) {
         if (Thread.currentThread() != this) {
-            logger.w( "joinChannel() - worker thread asynchronously " + channelKey + "," + channel + " " + uid);
+            logger.w("joinChannel() - worker thread asynchronously " + channelKey + "," + channel + " " + uid);
             Message envelop = new Message();
             envelop.what = ACTION_WORKER_JOIN_CHANNEL;
             envelop.obj = new Object[]{channelKey, channel, onJoinChannel};
@@ -192,7 +198,7 @@ public class WorkerThread extends Thread {
 
     public final void leaveChannel(String channel, OnLevelChannel onLevelChannel) {
         if (Thread.currentThread() != this && mWorkerHandler != null) {
-            logger.w( "leaveChannel() - worker thread asynchronously " + channel);
+            logger.w("leaveChannel() - worker thread asynchronously " + channel);
             Message envelop = new Message();
             envelop.what = ACTION_WORKER_LEAVE_CHANNEL;
             envelop.obj = new Object[]{channel, onLevelChannel};
@@ -222,7 +228,7 @@ public class WorkerThread extends Thread {
 
     public final void configEngine(int cRole, int vProfile) {
         if (Thread.currentThread() != this) {
-            logger.w( "configEngine() - worker thread asynchronously " + cRole + " " + vProfile);
+            logger.w("configEngine() - worker thread asynchronously " + cRole + " " + vProfile);
             Message envelop = new Message();
             envelop.what = ACTION_WORKER_CONFIG_ENGINE;
             envelop.obj = new Object[]{cRole, vProfile};
@@ -241,7 +247,7 @@ public class WorkerThread extends Thread {
         mRtcEngine.setVideoProfile(mEngineConfig.mVideoProfile, true);
 
         mRtcEngine.setClientRole(cRole);
-        if (feadback) {
+        if (audioCallBack) {
             mRtcEngine.enableAudioVolumeIndication(500, 3);
             mRtcEngine.muteAllRemoteAudioStreams(true);
         }
@@ -250,7 +256,7 @@ public class WorkerThread extends Thread {
 
     public final void preview(boolean start, SurfaceView view, int uid) {
         if (Thread.currentThread() != this) {
-            logger.w( "preview() - worker thread asynchronously " + start + " " + view + " " + (uid & 0XFFFFFFFFL));
+            logger.w("preview() - worker thread asynchronously " + start + " " + view + " " + (uid & 0XFFFFFFFFL));
             Message envelop = new Message();
             envelop.what = ACTION_WORKER_PREVIEW;
             envelop.obj = new Object[]{start, view, uid};
@@ -293,7 +299,7 @@ public class WorkerThread extends Thread {
             mRtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
 //            mRtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_COMMUNICATION);
             mRtcEngine.enableVideo();
-            mRtcEngine.enableLocalVideo(false);
+            mRtcEngine.enableLocalVideo(enableLocalVideo);
 //            mRtcEngine.disableVideo();
             File dir = new File(Environment.getExternalStorageDirectory()
                     + "/parentsmeeting/agoralog");
@@ -327,7 +333,7 @@ public class WorkerThread extends Thread {
      */
     public final void exit() {
         if (Thread.currentThread() != this) {
-            logger.w( "exit() - exit app thread asynchronously");
+            logger.w("exit() - exit app thread asynchronously");
             mWorkerHandler.sendEmptyMessage(ACTION_WORKER_THREAD_QUIT);
             return;
         }
@@ -346,12 +352,16 @@ public class WorkerThread extends Thread {
         logger.d("exit() > end");
     }
 
-    public WorkerThread(Context context, int mUid, boolean feadback) {
+    public WorkerThread(Context context, int mUid, boolean audioCallBack) {
         this.mContext = context;
-        this.feadback = feadback;
+        this.audioCallBack = audioCallBack;
         this.mEngineConfig = new EngineConfig();
         this.mEngineConfig.mUid = mUid;
-        this.mEngineEventHandler = new MyEngineEventHandler(mContext, this.mEngineConfig, feadback);
+        this.mEngineEventHandler = new MyEngineEventHandler(mContext, this.mEngineConfig, audioCallBack);
+    }
+
+    public void setEnableLocalVideo(boolean enableLocalVideo) {
+        this.enableLocalVideo = enableLocalVideo;
     }
 
     /**

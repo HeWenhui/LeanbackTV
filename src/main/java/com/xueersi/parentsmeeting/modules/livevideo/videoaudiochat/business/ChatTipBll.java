@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -28,6 +29,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page.AgoraChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class ChatTipBll {
@@ -37,6 +40,7 @@ public class ChatTipBll {
     Handler handler = new Handler(Looper.getMainLooper());
     private LiveAndBackDebug liveAndBackDebug;
     private VideoAudioChatHttp videoChatHttp;
+    private int raisehandCount = 0;
     private boolean raisehand = false;
     /**
      * 举麦包含我
@@ -217,9 +221,14 @@ public class ChatTipBll {
                 videoChatHttp.requestMicro(nonce, room, from);
                 videoChatHttp.chatHandAdd(new HttpCallBack(false) {
                     @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        logger.d("chatHandAdd:onPmSuccess:responseEntity=" + responseEntity.getJsonObject
-                                ());
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        Object jsonObject = responseEntity.getJsonObject();
+                        logger.d("chatHandAdd:onPmSuccess:responseEntity=" + jsonObject);
+                        try {
+                            raisehandCount = Integer.parseInt(jsonObject + "");
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(new Exception("" + jsonObject, e));
+                        }
                     }
 
                     @Override
@@ -272,6 +281,7 @@ public class ChatTipBll {
     }
 
     public void stopRecord() {
+        raisehand = false;
         handler.post(new Runnable() {
             @Override
             public void run() {

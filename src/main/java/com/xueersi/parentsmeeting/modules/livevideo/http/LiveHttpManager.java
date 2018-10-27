@@ -1323,7 +1323,18 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     * 理科接麦举手接口
+     * 理科2018接麦举手接口
+     *
+     * @param requestCallBack
+     */
+    public void addStuPutUpHandsNum(HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_ADD_STU_HAND_NUM, params, requestCallBack);
+    }
+
+    /**
+     * 理科2018接麦举手获得用户列表接口
      *
      * @param requestCallBack
      */

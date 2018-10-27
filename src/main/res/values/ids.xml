@@ -806,5 +806,6 @@
     <item name="rl_livevideo_chat_head2" type="id" />
     <item name="civ_livevideo_chat_head2" type="id" />
     <item name="tv_livevideo_chat_head2" type="id" />
+    <item name="rl_livevideo_chat_voice" type="id" />
     <item name="vw_livevideo_chat_voice" type="id" />
 </resources>

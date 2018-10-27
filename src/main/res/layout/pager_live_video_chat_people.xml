@@ -47,9 +47,24 @@
             android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
-    <com.xueersi.parentsmeeting.widget.AgoraVolumeWaveView
-        android:id="@id/vw_livevideo_chat_voice"
-        android:layout_width="34dp"
-        android:layout_height="34dp"
-        android:layout_gravity="center_vertical" />
+    <RelativeLayout
+        android:id="@id/rl_livevideo_chat_voice"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <com.xueersi.parentsmeeting.widget.AgoraVolumeWaveView
+            android:id="@id/vw_livevideo_chat_voice"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/vw_livevideo_chat_voice"
+            android:layout_centerHorizontal="true"
+            android:text="已接麦" />
+    </RelativeLayout>
+
 </LinearLayout>

@@ -37,6 +37,7 @@ import java.util.List;
  * 2018理科接麦
  * 聊天消息 https://wiki.xesv5.com/pages/viewpage.action?pageId=13839927
  * 接口 https://wiki.xesv5.com/pages/viewpage.action?pageId=13841181
+ * 蓝湖 https://lanhuapp.com/url/r2Ezg
  */
 public class VideoAudioChatBll implements VideoAudioChatAction {
     private static String TAG = "VideoAudioChatBll";

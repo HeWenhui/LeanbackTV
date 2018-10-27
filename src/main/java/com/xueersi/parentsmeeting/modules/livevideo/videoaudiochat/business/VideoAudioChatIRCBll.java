@@ -238,7 +238,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                 try {
                     String from = object.optString("from", "t");
                     String status = object.getString("status");
-                    String room = object.optString("status");
+                    String room = object.optString("room");
                     int micType = object.optInt("type", 0);
                     msg += ",STUDY_ONMIC:from=" + from + ",mode=" + mLiveBll.getMode();
                     ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
@@ -289,7 +289,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
             jsonObject.put("name", mGetInfo.getStuName());
             jsonObject.put("img", mGetInfo.getStuImg());
 
-            jsonObject.put("camera", 0);
+            jsonObject.put("camera", 1);
             jsonObject.put("linkNum", mGetInfo.getStuLinkMicNum());
             jsonObject.put("raiseNum", 0);
 
@@ -352,7 +352,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
     @Override
     public void chatHandAdd(HttpCallBack call) {
         if (mGetInfo.getIsArts() == 0) {
-            getHttpManager().chatHandAdd(call);
+            getHttpManager().addStuPutUpHandsNum(call);
         }
     }
 }
