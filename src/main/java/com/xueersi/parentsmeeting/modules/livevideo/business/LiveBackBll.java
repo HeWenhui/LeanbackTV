@@ -135,15 +135,15 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             } else {
                 mLiveType = LiveVideoConfig.LIVE_TYPE_LIVE;
             }
-            if (isArts == 1) {
-                appID = UmsConstants.ARTS_APP_ID_BACK;
-                IS_SCIENCE = false;
-                liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
-            } else {
-                appID = UmsConstants.LIVE_APP_ID_BACK;
-                IS_SCIENCE = true;
-                liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
-            }
+        }
+        if (isArts == 1) {
+            appID = UmsConstants.ARTS_APP_ID_BACK;
+            IS_SCIENCE = false;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
+        } else {
+            appID = UmsConstants.LIVE_APP_ID_BACK;
+            IS_SCIENCE = true;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         }
         logToFile = new LogToFile(this, TAG);
         ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, this);
