@@ -455,7 +455,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      */
     public void liveNewArtsSubmitTestAnswer(int type, String enstuId, String srcType, String testId, String liveId, String
             testAnswer, String userMode, boolean isVoice,
-                                     boolean isRight, HttpCallBack requestCallBack) {
+                                            boolean isRight, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSTEST_ANSWER;
         params.addBodyParam("liveId", liveId);
@@ -467,7 +467,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(url, params, requestCallBack);
         Loger.e("Duncan", "======> liveNewArtsSubmitTestAnswer:" + url);
     }
-
 
 
     public void getTestAnswerTeamStatus(String testId, HttpCallBack requestCallBack) {
@@ -515,7 +514,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     // 普通语音答题的提交
     public void liveSubmitNewArtsH5Answer(String srcType, String testId, String liveId, String
             testAnswer, String type, String userMode, String isSubmit,
-                                       double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
+                                          double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
         setDefaultParameter(params);
@@ -530,7 +529,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     // H5语音答题的提交
     public void liveSubmitNewArtsRealH5Answer(String srcType, String testId, String liveId, String
             testAnswer, String type, String userMode, String isSubmit,
-                                          double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
+                                              double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSH5_ANSWER;
         setDefaultParameter(params);
@@ -716,8 +715,8 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42_ANSWER, params, requestCallBack);
     }
 
-    /** 文科新课件平台语音评测是否已答过*/
-    public void speechNewArtEvaluateIsAnswered(String enstuId, String liveId, String id, HttpCallBack requestCallBack){
+    /** 文科新课件平台语音评测是否已答过 */
+    public void speechNewArtEvaluateIsAnswered(String enstuId, String liveId, String id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
@@ -859,12 +858,13 @@ public class LiveHttpManager extends BaseHttpBusiness {
     /**
      * 获取文科一发多题的预加载课件本地资源
      */
-     public void getArtsMoreCoureWareUrl(String liveId, HttpCallBack requestCallBack){
-         HttpRequestParams params = new HttpRequestParams();
-         params.addBodyParam("liveId", liveId);
-         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_ARTSMORE_COURSEWARE_URL;
-         sendPost(requestCallBack.url, params, requestCallBack);
-     }
+    public void getArtsMoreCoureWareUrl(String liveId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_ARTSMORE_COURSEWARE_URL;
+        sendPost(requestCallBack.url, params, requestCallBack);
+    }
+
     /**
      * 获得广告信息
      */
@@ -1323,6 +1323,18 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
+     * 理科接麦举手接口
+     *
+     * @param requestCallBack
+     */
+    public void getStuInfoByIds(String stuIds, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("stuIds",stuIds);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_STUINFO, params, requestCallBack);
+    }
+
+    /**
      * 文科表扬榜
      *
      * @param rankId      榜单id
@@ -1391,10 +1403,11 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     *获取文科直播间 额外信息
+     * 获取文科直播间 额外信息
+     *
      * @param requestCallBack
      */
-    public void getArtsExtLiveInfo(String liveId,String stuCouId,HttpCallBack requestCallBack){
+    public void getArtsExtLiveInfo(String liveId, String stuCouId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_ARTS_ROOM_INFO, params, requestCallBack);
@@ -1403,9 +1416,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 文科获取 排行信息
+     *
      * @param requestCallBack
      */
-    public void getNewArtsAllRank(String liveId,String stuCouId,HttpCallBack requestCallBack){
+    public void getNewArtsAllRank(String liveId, String stuCouId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_ARTS_TEAM_CLASS_RANK, params, requestCallBack);

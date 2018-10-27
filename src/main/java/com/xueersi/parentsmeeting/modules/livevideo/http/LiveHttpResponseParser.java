@@ -50,6 +50,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class LiveHttpResponseParser extends HttpResponseParser {
@@ -820,14 +821,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         entity.setGoldNum(Integer.parseInt(total.optString("gold")));
         entity.setRightNum(Integer.parseInt(total.optString("isRight")));
         JSONArray split = jsonObject.optJSONArray("split");
-        for(int i = 0 ; i < split.length() ; i++){
+        for (int i = 0; i < split.length(); i++) {
             JSONObject obj = split.optJSONObject(i);
             entity.setTestId(obj.optString("testId"));
             entity.setResultType(Integer.parseInt(obj.optString("isRight")));
             if (isVoice) {
                 JSONArray standeranswer = obj.optJSONArray("rightAnswer");
                 JSONArray youranswer = obj.optJSONArray("choice");
-                entity.setStandardAnswer( standeranswer.optString(0));
+                entity.setStandardAnswer(standeranswer.optString(0));
                 entity.setYourAnswer(youranswer.optString(0));
             }
         }
@@ -1709,10 +1710,29 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     }
 
 
-    public ArtsExtLiveInfo parseArtsExtLiveInfo(ResponseEntity responseEntity){
+    public ArtsExtLiveInfo parseArtsExtLiveInfo(ResponseEntity responseEntity) {
         ArtsExtLiveInfo info = new ArtsExtLiveInfo();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
         return info;
+    }
+
+    public HashMap<String, ClassmateEntity> parseStuInfoByIds(String stuIds, ResponseEntity responseEntity) {
+        HashMap<String, ClassmateEntity> classmateEntities = new HashMap<>();
+        String[] ids = stuIds.split(",");
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        for (int i = 0; i < ids.length; i++) {
+            String id = ids[i];
+            ClassmateEntity classmateEntity = new ClassmateEntity();
+            try {
+                JSONObject stuJSONObject = jsonObject.getJSONObject(id);
+                classmateEntity.setName(stuJSONObject.optString("nickname"));
+                classmateEntity.setImg(stuJSONObject.optString("avatar_path"));
+                classmateEntities.put(id, classmateEntity);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return classmateEntities;
     }
 }

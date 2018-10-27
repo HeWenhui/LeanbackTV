@@ -3,7 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business;
 import android.app.Activity;
 
 import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -21,8 +23,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControl
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import okhttp3.Call;
 
 /**
  * Created by lyqai on 2018/7/11.
@@ -145,17 +151,19 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                             lastNewLinkMicT = newLinkMic.toString();
                             String openNewMic = newLinkMic.optString("openNewMic", "off");
                             String room = newLinkMic.getString("room");
+                            int micType = newLinkMic.optInt("type", 0);
                             ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
                             if ("on".equals(openNewMic)) {
                                 JSONArray students = newLinkMic.getJSONArray("students");
                                 for (int i = 0; i < students.length(); i++) {
                                     ClassmateEntity classmateEntity = new ClassmateEntity();
-                                    classmateEntity.setId(students.getString(i));
+                                    JSONObject stuObj = students.getJSONObject(i);
+                                    classmateEntity.setId(stuObj.optString("id"));
                                     classmateEntities.add(classmateEntity);
                                 }
                             }
                             voiceChatStatus = openNewMic;
-                            videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "t");
+                            videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "t", micType);
                         }
                     } else {
                         JSONObject room_2 = jsonObject.getJSONObject("room_2");
@@ -164,6 +172,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                             lastNewLinkMicF = newLinkMic.toString();
                             String openNewMic = newLinkMic.optString("openNewMic", "off");
                             String room = newLinkMic.getString("room");
+                            int micType = newLinkMic.optInt("type", 0);
                             ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
                             if ("on".equals(openNewMic)) {
                                 JSONArray students = newLinkMic.getJSONArray("students");
@@ -174,7 +183,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                                 }
                             }
                             voiceChatStatus = openNewMic;
-                            videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "f");
+                            videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "f", micType);
                         }
                     }
                     if (!oldVoiceChatStatus.equals(voiceChatStatus)) {
@@ -197,6 +206,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
             case XESCODE.AgoraChat.RAISE_HAND: {
                 String from = object.optString("from", "t");
                 String room = object.optString("room");
+                int micType = object.optInt("mictype", 0);
                 msg += ",RAISE_HAND:from=" + from + ",mode=" + mLiveBll.getMode();
                 if ("t".equals(from) && LiveTopic.MODE_CLASS.equals(mLiveBll.getMode()) || "f".equals(from) &&
                         LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
@@ -204,7 +214,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                     voiceChatStatus = status;
                     if (videoChatAction != null) {
                         msg += "RAISE_HAND:status=" + status;
-                        videoChatAction.raisehand(status, room, from, object.optString("nonce"), 1);
+                        videoChatAction.raisehand(status, room, from, object.optString("nonce"), micType, 1);
                     }
                     for (int i = 0; i < chatStatusChanges.size(); i++) {
                         chatStatusChanges.get(i).onVideoChatStatusChange(status);
@@ -229,6 +239,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                     String from = object.optString("from", "t");
                     String status = object.getString("status");
                     String room = object.optString("status");
+                    int micType = object.optInt("type", 0);
                     msg += ",STUDY_ONMIC:from=" + from + ",mode=" + mLiveBll.getMode();
                     ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
                     if ("on".equals(status)) {
@@ -310,6 +321,32 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
             // logger.e( "understand", e);
             mLogtf.e("giveupMicro", e);
         }
+    }
+
+    @Override
+    public void getStuInfoByIds(final String uid, final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
+        getHttpManager().getStuInfoByIds(uid, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("getStuInfoByIds:onPmSuccess=" + responseEntity.getJsonObject());
+                HashMap<String, ClassmateEntity> classmateEntityHashMap = getHttpResponseParser().parseStuInfoByIds(uid, responseEntity);
+                abstractBusinessDataCallBack.onDataSucess(classmateEntityHashMap);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                logger.e("getStuInfoByIds:onPmFailure=" + msg, error);
+                abstractBusinessDataCallBack.onDataFail(0, msg);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                logger.d("getStuInfoByIds:onPmError=" + responseEntity.getErrorMsg());
+                abstractBusinessDataCallBack.onDataFail(1, responseEntity.getErrorMsg());
+            }
+        });
     }
 
     @Override

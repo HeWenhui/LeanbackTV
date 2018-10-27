@@ -133,6 +133,8 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_SAVESTU_TALK = HTTP_HOST + "/LiveCourse/saveStuTalkSource";
         /** 理科接麦举手接口 */
         public String URL_LIVE_HANDADD = HTTP_HOST + "/LiveCourse/handAdd";
+        /** 理科接麦举手获得用户列表接口 */
+        public String URL_LIVE_STUINFO = HTTP_HOST + "/LiveCourse/getStuInfoByIds";
 
         /** h5课件地址 */
         public String coursewareH5 = "https://live.xueersi.com/" +

@@ -293,7 +293,7 @@ public class WorkerThread extends Thread {
             mRtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
 //            mRtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_COMMUNICATION);
             mRtcEngine.enableVideo();
-            mRtcEngine.enableLocalVideo(false);
+//            mRtcEngine.enableLocalVideo(false);
 //            mRtcEngine.disableVideo();
             File dir = new File(Environment.getExternalStorageDirectory()
                     + "/parentsmeeting/agoralog");

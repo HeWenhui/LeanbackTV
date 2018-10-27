@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 
 /**
@@ -12,4 +13,5 @@ public interface VideoAudioChatHttp {
 
     void chatHandAdd(HttpCallBack call);
 
+    void getStuInfoByIds(String uid, AbstractBusinessDataCallBack abstractBusinessDataCallBack);
 }

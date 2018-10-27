@@ -19,7 +19,6 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatInter;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -142,24 +141,18 @@ public class ChatTipBll {
         bt_livevideo_chat_raisehand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (raisehand) {
-//                    XESToastUtils.showToast(activity, "已经举手");
-//                    return;
-//                }
-//                if (containMe) {
-//                    return;
-//                }
                 if (raisehand) {
                     v.setBackgroundResource(R.drawable.live_task_jushou_icon_normal);
+                    videoChatHttp.giveupMicro(msgFrom);
+                } else {
+                    v.setBackgroundResource(R.drawable.live_task_fangqi_icon_normal);
                     raisehand(msgFrom);
                     if (videoChatInter != null) {
                         stopRecord();
                     }
-                } else {
-                    v.setBackgroundResource(R.drawable.live_task_fangqi_icon_normal);
-                    videoChatHttp.giveupMicro(msgFrom);
                 }
                 raisehand = !raisehand;
+                logger.d("onClick:raisehand=" + raisehand);
             }
         });
         tv_livevideo_chat_people = vgRaisehand.findViewById(R.id.tv_livevideo_chat_people);
@@ -221,7 +214,6 @@ public class ChatTipBll {
             public void run() {
                 String nonce = StableLogHashMap.creatNonce();
                 VideoChatLog.sno4(liveAndBackDebug, nonce);
-                raisehand = true;
                 videoChatHttp.requestMicro(nonce, room, from);
                 videoChatHttp.chatHandAdd(new HttpCallBack(false) {
                     @Override
@@ -247,7 +239,7 @@ public class ChatTipBll {
         runnable.run();
     }
 
-    public void startMicro(final String nonce, final String room, String from, final boolean contain) {
+    public void startMicro(final String nonce, final String room, String from, final boolean contain, final int micType) {
         logger.d("startMicro:nonce=" + nonce + ",from=" + from);
         if (contain) {
             raisehand = true;
@@ -255,15 +247,15 @@ public class ChatTipBll {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                startRecord(room, nonce, contain);
+                startRecord(room, nonce, contain, micType);
             }
         });
     }
 
-    public void startRecord(final String room, final String nonce, boolean contain) {
+    public void startRecord(final String room, final String nonce, boolean contain, int micType) {
         if (videoChatInter != null) {
             if (contain) {
-                videoChatInter.startRecord("startRecord", room, nonce, false);
+                videoChatInter.startRecord("startRecord", room, nonce, micType == 1);
             } else {
                 videoChatInter.removeMe();
             }
@@ -271,9 +263,9 @@ public class ChatTipBll {
             return;
         }
         initView();
-        videoChatInter = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent);
+        videoChatInter = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp);
         if (contain) {
-            videoChatInter.startRecord("startRecord", room, nonce, false);
+            videoChatInter.startRecord("startRecord", room, nonce, micType == 1);
         }
         videoChatInter.updateUser(classmateChange, classmateEntities);
         ll_livevideo_chat_people.addView(videoChatInter.getRootView(), RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
