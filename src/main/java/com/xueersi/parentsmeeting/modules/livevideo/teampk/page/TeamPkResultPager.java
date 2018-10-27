@@ -132,6 +132,11 @@ public class TeamPkResultPager extends BasePager {
     private TeamPkProgressBar tpbFinalProgress;
     private RelativeLayout rlFinalPbBarContainer;
 
+    /**
+     * 底部贡献之星 右边距
+     */
+    private static final float CONTRIBUTION_VIEW_RIGHTMARGIN = 0.046f;
+
 
     public TeamPkResultPager(Context context, TeamPkBll pkBll) {
         super(context);
@@ -184,10 +189,14 @@ public class TeamPkResultPager extends BasePager {
         tvMyTeamEnergy.smoothAddNum(increment);
     }
 
+
     private void initRecycleView() {
-        mContributions = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
-        //一行显示item 个数
+
         int spanCount = 5;
+        // 多屏幕 适配
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rclContributionRank.getLayoutParams();
+        params.rightMargin = (int) (mView.getMeasuredWidth() * CONTRIBUTION_VIEW_RIGHTMARGIN);
+        rclContributionRank.setLayoutParams(params);
         mLayoutManager = new ContributionLayoutManager(spanCount);
         int itemWidth = rclContributionRank.getMeasuredWidth() / spanCount;
         mLayoutManager.setItemWidth(itemWidth);
@@ -195,6 +204,7 @@ public class TeamPkResultPager extends BasePager {
         rclContributionRank.setLayoutManager(mLayoutManager);
         pkResultAdapter = new PkResultAdapter(mContributions, itemWidth);
         rclContributionRank.setAdapter(pkResultAdapter);
+
     }
 
 
@@ -231,7 +241,8 @@ public class TeamPkResultPager extends BasePager {
             ratio = 0.5f;
         }
         tpbFinalProgress.setProgress((int) (ratio * tpbFinalProgress.getMaxProgress()));
-        SmoothAddNumTextView tvMyTeamFinalEngergy = rlLottieRootView.findViewById(R.id.tv_teampk_pkresult_myteam_final_anergy);
+        SmoothAddNumTextView tvMyTeamFinalEngergy = rlLottieRootView.findViewById(R.id
+                .tv_teampk_pkresult_myteam_final_anergy);
         tvMyTeamFinalEngergy.setText(myTeamEnergy + "");
         SmoothAddNumTextView tvOtherTeamFinalEngergy = rlLottieRootView.findViewById(R.id
                 .tv_teampk_pkresult_otherteam_final_anergy);
@@ -266,16 +277,22 @@ public class TeamPkResultPager extends BasePager {
                 mView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        if (mContributions == null) {
+                            mContributions = data.getContributionStarList();
+                        } else {
+                            mContributions.clear();
+                            mContributions.addAll(data.getContributionStarList());
+                        }
                         initRecycleView();
-                        mContributions.clear();
-                        mContributions.addAll(data.getContributionStarList());
                         pkResultAdapter.notifyDataSetChanged();
                         mView.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
+                                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext,
+                                        StudyReportAction.class);
                                 if (studyReportAction != null && data.isMe()) {
-                                    studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView, false, false);
+                                    studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView,
+                                            false, false);
                                 }
                             }
                         }, 200);
@@ -418,7 +435,8 @@ public class TeamPkResultPager extends BasePager {
         }
 
         public void bindData(TeamEnergyAndContributionStarEntity.ContributionStar data) {
-            ImageLoader.with(BaseApplication.getContext()).load(data.getAvaterPath()).asBitmap(new SingleConfig.BitmapListener
+            ImageLoader.with(BaseApplication.getContext()).load(data.getAvaterPath()).asBitmap(new SingleConfig
+                    .BitmapListener
                     () {
                 @Override
                 public void onSuccess(Drawable drawable) {
@@ -543,9 +561,13 @@ public class TeamPkResultPager extends BasePager {
         closePkResultPager();
     }
 
-    /** 老师昵称最大字符数 */
+    /**
+     * 老师昵称最大字符数
+     */
     private static final int TEACHER_NAME_MAXLEN = 6;
-    /** pk 对手音效进入时间点 */
+    /**
+     * pk 对手音效进入时间点
+     */
     private static final float FRACTION_MUSIC_IN = 0.11f;
 
     /**
