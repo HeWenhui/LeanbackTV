@@ -123,6 +123,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 主要记录 老师结束答题时下发的 nonce  作为 埋点上传log 参数
      */
     private String nonce;
+    /**当前pk状态*/
+    private StudentCoinAndTotalEnergyEntity mCurrentPkState;
 
     public TeamPkBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -623,6 +625,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         if (pkStateRootView != null) {
             pkStateRootView.setVisibility(View.VISIBLE);
             pkStateRootView.setTeamPkBll(this);
+            // 设置当前pk 状态,兼容 半身直播 主辅导态来回切换
+            if(mCurrentPkState != null){
+                pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),
+                        mCurrentPkState.getMyEnergy(), mCurrentPkState.getCompetitorEnergy(), false);
+            }
+
         }
         // step 2  初始化 又测 pk 状态栏
         updatePkStateLayout(false);
@@ -656,11 +664,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                 roomInitInfo.getStuId(), new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        StudentCoinAndTotalEnergyEntity energyEntity = mHttpResponseParser.
-                                parseStuCoinAndTotalEnergy(responseEntity);
-                        if (pkStateRootView != null && energyEntity != null) {
-                            pkStateRootView.bindData(energyEntity.getStuLiveGold(),
-                                    energyEntity.getMyEnergy(), energyEntity.getCompetitorEnergy(), showPopWindow);
+                        mCurrentPkState = mHttpResponseParser.parseStuCoinAndTotalEnergy(responseEntity);
+                        if (pkStateRootView != null && mCurrentPkState != null) {
+                            pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),
+                                    mCurrentPkState.getMyEnergy(), mCurrentPkState.getCompetitorEnergy(), showPopWindow);
                         }
                     }
 
