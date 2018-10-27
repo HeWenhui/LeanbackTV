@@ -123,8 +123,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 主要记录 老师结束答题时下发的 nonce  作为 埋点上传log 参数
      */
     private String nonce;
-    /**当前pk状态*/
+    /**
+     * 当前pk状态
+     */
     private StudentCoinAndTotalEnergyEntity mCurrentPkState;
+
+    /**当前老师模式*/
+    private String mTeacherMode = LiveTopic.MODE_TRANING;
 
     public TeamPkBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -167,26 +172,27 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
-
-        Log.e("teamPk","=====>onModeChange called1111:"+mode);
+        Log.e("TeamPk", "=====>onModeChange called1111:" + mode);
+        this.mTeacherMode = mode;
         // TODO: 2018/10/26
-        if(isHalfBodyLiveRoom()){
+        if (isHalfBodyLiveRoom()) {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("teamPk","=====>onModeChange called2222:");
+                    Log.e("teamPk", "=====>onModeChange called2222:");
                     showPkStateLayout();
                 }
-            },100);
+            }, 100);
         }
     }
 
     /**
      * 是否是半身直播 直播间
+     *
      * @return
      */
     private boolean isHalfBodyLiveRoom() {
-        Log.e("teamPk","========>isHalfBodyLiveRoom:"+roomInitInfo+":"+roomInitInfo.getPattern());
+        Log.e("teamPk", "========>isHalfBodyLiveRoom:" + roomInitInfo + ":" + roomInitInfo.getPattern());
         return roomInitInfo != null && roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY;
     }
 
@@ -389,7 +395,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 开启分队仪式
      */
     public void startTeamSelect() {
-        logger.e( "====>startTeamSelect:");
+        logger.e("====>startTeamSelect:");
         getTeamInfo();
     }
 
@@ -443,7 +449,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     private void showTeamSelectScene() {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkTeamSelectingPager)) {
-            logger.e( "====>showTeamSelectScene:" + mFocusPager);
+            logger.e("====>showTeamSelectScene:" + mFocusPager);
 
             if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager) {
                 return;
@@ -499,10 +505,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * @param isWin
      */
     public void showAwardGetScene(int type, final Object data, final boolean isWin) {
-        logger.e( "======>showAwardGetScene called");
+        logger.e("======>showAwardGetScene called");
         //   if (mFocusPager == null || !(mFocusPager instanceof TeamPkAwardPager)) {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkAwardPager)) {
-            logger.e( "======>showAwardGetScene called 11111");
+            logger.e("======>showAwardGetScene called 11111");
 
             if (type == CHEST_TYPE_CLASS) {
                 //从pk结果页面直接跳到 贡献之星
@@ -529,7 +535,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                         TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, TeamPkBll.this);
                         addPager(awardGetPager);
                         awardGetPager.showBoxLoop();
-                        logger.e( "======>showAwardGetScene called 3333");
+                        logger.e("======>showAwardGetScene called 3333");
                     }
                 }, 1000);
             }
@@ -554,7 +560,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     public void showTeamSelecting() {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkTeamSelectPager)) {
-            logger.e( "====>showTeamSelecting:");
+            logger.e("====>showTeamSelecting:");
             rlTeamPkContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
                     .OnGlobalLayoutListener() {
                 @Override
@@ -621,12 +627,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         // step 1
         ViewGroup viewGroup = (ViewGroup) mActivity.getWindow().getDecorView();
         pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
-        Log.e("teamPk","=====>onModeChange called333:"+pkStateRootView);
+        Log.e("teamPk", "=====>onModeChange called333:" + pkStateRootView);
         if (pkStateRootView != null) {
             pkStateRootView.setVisibility(View.VISIBLE);
             pkStateRootView.setTeamPkBll(this);
             // 设置当前pk 状态,兼容 半身直播 主辅导态来回切换
-            if(mCurrentPkState != null){
+            if (mCurrentPkState != null) {
                 pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),
                         mCurrentPkState.getMyEnergy(), mCurrentPkState.getCompetitorEnergy(), false);
             }
@@ -657,7 +663,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     }
 
     private void getPkState(final boolean showPopWindow) {
-        logger.e( "=====> getPkState:" + roomInitInfo.getStuId() + ":" + mHttpManager);
+        logger.e("=====> getPkState:" + roomInitInfo.getStuId() + ":" + mHttpManager);
         mHttpManager.liveStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
@@ -667,7 +673,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                         mCurrentPkState = mHttpResponseParser.parseStuCoinAndTotalEnergy(responseEntity);
                         if (pkStateRootView != null && mCurrentPkState != null) {
                             pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),
-                                    mCurrentPkState.getMyEnergy(), mCurrentPkState.getCompetitorEnergy(), showPopWindow);
+                                    mCurrentPkState.getMyEnergy(), mCurrentPkState.getCompetitorEnergy(),
+                                    showPopWindow);
                         }
                     }
 
@@ -700,7 +707,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 展示 投票加能量 动画
      */
     private void showVoteEnergyAnim(int addEnergy, String voteId) {
-        logger.e( "========> showVoteEnergyAnim:" + voteId + ":" + addEnergy);
+        logger.e("========> showVoteEnergyAnim:" + voteId + ":" + addEnergy);
         TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_VOTE,
                 this);
         addPager(aqAwardPager);
@@ -724,8 +731,22 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * @return
      */
     private int getRightMargin() {
-        int screenWidth = ScreenUtils.getScreenWidth();
-        return (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
+        int returnValue = 0;
+        if(!isFullScreenMode()){
+            int screenWidth = ScreenUtils.getScreenWidth();
+            returnValue = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
+        }
+        return returnValue;
+    }
+
+    /**
+     * 当时是否是全屏模式
+     * @return
+     */
+    public boolean isFullScreenMode() {
+        boolean result = isHalfBodyLiveRoom() && mTeacherMode != null && mTeacherMode.equals(LiveTopic.MODE_CLASS);
+        //Log.e("TeamPk","======>isFullScreenMode:"+result+":"+mTeacherMode);
+        return result;
     }
 
     private void addPager(BasePager aqAwardPager) {
@@ -742,10 +763,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         rlTeamPkContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                ViewGroup viewGroup = (ViewGroup) mActivity.getWindow().getDecorView();
-                View videoView = viewGroup.findViewById(R.id.vv_course_video_video);
-                ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                setVideoLayout(lp.width, lp.height);
+
+                if(!isFullScreenMode()){
+                    ViewGroup viewGroup = (ViewGroup) mActivity.getWindow().getDecorView();
+                    View videoView = viewGroup.findViewById(R.id.vv_course_video_video);
+                    ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+                    setVideoLayout(lp.width, lp.height);
+                }
             }
         });
     }
@@ -788,14 +812,14 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         if (mFocusPager != null) {
             mFocusPager.onStop();
         }
-        logger.e( "======>onStop");
+        logger.e("======>onStop");
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
-        logger.e( "======>onStop");
+        logger.e("======>onStop");
     }
 
     @Override
@@ -805,14 +829,14 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             mFocusPager.onResume();
         }
 
-        logger.e( "======>onResume");
+        logger.e("======>onResume");
     }
 
 
     @Override
     public void onDestory() {
         super.onDestory();
-        logger.e( "======>onDestory");
+        logger.e("======>onDestory");
     }
 
 
@@ -829,12 +853,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             isAIPartner = roomInitInfo.getIsAIPartner() == 1;
             isAvailable = true;
         }
+        this.mTeacherMode = mLiveBll.getMode();
 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
-        logger.e( "=======>:onRoomH5CloseEvent:" + event.getId() + ":"
+        logger.e("=======>:onRoomH5CloseEvent:" + event.getId() + ":"
                 + event.getmGoldNum() + ":" + event.getmEnergyNum() + ":" + event.isCloseByTeacher());
         if (h5CloseEvents == null) {
             h5CloseEvents = new ArrayList<LiveRoomH5CloseEvent>();
@@ -874,11 +899,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 显示当前的pk 结果
      */
     public void showCurrentPkResult() {
-        logger.e( "======>showCurrentPkResult: called 666669999:"+h5CloseEvents);
+        logger.e("======>showCurrentPkResult: called 666669999:" + h5CloseEvents);
         if (h5CloseEvents == null || h5CloseEvents.size() == 0) {
             return;
         }
-        logger.e( "======>showCurrentPkResult: called");
+        logger.e("======>showCurrentPkResult: called");
         LiveRoomH5CloseEvent cacheEvent = h5CloseEvents.remove(0);
         getEnergyNumAndContributionStar(cacheEvent);
     }
@@ -991,7 +1016,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
 
-        logger.e( "=======>onNotice :" + type);
+        logger.e("=======>onNotice :" + type);
 
         if (isAvailable) {
 
@@ -1026,7 +1051,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     if (OPEN_STATE_OPEN.equals(open)) {
                         startSelectAdversary();
                         TeamPkLog.receiveMatchOpponent(mLiveBll, nonce, true);
-                        logger.e( "====>onNotice startSelectAdversary:");
+                        logger.e("====>onNotice startSelectAdversary:");
                     } else if (OPEN_STATE_CLOSE.equals(open)) {
                         stopSelectAdversary();
                         TeamPkLog.receiveMatchOpponent(mLiveBll, nonce, false);
@@ -1068,7 +1093,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     @Override
     public void onTopic(LiveTopic data, JSONObject jsonObject, boolean modeChange) {
 
-        logger.e( "====>onTopic");
+        logger.e("====>onTopic");
         if (isAvailable) {
             // 战队pk  topic 逻辑
             LiveTopic.TeamPkEntity teamPkEntity = data.getTeamPkEntity();
@@ -1082,14 +1107,14 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     openBoxStateCode = teamPkEntity.getRoomInfo1().getOpenbox();
                     alloteamStateCode = teamPkEntity.getRoomInfo1().getAlloteam();
                     allotpkmanStateCode = teamPkEntity.getRoomInfo1().getAllotpkman();
-                    logger.e( "====>onTopic teampk main_teacher_info:" + openBoxStateCode + ":" +
+                    logger.e("====>onTopic teampk main_teacher_info:" + openBoxStateCode + ":" +
                             alloteamStateCode + ":" + allotpkmanStateCode);
                 } else {
                     if (teamPkEntity.getRoomInfo2() != null) {
                         openBoxStateCode = teamPkEntity.getRoomInfo2().getOpenbox();
                         alloteamStateCode = teamPkEntity.getRoomInfo2().getAlloteam();
                         allotpkmanStateCode = teamPkEntity.getRoomInfo2().getAllotpkman();
-                        logger.e( "====>onTopic teampk assist_teacher_info:" + openBoxStateCode + ":" +
+                        logger.e("====>onTopic teampk assist_teacher_info:" + openBoxStateCode + ":" +
                                 alloteamStateCode + ":" + allotpkmanStateCode);
                     }
                 }
@@ -1097,20 +1122,20 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                 if (!isTopicHandled() && alloteamStateCode == 1) {
                     setTopicHandled(true);
                     showTeamSelecting();
-                    logger.e( "====>onTopic showTeamSelecting:");
+                    logger.e("====>onTopic showTeamSelecting:");
                     return;
                 }
                 if (allotpkmanStateCode == 1 && !isTopicHandled()) {
                     setTopicHandled(true);
                     startSelectAdversary();
-                    logger.e( "====>onTopic startSelectAdversary:");
+                    logger.e("====>onTopic startSelectAdversary:");
                     return;
                 }
 
                 if (openBoxStateCode == 1 && !isTopicHandled()) {
                     setTopicHandled(true);
                     showPkResult();
-                    logger.e( "====>onTopic showPkResult:");
+                    logger.e("====>onTopic showPkResult:");
                     return;
                 }
                 setTopicHandled(true);
