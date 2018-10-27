@@ -4,7 +4,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-
     <RelativeLayout
         android:id="@id/rl_livevideo_chat_head1"
         android:layout_width="40dp"
@@ -12,8 +11,8 @@
 
         <com.xueersi.ui.widget.CircleImageView
             android:id="@id/civ_livevideo_chat_head1"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             app:border_color="#ffffff"
             app:border_width="3dp" />
 
@@ -24,7 +23,9 @@
             android:layout_below="@id/civ_livevideo_chat_head1"
             android:layout_centerHorizontal="true"
             android:ellipsize="end"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="11sp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -34,8 +35,8 @@
 
         <com.xueersi.ui.widget.CircleImageView
             android:id="@id/civ_livevideo_chat_head2"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             app:border_color="#ffffff"
             app:border_width="3dp" />
 
@@ -44,7 +45,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/civ_livevideo_chat_head2"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="11sp" />
     </RelativeLayout>
 
     <RelativeLayout

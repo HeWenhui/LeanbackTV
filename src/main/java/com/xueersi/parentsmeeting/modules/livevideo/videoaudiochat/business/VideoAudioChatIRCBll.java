@@ -178,7 +178,8 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                                 JSONArray students = newLinkMic.getJSONArray("students");
                                 for (int i = 0; i < students.length(); i++) {
                                     ClassmateEntity classmateEntity = new ClassmateEntity();
-                                    classmateEntity.setId(students.getString(i));
+                                    JSONObject stuObj = students.getJSONObject(i);
+                                    classmateEntity.setId(stuObj.optString("id"));
                                     classmateEntities.add(classmateEntity);
                                 }
                             }

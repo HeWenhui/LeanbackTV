@@ -29,8 +29,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page.AgoraChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 public class ChatTipBll {
@@ -43,6 +41,10 @@ public class ChatTipBll {
     private int raisehandCount = 0;
     private boolean raisehand = false;
     /**
+     * 连麦状态
+     */
+    private String onMic = "off";
+    /**
      * 举麦包含我
      */
     private boolean containMe = false;
@@ -54,10 +56,17 @@ public class ChatTipBll {
      * 连麦人数
      */
     private ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
-    ViewGroup vgRaisehand;
-    TextView tv_livevideo_chat_people;
-    RelativeLayout rl_livevideo_content_left;
-    LinearLayout ll_livevideo_chat_people;
+    private ViewGroup vgRaisehand;
+    private TextView tv_livevideo_chat_people;
+    private TextView tv_livevideo_chat_people_grey;
+    private RelativeLayout rl_livevideo_content_left;
+    private LinearLayout ll_livevideo_chat_people;
+    private TextView tv_livevideo_chat_in_queue;
+    private RelativeLayout rl_livevideo_chat_raisehand;
+    private Button bt_livevideo_chat_raisehand;
+    private TextView tv_livevideo_chat_raisehand;
+    private RelativeLayout rl_livevideo_chat_raisehand_on;
+    private RelativeLayout rl_livevideo_chat_raisehand_off;
     /**
      * 举手人数
      */
@@ -91,20 +100,25 @@ public class ChatTipBll {
 //        bottomContent.addView(videoChatPager.getRootView());
     }
 
-    public void raisehand(String room, String from, String nonce) {
+    public void raisehand(String room, String from, String nonce, int micType) {
         this.msgFrom = from;
         this.room = room;
         logger.d("raisehand:from=" + from + ",nonce=" + nonce);
-        XESToastUtils.showToast(activity, "老师开启了语音连麦，踊跃参与吧");
+        if (0 == micType) {
+            XESToastUtils.showToast(activity, "老师开启了语音连麦，踊跃参与吧");
+        } else {
+            XESToastUtils.showToast(activity, "老师开启了视频连麦，踊跃参与吧");
+        }
         handler.post(new Runnable() {
             @Override
             public void run() {
-                initView();
+                initView("raisehand");
             }
         });
     }
 
-    public void onClassmateChange(final ArrayList<ClassmateEntity> classmateEntities) {
+    public void onClassmateChange(final ArrayList<ClassmateEntity> classmateEntities, boolean contain) {
+        logger.d("onClassmateChange:size=" + classmateEntities.size() + "，contain=" + contain);
         this.classmateEntities = classmateEntities;
         handler.post(new Runnable() {
             @Override
@@ -129,38 +143,43 @@ public class ChatTipBll {
 //        logger.d("raiseHandStatus:status=" + status + ",num=" + num + ",from=" + from);
 //    }
 
-    private void initView() {
+    private void initView(String method) {
+        logger.d("initView:vgRaisehand=null?" + (vgRaisehand == null) + ",method=" + method);
         if (vgRaisehand != null) {
             return;
         }
         vgRaisehand = (ViewGroup) LayoutInflater.from(activity).inflate(R.layout.layout_live_video_chat, bottomContent, false);
         rl_livevideo_content_left = vgRaisehand.findViewById(R.id.rl_livevideo_chat_content_left);
         ll_livevideo_chat_people = vgRaisehand.findViewById(R.id.ll_livevideo_chat_people);
+        rl_livevideo_chat_raisehand_on = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand_on);
+        rl_livevideo_chat_raisehand_off = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand_off);
         final RelativeLayout.LayoutParams lpRaisehand = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpRaisehand.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         final int bottom = LiveVideoPoint.getInstance().screenHeight - LiveVideoPoint.getInstance().y4 + 200;
         vgRaisehand.setPadding(vgRaisehand.getLeft(), bottom, vgRaisehand.getRight(), bottom);
         bottomContent.addView(vgRaisehand, lpRaisehand);
-        Button bt_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.bt_livevideo_chat_raisehand);
+        rl_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand);
+        bt_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.bt_livevideo_chat_raisehand);
+        tv_livevideo_chat_raisehand = vgRaisehand.findViewById(R.id.tv_livevideo_chat_raisehand);
         bt_livevideo_chat_raisehand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (raisehand) {
-                    v.setBackgroundResource(R.drawable.live_task_jushou_icon_normal);
-                    videoChatHttp.giveupMicro(msgFrom);
-                } else {
-                    v.setBackgroundResource(R.drawable.live_task_fangqi_icon_normal);
+                boolean oldRaisehand = raisehand;
+                if (!raisehand) {
                     raisehand(msgFrom);
-                    if (videoChatInter != null) {
-                        stopRecord();
-                    }
+                } else {
+                    videoChatHttp.giveupMicro(msgFrom);
                 }
-                raisehand = !raisehand;
+                changeRaisehand(!raisehand);
+                raisehand = !oldRaisehand;
                 logger.d("onClick:raisehand=" + raisehand);
             }
         });
         tv_livevideo_chat_people = vgRaisehand.findViewById(R.id.tv_livevideo_chat_people);
-        tv_livevideo_chat_people.setText("当前直播人数" + raiseHandCount);
+        tv_livevideo_chat_people.setText("当前举手" + raiseHandCount + "人，等待连麦中…");
+        tv_livevideo_chat_people_grey = vgRaisehand.findViewById(R.id.tv_livevideo_chat_people_grey);
+        tv_livevideo_chat_people_grey.setText("当前举手" + raiseHandCount + "人，等待连麦中…");
+        tv_livevideo_chat_in_queue = vgRaisehand.findViewById(R.id.tv_livevideo_chat_in_queue);
         final ImageView iv_livevideo_chat_small = vgRaisehand.findViewById(R.id.iv_livevideo_chat_small);
         iv_livevideo_chat_small.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,14 +189,14 @@ public class ChatTipBll {
                     rl_livevideo_content_left.setVisibility(View.GONE);
                     if (videoChatInter instanceof AgoraChatPager) {
                         AgoraChatPager agoraChatPager = (AgoraChatPager) videoChatInter;
-                        agoraChatPager.hind();
+                        agoraChatPager.hind("onClick");
                     }
                 } else {
                     iv_livevideo_chat_small.setImageResource(R.drawable.live_task_you_icon_normal);
                     rl_livevideo_content_left.setVisibility(View.VISIBLE);
                     if (videoChatInter instanceof AgoraChatPager) {
                         AgoraChatPager agoraChatPager = (AgoraChatPager) videoChatInter;
-                        agoraChatPager.show();
+                        agoraChatPager.show("onClick");
                     }
                 }
 //                bottomContent.removeView(vgRaisehand);
@@ -199,14 +218,28 @@ public class ChatTipBll {
         });
     }
 
+    private void changeRaisehand(boolean raisehand) {
+        if (raisehand) {
+            bt_livevideo_chat_raisehand.setBackgroundResource(R.drawable.live_task_fangqi_icon_normal);
+            tv_livevideo_chat_raisehand.setText("放弃");
+            tv_livevideo_chat_in_queue.setText("举手成功，已进入队列");
+        } else {
+            bt_livevideo_chat_raisehand.setBackgroundResource(R.drawable.live_task_jushou_icon_normal);
+            tv_livevideo_chat_raisehand.setText("举手");
+        }
+    }
+
     public void raiseHandCount(final int num) {
         raiseHandCount = num;
         handler.post(new Runnable() {
             @Override
             public void run() {
-                initView();
+                initView("raiseHandCount");
                 if (tv_livevideo_chat_people != null) {
-                    tv_livevideo_chat_people.setText("当前直播人数" + num);
+                    tv_livevideo_chat_people.setText("当前举手" + raiseHandCount + "人，等待连麦中…");
+                }
+                if (tv_livevideo_chat_people_grey != null) {
+                    tv_livevideo_chat_people_grey.setText("当前举手" + raiseHandCount + "人，等待连麦中…");
                 }
             }
         });
@@ -248,20 +281,41 @@ public class ChatTipBll {
         runnable.run();
     }
 
-    public void startMicro(final String nonce, final String room, String from, final boolean contain, final int micType) {
-        logger.d("startMicro:nonce=" + nonce + ",from=" + from);
+    public void startMicro(final String onMic, final String nonce, final String room, String from, final boolean contain, final int micType) {
+        logger.d("startMicro:nonce=" + nonce + ",onMic=" + onMic + ",contain=" + contain + ",from=" + from);
+        this.onMic = onMic;
         if (contain) {
             raisehand = true;
         }
+        final boolean oldcontainMe = containMe;
+        containMe = contain;
         handler.post(new Runnable() {
             @Override
             public void run() {
+                initView("startMicro");
+                if ("on".equals(onMic)) {
+                    rl_livevideo_chat_raisehand_on.setVisibility(View.VISIBLE);
+                    rl_livevideo_chat_raisehand_off.setVisibility(View.INVISIBLE);
+                } else {
+                    rl_livevideo_chat_raisehand_on.setVisibility(View.INVISIBLE);
+                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
+                }
+                changeRaisehand(contain);
+                if (contain) {
+                    rl_livevideo_chat_raisehand.setVisibility(View.GONE);
+                } else {
+                    rl_livevideo_chat_raisehand.setVisibility(View.VISIBLE);
+                    if (oldcontainMe != containMe) {
+                        tv_livevideo_chat_in_queue.setText("你已下麦，可以再次举手");
+                    }
+                }
                 startRecord(room, nonce, contain, micType);
             }
         });
     }
 
     public void startRecord(final String room, final String nonce, boolean contain, int micType) {
+        logger.d("startRecord:room=" + room + ",contain=" + contain + ",micType=" + micType);
         if (videoChatInter != null) {
             if (contain) {
                 videoChatInter.startRecord("startRecord", room, nonce, micType == 1);
@@ -271,7 +325,7 @@ public class ChatTipBll {
             videoChatInter.updateUser(classmateChange, classmateEntities);
             return;
         }
-        initView();
+        initView("startRecord");
         videoChatInter = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp);
         if (contain) {
             videoChatInter.startRecord("startRecord", room, nonce, micType == 1);
@@ -280,8 +334,9 @@ public class ChatTipBll {
         ll_livevideo_chat_people.addView(videoChatInter.getRootView(), RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
     }
 
-    public void stopRecord() {
+    public void stopRecord(String method) {
         raisehand = false;
+        logger.d("stopRecord:method=" + method);
         handler.post(new Runnable() {
             @Override
             public void run() {

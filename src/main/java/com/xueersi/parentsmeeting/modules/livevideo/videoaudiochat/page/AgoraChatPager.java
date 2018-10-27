@@ -7,7 +7,6 @@ import android.os.Looper;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -121,7 +120,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
             mLogtf.d("onFirstRemoteVideoDecoded:uid=" + uid);
             startRemote.set(true);
             videoChatEvent.stopPlay();
-            doRenderRemoteUi(uid);
+//            doRenderRemoteUi(uid);
         }
 
         @Override
@@ -192,27 +191,26 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
             mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
                 @Override
                 public void onEngineCreate(final RtcEngine mRtcEngine) {
-                    if (video) {
-                        VideoEncoderConfiguration.VideoDimensions dimensions = VideoEncoderConfiguration.VD_320x240;
-                        VideoEncoderConfiguration configuration = new VideoEncoderConfiguration(dimensions,
-                                VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
-                                VideoEncoderConfiguration.STANDARD_BITRATE,
-                                VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE);
-                        int setVideoEncoder = mRtcEngine.setVideoEncoderConfiguration(configuration);
-                        logger.d("onEngineCreate:setVideoEncoder=" + setVideoEncoder);
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                ViewGroup container = activity.findViewById(R.id.rl_course_video_live_agora_content);
-                                SurfaceView surfaceView = RtcEngine.CreateRendererView(activity);
-                                surfaceView.setZOrderMediaOverlay(true);
-                                container.addView(surfaceView);
-                                mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_ADAPTIVE, 0));
-                                logger.d("onEngineCreate:container=" + container.getChildCount());
-                            }
-                        });
-                    }
+                    VideoEncoderConfiguration.VideoDimensions dimensions = VideoEncoderConfiguration.VD_320x240;
+                    VideoEncoderConfiguration configuration = new VideoEncoderConfiguration(dimensions,
+                            VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_10,
+                            VideoEncoderConfiguration.STANDARD_BITRATE,
+                            VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT);
+                    int setVideoEncoder = mRtcEngine.setVideoEncoderConfiguration(configuration);
+                    logger.d("onEngineCreate:setVideoEncoder=" + setVideoEncoder);
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ViewGroup container = activity.findViewById(R.id.rl_course_video_live_agora_content);
+                            logger.d("onEngineCreate:containerb=" + container.getChildCount());
+                            SurfaceView surfaceView = RtcEngine.CreateRendererView(activity);
+                            surfaceView.setZOrderMediaOverlay(true);
+                            container.addView(surfaceView, 320, 240);
+                            mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_ADAPTIVE, 0));
+                            logger.d("onEngineCreate:containera=" + container.getChildCount());
+                        }
+                    });
                 }
             });
         }
@@ -230,11 +228,12 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 VideoChatLog.sno8(liveBll, nonce, room, joinChannel);
             }
         });
-        show();
+        show("startRecord");
     }
 
     @Override
     public void stopRecord() {
+        logger.d("stopRecord:mWorkerThread=null?" + (mWorkerThread == null));
         if (mWorkerThread != null) {
             mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
                 @Override
@@ -271,7 +270,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     public void removeMe() {
         containMe = false;
         stopRecord();
-        hind();
+        hind("removeMe");
     }
 
     @Override
@@ -312,6 +311,11 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
 
     private void setName(final ClassmateEntity classmateEntity, final CircleImageView civ_livevideo_chat_head, final TextView tv_livevideo_chat_head) {
         if (StringUtils.isEmpty(classmateEntity.getName()) || StringUtils.isEmpty(classmateEntity.getImg())) {
+            if (StringUtils.isEmpty(classmateEntity.getImg())) {
+                civ_livevideo_chat_head.setImageResource(R.drawable.defult_head_img);
+            } else {
+                ImageLoader.with(activity).load(classmateEntity.getImg()).into(civ_livevideo_chat_head);
+            }
             videoChatHttp.getStuInfoByIds(classmateEntity.getId(), new AbstractBusinessDataCallBack() {
                 @Override
                 public void onDataSucess(Object... objData) {
@@ -347,21 +351,21 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         }
     }
 
-    public void show() {
-        logger.d("show");
+    public void show(String method) {
+        logger.d("show:method=" + method);
         rl_livevideo_chat_voice.setVisibility(View.VISIBLE);
         vw_livevideo_chat_voice.setVisibility(View.VISIBLE);
     }
 
-    public void hind() {
-        logger.d("hind");
+    public void hind(String method) {
+        logger.d("hind:method=" + method);
         rl_livevideo_chat_voice.setVisibility(View.GONE);
         vw_livevideo_chat_voice.setVisibility(View.GONE);
     }
 
     @Override
     public void onDestroy() {
-        hind();
+        hind("onDestroy");
         super.onDestroy();
     }
 }
