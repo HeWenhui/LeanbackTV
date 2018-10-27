@@ -126,24 +126,25 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             mLiveType = LiveVideoConfig.LIVE_TYPE_LECTURE;
             appID = UmsConstants.OPERAT_APP_ID;
         } else {
-            if (islocal) {
-                if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVE_PLAY_RECORD) {//直播辅导下载
-                    mLiveType = LiveVideoConfig.LIVE_TYPE_TUTORIAL;
-                } else {//直播课下载
-                    mLiveType = LiveVideoConfig.LIVE_TYPE_LIVE;
-                }
-            } else {
+
+        }
+        if (islocal) {
+            if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVE_PLAY_RECORD) {//直播辅导下载
+                mLiveType = LiveVideoConfig.LIVE_TYPE_TUTORIAL;
+            } else {//直播课下载
                 mLiveType = LiveVideoConfig.LIVE_TYPE_LIVE;
             }
-            if (isArts == 1) {
-                appID = UmsConstants.ARTS_APP_ID_BACK;
-                IS_SCIENCE = false;
-                liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
-            } else {
-                appID = UmsConstants.LIVE_APP_ID_BACK;
-                IS_SCIENCE = true;
-                liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
-            }
+        } else {
+            mLiveType = LiveVideoConfig.LIVE_TYPE_LIVE;
+        }
+        if (isArts == 1) {
+            appID = UmsConstants.ARTS_APP_ID_BACK;
+            IS_SCIENCE = false;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
+        } else {
+            appID = UmsConstants.LIVE_APP_ID_BACK;
+            IS_SCIENCE = true;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         }
         logToFile = new LogToFile(this, TAG);
         ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, this);
