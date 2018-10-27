@@ -212,7 +212,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
 
         long before = System.currentTimeMillis();
-        liveMessageLandEntities.clear();
 
         HalfBodyLiveMessagePager liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
                 null,baseLiveMediaControllerBottom, liveMessageLandEntities, null);
@@ -378,6 +377,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             mLiveMessagePager = new LiveMessagePortPager(activity, this, liveMessagePortEntities,
                     liveMessageLandEntities);
         }
+
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
         mLiveMessagePager.setPeopleCount(peopleCount);
