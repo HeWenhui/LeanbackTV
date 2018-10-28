@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -165,6 +167,12 @@ public class ChatTipBll {
         bt_livevideo_chat_raisehand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!raisehand) {
+                    boolean have = XesPermission.checkPermissionNoAlert(activity, PermissionConfig.PERMISSION_CODE_AUDIO, PermissionConfig.PERMISSION_CODE_CAMERA);
+                    if (!have) {
+                        return;
+                    }
+                }
                 boolean oldRaisehand = raisehand;
                 if (!raisehand) {
                     raisehand(msgFrom);
