@@ -19,16 +19,16 @@ public class LiveCutImage {
         if (bitmap == null) {
             return null;
         }
-        int width = Math.min(bitmap.getWidth(), (int) (LiveVideoConfig.VIDEO_WIDTH - LiveVideoConfig.VIDEO_HEAD_WIDTH));
-        int height = Math.min(bitmap.getHeight(), (int) LiveVideoConfig.VIDEO_HEIGHT);
+        int width = (int) (bitmap.getWidth() * (LiveVideoConfig.VIDEO_WIDTH - LiveVideoConfig.VIDEO_HEAD_WIDTH) / LiveVideoConfig.VIDEO_WIDTH);
+        int height = bitmap.getHeight();
         Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height);
         bitmap.recycle();
         return newBitmap;
     }
 
     public static Bitmap cutBitmap(Bitmap oldBitmap) {
-        int width = Math.min(oldBitmap.getWidth(), (int) (LiveVideoConfig.VIDEO_WIDTH - LiveVideoConfig.VIDEO_HEAD_WIDTH));
-        int height = Math.min(oldBitmap.getHeight(), (int) LiveVideoConfig.VIDEO_HEIGHT);
+        int width = (int) (oldBitmap.getWidth() * (LiveVideoConfig.VIDEO_WIDTH - LiveVideoConfig.VIDEO_HEAD_WIDTH) / LiveVideoConfig.VIDEO_WIDTH);
+        int height = oldBitmap.getHeight();
         Bitmap newBitmap = Bitmap.createBitmap(oldBitmap, 0, 0, width, height);
         return newBitmap;
     }

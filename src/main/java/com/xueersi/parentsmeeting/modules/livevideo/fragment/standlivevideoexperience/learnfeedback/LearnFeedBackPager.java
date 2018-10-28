@@ -118,14 +118,15 @@ public class LearnFeedBackPager extends BasePager {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONObject jsonOption = new JSONObject();
                 JSONArray jsonArray = new JSONArray();
                 try {
 
+                    JSONObject jsonOption = new JSONObject();
                     jsonOption.put("1", mDifficulty);
-                    jsonOption.put("2", mSatisficing);
                     jsonArray.put(jsonOption);
-
+                    JSONObject jsonObject2 = new JSONObject();
+                    jsonObject2.put("2", mSatisficing);
+                    jsonArray.put(jsonObject2);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

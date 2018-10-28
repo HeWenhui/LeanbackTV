@@ -8,6 +8,8 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -39,6 +41,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -69,6 +72,11 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     private Timer timer;
     private int goldNum;
+
+
+
+    //统计埋点
+    private Map<String, String> userLogMap = new HashMap<String, String>();
 
 
     public PraiseInteractionBll(Context context, LiveBll2 liveBll) {
@@ -124,6 +132,9 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
      */
     private void openPraise() {
         if (!isOpen) {
+            userLogMap.clear();
+            userLogMap.put("openPraise", "goldnum=" + goldNum);
+
             mHandler.removeCallbacks(delayRemoveRunalbe);
             isOpen = true;
             praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll);
@@ -245,6 +256,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent.OnGetGoldUpdateEvent event) {
         if (!TextUtils.isEmpty(event.goldNum)) {
+            userLogMap.put("reciveGoldNum", "goldnum=" + goldNum);
             goldNum = Integer.valueOf(event.goldNum);
             if (praiseInteractionPager != null) {
                 praiseInteractionPager.setGoldNum(goldNum);
@@ -256,7 +268,12 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
     private void closePraise() {
         if (isOpen == true) {
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), this.getClass().getSimpleName(),
+                    userLogMap);
             isOpen = false;
+            otherSpecialGiftStack.clear();
+            otherPraiseStack.clear();
+            mySpecialGiftStack.clear();
             if (timer != null) {
                 timer.cancel();
             }
@@ -462,8 +479,10 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
                     praiseMessageEntity.setGiftType(jsonObject.optInt("value"));
                     int giftType = praiseMessageEntity.getGiftType();
                     String messageContent = "";
+
                     if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_PHYSICAL) {
                         messageContent = praiseMessageEntity.getUserName() + "同学给老师点亮了星空";
+
                     } else if (giftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_CHEMISTRY) {
                         messageContent = praiseMessageEntity.getUserName() + "同学送老师一瓶魔法水";
 

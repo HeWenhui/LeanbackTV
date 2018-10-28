@@ -127,8 +127,10 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
 //            return;
 //        }
         if (mPager == null) {
+            logger.i("isBuyRecommondCourse" + isBuyRecommondCourse);
             mPager = new RecommondCoursePager(mContext, isBuyRecommondCourse, liveGetInfo.getUname());
             initListener();
+            registerInBllHideView();
         }
         if (livePlayBackHttpResponseParser == null) {
             livePlayBackHttpResponseParser = getCourseHttpResponseParser();
@@ -137,11 +139,27 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 //                if (!getIsResultComplete()) {
+                if (responseEntity != null) {
+                    logger.i(responseEntity.toString());
+                }
                 mRecommondCourseEntity = livePlayBackHttpResponseParser.parseRecommondCourseInfo(responseEntity);
                 mPager.updateView(mRecommondCourseEntity);
                 mRootView.addView(mPager.getRootView(), RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout
                         .LayoutParams.MATCH_PARENT);
+                logger.i("添加弹窗");
 //                }
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                logger.i("onPmFailure");
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                logger.i("onPmError");
             }
         };
         //发送http请求，得到推荐课程数据
@@ -219,6 +237,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
 
     private void removeView() {
         if (mPager != null && mPager.getRootView().getParent() == mRootView) {
+            logger.i("移除了RecommondCoursePager");
             mRootView.removeView(mPager.getRootView());
         }
     }
@@ -258,6 +277,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     public void buyRecommondCourseComplete(Boolean isSuccess) {
         if (isSuccess) {
             if (mPager != null && mPager.getRootView().getParent() == mRootView) {
+                logger.i("购课成功");
                 mPager.buyCourseSuccess();
             }
         }

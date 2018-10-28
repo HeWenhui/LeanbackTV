@@ -56,13 +56,13 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     public StudyReportBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         mLogtf = new LogToFile(activity, TAG);
-        putInstance(StudyReportAction.class, this);
     }
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         if (getInfo.getAllowSnapshot() == 1) {
+            putInstance(StudyReportAction.class, this);
             initData();
         } else {
             mLiveBll.removeBusinessBll(this);
@@ -232,7 +232,8 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                                 } else {
                                     try {
                                         Bitmap oldBitmap = BitmapFactory.decodeFile(saveFile.getPath());
-                                        Bitmap createBitmap = Bitmap.createBitmap(videoBitmap.getWidth(), videoBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+                                        int width = (int) (videoBitmap.getWidth() * (LiveVideoConfig.VIDEO_WIDTH - LiveVideoConfig.VIDEO_HEAD_WIDTH) / LiveVideoConfig.VIDEO_WIDTH);
+                                        Bitmap createBitmap = Bitmap.createBitmap(width, videoBitmap.getHeight(), Bitmap.Config.ARGB_8888);
                                         Canvas canvas = new Canvas(createBitmap);
                                         int left = (oldBitmap.getWidth() - videoBitmap.getWidth()) / 2;
                                         int top = (oldBitmap.getHeight() - videoBitmap.getHeight()) / 2;
@@ -245,9 +246,10 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                                             File videoSaveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
                                             LiveCutImage.saveImage(videoBitmap, videoSaveFile.getPath());
                                         }
+                                        oldBitmap.recycle();
                                         createBitmap.recycle();
                                         videoBitmap.recycle();
-                                        logger.d("onGetBitmap:width=" + oldBitmap.getWidth() + ",height=" + oldBitmap.getHeight() + ",left=" + left + ",top=" + top);
+                                        logger.d("onGetBitmap:create=" + createBitmap.getWidth() + ",old=" + oldBitmap.getWidth() + ",height=" + oldBitmap.getHeight() + ",left=" + left + ",top=" + top);
                                     } catch (Exception e) {
                                         CrashReport.postCatchedException(e);
                                         uploadWonderMoment(type, saveFile.getPath());

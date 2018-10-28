@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,8 +127,8 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
 //        String mEnStuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId(); // token
 //        examUrl = BrowserBll.getAutoLoginURL(mEnStuId, examUrl, "", 0, true);
         mLogtf.d("initData:examUrl=" + examUrl);
-        LiveHttpManager liveHttpManager=new LiveHttpManager(mContext);
-        HttpRequestParams params=new HttpRequestParams();
+        LiveHttpManager liveHttpManager = new LiveHttpManager(mContext);
+        HttpRequestParams params = new HttpRequestParams();
         liveHttpManager.sendGetNoBusiness(examUrl, params, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -135,15 +137,21 @@ public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectRe
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String r = response.body().string();
+                final String r = response.body().string();
                 logger.d("onResponse:r="+r);
-                wvSubjectWeb.loadDataWithBaseURL("",r,"text/html", "UTF-8", "");
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        wvSubjectWeb.loadDataWithBaseURL("",r,"text/html", "UTF-8", "");
+                    }
+                });
             }
 
         });
 //        wvSubjectWeb.loadUrl(examUrl);
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");
     }
+
 
     @android.webkit.JavascriptInterface
     private void addJavascriptInterface() {

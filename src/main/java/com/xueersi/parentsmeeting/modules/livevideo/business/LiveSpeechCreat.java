@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -46,13 +47,18 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
     @Override
     public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
                                                     SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll) {
-//        SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
-//                videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-//                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
-        RolePlayMachinePager rolePlayerPager  = new RolePlayMachinePager(context,
+
+        //老讲义人机走原生
+        if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles)){
+            RolePlayMachinePager rolePlayerPager  = new RolePlayMachinePager(context,
+                    videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                    true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
+            return rolePlayerPager;
+        }
+        SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
-        return rolePlayerPager;
+                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
+        return speechAssessmentPager;
     }
 
 

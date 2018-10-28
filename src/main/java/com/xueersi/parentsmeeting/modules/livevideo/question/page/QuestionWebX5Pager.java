@@ -89,7 +89,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private int mGoldNum;
     private int mEngerNum;
     private boolean allowTeamPk;
-    private boolean isLive = true;
+//    private boolean isLive = true;
     private File mMorecacheout;
     private File cacheFile;
     private String type;
@@ -103,22 +103,22 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                               String nonce, String isShowRanks, boolean IS_SCIENCE, String stuCouId, boolean allowTeamPk) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
-        if (baseVideoQuestionEntity != null) {
-            isLive = baseVideoQuestionEntity.isLive();
-        }
+//        if (baseVideoQuestionEntity != null) {
+//            isLive = baseVideoQuestionEntity.isLive();
+//        }
         this.IS_SCIENCE = IS_SCIENCE;
         this.questionBll = questionBll;
         this.stuId = stuId;
         this.stuName = stuName;
         this.liveid = liveid;
         this.testId = testId;
-        String[] ss = testId.split("-");
-        if (ss.length > 1) {
-            if ("0".equals(ss[1])) {
-                testPaperUrl = LiveVideoConfig.URL_LIVE_TEA_UPLOAD_TEST;
-                jsExamSubmitAll = "javascript:__CLIENT_SUBMIT__()";
-            }
-        }
+//        String[] ss = testId.split("-");
+//        if (ss.length > 1) {
+//            if ("0".equals(ss[1])) {
+//                testPaperUrl = LiveVideoConfig.URL_LIVE_TEA_UPLOAD_TEST;
+//                jsExamSubmitAll = "javascript:__CLIENT_SUBMIT__()";
+//            }
+//        }
         this.testPaperUrl = testPaperUrl;
         this.nonce = nonce;
         this.isShowRanks = isShowRanks;
@@ -239,7 +239,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             }
             examUrl += "&stuCouId=" + stuCouId;
             examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
-            examUrl += "&isPlayBack=" + (isLive ? "0" : "1");
+//            examUrl += "&isPlayBack=" + (isLive ? "0" : "1");
             examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
             wvSubjectWeb.loadUrl(examUrl);
             logger.e( "======> loadUrl:" + examUrl);
