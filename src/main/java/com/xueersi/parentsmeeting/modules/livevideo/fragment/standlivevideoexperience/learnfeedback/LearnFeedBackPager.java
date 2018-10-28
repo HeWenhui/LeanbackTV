@@ -153,15 +153,15 @@ public class LearnFeedBackPager<T extends LearnFeedBackContract.ISendHttp> exten
                     }
                 };
                 if (mSendHttp != null) {
-                    mSendHttp.sendHttp(
-                            UserBll.getInstance().getMyUserInfoEntity().getStuId(),
-                            mVideoEntity.getLiveId(),
-                            mVideoEntity.getSubjectId(),
-                            mVideoEntity.getGradId(),
-                            mVideoEntity.getChapterId(),
-                            etSuggest.getText().toString(),
-                            jsonOption,
-                            httpCallBack);
+//                    mSendHttp.sendHttp(
+//                            UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+//                            mVideoEntity.getLiveId(),
+//                            mVideoEntity.getSubjectId(),
+//                            mVideoEntity.getGradId(),
+//                            mVideoEntity.getChapterId(),
+//                            etSuggest.getText().toString(),
+//                            jsonOption,
+//                            httpCallBack);
                 }
                 mSendHttp.removeWindow();
 //                setBackgroundAlpha(1f);

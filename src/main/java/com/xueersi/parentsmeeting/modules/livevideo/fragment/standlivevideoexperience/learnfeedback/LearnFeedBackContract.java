@@ -3,12 +3,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexpe
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 public interface LearnFeedBackContract {
 
     interface ISendHttp extends IPresenter {
         void sendHttp(String useId, String liveId, String subjectId, String gradId, String chapterId, String
-                suggest, JSONObject jsonObject, HttpCallBack httpCallBack);
+                suggest, JSONArray jsonObject, HttpCallBack httpCallBack);
     }
 }

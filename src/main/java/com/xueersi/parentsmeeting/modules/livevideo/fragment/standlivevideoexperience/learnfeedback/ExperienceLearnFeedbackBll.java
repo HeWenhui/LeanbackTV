@@ -7,7 +7,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceLiveBackBll;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class ExperienceLearnFeedbackBll extends StandExperienceEventBaseBll implements LearnFeedBackContract.ISendHttp {
 
@@ -88,7 +88,7 @@ public class ExperienceLearnFeedbackBll extends StandExperienceEventBaseBll impl
 
     @Override
     public void sendHttp(String useId, String liveId, String subjectId, String gradId, String chapterId, String
-            suggest, JSONObject jsonObject, HttpCallBack httpCallBack) {
+            suggest, JSONArray jsonObject, HttpCallBack httpCallBack) {
         getCourseHttpManager().sendExperienceFeedback(useId, liveId, subjectId, gradId, chapterId, suggest,
                 jsonObject, httpCallBack);
     }
