@@ -11,6 +11,8 @@ public interface VideoAudioChatHttp {
 
     void giveupMicro(String from);
 
+    void praise(String uid, int likes);
+
     void chatHandAdd(HttpCallBack call);
 
     void getStuInfoByIds(String uid, AbstractBusinessDataCallBack abstractBusinessDataCallBack);

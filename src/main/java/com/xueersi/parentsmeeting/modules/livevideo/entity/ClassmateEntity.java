@@ -5,6 +5,8 @@ public class ClassmateEntity {
     private String name;
     private String img;
     private int place;
+    private boolean isMe = false;
+    private int likes;
 
     public String getId() {
         return id;
@@ -36,6 +38,22 @@ public class ClassmateEntity {
 
     public void setPlace(int place) {
         this.place = place;
+    }
+
+    public boolean isMe() {
+        return isMe;
+    }
+
+    public void setMe(boolean me) {
+        isMe = me;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     @Override

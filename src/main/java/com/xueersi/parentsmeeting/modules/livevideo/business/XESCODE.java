@@ -185,6 +185,8 @@ public interface XESCODE {
         int RAISE_HAND_COUNT = 282;
         /** 举手 */
         int STU_RAISE_HAND = 283;
+        /** 点赞 */
+        int PRAISE_STU = 286;
     }
 
     /** 文科表扬榜  开始notice */

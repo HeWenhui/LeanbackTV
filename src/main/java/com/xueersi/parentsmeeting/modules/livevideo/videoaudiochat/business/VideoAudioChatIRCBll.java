@@ -333,6 +333,24 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
     }
 
     @Override
+    public void praise(String uid, int likes) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", XESCODE.AgoraChat.PRAISE_STU);
+            jsonObject.put("to", uid);
+            jsonObject.put("likes", likes);
+            if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
+                mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
+            } else {
+                mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);
+            }
+        } catch (Exception e) {
+            // logger.e( "understand", e);
+            mLogtf.e("praise", e);
+        }
+    }
+
+    @Override
     public void getStuInfoByIds(final String uid, final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
         getHttpManager().getStuInfoByIds(uid, new HttpCallBack(false) {
             @Override

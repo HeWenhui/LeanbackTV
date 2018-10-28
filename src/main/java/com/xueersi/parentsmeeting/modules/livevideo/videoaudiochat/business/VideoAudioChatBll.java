@@ -271,6 +271,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
             allClassmateEntities.add(classmateEntity);
             if ((classmateEntity.getId() + "").equals(getInfo.getStuId())) {
                 contain = true;
+                classmateEntity.setMe(true);
 //                break;
             }
         }
@@ -360,6 +361,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                 allClassmateEntities.add(classmateEntity);
                 if ((classmateEntity.getId() + "").equals(getInfo.getStuId())) {
                     contain = true;
+                    classmateEntity.setMe(true);
 //                break;
                 }
             }
