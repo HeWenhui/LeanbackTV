@@ -122,9 +122,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         where = intent.getStringExtra("where");
         if ("LivePlayBackActivity".equals(where)) {//直播辅导
             mLiveType = LiveVideoConfig.LIVE_TYPE_TUTORIAL;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         } else if ("PublicLiveDetailActivity".equals(where)) {//公开直播
             mLiveType = LiveVideoConfig.LIVE_TYPE_LECTURE;
             appID = UmsConstants.OPERAT_APP_ID;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         } else {
             if (islocal) {
                 if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVE_PLAY_RECORD) {//直播辅导下载
