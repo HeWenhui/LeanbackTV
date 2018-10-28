@@ -6,13 +6,14 @@
 
     <RelativeLayout
         android:id="@id/rl_livevideo_chat_head1"
-        android:layout_width="40dp"
+        android:layout_width="50dp"
         android:layout_height="wrap_content">
 
         <com.xueersi.ui.widget.CircleImageView
             android:id="@id/civ_livevideo_chat_head1"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:layout_marginTop="17dp"
             app:border_color="#ffffff"
             app:border_width="3dp" />
 
@@ -22,6 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/civ_livevideo_chat_head1"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/white"
@@ -33,28 +35,40 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/civ_livevideo_chat_head1"
             android:layout_alignParentRight="true"
-            android:visibility="invisible" />
+            android:layout_marginRight="5dp"
+            android:src="@drawable/livevideo_right_dianzan_btn_normal" />
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lav_livevideo_chat_praise1"
+            android:id="@id/lav_livevideo_chat_praise1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/civ_livevideo_chat_head1"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="center"
             android:visibility="invisible" />
 
+        <TextView
+            android:id="@id/tv_livevideo_chat_count1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/iv_livevideo_chat_praise1"
+            android:layout_alignRight="@id/lav_livevideo_chat_praise1"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/shape_livevideo_praise_interaction_num"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:visibility="visible" />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@id/rl_livevideo_chat_head2"
-        android:layout_width="40dp"
+        android:layout_width="50dp"
         android:layout_height="wrap_content">
 
         <com.xueersi.ui.widget.CircleImageView
             android:id="@id/civ_livevideo_chat_head2"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:layout_marginTop="17dp"
             app:border_color="#ffffff"
             app:border_width="3dp" />
 
@@ -64,6 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/civ_livevideo_chat_head2"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/white"
@@ -75,17 +90,28 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/civ_livevideo_chat_head2"
             android:layout_alignParentRight="true"
-            android:visibility="invisible" />
+            android:layout_marginRight="5dp"
+            android:src="@drawable/livevideo_right_dianzan_btn_normal" />
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lav_livevideo_chat_praise2"
+            android:id="@id/lav_livevideo_chat_praise2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/civ_livevideo_chat_head2"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="center"
             android:visibility="invisible" />
 
+        <TextView
+            android:id="@id/tv_livevideo_chat_count2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/iv_livevideo_chat_praise2"
+            android:layout_alignRight="@id/iv_livevideo_chat_praise2"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/shape_livevideo_praise_interaction_num"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:visibility="visible" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -105,7 +131,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/vw_livevideo_chat_voice"
             android:layout_centerHorizontal="true"
-            android:text="已接麦" />
+            android:text="已接麦"
+            android:textColor="@color/white" />
     </RelativeLayout>
 
 </LinearLayout>

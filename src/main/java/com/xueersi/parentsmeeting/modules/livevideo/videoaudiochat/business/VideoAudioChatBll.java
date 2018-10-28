@@ -395,7 +395,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                 chatTipBll.startMicro(onMic, "", room, from, false, micType);
             }
         }
-        chatTipBll.onClassmateChange(onmicClassmateEntities, false);
+        chatTipBll.onClassmateChange(allClassmateEntities, false);
     }
 
     public void startMicro(String status, String nonce, boolean contain, String room, String from, int msgFrom) {
