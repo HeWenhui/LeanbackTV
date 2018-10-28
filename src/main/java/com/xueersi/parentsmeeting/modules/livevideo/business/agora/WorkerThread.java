@@ -243,8 +243,9 @@ public class WorkerThread extends Thread {
         }
         mEngineConfig.mClientRole = cRole;
         mEngineConfig.mVideoProfile = vProfile;
-
-        mRtcEngine.setVideoProfile(mEngineConfig.mVideoProfile, true);
+        if (vProfile > 0) {
+            mRtcEngine.setVideoProfile(mEngineConfig.mVideoProfile, true);
+        }
 
         mRtcEngine.setClientRole(cRole);
         if (audioCallBack) {

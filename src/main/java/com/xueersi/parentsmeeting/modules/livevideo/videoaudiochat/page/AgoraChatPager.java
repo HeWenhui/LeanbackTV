@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
@@ -120,7 +121,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
             mLogtf.d("onFirstRemoteVideoDecoded:uid=" + uid);
             startRemote.set(true);
             videoChatEvent.stopPlay();
-//            doRenderRemoteUi(uid);
+            doRenderRemoteUi(uid);
         }
 
         @Override
@@ -195,29 +196,31 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                     VideoEncoderConfiguration configuration = new VideoEncoderConfiguration(dimensions,
                             VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_10,
                             VideoEncoderConfiguration.STANDARD_BITRATE,
-                            VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT);
+                            VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_LANDSCAPE);
                     int setVideoEncoder = mRtcEngine.setVideoEncoderConfiguration(configuration);
                     logger.d("onEngineCreate:setVideoEncoder=" + setVideoEncoder);
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            ViewGroup container = activity.findViewById(R.id.rl_course_video_live_agora_content);
-                            logger.d("onEngineCreate:containerb=" + container.getChildCount());
-                            SurfaceView surfaceView = RtcEngine.CreateRendererView(activity);
-                            surfaceView.setZOrderMediaOverlay(true);
-                            container.addView(surfaceView, 320, 240);
-                            mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_ADAPTIVE, 0));
-                            logger.d("onEngineCreate:containera=" + container.getChildCount());
-                        }
-                    });
+                    if (AppConfig.DEBUG) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ViewGroup container = activity.findViewById(R.id.rl_course_video_live_agora_content);
+                                logger.d("onEngineCreate:containerb=" + container.getChildCount());
+                                SurfaceView surfaceView = RtcEngine.CreateRendererView(activity);
+                                surfaceView.setZOrderMediaOverlay(true);
+                                container.addView(surfaceView, 400, 400);
+                                mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_ADAPTIVE, 0));
+                                logger.d("onEngineCreate:containera=" + container.getChildCount());
+                            }
+                        });
+                    }
                 }
             });
         }
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
         mWorkerThread.start();
         mWorkerThread.waitForReady();
-        int vProfile = Constants.VIDEO_PROFILE_240P;
+        int vProfile = -1;
         mWorkerThread.configEngine(Constants.CLIENT_ROLE_BROADCASTER, vProfile);
         mWorkerThread.joinChannel(null, room, stuid, new WorkerThread.OnJoinChannel() {
             @Override

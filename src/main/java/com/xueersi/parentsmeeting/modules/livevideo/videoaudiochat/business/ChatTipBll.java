@@ -38,7 +38,7 @@ public class ChatTipBll {
     Handler handler = new Handler(Looper.getMainLooper());
     private LiveAndBackDebug liveAndBackDebug;
     private VideoAudioChatHttp videoChatHttp;
-    private int raisehandCount = 0;
+    private int stuPutUpHandsNum = 0;
     private boolean raisehand = false;
     /**
      * 连麦状态
@@ -92,6 +92,7 @@ public class ChatTipBll {
 
     public void setGetInfo(LiveGetInfo getInfo) {
         this.getInfo = getInfo;
+        stuPutUpHandsNum = getInfo.getStuPutUpHandsNum();
     }
 
     public void setRootView(RelativeLayout bottomContent) {
@@ -258,7 +259,8 @@ public class ChatTipBll {
                         Object jsonObject = responseEntity.getJsonObject();
                         logger.d("chatHandAdd:onPmSuccess:responseEntity=" + jsonObject);
                         try {
-                            raisehandCount = Integer.parseInt(jsonObject + "");
+                            stuPutUpHandsNum = Integer.parseInt(jsonObject + "");
+                            getInfo.setStuPutUpHandsNum(stuPutUpHandsNum);
                         } catch (Exception e) {
                             CrashReport.postCatchedException(new Exception("" + jsonObject, e));
                         }

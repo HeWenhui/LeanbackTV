@@ -298,9 +298,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
             jsonObject.put("name", mGetInfo.getStuName());
             jsonObject.put("img", mGetInfo.getStuImg());
 
-            jsonObject.put("camera", 1);
+            jsonObject.put("camera", 0);
             jsonObject.put("linkNum", mGetInfo.getStuLinkMicNum());
-            jsonObject.put("raiseNum", 0);
+            jsonObject.put("raiseNum", mGetInfo.getStuPutUpHandsNum());
 
             jsonObject.put("nonce", nonce);
             if ("t".equals(from)) {
