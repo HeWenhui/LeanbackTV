@@ -453,6 +453,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
             videoChatInter = null;
             mLogtf.d("MIC_TIME:onDestroy:time=" + (System.currentTimeMillis() - startTime));
         }
+        chatTipBll.destory();
         chatStatusChanges.clear();
     }
 

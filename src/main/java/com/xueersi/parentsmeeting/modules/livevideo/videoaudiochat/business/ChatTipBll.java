@@ -22,6 +22,8 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.agora.MyEngineEventHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -78,6 +80,7 @@ public class ChatTipBll {
     private AgoraVideoChatInter videoChatInter;
     private VideoChatEvent videoChatEvent;
     private LiveGetInfo getInfo;
+    WorkerThread testWorkerThread;
 
     public ChatTipBll(Activity activity) {
         this.activity = activity;
@@ -172,6 +175,9 @@ public class ChatTipBll {
                     if (!have) {
                         return;
                     }
+                    if (testWorkerThread == null) {
+                        enableLastmileTest();
+                    }
                 }
                 boolean oldRaisehand = raisehand;
                 if (!raisehand) {
@@ -225,6 +231,38 @@ public class ChatTipBll {
 //                });
             }
         });
+    }
+
+    MyEngineEventHandler.OnLastmileQuality onLastmileQuality = new MyEngineEventHandler.OnLastmileQuality() {
+        @Override
+        public void onLastmileQuality(int quality) {
+            logger.d("onLastmileQuality:quality=" + quality);
+            videoChatHttp.sendNetWorkQuality(quality);
+        }
+
+        @Override
+        public void onQuit() {
+            logger.d("onQuit");
+            testWorkerThread = null;
+        }
+    };
+
+    private void enableLastmileTest() {
+        AgoraChatPager agoraChatPager = null;
+        if (videoChatInter instanceof AgoraChatPager) {
+            agoraChatPager = (AgoraChatPager) videoChatInter;
+            logger.d("enableLastmileTest:WorkerThread=null?" + (agoraChatPager.getWorkerThread() == null));
+            if (agoraChatPager.getWorkerThread() != null) {
+                return;
+            }
+        }
+        if (testWorkerThread == null) {
+            testWorkerThread = new WorkerThread(activity.getApplicationContext(), 0, false);
+            if (agoraChatPager != null) {
+                agoraChatPager.setTestWorkerThread(testWorkerThread);
+            }
+        }
+        testWorkerThread.enableLastmileTest(onLastmileQuality);
     }
 
     private void changeRaisehand(boolean raisehand) {
@@ -337,7 +375,9 @@ public class ChatTipBll {
             return;
         }
         initView("startRecord");
-        videoChatInter = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp);
+        AgoraChatPager agoraChatPager = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp, micType);
+        agoraChatPager.setTestWorkerThread(testWorkerThread);
+        videoChatInter = agoraChatPager;
         if (contain) {
             videoChatInter.startRecord("startRecord", room, nonce, micType == 1);
         }
@@ -368,5 +408,11 @@ public class ChatTipBll {
                 }
             }
         });
+    }
+
+    public void destory() {
+        if (testWorkerThread != null) {
+            testWorkerThread.disableLastmileTest();
+        }
     }
 }

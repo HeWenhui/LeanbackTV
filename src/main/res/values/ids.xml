@@ -821,6 +821,7 @@
     <item name="lav_livevideo_chat_praise2" type="id" />
     <item name="tv_livevideo_chat_count2" type="id" />
 
+    <item name="v_livevideo_chat_myline" type="id" />
     <item name="rl_livevideo_chat_voice" type="id" />
     <item name="vw_livevideo_chat_voice" type="id" />
 </resources>

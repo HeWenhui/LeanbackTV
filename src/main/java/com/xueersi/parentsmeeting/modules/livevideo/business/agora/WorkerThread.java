@@ -49,6 +49,7 @@ public class WorkerThread extends Thread {
      */
     private boolean isExternalAudio;
     private OnEngineCreate onEngineCreate;
+    MyEngineEventHandler.OnLastmileQuality onLastmileQuality;
 
     private static final class WorkerThreadHandler extends Handler {
 
@@ -316,6 +317,21 @@ public class WorkerThread extends Thread {
             if (onEngineCreate != null) {
                 onEngineCreate.onEngineCreate(mRtcEngine);
             }
+            if (onLastmileQuality != null) {
+                mEngineEventHandler.setOnLastmileQuality(new MyEngineEventHandler.OnLastmileQuality() {
+                    @Override
+                    public void onLastmileQuality(int quality) {
+                        onLastmileQuality.onLastmileQuality(quality);
+//                        mRtcEngine.disableLastmileTest();
+                    }
+
+                    @Override
+                    public void onQuit() {
+                        onLastmileQuality.onQuit();
+                    }
+                });
+                mRtcEngine.enableLastmileTest();
+            }
         }
         return mRtcEngine;
     }
@@ -382,5 +398,23 @@ public class WorkerThread extends Thread {
 
     public interface OnEngineCreate {
         void onEngineCreate(RtcEngine mRtcEngine);
+    }
+
+    public void enableLastmileTest(MyEngineEventHandler.OnLastmileQuality onLastmileQuality) {
+        this.onLastmileQuality = onLastmileQuality;
+        try {
+            ensureRtcEngineReadyLock();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void disableLastmileTest() {
+        if (onLastmileQuality != null) {
+            onLastmileQuality.onQuit();
+        }
+        if (mRtcEngine != null) {
+            mRtcEngine.disableLastmileTest();
+        }
     }
 }

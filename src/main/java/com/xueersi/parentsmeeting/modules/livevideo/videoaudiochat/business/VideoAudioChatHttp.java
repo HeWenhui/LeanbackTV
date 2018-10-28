@@ -13,6 +13,8 @@ public interface VideoAudioChatHttp {
 
     void praise(String uid, int likes);
 
+    void sendNetWorkQuality(int quality);
+
     void chatHandAdd(HttpCallBack call);
 
     void getStuInfoByIds(String uid, AbstractBusinessDataCallBack abstractBusinessDataCallBack);

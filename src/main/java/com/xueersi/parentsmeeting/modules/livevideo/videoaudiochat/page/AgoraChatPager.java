@@ -62,6 +62,8 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     private boolean isFail = false;
     private Activity activity;
     private WorkerThread mWorkerThread;
+    /** 测试网络的 */
+    private WorkerThread testWorkerThread;
     private LogToFile mLogtf;
     private AtomicBoolean startRemote;
     private String eventId = LiveVideoConfig.LIVE_LINK_MIRCO;
@@ -76,8 +78,9 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     private LottieEffectInfo bubbleEffectInfo;
     private boolean initLottile1 = false;
     private boolean initLottile2 = false;
+    private int micType;
 
-    public AgoraChatPager(Activity activity, LiveAndBackDebug liveBll, LiveGetInfo getInfo, VideoChatEvent videoChatEvent, VideoAudioChatHttp videoChatHttp) {
+    public AgoraChatPager(Activity activity, LiveAndBackDebug liveBll, LiveGetInfo getInfo, VideoChatEvent videoChatEvent, VideoAudioChatHttp videoChatHttp, int micType) {
         logger = LoggerFactory.getLogger(TAG);
         this.activity = activity;
         mContext = activity;
@@ -86,6 +89,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         this.startRemote = videoChatEvent.getStartRemote();
         this.liveBll = liveBll;
         this.getInfo = getInfo;
+        this.micType = micType;
         netWorkType = NetWorkHelper.getNetWorkState(activity);
         mLogtf = new LogToFile(activity, TAG);
         mLogtf.d("AgoraChatPager:netWorkType=" + netWorkType);
@@ -201,6 +205,9 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         stuid = Integer.parseInt(getInfo.getStuId());
         containMe = true;
         this.room = room;
+        if (testWorkerThread != null) {
+            testWorkerThread.disableLastmileTest();
+        }
         mWorkerThread = new WorkerThread(activity.getApplicationContext(), stuid, true);
         if (video) {
             mWorkerThread.setEnableLocalVideo(true);
@@ -247,6 +254,14 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
             }
         });
         show("startRecord");
+    }
+
+    public void setTestWorkerThread(WorkerThread testWorkerThread) {
+        this.testWorkerThread = testWorkerThread;
+    }
+
+    public WorkerThread getWorkerThread() {
+        return mWorkerThread;
     }
 
     @Override
@@ -316,8 +331,10 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 final ImageView iv_livevideo_chat_praise1 = rl_livevideo_chat_head1.findViewById(R.id.iv_livevideo_chat_praise1);
                 TextView tv_livevideo_chat_count1 = rl_livevideo_chat_head1.findViewById(R.id.tv_livevideo_chat_count1);
                 final LottieAnimationView pressLottileView = rl_livevideo_chat_head1.findViewById(R.id.lav_livevideo_chat_praise1);
-                if (classmateEntity1.isMe()) {
-//                    iv_livevideo_chat_praise1.setVisibility(View.VISIBLE);
+                if (classmateEntity1.isMe() || micType == 0) {
+                    if (micType == 0) {
+                        iv_livevideo_chat_praise1.setVisibility(View.GONE);
+                    }
                     pressLottileView.setVisibility(View.GONE);
                 } else {
 //                    iv_livevideo_chat_praise1.setVisibility(View.INVISIBLE);
@@ -334,7 +351,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), activity);
                                 if ("img_2.png".equals(fileName)) {
                                     ViewGroup.LayoutParams lp = iv_livevideo_chat_praise1.getLayoutParams();
-                                    lp.width = lp.height = bitmap.getWidth() * lottieImageAsset.getWidth() / 145;
+//                                    lp.width = lp.height = bitmap.getWidth() * lottieImageAsset.getWidth() / 145;
                                     iv_livevideo_chat_praise1.setLayoutParams(lp);
                                     logger.d("fetchBitmap:width1=" + lp.width);
                                     iv_livevideo_chat_praise1.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -368,8 +385,10 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 final ImageView iv_livevideo_chat_praise2 = rl_livevideo_chat_head2.findViewById(R.id.iv_livevideo_chat_praise2);
                 TextView tv_livevideo_chat_count2 = rl_livevideo_chat_head2.findViewById(R.id.tv_livevideo_chat_count2);
                 final LottieAnimationView pressLottileView = rl_livevideo_chat_head2.findViewById(R.id.lav_livevideo_chat_praise2);
-                if (classmateEntity2.isMe()) {
-//                    iv_livevideo_chat_praise2.setVisibility(View.VISIBLE);
+                if (classmateEntity2.isMe() || micType == 0) {
+                    if (micType == 0) {
+                        iv_livevideo_chat_praise2.setVisibility(View.GONE);
+                    }
                     pressLottileView.setVisibility(View.GONE);
                 } else {
 //                    iv_livevideo_chat_praise2.setVisibility(View.INVISIBLE);
@@ -386,7 +405,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), activity);
                                 if ("img_2.png".equals(fileName)) {
                                     ViewGroup.LayoutParams lp = iv_livevideo_chat_praise2.getLayoutParams();
-                                    lp.width = lp.height = bitmap.getWidth() * lottieImageAsset.getWidth() / 145;
+//                                    lp.width = lp.height = bitmap.getWidth() * lottieImageAsset.getWidth() / 145;
                                     iv_livevideo_chat_praise2.setLayoutParams(lp);
                                     logger.d("fetchBitmap:width2=" + lp.width);
                                     iv_livevideo_chat_praise2.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {

@@ -340,15 +340,44 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
             jsonObject.put("to", uid);
             jsonObject.put("id", mGetInfo.getStuId());
             jsonObject.put("likes", "" + likes);
-//            if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
-//                mLiveBll.sendMessage(mLiveBll.getMainTeacherStr(), jsonObject);
-//            } else {
-//                mLiveBll.sendMessage(mLiveBll.getCounTeacherStr(), jsonObject);
-//            }
-            mLiveBll.sendMessage(jsonObject);
+            if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
+                mLiveBll.sendMessage(mLiveBll.getMainTeacherStr(), jsonObject);
+            } else {
+                mLiveBll.sendMessage(mLiveBll.getCounTeacherStr(), jsonObject);
+            }
+//            mLiveBll.sendMessage(jsonObject);
         } catch (Exception e) {
             // logger.e( "understand", e);
             mLogtf.e("praise", e);
+        }
+    }
+
+    @Override
+    public void sendNetWorkQuality(int quality) {
+        int quality2 = 0;
+        if (quality == 1 || quality == 2) {
+            quality2 = 0;
+        } else if (quality == 3 || quality == 4) {
+            quality2 = 1;
+        } else {
+            quality2 = 2;
+        }
+        logger.d("sendNetWorkQuality:quality=" + quality + ",quality2=" + quality2);
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "" + XESCODE.AgoraChat.PRAISE_STU);
+            jsonObject.put("id", mGetInfo.getStuId());
+
+            jsonObject.put("quality", quality2);
+            if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
+                mLiveBll.sendMessage(mLiveBll.getMainTeacherStr(), jsonObject);
+            } else {
+                mLiveBll.sendMessage(mLiveBll.getCounTeacherStr(), jsonObject);
+            }
+//            mLiveBll.sendMessage(jsonObject);
+        } catch (Exception e) {
+            // logger.e( "understand", e);
+            mLogtf.e("sendNetWorkQuality", e);
         }
     }
 
