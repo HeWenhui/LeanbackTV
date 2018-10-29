@@ -37,14 +37,13 @@
             android:id="@id/vwv_livevideo_speecteval_wave"
             android:layout_width="15dp"
             android:layout_height="22dp"
-            android:background="@drawable/bg_livevideo_feedback_wave_cover"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"/>
+
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/iv_livevideo_feedback_wave"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
             android:layout_gravity="center" />
 
 
