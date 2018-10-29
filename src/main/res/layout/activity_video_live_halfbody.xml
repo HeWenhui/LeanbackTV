@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:orientation="vertical">
+    >
 
     <RelativeLayout
         android:id="@id/rl_course_video_content"
@@ -48,6 +48,7 @@
                     android:contentDescription="@string/content_desc_lock"
                     android:padding="3dp" />
 
+                <!--视频加载中UI-->
                 <LinearLayout
                     android:id="@id/ll_course_video_loading"
                     android:layout_width="wrap_content"
@@ -92,6 +93,8 @@
                         android:text="正在获取网络资源，请稍候" />
 
                 </LinearLayout>
+
+
             </RelativeLayout>
 
             <!-- 老师不再直播间 -->
@@ -107,7 +110,7 @@
             android:id="@id/rl_course_video_live_agora_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true"></RelativeLayout>
+            android:layout_centerInParent="true"/>
 
         <!-- LiveMediaController界面位置 -->
         <RelativeLayout

@@ -77,6 +77,15 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+
+        <!--半身直播家长旁听-->
+        <activity
+            android:name=".activity.AuditClassHalfBodyLiveActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+
+
         <activity
             android:name=".activity.LectureLiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
