@@ -20,4 +20,21 @@ public class PlayErrorCodeLog {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 直播体验课视频 播放失败 上传日志
+     *
+     * @param liveAndBackDebug
+     * @param playErrorCode
+     */
+    public static void standExperienceLivePlayError(LiveAndBackDebug liveAndBackDebug, PlayErrorCode playErrorCode) {
+        try {
+            StableLogHashMap stableLogHashMap = new StableLogHashMap();
+            stableLogHashMap.put("code", "" + playErrorCode.getCode());
+            liveAndBackDebug.umsAgentDebugSys(LiveVideoConfig.STAND_EXPERIENCE_LIVE_PLAY_ERROR, stableLogHashMap
+                    .getData());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

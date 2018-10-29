@@ -53,7 +53,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     protected long mStartPos;
     /** 当前视频是否播放到了结尾 */
     protected boolean mIsEnd = false;
-
+    public static final Object mIjkLock = new Object();
     /** 所在的Activity是否已经onCreated */
     private boolean mCreated = false;
     /** 播放器核心服务 */

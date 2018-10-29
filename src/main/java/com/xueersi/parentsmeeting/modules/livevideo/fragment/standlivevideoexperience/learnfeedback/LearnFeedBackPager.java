@@ -13,23 +13,23 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import okhttp3.Call;
 
-public class LearnFeedBackPager<T extends LearnFeedBackContract.ISendHttp> extends BasePager {
+public class LearnFeedBackPager extends BasePager {
 
-    private T mSendHttp;
+    private IPresenter mPresenter;
+
+    private ISendHttp mSendHttp;
 
     private RadioGroup rgDifficulty;
     private RadioGroup rgSatisficing;
@@ -43,14 +43,12 @@ public class LearnFeedBackPager<T extends LearnFeedBackContract.ISendHttp> exten
 
     private VideoLivePlayBackEntity mVideoEntity;
 
-    private List<LiveExperienceEntity.LearnFeedBack> arrayOptions;
-
-    public LearnFeedBackPager(Context context, T presenter, VideoLivePlayBackEntity
+    public LearnFeedBackPager(Context context, ExperienceLearnFeedbackBll presenter, VideoLivePlayBackEntity
             videoLivePlayBackEntity) {
         super(context);
+        this.mPresenter = presenter;
         this.mSendHttp = presenter;
         this.mVideoEntity = videoLivePlayBackEntity;
-        arrayOptions = videoLivePlayBackEntity.getLearnFeedback();
         initListener();
     }
 
@@ -114,16 +112,21 @@ public class LearnFeedBackPager<T extends LearnFeedBackContract.ISendHttp> exten
         imgbtnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSendHttp.removeWindow();
+                mPresenter.removeWindow();
             }
         });
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONObject jsonOption = new JSONObject();
+                JSONArray jsonArray = new JSONArray();
                 try {
+
+                    JSONObject jsonOption = new JSONObject();
                     jsonOption.put("1", mDifficulty);
-                    jsonOption.put("2", mSatisficing);
+                    jsonArray.put(jsonOption);
+                    JSONObject jsonObject2 = new JSONObject();
+                    jsonObject2.put("2", mSatisficing);
+                    jsonArray.put(jsonObject2);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -131,7 +134,7 @@ public class LearnFeedBackPager<T extends LearnFeedBackContract.ISendHttp> exten
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        mSendHttp.removeWindow();
+                        mPresenter.removeWindow();
                     }
 
                     @Override
@@ -153,44 +156,36 @@ public class LearnFeedBackPager<T extends LearnFeedBackContract.ISendHttp> exten
                     }
                 };
                 if (mSendHttp != null) {
-//                    mSendHttp.sendHttp(
-//                            UserBll.getInstance().getMyUserInfoEntity().getStuId(),
-//                            mVideoEntity.getLiveId(),
-//                            mVideoEntity.getSubjectId(),
-//                            mVideoEntity.getGradId(),
-//                            mVideoEntity.getChapterId(),
-//                            etSuggest.getText().toString(),
-//                            jsonOption,
-//                            httpCallBack);
+                    mSendHttp.sendHttp(
+                            UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+                            mVideoEntity.getLiveId(),
+                            mVideoEntity.getSubjectId(),
+                            mVideoEntity.getGradId(),
+                            mVideoEntity.getChapterId(),
+                            etSuggest.getText().toString(),
+                            jsonArray,
+                            httpCallBack);
                 }
-                mSendHttp.removeWindow();
+                mPresenter.removeWindow();
 //                setBackgroundAlpha(1f);
             }
         });
     }
 
-    //    private void setBackgroundAlpha(float bgAlpha) {
+//    private void setBackgroundAlpha(float bgAlpha) {
 //        WindowManager.LayoutParams lp = mWindow
 //                .getAttributes();
 //        lp.alpha = bgAlpha;
 //        mWindow.setAttributes(lp);
 //    }
-// FIXME: 2018/10/16 ui给了之后，再来选择显示什么样子
+
     @Override
     public void initData() {
-        for (LiveExperienceEntity.LearnFeedBack item : arrayOptions) {
-            item.getTitle();
-            Map<String, String> map = item.getOptions();
-            int length = map.size();
 
-            Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, String> entryKey = iterator.next();
-                String key = entryKey.getKey();
-                String value = entryKey.getValue();
-            }
-
-        }
     }
 
+    public interface ISendHttp {
+        void sendHttp(String useId, String liveId, String subjectId, String gradId, String chapterId, String
+                suggest, JSONArray jsonObject, HttpCallBack httpCallBack);
+    }
 }

@@ -85,6 +85,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
 
     protected LivePlayerFragment videoFragment;
 
+
     protected LiveMediaController mMediaController;
 
     private LiveAchievementIRCBll starAction;
@@ -134,7 +135,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                 liveMessageLandEntities,
                 null);
 //        初始化默认看不见这个布局
-
+        mLiveMessagePager.setStarGoldImageViewVisible(false);//异常右上角临时加的星星和金币图片
         mLiveMessagePager.setIrcState(videoExperiencIRCState);
         mRootView.addView(mLiveMessagePager.getRootView());
         mLiveMessagePager.setGetInfo(liveGetInfo);

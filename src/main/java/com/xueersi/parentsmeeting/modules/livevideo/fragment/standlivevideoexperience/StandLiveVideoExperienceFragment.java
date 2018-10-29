@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBack
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
@@ -64,6 +65,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceQuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -435,7 +437,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 }
             });
         }
+
     }
+
 
     protected void initBusiness() {
         liveBackBll.addBusinessShareParam("videoView", videoView);
@@ -590,6 +594,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             } else {
                 PlayErrorCode playErrorCode = PlayErrorCode.getError(arg2);
                 errorInfo.setText("视频播放失败 [" + playErrorCode.getCode() + "]");
+                PlayErrorCodeLog.standExperienceLivePlayError(liveBackBll, playErrorCode);
             }
         }
 //        rlQuestionContent.setVisibility(View.GONE);
@@ -649,27 +654,28 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         resultFailed = true;
         logger.d("resultFailed:arg2=" + arg2);
         if (arg2 != 0 && mVideoEntity != null) {
-            if ("LivePlayBackActivity".equals(where)) {//直播辅导
-                XesMobAgent.onOpenFail(where + ":playback2", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
-                        mVideoEntity.getCourseId() + "-" + mVideoEntity.getSectionId() + "-" + mVideoEntity.getLiveId
-                        (), mWebPath, arg2);
-            } else if ("PublicLiveDetailActivity".equals(where)) {//公开直播
-                XesMobAgent.onOpenFail(where + ":playback3", mVideoEntity.getLiveId(), mWebPath, arg2);
-            } else {
-                if (islocal) {
-                    if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVE_PLAY_RECORD) {//直播辅导下载
-                        XesMobAgent.onOpenFail(where + ":playback4", mVideoEntity.getCourseId() + "-" + mVideoEntity
-                                .getLiveId(), mWebPath + "," + new File(mWebPath).length(), arg2);
-                    } else {//直播课下载
-                        XesMobAgent.onOpenFail(where + ":playback5", mVideoEntity.getCourseId() + "-" + mVideoEntity
-                                .getLiveId(), mWebPath + "," + new File(mWebPath).length(), arg2);
-                    }
-                } else {
-                    XesMobAgent.onOpenFail(where + ":playback6", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
-                            mVideoEntity.getCourseId() + "-" + mVideoEntity.getLiveId(), mWebPath, arg2);
-                }
-            }
-//            XesMobAgent.onOpenFail(where+"playback7",);
+            XesMobAgent.onOpenFail(where + ":playback7", mVideoEntity.getCourseId() + "-" + mVideoEntity.getLiveId(),
+                    mWebPath, arg2);
+//            if ("LivePlayBackActivity".equals(where)) {//直播辅导
+//                XesMobAgent.onOpenFail(where + ":playback2", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
+//                        mVideoEntity.getCourseId() + "-" + mVideoEntity.getSectionId() + "-" + mVideoEntity.getLiveId
+//                        (), mWebPath, arg2);
+//            } else if ("PublicLiveDetailActivity".equals(where)) {//公开直播
+//                XesMobAgent.onOpenFail(where + ":playback3", mVideoEntity.getLiveId(), mWebPath, arg2);
+//            } else {
+//                if (islocal) {
+//                    if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVE_PLAY_RECORD) {//直播辅导下载
+//                        XesMobAgent.onOpenFail(where + ":playback4", mVideoEntity.getCourseId() + "-" + mVideoEntity
+//                                .getLiveId(), mWebPath + "," + new File(mWebPath).length(), arg2);
+//                    } else {//直播课下载
+//                        XesMobAgent.onOpenFail(where + ":playback5", mVideoEntity.getCourseId() + "-" + mVideoEntity
+//                                .getLiveId(), mWebPath + "," + new File(mWebPath).length(), arg2);
+//                    }
+//                } else {
+//                    XesMobAgent.onOpenFail(where + ":playback6", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
+//                            mVideoEntity.getCourseId() + "-" + mVideoEntity.getLiveId(), mWebPath, arg2);
+//                }
+//            }
         }
         continuedMTime += System.currentTimeMillis() - everyTime;//得到这次观看的时间
     }

@@ -109,6 +109,15 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                     logger.i( "数据为空");
                     return;
                 }
+
+                if(mEntity.getMsgStatus() == RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY){
+                    logger.i("正在roleplay,不可点击自己对话");
+                    return;
+                }
+                if(mEntity.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ){
+                    logger.i( "roleplay还未结束，不可点击对话");
+                    return;
+                }
                 if (mIsPlaying) {
                     logger.i( "语音正在播放中，请不要重复点击");
                     return;
@@ -254,7 +263,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 //                        public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
 //                            super.onError(msg, dataSource, manager);
 //                            if (msg != null) {
-//                                IMLoger.info(mContext, "语音播放错误：" + msg + "  语音地址：" + mEntity.getSmallResourceUrl());
+//                                IMlogger.info(mContext, "语音播放错误：" + msg + "  语音地址：" + mEntity.getSmallResourceUrl());
 //                            }
 //                        }
 //                    }
@@ -552,6 +561,14 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
     private void changeYuyinClickable() {
         vVoiceMain.setClickable(mIsVideoUnClick ? false : true);
+    }
+
+    public void relaseAudioPlay() {
+
+        if(mAudioPlayerManager != null){
+            mAudioPlayerManager.stop();
+            mAudioPlayerManager.release();
+        }
     }
 }
 

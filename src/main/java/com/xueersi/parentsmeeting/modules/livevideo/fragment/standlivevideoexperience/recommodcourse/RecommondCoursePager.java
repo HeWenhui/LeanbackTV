@@ -52,7 +52,7 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
 
     private boolean isBuyCourseSuccess = false;
 
-//    private ImageView ivBannerBackground;
+    //    private ImageView ivBannerBackground;
     //    private VideoLivePlayBackEntity mVideoEntity;
     String userName;
 
@@ -201,12 +201,17 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
         logger.i(mRecommondCourseEntity.getCourseName() + " " + mRecommondCourseEntity.getCoursePrice());
         recommondCourseEntity = mRecommondCourseEntity;
         if (mRecommondCourseEntity != null) {
-            if (!TextUtils.isEmpty(mRecommondCourseEntity.getCourseName())) {
+            if (!TextUtils.isEmpty(mRecommondCourseEntity.getCourseName()) && !TextUtils.isEmpty
+                    (mRecommondCourseEntity.getCoursePrice())) {
                 tvCourseName.setText(mRecommondCourseEntity.getCourseName());
-            }
-            if (!TextUtils.isEmpty(mRecommondCourseEntity.getCoursePrice())) {
                 tvCourseMoney.setText("¥" + mRecommondCourseEntity.getCoursePrice());
+            } else {//如果其中任何一个为空，则隐藏掉这个layout
+                wholeRecommondCourseLayout.setVisibility(View.GONE);
+                thumbnailRecommondCourseLayout.setVisibility(View.GONE);
             }
+        } else {
+            wholeRecommondCourseLayout.setVisibility(View.GONE);
+            thumbnailRecommondCourseLayout.setVisibility(View.GONE);
         }
     }
 
@@ -281,6 +286,7 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
         SpannableString spannableString = new SpannableString("恭喜 " + userName + "购买 " + "Amazing English");
         queMessages.add(0, spannableString);
         cvbView.setOwn(true);
+        logger.i("隐藏推荐课程，左上角轮播图不隐藏");
         wholeRecommondCourseLayout.setVisibility(View.GONE);
         thumbnailRecommondCourseLayout.setVisibility(View.GONE);
     }
@@ -296,8 +302,10 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
             if (!isBuyCourseSuccess) {
                 if (isShow) {
                     mView.setVisibility(View.GONE);
+                    logger.i("试题开始，结束推荐课程弹窗");
                 } else {
                     mView.setVisibility(View.VISIBLE);
+                    logger.i("试题结束，开启推荐课程弹窗");
                 }
             }
         }

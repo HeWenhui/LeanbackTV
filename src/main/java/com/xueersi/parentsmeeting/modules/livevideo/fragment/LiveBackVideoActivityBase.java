@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.tencent.bugly.crashreport.BuglyLog;
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCall;
@@ -50,6 +51,7 @@ public class LiveBackVideoActivityBase extends XesActivity {
         Intent intent = new Intent(this, LiveService.class);
         intent.putExtra("livepid", android.os.Process.myPid());
         startService(intent);
+        BuglyLog.i(TAG,"onCreate");
     }
 
     @Override
@@ -68,6 +70,7 @@ public class LiveBackVideoActivityBase extends XesActivity {
     @Override
     public void onResume() {
         super.onResume();
+        BuglyLog.i(TAG,"onResume");
         FileLogger.runActivity = this;
         //关闭系统后台声音
         AudioPlayer.requestAudioFocus(this);
@@ -77,6 +80,7 @@ public class LiveBackVideoActivityBase extends XesActivity {
     @Override
     public void onPause() {
         super.onPause();
+        BuglyLog.i(TAG,"onPause");
         AudioPlayer.abandAudioFocus(this);
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONPAUSE);
     }
@@ -84,6 +88,7 @@ public class LiveBackVideoActivityBase extends XesActivity {
     @Override
     public void onStop() {
         super.onStop();
+        BuglyLog.i(TAG,"onStop");
         XesMobAgent.userMarkVideoDestory(MobEnumUtil.MARK_VIDEO_ONSTOP);
     }
 
@@ -101,6 +106,7 @@ public class LiveBackVideoActivityBase extends XesActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        BuglyLog.i(TAG,"onDestroy");
         // 注销事件
         EventBus.getDefault().unregister(this);
         stopService(new Intent(this, LiveService.class));
@@ -114,6 +120,7 @@ public class LiveBackVideoActivityBase extends XesActivity {
 
     @Override
     public final void onBackPressed() {
+        BuglyLog.i(TAG,"onBackPressed");
         if (liveVideoFragmentBase != null) {
             liveVideoFragmentBase.onBackPressed();
         }

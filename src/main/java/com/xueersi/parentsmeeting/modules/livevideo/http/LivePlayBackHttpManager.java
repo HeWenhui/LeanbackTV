@@ -3,11 +3,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 
 import com.xueersi.common.base.BaseHttpBusiness;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 
@@ -57,39 +59,53 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     public void saveTestRecord(String enStuId, String srcType, String testId, String testResult, String testDay,
                                String classId,
                                int livePlayType, boolean voice, boolean isRight, HttpCallBack requestCallBack) {
-        String liveUrl;
-        // 如果是录播直播回放
-        if (livePlayType == LocalCourseConfig.LIVETYPE_RECORDED) {
-            liveUrl = LiveVideoConfig.URL_STUDY_SAVE_TEST_RECORD;
-            // 直播讲座
-        } else if (livePlayType == LocalCourseConfig.LIVETYPE_LECTURE) {
-            liveUrl = LiveVideoConfig.URL_PUBLIC_LIVE_COURSE_SUBMIT_QUESTION;
-        } else {
-            if (voice) {
-                liveUrl = liveVideoSAConfigInner.URL_LIVE_SUBMIT_TEST_ANSWER_VOICE;
-            } else {
-                liveUrl = liveVideoSAConfigInner.URL_STUDY_SAVE_ANSWER_FOR_PLAYBACK;
-            }
-        }
-        HttpRequestParams params = new HttpRequestParams();
-        setDefaultParameter(params);
-        if (!StringUtils.isSpace(srcType)) {
-            params.addBodyParam("srcType", srcType);
-        }
-        params.addBodyParam("classId", classId);
-        params.addBodyParam("liveId", classId);
-        params.addBodyParam("testDay", testDay);
-//        params.addBodyParam("enstuId", enStuId);
-        params.addBodyParam("testId", testId);
-        if (voice) {
+        if(LiveVideoConfig.isNewArts){
+            HttpRequestParams params = new HttpRequestParams();
+            String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSTEST_ANSWER;
+            params.addBodyParam("liveId", classId);
+            params.addBodyParam("testId", testId);
             params.addBodyParam("answer", testResult);
+            params.addBodyParam("isPlayBack", "2");
+            params.addBodyParam("isForce", "1");
+            setDefaultParameter(params);
+            sendPost(url, params, requestCallBack);
+            Loger.e("Duncan", "======> liveNewArtsSubmitTestAnswerforback:" + url);
+
         } else {
-            params.addBodyParam("testAnswer", testResult);
+            String liveUrl;
+            // 如果是录播直播回放
+            if (livePlayType == LocalCourseConfig.LIVETYPE_RECORDED) {
+                liveUrl = LiveVideoConfig.URL_STUDY_SAVE_TEST_RECORD;
+                // 直播讲座
+            } else if (livePlayType == LocalCourseConfig.LIVETYPE_LECTURE) {
+                liveUrl = LiveVideoConfig.URL_PUBLIC_LIVE_COURSE_SUBMIT_QUESTION;
+            } else {
+                if (voice) {
+                    liveUrl = liveVideoSAConfigInner.URL_LIVE_SUBMIT_TEST_ANSWER_VOICE;
+                } else {
+                    liveUrl = liveVideoSAConfigInner.URL_STUDY_SAVE_ANSWER_FOR_PLAYBACK;
+                }
+            }
+            HttpRequestParams params = new HttpRequestParams();
+            setDefaultParameter(params);
+            if (!StringUtils.isSpace(srcType)) {
+                params.addBodyParam("srcType", srcType);
+            }
+            params.addBodyParam("classId", classId);
+            params.addBodyParam("liveId", classId);
+            params.addBodyParam("testDay", testDay);
+//        params.addBodyParam("enstuId", enStuId);
+            params.addBodyParam("testId", testId);
+            if (voice) {
+                params.addBodyParam("answer", testResult);
+            } else {
+                params.addBodyParam("testAnswer", testResult);
+            }
+            params.addBodyParam("useVoice", voice ? "1" : "0");
+            params.addBodyParam("isRight", isRight ? "1" : "0");
+            params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
+            sendPost(liveUrl, params, requestCallBack);
         }
-        params.addBodyParam("useVoice", voice ? "1" : "0");
-        params.addBodyParam("isRight", isRight ? "1" : "0");
-        params.addBodyParam("sessid", UserBll.getInstance().getMyUserInfoEntity().getSessionId());
-        sendPost(liveUrl, params, requestCallBack);
     }
 
     /**
@@ -110,26 +126,39 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     public void sumitCourseWareH5(String enStuId, String srcType, String testId, String testResult, String testDay,
                                   String classId, String isSubmit, String type,
                                   double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
-        String liveUrl = liveVideoSAConfigInner.URL_LIVE_SUBMIT_TEST_H5_ANSWER;
-        HttpRequestParams params = new HttpRequestParams();
-        setDefaultParameter(params);
-        if (!StringUtils.isSpace(srcType)) {
-            params.addBodyParam("srcType", srcType);
-        }
-        params.addBodyParam("classId", classId);
-        params.addBodyParam("liveId", classId);
-        params.addBodyParam("testDay", testDay);
+        if(LiveVideoConfig.isNewArts){
+            HttpRequestParams params = new HttpRequestParams();
+            String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
+            setDefaultParameter(params);
+            params.addBodyParam("liveId", classId);
+            params.addBodyParam("answers", testResult);
+            params.addBodyParam("isPlayBack", "2");
+            params.addBodyParam("isForce", "1");
+            params.addBodyParam("Cookie", AppBll.getInstance().getUserToken());
+            sendPost(url, params, requestCallBack);
+        }else{
+            String liveUrl = liveVideoSAConfigInner.URL_LIVE_SUBMIT_TEST_H5_ANSWER;
+            HttpRequestParams params = new HttpRequestParams();
+            setDefaultParameter(params);
+            if (!StringUtils.isSpace(srcType)) {
+                params.addBodyParam("srcType", srcType);
+            }
+            params.addBodyParam("classId", classId);
+            params.addBodyParam("liveId", classId);
+            params.addBodyParam("testDay", testDay);
 //        params.addBodyParam("enstuId", enStuId);
-        params.addBodyParam("testId", testId);
-        params.addBodyParam("testAnswer", testResult);
-        params.addBodyParam("type", type);
-        params.addBodyParam("isPlayBack", "1");
-        params.addBodyParam("testNum", "1");
-        params.addBodyParam("isSubmit", isSubmit);
-        params.addBodyParam("useVoice", "1");
-        params.addBodyParam("voiceTime", "" + voiceTime);
-        params.addBodyParam("isRight", isRight ? "1" : "0");
-        sendPost(liveUrl, params, requestCallBack);
+            params.addBodyParam("testId", testId);
+            params.addBodyParam("testAnswer", testResult);
+            params.addBodyParam("type", type);
+            params.addBodyParam("isPlayBack", "1");
+            params.addBodyParam("testNum", "1");
+            params.addBodyParam("isSubmit", isSubmit);
+            params.addBodyParam("useVoice", "1");
+            params.addBodyParam("voiceTime", "" + voiceTime);
+            params.addBodyParam("isRight", isRight ? "1" : "0");
+            sendPost(liveUrl, params, requestCallBack);
+        }
+
     }
 
 
@@ -226,15 +255,28 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     //语音评测2期答案提交
     public void sendSpeechEvalResult2(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack
             requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        setDefaultParameter(params);
+        if(LiveVideoConfig.isNewArts){
+            HttpRequestParams params = new HttpRequestParams();
+            params.addBodyParam("liveId", liveId);
+            params.addBodyParam("testId", id);
+            params.addBodyParam("isRejected", "1");
+            params.addBodyParam("answers", "" + stuAnswer);
+            params.addBodyParam("type", "2");
+            setDefaultParameter(params);
+            Loger.i("Duncan", "sendSpeechEvalResult2:enstuId=" + enstuId + ",liveId=" + liveId);
+            sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVALUATEARTS, params, requestCallBack);
+        }else{
+            HttpRequestParams params = new HttpRequestParams();
+            setDefaultParameter(params);
 //        params.addBodyParam("enstuId", enstuId);
-        params.addBodyParam("liveId", liveId);
-        params.addBodyParam("testId", id);
-        params.addBodyParam("isRejected", "1");
-        params.addBodyParam("answers", "" + stuAnswer);
-        params.addBodyParam("type", "2");
-        sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
+            params.addBodyParam("liveId", liveId);
+            params.addBodyParam("testId", id);
+            params.addBodyParam("isRejected", "1");
+            params.addBodyParam("answers", "" + stuAnswer);
+            params.addBodyParam("type", "2");
+            sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
+        }
+
     }
 
     //判断语音评测2期是否作答
@@ -274,8 +316,6 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 
     /**
      * 提交体验课交互信息
-     *
-     * @param stuId
      * @param termId
      * @param times
      * @param requestCallBack

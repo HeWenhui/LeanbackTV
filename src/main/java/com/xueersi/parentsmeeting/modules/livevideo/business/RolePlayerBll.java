@@ -17,10 +17,14 @@ import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPager;
@@ -34,6 +38,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +56,7 @@ import okhttp3.Call;
  */
 public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     private final LiveGetInfo mLiveGetInfo;
     /**
@@ -184,67 +190,6 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         }
 
 
-        /*  Loger.i("RolePlayerDemoTest", "isHasVideo "+isHasVideo+" SpeechEvaluatorUtils.isOfflineFail() "
-        +SpeechEvaluatorUtils.isOfflineFail());
-          if (isHasVideo && !SpeechEvaluatorUtils.isOfflineFail()) {
-                Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo+" 拍照，录音，权限授予；离线加载成功，请求分组");
-                beginConWebSocket();
-                mIsBeginSocket = true;
-            } else {
-                Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo+" 拍照，录音，权限未授予；或离线加载失败，不再请求分组，进人机");
-                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        XesPermission.checkPermission(mContext, PermissionConfig.PERMISSION_CODE_AUDIO,
-                        PermissionConfig.PERMISSION_CODE_CAMERA);
-                        if (mIsBeginSocket) {
-                            Loger.i("RolePlayerDemoTest", "延迟了3秒去再次请求权限");
-                            beginConWebSocket();
-                        }
-                    }
-                }, 3000);
-            }*/
-
-       /* boolean isHasVideo = XesPermission.checkPermission(mContext, new PermissionCallback() {
-
-            @Override
-            public void onFinish() {
-                Loger.i("RolePlayerDemoTest", "没开启录音权限无法参与RolePlayer");
-            }
-
-            @Override
-            public void onDeny(String permission, int position) {
-                XESToastUtils.showToast(mContext, "没开启录音权限无法参与RolePlayer");
-                Loger.i("RolePlayerDemoTest", "没开启录音权限无法参与RolePlayer");
-            }
-
-            @Override
-            public void onGuarantee(String permission, int position) {
-                Loger.i("RolePlayerDemoTest", "开启了录音权限，开始去请求分组");
-                //beginConWebSocket();
-            }
-        }, PermissionConfig.PERMISSION_CODE_AUDIO,PermissionConfig.PERMISSION_CODE_CAMERA);
-        Loger.i("RolePlayerDemoTest", "isHasVideo "+isHasVideo+" SpeechEvaluatorUtils.isOfflineFail() "
-        +SpeechEvaluatorUtils.isOfflineFail());
-        if (isHasVideo && !SpeechEvaluatorUtils.isOfflineFail()) {
-            Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo+" 拍照，录音，权限授予；离线加载成功，请求分组");
-            beginConWebSocket();
-            mIsBeginSocket = true;
-        } else {
-            Loger.i("RolePlayerDemoTest", "isHasVideo = " + isHasVideo+" 拍照，录音，权限未授予；或离线加载失败，不再请求分组，进人机");
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    XesPermission.checkPermission(mContext, PermissionConfig.PERMISSION_CODE_AUDIO,PermissionConfig
-                    .PERMISSION_CODE_CAMERA);
-                    if (mIsBeginSocket) {
-                        Loger.i("RolePlayerDemoTest", "延迟了3秒去再次请求权限");
-                        beginConWebSocket();
-                    }
-                }
-            }, 3000);
-        }*/
-
     }
 
     /**
@@ -254,16 +199,53 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     public void teacherPushTest(VideoQuestionLiveEntity videoQuestionLiveEntity) {
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         //拉取试题a
-        requestTestInfos();
-        mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo);
-        mRolePlayerPager.initData();
-        if (bottomContent != null) {
-            bottomContent.addView(mRolePlayerPager.getRootView());
+        if(videoQuestionLiveEntity.isNewArtsH5Courseware()){
+            requestNewArtsTestInfos();
+        }else{
+            requestTestInfos();
+        }
+        logger.d( "创建了原生页面");
+        if(mRolePlayerPager == null){
+            mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo);
+            mRolePlayerPager.initData();
+            if (bottomContent != null) {
+                bottomContent.addView(mRolePlayerPager.getRootView());
+            }
         }
         //用户弹出答题框
         logger.i( "用户弹出答题框,记录日志");
         RolePlayLog.sno4(mLiveBll, videoQuestionLiveEntity, mContext);
 
+    }
+
+    // 文科新课件平台获取试题信息
+    private void requestNewArtsTestInfos() {
+        if (mRolePlayerEntity != null) {
+            mRolePlayerHttpManager.requestNewArtsRolePlayTestInfos(mLiveId, mStuCouId, mRolePlayerEntity.getTestId(), mLiveGetInfo.getStuId(),new
+                    HttpCallBack(false) {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            mRolePlayerHttpResponseParser.parserNewArtsRolePlayTestInfos(responseEntity, mRolePlayerEntity);
+                            logger.i( "服务器试题信息返回 " + responseEntity.getJsonObject().toString());
+                            logger.i( "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
+                                    ".getLstRolePlayerMessage()" +
+                                    ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
+                                    mRolePlayerEntity.toString());
+                        }
+
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            super.onPmError(responseEntity);
+                            logger.i( "onPmError:" + responseEntity.getErrorMsg());
+                        }
+
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            super.onPmFailure(error, msg);
+                            logger.i( "onPmFailure:" + msg);
+                        }
+                    });
+        }
     }
 
     @Override
@@ -276,7 +258,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce) {
-        logger.i( "老师收题了,断开socket ");
+        logger.i( "onStopQuestion 老师收题了,断开socket ");
         if (mWebSocket != null && mWebSocket.isOpen()) {
             mWebSocket.close();
             mWebSocket = null;
@@ -284,21 +266,30 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                if (bottomContent != null) {
-                    bottomContent.removeView(mRolePlayerPager.getRootView());
-                    mRolePlayerPager.onDestroy();
-                    mRolePlayerPager = null;
-                    AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
-                    if (audioRequest != null) {
-                        audioRequest.release();
-                    }
-                    UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext,UpdateAchievement.class);
-                    if (updateAchievement != null) {
-                        updateAchievement.getStuGoldCount();
-                    }
-                }
+                closeCurPage();
             }
         });
+    }
+
+    /**
+     * 关掉当前页面
+     */
+    public void closeCurPage() {
+        logger.i( "onStopQuestion 关闭当前页面 "+bottomContent+":"+mRolePlayerPager);
+        if (bottomContent != null && mRolePlayerPager != null) {
+            logger.i( "onStopQuestion 关闭当前页面 ");
+            bottomContent.removeView(mRolePlayerPager.getRootView());
+            mRolePlayerPager.onDestroy();
+            mRolePlayerPager = null;
+            AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
+            if (audioRequest != null) {
+                audioRequest.release();
+            }
+            UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext,UpdateAchievement.class);
+            if (updateAchievement != null) {
+                updateAchievement.getStuGoldCount();
+            }
+        }
     }
 
     /**
@@ -326,6 +317,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     bottomContent.removeView(mRolePlayerPager.getRootView());
                     mRolePlayerPager.onDestroy();
                     mRolePlayerPager = null;
+                    logger.d( "移除了原生页面");
                 }
             }
         });
@@ -345,7 +337,6 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             mWebSocket.close();
             mWebSocket = null;
         }
-
     }
 
 
@@ -764,6 +755,90 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     }
 
     /**
+     * 文科新课件平台提交结果
+     */
+    public synchronized void requestNewArtsResult() {
+        logger.i( "提交结果");
+        logger.i( "用户提交结果,记录日志");
+        //提交结果的时候，记录日志信息
+        RolePlayLog.sno6(mLiveBll, mRolePlayerEntity, mContext);
+        mRolePlayerEntity.setResult(true);
+        JSONObject obj = new JSONObject();
+        try {
+            RolePlayerEntity.RolePlayerHead rolePlayerHead = mRolePlayerEntity.getSelfRoleHead();
+            String roleName = null;
+            if (rolePlayerHead != null) {
+                roleName = rolePlayerHead.getRoleName();
+            }
+            obj.put("type", 1);
+            obj.put("roler", roleName);
+            JSONArray arrAnswer = new JSONArray();
+            //TODO:
+            int i = 1;
+            for (RolePlayerEntity.RolePlayerMessage message : mRolePlayerEntity.getLstRolePlayerMessage()) {
+                JSONObject objAn = new JSONObject();
+                objAn.put("sentenceNum", i);
+                objAn.put("entranceTime", message.getMaxReadTime());
+                objAn.put("score", message.getSpeechScore());
+
+                if (message.getRolePlayer().isSelfRole() && message.getRolePlayer().getSpeechScore() > 1) {
+                    JSONObject objData = new JSONObject();
+                    objData.put("cont_score", message.getFluency());
+                    objData.put("pron_score", message.getAccuracy());
+                    objData.put("total_score", message.getSpeechScore());
+                    objData.put("level", message.getLevel());
+                    objAn.put("alldata", objData);
+                } else {
+                    objAn.put("alldata", "");
+                }
+                arrAnswer.put(objAn);
+                i++;
+            }
+            obj.put("answers", arrAnswer);
+            logger.i( "mStuCouId = " + mStuCouId + " mLiveId = " + mLiveId + " mRolePlayerEntity" +
+                    ".getTestId() = " + mRolePlayerEntity.getTestId()
+                    + " obj = " + obj.toString());
+
+            mRolePlayerHttpManager.requestNewArtsResult(mStuCouId, mLiveId, mRolePlayerEntity.getTestId(), roleName, obj
+                    .toString(), new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    int gold = jsonObject.optInt("gold");
+                    int scores = jsonObject.optInt("scores");
+                    mRolePlayerEntity.setGoldCount(gold);
+                    // 发送已答过的状态
+                    EventBus.getDefault().post(new ArtsAnswerResultEvent(mRolePlayerEntity.getTestId(),ArtsAnswerResultEvent.TYPE_NATIVE_ANSWERRESULT));
+                    EventBus.getDefault().post(new VoiceAnswerResultEvent(mRolePlayerEntity.getTestId(),scores));
+                    logger.i( "onPmSuccess: gold  =" + gold);
+                }
+
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    super.onFailure(call, e);
+                    logger.i( "onFailure: e.getMessage()  =" + e.getMessage() + "取消点赞");
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    logger.i( "onPmError: responseEntity.toString()  =" + responseEntity.toString
+                            () + "提交结果失败，但是要释放资源");
+                    super.onPmError(responseEntity);
+                    if (mRolePlayerPager != null) {
+                        mRolePlayerPager.recoverListScrollAndCancelDZ();
+                        mRolePlayerPager.leaveChannel();
+                    }
+
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
      * 返回结果之后，去掉点赞按钮
      */
     public synchronized void cancelDZ() {
@@ -897,4 +972,11 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     }
 
 
+    public RolePlayerPager getRolePlayPager() {
+        return mRolePlayerPager;
+    }
+
+    public RelativeLayout getBottomView() {
+        return bottomContent;
+    }
 }

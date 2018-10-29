@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.util;
 
-import android.net.Uri;
+import android.os.SystemClock;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -43,7 +43,8 @@ public class DNSUtil {
 
     public static void getDns(URLDNS urldns, String url2) throws UnknownHostException {
         UnknownHostException exception = null;
-        long before = System.currentTimeMillis();
+//        long before = System.currentTimeMillis();
+        long before = SystemClock.elapsedRealtime();
         try {
             urldns.url = url2;
             url2 = getHost(url2);
@@ -51,10 +52,11 @@ public class DNSUtil {
             InetAddress inetAddress = InetAddress.getByName(url2);
             urldns.ip = inetAddress.getHostAddress();
         } catch (UnknownHostException e) {
-            logger.e( "getDns", e);
+            logger.e("getDns", e);
             exception = e;
         }
-        urldns.time = System.currentTimeMillis() - before;
+//        urldns.time = System.currentTimeMillis() - before;
+        urldns.time = SystemClock.elapsedRealtime() - before;
         logger.d("getDns:url2=" + urldns.url + ",time=" + urldns.time);
         if (exception != null) {
             throw exception;

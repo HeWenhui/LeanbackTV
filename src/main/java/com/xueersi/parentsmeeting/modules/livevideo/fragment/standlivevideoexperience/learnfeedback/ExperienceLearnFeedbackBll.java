@@ -4,14 +4,25 @@ import android.app.Activity;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceLiveBackBll;
 
 import org.json.JSONArray;
 
-public class ExperienceLearnFeedbackBll extends StandExperienceEventBaseBll implements LearnFeedBackContract.ISendHttp {
+public class ExperienceLearnFeedbackBll extends StandExperienceEventBaseBll implements IPresenter, LearnFeedBackPager
+        .ISendHttp {
 
     LearnFeedBackPager mPager;
+
+    private static ExperienceLearnFeedbackBll instance;
+
+//    public static ExperienceLearnFeedbackBll getInstance(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+//        if (instance == null) {
+//            instance = new ExperienceLearnFeedbackBll(activity, liveBackBll);
+//        }
+//        return instance;
+//    }
 
     public ExperienceLearnFeedbackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -24,8 +35,6 @@ public class ExperienceLearnFeedbackBll extends StandExperienceEventBaseBll impl
     }
 
     private void initListener() {
-
-
 //        experienceLearnFeedbackPager.setLearnFeedBackPagerListener(new ExperienceLearnFeedbackPager
 //                .LearnFeedBackPagerListener() {
 //            @Override

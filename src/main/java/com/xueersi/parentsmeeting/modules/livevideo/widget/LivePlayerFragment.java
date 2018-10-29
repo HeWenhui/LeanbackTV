@@ -206,15 +206,36 @@ public class LivePlayerFragment extends BasePlayerFragment implements VideoView.
             vPlayer.releaseSurface();
         }
         if (mServiceConnected) {
-            // 解绑播放的Service
-            vPlayer.onDestroy();
             // 链接置空
             mServiceConnected = false;
+            new Thread() {
+                @Override
+                public void run() {
+                    synchronized (mIjkLock) {
+                        // 解绑播放的Service
+                        vPlayer.onDestroy();
+                        logger.d("onDestroy:vPlayer.onDestroy");
+                    }
+                }
+            }.start();
         }
-
-        if (isInitialized() && !vPlayer.isPlaying()) {
-            // 释放播放器资源
-            release();
+        if (isInitialized()) {
+            new Thread() {
+                @Override
+                public void run() {
+                    synchronized (mIjkLock) {
+                        if (isInitialized() && !vPlayer.isPlaying()) {
+                            // 释放播放器资源
+                            release();
+                            logger.d("onDestroy:release");
+                        } else {
+                            logger.d("onDestroy:isInitialized,isPlaying=false");
+                        }
+                    }
+                }
+            }.start();
+        } else {
+            logger.d("onDestroy:isInitialized=false");
         }
         super.onDestroy();
     }

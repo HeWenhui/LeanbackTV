@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -40,8 +41,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.StarInt
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
@@ -843,6 +846,40 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     }
 
     public void getAllRanking(final AbstractBusinessDataCallBack callBack) {
+
+        if(mGetInfo.getArtsExtLiveInfo() != null
+                && mGetInfo.getArtsExtLiveInfo().getNewCourseWarePlatform().equals("1")){
+            getNewArtsRankingData(callBack);
+        }else{
+            getOldRankingData(callBack);
+        }
+    }
+
+    /**获取新文科课件直播间 排行信息*/
+    private void getNewArtsRankingData(final AbstractBusinessDataCallBack callBack) {
+        mHttpManager.getNewArtsAllRank(mGetInfo.getId(),mGetInfo.getStuCouId(),new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                AllRankEntity allRankEntity = mHttpResponseParser.parseAllRank(responseEntity);
+                callBack.onDataSucess(allRankEntity);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                logger.e("getAllRanking:onPmError" + responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                logger.e("getAllRanking:onPmFailure" + msg);
+            }
+        });
+
+    }
+
+    private void getOldRankingData(final AbstractBusinessDataCallBack callBack) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
@@ -867,6 +904,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 logger.e( "getAllRanking:onPmFailure" + msg);
             }
         });
+
     }
 
 //    public void getStuRanking(HttpCallBack requestCallBack) {
@@ -2640,19 +2678,69 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             if (englishH5CoursewareAction instanceof EnglishH5CoursewareBll) {
                 ((EnglishH5CoursewareBll) englishH5CoursewareAction).setTeamPkAllowed(true);
             }
-
-            // mTeamPKBll = liveLazyBllCreat.createTeamPkBll();
-            // mTeamPKBll.setHttpManager(mHttpManager);
-            // mTeamPKBll.setLiveBll(this);
-            // mTeamPKBll.setRoomInitInfo(mGetInfo);
-            // mTeamPKBll.attachToRootView();
             isAllowTeamPk = true;
         } else {
             isAllowTeamPk = false;
         }
         liveGetPlayServerFirst();
+        initExtInfo(mGetInfo);
     }
 
+
+
+    private static final long RETRY_DELAY = 3000;
+    private static final long MAX_RETRY_TIME = 4;
+    private Runnable initArtsExtLiveInfoTask = new Runnable() {
+        int retryCount;
+        @Override
+        public void run() {
+            mHttpManager.getArtsExtLiveInfo(mGetInfo.getId(),mGetInfo.getStuCouId(), new HttpCallBack() {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                    ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
+                    mGetInfo.setArtsExtLiveInfo(info);
+                }
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    super.onPmFailure(error, msg);
+                    retry();
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    super.onPmError(responseEntity);
+                    retry();
+                }
+
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    super.onFailure(call, e);
+                    retry();
+                }
+
+            });
+        }
+
+        private void retry(){
+            logger.e("======>retry get ArtsExtLiveInfo");
+            if(retryCount < MAX_RETRY_TIME){
+                retryCount ++;
+                postDelayedIfNotFinish(initArtsExtLiveInfoTask,RETRY_DELAY);
+            }
+        }
+    };
+
+    private AtomicBoolean exInfoInited = new AtomicBoolean();
+    /**
+     * 初始化直接间额外参数
+     * @param getInfo
+     */
+    private void initExtInfo(LiveGetInfo getInfo) {
+        if(getInfo != null && getInfo.getIsArts() == 1 && !exInfoInited.get()){
+            exInfoInited.set(true);
+            postDelayedIfNotFinish(initArtsExtLiveInfoTask,0);
+        }
+    }
 
     /**
      * 处理用户签到
@@ -2939,7 +3027,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             return;
         }
         liveGetPlayServerError = false;
-        final long before = System.currentTimeMillis();
+        final long before = SystemClock.elapsedRealtime();
         // http://gslb.xueersi.com/xueersi_gslb/live?cmd=live_get_playserver&userid=000041&username=xxxxxx
         // &channelname=88&remote_ip=116.76.97.244
         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -2972,7 +3060,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
                 mLogtf.d("liveGetPlayServer:onError:ex=" + ex + ",isOnCallback=" + isOnCallback + "," + urldns);
-                long time = System.currentTimeMillis() - before;
+                long time = SystemClock.elapsedRealtime() - before;
                 if (ex instanceof HttpException) {
                     HttpException error = (HttpException) ex;
                     if (error.getCode() >= 300) {
@@ -3027,7 +3115,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                     PlayServerEntity server = mHttpResponseParser.parsePlayerServer(object);
                     if (server != null) {
                         if (livePlayLog != null) {
-                            long time = System.currentTimeMillis() - before;
+                            long time = SystemClock.elapsedRealtime() - before;
                             livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode0, 0, server.getCipdispatch(), null, serverurl);
                         }
                         s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();

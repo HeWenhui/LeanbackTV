@@ -177,8 +177,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //        lastSecond = (int) totalOpeningLength.duration;
     }
 
-    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, final AtomicBoolean
-            audioRequest, RelativeLayout mContentView) {
+    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest, RelativeLayout mContentView) {
         if (speakerRecognitioner != null) {
 
         } else {
@@ -200,7 +199,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             } else {
                 this.talLanguage = talLanguage;
             }
-            logger.d("initView:time1=" + (System.currentTimeMillis() - before));
+            logger.d( "initView:time1=" + (System.currentTimeMillis() - before));
         }
         this.bottomContent = bottomContent;
         myView = (ViewGroup) activity.findViewById(R.id.rl_livevideo_english_content);
@@ -253,8 +252,8 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                             talAsrJni.LangIDReset(0);
                         }
                         if (isStarLottieVisible) {
-                            rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
-                            rl_livevideo_english_speak_error.setVisibility(View.GONE);
+                        rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+                        rl_livevideo_english_speak_error.setVisibility(View.GONE);
                         }
                         isDestory = false;
                         isDestory2 = false;
@@ -271,8 +270,8 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         talAsrJni.LangIDReset(0);
                     }
                     if (isStarLottieVisible) {
-                        rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
-                        rl_livevideo_english_speak_error.setVisibility(View.GONE);
+                    rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+                    rl_livevideo_english_speak_error.setVisibility(View.GONE);
                     }
                     isDestory = false;
                     isDestory2 = false;
@@ -304,14 +303,14 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //            tv_livevideo_english_time.setVisibility(View.GONE);
 //            }
             if (isStarLottieVisible) {
-                rl_livevideo_english_speak_content.setVisibility(View.GONE);
+            rl_livevideo_english_speak_content.setVisibility(View.GONE);
             }
 //            tv_livevideo_english_prog.setVisibility(View.GONE);
 //            rl_livevideo_english_stat.setVisibility(View.GONE);
 
         } else {
             if (isStarLottieVisible) {
-                rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+            rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
             }
 //            tv_livevideo_english_time.setVisibility(View.VISIBLE);
 //            tv_livevideo_english_prog.setVisibility(View.VISIBLE);
@@ -449,7 +448,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void destory() {
-        logger.d("destory:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
+        logger.d( "destory:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
         isDestory = true;
         isDestory2 = true;
         stop(null);
@@ -475,9 +474,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
             isDestory = true;
             isDestory2 = true;
             if (isStarLottieVisible) {
-                rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
-                //这里不能改为GONE，因为rl_livevideo_english_speak_error布局和rl_livevideo_english_speak_content在同一个高度和底部
-                rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
+            rl_livevideo_english_speak_content.setVisibility(View.INVISIBLE);
+            //这里不能改为GONE，因为rl_livevideo_english_speak_error布局和rl_livevideo_english_speak_content在同一个高度和底部
+            rl_livevideo_english_speak_error.setVisibility(View.VISIBLE);
             }
 
             if (onAudioRequest != null) {
@@ -520,7 +519,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                                     sendDbDuration = dbDuration;
                                     liveBll.sendDBStudent(dbDuration);
                                     lastDBTime = nowTime;
-                                    logger.d("onProcessData(sendDBStudent):dbDuration=" + dbDuration);
+                                    logger.d( "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
                                 }
                             }
                             if (totalOpeningLength.duration == 0) {
@@ -551,7 +550,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                                         setTime(MAX_SECOND);
                                     }
                                 }
-                                logger.d("onProcessData:second=" + second + ",oldProgress=" + oldProgress
+                                logger.d( "onProcessData:second=" + second + ",oldProgress=" + oldProgress
                                         + ",newProgress=" + newProgress);
                                 if (newProgress != 45) {
                                     setProg(startProgress, newProgress);
@@ -612,7 +611,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onPredict(String predict) {
-        logger.d("onPredict:predict=" + predict);
+        logger.d( "onPredict:predict=" + predict);
         if (totalOpeningLength == null) {
             return;
         }
@@ -637,7 +636,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                     sendDbDuration = dbDuration;
                     liveBll.sendDBStudent(dbDuration);
                     lastDBTime = nowTime;
-                    logger.d("onProcessData(sendDBStudent):dbDuration=" + dbDuration);
+                    logger.d( "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
                 }
             }
             second15 += totalSecond - lastSecond;
@@ -670,7 +669,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                                 setTime(MAX_SECOND);
                             }
                         }
-                        logger.d("onProcessData:second=" + second + ",oldProgress=" + oldProgress
+                        logger.d( "onProcessData:second=" + second + ",oldProgress=" + oldProgress
                                 + ",newProgress=" + newProgress);
                         if (newProgress != 45) {
                             setProg(startProgress, newProgress);
@@ -741,7 +740,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
             @Override
             public void onAnimationCancel(Animator animation) {
-                logger.i("onAnimationCancel:equal=" + (lastValueAnimator ==
+                logger.i( "onAnimationCancel:equal=" + (lastValueAnimator ==
                         valueAnimator));
             }
 
@@ -790,7 +789,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onDBStart() {
-        logger.d("onDBStart:dbStart=" + dbStart);
+        logger.d( "onDBStart:dbStart=" + dbStart);
         if (!dbStart) {
             dbStart = true;
             dbSecond = lastSecond;
@@ -805,7 +804,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onDBStop() {
-        logger.d("onDBStop:dbStart=" + dbStart + ",dbDuration=" + dbDuration + ",sendDbDuration=" + sendDbDuration);
+        logger.d( "onDBStop:dbStart=" + dbStart + ",dbDuration=" + dbDuration + ",sendDbDuration=" + sendDbDuration);
         if (dbStart) {
             dbStart = false;
             LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
@@ -832,14 +831,14 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 
     @Override
     public void onModeChange(final String mode, final boolean audioRequest) {
-        logger.d("onModeChange:mode=" + mode + ",audioRequest=" + audioRequest);
+        logger.d( "onModeChange:mode=" + mode + ",audioRequest=" + audioRequest);
         this.mode = mode;
         myView.post(new Runnable() {
             @Override
             public void run() {
                 if (LiveTopic.MODE_TRANING.equals(mode)) {
                     if (isStarLottieVisible) {
-                        rl_livevideo_english_speak_content.setVisibility(View.GONE);
+                    rl_livevideo_english_speak_content.setVisibility(View.GONE);
                     }
 //                    tv_livevideo_english_prog.setVisibility(View.GONE);
 //                    rl_livevideo_english_stat.setVisibility(View.GONE);
@@ -848,9 +847,8 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
 //                    tv_livevideo_english_prog.setVisibility(View.VISIBLE);
 //                    rl_livevideo_english_stat.setVisibility(View.VISIBLE);
                     if (isStarLottieVisible) {
-                        if (rl_livevideo_english_speak_error.getVisibility() != View.VISIBLE) {
-
-                            rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
+                    if (rl_livevideo_english_speak_error.getVisibility() != View.VISIBLE) {
+                        rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
 
                         }
                     }
@@ -889,7 +887,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     @Override
     public void praise(int answer) {
 
-        logger.d("praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
+        logger.d( "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration >= answer) {
             Map<String, String> mData = new HashMap<>();
             mData.put("logtype", "sendPraise");
@@ -982,7 +980,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
     @Override
     public void remind(int answer) {
 
-        logger.d("remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
+        logger.d( "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
 
         if (sendDbDuration <= answer) {
             Map<String, String> mData = new HashMap<>();
