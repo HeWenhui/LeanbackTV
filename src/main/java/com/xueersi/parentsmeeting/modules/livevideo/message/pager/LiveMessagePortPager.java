@@ -485,7 +485,7 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                OtherModulesEnter.requestGoldTotal(mContext);
+                LiveIRCMessageBll.requestGoldTotal(mContext);
             }
         });
         ivExpressionCancle.setOnClickListener(new View.OnClickListener() {
