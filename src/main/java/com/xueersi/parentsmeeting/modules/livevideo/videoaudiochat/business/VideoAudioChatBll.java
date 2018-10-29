@@ -214,7 +214,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     @Override
     public void raisehand(String status, String room, String from, String nonce, int micType, int msgFrom) {
         logger.d("raisehand:status=" + status + ",from=" + from + ",nonce=" + nonce);
-        onmicStatus = status;
+        openNewMic = status;
         this.micType = micType;
         this.from = from;
         if ("on".equals(status)) {
@@ -467,68 +467,6 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
             ActivityStatic activityStatic = (ActivityStatic) activity;
             if (activityStatic.isResume()) {
                 XESToastUtils.showToast(activity, text);
-            }
-        }
-    }
-
-    RaiseHandPermissionFinish currentPermission;
-
-    /**
-     * 举手权限回调
-     */
-    private class RaiseHandPermissionFinish implements OnPermissionFinish {
-        String status;
-        String from;
-        Runnable runnable;
-
-        public RaiseHandPermissionFinish(String status, String from, Runnable runnable) {
-            this.status = status;
-            this.from = from;
-            this.runnable = runnable;
-            currentPermission = this;
-        }
-
-        @Override
-        public void onFinish() {
-            if (status.equals(VideoAudioChatBll.this.onmicStatus) && from.equals(VideoAudioChatBll.this.from)) {
-                if (currentPermission == this) {
-                    runnable.run();
-                }
-            }
-        }
-    }
-
-    OnJoinPermissionFinish currentPermission2;
-
-    /**
-     * 加入房间权限回调
-     */
-    private class OnJoinPermissionFinish implements OnPermissionFinish {
-        String onmic;
-        String room;
-        String from;
-        boolean contain;
-        Runnable runnable;
-
-        public OnJoinPermissionFinish(String onmic, String room, String from, boolean contain,
-                                      Runnable
-                                              runnable) {
-            this.onmic = onmic;
-            this.room = room;
-            this.from = from;
-            this.contain = contain;
-            this.runnable = runnable;
-            currentPermission2 = this;
-        }
-
-        @Override
-        public void onFinish() {
-            if (onmic.equals(VideoAudioChatBll.this.openNewMic)
-                    && room.equals(VideoAudioChatBll.this.room) && from.equals(VideoAudioChatBll.this.from) && contain ==
-                    containMe) {
-                if (currentPermission2 == this) {
-                    runnable.run();
-                }
             }
         }
     }

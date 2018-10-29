@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.util.MidToast;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page.AgoraChatPager;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 
@@ -44,6 +45,8 @@ public class ChatTipBll {
     private VideoAudioChatHttp videoChatHttp;
     private int stuPutUpHandsNum = 0;
     private boolean raisehand = false;
+    private boolean haveRaisehand = false;
+    private boolean haveContainMe = false;
     /**
      * 连麦状态
      */
@@ -111,9 +114,9 @@ public class ChatTipBll {
         this.room = room;
         logger.d("raisehand:from=" + from + ",nonce=" + nonce);
         if (0 == micType) {
-            XESToastUtils.showToast(activity, "老师开启了语音连麦，踊跃参与吧");
+            MidToast.showToast(activity, "老师开启了语音连麦，踊跃参与吧");
         } else {
-            XESToastUtils.showToast(activity, "老师开启了视频连麦，踊跃参与吧");
+            MidToast.showToast(activity, "老师开启了视频连麦，踊跃参与吧");
         }
         handler.post(new Runnable() {
             @Override
@@ -161,6 +164,8 @@ public class ChatTipBll {
         rl_livevideo_chat_raisehand_off = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand_off);
         final RelativeLayout.LayoutParams lpRaisehand = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpRaisehand.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lpRaisehand.leftMargin = LiveVideoPoint.getInstance().x2;
+        logger.d("initView:x2=" + LiveVideoPoint.getInstance().x2);
         final int bottom = LiveVideoPoint.getInstance().screenHeight - LiveVideoPoint.getInstance().y4 + 200;
         vgRaisehand.setPadding(vgRaisehand.getLeft(), bottom, vgRaisehand.getRight(), bottom);
         bottomContent.addView(vgRaisehand, lpRaisehand);
@@ -179,6 +184,7 @@ public class ChatTipBll {
                         enableLastmileTest();
                     }
                 }
+                haveRaisehand = true;
                 boolean oldRaisehand = raisehand;
                 if (!raisehand) {
                     raisehand(msgFrom);
@@ -351,6 +357,8 @@ public class ChatTipBll {
                 changeRaisehand(contain);
                 raisehand = contain;
                 if (contain) {
+                    haveRaisehand = true;
+                    haveContainMe = true;
                     rl_livevideo_chat_raisehand.setVisibility(View.GONE);
                 } else {
                     rl_livevideo_chat_raisehand.setVisibility(View.VISIBLE);
@@ -386,6 +394,16 @@ public class ChatTipBll {
     }
 
     public void stopRecord(String method) {
+        if (haveRaisehand) {
+            if (haveContainMe) {
+                MidToast.showToast(activity, "老师已结束本次举麦");
+            } else {
+                MidToast.showToast(activity, "很遗憾本次没有轮到你，下次再见哦");
+            }
+            haveRaisehand = false;
+        } else {
+            MidToast.showToast(activity, "老师已结束本次举麦");
+        }
         raisehand = false;
         logger.d("stopRecord:method=" + method);
         handler.post(new Runnable() {

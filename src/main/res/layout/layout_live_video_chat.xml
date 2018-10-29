@@ -7,7 +7,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/live_task_pic_bg_normal">
+        android:background="@drawable/live_task_pic_bg_normal"
+        android:padding="0dp">
 
         <RelativeLayout
             android:id="@id/rl_livevideo_chat_content_left"
@@ -76,13 +77,14 @@
                 android:id="@id/rl_livevideo_chat_raisehand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/ll_livevideo_chat_people">
 
                 <Button
                     android:id="@id/bt_livevideo_chat_raisehand"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
                     android:background="@drawable/live_task_jushou_icon_normal" />
 
                 <TextView
@@ -105,6 +107,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_toRightOf="@id/rl_livevideo_chat_content_left"
             android:src="@drawable/live_task_zuo_icon_normal" />
     </RelativeLayout>

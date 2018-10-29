@@ -354,21 +354,13 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
 
     @Override
     public void sendNetWorkQuality(int quality) {
-        int quality2 = 0;
-        if (quality == 1 || quality == 2) {
-            quality2 = 0;
-        } else if (quality == 3 || quality == 4) {
-            quality2 = 1;
-        } else {
-            quality2 = 2;
-        }
-        logger.d("sendNetWorkQuality:quality=" + quality + ",quality2=" + quality2);
+        logger.d("sendNetWorkQuality:quality=" + quality);
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.AgoraChat.PRAISE_STU);
             jsonObject.put("id", mGetInfo.getStuId());
 
-            jsonObject.put("quality", quality2);
+            jsonObject.put("quality", quality);
             if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
                 mLiveBll.sendMessage(mLiveBll.getMainTeacherStr(), jsonObject);
             } else {

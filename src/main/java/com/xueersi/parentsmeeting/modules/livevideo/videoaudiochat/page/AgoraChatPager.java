@@ -330,10 +330,14 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 setName(classmateEntity1, civ_livevideo_chat_head1, tv_livevideo_chat_head1);
                 final ImageView iv_livevideo_chat_praise1 = rl_livevideo_chat_head1.findViewById(R.id.iv_livevideo_chat_praise1);
                 TextView tv_livevideo_chat_count1 = rl_livevideo_chat_head1.findViewById(R.id.tv_livevideo_chat_count1);
+                tv_livevideo_chat_count1.setVisibility(View.GONE);
                 final LottieAnimationView pressLottileView = rl_livevideo_chat_head1.findViewById(R.id.lav_livevideo_chat_praise1);
                 if (classmateEntity1.isMe() || micType == 0) {
                     if (micType == 0) {
                         iv_livevideo_chat_praise1.setVisibility(View.GONE);
+                    }
+                    if (classmateEntity1.isMe()) {
+                        iv_livevideo_chat_praise1.setImageResource(R.drawable.live_task_zanhui_icon_normal);
                     }
                     pressLottileView.setVisibility(View.GONE);
                 } else {
@@ -349,6 +353,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                                 String fileName = lottieImageAsset.getFileName();
                                 Bitmap bitmap = bubbleEffectInfo.fetchBitmapFromAssets(pressLottileView, lottieImageAsset.getFileName(),
                                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), activity);
+                                logger.d("fetchBitmap:fileName1=" + fileName);
                                 if ("img_2.png".equals(fileName)) {
                                     ViewGroup.LayoutParams lp = iv_livevideo_chat_praise1.getLayoutParams();
 //                                    lp.width = lp.height = bitmap.getWidth() * lottieImageAsset.getWidth() / 145;
@@ -357,14 +362,20 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                                     iv_livevideo_chat_praise1.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                                         @Override
                                         public boolean onPreDraw() {
+                                            int width = iv_livevideo_chat_praise1.getWidth();
+                                            int height = iv_livevideo_chat_praise1.getHeight();
                                             int left = iv_livevideo_chat_praise1.getLeft();
                                             int top = iv_livevideo_chat_praise1.getTop();
+                                            float scaleX = ((float) width * 145) / 80.0f / (float) pressLottileView.getWidth();
+                                            float scaleY = ((float) height * 145) / 80.0f / (float) pressLottileView.getHeight();
+//                                            pressLottileView.setScaleX(scaleX);
+//                                            pressLottileView.setScale(scaleY);
                                             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) pressLottileView.getLayoutParams();
-//                                            lp.leftMargin = left - (pressLottileView.getWidth() - iv_livevideo_chat_praise1.getWidth()) / 2;
-//                                            lp.topMargin = top - (pressLottileView.getWidth() - iv_livevideo_chat_praise1.getWidth()) / 2;
+//                                            lp.leftMargin = left - (pressLottileView.getWidth() - iv_livevideo_chat_praise2.getWidth()) / 2;
+//                                            lp.topMargin = top - (pressLottileView.getWidth() - iv_livevideo_chat_praise2.getWidth()) / 2;
                                             pressLottileView.setLayoutParams(lp);
                                             iv_livevideo_chat_praise1.getViewTreeObserver().removeOnPreDrawListener(this);
-                                            logger.d("onPreDraw:left1=" + left + "," + lp.leftMargin + ",top1=" + top + "," + lp.topMargin);
+                                            logger.d("onPreDraw:left1=" + width + ",scale1=" + scaleX + "," + scaleY);
                                             return false;
                                         }
                                     });
@@ -373,6 +384,8 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                             }
                         };
                         pressLottileView.setImageAssetDelegate(imageAssetDelegate);
+//                        pressLottileView.setTranslationX(20);
+//                        pressLottileView.setTranslationY(20);
                     }
                     pressLottileView.setOnClickListener(new PraiseClick(pressLottileView, classmateEntity1, tv_livevideo_chat_count1));
                 }
@@ -384,10 +397,14 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 setName(classmateEntity2, civ_livevideo_chat_head2, tv_livevideo_chat_head2);
                 final ImageView iv_livevideo_chat_praise2 = rl_livevideo_chat_head2.findViewById(R.id.iv_livevideo_chat_praise2);
                 TextView tv_livevideo_chat_count2 = rl_livevideo_chat_head2.findViewById(R.id.tv_livevideo_chat_count2);
+                tv_livevideo_chat_count2.setVisibility(View.GONE);
                 final LottieAnimationView pressLottileView = rl_livevideo_chat_head2.findViewById(R.id.lav_livevideo_chat_praise2);
                 if (classmateEntity2.isMe() || micType == 0) {
                     if (micType == 0) {
                         iv_livevideo_chat_praise2.setVisibility(View.GONE);
+                    }
+                    if (classmateEntity2.isMe()) {
+                        iv_livevideo_chat_praise2.setImageResource(R.drawable.live_task_zanhui_icon_normal);
                     }
                     pressLottileView.setVisibility(View.GONE);
                 } else {
@@ -403,6 +420,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                                 String fileName = lottieImageAsset.getFileName();
                                 Bitmap bitmap = bubbleEffectInfo.fetchBitmapFromAssets(pressLottileView, lottieImageAsset.getFileName(),
                                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), activity);
+                                logger.d("fetchBitmap:fileName2=" + fileName);
                                 if ("img_2.png".equals(fileName)) {
                                     ViewGroup.LayoutParams lp = iv_livevideo_chat_praise2.getLayoutParams();
 //                                    lp.width = lp.height = bitmap.getWidth() * lottieImageAsset.getWidth() / 145;
@@ -411,14 +429,20 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                                     iv_livevideo_chat_praise2.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                                         @Override
                                         public boolean onPreDraw() {
+                                            int width = iv_livevideo_chat_praise2.getWidth();
+                                            int height = iv_livevideo_chat_praise2.getHeight();
                                             int left = iv_livevideo_chat_praise2.getLeft();
                                             int top = iv_livevideo_chat_praise2.getTop();
+                                            float scaleX = ((float) width * 145) / 80.0f / (float) pressLottileView.getWidth();
+                                            float scaleY = ((float) height * 145) / 80.0f / (float) pressLottileView.getHeight();
+//                                            pressLottileView.setScaleX(scaleX);
+//                                            pressLottileView.setScale(scaleY);
                                             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) pressLottileView.getLayoutParams();
 //                                            lp.leftMargin = left - (pressLottileView.getWidth() - iv_livevideo_chat_praise2.getWidth()) / 2;
 //                                            lp.topMargin = top - (pressLottileView.getWidth() - iv_livevideo_chat_praise2.getWidth()) / 2;
                                             pressLottileView.setLayoutParams(lp);
                                             iv_livevideo_chat_praise2.getViewTreeObserver().removeOnPreDrawListener(this);
-                                            logger.d("onPreDraw:left2=" + left + "," + lp.leftMargin + ",top2=" + top + "," + lp.topMargin);
+                                            logger.d("onPreDraw:left2=" + width + ",scale2=" + scaleX + "," + scaleY);
                                             return false;
                                         }
                                     });
@@ -427,6 +451,8 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                             }
                         };
                         pressLottileView.setImageAssetDelegate(imageAssetDelegate);
+//                        pressLottileView.setTranslationX(20);
+//                        pressLottileView.setTranslationY(20);
                     }
                     pressLottileView.setOnClickListener(new PraiseClick(pressLottileView, classmateEntity2, tv_livevideo_chat_count2));
                 }
@@ -466,7 +492,9 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
 
         @Override
         public void onClick(View v) {
-            pressLottileView.playAnimation();
+            if (!pressLottileView.isAnimating()) {
+                pressLottileView.playAnimation();
+            }
             classmateEntity.setLikes(classmateEntity.getLikes() + 1);
             tv_livevideo_chat_count.setVisibility(View.VISIBLE);
             tv_livevideo_chat_count.setText("" + classmateEntity.getLikes());
