@@ -46,5 +46,9 @@ public interface EnglishSpeechBulletContract {
          * 获取voiceId
          */
         String getVoiceId();
+        /**
+         * getHeadImg
+         */
+        String getHeadImgUrl();
     }
 }

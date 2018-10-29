@@ -16,6 +16,7 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
@@ -198,6 +199,14 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     private boolean isShowingSpeechBullet = false;
 
     /**
+     * 声音池
+     */
+    private SoundPool soundPool;
+    /**
+     * 收音开始时的提示音
+     */
+    private int soundStartEvaluator = 0;
+    /**
      * MVP:Presenter层接口
      */
     private EnglishSpeechBulletContract.EnglishSpeechBulletPresenter presenter;
@@ -328,7 +337,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (StringUtils.isEmpty(charSequence)) {
+                if (StringUtils.isSpace(charSequence.toString())) {
                     tvSpeechbulSend.setEnabled(false);
                     tvSpeechbulSend.setAlpha(0.6f);
                 } else {
@@ -365,7 +374,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND || (event != null && event.getKeyCode() == KeyEvent
                         .KEYCODE_ENTER)) {
-                    if (!StringUtils.isEmpty(etSpeechbulWords.getText().toString())) {
+                    if (!StringUtils.isSpace(etSpeechbulWords.getText().toString())) {
                         tvSpeechbulSend.performClick();
                         return true;
                     }
@@ -412,14 +421,15 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                 });
 
                 closeSpeechBullet(false);
-//                for (int i = 0; i < 30; i++) {
+                addDanmaku("我", etSpeechbulWords.getText().toString(), presenter.getHeadImgUrl(), false);
+//                for (int i = 1; i < 30; i++) {
+//                    final int finalI = i;
 //                    mWeakHandler.postDelayed(new Runnable() {
 //                        @Override
 //                        public void run() {
-//                            addDanmaKuSpeech("我", etSpeechbulWords.getText().toString(), presenter.getHeadImgUrl(), false);
+//                            addDanmaku("名字"+ finalI, "我是一条测试弹幕"+finalI, presenter.getHeadImgUrl(), true);
 //                        }
 //                    }, i * 300);
-//
 //                }
                 presenter.uploadSpeechBulletScreen(etSpeechbulWords.getText().toString(), new HttpCallBack(false) {
                     @Override
@@ -446,7 +456,9 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         switchFSPanelLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                switchFSPanelLinearLayout.refreshHeight(KeyboardUtil.getValidPanelHeight(mContext));
+                if (switchFSPanelLinearLayout.getHeight() != KeyboardUtil.getValidPanelHeight(mContext)) {
+                    switchFSPanelLinearLayout.refreshHeight(KeyboardUtil.getValidPanelHeight(mContext));
+                }
             }
         });
 
@@ -693,10 +705,23 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                             new EvaluatorListener() {
                                 @Override
                                 public void onBeginOfSpeech() {
+                                    //播放声音
+                                    if (soundPool == null)
+                                        soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+                                    if (soundStartEvaluator == 0) {
+                                        soundStartEvaluator = soundPool.load(mContext, R.raw.start_evaluator, 1);
+                                        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                                            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                                                // TODO Auto-generated method stub
+                                                soundPool.play(soundStartEvaluator, 1, 1, 0, 0, 1);
+                                            }
+                                        });
+                                    } else {
+                                        soundPool.play(soundStartEvaluator, 1, 1, 0, 0, 1);
+                                    }
                                     logger.i("onBeginOfSpeech()");
                                     mAM.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (0.5f * mMaxVolume), 0);
                                     stopSpeechTimer.start();
-                                    //3秒没有检测到声音提示
                                     //3秒没有检测到声音提示
                                     mWeakHandler.postDelayed(mHintRunnable, 3000);
                                     //6秒仍没检测到说话
@@ -734,12 +759,14 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      */
     private void stopEvaluator() {
         if (mSpeechEvaluatorUtils != null) {
+            logger.i("mSpeechEvaluatorUtils.cancel();");
             mSpeechEvaluatorUtils.cancel();
         }
         if (mAM != null) {
             mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
         }
         if (stopSpeechTimer != null) {
+
             stopSpeechTimer.cancel();
         }
         hasValidSpeechInput = false;
@@ -799,8 +826,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             startTextInput("");
 
         } else {
-            if (!TextUtils.isEmpty(tvSpeechbulTitle.getText().toString()) && !VOICE_RECOG_HINT.equals(tvSpeechbulTitle.getText().toString())) {
-
+            if (hasValidSpeechInput) {
+                startTextInput(tvSpeechbulTitle.getText().toString());
             } else {
                 startTextInput("");
             }
@@ -1327,6 +1354,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             mDanmakuView.release();
             mDanmakuView = null;
         }
+        if (soundPool != null)
+            soundPool.release();
         stopEvaluator();
     }
 }

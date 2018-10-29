@@ -106,7 +106,7 @@ public class TeamPkStateLayout extends FrameLayout {
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                logger.e( "===========>:onGlobalLayout"+TeamPkStateLayout.this.getMeasuredWidth());
+//                logger.e( "===========>:onGlobalLayout"+TeamPkStateLayout.this.getMeasuredWidth());
                 if(TeamPkStateLayout.this.getMeasuredWidth() > 0){
                     try {
                         addPkStatBar();

@@ -124,7 +124,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
                     @Override
                     public void run() {
                         if (senderId.equals(mLiveBll.getConnectNickname())) {
-                            englishSpeechBulletView.receiveDanmakuMsg(name, context, headImg, false, mRootView);
+//                            englishSpeechBulletView.receiveDanmakuMsg(name, context, headImg, false, mRootView);
                         }
                         else {
                             englishSpeechBulletView.receiveDanmakuMsg(name, context, headImg, true, mRootView);
@@ -214,5 +214,10 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     @Override
     public String getVoiceId() {
         return mLiveBll.getLiveId() + "_" + voiceBarrageCount;
+    }
+
+    @Override
+    public String getHeadImgUrl() {
+        return mGetInfo.getHeadImgPath();
     }
 }
