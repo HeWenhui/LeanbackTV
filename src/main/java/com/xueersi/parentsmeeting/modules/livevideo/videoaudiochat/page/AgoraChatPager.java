@@ -345,6 +345,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                     pressLottileView.setVisibility(View.VISIBLE);
                     if (!initLottile1) {
                         initLottile1 = true;
+                        logger.d("setAnimationFromJson2");
                         pressLottileView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(activity), "press");
                         pressLottileView.useHardwareAcceleration(true);
                         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
@@ -384,8 +385,8 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                             }
                         };
                         pressLottileView.setImageAssetDelegate(imageAssetDelegate);
-//                        pressLottileView.setTranslationX(20);
-//                        pressLottileView.setTranslationY(20);
+                        pressLottileView.setTranslationX(20);
+                        pressLottileView.setTranslationY(20);
                     }
                     pressLottileView.setOnClickListener(new PraiseClick(pressLottileView, classmateEntity1, tv_livevideo_chat_count1));
                 }
@@ -412,6 +413,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                     pressLottileView.setVisibility(View.VISIBLE);
                     if (!initLottile2) {
                         initLottile2 = true;
+                        logger.d("setAnimationFromJson2");
                         pressLottileView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(activity), "press");
                         pressLottileView.useHardwareAcceleration(true);
                         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
@@ -451,8 +453,8 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                             }
                         };
                         pressLottileView.setImageAssetDelegate(imageAssetDelegate);
-//                        pressLottileView.setTranslationX(20);
-//                        pressLottileView.setTranslationY(20);
+                        pressLottileView.setTranslationX(20);
+                        pressLottileView.setTranslationY(20);
                     }
                     pressLottileView.setOnClickListener(new PraiseClick(pressLottileView, classmateEntity2, tv_livevideo_chat_count2));
                 }

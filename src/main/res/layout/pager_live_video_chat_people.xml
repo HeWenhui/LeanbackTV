@@ -11,9 +11,9 @@
 
         <com.xueersi.ui.widget.CircleImageView
             android:id="@id/civ_livevideo_chat_head1"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="17dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="7dp"
             app:border_color="#ffffff"
             app:border_width="3dp" />
 
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/civ_livevideo_chat_head1"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="3dp"
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/white"
@@ -61,7 +61,7 @@
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textSize="10sp"
                 android:visibility="visible" />
         </RelativeLayout>
 
@@ -74,9 +74,9 @@
 
         <com.xueersi.ui.widget.CircleImageView
             android:id="@id/civ_livevideo_chat_head2"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="17dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="7dp"
             app:border_color="#ffffff"
             app:border_width="3dp" />
 
@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/civ_livevideo_chat_head2"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="3dp"
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/white"
@@ -124,7 +124,7 @@
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textSize="10sp"
                 android:visibility="visible" />
         </RelativeLayout>
 
@@ -132,7 +132,7 @@
 
     <RelativeLayout
         android:id="@id/rl_livevideo_chat_voice"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:visibility="gone">
