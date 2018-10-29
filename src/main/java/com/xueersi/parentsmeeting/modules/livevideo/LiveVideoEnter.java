@@ -11,6 +11,7 @@ import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassHalfBodyLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
@@ -139,6 +140,11 @@ public class LiveVideoEnter {
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         bundle.putInt(ENTER_ROOM_FROM, from);
         LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+
+        // 测试代码
+        //intentToHalfBodyAuditClassActivity(context,vStuCourseID,vSectionID);
+
+
 //        DataLoadEntity dataLoadEntity = new DataLoadEntity(context);
 //        BaseBll.postDataLoadEvent(dataLoadEntity.beginLoading());
 //        LiveHttpManager httpManager = new LiveHttpManager(context);
@@ -207,6 +213,31 @@ public class LiveVideoEnter {
         AuditClassLiveActivity.intentTo(context, stuCouId, vSectionID);
         return true;
     }
+
+
+    /**
+     * 半身直播 家长旁听
+     * @param context
+     * @param stuCouId
+     * @param vSectionID
+     * @return
+     */
+    public static boolean intentToHalfBodyAuditClassActivity(Activity context, String stuCouId, String vSectionID){
+
+        //低端机设备检测页拦截
+        if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
+                        .SP_APP_DEVICE_NOTICE, false,
+                ShareDataManager.SHAREDATA_USER)) {
+            Intent intent = new Intent(context, DeviceDetectionActivity.class);
+            context.startActivity(intent);
+            return false;
+        }
+
+        AuditClassHalfBodyLiveActivity.intentTo(context,stuCouId,vSectionID);
+
+        return true;
+    }
+
 
     /**
      * 跳转到直播, 公开直播
