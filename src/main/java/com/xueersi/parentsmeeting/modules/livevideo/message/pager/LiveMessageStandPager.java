@@ -181,6 +181,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     private int mVoiceMsgCount = 0;
     /** 语音文件*/
     private  File mVoiceFile;
+    private AudioRequest mAudioRequest;
 
 
     public LiveMessageStandPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
@@ -483,6 +484,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 //                btMesOpen.performClick();
                 if (rlMessageVoice.getVisibility() == View.VISIBLE) {
                     stopEvaluator();
+                    setSpeechFinishView(mVoiceContent);
+                    isVoice = false;
                 }
                 clearMsgView();
 
@@ -740,6 +743,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         before = System.currentTimeMillis();
         initOpenBt(false, false);
         initOpenBt(false, true);
+        mAudioRequest = ProxUtil.getProxUtil().get(liveVideoActivity, AudioRequest.class);
     }
 
     @Override
@@ -748,8 +752,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         if (liveSoundPool != null) {
             liveSoundPool.release();
         }
-        noSpeechTimer.cancel();
-        noSpeechTimer = null;
+        if(noSpeechTimer != null){
+            noSpeechTimer.cancel();
+        }
         Map<String, String> mData = new HashMap<>();
         mData.put("userid",getInfo.getStuId());
         mData.put("liveid",getInfo.getId());
@@ -1428,8 +1433,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     /** 是不是评测成功 */
     private boolean isSpeechSuccess = false;
     private final static String VOICE_RECOG_HINT = "语音输入中，请大声说英语";
-    private final static String VOICE_RECOG_NOVOICE_HINT = "没听清，请重说";
-    private final static String VOICE_RECOG_NORECOG_HINT = "抱歉没听清，请手动输入或重说";
+    private final static String VOICE_RECOG_NOVOICE_HINT = "抱歉没听清，请大点声重说哦";
+    private final static String VOICE_RECOG_NORECOG_HINT = "请手动输入或重说";
     Runnable mHintRunnable = new Runnable() {
         @Override
         public void run() {
@@ -1476,6 +1481,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     };
 
     private void startEvaluator() {
+        mVoiceContent = "";
         logger.d("startEvaluator()" + mSpeechEvaluatorUtils.toString());
         mVoiceFile = new File(dir, "voicechat" + System.currentTimeMillis()  + ".mp3");
         SpeechEvaluatorInter speechEvaluatorInter = mSpeechEvaluatorUtils.startSpeechRecognitionOffline(mVoiceFile
@@ -1527,7 +1533,12 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         if (mAM != null) {
             mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
         }
-        noSpeechTimer.cancel();
+        if (noSpeechTimer != null){
+            noSpeechTimer.cancel();
+        }
+        if (mAudioRequest != null){
+            mAudioRequest.release();
+        }
         tvVoiceChatCountdown.setVisibility(View.GONE);
     }
 
@@ -1548,7 +1559,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mVoiceContent = content;
         logger.d("=====speech evaluating" + content);
         if (isSpeechFinished) {
-            noSpeechTimer.cancel();
+            if (noSpeechTimer != null){
+                noSpeechTimer.cancel();
+            }
             tvVoiceChatCountdown.setVisibility(View.GONE);
             if (!TextUtils.isEmpty(content)) {
                 stopEvaluator();
@@ -1578,7 +1591,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         etMessageContent.setText(content);
         etMessageContent.requestFocus();
         etMessageContent.setSelection(etMessageContent.getText().toString().length());
-        mVoiceContent = "";
     }
 
     private void startVoiceInput() {
@@ -1598,9 +1610,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         }
         tvVoiceContent.setText(VOICE_RECOG_HINT);
         tvVoiceCount.setText("");
-        AudioRequest audioRequest = ProxUtil.getProxUtil().get(liveVideoActivity, AudioRequest.class);
-        if (audioRequest != null) {
-            audioRequest.request(new AudioRequest.OnAudioRequest() {
+        if (mAudioRequest != null) {
+            mAudioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
                 public void requestSuccess() {
                     startEvaluator();
