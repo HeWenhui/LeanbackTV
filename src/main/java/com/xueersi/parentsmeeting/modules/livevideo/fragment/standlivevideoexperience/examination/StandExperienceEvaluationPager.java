@@ -1,9 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.View;
 
 import com.tencent.smtt.sdk.WebView;
+import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 
@@ -51,7 +53,13 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
         if (url.contains(" www.sina.com")) {
             String courseId = findNumber(url, "courseId");
             String classId = findNumber(url, "classId");
+            String orderId = findNumber(url, "orderId");
+//            ARouter.getInstance().build("/xesmall/orderDetail").withString("orderNum", orderId).navigation();
             //跳转到商城的订单详情页面
+            Bundle bundle = new Bundle();
+            bundle.putString("orderNum", orderId);
+            //跳转到
+            XueErSiRouter.startModule(mContext, "/module/Browser", bundle);
 //            OtherModulesEnter.intentToOrderConfirmActivity((Activity) mContext, courseId + "-" + classId, 100,
 //                    "LivePlaybackVideoActivity");
         }

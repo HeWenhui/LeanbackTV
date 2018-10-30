@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback
         .ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 public class StandExperienceEvaluationBll extends
         StandExperienceEventBaseBll implements IPresenter {
@@ -57,6 +59,9 @@ public class StandExperienceEvaluationBll extends
     //显示下一个View
     @Override
     public void showNextWindow() {
+
+        ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
+        activityChangeLand.changeLOrP();
         for (LiveBackBaseBll liveBackBaseBll : liveBackBll.getLiveBackBaseBlls()) {
             if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
 //                ().showWindow();

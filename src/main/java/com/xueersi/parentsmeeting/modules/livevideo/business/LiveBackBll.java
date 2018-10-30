@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.xueersi.common.base.BaseBll;
@@ -57,41 +58,63 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         LiveOnLineLogs {
     protected String TAG = "LiveBackBll";
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
-    Activity activity;
+    protected Activity activity;
     private LiveGetInfo mGetInfo;
     LiveHttpManager mHttpManager;
     private AllLiveBasePagerIml allLiveBasePagerIml;
-    /** 购课id */
+    /**
+     * 购课id
+     */
     protected String stuCourId;
-    /** 视频节对象 */
+    /**
+     * 视频节对象
+     */
     protected VideoLivePlayBackEntity mVideoEntity;
-    /** 从哪个页面跳转 */
+    /**
+     * 从哪个页面跳转
+     */
     String where;
     int isArts;
     int mLiveType;
-    /** 区分文理appid */
-    String appID = UmsConstants.LIVE_APP_ID_BACK;
+    /**
+     * 区分文理appid
+     */
+    protected String appID = UmsConstants.LIVE_APP_ID_BACK;
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE = false;
-    /** 播放器核心服务 */
+    /**
+     * 播放器核心服务
+     */
     protected PlayerService vPlayer;
-    /** 互动题 */
+    /**
+     * 互动题
+     */
     protected VideoQuestionEntity mQuestionEntity;
     private HashMap<VideoQuestionEntity, VideoQuestionLiveEntity> liveEntityHashMap = new HashMap<>();
-    /** 显示互动题 */
+    /**
+     * 显示互动题
+     */
     private static final int SHOW_QUESTION = 0;
-    /** 没有互动题 */
+    /**
+     * 没有互动题
+     */
     private static final int NO_QUESTION = 1;
-    /** 当前是否正在显示互动题 */
+    /**
+     * 当前是否正在显示互动题
+     */
     private boolean mIsShowQuestion = false;
     protected ArrayList<LiveBackBaseBll> liveBackBaseBlls = new ArrayList<>();
     protected SparseArray<LiveBackBaseBll> array = new SparseArray<>();
-    /** 直播间内模块间 数据共享池 */
+    /**
+     * 直播间内模块间 数据共享池
+     */
     private HashMap<String, Object> businessShareParamMap = new HashMap<String, Object>();
     private AtomicBoolean mIsLand = new AtomicBoolean(true);
     private LivePlayBackHttpManager mCourseHttpManager;
     private LivePlayBackHttpResponseParser mCourseHttpResponseParser;
-    /** 本地视频 */
+    /**
+     * 本地视频
+     */
     boolean islocal;
     /**
      * 2 代表全身直播
@@ -293,7 +316,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         return liveVideoSAConfig;
     }
 
-    /** 扫描是否有需要弹出的互动题 */
+    /**
+     * 扫描是否有需要弹出的互动题
+     */
     public void scanQuestion(long position) {
 
         VideoQuestionEntity oldQuestionEntity = mQuestionEntity;

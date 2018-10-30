@@ -13,11 +13,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination
-        .StandExperienceEvaluationBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination.StandExperienceEvaluationBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse
-        .ExperienceBuyCoursePresenter;
 
 import java.util.List;
 import java.util.Map;
@@ -152,11 +149,12 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
             if (liveBackBaseBll instanceof StandExperienceEventBaseBll) {
                 ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
             }
-            if (liveBackBaseBll instanceof ExperienceBuyCoursePresenter) {
+//            if (liveBackBaseBll instanceof ExperienceBuyCoursePresenter) {
 //                ((ExperienceBuyCoursePresenter) liveBackBaseBll).showNextWindow();
-                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
-            }
+//                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
+//            }
             if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
+
                 showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
             }
         }
