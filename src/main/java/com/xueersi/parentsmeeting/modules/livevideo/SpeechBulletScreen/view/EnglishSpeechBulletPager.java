@@ -190,6 +190,14 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      */
     private File dir;
     /**
+     * 语音保存文件
+     */
+    private File saveFile;
+    /**
+     * 语音请求和释放
+     */
+    private AudioRequest audioRequest;
+    /**
      * 是否拥有麦克风权限
      */
     private boolean hasAudioPermission = false;
@@ -304,8 +312,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
 
                 @Override
                 public void onDeny(String permission, int position) {
-                    tvSpeechbulRepeat.setEnabled(false);
-                    tvSpeechbulRepeat.setAlpha(0.6f);
+                    setRepeatBtnDisenable();
                     startTextInput("");
                 }
 
@@ -387,13 +394,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         tvSpeechbulRepeat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
-                rlSpeechbulInputContent.setVisibility(View.GONE);
-                tvSpeechbulTitle.setText(VOICE_RECOG_HINT);
-                tvSpeechbulTitleCount.setText("");
-                tvSpeechbulTitle.setVisibility(View.VISIBLE);
-                tvSpeechbulTitleCount.setVisibility(View.VISIBLE);
-                vwvSpeechbulWave.setVisibility(View.VISIBLE);
                 startEvaluator();
                 umsAgentDebugInterSno6();
             }
@@ -404,21 +404,25 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             public void onClick(View view) {
                 isSend = "1";
                 fainalText = etSpeechbulWords.getText().toString();
-                uploadCloud(saveFile.getPath(), new AbstractBusinessDataCallBack() {
-                    @Override
-                    public void onDataSucess(Object... objData) {
-                        XesCloudResult result = (XesCloudResult) objData[0];
-                        aliyunUrl = result.getHttpPath();
-                        umsAgentDebugInterSno7();
-                    }
+                if (saveFile != null) {
+                    uploadCloud(saveFile.getPath(), new AbstractBusinessDataCallBack() {
+                        @Override
+                        public void onDataSucess(Object... objData) {
+                            XesCloudResult result = (XesCloudResult) objData[0];
+                            aliyunUrl = result.getHttpPath();
+                            umsAgentDebugInterSno7();
+                        }
 
-                    @Override
-                    public void onDataFail(int errStatus, String failMsg) {
-                        super.onDataFail(errStatus, failMsg);
-                        aliyunUrl = "";
-                        umsAgentDebugInterSno7();
-                    }
-                });
+                        @Override
+                        public void onDataFail(int errStatus, String failMsg) {
+                            aliyunUrl = "";
+                            umsAgentDebugInterSno7();
+                        }
+                    });
+                } else {
+                    aliyunUrl = "";
+                    umsAgentDebugInterSno7();
+                }
 
                 closeSpeechBullet(false);
                 addDanmaku("我", etSpeechbulWords.getText().toString(), presenter.getHeadImgUrl(), false);
@@ -429,7 +433,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
 //                        public void run() {
 //                            addDanmaku("名字"+ finalI, "我是一条测试弹幕"+finalI, presenter.getHeadImgUrl(), true);
 //                        }
-//                    }, i * 300);
+//                    }, i * 300);`
 //                }
                 presenter.uploadSpeechBulletScreen(etSpeechbulWords.getText().toString(), new HttpCallBack(false) {
                     @Override
@@ -555,6 +559,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      * @param name       名字
      * @param msg        内容
      * @param headImgUrl 头像Url
+     * @param rootView
      */
     @Override
     public void receiveDanmakuMsg(String name, String msg, String headImgUrl, boolean isGuset, RelativeLayout rootView) {
@@ -687,12 +692,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     };
 
     /**
-     * 语音请求和释放
-     */
-    private AudioRequest audioRequest;
-    private File saveFile;
-
-    /**
      * 开始语音识别
      */
     private void startEvaluator() {
@@ -700,6 +699,14 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             audioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
                 public void requestSuccess() {
+                    KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
+                    rlSpeechbulInputContent.setVisibility(View.GONE);
+                    tvSpeechbulTitle.setText(VOICE_RECOG_HINT);
+                    tvSpeechbulTitleCount.setText("");
+                    tvSpeechbulTitle.setVisibility(View.VISIBLE);
+                    tvSpeechbulTitleCount.setVisibility(View.VISIBLE);
+                    vwvSpeechbulWave.setVisibility(View.VISIBLE);
+
                     saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
                     mSpeechEvaluatorUtils.startSpeechRecognitionOffline(saveFile.getPath(), "3", "30",
                             new EvaluatorListener() {
@@ -862,23 +869,36 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     private void startSpeechInput() {
         //判断模型是否初始化成功
         if (!SpeechEvaluatorUtils.isRecogOfflineSuccess()) {
-            XESToastUtils.showToast(mContext, "模型正在启动请稍后");
-            SpeechEvaluatorUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
-                @Override
-                public void onFileSuccess() {
-                    XESToastUtils.showToast(mContext, "模型启动成功");
-                    startEvaluator();
-                }
-
-                @Override
-                public void onFileFail() {
-                    XESToastUtils.showToast(mContext, "模型启动失败");
-                    startTextInput("");
-                }
-            });
+//            XESToastUtils.showToast(mContext, "模型正在启动请稍后");
+//            SpeechEvaluatorUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
+//                @Override
+//                public void onFileSuccess() {
+//                    XESToastUtils.showToast(mContext, "模型启动成功");
+//                    startEvaluator();
+//                }
+//
+//                @Override
+//                public void onFileFail() {
+//                    XESToastUtils.showToast(mContext, "模型启动失败");
+//                    setRepeatBtnDisenable();
+//                    startTextInput("");
+//                }
+//
+//            });
+            XESToastUtils.showToast(mContext, "语音识别模型初始化失败，请手动输入");
+            setRepeatBtnDisenable();
+            startTextInput("");
         } else {
             startEvaluator();
         }
+    }
+
+    /**
+     * 置灰重说按钮
+     */
+    private void setRepeatBtnDisenable() {
+        tvSpeechbulRepeat.setEnabled(false);
+        tvSpeechbulRepeat.setAlpha(0.6f);
     }
 
     /**

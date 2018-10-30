@@ -32,6 +32,10 @@ import okhttp3.Response;
  * 监听IRC消息,处理业务逻辑
  */
 public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicAction, NoticeAction, EnglishSpeechBulletContract.EnglishSpeechBulletPresenter {
+    /**
+     * MVP模式V层接口
+     */
+    private EnglishSpeechBulletContract.EnglishSpeechBulletView englishSpeechBulletView;
     private LiveTopic liveTopic;
     /**
      * 语音弹幕开启&关闭指令
@@ -41,10 +45,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
      * 该场次语音弹幕开启次数
      */
     private int voiceBarrageCount;
-    /**
-     * MVP模式V层接口
-     */
-    private EnglishSpeechBulletContract.EnglishSpeechBulletView englishSpeechBulletView;
+
 
     public EnglishSpeechBulletIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -74,6 +75,9 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
         logger.i("onTopic: jsonObject= " + jsonObject.toString());
         this.liveTopic = liveTopic;
         if (liveTopic.getMainRoomstatus().isOpenVoiceBarrage()) {
+            if (liveTopic.getMainRoomstatus().getVoiceBarrageCount() == voiceBarrageCount) {
+                return;
+            }
             voiceBarrageCount = liveTopic.getMainRoomstatus().getVoiceBarrageCount();
             if (englishSpeechBulletView != null) {
                 mHandler.post(new Runnable() {
@@ -125,8 +129,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
                     public void run() {
                         if (senderId.equals(mLiveBll.getConnectNickname())) {
 //                            englishSpeechBulletView.receiveDanmakuMsg(name, context, headImg, false, mRootView);
-                        }
-                        else {
+                        } else {
                             englishSpeechBulletView.receiveDanmakuMsg(name, context, headImg, true, mRootView);
                         }
                     }
@@ -176,7 +179,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
             data.put("liveId", mLiveBll.getLiveId());
             data.put("liveType", 1);
             data.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
-            data.put("bulletId", voiceBarrageCount+"");
+            data.put("bulletId", voiceBarrageCount + "");
             String[] strings = msg.split(" ");
             JSONArray keywords = new JSONArray();
             for (int i = 0; i < strings.length; i++) {
