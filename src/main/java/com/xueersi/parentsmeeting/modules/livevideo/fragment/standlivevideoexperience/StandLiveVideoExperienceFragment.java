@@ -1035,6 +1035,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     public void onDestroy() {
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
+        isFinishing = true;
+        mHandler.removeCallbacks(mPlayDuration);
         isPlay = false;
         liveBackBll.onDestory();
         ProxUtil.getProxUtil().clear(activity);
