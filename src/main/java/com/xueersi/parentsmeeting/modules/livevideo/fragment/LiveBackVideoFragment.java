@@ -382,7 +382,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         liveBackBll = new LiveBackBll(activity, mVideoEntity);
         liveBackBll.setStuCourId(stuCourId);
         liveBackBll.setvPlayer(vPlayer);
-        LiveVideoConfig.isNewArts = false;
     }
 
     protected void initBll() {
@@ -788,6 +787,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (liveBackVideoBll != null) {
             liveBackVideoBll.onDestroy();
         }
+        LiveVideoConfig.isNewArts = false;
         ProxUtil.getProxUtil().clear(activity);
     }
 

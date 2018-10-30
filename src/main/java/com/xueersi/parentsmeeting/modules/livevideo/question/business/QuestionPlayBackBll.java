@@ -149,6 +149,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
+                LiveVideoConfig.isNewArts = false;
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
                 videoQuestionLiveEntity.type = questionEntity.getvQuestionType();
@@ -188,6 +189,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
+                LiveVideoConfig.isNewArts = false;
                 VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
                         .getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
