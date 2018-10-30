@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="550dp"
+        android:layout_height="375dp"
+        android:src="@drawable/bg_stand_experience_learn_feedback_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_learn_feedback_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_learn_feedback_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.69"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_learn_feedback_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintGuide_percent="0.26"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_learn_feedback_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintGuide_percent="0.65"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/sv_stand_experience_learn_feedback_select"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_learn_feedback_bottom"
+        app:layout_constraintLeft_toLeftOf="@id/guideline_learn_feedback_left"
+        app:layout_constraintRight_toRightOf="@id/guideline_learn_feedback_right"
+        app:layout_constraintTop_toTopOf="@id/guideline_learn_feedback_top">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/fzcytv_stand_experience_learn_feedback_title1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12334"
+                android:textSize="11sp"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RadioGroup
+                android:id="@+id/rg_stand_experience_learn_feedback_select1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@+id/fzcytv_stand_experience_learn_feedback_title1">
+
+                <RadioButton
+                    android:id="@+id/rb_stand_experience_learn_feedback_select1_button1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/selector_stand_experience_learn_feedback_button"
+                    android:textSize="10sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_stand_experience_learn_feedback_select1_button2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:button="@drawable/selector_stand_experience_learn_feedback_button"
+                    android:textSize="10sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_stand_experience_learn_feedback_select1_button3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:button="@drawable/selector_stand_experience_learn_feedback_button"
+                    android:textSize="10sp" />
+            </RadioGroup>
+
+            <android.support.constraint.Group
+                android:id="@+id/group_stand_experience_learn_feedback_select2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="
+                fzcytv_stand_experience_learn_feedback_title2,
+                rg_stand_experience_learn_feedback_select2" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/fzcytv_stand_experience_learn_feedback_title2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="123231"
+                android:textSize="11sp"
+                app:layout_constraintTop_toBottomOf="@+id/rg_stand_experience_learn_feedback_select1" />
+
+            <RadioGroup
+                android:id="@+id/rg_stand_experience_learn_feedback_select2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@+id/fzcytv_stand_experience_learn_feedback_title2">
+
+                <RadioButton
+                    android:id="@+id/rb_stand_experience_learn_feedback_select2_button1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/selector_stand_experience_learn_feedback_button"
+                    android:textSize="10sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_stand_experience_learn_feedback_select2_button2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:button="@drawable/selector_stand_experience_learn_feedback_button"
+                    android:textSize="10sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_stand_experience_learn_feedback_select2_button3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:button="@drawable/selector_stand_experience_learn_feedback_button"
+                    android:textSize="10sp" />
+            </RadioGroup>
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/fzcytv_stand_experience_learn_feedback_suggest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="11sp"
+                android:text="其他建议"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rg_stand_experience_learn_feedback_select2" />
+
+            <EditText
+                android:id="@+id/et_stand_experience_learn_feedback_suggest"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/shape_stand_experience_learn_feedback_edit_text"
+                android:textSize="10sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fzcytv_stand_experience_learn_feedback_suggest" />
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btn_stand_experience_learn_feedback_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_stand_experience_learn_feedback_submit"
+        app:layout_constraintLeft_toLeftOf="@+id/sv_stand_experience_learn_feedback_select"
+        app:layout_constraintRight_toRightOf="@+id/sv_stand_experience_learn_feedback_select"
+        app:layout_constraintTop_toBottomOf="@+id/sv_stand_experience_learn_feedback_select" />
+</android.support.constraint.ConstraintLayout>
