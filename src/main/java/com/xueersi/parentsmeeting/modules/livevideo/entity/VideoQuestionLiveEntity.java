@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,7 +146,12 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
      * 设置选择题显示数据
      */
     private void editShowQuestion() {
-        int vBlankSize = num;
+        int vBlankSize = 1;
+        if(LiveVideoConfig.isNewArts){
+            vBlankSize = 1;
+        }else{
+            vBlankSize = num;
+        }
         for (int i = 0; i < vBlankSize; i++) {
             AnswerEntity answerLiveEntity = new AnswerEntity();
             mAnswerEntityLst.add(answerLiveEntity);
