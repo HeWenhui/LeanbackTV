@@ -8,21 +8,26 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.media.audiofx.AcousticEchoCanceler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.PCMFormat;
-import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechCollectivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.io.IOException;
 
@@ -58,6 +63,8 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
     private short[] mPCMBuffer;
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     private AcousticEchoCanceler m_canceler = null;
+
+    protected android.os.Handler mHandler = new android.os.Handler(Looper.getMainLooper());
 
     public SpeechCollectiveBll(Activity activity, SpeechCollectiveIRCBll backIRCBll) {
         this.activity = activity;
@@ -105,12 +112,20 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
         if (isStart) {
             return;
         }
+
+        LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
+        if (liveMessageBll != null) {
+            liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                    "老师开启了集体发言");
+
+        }
         logger.d("start:roomId=" + roomId);
         isStart = true;
-        liveThreadPoolExecutor.execute(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
-                boolean checkPermission = XesPermission.checkPermission(activity, new PermissionCallback() {
+                boolean have = XesPermission.checkPermission(activity, new LiveActivityPermissionCallback() {
+
                             @Override
                             public void onFinish() {
 
@@ -118,57 +133,63 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
 
                             @Override
                             public void onDeny(String permission, int position) {
+
                             }
 
                             @Override
                             public void onGuarantee(String permission, int position) {
-                                logger.d("thread=" + Thread.currentThread().getName());
                                 initData();
                             }
                         },
                         PermissionConfig.PERMISSION_CODE_AUDIO);
-
-                if (checkPermission) {
+                if (have) {
                     initData();
                 }
+
             }
         });
+
     }
 
     private void initData() {
-        try {
-            logger.d("start:startRecording:mAudioRecord=" + (mAudioRecord == null));
-            initAudio();
-            bottomContent.post(new Runnable() {
-                @Override
-                public void run() {
-                    speechFeedBackPager = new SpeechCollectivePager(activity);
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup
-                            .LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT);
-                    int screenWidth = ScreenUtils.getScreenWidth();
-                    int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig
-                            .VIDEO_WIDTH);
-                    params.rightMargin = wradio;
-                    bottomContent.addView(speechFeedBackPager.getRootView(), params);
-                }
-            });
-            long time = System.currentTimeMillis();
-            mAudioRecord.startRecording();
-            mAudioTrack.play();
-            while (isStart) {
-                if (mAudioRecord != null) {
-                    int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
-                    if (readSize > 0) {
-                        calculateRealVolume(mPCMBuffer, readSize);
+        liveThreadPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    logger.d("start:startRecording:mAudioRecord=" + (mAudioRecord == null));
+                    initAudio();
+                    bottomContent.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            speechFeedBackPager = new SpeechCollectivePager(activity);
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup
+                                    .LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT);
+                            int screenWidth = ScreenUtils.getScreenWidth();
+                            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig
+                                    .VIDEO_WIDTH);
+                            params.rightMargin = wradio;
+                            bottomContent.addView(speechFeedBackPager.getRootView(), params);
+                        }
+                    });
+                    long time = System.currentTimeMillis();
+                    mAudioRecord.startRecording();
+                    mAudioTrack.play();
+                    while (isStart) {
+                        if (mAudioRecord != null) {
+                            int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
+                            if (readSize > 0) {
+                                calculateRealVolume(mPCMBuffer, readSize);
+                            }
+                            mAudioTrack.write(mPCMBuffer, 0, mPCMBuffer.length);
+                        }
                     }
-                    mAudioTrack.write(mPCMBuffer, 0, mPCMBuffer.length);
+                    logger.d("start:startRecording:end;time=" + (System.currentTimeMillis() - time));
+                } catch (IOException e) {
+                    logger.e("initAudioRecorder", e);
                 }
             }
-            logger.d("start:startRecording:end;time=" + (System.currentTimeMillis() - time));
-        } catch (IOException e) {
-            logger.e("initAudioRecorder", e);
-        }
+        });
 
     }
 
@@ -177,6 +198,12 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
     public void stop() {
         if (!isStart) {
             return;
+        }
+        LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
+        if (liveMessageBll != null) {
+            liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                    "老师关闭了集体发言");
+
         }
         logger.d("stop:mAudioRecord=" + (mAudioRecord == null));
         isStart = false;
@@ -189,11 +216,18 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
             mAudioTrack = null;
         }
         if (speechFeedBackPager != null) {
-            bottomContent.post(new Runnable() {
+
+            mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    bottomContent.removeView(speechFeedBackPager.getRootView());
-                    speechFeedBackPager = null;
+                    speechFeedBackPager.stop();
+                    bottomContent.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            bottomContent.removeView(speechFeedBackPager.getRootView());
+                            speechFeedBackPager = null;
+                        }
+                    }, 1000);
                 }
             });
         }

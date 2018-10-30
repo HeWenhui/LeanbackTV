@@ -21,13 +21,16 @@
     </RelativeLayout>
 
     <ImageView
+        android:id="@+id/iv_livevideo_open_close"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_centerInParent="true" />
 
 
     <FrameLayout
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="14dp">
@@ -35,16 +38,14 @@
 
         <com.xueersi.parentsmeeting.widget.VolumeWaveView
             android:id="@id/vwv_livevideo_speecteval_wave"
-            android:layout_width="15dp"
-            android:layout_height="22dp"
-            android:layout_gravity="center"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/iv_livevideo_feedback_wave"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center" />
+            android:layout_height="match_parent" />
 
 
     </FrameLayout>
