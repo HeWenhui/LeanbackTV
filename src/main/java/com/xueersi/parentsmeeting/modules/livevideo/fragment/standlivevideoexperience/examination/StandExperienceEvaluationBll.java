@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination;
 
 import android.app.Activity;
-import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
@@ -9,8 +8,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceLiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback
-        .ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 public class StandExperienceEvaluationBll extends
@@ -31,16 +29,18 @@ public class StandExperienceEvaluationBll extends
     @Override
     public void showWindow() {
         if (mView != null) {
-            if (TextUtils.isEmpty(mVideoEntity.getExamUrl())) {
+//            if (!TextUtils.isEmpty(mVideoEntity.getExamUrl())) {
 //                String url = mVideoEntity.getExamUrl() + "#/index?nowLevel=" + "&liveId=" + mVideoEntity.getLiveId() +
 //                        "&gradeId=" + mVideoEntity.getGradId() + "&subjectId=" + mVideoEntity.getSubjectId() +
 //                        "&teacherId=" + mVideoEntity.getTeacherId() + "&orderId=" + mVideoEntity.getChapterId() +
 //                        "&userId=" + UserBll.getInstance().getMyUserInfoEntity().getStuId();
-                // FIXME: 2018/10/15  需要将屏幕竖屏
-                mView.showWebView(mVideoEntity.getExamUrl());
-                mRootView.addView(mView.getRootView(), RelativeLayout.LayoutParams
-                        .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-            }
+            ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
+            activityChangeLand.changeLOrP();
+            logger.i("旋转屏幕");
+            mView.showWebView(mVideoEntity.getExamUrl());
+            mRootView.addView(mView.getRootView(), RelativeLayout.LayoutParams
+                    .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+//            }
         }
     }
 
@@ -59,7 +59,7 @@ public class StandExperienceEvaluationBll extends
     //显示下一个View
     @Override
     public void showNextWindow() {
-
+        logger.i("旋转屏幕");
         ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
         activityChangeLand.changeLOrP();
         for (LiveBackBaseBll liveBackBaseBll : liveBackBll.getLiveBackBaseBlls()) {

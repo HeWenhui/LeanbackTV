@@ -11,12 +11,11 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination.StandExperienceEvaluationBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -155,16 +154,15 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 //                ((ExperienceBuyCoursePresenter) liveBackBaseBll).showNextWindow();
 //                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
 //            }
+//            展示定级卷
             if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
-
                 showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
             }
-        }
-//        showNextWindow(new ExperienceBuyCoursePresenter(activity, this));
-//        showNextWindow(ProxUtil.getProxUtil().get(activity, ExperienceBuyCoursePresenter
-//                .class));
+//            if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
+//                showNextWindow((ExperienceLearnFeedbackBll) liveBackBaseBll);
+//            }
 
-//        showNextWindow(iPresenter);
+        }
     }
 
     /**
@@ -174,8 +172,8 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
      */
     public void showNextWindow(IPresenter mPresenter) {
         //定级卷竖屏来做
-        ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
-        activityChangeLand.changeLOrP();
+//        ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
+//        activityChangeLand.changeLOrP();
         if (mPresenter != null) {
             mPresenter.showWindow();
         }

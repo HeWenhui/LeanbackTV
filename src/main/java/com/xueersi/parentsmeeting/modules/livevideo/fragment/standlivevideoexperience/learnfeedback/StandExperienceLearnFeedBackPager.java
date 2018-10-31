@@ -1,14 +1,17 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback;
 
 import android.content.Context;
-import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.support.constraint.Group;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
@@ -17,7 +20,6 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,12 +49,14 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
     /**
      * 提交按钮
      */
-    private Button submitBtn;
+    private ImageView submitBtn;
     /**
      * 标题
      */
-    private FangZhengCuYuanTextView tvTittle1, tvTittle2, tvSuggest;
+    private TextView tvTittle1, tvTittle2, tvSuggest;
     private VideoLivePlayBackEntity mVideoEntity;
+
+    private ImageView ivClose;
     /**
      * 反馈建议
      */
@@ -69,15 +73,10 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
         this.mVideoEntity = videoLivePlayBackEntity;
         arrayOptions = videoLivePlayBackEntity.getLearnFeedback();
         initListener();
+        initData();
     }
 
-    int[][] radioButtonIds = {{R.id.rb_stand_experience_learn_feedback_select1_button1,
-            R.id.rb_stand_experience_learn_feedback_select1_button2,
-            R.id.rb_stand_experience_learn_feedback_select1_button3},
-            {R.id.rb_stand_experience_learn_feedback_select2_button1,
-                    R.id.rb_stand_experience_learn_feedback_select2_button2,
-                    R.id.rb_stand_experience_learn_feedback_select2_button3}
-    };
+    int[][] radioButtonIds;
 
     @Override
     public View initView() {
@@ -87,15 +86,29 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
         tvTittle1 = mView.findViewById(R.id.fzcytv_stand_experience_learn_feedback_title1);
         tvTittle2 = mView.findViewById(R.id.fzcytv_stand_experience_learn_feedback_title2);
         tvSuggest = mView.findViewById(R.id.fzcytv_stand_experience_learn_feedback_suggest);
+        radioButtonIds = new int[][]{
+                {
+                        R.id.rb_stand_experience_learn_feedback_select1_button1,
+                        R.id.rb_stand_experience_learn_feedback_select1_button2,
+                        R.id.rb_stand_experience_learn_feedback_select1_button3
+                },
+                {
+                        R.id.rb_stand_experience_learn_feedback_select2_button1,
+                        R.id.rb_stand_experience_learn_feedback_select2_button2,
+                        R.id.rb_stand_experience_learn_feedback_select2_button3
+                }
+        };
+        logger.i(radioButtonIds.length);
+        logger.i(" " + radioButtonIds[0].length);
         radioButtons = new RadioButton[radioButtonIds.length][radioButtonIds[0].length];
-//        for (int i = 0; i < radioButtonIds.length; i++) {
-//            for (int j = 0; j < radioButtonIds[i].length; j++) {
-//
-//            }
-//        }
+        for (int i = 0; i < line; i++) {
+            for (int j = 0; j < column; j++) {
+                radioButtons[i][j] = mView.findViewById(radioButtonIds[i][j]);
+            }
+        }
         etSuggest = mView.findViewById(R.id.et_stand_experience_learn_feedback_suggest);
         submitBtn = mView.findViewById(R.id.btn_stand_experience_learn_feedback_submit);
-
+        ivClose = mView.findViewById(R.id.iv_stand_experience_learn_feedback_close);
 
         return mView;
     }
@@ -108,6 +121,9 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
         radioGroup1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (!TextUtils.isEmpty(arrayOptions.get(0).getDefaultOption())) {
+                    radioGroupAns1 = arrayOptions.get(0).getDefaultOption();
+                }
                 if (checkedId == R.id.rb_stand_experience_learn_feedback_select1_button1) {
                     radioGroupAns1 = questionList.get(0).listKey.get(0);
                 } else if (checkedId == R.id.rb_stand_experience_learn_feedback_select1_button2) {
@@ -121,6 +137,9 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
             radioGroup2.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    if (!TextUtils.isEmpty(arrayOptions.get(1).getDefaultOption())) {
+                        radioGroupAns1 = arrayOptions.get(1).getDefaultOption();
+                    }
                     if (checkedId == R.id.rb_stand_experience_learn_feedback_select2_button1) {
                         radioGroupAns2 = questionList.get(1).listKey.get(0);
                     } else if (checkedId == R.id.rb_stand_experience_learn_feedback_select2_button2) {
@@ -131,7 +150,14 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
                 }
             });
         }
-
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (presenter != null) {
+                    presenter.removeWindow();
+                }
+            }
+        });
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,11 +238,9 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
                 int scrollExtent = editText.getHeight() - editText.getCompoundPaddingTop() - editText.getCompoundPaddingBottom();
                 //控件内容总高度与实际显示高度的差值
                 int scrollDifference = scrollRange - scrollExtent;
-
                 if (scrollDifference == 0) {
                     return false;
                 }
-
                 return (scrollY > 0) || (scrollY < scrollDifference - 1);
             }
         });
@@ -257,7 +281,7 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
                 String value = entryKey.getValue();
 //                itemMap.put(value, key);
                 keyList.add(key);
-                keyList.add(value);
+                valueList.add(value);
             }
             QuestionOption tempQuestion = new QuestionOption(keyList, valueList);
             questionList.add(tempQuestion);
@@ -266,15 +290,37 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
         judgeNum();
     }
 
+    public class QuestionOption {
+        private List<String> listKey;
+        private List<String> listValue;
+
+        public QuestionOption(List<String> listKey, List<String> listValue) {
+            this.listKey = listKey;
+            this.listValue = listValue;
+        }
+    }
+
     /**
      * 拿到数据后，对View进行数据填充
      */
+    private final int column = 3;
+    private final int line = 2;
+
     private void setView() {
+        logger.i(radioButtons.length + " " + radioButtons[0].length);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            Drawable drawable = radioButtons[0][0].getButtonDrawable();
+        }
+        ShapeDrawable shapeDrawable = new ShapeDrawable();
+
+
         for (int i = 0; i < questionList.size(); i++) {
             List<String> itemList = questionList.get(i).listValue;
             for (int j = 0; j < itemList.size(); j++) {
-                radioButtons[i][j] = mView.findViewById(radioButtonIds[i][j]);
-                radioButtons[i][j].setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
+
+//                radioButtons[i][j].setTypeface(FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf"));
+                ;
                 radioButtons[i][j].setText(itemList.get(j));
 //                radioButtons[i][j].setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
             }
@@ -291,39 +337,16 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
         if (arrayOptions.size() == 1) {
             select2.setVisibility(View.GONE);
             if (arrayOptions.get(0).getOptions().size() < 3) {//如果只有两个选项，隐藏第三个.
-                radioButtons[0][2].setVisibility(View.GONE);
+                radioButtons[0][2].setVisibility(View.INVISIBLE);
             }
         } else {
             if (arrayOptions.get(0).getOptions().size() < 3) {//如果只有两个选项，隐藏第三个.
-                radioButtons[0][2].setVisibility(View.GONE);
+                radioButtons[0][2].setVisibility(View.INVISIBLE);
             }
             if (arrayOptions.get(1).getOptions().size() < 3) {
-                radioButtons[1][2].setVisibility(View.GONE);
+                radioButtons[1][2].setVisibility(View.INVISIBLE);
             }
         }
 
-    }
-
-    private class QuestionOption {
-        private List<String> listKey;
-        private List<String> listValue;
-
-//        public QuestionOption() {
-//            listKey = new ArrayList<>();
-//            listValue = new ArrayList<>();
-//        }
-
-        public QuestionOption(List<String> listKey, List<String> listValue) {
-            this.listKey = listKey;
-            this.listValue = listValue;
-        }
-
-        public List<String> getListKey() {
-            return listKey;
-        }
-
-        public List<String> getListValue() {
-            return listValue;
-        }
     }
 }

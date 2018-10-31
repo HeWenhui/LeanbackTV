@@ -2,15 +2,21 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexpe
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.route.XueErSiRouter;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ren.yale.android.cachewebviewlib.CacheWebView;
 
 public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWebviewX5Pager implements
         IEvaluationContract.IEvaluationView {
@@ -26,8 +32,10 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
     public View initView() {
 //        addJavascriptInterface();
 //        wvSubjectWeb.addJavascriptInterface(new StandExperienceEvaluation(), "standExperienceEvaluation");
-
-        return super.initView();
+        View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware_x5, null);
+        mView = wvSubjectWeb = new CacheWebView(mContext);
+        wvSubjectWeb.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        return mView;
     }
 
     @Override
@@ -48,7 +56,6 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
             iPresenter.showNextWindow();
 
         }
-        // FIXME: 2018/10/16 跳转到 商城的学习中心页
         //进入推荐的课程   https://www.sina.com?courseId=**&classId=**
         if (url.contains(" www.sina.com")) {
             String courseId = findNumber(url, "courseId");
@@ -58,7 +65,7 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
             //跳转到商城的订单详情页面
             Bundle bundle = new Bundle();
             bundle.putString("orderNum", orderId);
-            //跳转到
+            //采用ARouter来跳转
             XueErSiRouter.startModule(mContext, "/module/Browser", bundle);
 //            OtherModulesEnter.intentToOrderConfirmActivity((Activity) mContext, courseId + "-" + classId, 100,
 //                    "LivePlaybackVideoActivity");
@@ -124,15 +131,26 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
         return sts;
     }
 
+    /**
+     * "http://exp-class.xesv5.com/wholeBodyLive/expClassApp/index" +
+     * ".html#/index?nowLevel=12&liveId=210285&gradeId=1&subjectId=2&teacherId=2671&orderId=2523&userId" +
+     * "=11"
+     *
+     * @param url
+     */
     @Override
     public void showWebView(String url) {
-//        if (!TextUtils.isEmpty(url)) {
-//            wvSubjectWeb.loadUrl(url);
-//        } else {
-        wvSubjectWeb.loadUrl("http://exp-class.xesv5.com/wholeBodyLive/expClassApp/index" +
-                ".html#/index?nowLevel=12&liveId=210285&gradeId=1&subjectId=2&teacherId=2671&orderId=2523&userId" +
-                "=11");
-//        }
+        if (!TextUtils.isEmpty(url)) {
+            logger.i("加载url:" + url);
+            wvSubjectWeb.loadUrl(url);
+        } else {
+//            logger.i("加载url:" + "http://exp-class.xesv5.com/wholeBodyLive/expClassApp/index" +
+//                    ".html#/index?nowLevel=12&liveId=210285&gradeId=1&subjectId=2&teacherId=2671&orderId=2523&userId" +
+//                    "=11");
+//            wvSubjectWeb.loadUrl("http://exp-class.xesv5.com/wholeBodyLive/expClassApp/index" +
+//                    ".html#/index?nowLevel=12&liveId=210285&gradeId=1&subjectId=2&teacherId=2671&orderId=2523&userId" +
+//                    "=11");
+        }
     }
 
 
