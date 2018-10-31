@@ -59,6 +59,8 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         return speechAssessmentPager;
     }
 
+
+
     @Override
     public void setViewLayoutParams(BaseSpeechAssessmentPager baseVoiceAnswerPager, int rightMargin) {
 //        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) baseVoiceAnswerPager.getRootView().getLayoutParams();
@@ -66,6 +68,16 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
 //            params.rightMargin = rightMargin;
 //            LayoutParamsUtil.setViewLayoutParams(baseVoiceAnswerPager.getRootView(), params);
 //        }
+    }
+
+    @Override
+    public BaseSpeechAssessmentPager createNewRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId, SpeechEvalAction speechEvalAction, String stuCouId) {
+        SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
+                videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
+        speechAssessmentPager.setStandingLive(true);
+        RolePlayStandLog.sno3(liveAndBackDebug, testId);
+        return speechAssessmentPager;
     }
 
     class LiveStandSpeechEvalActionImpl implements LiveStandSpeechEvalAction {

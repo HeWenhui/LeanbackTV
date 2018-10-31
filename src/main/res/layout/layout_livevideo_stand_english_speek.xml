@@ -62,6 +62,7 @@
     <com.airbnb.lottie.LottieAnimationView
         android:id="@id/lav_live_stand_english_gold"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 </RelativeLayout>

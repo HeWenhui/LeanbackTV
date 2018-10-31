@@ -2,7 +2,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.entity.MyUserInfoEntity;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
@@ -13,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexper
         .ExperienceBuyCoursePresenter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -143,11 +149,6 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
      * 视频结束的时候，扫描一遍所有的livebackbasebll是否需要做什么事情
      */
     public void resultAllComplete() {
-//        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
-//            if (liveBackBaseBll instanceof StandExperienceEventBaseBll) {
-//                ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
-//            }
-//        }
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             if (liveBackBaseBll instanceof StandExperienceEventBaseBll) {
                 ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
@@ -157,11 +158,6 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
                 showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
             }
         }
-//        showNextWindow(new ExperienceBuyCoursePresenter(activity, this));
-//        showNextWindow(ProxUtil.getProxUtil().get(activity, ExperienceBuyCoursePresenter
-//                .class));
-
-//        showNextWindow(iPresenter);
     }
 
     //    购课完成后专用
@@ -216,6 +212,61 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
                 ((RecommondCourseBll) liveBackBaseBll).onResume();
             }
         }
+    }
+
+    @Override
+    public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
+        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        mData.put("uid", userInfoEntity.getStuId());
+        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("courseid", mVideoEntity.getCourseId());
+        mData.put("liveid", mVideoEntity.getLiveId());
+        mData.put("livetype", String.valueOf(4));
+//        if ("PublicLiveDetailActivity".equals(where)) {
+//            mData.put("livetype", "" + 2);
+//        } else {
+//            mData.put("livetype", "" + 3);
+//        }
+        mData.put("clits", "" + System.currentTimeMillis());
+//        Loger.d(mContext, eventId, mData, true);
+        UmsAgentManager.umsAgentDebug(activity, appID, eventId, mData);
+    }
+
+    @Override
+    public void umsAgentDebugInter(String eventId, final Map<String, String> mData) {
+        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        mData.put("uid", userInfoEntity.getStuId());
+        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("courseid", mVideoEntity.getCourseId());
+        mData.put("liveid", mVideoEntity.getLiveId());
+        mData.put("livetype", "" + 100);
+        mData.put("livetype", "" + 4);
+//        if ("PublicLiveDetailActivity".equals(where)) {
+//            mData.put("livetype", "" + 2);
+//        } else {
+//            mData.put("livetype", "" + 3);
+//        }
+        mData.put("eventid", "" + eventId);
+        mData.put("clits", "" + System.currentTimeMillis());
+        UmsAgentManager.umsAgentOtherBusiness(activity, appID, UmsConstants.uploadBehavior, mData);
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, final Map<String, String> mData) {
+        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
+        mData.put("uid", userInfoEntity.getStuId());
+        mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
+        mData.put("courseid", mVideoEntity.getCourseId());
+        mData.put("liveid", mVideoEntity.getLiveId());
+        mData.put("livetype", "" + 4);
+//        if ("PublicLiveDetailActivity".equals(where)) {
+//            mData.put("livetype", "" + 2);
+//        } else {
+//            mData.put("livetype", "" + 3);
+//        }
+        mData.put("eventid", "" + eventId);
+        mData.put("clits", "" + System.currentTimeMillis());
+        UmsAgentManager.umsAgentOtherBusiness(activity, appID, UmsConstants.uploadShow, mData);
     }
 
 }

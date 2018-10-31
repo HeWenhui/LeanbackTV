@@ -34,7 +34,7 @@ import java.util.Random;
 
 import okhttp3.Call;
 
-public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
+public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachineAction{
     private RolePlayerHttpManager mRolePlayerHttpManager;
     private RolePlayerHttpResponseParser mRolePlayerHttpResponseParser;
 
@@ -81,7 +81,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
         mRolePlayerHttpManager = new RolePlayerHttpManager(mContext);
         mRolePlayerHttpResponseParser = new RolePlayerHttpResponseParser();
 
-        mBottomContent = bottomContent;
+        //mBottomContent = bottomContent;
 
     }
     /**
@@ -328,7 +328,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
 
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce) {
-        logger.i( "老师收题了,断开socket ");
+        logger.i( "onStopQuestion 老师收题了,断开socket ");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -339,7 +339,9 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
 
     @Override
     public void closeCurPage() {
+        logger.i( "onStopQuestion 关闭当前页面 "+mBottomContent+":"+mRolePlayMachinePager);
         if (mBottomContent != null && mRolePlayMachinePager != null) {
+            logger.i( "onStopQuestion 关闭当前页面 ");
             mBottomContent.removeView(mRolePlayMachinePager.getRootView());
             mRolePlayMachinePager.relaseCurrentPage();
             mRolePlayMachinePager.onDestroy();
@@ -354,6 +356,15 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayAction{
             }
         }
     }
+    @Override
+    public String getQuestionId() {
+        if (videoQuestionLiveEntity != null) {
+            return videoQuestionLiveEntity.id;
+        }
+        return "";
+    }
 
-
+    public void setBottomView(RelativeLayout bottomView) {
+        this.mBottomContent = bottomView;
+    }
 }

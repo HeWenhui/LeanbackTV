@@ -157,4 +157,12 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
+    /**
+     * 视屏结束时的回调
+     *
+     * @return
+     */
+    public void onUserBackPressed() {
+
+    }
 }

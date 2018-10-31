@@ -6,11 +6,13 @@ import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.Constants;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
@@ -27,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.H5OnlineTechEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -36,10 +39,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardSho
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
+import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
@@ -58,6 +66,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     /** RolePlayer 人机功能接口 */
     private RolePlayMachineAction rolePlayMachineAction;
+
+    private String Tag = "QuestionIRCBll";
+
+
+    private List<String> questiongtype;
 
     public QuestionIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -78,6 +91,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             keyboardShowingReg.addKeyboardShowing(mQuestionAction);
         }
         mQuestionAction.setLiveType(mLiveType);
+        String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6","18","19"};
+        questiongtype = Arrays.asList(ptTypeFilters);
     }
 
     @Override
@@ -170,57 +185,172 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-        LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
-        if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
-            String num = mainRoomstatus.getExamNum();
-            if ("on".equals(mainRoomstatus.getExamStatus())) {
-                VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                videoQuestionLiveEntity.id = num;
-                mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
-                if (mAnswerRankBll != null) {
-                    mAnswerRankBll.setTestId(num);
+        /**新版文科课件平台 Topic**/
+        if (isNewArtsH5Courseware(jsonObject)) {
+            try {
+                String onlineTechStatus = "";
+                JSONObject onlineJobj = jsonObject.optJSONObject("coursewareOnlineTech");
+                if (onlineJobj != null && "on".equals(onlineJobj.optString("status"))) {
+                    JSONObject onlineTechObj = jsonObject.getJSONObject("coursewareOnlineTech");
+                    if (!"{}".equals(onlineTechObj.toString())) {
+                        VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                        videoQuestionLiveEntity.setNewArtsCourseware(true);
+                        String status = onlineTechObj.optString("status");
+                        if ("on".equals(status)) {
+                            videoQuestionLiveEntity.package_socurce = onlineTechObj.optInt("package_source");
+                            videoQuestionLiveEntity.gold = onlineTechObj.optDouble("gold");
+                            videoQuestionLiveEntity.time = onlineTechObj.optDouble("time");
+                            videoQuestionLiveEntity.id = getIdStr(onlineTechObj.optJSONArray("id"));
+                            videoQuestionLiveEntity.multiRolePlay = onlineTechObj.optString("multiRolePlay");
+                            videoQuestionLiveEntity.roles = onlineTechObj.optString("roles");
+                            videoQuestionLiveEntity.totalScore = onlineTechObj.optString("totalScore");
+                            videoQuestionLiveEntity.answer = onlineTechObj.optString("answer");
+                            videoQuestionLiveEntity.speechContent = onlineTechObj.optString("answer");
+                            videoQuestionLiveEntity.type = onlineTechObj.optString("ptype");
+                            videoQuestionLiveEntity.num = 1;
+                            if("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)){
+                                videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(onlineTechObj.optJSONArray("id")),videoQuestionLiveEntity.type));
+                                videoQuestionLiveEntity.isAllow42 = "0";
+                            }else{
+                                videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.optJSONArray("id"))));
+                                videoQuestionLiveEntity.isAllow42 = "1";
+                            }
+                            if ("1".equals(onlineTechObj.optString("isVoice"))) {
+                                videoQuestionLiveEntity.assess_ref = onlineTechObj.optString("assess_ref");
+                                videoQuestionLiveEntity.questiontype = onlineTechObj.optString("questiontype");
+                                videoQuestionLiveEntity.setIsVoice(onlineTechObj.optString("isVoice"));
+                            }
+//                            videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.getJSONArray("id"))));
+                            logger.e("======> onTopic 1111:" + mQuestionAction);
+                            if (mQuestionAction != null && (questiongtype.contains(videoQuestionLiveEntity.type))) {
+                                logger.e( "======> showQuestionType:"+ videoQuestionLiveEntity.questiontype);
+                                mQuestionAction.showQuestion(videoQuestionLiveEntity);
+                                if (mAnswerRankBll != null) {
+                                    mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                                }
+                                if (mLiveAutoNoticeBll != null) {
+                                    mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                                    mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.package_socurce + "");
+                                }
+                            }
+                        }
+                    }
+                } else {
+//                    JSONObject coursewareH5 = jsonObject.getJSONObject("coursewareH5");
+//                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+//                    videoQuestionLiveEntity.setNewArtsCourseware(true);
+//                    videoQuestionLiveEntity.gold = coursewareH5.optDouble("gold");
+//                    videoQuestionLiveEntity.package_socurce = coursewareH5.optInt("package_socurce");
+//                    videoQuestionLiveEntity.time = coursewareH5.optDouble("time");
+//                    videoQuestionLiveEntity.setIsVoice(coursewareH5.optString("isVoice"));
+//                    videoQuestionLiveEntity.type = coursewareH5.optString("ptype");
+//                    String status = coursewareH5.optString("status", "off");
+//                    if ("on".equals(status)) {
+//                        videoQuestionLiveEntity.id = coursewareH5.optString("id");
+//                        JSONArray idObject = coursewareH5.getJSONArray("id");
+//                        String idStr = getIdStr(idObject);
+//                        videoQuestionLiveEntity.setUrl(buildCourseUrl(idStr));
+//                        if ("1".equals(videoQuestionLiveEntity.getIsVoice())) {
+//                            videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = coursewareH5
+//                                    .optString("questiontype");
+//                            videoQuestionLiveEntity.assess_ref = coursewareH5.optString("assess_ref");
+//                        }
+//                        Loger.e("QuestionIRCBll", "======> onTopic 1111:" + mQuestionAction);
+//                        if (mQuestionAction != null) {
+//                            mQuestionAction.showQuestion(videoQuestionLiveEntity);
+//                            if (mAnswerRankBll != null) {
+//                                mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+//                            }
+//                            if (mLiveAutoNoticeBll != null) {
+//                                mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+//                                mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.package_socurce + "");
+//                            }
+//                        }
+//                    }
                 }
-            } else {
-                mQuestionAction.onExamStop(num);
-            }
-        }
-
-
-        if (liveTopic.getVideoQuestionLiveEntity() != null) {
-            if (mQuestionAction != null) {
-                //解决，老师发题后，学生后进来，无法进入roleplay的问题
-                //人机的回调
-                if (rolePlayMachineAction == null) {
-                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                    mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
-                }
-
-                //多人的回调
-                if (rolePlayAction == null) {
-                    RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
-                    mQuestionAction.setRolePlayAction(rolePlayerBll);
-                    rolePlayAction = rolePlayerBll;
-                }
-                mQuestionAction.showQuestion(liveTopic.getVideoQuestionLiveEntity());
-                if (mAnswerRankBll != null) {
-                    mAnswerRankBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
-                }
-                if (mLiveAutoNoticeBll != null) {
-                    mLiveAutoNoticeBll.setTestId(liveTopic.getVideoQuestionLiveEntity().getvQuestionID());
-                    mLiveAutoNoticeBll.setSrcType(liveTopic.getVideoQuestionLiveEntity().srcType);
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.e("======>QuestionIRCBlle:" + e.toString());
             }
         } else {
-            if (mQuestionAction != null) {
-                mQuestionAction.showQuestion(null);
+            LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
+            if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
+                String num = mainRoomstatus.getExamNum();
+                if ("on".equals(mainRoomstatus.getExamStatus())) {
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                    videoQuestionLiveEntity.id = num;
+                    mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
+                    if (mAnswerRankBll != null) {
+                        mAnswerRankBll.setTestId(num);
+                    }
+                } else {
+                    mQuestionAction.onExamStop(num);
+                }
+            }
+
+
+            if (liveTopic.getVideoQuestionLiveEntity() != null) {
+                logger.e("======>QuestionIRCBlle:" + "走了错误的逻辑");
+                if (mQuestionAction != null) {
+
+                    VideoQuestionLiveEntity videoQuestionLiveEntity =liveTopic.getVideoQuestionLiveEntity();
+
+                    JSONObject topicObj = jsonObject.optJSONObject("topic");
+                    videoQuestionLiveEntity.roles = topicObj.optString("roles");
+                    videoQuestionLiveEntity.id = topicObj.optString("id");
+
+                    //解决，老师发题后，学生后进来，无法进入roleplay的问题
+                    //人机的回调
+
+                    if(!TextUtils.isEmpty( videoQuestionLiveEntity.roles)){
+                        if (rolePlayMachineAction == null) {
+                            RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                            rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
+                        }
+
+                        //多人的回调
+                        if (rolePlayAction == null) {
+                            RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
+                            rolePlayAction = rolePlayerBll;
+                        }
+                        mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction);
+                        mQuestionAction.setRolePlayAction(rolePlayAction);
+                    }
+
+                    mQuestionAction.showQuestion(videoQuestionLiveEntity);
+                    if (mAnswerRankBll != null) {
+                        mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                    }
+                    if (mLiveAutoNoticeBll != null) {
+                        mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                        mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
+                    }
+                }
+            } else {
+                logger.e("======>QuestionIRCBlle:" + "正常的逻辑");
+                if (mQuestionAction != null) {
+                    mQuestionAction.showQuestion(null);
+                }
             }
         }
-
 
     }
 
+
+    /**
+     * 是否是新版文科 课件 topic消息
+     *
+     * @param jsonObject
+     * @return
+     */
+    private boolean isNewArtsH5Courseware(JSONObject jsonObject) {
+        return jsonObject.has("coursewareH5") || jsonObject.has("coursewareOnlineTech");
+    }
+
+
     @Override
     public void onNotice(String sourceNick, String target, JSONObject object, int type) {
+        logger.e( "======>onNotice:" + type + ":" + object);
         switch (type) {
             case XESCODE.SENDQUESTION: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
@@ -272,12 +402,54 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     if (rolePlayMachineAction == null) {
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
                         mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                        rolePlayMachineAction = rolePlayerBll;
                     }
 
                 }
 
             }
             break;
+            case XESCODE.ARTS_SEND_QUESTION: {
+                VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                videoQuestionLiveEntity.gold = object.optDouble("gold");
+                videoQuestionLiveEntity.id = getIdStr(object.optJSONArray("id"));
+                videoQuestionLiveEntity.nonce = object.optString("nonce");
+                videoQuestionLiveEntity.roles = object.optString("roles");
+                videoQuestionLiveEntity.type = object.optString("ptype");
+                videoQuestionLiveEntity.package_socurce = object.optInt("package_source");
+                videoQuestionLiveEntity.time = object.optDouble("time");
+                videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay");
+                videoQuestionLiveEntity.speechContent = object.optString("answer");
+                videoQuestionLiveEntity.num = 1;
+                videoQuestionLiveEntity.setNewArtsCourseware(true);
+                String isVoice = object.optString("isVoice");
+                videoQuestionLiveEntity.setIsVoice(isVoice);
+                //构建 H5 url
+                if("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)){
+                    videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(object.optJSONArray("id")),videoQuestionLiveEntity.type));
+                    videoQuestionLiveEntity.isAllow42 = "0";
+                }else{
+                    videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(object.optJSONArray("id"))));
+                    videoQuestionLiveEntity.isAllow42 = "1";
+                }
+                if ("1".equals(isVoice)) {
+                    videoQuestionLiveEntity.assess_ref = object.optString("assess_ref");
+                    videoQuestionLiveEntity.questiontype = object.optString("questionType");
+                    videoQuestionLiveEntity.setIsVoice(isVoice);
+                }
+                if (mQuestionAction != null) {
+                    mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(videoQuestionLiveEntity);
+                    mQuestionAction.showQuestion(videoQuestionLiveEntity);
+                    if (mAnswerRankBll != null) {
+                        mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                    }
+                    if (mLiveAutoNoticeBll != null) {
+                        mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                        mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
+                    }
+                }
+                break;
+            }
             case XESCODE.STOPQUESTION:
                 mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                 if (mQuestionAction != null) {
@@ -293,6 +465,20 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 }
                 break;
+
+            case XESCODE.ARTS_STOP_QUESTION: {
+                mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
+                String ptype = object.optString("ptype");
+                String package_socurce = object.optString("package_socurce");
+                if (mQuestionAction != null) {
+                    try {
+                        mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            }
             case XESCODE.EXAM_START:
                 if (mQuestionAction != null) {
                     String num = object.optString("num", "0");
@@ -329,6 +515,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (rolePlayMachineAction == null) {
                     RolePlayMachineBll rolePlayerMachineBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
                     mQuestionAction.setRolePlayMachineAction(rolePlayerMachineBll);
+                    rolePlayMachineAction = (RolePlayMachineAction) rolePlayerMachineBll;
 
                 }
 
@@ -341,9 +528,72 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
     }
 
+
+    private String getIdStr(JSONArray jsonArray) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            if (jsonArray != null) {
+                for (int i = 0, len = jsonArray.length(); i < len; i++) {
+                    if (i < (len - 1)) {
+                        stringBuilder.append(jsonArray.getString(i)).append(",");
+                    } else {
+                        stringBuilder.append(jsonArray.getString(i));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stringBuilder.toString();
+    }
+
+    private String buildCourseUrl(String testIds) {
+        String isPlayback = "1";
+        if (LiveVideoConfig.LIVE_TYPE_TUTORIAL == mLiveBll.getLiveType()) {
+            isPlayback = "2";
+        }
+        StringBuilder sb = new StringBuilder();
+        String falseStr = Base64.encodeBytes("false".getBytes());
+        sb.append(mLiveBll.getLiveVideoSAConfig().inner.URL_ARTS_H5_URL).append("?liveId=").append(mLiveId)
+                .append("&testIds=").append(testIds).append("&isPlayBack=").append(isPlayback)
+                .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
+                .getStuId())
+                .append("&cookie=").append(AppBll.getInstance().getUserToken())
+                .append("&stuClientPath=").append(falseStr)
+                .append("&fontDir=").append(falseStr);
+        return sb.toString();
+    }
+
+    private String buildRolePlayUrl(String id,String type){
+        String isPlayback = "0";
+        StringBuilder sb = new StringBuilder();
+        String url;
+        if("5".equals(type)){
+            url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_ROALPLAY_URL;
+        }else {
+            url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_CHINESEREADING_URL;
+        }
+        sb.append(url).append("?liveId=").append(mLiveId)
+                .append("&testId=").append(id).append("&isPlayBack=").append(isPlayback)
+                .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
+                .getStuId())
+                .append("&cookie=").append(AppBll.getInstance().getUserToken());
+        return sb.toString();
+    }
+
+
+
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.SENDQUESTION, XESCODE.STOPQUESTION, XESCODE.EXAM_START, XESCODE.EXAM_STOP, XESCODE.XCR_ROOM_ROLE_READ};
+        return new int[]{
+                XESCODE.SENDQUESTION,
+                XESCODE.STOPQUESTION,
+                XESCODE.EXAM_START,
+                XESCODE.EXAM_STOP,
+                XESCODE.XCR_ROOM_ROLE_READ,
+                XESCODE.ARTS_SEND_QUESTION,
+                XESCODE.ARTS_STOP_QUESTION
+        };
     }
 
     @Override
@@ -405,7 +655,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
+    public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity,
+            String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                 videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="
@@ -416,52 +667,103 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 userMode = "0";
             }
         }
-        getHttpManager().liveSubmitTestAnswer(mLiveType, enstuId, videoQuestionLiveEntity.srcType,
-                videoQuestionLiveEntity.id, mLiveId, testAnswer, userMode, isVoice, isRight, new HttpCallBack() {
+        if(LiveVideoConfig.isNewArts){
+            logger.e( "======> liveSubmitTestAnswer:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
+            getHttpManager().liveNewArtsSubmitTestAnswer(mLiveType, enstuId, videoQuestionLiveEntity.srcType,
+                    videoQuestionLiveEntity.id, mLiveId, testAnswer, userMode, isVoice, isRight, new HttpCallBack() {
 
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        mLogtf.d("liveSubmitTestAnswer:onPmSuccess=" + responseEntity.getJsonObject().toString() + "," +
-                                videoQuestionLiveEntity);
-                        VideoResultEntity entity = getHttpResponseParser().parseQuestionAnswer(responseEntity, isVoice);
-                        entity.setVoice(isVoice);
-                        if (StringUtils.isSpace(entity.getTestId())) {
-                            entity.setTestId(videoQuestionLiveEntity.id);
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) {
+                            mLogtf.d("liveSubmitTestAnswer:onPmSuccess=" + responseEntity.getJsonObject().toString() + "," +
+                                    videoQuestionLiveEntity);
+                            VideoResultEntity entity = getHttpResponseParser().parseQuestionAnswer(responseEntity, isVoice);
+                            entity.setVoice(isVoice);
+                            if (StringUtils.isSpace(entity.getTestId())) {
+                                entity.setTestId(videoQuestionLiveEntity.id);
+                            }
+                            if (answerReslut != null) {
+                                answerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
+                            }
+                            if (mQuestionAction != null) {
+                                mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, entity);
+                            }
                         }
-                        if (answerReslut != null) {
-                            answerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
-                        }
-                        if (mQuestionAction != null) {
-                            mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, entity);
-                        }
-                    }
 
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        mLogtf.d("liveSubmitTestAnswer:onPmFailure=" + msg + ",testId=" + videoQuestionLiveEntity.id);
-                        if (mQuestionAction != null) {
-                            mQuestionAction.onAnswerFailure();
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            mLogtf.d("liveSubmitTestAnswer:onPmFailure=" + msg + ",testId=" + videoQuestionLiveEntity.id);
+                            if (mQuestionAction != null) {
+                                mQuestionAction.onAnswerFailure();
+                            }
+                            if (answerReslut != null) {
+                                answerReslut.onAnswerFailure();
+                            }
                         }
-                        if (answerReslut != null) {
-                            answerReslut.onAnswerFailure();
-                        }
-                    }
 
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        mLogtf.d("liveSubmitTestAnswer:onPmError=" + responseEntity.getErrorMsg() + ",testId=" +
-                                videoQuestionLiveEntity.id);
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            mLogtf.d("liveSubmitTestAnswer:onPmError=" + responseEntity.getErrorMsg() + ",testId=" +
+                                    videoQuestionLiveEntity.id);
 //                        if (!responseEntity.isJsonError()) {
 //
 //                        }
-                        if (mQuestionAction != null) {
-                            mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, null);
+                            if (mQuestionAction != null) {
+                                mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, null);
+                            }
+                            if (answerReslut != null) {
+                                answerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
+                            }
                         }
-                        if (answerReslut != null) {
-                            answerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
+                    });
+        } else {
+            getHttpManager().liveSubmitTestAnswer(mLiveType, enstuId, videoQuestionLiveEntity.srcType,
+                    videoQuestionLiveEntity.id, mLiveId, testAnswer, userMode, isVoice, isRight, new HttpCallBack() {
+
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) {
+                            mLogtf.d("liveSubmitTestAnswer:onPmSuccess=" + responseEntity.getJsonObject().toString() + "," +
+                                    videoQuestionLiveEntity);
+                            VideoResultEntity entity = getHttpResponseParser().parseQuestionAnswer(responseEntity, isVoice);
+                            entity.setVoice(isVoice);
+                            if (StringUtils.isSpace(entity.getTestId())) {
+                                entity.setTestId(videoQuestionLiveEntity.id);
+                            }
+                            if (answerReslut != null) {
+                                answerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
+                            }
+                            if (mQuestionAction != null) {
+                                mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, entity);
+                            }
                         }
-                    }
-                });
+
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            mLogtf.d("liveSubmitTestAnswer:onPmFailure=" + msg + ",testId=" + videoQuestionLiveEntity.id);
+                            if (mQuestionAction != null) {
+                                mQuestionAction.onAnswerFailure();
+                            }
+                            if (answerReslut != null) {
+                                answerReslut.onAnswerFailure();
+                            }
+                        }
+
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            mLogtf.d("liveSubmitTestAnswer:onPmError=" + responseEntity.getErrorMsg() + ",testId=" +
+                                    videoQuestionLiveEntity.id);
+//                        if (!responseEntity.isJsonError()) {
+//
+//                        }
+                            if (mQuestionAction != null) {
+                                mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, null);
+                            }
+                            if (answerReslut != null) {
+                                answerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
+                            }
+                        }
+                    });
+        }
+
     }
 
     @Override
@@ -526,11 +828,34 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void sendSpeechEvalResult2(String id, String stuAnswer, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
+        if(LiveVideoConfig.isNewArts){
+            getHttpManager().sendSpeechEvalResultNewArts(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
 
-            @Override
-            public void onPmSuccess(final ResponseEntity responseEntity) {
-                mLogtf.i("sendSpeechEvalResult2:onPmSuccess=" + responseEntity.getJsonObject());
+                @Override
+                public void onPmSuccess(final ResponseEntity responseEntity) {
+                    mLogtf.i("sendSpeechEvalResult2:onPmSuccess=" + responseEntity.getJsonObject());
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    onSpeechEval.onSpeechEval(jsonObject);
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
+                    onSpeechEval.onPmFailure(error, msg);
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
+                    onSpeechEval.onPmError(responseEntity);
+                }
+            });
+        } else {
+            getHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
+
+                @Override
+                public void onPmSuccess(final ResponseEntity responseEntity) {
+                    mLogtf.i("sendSpeechEvalResult2:onPmSuccess=" + responseEntity.getJsonObject());
 //                Handler handler=new Handler();
 //                handler.postDelayed(new Runnable() {
 //                    @Override
@@ -539,22 +864,23 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                        onSpeechEval.onSpeechEval(jsonObject);
 //                    }
 //                },2000);
-                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                onSpeechEval.onSpeechEval(jsonObject);
-            }
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    onSpeechEval.onSpeechEval(jsonObject);
+                }
 
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
-                onSpeechEval.onPmFailure(error, msg);
-            }
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
+                    onSpeechEval.onPmFailure(error, msg);
+                }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
-                onSpeechEval.onPmError(responseEntity);
-            }
-        });
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
+                    onSpeechEval.onPmError(responseEntity);
+                }
+            });
+        }
     }
 
     @Override
@@ -598,25 +924,48 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(final ResponseEntity responseEntity) {
-                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                mLogtf.i("speechEval42IsAnswered:onPmSuccess=" + jsonObject);
-                boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
-                isAnswered.isAnswer(isAnswer);
-            }
+        if(LiveVideoConfig.isNewArts){
+            getHttpManager().speechNewArtEvaluateIsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(final ResponseEntity responseEntity) {
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    JSONObject detail = jsonObject.optJSONObject("data");
+                    mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmSuccess=" + jsonObject);
+                    boolean isAnswer = detail.optInt("isAnswer") == 1;
+                    isAnswered.isAnswer(isAnswer);
+                }
 
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                mLogtf.i("speechEval42IsAnswered:onPmFailure=" + msg);
-            }
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmFailure=" + msg);
+                }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.i("speechEval42IsAnswered:onPmError=" + responseEntity.getErrorMsg());
-            }
-        });
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmError=" + responseEntity.getErrorMsg());
+                }
+            });
+        } else {
+            getHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(final ResponseEntity responseEntity) {
+                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                    mLogtf.i("speechEval42IsAnswered:onPmSuccess=" + jsonObject);
+                    boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
+                    isAnswered.isAnswer(isAnswer);
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    mLogtf.i("speechEval42IsAnswered:onPmFailure=" + msg);
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    mLogtf.i("speechEval42IsAnswered:onPmError=" + responseEntity.getErrorMsg());
+                }
+            });
+        }
     }
 
     private int test1 = 0;
@@ -727,4 +1076,19 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         });
     }
 
+
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        if(mQuestionAction != null){
+            mQuestionAction.onDestroy();
+        }
+    }
 }
+
+
+
+
+
+

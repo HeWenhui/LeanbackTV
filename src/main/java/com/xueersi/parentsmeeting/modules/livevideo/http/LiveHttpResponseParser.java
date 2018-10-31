@@ -11,6 +11,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
@@ -78,6 +79,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } else {
             LiveVideoConfig.isPrimary = false;
         }
+        LiveVideoConfig.isScience = true;
+        getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
         LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
         LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
@@ -317,6 +320,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 getInfo.setSubjectIds(arrSubjIds);
             }
             LiveVideoConfig.isPrimary = false;
+            LiveVideoConfig.isScience = false;
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 if (getInfo.getIsArts() == 1) {
                     parseLiveGetInfoLibarts(data, liveTopic, getInfo);
@@ -808,6 +812,48 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } catch (Exception e) {
             MobAgent.httpResponseParserError(TAG, "parseQuestionAnswer", e.getMessage());
         }
+        return entity;
+    }
+
+    /**
+     * 解析文科新课件平台互动题
+     *
+     * @param responseEntity
+     * @return
+     */
+    public VideoResultEntity parseNewArtsPlatformQuestionAnswer(ResponseEntity responseEntity, boolean isVoice) {
+        VideoResultEntity entity = new VideoResultEntity();
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        JSONObject total = jsonObject.optJSONObject("total");
+        entity.setGoldNum(Integer.parseInt(total.optString("gold")));
+        entity.setRightNum(Integer.parseInt(total.optString("isRight")));
+        JSONArray split = jsonObject.optJSONArray("split");
+        for(int i = 0 ; i < split.length() ; i++){
+            JSONObject obj = split.optJSONObject(i);
+            entity.setTestId(obj.optString("testId"));
+            entity.setResultType(Integer.parseInt(obj.optString("isRight")));
+            if (isVoice) {
+                JSONArray standeranswer = obj.optJSONArray("rightAnswer");
+                JSONArray youranswer = obj.optJSONArray("choice");
+                entity.setStandardAnswer( standeranswer.optString(0));
+                entity.setYourAnswer(youranswer.optString(0));
+            }
+        }
+        return entity;
+    }
+
+    /**
+     * 解析文科新课件H5语音答题
+     *
+     * @param responseEntity
+     * @return
+     */
+    public VideoResultEntity parseNewArtsH5PlatformQuestionAnswer(ResponseEntity responseEntity, boolean isVoice) {
+        VideoResultEntity entity = new VideoResultEntity();
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        entity.setGoldNum(Integer.parseInt(jsonObject.optString("gold")));
+        entity.setTestId(jsonObject.optString("testId"));
+
         return entity;
     }
 
@@ -1668,5 +1714,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         return entity;
+    }
+
+
+    public ArtsExtLiveInfo parseArtsExtLiveInfo(ResponseEntity responseEntity){
+        ArtsExtLiveInfo info = new ArtsExtLiveInfo();
+        JSONObject data = (JSONObject) responseEntity.getJsonObject();
+        info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
+        return info;
     }
 }

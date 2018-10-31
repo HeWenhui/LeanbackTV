@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,22 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     /** 体验课订单ID */
     private String termId;
     private boolean isLive = true;
+    /** H5语音答题的题型*/
+    public String voiceType;
+    /**
+     * 1.在线教研
+     * 2 设计组
+     */
+    public int package_socurce;
+
+    /**文科在线教研数据**/
+    private H5OnlineTechEntity onlineTechEntity;
+
+    /**语文主观题独有。总分数**/
+    public String totalScore;
+
+    /**语音评测独有。答案**/
+    public String answer;
 
     public VideoQuestionLiveEntity() {
     }
@@ -71,6 +88,14 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public void setIsVoice(String isVoice) {
         //isVoice = "0";
         this.isVoice = isVoice;
+    }
+
+    public String getVoiceType() {
+        return voiceType;
+    }
+
+    public void setVoiceType(String voiceType) {
+        this.voiceType = voiceType;
     }
 
     @Override
@@ -104,11 +129,29 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
         return id;
     }
 
+
+    /**
+     * 是否是 文科新课件平台 答题
+     * */
+
+    public void setNewArtsCourseware(boolean newH5Course) {
+        englishH5Entity.setArtsNewH5Courseware(newH5Course);
+    }
+
+    public boolean isNewArtsH5Courseware() {
+        return englishH5Entity.isArtsNewH5Courseware();
+    }
+
     /**
      * 设置选择题显示数据
      */
     private void editShowQuestion() {
-        int vBlankSize = num;
+        int vBlankSize = 1;
+        if(LiveVideoConfig.isNewArts){
+            vBlankSize = 1;
+        }else{
+            vBlankSize = num;
+        }
         for (int i = 0; i < vBlankSize; i++) {
             AnswerEntity answerLiveEntity = new AnswerEntity();
             mAnswerEntityLst.add(answerLiveEntity);
@@ -172,5 +215,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setLive(boolean live) {
         isLive = live;
+    }
+
+    public void setOnlineTechEntity(H5OnlineTechEntity onlineTechEntity) {
+        this.onlineTechEntity = onlineTechEntity;
+    }
+
+    public H5OnlineTechEntity getOnlineTechEntity() {
+        return onlineTechEntity;
     }
 }

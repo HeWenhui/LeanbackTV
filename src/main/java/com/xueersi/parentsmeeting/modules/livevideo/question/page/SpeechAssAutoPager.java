@@ -34,6 +34,8 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -43,6 +45,7 @@ import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -633,16 +636,27 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 detail.put("total_score", score);
                 answers1.put("detail", detail);
                 answers.put("1", answers1);
+                // 发送分数和TestId
+                EventBus.getDefault().post(new VoiceAnswerResultEvent(id,score));
+                // 发送已答过的状态
+                EventBus.getDefault().post(new ArtsAnswerResultEvent(id,ArtsAnswerResultEvent.TYPE_NATIVE_ANSWERRESULT));
                 speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), new OnSpeechEval() {
                     OnSpeechEval onSpeechEval = this;
 
                     @Override
                     public void onSpeechEval(Object object) {
                         JSONObject jsonObject = (JSONObject) object;
-                        int gold = jsonObject.optInt("gold");
-                        haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
-                        onSpeechEvalSuccess(resultEntity, gold);
-                        speechEvalAction.onSpeechSuccess(id);
+                        if(LiveVideoConfig.isNewArts){
+                            int gold = jsonObject.optInt("gold");
+                            onSpeechEvalSuccess(resultEntity, gold);
+                            speechEvalAction.onSpeechSuccess(id);
+                        } else {
+                            int gold = jsonObject.optInt("gold");
+                            haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
+                            onSpeechEvalSuccess(resultEntity, gold);
+                            speechEvalAction.onSpeechSuccess(id);
+                        }
+
                     }
 
                     @Override

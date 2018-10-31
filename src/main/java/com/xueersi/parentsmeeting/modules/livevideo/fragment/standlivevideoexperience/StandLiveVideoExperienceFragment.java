@@ -65,6 +65,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceQuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -591,10 +592,11 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         if (error != null) {
             errorInfo.setVisibility(View.VISIBLE);
             if (error == AvformatOpenInputError.HTTP_NOT_FOUND) {
-                errorInfo.setText("回放视频未生成，请重试[" + mVideoEntity.getLiveId() + "]");
+                errorInfo.setText("视频未生成，请重试[" + mVideoEntity.getLiveId() + "]");
             } else {
                 PlayErrorCode playErrorCode = PlayErrorCode.getError(arg2);
                 errorInfo.setText("视频播放失败 [" + playErrorCode.getCode() + "]");
+                PlayErrorCodeLog.standExperienceLivePlayError(liveBackBll, playErrorCode);
             }
         }
 //        rlQuestionContent.setVisibility(View.GONE);
@@ -654,26 +656,28 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         resultFailed = true;
         logger.d("resultFailed:arg2=" + arg2);
         if (arg2 != 0 && mVideoEntity != null) {
-            if ("LivePlayBackActivity".equals(where)) {//直播辅导
-                XesMobAgent.onOpenFail(where + ":playback2", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
-                        mVideoEntity.getCourseId() + "-" + mVideoEntity.getSectionId() + "-" + mVideoEntity.getLiveId
-                        (), mWebPath, arg2);
-            } else if ("PublicLiveDetailActivity".equals(where)) {//公开直播
-                XesMobAgent.onOpenFail(where + ":playback3", mVideoEntity.getLiveId(), mWebPath, arg2);
-            } else {
-                if (islocal) {
-                    if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVE_PLAY_RECORD) {//直播辅导下载
-                        XesMobAgent.onOpenFail(where + ":playback4", mVideoEntity.getCourseId() + "-" + mVideoEntity
-                                .getLiveId(), mWebPath + "," + new File(mWebPath).length(), arg2);
-                    } else {//直播课下载
-                        XesMobAgent.onOpenFail(where + ":playback5", mVideoEntity.getCourseId() + "-" + mVideoEntity
-                                .getLiveId(), mWebPath + "," + new File(mWebPath).length(), arg2);
-                    }
-                } else {
-                    XesMobAgent.onOpenFail(where + ":playback6", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
-                            mVideoEntity.getCourseId() + "-" + mVideoEntity.getLiveId(), mWebPath, arg2);
-                }
-            }
+            XesMobAgent.onOpenFail(where + ":playback7", mVideoEntity.getCourseId() + "-" + mVideoEntity.getLiveId(),
+                    mWebPath, arg2);
+//            if ("LivePlayBackActivity".equals(where)) {//直播辅导
+//                XesMobAgent.onOpenFail(where + ":playback2", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
+//                        mVideoEntity.getCourseId() + "-" + mVideoEntity.getSectionId() + "-" + mVideoEntity.getLiveId
+//                        (), mWebPath, arg2);
+//            } else if ("PublicLiveDetailActivity".equals(where)) {//公开直播
+//                XesMobAgent.onOpenFail(where + ":playback3", mVideoEntity.getLiveId(), mWebPath, arg2);
+//            } else {
+//                if (islocal) {
+//                    if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVE_PLAY_RECORD) {//直播辅导下载
+//                        XesMobAgent.onOpenFail(where + ":playback4", mVideoEntity.getCourseId() + "-" + mVideoEntity
+//                                .getLiveId(), mWebPath + "," + new File(mWebPath).length(), arg2);
+//                    } else {//直播课下载
+//                        XesMobAgent.onOpenFail(where + ":playback5", mVideoEntity.getCourseId() + "-" + mVideoEntity
+//                                .getLiveId(), mWebPath + "," + new File(mWebPath).length(), arg2);
+//                    }
+//                } else {
+//                    XesMobAgent.onOpenFail(where + ":playback6", LocalCourseConfig.LIVEPLAYBACK_COURSE + "" +
+//                            mVideoEntity.getCourseId() + "-" + mVideoEntity.getLiveId(), mWebPath, arg2);
+//                }
+//            }
         }
         continuedMTime += System.currentTimeMillis() - everyTime;//得到这次观看的时间
     }
@@ -725,7 +729,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     private final int mPlayDurTime = 300000;
 
     //    private long errorContinuedmTime = 0L;
-    private long delaymTime = 0L;
+    private long delaymTime = 300000L;
 
     private long continuedMTime = 0L;
     private Runnable mPlayDuration = new Runnable() {
@@ -737,21 +741,27 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 long nowContinuedMTime = 0L;
                 if (isPlay) {//处于播放状态
                     nowContinuedMTime = System.currentTimeMillis() - everyTime;
-                    if (continuedMTime + nowContinuedMTime >= mPlayDurTime) {//持续时间大于定义的发送间隔
+                    if (continuedMTime + nowContinuedMTime >= delaymTime) {//持续时间大于定义的发送间隔
                         sendVideoContinuedFlop();
                         continuedMTime = 0L;
                         delaymTime = mPlayDurTime;
                         everyTime = System.currentTimeMillis();
                     } else {
                         delaymTime = mPlayDurTime - continuedMTime - nowContinuedMTime;
+                        continuedMTime = 0L;
                     }
                 } else {
-                    if (continuedMTime >= mPlayDurTime) {//如果持续时间大于定义的发送间隔
+                    if (continuedMTime >= delaymTime) {//如果持续时间大于定义的发送间隔
                         sendVideoContinuedFlop();
+                        delaymTime = mPlayDurTime;
+                        continuedMTime = 0L;
                     } else {//
                         delaymTime = mPlayDurTime - continuedMTime;
+                        continuedMTime = 0L;
                     }
+                    continuedMTime = 0L;
                 }
+//                continuedMTime = 0L;
                 mHandler.postDelayed(this, delaymTime);
             }
         }
@@ -1025,6 +1035,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     public void onDestroy() {
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
+        isFinishing = true;
+        mHandler.removeCallbacks(mPlayDuration);
         isPlay = false;
         liveBackBll.onDestory();
         ProxUtil.getProxUtil().clear(activity);

@@ -119,11 +119,14 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         islocal = intent.getBooleanExtra("islocal", false);
         pattern = intent.getIntExtra("pattern", 0);
         isExperience = intent.getBooleanExtra("isExperience", false);
+        where = intent.getStringExtra("where");
         if ("LivePlayBackActivity".equals(where)) {//直播辅导
             mLiveType = LiveVideoConfig.LIVE_TYPE_TUTORIAL;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         } else if ("PublicLiveDetailActivity".equals(where)) {//公开直播
             mLiveType = LiveVideoConfig.LIVE_TYPE_LECTURE;
             appID = UmsConstants.OPERAT_APP_ID;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         } else {
             if (islocal) {
                 if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVE_PLAY_RECORD) {//直播辅导下载
@@ -147,14 +150,18 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         logToFile = new LogToFile(this, TAG);
         ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, this);
         mCourseHttpManager = new LivePlayBackHttpManager(activity);
-        mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
+        if (liveVideoSAConfig != null) {
+            mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
+        }
         mCourseHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
         mCourseHttpResponseParser = new LivePlayBackHttpResponseParser();
         allLiveBasePagerIml = new AllLiveBasePagerIml(activity);
         showQuestion = new LiveShowQuestion();
         liveUidRx = new LiveUidRx(activity, false);
         mHttpManager = new LiveHttpManager(activity);
-        mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
+        if (liveVideoSAConfig != null) {
+            mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
+        }
         mHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
     }
 
@@ -309,6 +316,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             LiveBackBaseBll liveBackBaseBll = array.get(oldQuestionEntity.getvCategory());
             if (liveBackBaseBll != null) {
                 logger.d("scanQuestion:onQuestionEnd:id=" + oldQuestionEntity.getvCategory());
+                Log.e("mqtt", "关闭上一题" + "position:" + position);
                 liveBackBaseBll.onQuestionEnd(oldQuestionEntity);
             }
             showQuestion.onHide(oldQuestionEntity);
@@ -316,6 +324,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         if (mQuestionEntity != null && oldQuestionEntity != mQuestionEntity && !mQuestionEntity.isAnswered()) {
             mQuestionEntity.setAnswered(true);
             logger.d("scanQuestion:showQuestion");
+            Log.e("Duncan", "showQuestion:" + position);
             showQuestion(oldQuestionEntity, showQuestion);
         }
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
@@ -405,8 +414,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     break;
                 }
             } else if (LocalCourseConfig.CATEGORY_QUESTION == videoQuestionEntity.getvCategory()) {
-                if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionEntity.getvQuestionType()))
-                {//语音评测。在那个点弹出
+                if (LocalCourseConfig.QUESTION_TYPE_SPEECH.equals(videoQuestionEntity.getvQuestionType())) {//语音评测。在那个点弹出
                     // 在开始时间和结束时间之间
                     if (startTime <= playPosition && playPosition < endTime) {
 //                    if (startTime == playPosition) {
@@ -469,6 +477,28 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     mQuestionEntity = videoQuestionEntity;
                     hasQuestionShow = true;
                     index = i;
+                    break;
+                }
+            } else if (LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE == videoQuestionEntity.getvCategory()) {
+                // 在开始时间和结束时间之间
+                if (startTime <= playPosition && playPosition < endTime) {
+                    LiveVideoConfig.isMulLiveBack = false;
+//                if (startTime == playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    Log.e("Duncan", "i:" + i + "playPosition:" + playPosition);
+                    break;
+                }
+            } else if (LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE == videoQuestionEntity.getvCategory()) {
+                // 在开始时间和结束时间之间
+                if (startTime <= playPosition && playPosition < endTime) {
+                    LiveVideoConfig.isMulLiveBack = false;
+//                if (startTime == playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    Log.e("Duncan", "i:" + i + "playPosition:" + playPosition);
                     break;
                 }
             } else if (LocalCourseConfig.CATEGORY_UNDERSTAND == videoQuestionEntity.getvCategory()) {//懂了吗

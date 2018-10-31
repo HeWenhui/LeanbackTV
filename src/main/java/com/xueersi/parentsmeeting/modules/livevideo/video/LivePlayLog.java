@@ -68,6 +68,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  * 直播播放日志
  */
 public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
+
     private static String TAG = "LivePlayLog";
     private Logger logger = LoggerFactory.getLogger(TAG);
     private PlayerService vPlayer;
@@ -183,13 +184,13 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         this.isLive = isLive;
         saveLogDir = LiveCacheFile.geCacheFile(activity, "liveplaylog");
         saveLogDirDebug = LiveCacheFile.geCacheFile(activity, "liveplaylogdebug");
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                uploadOld();
-            }
-        }, 20000);
+//        Handler handler = new Handler(Looper.getMainLooper());
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                uploadOld();
+//            }
+//        }, 20000);
 //        if (AppConfig.DEBUG) {
 //            logurl = "http://10.99.1.251/log";
 //        }
@@ -382,11 +383,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             } else {
                 dataJson.put("node", "xrs_back");
             }
-            if (vPlayer.isInitialized()) {
-                IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-                trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
-                logger.d("downCom:trafficStatisticByteCount=" + trafficStatisticByteCount);
-            }
             long heartTime;
             if (lastHeartTime == 0) {
                 heartTime = 0;
@@ -398,6 +394,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             long bytes = trafficStatisticByteCount - lastTrafficStatisticByteCount;
             if (bytes < 0) {
                 bytes = 0;
+                logger.d("downCom:now=" + trafficStatisticByteCount + ",last=" + lastTrafficStatisticByteCount);
             }
             dataJson.put("bytes", bytes);
             dataJson.put("uid", "" + userId);
@@ -445,7 +442,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             if (vPlayer.isInitialized()) {
                 IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                 bufferduration = ijkMediaPlayer.getVideoCachedDuration();
-                trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
                 logger.d("send:method=" + method + ",bufferduration=" + bufferduration);
             }
             dataJson.put("bufType", bufType);
@@ -470,6 +466,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             long bytes = trafficStatisticByteCount - lastTrafficStatisticByteCount;
             if (bytes < 0) {
                 bytes = 0;
+                logger.d("send:now=" + trafficStatisticByteCount + ",last=" + lastTrafficStatisticByteCount);
             }
             dataJson.put("bytes", bytes);
 //            dataJson.put("allpri", "" + tidAndPri.get(tid));
@@ -1105,7 +1102,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             e1.printStackTrace();
                         }
                     }
-                    saveStrToFile(requestJson.toString());
+//                    saveStrToFile(requestJson.toString());
                     if (e instanceof SocketTimeoutException) {
                         final long now = System.currentTimeMillis();
                         if (now - xescdnLog2Before < 5 * 60 * 1000) {
@@ -1224,7 +1221,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                         if (vPlayer.isInitialized()) {
                             IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                             bufferduration = ijkMediaPlayer.getVideoCachedDuration();
-                            trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
                         }
                         dataJson.put("bufType", bufType);
                         if (isBuffer) {
@@ -1242,6 +1238,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                         long bytes = trafficStatisticByteCount - lastTrafficStatisticByteCount;
                         if (bytes < 0) {
                             bytes = 0;
+                            logger.d("onOpenFailed:now=" + trafficStatisticByteCount + ",last=" + lastTrafficStatisticByteCount);
                         }
                         dataJson.put("bytes", bytes);
                     } else {

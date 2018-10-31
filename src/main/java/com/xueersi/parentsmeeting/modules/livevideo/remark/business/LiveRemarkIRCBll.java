@@ -122,11 +122,16 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                         if (viewStub == null) {
                             viewStub = mContentView.findViewById(R.id.vs_course_video_video_texture);
                         }
-                        liveTextureView = (LiveTextureView) viewStub.inflate();
-                        liveTextureView.vPlayer = vPlayer;
-                        liveTextureView.setLayoutParams(videoView.getLayoutParams());
+                        if (viewStub == null) {
+                            liveTextureView = activity.findViewById(R.id.ltv_course_video_video_texture);
+                        } else {
+                            liveTextureView = (LiveTextureView) viewStub.inflate();
+                        }
+                        if (liveTextureView != null) {
+                            liveTextureView.vPlayer = vPlayer;
+                            liveTextureView.setLayoutParams(videoView.getLayoutParams());
+                        }
                     }
-                    liveRemarkBll.setTextureView(liveTextureView);
                     liveRemarkBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
                     liveRemarkBll.setLiveAndBackDebug(mLiveBll);
                     liveRemarkBll.setHttpManager(getHttpManager());

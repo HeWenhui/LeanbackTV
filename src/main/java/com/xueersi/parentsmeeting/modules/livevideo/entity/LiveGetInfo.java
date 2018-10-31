@@ -223,6 +223,10 @@ public class LiveGetInfo {
      */
     private String isShowMarkPoint;
     /**
+     * 是否有精彩瞬间截图
+     */
+    private int allowSnapshot;
+    /**
      * 1-普通直播，2-全身直播
      */
     private int pattern = 1;
@@ -295,6 +299,14 @@ public class LiveGetInfo {
 
     public void setIsShowMarkPoint(String isShowMarkPoint) {
         this.isShowMarkPoint = isShowMarkPoint;
+    }
+
+    public int getAllowSnapshot() {
+        return allowSnapshot;
+    }
+
+    public void setAllowSnapshot(int allowSnapshot) {
+        this.allowSnapshot = allowSnapshot;
     }
 
     public String getIsShowCounselorWhisper() {
@@ -1129,4 +1141,16 @@ public class LiveGetInfo {
     public void setMulh5url(String mulh5url) {
         this.mulh5url = mulh5url;
     }
+
+    /**直播间额外参数信息*/
+    private ArtsExtLiveInfo artsExtLiveInfo;
+
+    public void setArtsExtLiveInfo(ArtsExtLiveInfo artsExtLiveInfo) {
+        this.artsExtLiveInfo = artsExtLiveInfo;
+    }
+
+    public ArtsExtLiveInfo getArtsExtLiveInfo() {
+        return artsExtLiveInfo;
+    }
+
 }

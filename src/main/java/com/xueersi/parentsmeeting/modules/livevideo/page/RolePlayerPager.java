@@ -274,12 +274,14 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
     private final LiveAndBackDebug liveAndBackDebug;//只为记录日志调用方便
     private boolean mIsListViewUnSroll;//listview是否可滑动
     //private boolean mIsEvaluatoring;//标记正在测评中
+    private RolePlayerEntity mtype;
 
     public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll,
                            LiveGetInfo liveGetInfo) {
         super(context, obj, isNewView);
         this.mRolePlayBll = rolePlayerBll;
         mLiveGetInfo = liveGetInfo;
+        mtype = obj;
         dir = LiveCacheFile.geCacheFile(context, "liveSpeech");
         if (!dir.exists()) {
             dir.mkdirs();
@@ -292,8 +294,69 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
 
         liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
 
+        //区分英语，语文测评，显示中英文的roleplay标题和布局
+        initRoleplayTitleUi();
+
+    }
+    /**
+     * 区分英语，语文测评，显示中英文的roleplay标题和布局
+     */
+    private void initRoleplayTitleUi() {
+        if (mLiveGetInfo != null) {
+            if (1 == mLiveGetInfo.getIsEnglish()) {
+                logger.i( "走英语离线测评");
+                //走英语离线测评
+                setEnRoleplayUI();
+            } else {
+                String[] arrSubIds = mLiveGetInfo.getSubjectIds();
+                if(arrSubIds != null){
+                    for (String subId : arrSubIds) {
+                        if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subId)) {
+                            //走语文离线测评
+                            logger.i( "走语文离线测评:"+subId);
+                            setChRoleplayUI();
+
+                            break;
+                        }else{
+                            //走英语离线测评
+                            logger.i( "走英语离线测评:"+subId);
+                            setEnRoleplayUI();
+                        }
+                    }
+                }else {
+                    //走英语离线测评
+                    logger.i( "走英语离线测评:");
+                    setEnRoleplayUI();
+                }
+
+            }
+
+        } else {
+            //默认走英语离线测评
+            logger.i( "走英语离线测评");
+            setEnRoleplayUI();
+        }
     }
 
+    /**
+     * 设置英语标题布局
+     */
+    private void setEnRoleplayUI() {
+        iv_live_roleplayer_title.setImageResource(R.drawable.livevideo_roleplay_title);
+        //记录当前正在走的模型，留给界面更新使用
+        ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig
+                .VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
+    }
+
+    /**
+     * 设置语文标题布局
+     */
+    private void setChRoleplayUI() {
+        iv_live_roleplayer_title.setImageResource(R.drawable.live_role_play_title);
+        //记录当前正在走的模型，留给界面更新使用
+        ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
+                RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
+    }
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.pager_roleplayer, null);
@@ -352,24 +415,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         rlResult = view.findViewById(R.id.rl_live_roleplayer_result_main);
 
         iv_live_roleplayer_title = view.findViewById(R.id.iv_live_roleplayer_title);
-        ///获取当前应该走的离线模型
-        final int curSubModEva = ShareDataManager.getInstance().getInt(RolePlayConfig
-                .KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager
-                .SHAREDATA_NOT_CLEAR);
-        switch (curSubModEva) {
-            case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
-                //当前是英语离线测评
-                iv_live_roleplayer_title.setImageResource(R.drawable.livevideo_roleplay_title);
-                break;
-            case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
-                //当前是语文离线测评
-                iv_live_roleplayer_title.setImageResource(R.drawable.live_role_play_title);
-                break;
-            default:
-                //默认走英语离线测评
-                iv_live_roleplayer_title.setImageResource(R.drawable.livevideo_roleplay_title);
-                break;
-        }
+
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View view) {
@@ -631,7 +677,11 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                                 (mCurrentReadIndex - 1);
                         if ((mCurrentReadIndex - 1) == mEntity.getSelfLastIndex()) {
                             logger.i( "提交结果");
-                            mRolePlayBll.requestResult();
+                            if(mtype.isNewArts()){
+                                mRolePlayBll.requestNewArtsResult();
+                            }else{
+                                mRolePlayBll.requestResult();
+                            }
                         }
                         if (upMessage.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH) {
                             upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
@@ -744,6 +794,12 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         mWorkerThread.waitForReady();
         int vProfile = Constants.VIDEO_PROFILE_120P;
         mWorkerThread.configEngine(Constants.CLIENT_ROLE_BROADCASTER, vProfile);
+        if(mEntity == null){
+            if(mRolePlayBll != null){
+                mRolePlayBll.closeCurPage();
+            }
+            return;
+        }
         mWorkerThread.joinChannel(null, mEntity.getLiveId() + "_" + mEntity.getTestId() + "_" + mEntity.getTeamId(),
                 Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getStuId()), new WorkerThread
                         .OnJoinChannel() {
@@ -1000,7 +1056,11 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         }
         if (!mEntity.isResult()) {
             logger.i( "结束RolePlayer,结果还未提交，再次提交结果");
-            mRolePlayBll.requestResult();
+            if(mtype.isNewArts()){
+                mRolePlayBll.requestNewArtsResult();
+            }else{
+                mRolePlayBll.requestResult();
+            }
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -1045,50 +1105,36 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
             logger.i( "自己在朗读，开启音频流");
         }
 
-        /*if(mIsEvaluatoring){
-            Loger.i("RolePlayerDemoTest", "正在测评中，不接受新的测评请求");
-            return;
-        }*/
 
         rlSpeechVolumnMain.setVisibility(View.VISIBLE);
         vwvSpeechVolume.setVisibility(View.VISIBLE);
         String spechMsg = message.getReadMsg().replace("\n", "");
+        logger.i( "待测评的文本"+spechMsg);
 
-        if (mLiveGetInfo != null) {
-            if (1 == mLiveGetInfo.getIsEnglish()) {
-                logger.i( "走英语离线测评");
+        final int curSubModEva = ShareDataManager.getInstance().getInt(RolePlayConfig
+                .KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager
+                .SHAREDATA_NOT_CLEAR);
+        saveVideoFile = new File(dir, "roleplayer_machine_" + System.currentTimeMillis() + ".mp3");
+        switch (curSubModEva) {
+            case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
                 //走英语离线测评
+                logger.i(TAG+"走英语离线测评");
                 mIse = new SpeechEvaluatorUtils(
                         true);
-                saveVideoFile = new File(dir, "roleplayer" + System.currentTimeMillis() + ".mp3");
-                //记录当前正在走的模型，留给界面更新使用
-                ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig
-                        .VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
-            } else {
-                String[] arrSubIds = mLiveGetInfo.getSubjectIds();
-                for (String subId : arrSubIds) {
-                    if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subId)) {
-                        //走语文离线测评
-                        mIse = new SpeechEvaluatorUtils(true, com.tal.speech.speechrecognizer.Constants
-                                .ASSESS_PARAM_LANGUAGE_CH);
-                        saveVideoFile = new File(dir, "roleplayer" + System.currentTimeMillis() + ".mp3");
-                        //记录当前正在走的模型，留给界面更新使用
-                        ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
-                                RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
-                        logger.i( "走语文离线测评");
-                        break;
-                    }
-                }
-            }
 
-        } else {
-            //默认走英语离线测评
-            logger.i( "走英语离线测评");
-            mIse = new SpeechEvaluatorUtils(true);
-            //记录当前正在走的模型，留给界面更新使用
-            ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig
-                    .VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
-            saveVideoFile = new File(dir, "roleplayer" + System.currentTimeMillis() + ".mp3");
+                break;
+            case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
+                //走语文离线测评
+                logger.i(TAG+"走语文离线测评");
+                mIse = new SpeechEvaluatorUtils(true, com.tal.speech.speechrecognizer.Constants
+                        .ASSESS_PARAM_LANGUAGE_CH);
+                break;
+            default:
+                //默认走英语离线测评
+                logger.i(TAG+"走英语离线测评");
+                mIse = new SpeechEvaluatorUtils(
+                        true);
+                break;
         }
 
         mIse.cancel();
@@ -1402,11 +1448,11 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
     @Override
     public boolean onUserBackPressed() {
         logger.i("点击返回");
-        if(mRolePlayBll != null){
+        if(mRolePlayBll != null && mRolePlayBll.getRolePlayPager() != null && mRolePlayBll.getBottomView() != null){
             mRolePlayBll.closeCurPage();
             return true;
         }
-        return false;
+        return super.onUserBackPressed();
     }
 
 }

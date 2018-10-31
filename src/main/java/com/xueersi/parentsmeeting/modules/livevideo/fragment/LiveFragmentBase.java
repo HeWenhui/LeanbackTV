@@ -35,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -52,7 +53,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements VideoAction {
     private String TAG = "LiveFragmentBase";
     /** 播放器同步 */
-    protected static final Object mIjkLock = new Object();
+    protected static final Object mIjkLock = BasePlayerFragment.mIjkLock;
     protected WeakHandler mHandler = new WeakHandler(null);
     protected LiveBll2 mLiveBll;
     /** 直播类型 */
@@ -245,7 +246,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         LiveFragmentBase liveFragmentBase;
 
         public LiveLivePlayerPlayFragment() {
-            logger.d( "LiveLivePlayerPlayFragment");
+            logger.d("LiveLivePlayerPlayFragment");
         }
 
         @Override
@@ -524,7 +525,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
         if (event.getClass() == AppEvent.class) {
-            logger.i( "onEvent:netWorkType=" + event.netWorkType);
+            logger.i("onEvent:netWorkType=" + event.netWorkType);
             mLiveVideoBll.onNetWorkChange(event.netWorkType);
         }
     }
