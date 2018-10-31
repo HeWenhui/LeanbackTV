@@ -59,7 +59,7 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
     public void setVolume(float volume) {
         this.newVolume = volume;
 //        this.volume = volume;
-        Log.i(TAG, "setVolume:volume=" + volume);
+//        Log.i(TAG, "setVolume:volume=" + volume);
     }
 
     @Override

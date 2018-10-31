@@ -55,7 +55,7 @@ public class MyEngineEventHandler {
                             handler.onVolume(info.volume);
                         }
                     }
-                    logger.d("onAudioVolumeIndication:info=" + info.uid + "," + info.volume);
+//                    logger.d("onAudioVolumeIndication:info=" + info.uid + "," + info.volume);
                 }
             }
         }
