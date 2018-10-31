@@ -314,6 +314,10 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     public void updateUser(boolean classmateChange, ArrayList<ClassmateEntity> classmateEntities) {
         final RelativeLayout rl_livevideo_chat_head1 = mView.findViewById(R.id.rl_livevideo_chat_head1);
         final RelativeLayout rl_livevideo_chat_head2 = mView.findViewById(R.id.rl_livevideo_chat_head2);
+        final LottieAnimationView pressLottileView1 = mView.findViewById(R.id.lav_livevideo_chat_praise1);
+        final LottieAnimationView pressLottileView2 = mView.findViewById(R.id.lav_livevideo_chat_praise2);
+        pressLottileView1.setVisibility(View.INVISIBLE);
+        pressLottileView2.setVisibility(View.INVISIBLE);
         int size = classmateEntities.size();
         mLogtf.d("updateUser:size=" + size);
         if (size == 0) {
@@ -334,7 +338,6 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 final ImageView iv_livevideo_chat_praise1 = rl_livevideo_chat_head1.findViewById(R.id.iv_livevideo_chat_praise1);
                 TextView tv_livevideo_chat_count1 = rl_livevideo_chat_head1.findViewById(R.id.tv_livevideo_chat_count1);
                 tv_livevideo_chat_count1.setVisibility(View.GONE);
-                final LottieAnimationView pressLottileView = mView.findViewById(R.id.lav_livevideo_chat_praise1);
                 if (classmateEntity1.isMe() || micType == 0) {
                     if (micType == 0) {
                         iv_livevideo_chat_praise1.setVisibility(View.GONE);
@@ -343,46 +346,46 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                             iv_livevideo_chat_praise1.setImageResource(R.drawable.live_task_zanhui_icon_normal);
                         }
                     }
-                    pressLottileView.setVisibility(View.GONE);
+                    pressLottileView1.setVisibility(View.GONE);
                 } else {
                     iv_livevideo_chat_praise1.setVisibility(View.INVISIBLE);
-                    pressLottileView.setVisibility(View.VISIBLE);
+                    pressLottileView1.setVisibility(View.VISIBLE);
                     if (!initLottile1) {
                         initLottile1 = true;
                         logger.d("setAnimationFromJson1");
-                        pressLottileView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(activity), "press");
-                        pressLottileView.useHardwareAcceleration(true);
+                        pressLottileView1.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(activity), "press");
+                        pressLottileView1.useHardwareAcceleration(true);
                         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
                             @Override
                             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                                Bitmap bitmap = bubbleEffectInfo.fetchBitmapFromAssets(pressLottileView, lottieImageAsset.getFileName(),
+                                Bitmap bitmap = bubbleEffectInfo.fetchBitmapFromAssets(pressLottileView1, lottieImageAsset.getFileName(),
                                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), activity);
                                 return bitmap;
                             }
                         };
-                        pressLottileView.setImageAssetDelegate(imageAssetDelegate);
+                        pressLottileView1.setImageAssetDelegate(imageAssetDelegate);
                         iv_livevideo_chat_praise1.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                             @Override
                             public boolean onPreDraw() {
-                                pressLottileView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                                pressLottileView1.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                                     @Override
                                     public boolean onPreDraw() {
-                                        int lottieWidth = pressLottileView.getWidth();
-                                        int lottieHeight = pressLottileView.getHeight();
+                                        int lottieWidth = pressLottileView1.getWidth();
+                                        int lottieHeight = pressLottileView1.getHeight();
                                         if (lottieWidth == 0 || lottieHeight == 0) {
                                             return false;
                                         }
-                                        pressLottileView.getViewTreeObserver().removeOnPreDrawListener(this);
+                                        pressLottileView1.getViewTreeObserver().removeOnPreDrawListener(this);
                                         int width = iv_livevideo_chat_praise1.getWidth();
                                         int height = iv_livevideo_chat_praise1.getHeight();
                                         int left = iv_livevideo_chat_praise1.getLeft();
                                         int top = iv_livevideo_chat_praise1.getTop();
-                                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) pressLottileView.getLayoutParams();
+                                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) pressLottileView1.getLayoutParams();
                                         lp.width = lp.height = (int) (145.0f * width / 80.0f);
                                         int tra = (lp.width - width) / 2;
                                         lp.leftMargin = left + rl_livevideo_chat_head1.getLeft() - tra;
                                         lp.topMargin = top + rl_livevideo_chat_head1.getTop() - tra;
-                                        pressLottileView.setLayoutParams(lp);
+                                        pressLottileView1.setLayoutParams(lp);
                                         logger.d("onPreDraw:left1=" + width + ",lw=" + lottieWidth + "," + lp.width + ",left=" + left + ",tra=" + tra);
                                         return false;
                                     }
@@ -392,7 +395,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                             }
                         });
                     }
-                    pressLottileView.setOnClickListener(new PraiseClick(pressLottileView, classmateEntity1, tv_livevideo_chat_count1));
+                    pressLottileView1.setOnClickListener(new PraiseClick(pressLottileView1, classmateEntity1, tv_livevideo_chat_count1));
                 }
             }
             if (size == 2) {
@@ -403,7 +406,6 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 final ImageView iv_livevideo_chat_praise2 = rl_livevideo_chat_head2.findViewById(R.id.iv_livevideo_chat_praise2);
                 TextView tv_livevideo_chat_count2 = rl_livevideo_chat_head2.findViewById(R.id.tv_livevideo_chat_count2);
                 tv_livevideo_chat_count2.setVisibility(View.GONE);
-                final LottieAnimationView pressLottileView = mView.findViewById(R.id.lav_livevideo_chat_praise2);
                 if (classmateEntity2.isMe() || micType == 0) {
                     if (micType == 0) {
                         iv_livevideo_chat_praise2.setVisibility(View.GONE);
@@ -412,46 +414,46 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                             iv_livevideo_chat_praise2.setImageResource(R.drawable.live_task_zanhui_icon_normal);
                         }
                     }
-                    pressLottileView.setVisibility(View.GONE);
+                    pressLottileView2.setVisibility(View.GONE);
                 } else {
                     iv_livevideo_chat_praise2.setVisibility(View.INVISIBLE);
-                    pressLottileView.setVisibility(View.VISIBLE);
+                    pressLottileView2.setVisibility(View.VISIBLE);
                     if (!initLottile2) {
                         initLottile2 = true;
                         logger.d("setAnimationFromJson2");
-                        pressLottileView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(activity), "press");
-                        pressLottileView.useHardwareAcceleration(true);
+                        pressLottileView2.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(activity), "press");
+                        pressLottileView2.useHardwareAcceleration(true);
                         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
                             @Override
                             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                                Bitmap bitmap = bubbleEffectInfo.fetchBitmapFromAssets(pressLottileView, lottieImageAsset.getFileName(),
+                                Bitmap bitmap = bubbleEffectInfo.fetchBitmapFromAssets(pressLottileView2, lottieImageAsset.getFileName(),
                                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), activity);
                                 return bitmap;
                             }
                         };
-                        pressLottileView.setImageAssetDelegate(imageAssetDelegate);
+                        pressLottileView2.setImageAssetDelegate(imageAssetDelegate);
                         iv_livevideo_chat_praise2.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                             @Override
                             public boolean onPreDraw() {
-                                pressLottileView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                                pressLottileView2.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                                     @Override
                                     public boolean onPreDraw() {
-                                        int lottieWidth = pressLottileView.getWidth();
-                                        int lottieHeight = pressLottileView.getHeight();
+                                        int lottieWidth = pressLottileView2.getWidth();
+                                        int lottieHeight = pressLottileView2.getHeight();
                                         if (lottieWidth == 0 || lottieHeight == 0) {
                                             return false;
                                         }
-                                        pressLottileView.getViewTreeObserver().removeOnPreDrawListener(this);
+                                        pressLottileView2.getViewTreeObserver().removeOnPreDrawListener(this);
                                         int width = iv_livevideo_chat_praise2.getWidth();
                                         int height = iv_livevideo_chat_praise2.getHeight();
                                         int left = iv_livevideo_chat_praise2.getLeft();
                                         int top = iv_livevideo_chat_praise2.getTop();
-                                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) pressLottileView.getLayoutParams();
+                                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) pressLottileView2.getLayoutParams();
                                         lp.width = lp.height = (int) (145.0f * width / 80.0f);
                                         int tra = (lp.width - width) / 2;
                                         lp.leftMargin = left + rl_livevideo_chat_head2.getLeft() - tra;
                                         lp.topMargin = top + rl_livevideo_chat_head2.getTop() - tra;
-                                        pressLottileView.setLayoutParams(lp);
+                                        pressLottileView2.setLayoutParams(lp);
                                         logger.d("onPreDraw:left2=" + width + ",lw=" + lottieWidth + "," + lp.width + ",left=" + left + ",tra=" + tra);
                                         return false;
                                     }
@@ -461,7 +463,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                             }
                         });
                     }
-                    pressLottileView.setOnClickListener(new PraiseClick(pressLottileView, classmateEntity2, tv_livevideo_chat_count2));
+                    pressLottileView2.setOnClickListener(new PraiseClick(pressLottileView2, classmateEntity2, tv_livevideo_chat_count2));
                 }
             }
         }
