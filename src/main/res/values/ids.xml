@@ -808,6 +808,7 @@
     <item name="bt_livevideo_chat_big" type="id" />
 
     <item name="rl_livevideo_chat_head1" type="id" />
+    <item name="rl_livevideo_chat_head_back1" type="id" />
     <item name="civ_livevideo_chat_head1" type="id" />
     <item name="tv_livevideo_chat_head1" type="id" />
     <item name="iv_livevideo_chat_praise1" type="id" />
@@ -815,6 +816,7 @@
     <item name="tv_livevideo_chat_count1" type="id" />
 
     <item name="rl_livevideo_chat_head2" type="id" />
+    <item name="rl_livevideo_chat_head_back2" type="id" />
     <item name="civ_livevideo_chat_head2" type="id" />
     <item name="tv_livevideo_chat_head2" type="id" />
     <item name="iv_livevideo_chat_praise2" type="id" />

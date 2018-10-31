@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.widget;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -16,6 +18,7 @@ import android.view.SurfaceView;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 import java.util.ArrayList;
 
@@ -33,8 +36,9 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
     private float newVolume = 0f;
     private float speed = .1f;
     private int backColor;
-    int colors[] = {0x196462a2, 0x326462a2, 0x646462a2, 0x966462a2, 0xFF6462a2};
-    LinearGradient linearGradient;
+    private int colors[] = {0x196462a2, 0x326462a2, 0x646462a2, 0x966462a2, 0xFF6462a2};
+    private LinearGradient linearGradient;
+    private Bitmap back;
 
     public AgoraVolumeWaveView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -76,6 +80,7 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
         private int K = 2;
         private int width = 800;
         private int height = 800;
+        private int board = 5;
         private int F = 6;
         private double phase = 0;
         Paint paint = new Paint();
@@ -102,8 +107,15 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
             long before = System.currentTimeMillis();
             while (isRun) {
                 long before2 = System.currentTimeMillis();
-                width = getWidth();
-                height = getHeight();
+                int viewWidth = getWidth();
+                int viewHeight = getHeight();
+                width = viewWidth - 2 * board;
+                height = viewHeight - 2 * board;
+//                Rect dirty = new Rect();
+//                dirty.top = 3;
+//                dirty.left = 3;
+//                dirty.right = dirty.left + width;
+//                dirty.bottom = dirty.top + width;
                 Canvas canvas = mSurfaceHolder.lockCanvas();
                 long time1 = System.currentTimeMillis() - before2;
                 before2 = System.currentTimeMillis();
@@ -123,7 +135,17 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
                         canvas.drawPaint(clearPaint);
                         clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
 //                        canvas.drawColor(backColor);
-                        canvas.drawCircle(width / 2, height / 2, width / 2, backPaint);
+                        if (back == null) {
+                            Bitmap back2 = BitmapFactory.decodeResource(getResources(), R.drawable.live_task_hongse_icon_normal);
+                            if (back2 != null) {
+                                back = Bitmap.createScaledBitmap(back2, viewWidth, viewHeight, false);
+                                back2.recycle();
+                            }
+                        }
+                        if (back != null) {
+                            canvas.drawBitmap(back, 0, 0, null);
+                        }
+//                        canvas.drawCircle(width / 2, height / 2, width / 2, backPaint);
 //                        canvas.drawColor(Color.TRANSPARENT);
                         //
                         phase = ((this.phase + speed) % (Math.PI * 64));
@@ -132,7 +154,6 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
 //                        _drawLine(canvas, drawVolume, 4, 0x646462a2);
 //                        _drawLine(canvas, drawVolume, 2, 0x966462a2);
 //                        _drawLine(canvas, drawVolume, 1, 0xff6462a2);
-
                         _drawLine(canvas, drawVolume);
                     }
                 } catch (Exception e) {
@@ -199,7 +220,7 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
             for (int i = 0; i < colors.length; i++) {
                 Path path = paths.get(i);
                 path.reset();
-                path.moveTo(0, height / 2);
+                path.moveTo(board, height / 2 + board);
             }
             float x, y;
             for (float i = -this.K; i <= this.K; i += 0.01f) {
@@ -209,7 +230,7 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
                     y = (float) (this.height / 2 + drawVolume * this._globalAttenuationFn(i) * (1 / attenuation) *
                             Math.sin(this.F * i - this.phase));
                     Path path = paths.get(j);
-                    path.lineTo(x, y);
+                    path.lineTo(x + board, y + board);
                 }
             }
             for (int i = 0; i < colors.length; i++) {

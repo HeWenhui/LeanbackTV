@@ -128,10 +128,12 @@ public class ChatTipBll {
 
     public void onClassmateChange(final ArrayList<ClassmateEntity> classmateEntities, boolean contain) {
         logger.d("onClassmateChange:size=" + classmateEntities.size() + "，contain=" + contain);
-        this.classmateEntities = classmateEntities;
+        this.classmateEntities.clear();
+        this.classmateEntities.addAll(classmateEntities);
         handler.post(new Runnable() {
             @Override
             public void run() {
+                raiseHandCount(raiseHandCount);
                 if (videoChatInter != null) {
                     videoChatInter.updateUser(classmateChange, classmateEntities);
                 }
@@ -157,6 +159,7 @@ public class ChatTipBll {
         if (vgRaisehand != null) {
             return;
         }
+        handler.postDelayed(waitRun, 1000);
         vgRaisehand = (ViewGroup) LayoutInflater.from(activity).inflate(R.layout.layout_live_video_chat, bottomContent, false);
         rl_livevideo_content_left = vgRaisehand.findViewById(R.id.rl_livevideo_chat_content_left);
         ll_livevideo_chat_people = vgRaisehand.findViewById(R.id.ll_livevideo_chat_people);
@@ -291,17 +294,55 @@ public class ChatTipBll {
         }
     }
 
+    private String pointstr = ".  ";
+    private int index = 0;
+
+    private Runnable waitRun = new Runnable() {
+        @Override
+        public void run() {
+            if ("off".equals(onMic)) {
+                if (tv_livevideo_chat_people != null) {
+                    tv_livevideo_chat_people.setText("当前举手" + raiseHandCount + "人，等待连麦中" + pointstr);
+                }
+                if (tv_livevideo_chat_people_grey != null) {
+                    tv_livevideo_chat_people_grey.setText("当前举手" + raiseHandCount + "人，等待连麦中" + pointstr);
+                }
+                index++;
+                if (index % 3 == 1) {
+                    pointstr = ".. ";
+                } else if (index % 3 == 2) {
+                    pointstr = "...";
+                } else {
+                    pointstr = ".  ";
+                }
+                logger.d("waitRun:index=" + index + ",pointstr=" + pointstr);
+                handler.postDelayed(this, 1000);
+            } else {
+                logger.d("waitRun:onMic=off");
+            }
+        }
+    };
+
     public void raiseHandCount(final int num) {
         raiseHandCount = num;
         handler.post(new Runnable() {
             @Override
             public void run() {
                 initView("raiseHandCount");
-                if (tv_livevideo_chat_people != null) {
-                    tv_livevideo_chat_people.setText("当前举手" + raiseHandCount + "人，等待连麦中…");
-                }
-                if (tv_livevideo_chat_people_grey != null) {
-                    tv_livevideo_chat_people_grey.setText("当前举手" + raiseHandCount + "人，等待连麦中…");
+                if ("on".equals(onMic)) {
+                    if (tv_livevideo_chat_people != null) {
+                        tv_livevideo_chat_people.setText("当前举手" + raiseHandCount + "人，已连麦" + classmateEntities.size() + "人");
+                    }
+                    if (tv_livevideo_chat_people_grey != null) {
+                        tv_livevideo_chat_people_grey.setText("当前举手" + raiseHandCount + "人，已连麦" + classmateEntities.size() + "人");
+                    }
+                } else {
+                    if (tv_livevideo_chat_people != null) {
+                        tv_livevideo_chat_people.setText("当前举手" + raiseHandCount + "人，等待连麦中…");
+                    }
+                    if (tv_livevideo_chat_people_grey != null) {
+                        tv_livevideo_chat_people_grey.setText("当前举手" + raiseHandCount + "人，等待连麦中…");
+                    }
                 }
             }
         });
@@ -356,10 +397,12 @@ public class ChatTipBll {
             @Override
             public void run() {
                 initView("startMicro");
+                handler.removeCallbacks(waitRun);
                 if ("on".equals(onMic)) {
                     rl_livevideo_chat_raisehand_on.setVisibility(View.VISIBLE);
                     rl_livevideo_chat_raisehand_off.setVisibility(View.INVISIBLE);
                 } else {
+                    handler.postDelayed(waitRun, 1000);
                     rl_livevideo_chat_raisehand_on.setVisibility(View.INVISIBLE);
                     rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
                 }
@@ -415,6 +458,7 @@ public class ChatTipBll {
         }
         raisehand = false;
         logger.d("stopRecord:method=" + method);
+        handler.removeCallbacks(waitRun);
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -438,6 +482,7 @@ public class ChatTipBll {
     }
 
     public void destory() {
+        handler.removeCallbacks(waitRun);
         if (testWorkerThread != null) {
             testWorkerThread.disableLastmileTest();
         }

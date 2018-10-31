@@ -71,6 +71,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     private VideoChatEvent videoChatEvent;
     private VideoAudioChatHttp videoChatHttp;
     private RelativeLayout rl_livevideo_chat_voice;
+    private View v_livevideo_chat_myline;
     private AgoraVolumeWaveView vw_livevideo_chat_voice;
     private boolean containMe = false;
     int stuid;
@@ -100,6 +101,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     @Override
     public View initView() {
         mView = View.inflate(activity, R.layout.pager_live_video_chat_people, null);
+        v_livevideo_chat_myline = mView.findViewById(R.id.v_livevideo_chat_myline);
         vw_livevideo_chat_voice = mView.findViewById(R.id.vw_livevideo_chat_voice);
         vw_livevideo_chat_voice.setVisibility(View.GONE);
         rl_livevideo_chat_voice = mView.findViewById(R.id.rl_livevideo_chat_voice);
@@ -320,7 +322,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         pressLottileView2.setVisibility(View.INVISIBLE);
         int size = classmateEntities.size();
         mLogtf.d("updateUser:size=" + size);
-        if (size == 0) {
+        if (size == 0 || micType == 0) {
             rl_livevideo_chat_head1.setVisibility(View.GONE);
             rl_livevideo_chat_head2.setVisibility(View.GONE);
         } else if (size < 3) {
@@ -568,9 +570,14 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     }
 
     public void show(String method) {
-        logger.d("show:method=" + method);
+        logger.d("show:method=" + method + ",micType=" + micType);
         rl_livevideo_chat_voice.setVisibility(View.VISIBLE);
         vw_livevideo_chat_voice.setVisibility(View.VISIBLE);
+        if (micType == 0) {
+            v_livevideo_chat_myline.setVisibility(View.GONE);
+        } else {
+            v_livevideo_chat_myline.setVisibility(View.VISIBLE);
+        }
     }
 
     public void hind(String method) {
