@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -8,6 +9,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseCacheData;
@@ -27,12 +30,15 @@ import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
+import com.xueersi.parentsmeeting.module.videoplayer.media.CenterLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AuditClassAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AuditClassBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AuditClassLiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AuditVideoAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodyAuditClassBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -79,6 +85,7 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 public class AuditClassLiveActivity extends LiveVideoActivityBase implements AuditVideoAction, ActivityStatic {
 
     private String TAG = "AcLiveVideoActivityLog";
+    private RelativeLayout businessRootView;
 
     {
         mLayoutVideo = R.layout.activity_video_audit_live;
@@ -93,7 +100,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     /** 打开超时 */
     private final long mOpenTimeOut = 15000;
     private AuditClassLiveBll mLiveBll;
-    private AuditClassBll auditClassBll;
+    private AuditClassAction auditClassBll;
     /** 直播缓存打开统计 */
     private VPlayerListener mPlayStatistics;
     /** 初始进入播放器时的预加载界面 */
@@ -177,6 +184,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     static int times = -1;
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
+    @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         times++;
         createTime = System.currentTimeMillis();
@@ -195,20 +203,41 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         }
         mLogtf.setLiveOnLineLogs(mLiveBll);
         initView();
-        findViewById(R.id.rl_livevideo_student_liveinfo).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mGetInfo == null) {
-                    XESToastUtils.showToast(AuditClassLiveActivity.this, "请稍等");
-                    return;
-                }
-                UmsAgentManager.umsAgentStatistics(mContext, LiveVideoConfig.LIVE_VIDEO_AUDIO_LIVE,
-                        "times=" + times + ",mVSectionID=" + mVSectionID + ",roomClick");
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("isArts", !IS_SCIENCE);
-                OtherModulesEnter.intentToAuditClassActivity(AuditClassLiveActivity.this, mVSectionID, stuCouId, bundle);
-            }
-        });
+        return true;
+    }
+
+    @Override
+    protected void showRefresyLayout(int arg1, int arg2) {
+        super.showRefresyLayout(arg1, arg2);
+    }
+
+    @Override
+    public void showLongMediaController() {
+        super.showLongMediaController();
+    }
+
+    private void initView() {
+        // 加载直播基本布局
+        rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
+        ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
+        businessRootView = findViewById(R.id.rcl_livevideo_auditclass_business_container);
+
+        RelativeLayout bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
+        bottomContent.setVisibility(View.VISIBLE);
+        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
+        mMediaController.setControllerTop(baseLiveMediaControllerTop);
+        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
+        updateLoadingImage();
+        tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
+        tvLoadingHint.setText("获取课程信息");
+        //先让播放器按照默认模式设置
+        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,(int) VIDEO_HEIGHT, VIDEO_RATIO);
+    }
+
+
+    private void initListener(){
         AtomicBoolean mIsLand = new AtomicBoolean(false);
         xv_livevideo_student.setIsLand(mIsLand);
         xv_livevideo_student.onCreate();
@@ -240,7 +269,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             @Override
             public void onOpenSuccess() {
                 rl_livevideo_student.setVisibility(View.GONE);
-                MediaController2 mMediaController = new MediaController2(AuditClassLiveActivity.this, xv_livevideo_student);
+                MediaController2 mMediaController = new MediaController2(AuditClassLiveActivity.this,
+                        xv_livevideo_student);
                 xv_livevideo_student.setMediaController(mMediaController);
             }
 
@@ -333,7 +363,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
             @Override
             public void resultFailed(int arg1, int arg2) {
-//                mLiveBll.startVideo();
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -362,69 +391,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
             }
         });
-        return true;
     }
 
-    @Override
-    protected void showRefresyLayout(int arg1, int arg2) {
-        super.showRefresyLayout(arg1, arg2);
-    }
-
-    @Override
-    public void showLongMediaController() {
-        super.showLongMediaController();
-    }
-
-    private void initView() {
-        // 预加载布局
-        rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
-        ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
-        rl_livevideo_student = (RelativeLayout) findViewById(R.id.rl_livevideo_student_load);
-        rlLivevideoStudentVideo = (RelativeLayout) findViewById(R.id.rl_livevideo_student_video);
-        xv_livevideo_student = (XESVideoView) findViewById(R.id.xv_livevideo_student_video);
-        tv_livevideo_student_load_tip = (TextView) findViewById(R.id.tv_livevideo_student_load_tip);
-        pb_livevideo_student_load = (ProgressBar) findViewById(R.id.pb_livevideo_student_load);
-        iv_livevideo_student_camera = (ImageView) findViewById(R.id.iv_livevideo_student_camera);
-        tv_livevideo_student_camera =
-                (TextView) findViewById(R.id.tv_livevideo_student_camera);
-        RelativeLayout bottomContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_content);
-        bottomContent.setVisibility(View.VISIBLE);
-        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
-        mMediaController.setControllerTop(baseLiveMediaControllerTop);
-        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        //聊天
-        //if (liveType != LiveBll.LIVE_TYPE_LECTURE) {
-        //}
-        ivLoading = (ImageView) findViewById(R.id.iv_course_video_loading_bg);
-        updateLoadingImage();
-        tvLoadingHint = (TextView) findViewById(R.id.tv_course_video_loading_content);
-        // 预加载布局中退出事件
-        findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
-        tvLoadingHint.setText("获取课程信息");
-        //先让播放器按照默认模式设置
-        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
-                (int) VIDEO_HEIGHT, VIDEO_RATIO);
-        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-        setFirstParam(lp);
-        final View contentView = findViewById(android.R.id.content);
-        contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if (videoView.getWidth() <= 0) {
-                    return;
-                }
-                boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-                //logger.i( "setVideoWidthAndHeight:isLand=" + isLand);
-                if (!isLand) {
-                    return;
-                }
-                videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
-                        (int) VIDEO_HEIGHT, VIDEO_RATIO);
-                ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                setFirstParam(lp);
-            }
-        });
-    }
 
     protected boolean initData() {
         Intent intent = getIntent();
@@ -494,6 +462,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         //logger.e( "setFirstParam:screenWidth=" + screenWidth + ",width=" + lp.width + "," + lp.height + "," + rightMargin);
     }
 
+
+
+
     @Override
     protected void onPlayOpenStart() {
         setFirstBackgroundVisible(View.VISIBLE);
@@ -506,7 +477,13 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         if (tvFail != null) {
             tvFail.setVisibility(View.INVISIBLE);
         }
-        setFirstBackgroundVisible(View.GONE);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setFirstBackgroundVisible(View.GONE);
+            }
+        },100);
+
     }
 
     @Override
@@ -641,7 +618,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     public void onTitleShow(boolean show) {
 
     }
-
+     @Override
     protected VPlayerListener getWrapListener() {
         return mPlayListener;
     }
@@ -781,17 +758,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-//                setFirstBackgroundVisible(View.VISIBLE);
-//                String text;
-//                if (isBefore) {
-//                    text = "老师还未进入直播间，请稍后再来";
-//                } else {
-//                    text = "你来晚了，下课了，等着看回放吧";
-//                }
-//                final String msg = text;
-//                if (tvLoadingHint != null) {
-//                    tvLoadingHint.setText(msg);
-//                }
                 if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                     if (mGetInfo.getStudentLiveInfo().isExpe() && LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
                         tvLoadingHint.setText("所有班级已切换到辅导老师小班教学模式，\n购买课程后继续听课，享受小班教学服务");
@@ -813,12 +779,15 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     }
 
+    private boolean isHalfBodyLive = false;
+
     @Override
     public void onLiveInit(LiveGetInfo getInfo) {
         mGetInfo = getInfo;
         liveVideoSAConfig = mLiveBll.getLiveVideoSAConfig();
         IS_SCIENCE = liveVideoSAConfig.IS_SCIENCE;
         mMediaController.setFileName(getInfo.getName());
+        mLiveBll.setHalfBodyLive(isHalfBodyLive());
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -829,6 +798,181 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 mHandler.postDelayed(this, 300000);
             }
         });
+        initBussinessUI();
+    }
+
+    private void initBussinessUI() {
+        if(isHalfBodyLive()){
+              initHalfBodyUI();
+        }else{
+              initNormalUI();
+        }
+    }
+
+    private void initNormalUI() {
+        View view = View.inflate(this,R.layout.layout_auditclass_studentinfo,null);
+        businessRootView.addView(view,RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
+        //业务UI
+        rl_livevideo_student = (RelativeLayout) findViewById(R.id.rl_livevideo_student_load);
+        rlLivevideoStudentVideo = (RelativeLayout) findViewById(R.id.rl_livevideo_student_video);
+        xv_livevideo_student = (XESVideoView) findViewById(R.id.xv_livevideo_student_video);
+        tv_livevideo_student_load_tip = (TextView) findViewById(R.id.tv_livevideo_student_load_tip);
+        pb_livevideo_student_load = (ProgressBar) findViewById(R.id.pb_livevideo_student_load);
+        iv_livevideo_student_camera = (ImageView) findViewById(R.id.iv_livevideo_student_camera);
+        tv_livevideo_student_camera = (TextView) findViewById(R.id.tv_livevideo_student_camera);
+
+        findViewById(R.id.rl_livevideo_student_liveinfo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mGetInfo == null) {
+                    XESToastUtils.showToast(AuditClassLiveActivity.this, "请稍等");
+                    return;
+                }
+                UmsAgentManager.umsAgentStatistics(mContext, LiveVideoConfig.LIVE_VIDEO_AUDIO_LIVE,
+                        "times=" + times + ",mVSectionID=" + mVSectionID + ",roomClick");
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isArts", !IS_SCIENCE);
+                OtherModulesEnter.intentToAuditClassActivity(AuditClassLiveActivity.this, mVSectionID, stuCouId, bundle);
+            }
+        });
+
+        auditClassBll = new AuditClassBll(this);
+        mLiveBll.setAuditClassAction(auditClassBll);
+
+
+        //重新 计算 业务UI 和视频 窗口的位置关系
+        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+        setFirstParam(lp);
+        final View contentView = findViewById(android.R.id.content);
+        contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (videoView.getWidth() <= 0) {
+                    return;
+                }
+                boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+                if (!isLand) {
+                    return;
+                }
+                videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
+                        (int) VIDEO_HEIGHT, VIDEO_RATIO);
+                ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+                setFirstParam(lp);
+            }
+        });
+        initListener();
+    }
+
+    private void initHalfBodyUI() {
+        View view = View.inflate(this,R.layout.layout_auditclass_halfbody_studentinfo,null);
+        businessRootView.addView(view,RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
+        //业务UI
+        rl_livevideo_student = (RelativeLayout) findViewById(R.id.rl_livevideo_student_load);
+        rlLivevideoStudentVideo = (RelativeLayout) findViewById(R.id.rl_livevideo_student_video);
+        xv_livevideo_student = (XESVideoView) findViewById(R.id.xv_livevideo_student_video);
+        tv_livevideo_student_load_tip = (TextView) findViewById(R.id.tv_livevideo_student_load_tip);
+        pb_livevideo_student_load = (ProgressBar) findViewById(R.id.pb_livevideo_student_load);
+        iv_livevideo_student_camera = (ImageView) findViewById(R.id.iv_livevideo_student_camera);
+        tv_livevideo_student_camera = (TextView) findViewById(R.id.tv_livevideo_student_camera);
+
+        auditClassBll = new HalfBodyAuditClassBll(this);
+        mLiveBll.setAuditClassAction(auditClassBll);
+
+        //重新 计算 业务UI 和视频 窗口的位置关系
+        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+        setHalfBodyUiPrama(lp);
+        final View contentView = findViewById(android.R.id.content);
+        contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (videoView.getWidth() <= 0) {
+                    return;
+                }
+                boolean isLand = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+                if (!isLand) {
+                    return;
+                }
+                CenterLayout.LayoutParams params = calculateLayoutParam(videoView);
+                if(params.width != videoView.getWidth()){
+                    videoView.setLayoutParams(params);
+                    ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+                    setHalfBodyUiPrama(lp);
+                }
+            }
+        });
+        initListener();
+    }
+
+    /**
+     *  根据尺寸信息 计算viewView 的布局参数
+     * @param videoView
+     * @return
+     */
+    private CenterLayout.LayoutParams calculateLayoutParam(com.xueersi.parentsmeeting.module.videoplayer.media.VideoView videoView) {
+        // 获取屏幕 尺寸，比例信息
+        View contentView = findViewById(android.R.id.content);
+        View actionBarOverlayLayout = (View) contentView.getParent();
+        Rect r = new Rect();
+        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
+        int windowWidth = (r.right - r.left);
+        int windowHeight = ScreenUtils.getScreenHeight();
+        float windowRatio = windowWidth / (float) windowHeight;
+        int videoViewWidth  = videoView.getWidth();
+        int videoViewHeight = videoView.getHeight();
+       // videoViewWidth = (int) (windowWidth * (windowRatio / VIDEO_RATIO)*
+        videoViewWidth = (int) (windowWidth*0.75f);
+        videoViewHeight = (int) (videoViewWidth * 1/VIDEO_RATIO);
+        Log.e(TAG,"=======>calculateLayoutParam:"+videoViewWidth+":"+videoViewHeight);
+        return new  CenterLayout.LayoutParams(videoViewWidth,videoViewHeight,0,0);
+    }
+
+    /**
+     * 设置全是直播 UI 位置，尺寸 信息
+     * @param lp
+     */
+    private void setHalfBodyUiPrama(ViewGroup.LayoutParams lp){
+        final View contentView = findViewById(android.R.id.content);
+        final View actionBarOverlayLayout = (View) contentView.getParent();
+        Rect r = new Rect();
+        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
+        int screenWidth = (r.right - r.left);
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
+        int rightMargin = screenWidth - lp.width;
+        int topMargin = 0;
+        if (params.rightMargin != rightMargin) {
+            params.rightMargin = rightMargin;
+            rlFirstBackgroundView.setLayoutParams(params);
+            ivTeacherNotpresent.setLayoutParams(params);
+            Log.e(TAG,"====>setHalfBodyUiPrama:"+params.rightMargin);
+            viewRoot.setLayoutParams(params);
+        }
+
+        RelativeLayout.LayoutParams xvlp = (RelativeLayout.LayoutParams) rlLivevideoStudentVideo.getLayoutParams();
+        int screenHeight = ScreenUtils.getScreenHeight();
+        int wradio = rightMargin;
+        int hradio = (int) (rightMargin * VIDEO_HEAD_HEIGHT /VIDEO_HEAD_WIDTH);
+        if (xvlp.width != wradio || xvlp.height != hradio) {
+            xvlp.width  = wradio;
+            xvlp.height = hradio;
+            Log.e(TAG,"=====>setHalfBodyUiPrama:"+wradio+":"+hradio+":"+xvlp.height);
+            xvlp.topMargin = 0;
+            rlLivevideoStudentVideo.setLayoutParams(xvlp);
+        }
+        xvlp = (RelativeLayout.LayoutParams) rl_livevideo_student.getLayoutParams();
+        if (xvlp.height != hradio) {
+            xvlp.height = hradio;
+            xvlp.topMargin = 0;
+            xvlp.width = wradio;
+            rl_livevideo_student.setLayoutParams(xvlp);
+        }
+    }
+
+    /**
+     * 是否是半身直播
+     * @return
+     */
+    private boolean isHalfBodyLive() {
+        return true;
     }
 
     @Override
@@ -941,13 +1085,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     @Override
     public void onKick() {
-//        mHandler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                XESToastUtils.showToast(AuditClassLiveActivity.this, "您的帐号已在其他设备登录，请重新进入直播间");
-//                finish();
-//            }
-//        });
     }
 
     @Override
@@ -1529,8 +1666,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (footerIconEntity != null) {
             String loadingNoClickUrl = footerIconEntity.getNoClickUrlById("6");
-            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl))
+            if (loadingNoClickUrl != null && !"".equals(loadingNoClickUrl)){
                 ImageLoader.with(this).load(loadingNoClickUrl).placeHolder(R.drawable.livevideo_cy_moren_logo_normal).error(R.drawable.livevideo_cy_moren_logo_normal).into(ivLoading);
+            }
         }
     }
 }

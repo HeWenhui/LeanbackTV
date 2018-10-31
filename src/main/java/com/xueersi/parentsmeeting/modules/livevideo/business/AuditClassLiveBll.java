@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
@@ -20,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
@@ -132,6 +134,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     /** 区分文理appid */
     String appID = UmsConstants.LIVE_APP_ID;
 
+    private boolean isHalfBodyLive = false;
+
     public AuditClassLiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
         super(context);
         this.mLiveId = vSectionID;
@@ -200,6 +204,17 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     @Override
     public String getPrefix() {
         return "AC";
+    }
+
+    public boolean isHalfBodyLive() {
+        return isHalfBodyLive;
+    }
+    /**
+     * 设置是否是半身直播
+     * @param halfBodyLive
+     */
+    public void setHalfBodyLive(boolean halfBodyLive){
+        this.isHalfBodyLive = halfBodyLive;
     }
 
     /**
@@ -635,6 +650,17 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
      * 签名
      */
     public synchronized void getStudentLiveInfo() {
+        if(isHalfBodyLive){
+            getHalfBodyLiveStudentLiveInfo();
+        }else{
+            getNorLiveStudentLiveInfo();
+        }
+    }
+
+    /**
+     * 普通直播 获取旁听数据
+     */
+    private void getNorLiveStudentLiveInfo() {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mHttpManager.getStudentLiveInfo(enstuId, mLiveId, new HttpCallBack(false) {
             @Override
@@ -666,6 +692,16 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         });
     }
+
+    /**
+     * 获取半身直播  旁听数据
+     */
+    public synchronized void getHalfBodyLiveStudentLiveInfo() {
+        // TODO: 2018/10/31  调用 获取 半身直播旁听 信息接口
+        Log.e("AuditClassLiveBll","=========> getHalfBodyLiveStudentLiveInfo called");
+    }
+
+
 
     /** 第一次调度，不判断老师状态 */
     public void liveGetPlayServerFirst() {

@@ -804,6 +804,6 @@
     <!--半身直播旁听-->
     <item name="ll_livevideo_auditclass_online_state_container" type="id"/>
     <item name="rcl_livevideo_auditclass_anwser_state" type="id"/>
-
+    <item name="rcl_livevideo_auditclass_business_container" type="id"/>
 
 </resources>
