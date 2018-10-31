@@ -525,6 +525,13 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
     }
 
+    @Override
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.onOpenbarrage(openbarrage, fromNotice);
+        }
+    }
+
     /**
      * 理科辅导老师开启关闭鲜花
      * @param openFDbarrage

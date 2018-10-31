@@ -85,7 +85,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     private VideoAction mVideoAction;
     /** 智能私信业务 */
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
-    private LiveMessageBll mRoomAction;
+    private LiveMessageBll  mRoomAction;
     /** 星星互动 */
     private LiveAchievementIRCBll starAction;
     private LiveHttpManager mHttpManager;
@@ -548,6 +548,18 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     loger.e("TEACHER_MESSAGE", e);
                 }
                 break;
+            case XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE: {
+                //开启/关闭弹幕
+                try {
+                    boolean open = object.getBoolean("open");
+                    if (mRoomAction != null){
+                        mRoomAction.onOpenVoicebarrage(open,true);
+                    }
+                } catch (JSONException e) {
+                    loger.e("onNotice:XCR_ROOM_OPEN_VOICEBARRAGE", e);
+                }
+                break;
+            }
             default:
                 break;
         }

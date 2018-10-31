@@ -702,6 +702,11 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
 
     }
 
+    @Override
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+
+    }
+
     /**
      * 理科辅导老师开启/关闭献花
      *

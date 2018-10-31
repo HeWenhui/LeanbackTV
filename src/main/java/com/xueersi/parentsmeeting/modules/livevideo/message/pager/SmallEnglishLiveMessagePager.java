@@ -1567,6 +1567,32 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     }
 
     @Override
+    public void onOpenVoicebarrage(final boolean openbarrage, boolean fromNotice) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (openbarrage){
+//                    speechToKeyboard(mVoiceContent);
+                    stopEvaluator();
+                    rlMessageContent.setVisibility(View.GONE);
+                    rlMessageTextContent.setVisibility(View.GONE);
+                    rlMessageVoiceContent.setVisibility(View.GONE);
+                    etMessageContent.setText(mVoiceContent);
+                    etMessageContent.requestFocus();
+                    etMessageContent.setSelection(etMessageContent.getText().toString().length());
+                    btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_voice);
+                    isVoice = false;
+                    btnMessageStartVoice.setEnabled(false);
+                }else {
+                    btnMessageStartVoice.setEnabled(true);
+                }
+            }
+        });
+
+
+    }
+
+    @Override
     public void onFDOpenbarrage(boolean open, boolean b) {
 
     }
@@ -1636,7 +1662,15 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     @Override
     public void onQuestionShow(boolean isShow) {
-
+        if (isShow){
+            speechToKeyboard(mVoiceContent);
+            rlMessageContent.setVisibility(View.GONE);
+            rlMessageTextContent.setVisibility(View.GONE);
+            rlMessageVoiceContent.setVisibility(View.GONE);
+            btnMessageStartVoice.setEnabled(false);
+        } else {
+            btnMessageStartVoice.setEnabled(true);
+        }
     }
 
     @Override
@@ -1767,6 +1801,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     public void stopEvaluator() {
         logger.d( "stopEvaluator()");
+        if (mAudioRequest != null){
+            mAudioRequest.release();
+        }
         if (mSpeechEvaluatorUtils != null) {
             vwvVoiceChatWave.setVisibility(View.GONE);
             mSpeechEvaluatorUtils.cancel();
@@ -1777,7 +1814,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         if (noSpeechTimer != null) {
             noSpeechTimer.cancel();
         }
-        mAudioRequest.release();
         tvVoiceChatCountdown.setVisibility(View.GONE);
         mainHandler.removeCallbacks(mHintRunnable);
         mainHandler.removeCallbacks(mNorecogRunnable);

@@ -1357,6 +1357,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         });
     }
 
+    @Override
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+
+    }
+
     /**
      * 使送礼物面板消失
      *

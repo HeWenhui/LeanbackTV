@@ -828,6 +828,11 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
     }
 
     @Override
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+
+    }
+
+    @Override
     public void onFDOpenbarrage(boolean open, boolean b) {
 
     }

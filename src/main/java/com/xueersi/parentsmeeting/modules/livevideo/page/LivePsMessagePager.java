@@ -1535,6 +1535,11 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         });
     }
 
+    @Override
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+
+    }
+
     FlowerAction commonAction = new CommonDisable();
 
     class CommonDisable implements FlowerAction {

@@ -1260,6 +1260,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     }
 
     @Override
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+//        mView.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                ivMessageClose.performClick();
+//            }
+//        });
+    }
+
+    @Override
     public void onFDOpenbarrage(boolean open, boolean b) {
 
     }
