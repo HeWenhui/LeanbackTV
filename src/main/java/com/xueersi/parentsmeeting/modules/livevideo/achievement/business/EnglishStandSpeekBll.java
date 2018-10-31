@@ -10,9 +10,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,23 +22,21 @@ import com.tal.speech.language.LanguageEncodeThread;
 import com.tal.speech.language.LanguageListener;
 import com.tal.speech.language.TalLanguage;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONException;
@@ -105,6 +101,15 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
     AudioRequest.OnAudioRequest onAudioRequest;
     LogToFile mLogtf;
 
+    /**
+     * 判断是否隐藏星星的lottie动画
+     */
+    private boolean isStarLottieVisible = true;
+
+    /**
+     * 使用星星数量
+     */
+//    private TextView tvStarCount;
     public EnglishStandSpeekBll(Activity activity) {
         if (staticInt > 5) {
             staticInt = 0;
@@ -151,7 +156,8 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 //        lastSecond = (int) totalOpeningLength.duration;
     }
 
-    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, AtomicBoolean audioRequest, RelativeLayout mContentView) {
+    public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, AtomicBoolean
+            audioRequest, RelativeLayout mContentView) {
         if (speakerRecognitioner != null) {
 
         } else {
@@ -168,7 +174,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
                 }
 //                talAsrJni.LangIDReset(0);
             }
-            logger.d( "initView:time1=" + (System.currentTimeMillis() - before));
+            logger.d("initView:time1=" + (System.currentTimeMillis() - before));
             if (talLanguage == null) {
                 this.talLanguage = new TalLanguage(activity);
             } else {
@@ -181,12 +187,18 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
             myView = mContentView.findViewById(R.id.rl_livevideo_english_content);
         }
         myView.setVisibility(View.VISIBLE);
-        final View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_stand_english_speek, myView, false);
+        final View layout_livevideo_stat_gold = LayoutInflater.from(activity).inflate(R.layout
+                .layout_livevideo_stand_english_speek, myView, false);
         myView.addView(layout_livevideo_stat_gold);
         goldLottieAnimationView = layout_livevideo_stat_gold.findViewById(R.id.lav_live_stand_english_gold);
-//        tv_livevideo_english_prog = (ProgressBar) layout_livevideo_stat_gold.findViewById(R.id.tv_livevideo_english_prog);
+//        tv_livevideo_english_prog = (ProgressBar) layout_livevideo_stat_gold.findViewById(R.id
+// .tv_livevideo_english_prog);
         starLottieAnimationView = activity.findViewById(R.id.lav_livevideo_chievement);
-        layout_livevideo_stat_gold.findViewById(R.id.bt_livevideo_english_speak_set).setOnClickListener(new View.OnClickListener() {
+
+//        tvStarCount = layout_livevideo_stat_gold.findViewById(R.id.tv_livevideo_star_count);
+
+        layout_livevideo_stat_gold.findViewById(R.id.bt_livevideo_english_speak_set).setOnClickListener(new View
+                .OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
@@ -196,7 +208,8 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 //                activity.startActivityForResult(intent,100);
             }
         });
-        layout_livevideo_stat_gold.findViewById(R.id.bt_livevideo_english_speak_close).setOnClickListener(new View.OnClickListener() {
+        layout_livevideo_stat_gold.findViewById(R.id.bt_livevideo_english_speak_close).setOnClickListener(new View
+                .OnClickListener() {
             @Override
             public void onClick(View v) {
                 myView.removeView(layout_livevideo_stat_gold);
@@ -218,47 +231,56 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
     }
 
     private void initlottieAnim() {
-        starLottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
-                logger.d( "onCompositionLoaded:onAnimationStart");
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                logger.d( "onCompositionLoaded:onAnimationEnd");
-                starLottieAnimationView.setProgress(0);
-                haveGold.set(false);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) {
-
-            }
-        });
-        starLottieAnimationView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float fraction = animation.getAnimatedFraction();
-//                logger.d( "onProcessData:fraction=" + fraction + ",progress=" + starLottieAnimationView.getProgress());
-                if (!haveGold.get() && starLottieAnimationView.getProgress() > 0.32f) {
-                    goldLottieAnimationView.playAnimation();
-                    haveGold.set(true);
+        if (isStarLottieVisible) {
+            starLottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                    logger.d("onCompositionLoaded:onAnimationStart");
+//                    if (tvStarCount != null) {
+//                        String tv = tvStarCount.getText().toString();
+//                        tvStarCount.setText();
+//                    }
                 }
-            }
-        });
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    logger.d("onCompositionLoaded:onAnimationEnd");
+                    starLottieAnimationView.setProgress(0);
+                    haveGold.set(false);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+            starLottieAnimationView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float fraction = animation.getAnimatedFraction();
+//                logger.d( "onProcessData:fraction=" + fraction + ",progress=" + starLottieAnimationView.getProgress
+// ());
+                    if (!haveGold.get() && starLottieAnimationView.getProgress() > 0.32f) {
+                        goldLottieAnimationView.playAnimation();
+                        haveGold.set(true);
+                    }
+                }
+            });
+        } else {
+
+        }
         final String fileName = "live_stand/lottie/live_stand_jindu_gold.json";
         final HashMap<String, String> assetFolders = new HashMap<String, String>();
         assetFolders.put(fileName, "live_stand/lottie/jindu_gold");
         LottieComposition.Factory.fromAssetFileName(activity, fileName, new OnCompositionLoadedListener() {
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                logger.d( "onCompositionLoaded:composition=" + composition);
+                logger.d("onCompositionLoaded:composition=" + composition);
                 if (composition == null) {
 //                    Toast.makeText(activity, "加载失败", Toast.LENGTH_SHORT).show();
                     return;
@@ -276,7 +298,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 
     @Override
     public void start() {
-        logger.d( "start:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",mode=" + mode);
+        logger.d("start:isDestory=" + isDestory + ",isDestory2=" + isDestory2 + ",mode=" + mode);
         if (isDestory) {
             return;
         }
@@ -328,7 +350,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 
     @Override
     public void destory() {
-        logger.d( "destory:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
+        logger.d("destory:isDestory=" + isDestory + ",isDestory2=" + isDestory2);
         isDestory = true;
         isDestory2 = true;
         stop(null);
@@ -392,7 +414,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
                                     sendDbDuration = dbDuration;
                                     liveBll.sendDBStudent(dbDuration);
                                     lastDBTime = nowTime;
-                                    logger.d( "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
+                                    logger.d("onProcessData(sendDBStudent):dbDuration=" + dbDuration);
                                 }
                             }
 //                                        logger.d( "onProcessData:totalSecond=" + totalSecond);
@@ -404,18 +426,28 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 //                                                newProgress = (second15 - 15) * 3;
 //                                                setTime(2 * MAX_SECOND - second15);
                                     newProgress = (second15 % MAX_SECOND) * 3;
-//                                                        logger.d( "onProcessData(<0):oldProgress=" + oldProgress + ",second15=" + second15);
+//                                                        logger.d( "onProcessData(<0):oldProgress=" + oldProgress +
+// ",second15=" + second15);
                                 } else {
                                     newProgress = second15 * 3;
                                 }
                                 oldProgress = (int) newProgress;
                                 float progress = newProgress / 45 * 0.32f;
-                                logger.d( "onProcessData:second=" + second + ",oldProgress=" + oldProgress + ",newProgress=" + newProgress + ",progress=" + progress);
+                                logger.d("onProcessData:second=" + second + ",oldProgress=" + oldProgress + "," +
+                                        "newProgress=" + newProgress + ",progress=" + progress);
                                 if (newProgress < 45) {
-                                    starLottieAnimationView.cancelAnimation();
-                                    starLottieAnimationView.setProgress(progress);
+                                    if (isStarLottieVisible) {
+                                        starLottieAnimationView.cancelAnimation();
+                                        starLottieAnimationView.setProgress(progress);
+                                    } else {
+
+                                    }
                                 } else {
-                                    starLottieAnimationView.resumeAnimation();
+                                    if (isStarLottieVisible) {
+                                        starLottieAnimationView.resumeAnimation();
+                                    } else {
+
+                                    }
                                 }
                             }
                             if (!"".equals(en_seg_len)) {
@@ -488,7 +520,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
                     sendDbDuration = dbDuration;
                     liveBll.sendDBStudent(dbDuration);
                     lastDBTime = nowTime;
-                    logger.d( "onProcessData(sendDBStudent):dbDuration=" + dbDuration);
+                    logger.d("onProcessData(sendDBStudent):dbDuration=" + dbDuration);
                 }
             }
 //          logger.d( "onProcessData:totalSecond=" + totalSecond);
@@ -500,21 +532,31 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 //                                                newProgress = (second15 - 15) * 3;
 //                                                setTime(2 * MAX_SECOND - second15);
                     newProgress = (second15 % MAX_SECOND) * 3;
-//                                                        logger.d( "onProcessData(<0):oldProgress=" + oldProgress + ",second15=" + second15);
+//                                                        logger.d( "onProcessData(<0):oldProgress=" + oldProgress +
+// ",second15=" + second15);
                 } else {
                     newProgress = second15 * 3;
                 }
                 oldProgress = (int) newProgress;
                 final float progress = newProgress / 45 * 0.32f;
-                logger.d( "onProcessData:second=" + second + ",oldProgress=" + oldProgress + ",newProgress=" + newProgress + ",progress=" + progress);
+                logger.d("onProcessData:second=" + second + ",oldProgress=" + oldProgress + ",newProgress=" +
+                        newProgress + ",progress=" + progress);
                 myView.post(new Runnable() {
                     @Override
                     public void run() {
                         if (newProgress < 45) {
-                            starLottieAnimationView.cancelAnimation();
-                            starLottieAnimationView.setProgress(progress);
+                            if (isStarLottieVisible) {
+                                starLottieAnimationView.cancelAnimation();
+                                starLottieAnimationView.setProgress(progress);
+                            } else {
+
+                            }
                         } else {
-                            starLottieAnimationView.resumeAnimation();
+                            if (isStarLottieVisible) {
+                                starLottieAnimationView.resumeAnimation();
+                            } else {
+
+                            }
                         }
                         if (!"".equals(en_seg_len)) {
                             totalEn_seg_len.append(en_seg_len).append(",");
@@ -570,7 +612,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 
     @Override
     public void onDBStart() {
-        logger.d( "onDBStart:dbStart=" + dbStart);
+        logger.d("onDBStart:dbStart=" + dbStart);
         if (!dbStart) {
             dbStart = true;
             dbSecond = lastSecond;
@@ -585,19 +627,21 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 
     @Override
     public void onDBStop() {
-        logger.d( "onDBStop:dbStart=" + dbStart + ",dbDuration=" + dbDuration + ",sendDbDuration=" + sendDbDuration);
+        logger.d("onDBStop:dbStart=" + dbStart + ",dbDuration=" + dbDuration + ",sendDbDuration=" + sendDbDuration);
         if (dbStart) {
             dbStart = false;
             LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(activity, LiveMessageBll.class);
             if (sendDbDuration == 0) {
                 liveBll.setNotOpeningNum();
                 if (liveMessageBll != null) {
-                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP, "大声的说出来，老师很想听到你的声音哦~");
+                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                            "大声的说出来，老师很想听到你的声音哦~");
                 }
 
             } else {
                 if (lastdbDuration == 0 && liveMessageBll != null) {
-                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP, "没错，就是这样，继续坚持下去！");
+                    liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                            "没错，就是这样，继续坚持下去！");
                 }
             }
             lastdbDuration = sendDbDuration;
@@ -611,7 +655,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 
     @Override
     public void onModeChange(final String mode, final boolean audioRequest) {
-        logger.d( "onModeChange:mode=" + mode + ",audioRequest=" + audioRequest);
+        logger.d("onModeChange:mode=" + mode + ",audioRequest=" + audioRequest);
         this.mode = mode;
         myView.post(new Runnable() {
             @Override
@@ -652,7 +696,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 
     @Override
     public void praise(int answer) {
-        logger.d( "praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
+        logger.d("praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration >= answer) {
             Map<String, String> mData = new HashMap<>();
             mData.put("logtype", "sendPraise");
@@ -662,12 +706,15 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
             bottomContent.post(new Runnable() {
                 @Override
                 public void run() {
-                    final View view = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_english_speek_praise, bottomContent, false);
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    final View view = LayoutInflater.from(activity).inflate(R.layout
+                            .layout_livevideo_english_speek_praise, bottomContent, false);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                            .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     lp.rightMargin = praiseWidth;
                     ImageView imageView = (ImageView) view.findViewById(R.id.iv_livevideo_english_praise);
                     imageView.setImageResource(R.drawable.bg_livevideo_english_speek_praise);
-                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id.tv_livevideo_english_praise);
+                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
+                            .tv_livevideo_english_praise);
                     tv_livevideo_english_praise.setText("老师表扬了你！");
                     bottomContent.addView(view, lp);
                     bottomContent.postDelayed(new Runnable() {
@@ -683,7 +730,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
 
     @Override
     public void remind(int answer) {
-        logger.d( "remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
+        logger.d("remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
         if (sendDbDuration <= answer) {
             Map<String, String> mData = new HashMap<>();
             mData.put("logtype", "sendRemind");
@@ -693,12 +740,15 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
             bottomContent.post(new Runnable() {
                 @Override
                 public void run() {
-                    final View view = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_english_speek_praise, bottomContent, false);
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    final View view = LayoutInflater.from(activity).inflate(R.layout
+                            .layout_livevideo_english_speek_praise, bottomContent, false);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                            .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     lp.rightMargin = praiseWidth;
                     ImageView imageView = (ImageView) view.findViewById(R.id.iv_livevideo_english_praise);
                     imageView.setImageResource(R.drawable.bg_livevideo_english_speek_remind);
-                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id.tv_livevideo_english_praise);
+                    TextView tv_livevideo_english_praise = (TextView) view.findViewById(R.id
+                            .tv_livevideo_english_praise);
                     tv_livevideo_english_praise.setText("大声说英语啦！");
                     bottomContent.addView(view, lp);
                     bottomContent.postDelayed(new Runnable() {

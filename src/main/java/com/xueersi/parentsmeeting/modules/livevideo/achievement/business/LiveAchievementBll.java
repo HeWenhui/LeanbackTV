@@ -23,6 +23,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -46,6 +47,9 @@ public class LiveAchievementBll implements StarInteractAction {
     private Activity activity;
     private View flyStat;
     private View flyLight;
+    /**
+     * 星星图标
+     */
     private ImageView ivStarInteractStat;
     private ImageView ivStarInteractGold;
     /**
@@ -53,7 +57,7 @@ public class LiveAchievementBll implements StarInteractAction {
      */
     private TextView tvStarInteractCount;
     /**
-     * 本场成就星星数量-背后隐藏数量
+     * 能量条上方，本场成就星星数量-背后隐藏数量
      */
     private TextView tvStarInteractCountHind;
     /**
@@ -146,6 +150,11 @@ public class LiveAchievementBll implements StarInteractAction {
     private LiveGetInfo getInfo;
     //是否使用小英萌萌哒皮肤
     private boolean isSmallEnglish = false;
+    LogToFile logToFile;
+    /**
+     * 右边进度条的星星动画是否显示出来
+     */
+    private boolean isStarVisible = false;
 
     public LiveAchievementBll(Activity activity, int liveType, LiveGetInfo mLiveGetInfo, boolean mIsLand) {
         this.activity = activity;
@@ -160,19 +169,19 @@ public class LiveAchievementBll implements StarInteractAction {
         LineMath line1 = getAandB(starScaleStep1, 1.0f, starScaleStep2, starScaleMax);
         starInLine1a = line1.a;
         starInLine1b = line1.b;
-        logger.d( "StarInteractBll:starInLine1a=(" + starInLine1a + "," + starInLine1b + ")");
+        logger.d("StarInteractBll:starInLine1a=(" + starInLine1a + "," + starInLine1b + ")");
         //第二条线
         LineMath line2 = getAandB(starScaleStep2, starScaleMax, 1.0f, 1.0f);
         starInLine2a = line2.a;
         starInLine2b = line2.b;
-        logger.d( "StarInteractBll:starInLine2a=(" + starInLine2a + "," + starInLine2b + ")");
+        logger.d("StarInteractBll:starInLine2a=(" + starInLine2a + "," + starInLine2b + ")");
         LineMath line3 = getAandB(0.25f, 1f, 0.75f, -1f);
         starRotateLine1a = line3.a;
         starRotateLine1b = line3.b;
         LineMath line4 = getAandB(0.75f, -1f, 1f, 0f);
         starRotateLine2a = line4.a;
         starRotateLine2b = line4.b;
-
+        logToFile = new LogToFile(activity, TAG);
         EventBusUtil.register(this);
     }
 
@@ -565,6 +574,11 @@ public class LiveAchievementBll implements StarInteractAction {
         }
         final View flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_english_stat_fly,
                 bottomContent, false);
+        //隐藏进度条星星动画
+        if (!isStarVisible) {
+            flyStat.setVisibility(View.GONE);
+        }
+
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
         params.leftMargin = (int) startPoint.getX();
         params.topMargin = (int) startPoint.getY();
@@ -574,6 +588,14 @@ public class LiveAchievementBll implements StarInteractAction {
         iv_livevideo_starinteract_stat.setImageResource(isSmallEnglish ?
                 R.drawable.bg_livevideo_small_english_statinteract_stat_big :
                 R.drawable.bg_livevideo_statinteract_stat_big);
+
+        if (endGoldPoint == null) {
+            logToFile.d("onStarAdd:endGoldPoint=null");
+            int[] outLocation = new int[2];
+            ivStarInteractStat.getLocationInWindow(outLocation);
+            endStarPoint = new Point(outLocation[0] - (flyStat.getWidth() - ivStarInteractStat.getWidth()) / 2,
+                    outLocation[1] - (flyStat.getHeight() - ivStarInteractStat.getHeight()) / 2);
+        }
         ValueAnimator translateValueAnimator = ValueAnimator.ofObject(new LineEvaluator(), new LineEvaluator
                 .PointAndFloat(startPoint), new LineEvaluator.PointAndFloat(endStarPoint));
         translateValueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -586,14 +608,16 @@ public class LiveAchievementBll implements StarInteractAction {
                 params.topMargin = (int) currentPoint.point.getY();
                 params.leftMargin = (int) currentPoint.point.getX();
 //                    flyStat.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(flyStat, params);
+                if (isStarVisible) {
+                    LayoutParamsUtil.setViewLayoutParams(flyStat, params);
+                }
                 float fraction = currentPoint.fraction;
                 flyStat.setAlpha(1 - fraction);
                 int width = iv_livevideo_starinteract_stat.getWidth();
                 float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
                 iv_livevideo_starinteract_stat.setScaleX(scale);
                 iv_livevideo_starinteract_stat.setScaleY(scale);
-                logger.i( "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
+                logger.i("onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
 //                    logger.i( "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float)
 // ivStarInteractStat.getWidth() / (float) width));
             }
@@ -608,6 +632,7 @@ public class LiveAchievementBll implements StarInteractAction {
 
             @Override
             public void onAnimationEnd(Animator animation) {
+
                 tvStarInteractCountHind.startAnimation(mStarCountAnimSlideIn);
                 tvStarInteractCount.startAnimation(mStarCountAnimSlideOut);
                 flyStat.post(new Runnable() {
@@ -661,10 +686,10 @@ public class LiveAchievementBll implements StarInteractAction {
         AllAnimation allAnimation;
         if (!allAnimations.isEmpty()) {
             allAnimation = allAnimations.remove(0);
-            logger.i( "onReceiveStat:allAnimation=old");
+            logger.i("onReceiveStat:allAnimation=old");
         } else {
             allAnimation = new AllAnimation();
-            logger.i( "onReceiveStat:allAnimation=new");
+            logger.i("onReceiveStat:allAnimation=new");
         }
         allAnimation.setFlyStat(type, flyStat);
         allAnimation.setNonce(nonce);
@@ -750,7 +775,7 @@ public class LiveAchievementBll implements StarInteractAction {
 //                        output = accelerateInterpolator.getInterpolation(output);
 //                        output = accelerateDecelerateInterpolator.getInterpolation(output);
                     }
-                    logger.i( "getInterpolation:input=" + input + ",output=" + output + ",sameIn=" +
+                    logger.i("getInterpolation:input=" + input + ",output=" + output + ",sameIn=" +
                             (firstAllAnimation == AllAnimation.this) + "," + (lastAllAnimation == null));
                     if (firstAllAnimation == AllAnimation.this) {
                         flyLight.setScaleX(output);
@@ -761,6 +786,11 @@ public class LiveAchievementBll implements StarInteractAction {
             });
             mAnimSlideRotate = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_star_rotate);
 //            mAnimSlideRotate.setRepeatCount(2);
+            if (startPoint == null) {
+                logToFile.d("AllAnimation:startPoint=null");
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
+                startPoint = new Point(params.leftMargin, params.topMargin);
+            }
             endLinePoint = new LineEvaluator.PointAndFloat();
             translateValueAnimator = ValueAnimator.ofObject(new LineEvaluator(), new LineEvaluator.PointAndFloat
                     (startPoint), endLinePoint);
@@ -782,7 +812,7 @@ public class LiveAchievementBll implements StarInteractAction {
                     float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
                     iv_livevideo_starinteract_stat.setScaleX(scale);
                     iv_livevideo_starinteract_stat.setScaleY(scale);
-                    logger.i( "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
+                    logger.i("onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
 //                    logger.i( "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float)
 // ivStarInteractStat.getWidth() / (float) width));
                 }
@@ -881,7 +911,7 @@ public class LiveAchievementBll implements StarInteractAction {
                     } else {
                         output = starRotateLine2a * fraction + starRotateLine2b;
                     }
-                    logger.d( "RotateInterpolator:input=" + fraction + "," + output);
+                    logger.d("RotateInterpolator:input=" + fraction + "," + output);
                     return output;
                 }
             });

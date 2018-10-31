@@ -30,6 +30,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsMoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreCache;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -77,11 +78,16 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     boolean useService = true;
     boolean isStart = true;
     private List<MoreCache> mList;
+    private List<ArtsMoreChoice> mArtsList;
     private File mMorecachein;
     private File mMorecacheout;
+    private File mArtsMorecachein;
+    private File mArtsMorecacheout;
     private ArrayList<String> mUrls;
+    private ArrayList<String> mArtsUrls;
     private LiveHttpManager mHttpManager;
     private ArrayList<String> mtexts;
+    private ArrayList<String> mfonts;
     private int count = 0;
     private Boolean add = true;
 
@@ -149,7 +155,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     };
 
     @Override
-    public void getCourseWareUrl() {
+    public void  getCourseWareUrl() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         final String today = dateFormat.format(date);
@@ -258,41 +264,40 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         });
 
         // 一次多发的接口调用
-        mHttpManager.getMoreCoureWareUrl(liveId, new HttpCallBack(false) {
+       if(LiveVideoConfig.isScience){
+           ScienceMulPreDownLoad(todayLiveCacheDir);
+       }else{
+           ArtsMulPreDownLoad(todayLiveCacheDir);
+       }
+    }
+
+    private void ArtsMulPreDownLoad(final File path) {
+        mHttpManager.getArtsMoreCoureWareUrl(liveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 logger.e( "responseEntity.getJsonObject=" + responseEntity.getJsonObject());
 //                final Object jsonObject = responseEntity.getJsonObject();
                 JSONObject objects = new JSONObject(responseEntity.getJsonObject().toString());
-                JSONArray array = objects.optJSONArray("list");
-                JSONArray res = objects.optJSONArray("resource");
-                JSONArray loadpages = objects.optJSONArray("loadpages");
-                mList = new ArrayList<>();
-                mtexts = new ArrayList<>();
-                for (int i = 0; i < array.length(); i++) {
-                    MoreCache cache = new MoreCache();
+                JSONArray array = objects.optJSONArray("List");
+                JSONArray font = objects.optJSONArray("Font");
+                mArtsList = new ArrayList<>();
+                mfonts = new ArrayList<>();
+                for(int i = 0 ; i < array.length() ; i++){
+                    ArtsMoreChoice cache = new ArtsMoreChoice();
                     JSONObject object = array.getJSONObject(i);
-                    cache.setPackageId(object.optString("packageId"));
-                    cache.setPackageSource(object.optString("packageSource"));
-                    cache.setIsTemplate(object.optInt("isTemplate"));
-                    cache.setPageId(object.optString("pageId"));
+                    cache.setSourceId(object.optString("sourceId"));
                     cache.setResourceUrl(object.optString("resourceUrl"));
                     cache.setTemplateUrl(object.optString("templateUrl"));
-                    mList.add(cache);
+                    mArtsList.add(cache);
                 }
-                for (int i = 0; i < res.length(); i++) {
-                    String txt = res.optString(i);
-                    mtexts.add(txt);
+                for (int i = 0; i < font.length(); i++) {
+                    String txt = font.optString(i);
+                    mfonts.add(txt);
                 }
-                for (int i = 0; i < loadpages.length(); i++) {
-                    String txt = loadpages.optString(i);
-                    mtexts.add(txt);
+                if(mArtsList.size() > 0){
+                    Artsdownload(path);
                 }
-                logger.e( "list=" + mList.size());
-                logger.e( "text=" + mtexts.size());
-                if (mList.size() > 0) {
-                    download(todayLiveCacheDir);
-                }
+
             }
 
             @Override
@@ -307,6 +312,77 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 logger.e( "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
             }
         });
+    }
+
+    private void Artsdownload(File path) {
+        mArtsUrls = new ArrayList<>();
+        mArtsMorecachein = new File(path, liveId + "child");
+        if (!mArtsMorecachein.exists()) {
+            mArtsMorecachein.mkdirs();
+        }
+        mArtsMorecacheout = new File(path, liveId + "artschild");
+        if (!mArtsMorecacheout.exists()) {
+            mArtsMorecacheout.mkdirs();
+        }
+        // 文科一发多题下载及解压预加载的文件
+        for(int i = 0 ; i < mArtsList.size() ; i++){
+            if (!TextUtils.isEmpty(mArtsList.get(i).getResourceUrl()) && !mArtsUrls.contains(mArtsList.get(i).getResourceUrl())) {
+                mArtsUrls.add(mArtsList.get(i).getResourceUrl());
+            }
+            if (!TextUtils.isEmpty(mArtsList.get(i).getTemplateUrl()) && !mArtsUrls.contains(mArtsList.get(i).getTemplateUrl())) {
+                mArtsUrls.add(mArtsList.get(i).getTemplateUrl());
+            }
+        }
+        for (int i = 0; i < mArtsUrls.size(); i++) {
+            final String url = i + ".zip";
+            final File save = new File(mArtsMorecachein, url);
+            if (!fileIsExists(save.getPath())) {
+                final File tempFile = new File(mArtsMorecachein, url + ".temp");
+                mHttpManager.download(mArtsUrls.get(i), tempFile.getPath(), new DownloadCallBack() {
+                    @Override
+                    protected void onDownloadSuccess() {
+                        boolean renameTo = tempFile.renameTo(save);
+                        logger.d("onDownloadSuccess(mUrls):url=" + url + ",renameTo=" + renameTo);
+                        new ZipExtractorTask(new File(mArtsMorecachein, url), mArtsMorecacheout, true, new Progresses()).execute();
+                    }
+
+                    @Override
+                    protected void onDownloadFailed() {
+                        logger.d( "onDownloadFailed(mUrls):url=" + url);
+//                        XESToastUtils.showToast(context, "下载文科资源包失败");
+                    }
+                });
+            } else {
+                logger.d("fileIsExists(mtexts):fileName=" + url);
+            }
+        }
+        // 添加字体的下载链接
+        if (mfonts.size() > 0) {
+            // 字体文件直接下载到zip解压的文件夹中
+            for (int i = 0; i < mfonts.size(); i++) {
+                String url = mfonts.get(i);
+                final String fileName = MD5Utils.getMD5(url);
+                final File save = new File(mArtsMorecacheout, fileName);
+                if (!fileIsExists(save.getPath())) {
+                    final File tempFile = new File(mArtsMorecacheout, fileName + ".temp");
+                    mHttpManager.download(mfonts.get(i), tempFile.getPath(), new DownloadCallBack() {
+                        @Override
+                        protected void onDownloadSuccess() {
+                            boolean renameTo = tempFile.renameTo(save);
+                            logger.d( "onDownloadSuccess(mtexts):fileName=" + fileName + ",renameTo=" + renameTo);
+                        }
+
+                        @Override
+                        protected void onDownloadFailed() {
+                            logger.d( "onDownloadFailed(mtexts):fileName=" + fileName);
+//                            XESToastUtils.showToast(context, "下载文科字体包失败");
+                        }
+                    });
+                } else {
+                    logger.d( "fileIsExists(mtexts):fileName=" + fileName);
+                }
+            }
+        }
     }
 
     private void download(File path) {
@@ -347,7 +423,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         @Override
                         protected void onDownloadFailed() {
                             logger.d( "onDownloadFailed(mtexts):fileName=" + fileName);
-                            XESToastUtils.showToast(context, "下载字体包失败");
+//                            XESToastUtils.showToast(context, "下载字体包失败");
                         }
                     });
                 } else {
@@ -371,7 +447,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     @Override
                     protected void onDownloadFailed() {
                         logger.d( "onDownloadFailed(mUrls):url=" + url);
-                        XESToastUtils.showToast(context, "下载资源包失败");
+//                        XESToastUtils.showToast(context, "下载资源包失败");
                     }
                 });
             } else {
@@ -396,6 +472,57 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         public void setMax(int max) {
 
         }
+    }
+
+    public void ScienceMulPreDownLoad(final File path){
+        mHttpManager.getMoreCoureWareUrl(liveId, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.e( "responseEntity.getJsonObject=" + responseEntity.getJsonObject());
+                JSONObject objects = new JSONObject(responseEntity.getJsonObject().toString());
+                JSONArray array = objects.optJSONArray("list");
+                JSONArray res = objects.optJSONArray("resource");
+                JSONArray loadpages = objects.optJSONArray("loadpages");
+                mList = new ArrayList<>();
+                mtexts = new ArrayList<>();
+                for (int i = 0; i < array.length(); i++) {
+                    MoreCache cache = new MoreCache();
+                    JSONObject object = array.getJSONObject(i);
+                    cache.setPackageId(object.optString("packageId"));
+                    cache.setPackageSource(object.optString("packageSource"));
+                    cache.setIsTemplate(object.optInt("isTemplate"));
+                    cache.setPageId(object.optString("pageId"));
+                    cache.setResourceUrl(object.optString("resourceUrl"));
+                    cache.setTemplateUrl(object.optString("templateUrl"));
+                    mList.add(cache);
+                }
+                for (int i = 0; i < res.length(); i++) {
+                    String txt = res.optString(i);
+                    mtexts.add(txt);
+                }
+                for (int i = 0; i < loadpages.length(); i++) {
+                    String txt = loadpages.optString(i);
+                    mtexts.add(txt);
+                }
+                logger.e( "list=" + mList.size());
+                logger.e( "text=" + mtexts.size());
+                if (mList.size() > 0) {
+                    download(path);
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                super.onFailure(call, e);
+                logger.e( "getCourseWareUrl:onFailure:e=" + e);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                logger.e("getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
+            }
+        });
     }
 
 

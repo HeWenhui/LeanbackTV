@@ -25,6 +25,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportIRCBll;
@@ -32,22 +38,19 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.ArtsPraiseListBll;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseInteractionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -56,6 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChat
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.worddictation.business.WordDictationIRCBll;
 
 import java.util.List;
 
@@ -159,6 +163,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new ArtsPraiseListBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new EnglishSpeechBulletIRCBll(activity,mLiveBll));
+            mLiveBll.addBusinessBll(new WordDictationIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new ArtsAnswerResultBll(activity,mLiveBll));
         } else {
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -180,6 +187,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new SpeechBulletScreenIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
         }
         VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
         videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -207,7 +216,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
         createMediaControllerBottom();
-        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         bottomContent.addView(liveMediaControllerBottom);
     }
 
@@ -330,12 +340,12 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                         if (isInitialized()) {
                             if (openSuccess) {
                                 mLiveVideoBll.stopPlayDuration();
-                                logger.d( "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+                                logger.d("onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
                             }
                             vPlayer.releaseSurface();
                             vPlayer.stop();
                         } else {
-                            logger.d( "onPause:isInitialized=false");
+                            logger.d("onPause:isInitialized=false");
                         }
                         isPlay = false;
                     }
@@ -361,7 +371,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
         long before = System.currentTimeMillis();
         mMediaController.setFileName(getInfo.getName());
-        logger.d( "onLiveInit:time3=" + (System.currentTimeMillis() - before));
+        logger.d("onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 
     @Override
@@ -377,7 +387,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     vPlayer.stop();
                 }
                 isPlay = false;
-                liveVideoAction.onModeChange(mode, isPresent);
+                if (liveVideoAction != null) {
+                    liveVideoAction.onModeChange(mode, isPresent);
+                }
             }
         });
     }
@@ -396,6 +408,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      */
     @Override
     public void rePlay(boolean modechange) {
+        mLogtf.d("rePlay:mHaveStop=" + mHaveStop);
         if (mGetInfo == null || liveVideoAction == null) {//上次初始化尚未完成
             return;
         }

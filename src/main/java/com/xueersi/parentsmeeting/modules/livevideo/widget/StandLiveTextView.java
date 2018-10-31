@@ -37,6 +37,9 @@ public class StandLiveTextView extends TextView {
      * @return
      */
     public static String getShortName(String name) {
+        if (name == null) {
+            return "";
+        }
         String newText = name;
         boolean isChinese = isChinese(name);
         int length = name.length();

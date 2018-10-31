@@ -28,6 +28,8 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import java.io.File;
 
+import java.io.File;
+
 /**
  * Created by linyuqiang on 2017/3/25
  * 直播基本的WebView，增加刷新

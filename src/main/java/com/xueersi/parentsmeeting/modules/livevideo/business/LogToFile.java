@@ -38,6 +38,7 @@ public class LogToFile {
 
     public LogToFile(String tag) {
         logger = LoggerFactory.getLogger(tag);
+        logger.setLogMethod(false);
         this.TAG = "OL:" + tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
@@ -55,6 +56,7 @@ public class LogToFile {
 
     public LogToFile(String tag, LiveOnLineLogs liveOnLineLogs) {
         logger = LoggerFactory.getLogger(tag);
+        logger.setLogMethod(false);
         this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
@@ -72,6 +74,7 @@ public class LogToFile {
 
     public LogToFile(LiveOnLineLogs liveBll2, String tag) {
         logger = LoggerFactory.getLogger(tag);
+        logger.setLogMethod(false);
         this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
@@ -85,6 +88,7 @@ public class LogToFile {
 
     public LogToFile(Context context, String tag) {
         logger = LoggerFactory.getLogger(tag);
+        logger.setLogMethod(false);
         this.TAG = tag + ":" + LIVE_TIME;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();

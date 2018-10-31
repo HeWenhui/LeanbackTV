@@ -53,7 +53,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     protected long mStartPos;
     /** 当前视频是否播放到了结尾 */
     protected boolean mIsEnd = false;
-
+    public static final Object mIjkLock = new Object();
     /** 所在的Activity是否已经onCreated */
     private boolean mCreated = false;
     /** 播放器核心服务 */
@@ -721,6 +721,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     /** 设置播放器的界面布局 */
     protected void setVideoLayout() {
         logger.d("setVideoLayout:VideoWidth=" + vPlayer.getVideoWidth() + ",VideoHeight=" + vPlayer.getVideoHeight());
+        if (vPlayer.getVideoWidth() == 0 || vPlayer.getVideoHeight() == 0) {
+            return;
+        }
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, vPlayer.getVideoWidth(),
                 vPlayer.getVideoHeight(), vPlayer.getVideoAspectRatio());
     }
@@ -779,10 +782,11 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     @Override
     public void onSurfaceCreated(SurfaceHolder holder) {
+        logger.d("onSurfaceCreated:vPlayer=null?" + (vPlayer == null) + ",mServiceConnected=" + mServiceConnected);
         mSurfaceCreated = true;
-        if (mServiceConnected) {
-            vPlayerHandler.sendEmptyMessage(OPEN_FILE);
-        }
+//        if (mServiceConnected) {
+//            vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+//        }
         if (vPlayer != null) {
             vPlayer.setDisplay(holder);
         }
@@ -790,11 +794,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     @Override
     public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
+        logger.d("onSurfaceChanged:width=" + width + ",height=" + height);
     }
 
     @Override
     public void onSurfaceDestroyed(SurfaceHolder holder) {
+        logger.d("onSurfaceDestroyed");
         if (vPlayer != null && vPlayer.isInitialized()) {
             if (vPlayer.isPlaying()) {
                 vPlayer.pause();

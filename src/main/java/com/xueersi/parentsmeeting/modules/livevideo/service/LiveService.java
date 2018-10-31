@@ -174,10 +174,8 @@ public class LiveService extends Service {
         try {
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.contains("" + livepid)) {
-                    bw.write(line);
-                    bw.newLine();
-                }
+                bw.write(line);
+                bw.newLine();
             }
         } catch (Exception e) {
         } finally {

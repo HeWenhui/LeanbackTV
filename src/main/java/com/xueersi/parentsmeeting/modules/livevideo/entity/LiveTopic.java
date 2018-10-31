@@ -204,6 +204,11 @@ public class LiveTopic {
          */
         private int voiceBarrageCount;
 
+        /**
+         * 点赞送礼物开关
+         */
+        private boolean openlike=false;
+
         public RoomStatusEntity() {
             classbegin = false;
             openbarrage = false;
@@ -237,6 +242,7 @@ public class LiveTopic {
             agoraVoiceChatRoom = roomStatusEntity.agoraVoiceChatRoom;
             onVideoChat = roomStatusEntity.onVideoChat;
             isOnbreak = roomStatusEntity.isOnbreak;
+            openlike=roomStatusEntity.openlike;
         }
 
         public boolean isOnbreak() {
@@ -466,6 +472,14 @@ public class LiveTopic {
 
         public void setVoiceBarrageCount(int voiceBarrageCount) {
             this.voiceBarrageCount = voiceBarrageCount;
+        }
+
+        public boolean isOpenlike() {
+            return openlike;
+        }
+
+        public void setOpenlike(boolean openlike) {
+            this.openlike = openlike;
         }
     }
 

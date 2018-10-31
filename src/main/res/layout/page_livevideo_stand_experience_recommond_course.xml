@@ -4,22 +4,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.MarqueeView
-        android:id="@+id/mv_livevideo_stand_experience_banner_message"
+    <!--<com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.MarqueeView-->
+    <!--android:id="@+id/mv_livevideo_stand_experience_banner_message"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="30dp"-->
+    <!--android:layout_marginLeft="13dp"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:alpha="0.6"-->
+    <!--android:background="@drawable/shape_livevideo_stand_experience_recommond_course_banner_message_background"-->
+    <!--android:paddingLeft="20dp"-->
+    <!--android:paddingRight="20dp"-->
+    <!--android:visibility="gone"-->
+    <!--app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent"-->
+    <!--app:mvAnimDuration="2000"-->
+    <!--app:mvDirection="bottom_to_top"-->
+    <!--app:mvInterval="5000"-->
+    <!--app:mvSingleLine="true" />-->
+    <!--<ImageView-->
+        <!--android:id="@+id/tv_recommond_course_banner_background"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:layout_marginLeft="13dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:alpha="0.6"-->
+        <!--android:background="@drawable/shape_livevideo_stand_experience_recommond_course_banner_message_background"-->
+        <!--android:paddingLeft="20dp"-->
+        <!--android:paddingRight="20dp"-->
+        <!--android:visibility="gone"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+    <com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.CustomVerticalBannerView
+        android:id="@+id/cvbv_recommond_course"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:layout_marginLeft="13dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/shape_livevideo_stand_experience_recommond_course_banner_message_background"
+        android:layout_marginTop="10dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:mvAnimDuration="2000"
-        app:mvDirection="bottom_to_top"
-        app:mvInterval="3000"
-        app:mvSingleLine="true" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/ctl_recommod_course"
@@ -29,12 +55,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.6">
+        app:layout_constraintVertical_bias="0.7">
 
         <ImageView
             android:id="@+id/iv_livevideo_stand_experience_recommond_course_background"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="446dp"
+            android:layout_height="107dp"
             android:src="@drawable/bg_livevideo_stand_experience_recommond_course"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
@@ -62,34 +88,35 @@
             android:id="@+id/tv_livevideo_stand_experience_recommond_course_course_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="6dp"
             android:singleLine="true"
-            android:text="【2017-暑】英语直播中考高分班冲刺"
+            android:text=""
             android:textColor="@color/COLOR_FF247AE9"
-            android:textSize="16sp"
+            android:textSize="12sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/iv_livevideo_stand_experience_recommond_course_buy_btn"
-            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_bias="0.1"
             app:layout_constraintLeft_toLeftOf="@+id/guideline_recommond_course"
             app:layout_constraintRight_toRightOf="@+id/iv_livevideo_stand_experience_recommond_course_background"
-            app:layout_constraintWidth_max="270dp" />
+            app:layout_constraintWidth_max="200dp" />
 
         <TextView
             android:id="@+id/tv_livevideo_stand_experience_recommond_course_course_money"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="¥1100"
+            android:text=""
             android:textColor="@color/COLOR_FFFF8227"
-            android:textSize="20sp"
+            android:textSize="15sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_stand_experience_recommond_course_buy_btn"
             app:layout_constraintLeft_toLeftOf="@+id/tv_livevideo_stand_experience_recommond_course_course_name"
             app:layout_constraintTop_toTopOf="@+id/iv_livevideo_stand_experience_recommond_course_buy_btn" />
 
         <ImageView
             android:id="@+id/iv_livevideo_stand_experience_recommond_course_buy_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:src="@drawable/bg_livevideo_stand_experience_recommond_course_buy_btn"
+            android:layout_width="84dp"
+            android:layout_height="30dp"
+            android:src="@drawable/selector_livevideo_stand_experience_recommond_course_buy_course"
             app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_stand_experience_recommond_course_background"
             app:layout_constraintHorizontal_bias="0.72"
             app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_stand_experience_recommond_course_background"
@@ -99,13 +126,16 @@
 
         <ImageView
             android:id="@+id/iv_livevideo_stand_experience_recommond_course_close_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="31dp"
             android:layout_marginTop="10dp"
             android:src="@drawable/bg_livevideo_stand_experience_recommond_course_close_btn"
             app:layout_constraintBottom_toBottomOf="@+id/tv_livevideo_stand_experience_recommond_course_course_name"
-            app:layout_constraintLeft_toRightOf="@+id/iv_livevideo_stand_experience_recommond_course_buy_btn"
-            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_stand_experience_recommond_course_background" />
+            app:layout_constraintHorizontal_bias="0.8"
+            app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_stand_experience_recommond_course_background"
+            app:layout_constraintRight_toRightOf="@+id/iv_livevideo_stand_experience_recommond_course_background"
+            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_stand_experience_recommond_course_background"
+            app:layout_constraintVertical_bias="0.0" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -116,12 +146,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.65">
+        app:layout_constraintVertical_bias="0.75">
 
         <ImageView
             android:id="@+id/iv_livevideo_stand_experience_recommod_course_teacher_img_background"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="106dp"
+            android:layout_height="81dp"
             android:src="@drawable/bg_livevideo_stand_experience_recommond_course_teacher_img_background" />
 
         <!--<ImageView-->
@@ -135,11 +165,10 @@
 
         <ImageView
             android:id="@+id/iv_livevideo_stand_experience_recommod_course_recommod_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="59dp"
+            android:layout_height="19dp"
             android:src="@drawable/bg_livevideo_stand_experience_recommond_course_recommod_icon"
             app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_stand_experience_recommod_course_teacher_img_background"
-            app:layout_constraintHorizontal_bias="0.4"
             app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_stand_experience_recommod_course_teacher_img_background"
             app:layout_constraintRight_toRightOf="@+id/iv_livevideo_stand_experience_recommod_course_teacher_img_background"
             app:layout_constraintTop_toTopOf="@+id/iv_livevideo_stand_experience_recommod_course_teacher_img_background"

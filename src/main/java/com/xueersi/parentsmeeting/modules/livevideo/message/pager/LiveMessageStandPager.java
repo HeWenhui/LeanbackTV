@@ -61,6 +61,10 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.RegexUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
@@ -109,6 +113,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  * @author linyuqiang
  * @date 2016/8/2
  * 直播聊天横屏-直播课和直播辅导
+ * 修改请注意:直播体验课也走的这里
  */
 public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveAndBackDebug {
     private String TAG = getClass().getSimpleName();
@@ -267,6 +272,20 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             }
         }, 100);
         return mView;
+    }
+
+    /**
+     * 体验课走这里，为了隐藏临时的star和gold图片
+     *
+     * @param isVisible
+     */
+    public void setStarGoldImageViewVisible(boolean isVisible) {
+
+        if (mView != null) {
+            mView.findViewById(R.id.cl_stand_experience_temp_gold_star).setVisibility(isVisible ? View.VISIBLE : View
+                    .GONE);
+        }
+
     }
 
     /**
@@ -641,7 +660,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                OtherModulesEnter.requestGoldTotal(mContext);
+                LiveIRCMessageBll.requestGoldTotal(mContext);
             }
         });
         btMessageFlowers.setTag("0");

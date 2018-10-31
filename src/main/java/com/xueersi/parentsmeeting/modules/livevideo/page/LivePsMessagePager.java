@@ -606,7 +606,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         new Thread() {
             @Override
             public void run() {
-                OtherModulesEnter.requestGoldTotal(mContext);
+                LiveIRCMessageBll.requestGoldTotal(mContext);
             }
         }.start();
         btMessageFlowers.setTag("0");

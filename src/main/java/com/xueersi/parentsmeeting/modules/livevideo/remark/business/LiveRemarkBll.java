@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
@@ -100,7 +101,6 @@ public class LiveRemarkBll {
     private LinearLayout llPoints;
     private RelativeLayout rlMask;
     private CommonAdapter mAdapter;
-    private TextureView mTextureView;
     private MediaController2 mController;
     private AbstractBusinessDataCallBack mCallBack;
     private String liveId;
@@ -139,10 +139,6 @@ public class LiveRemarkBll {
     public void setLiveMediaControllerBottom(LiveMediaControllerBottom liveMediaControllerBottom) {
         mLiveMediaControllerBottom = liveMediaControllerBottom;
 
-    }
-
-    public void setTextureView(TextureView textureView) {
-        mTextureView = textureView;
     }
 
     public void initData() {
@@ -214,6 +210,7 @@ public class LiveRemarkBll {
                         mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.VISIBLE);
                     }
                 } else {
+
                     if (mLiveMediaControllerBottom.getLlMarkPopMenu() != null) {
                         mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.GONE);
                     }
@@ -402,7 +399,9 @@ public class LiveRemarkBll {
     public void setList(List<VideoPointEntity> list) {
         mList = list;
         setEntityNum(mList);
-        setNewEntityNum(mList);
+        if(AppConfig.isMulLiveBack){
+            setNewEntityNum(mList);
+        }
     }
 
     private void setNewEntityNum(List<VideoPointEntity> lst) {

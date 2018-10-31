@@ -1,0 +1,67 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#CC000000">
+
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_arts_answer_result_sumbit_toast"
+        android:layout_width="269dp"
+        android:layout_height="83dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/pse_answer_toast_bg"
+        android:gravity="center"
+        android:text="你要快快提交哦~"
+        android:textColor="#F46832"
+        android:textSize="20sp"
+        android:visibility="gone"
+        />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@id/lv_arts_answer_state_pse"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@id/rl_arts_pse_answer_result_root"
+        >
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@id/lv_arts_answer_result_pse"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
+            android:id="@id/rcl_arts_answer_result_detail"
+            android:layout_width="370dp"
+            android:layout_height="130dp"
+            android:layout_below="@id/tv_arts_answer_result_detail_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:overScrollMode="never"
+            android:visibility="gone"
+            app:VerticalThumbDrawable="@drawable/arts_pse_fastscorller_header_selector"
+            app:VerticalTrackDrawable="@drawable/arts_rcl_fastscroller_tracker"
+            />
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@id/iv_arts_answer_result_answer_btn"
+        android:layout_width="83dp"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="61dp"
+        android:layout_marginRight="20dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/selector_live_artspse_answer_result"
+        android:visibility="gone"
+        />
+
+
+</RelativeLayout>

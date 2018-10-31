@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand;
 
 import android.app.Activity;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -11,14 +13,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 
-public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll {
+public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll implements IUnderStandContract
+        .IUnderStandPresenter {
 
     StandExperienceUnderstandPager mPager;
-
-//    List<String> optionList;
-
-//    Map<String, String> map;
 
     public StandExperienceUnderstandBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -28,25 +29,36 @@ public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll {
     @Override
     public void initView() {
         super.initView();
-        mPager = new StandExperienceUnderstandPager(mContext, mVideoEntity);
+        mPager = new StandExperienceUnderstandPager(mContext, mVideoEntity, this);
+        registerInBllHideView();
         initData();
         initListener();
+    }
+
+    /**
+     * 将这个bll注册在所有的Bll中，在各种其他Bll（目前只有QuestionBll，EnglishH5CoursewareBll）显示时做出相应操作（目前是隐藏聊天区的View）
+     */
+    private void registerInBllHideView() {
+        //在QuestionShowReg中注册(也就是QuestionShowReg唯一实现类QuestionBLl中注册)，为了在QuestionBll显示时隐藏该聊天区
+        QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
+        if (questionShowReg != null) {
+            questionShowReg.registQuestionShow(mPager);
+        }
+        //在EnglishShowReg中注册(也就是EnglishShowReg唯一实现类EnglishH5CoursewareBll中注册)，为了在EnglishH5CoursewareBll显示时隐藏该聊天区
+        EnglishShowReg englishShowReg = getInstance(EnglishShowReg.class);
+        if (englishShowReg != null) {
+            englishShowReg.registQuestionShow(mPager);
+        }
     }
 
     /**
      * 得到懂了么的数据
      */
     private void initData() {
-//        optionList = new ArrayList<>();
-//        map = mVideoEntity.getUnderStandDifficulty();
-//        Iterator<String> iterator = map.keySet().iterator();
-//        while (iterator.hasNext()) {
-//            optionList.add(iterator.next());
-//        }
     }
 
     private void initListener() {
-        mPager.setUnderStandListener(new StandExperienceUnderstandPager.IUnderStandListener() {
+        mPager.setUnderStandListener(new IUnderStandContract.IUnderStandListener() {
             @Override
             public void onClick(int sign) {
                 HttpCallBack httpCallBack = new HttpCallBack() {
@@ -82,29 +94,44 @@ public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll {
         });
     }
 
+    //是否移出了懂了么弹窗
+    private boolean isRemoveView = false;
+
     @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll
             .ShowQuestion showQuestion) {
         super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
         logger.i("显示懂了吗弹窗");
-        if (mPager != null) {
-            mRootView.addView(mPager.getRootView());
+        if (mPager != null && !isRemoveView) {
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
+                    .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+            mRootView.addView(mPager.getRootView(), layoutParams);
         }
     }
 
-    @Override
-    public void onQuestionEnd(VideoQuestionEntity questionEntity) {
-        super.onQuestionEnd(questionEntity);
-        logger.i("移出懂了么窗口");
-        if (mPager != null && mPager.getRootView().getParent() == mRootView) {
-            mRootView.removeView(mPager.getRootView());
-        }
-    }
+//    @Override
+//    public void onQuestionEnd(VideoQuestionEntity questionEntity) {
+//        super.onQuestionEnd(questionEntity);
+//        logger.i("移出懂了么窗口");
+//        if (mPager != null && mPager.getRootView().getParent() == mRootView) {
+//            mRootView.removeView(mPager.getRootView());
+//        }
+//    }
 
     @Override
     public int[] getCategorys() {
         return new int[]{
                 LocalCourseConfig.CATEGORY_UNDERSTAND
         };
+    }
+
+    @Override
+    public void removeView() {
+        logger.i("移出懂了么窗口");
+        if (mPager != null && mPager.getRootView().getParent() == mRootView) {
+            mRootView.removeView(mPager.getRootView());
+            isRemoveView = true;
+        }
     }
 }

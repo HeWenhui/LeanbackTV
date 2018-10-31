@@ -993,7 +993,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    OtherModulesEnter.requestGoldTotal(mContext);
+                    LiveIRCMessageBll.requestGoldTotal(mContext);
                 }
             });
         }
@@ -1661,16 +1661,22 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
 
     @Override
-    public void onQuestionShow(boolean isShow) {
-        if (isShow){
-            speechToKeyboard(mVoiceContent);
-            rlMessageContent.setVisibility(View.GONE);
-            rlMessageTextContent.setVisibility(View.GONE);
-            rlMessageVoiceContent.setVisibility(View.GONE);
-            btnMessageStartVoice.setEnabled(false);
-        } else {
-            btnMessageStartVoice.setEnabled(true);
-        }
+    public void onQuestionShow(final boolean isShow) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isShow){
+                    speechToKeyboard(mVoiceContent);
+                    rlMessageContent.setVisibility(View.GONE);
+                    rlMessageTextContent.setVisibility(View.GONE);
+                    rlMessageVoiceContent.setVisibility(View.GONE);
+                    btnMessageStartVoice.setEnabled(false);
+                } else {
+                    btnMessageStartVoice.setEnabled(true);
+                }
+            }
+        });
+
     }
 
     @Override

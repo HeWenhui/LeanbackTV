@@ -68,6 +68,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  * 直播播放日志
  */
 public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
+
     private static String TAG = "LivePlayLog";
     private Logger logger = LoggerFactory.getLogger(TAG);
     private PlayerService vPlayer;
@@ -81,6 +82,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     /** 帧数10秒统计,开始时间 */
     private long frame10Start;
     private long lastTrafficStatisticByteCount;
+    private long trafficStatisticByteCount;
     /** 视频是不是再缓冲 */
     private boolean isBuffer = false;
     /** 视频是不是暂停 */
@@ -182,13 +184,13 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         this.isLive = isLive;
         saveLogDir = LiveCacheFile.geCacheFile(activity, "liveplaylog");
         saveLogDirDebug = LiveCacheFile.geCacheFile(activity, "liveplaylogdebug");
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                uploadOld();
-            }
-        }, 20000);
+//        Handler handler = new Handler(Looper.getMainLooper());
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                uploadOld();
+//            }
+//        }, 20000);
 //        if (AppConfig.DEBUG) {
 //            logurl = "http://10.99.1.251/log";
 //        }
@@ -313,7 +315,16 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             }
                             fistDisaplyCount = disaplyCount;
                             lastTrafficStatisticByteCount = trafficStatisticByteCount;
+                            LivePlayLog.this.trafficStatisticByteCount = lastTrafficStatisticByteCount;
                             lastHeartTime = frame10Start = System.currentTimeMillis();
+                        } else {
+                            try {
+                                if (vPlayer.isInitialized()) {
+                                    trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                         lastDisaplyCount = disaplyCount;
                         if (!isLive) {
@@ -372,13 +383,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             } else {
                 dataJson.put("node", "xrs_back");
             }
-            long trafficStatisticByteCount = lastTrafficStatisticByteCount;
-            if (vPlayer.isInitialized()) {
-                IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-                trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
-                logger.d("downCom:trafficStatisticByteCount=" + trafficStatisticByteCount);
-            }
-
             long heartTime;
             if (lastHeartTime == 0) {
                 heartTime = 0;
@@ -387,7 +391,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             }
             dataJson.put("hbDur", heartTime);
             dataJson.put("dnDur", heartTime);
-            dataJson.put("bytes", (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+            long bytes = trafficStatisticByteCount - lastTrafficStatisticByteCount;
+            if (bytes < 0) {
+                bytes = 0;
+                logger.d("downCom:now=" + trafficStatisticByteCount + ",last=" + lastTrafficStatisticByteCount);
+            }
+            dataJson.put("bytes", bytes);
             dataJson.put("uid", "" + userId);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -430,11 +439,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             dataJson.put("msg", "Success");
             dataJson.put("method", activity.getClass().getSimpleName() + "-" + method);
             long bufferduration = dur;
-            long trafficStatisticByteCount = lastTrafficStatisticByteCount;
             if (vPlayer.isInitialized()) {
                 IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                 bufferduration = ijkMediaPlayer.getVideoCachedDuration();
-                trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
                 logger.d("send:method=" + method + ",bufferduration=" + bufferduration);
             }
             dataJson.put("bufType", bufType);
@@ -456,7 +463,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 heartTime = (System.currentTimeMillis() - this.lastHeartTime);
             }
             dataJson.put("hbDur", heartTime);
-            dataJson.put("bytes", (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+            long bytes = trafficStatisticByteCount - lastTrafficStatisticByteCount;
+            if (bytes < 0) {
+                bytes = 0;
+                logger.d("send:now=" + trafficStatisticByteCount + ",last=" + lastTrafficStatisticByteCount);
+            }
+            dataJson.put("bytes", bytes);
 //            dataJson.put("allpri", "" + tidAndPri.get(tid));
             dataJson.put("uid", "" + userId);
         } catch (JSONException e) {
@@ -709,6 +721,17 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         int totalRam = HardWareUtil.getTotalRam();
         long availMemory = HardWareUtil.getAvailMemory(activity) / 1024;
         double memRate = (double) ((totalRam - availMemory) * 100) / (double) totalRam;
+        boolean error = false;
+        if (memRate > 100) {
+            memRate = 100;
+            error = true;
+        } else if (memRate < 0) {
+            memRate = 0;
+            error = false;
+        }
+        if (error) {
+            logger.d("getMemRate:totalRam=" + totalRam + ",availMemory=" + availMemory);
+        }
         return memRate;
     }
 
@@ -1079,7 +1102,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             e1.printStackTrace();
                         }
                     }
-                    saveStrToFile(requestJson.toString());
+//                    saveStrToFile(requestJson.toString());
                     if (e instanceof SocketTimeoutException) {
                         final long now = System.currentTimeMillis();
                         if (now - xescdnLog2Before < 5 * 60 * 1000) {
@@ -1195,11 +1218,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     dataJson.put("msg", "" + playFailCode.getTip());
                     if (isOpenSuccessfinal) {
                         long bufferduration = 0;
-                        long trafficStatisticByteCount = lastTrafficStatisticByteCount;
                         if (vPlayer.isInitialized()) {
                             IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
                             bufferduration = ijkMediaPlayer.getVideoCachedDuration();
-                            trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
                         }
                         dataJson.put("bufType", bufType);
                         if (isBuffer) {
@@ -1214,7 +1235,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                         dataJson.put("fps", videofps);
                         dataJson.put("playBuf", bufferduration);
                         dataJson.put("hbDur", heartTime);
-                        dataJson.put("bytes", (trafficStatisticByteCount - lastTrafficStatisticByteCount));
+                        long bytes = trafficStatisticByteCount - lastTrafficStatisticByteCount;
+                        if (bytes < 0) {
+                            bytes = 0;
+                            logger.d("onOpenFailed:now=" + trafficStatisticByteCount + ",last=" + lastTrafficStatisticByteCount);
+                        }
+                        dataJson.put("bytes", bytes);
                     } else {
                         URLDNS urldns = new URLDNS();
                         try {

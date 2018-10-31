@@ -135,6 +135,7 @@ public interface XESCODE {
     /** 老师点赞 */
     int TEACHER_PRAISE = 236;
 
+
     /** 分队仪式 */
     int TEAM_PK_TEAM_SELECT = 230;
 
@@ -164,6 +165,16 @@ public interface XESCODE {
     /**提醒学生标记*/
     int MARK_POINT_TIP=800;
 
+    /**
+     * 老师开启或者关闭点赞
+     */
+    int PRAISE_SWITCH=265;
+    /** 点赞消息 */
+    int PRAISE_MESSAGE =266;
+
+    /** 班级点赞数量消息 */
+    int PRAISE_CLASS_NUM =267;
+
 
     /**文科表扬榜  开始notice*/
     int ARTS_PRAISE_START = 1000;
@@ -177,4 +188,25 @@ public interface XESCODE {
     int XCR_ROOM_VOICEBARRAGE = 1006;
     /**文科语音弹幕  表扬消息*/
     int XCR_ROOM_VOICEBARRAGEPRAISE = 1007;
+
+
+    /**
+     * 文科新课件平台 对接notice 指令
+     */
+    /**文科在线教研 发题*/
+    int ARTS_SEND_QUESTION = 1104;
+    /**文科在线教研收题*/
+    int ARTS_STOP_QUESTION = 1105;
+    /**文科设计组课件收发题*/
+    int ARTS_H5_COURSEWARE = 1145;
+    /**文科教师端提醒交卷**/
+    int ARTS_REMID_SUBMIT = 1161;
+
+    /**文科 表扬学生（多题作答表扬全对、语音作答按分数区间表扬）*/
+    int ARTS_PARISE_ANSWER_RIGHT =1160;
+
+    /**文科单题表扬*/
+    int ARTS_PRAISE_ANSWER_RIGHT_SINGLE = 1162;
+    /**文科单词听写*/
+    int ARTS_WORD_DICTATION = 1003;
 }
