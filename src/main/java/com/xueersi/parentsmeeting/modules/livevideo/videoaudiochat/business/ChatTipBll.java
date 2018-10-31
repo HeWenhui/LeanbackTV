@@ -65,7 +65,9 @@ public class ChatTipBll {
     private ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
     private ViewGroup vgRaisehand;
     private TextView tv_livevideo_chat_people;
+    private TextView tv_livevideo_chat_people_hind;
     private TextView tv_livevideo_chat_people_grey;
+    private TextView tv_livevideo_chat_people_grey_hind;
     private RelativeLayout rl_livevideo_content_left;
     private LinearLayout ll_livevideo_chat_people;
     private TextView tv_livevideo_chat_in_queue;
@@ -200,9 +202,11 @@ public class ChatTipBll {
             }
         });
         tv_livevideo_chat_people = vgRaisehand.findViewById(R.id.tv_livevideo_chat_people);
-        tv_livevideo_chat_people.setText("当前举手" + raiseHandCount + "人，等待连麦中…");
+        tv_livevideo_chat_people_hind = vgRaisehand.findViewById(R.id.tv_livevideo_chat_people_hind);
+        tv_livevideo_chat_people.setText("当前举手" + raiseHandCount + "人，等待连麦中...");
         tv_livevideo_chat_people_grey = vgRaisehand.findViewById(R.id.tv_livevideo_chat_people_grey);
-        tv_livevideo_chat_people_grey.setText("当前举手" + raiseHandCount + "人，等待连麦中…");
+        tv_livevideo_chat_people_grey_hind = vgRaisehand.findViewById(R.id.tv_livevideo_chat_people_grey_hind);
+        tv_livevideo_chat_people_grey.setText("当前举手" + raiseHandCount + "人，等待连麦中...");
         tv_livevideo_chat_in_queue = vgRaisehand.findViewById(R.id.tv_livevideo_chat_in_queue);
         final ImageView iv_livevideo_chat_small = vgRaisehand.findViewById(R.id.iv_livevideo_chat_small);
         iv_livevideo_chat_small.setOnClickListener(new View.OnClickListener() {
@@ -315,7 +319,7 @@ public class ChatTipBll {
                 } else {
                     pointstr = ".  ";
                 }
-                logger.d("waitRun:index=" + index + ",pointstr=" + pointstr);
+//                logger.d("waitRun:index=" + index + ",pointstr=" + pointstr);
                 handler.postDelayed(this, 1000);
             } else {
                 logger.d("waitRun:onMic=off");
@@ -338,10 +342,12 @@ public class ChatTipBll {
                     }
                 } else {
                     if (tv_livevideo_chat_people != null) {
-                        tv_livevideo_chat_people.setText("当前举手" + raiseHandCount + "人，等待连麦中…");
+                        tv_livevideo_chat_people.setText("当前举手" + raiseHandCount + "人，等待连麦中...");
+                        tv_livevideo_chat_people_hind.setText("当前举手" + raiseHandCount + "人，等待连麦中...");
                     }
                     if (tv_livevideo_chat_people_grey != null) {
-                        tv_livevideo_chat_people_grey.setText("当前举手" + raiseHandCount + "人，等待连麦中…");
+                        tv_livevideo_chat_people_grey.setText("当前举手" + raiseHandCount + "人，等待连麦中...");
+                        tv_livevideo_chat_people_grey_hind.setText("当前举手" + raiseHandCount + "人，等待连麦中...");
                     }
                 }
             }
@@ -446,6 +452,7 @@ public class ChatTipBll {
     }
 
     public void stopRecord(String method) {
+        raiseHandCount = 0;
         if (haveRaisehand) {
             if (haveContainMe) {
                 MidToast.showToast(activity, "老师已结束本次举麦");

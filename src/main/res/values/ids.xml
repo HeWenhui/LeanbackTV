@@ -798,7 +798,9 @@
     <item name="rl_livevideo_chat_raisehand_on" type="id" />
     <item name="rl_livevideo_chat_raisehand_off" type="id" />
     <item name="tv_livevideo_chat_people" type="id" />
+    <item name="tv_livevideo_chat_people_hind" type="id" />
     <item name="tv_livevideo_chat_people_grey" type="id" />
+    <item name="tv_livevideo_chat_people_grey_hind" type="id" />
     <item name="tv_livevideo_chat_in_queue" type="id" />
     <item name="rl_livevideo_chat_raisehand" type="id" />
     <item name="bt_livevideo_chat_raisehand" type="id" />

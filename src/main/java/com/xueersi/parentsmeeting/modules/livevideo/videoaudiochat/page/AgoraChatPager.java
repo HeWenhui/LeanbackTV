@@ -323,6 +323,8 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         int size = classmateEntities.size();
         mLogtf.d("updateUser:size=" + size);
         if (size == 0 || micType == 0) {
+            pressLottileView1.setVisibility(View.GONE);
+            pressLottileView2.setVisibility(View.GONE);
             rl_livevideo_chat_head1.setVisibility(View.GONE);
             rl_livevideo_chat_head2.setVisibility(View.GONE);
         } else if (size < 3) {

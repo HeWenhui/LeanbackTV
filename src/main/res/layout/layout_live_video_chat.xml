@@ -30,10 +30,17 @@
                     android:layout_centerVertical="true">
 
                     <TextView
+                        android:id="@id/tv_livevideo_chat_people_hind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:visibility="invisible" />
+
+                    <TextView
                         android:id="@id/tv_livevideo_chat_people"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="当前举手234人，等待连麦中…"
+                        android:text="当前举手234人，等待连麦中..."
                         android:textColor="@color/white"
                         android:textSize="16sp" />
                 </RelativeLayout>
@@ -46,10 +53,17 @@
                     android:visibility="invisible">
 
                     <TextView
+                        android:id="@id/tv_livevideo_chat_people_grey_hind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+
+                    <TextView
                         android:id="@id/tv_livevideo_chat_people_grey"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="当前举手234人，等待连麦中…"
+                        android:text="当前举手234人，等待连麦中..."
                         android:textColor="@color/grey"
                         android:textSize="14sp" />
 
