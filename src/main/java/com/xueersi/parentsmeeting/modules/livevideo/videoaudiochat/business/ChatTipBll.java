@@ -239,16 +239,25 @@ public class ChatTipBll {
         });
     }
 
+    /**
+     * 上次网络质量
+     */
+    private int lastquality = -1;
     MyEngineEventHandler.OnLastmileQuality onLastmileQuality = new MyEngineEventHandler.OnLastmileQuality() {
+
         @Override
         public void onLastmileQuality(int quality) {
             logger.d("onLastmileQuality:quality=" + quality);
-            videoChatHttp.sendNetWorkQuality(quality);
+            if (lastquality != quality) {
+                videoChatHttp.sendNetWorkQuality(quality);
+            }
+            lastquality = quality;
         }
 
         @Override
         public void onQuit() {
             logger.d("onQuit");
+            lastquality = -1;
             testWorkerThread = null;
         }
     };

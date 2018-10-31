@@ -506,13 +506,12 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
 
         @Override
         public void onClick(View v) {
-            if (!pressLottileView.isAnimating()) {
-                pressLottileView.playAnimation();
-            }
+//            if (!pressLottileView.isAnimating()) {
+//                pressLottileView.playAnimation();
+//            }
             classmateEntity.setLikes(classmateEntity.getLikes() + 1);
             tv_livevideo_chat_count.setVisibility(View.VISIBLE);
             tv_livevideo_chat_count.setText("" + classmateEntity.getLikes());
-            videoChatHttp.praise(classmateEntity.getId(), classmateEntity.getLikes());
             if (before == 0) {
                 before = System.currentTimeMillis();
             }
