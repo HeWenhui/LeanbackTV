@@ -209,6 +209,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             mUrl = getInfo.getUrl();
             mFinalUrl = mUrl;
             logger.e("=======> loadUrl:" + mUrl);
+            mLogtf.d("initData:isNewArtsurl=" + mUrl);
         }else if (isExperience) {
             String termId = "";
             if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
@@ -222,7 +223,8 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             if (isStandingLive) {
                 mUrl += "&isStandingLive=1&isAudio=1";
             }
-        }  else{
+            mFinalUrl = mUrl;
+        }  else {
             String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
 //        String url = "http://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
 //                liveid + "/" + stuCouId + "/" + testId + "/" + stuId;
@@ -263,7 +265,9 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
             }
         }, PermissionConfig.PERMISSION_CODE_AUDIO);
         if (have) {
-            wvSubjectWeb.loadUrl(mUrl);
+            if(!TextUtils.isEmpty(mUrl)){
+                wvSubjectWeb.loadUrl(mUrl);
+            }
             logger.e("=======>webloadUrl:" + mUrl);
             mLogtf.d("initData:url=" + mUrl);
         }

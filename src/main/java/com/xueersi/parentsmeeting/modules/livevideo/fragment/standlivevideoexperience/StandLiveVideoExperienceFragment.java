@@ -729,7 +729,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     private final int mPlayDurTime = 300000;
 
     //    private long errorContinuedmTime = 0L;
-    private long delaymTime = 0L;
+    private long delaymTime = 300000L;
 
     private long continuedMTime = 0L;
     private Runnable mPlayDuration = new Runnable() {
@@ -741,21 +741,27 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 long nowContinuedMTime = 0L;
                 if (isPlay) {//处于播放状态
                     nowContinuedMTime = System.currentTimeMillis() - everyTime;
-                    if (continuedMTime + nowContinuedMTime >= mPlayDurTime) {//持续时间大于定义的发送间隔
+                    if (continuedMTime + nowContinuedMTime >= delaymTime) {//持续时间大于定义的发送间隔
                         sendVideoContinuedFlop();
                         continuedMTime = 0L;
                         delaymTime = mPlayDurTime;
                         everyTime = System.currentTimeMillis();
                     } else {
                         delaymTime = mPlayDurTime - continuedMTime - nowContinuedMTime;
+                        continuedMTime = 0L;
                     }
                 } else {
-                    if (continuedMTime >= mPlayDurTime) {//如果持续时间大于定义的发送间隔
+                    if (continuedMTime >= delaymTime) {//如果持续时间大于定义的发送间隔
                         sendVideoContinuedFlop();
+                        delaymTime = mPlayDurTime;
+                        continuedMTime = 0L;
                     } else {//
                         delaymTime = mPlayDurTime - continuedMTime;
+                        continuedMTime = 0L;
                     }
+                    continuedMTime = 0L;
                 }
+//                continuedMTime = 0L;
                 mHandler.postDelayed(this, delaymTime);
             }
         }
@@ -1029,6 +1035,8 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     public void onDestroy() {
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
+        isFinishing = true;
+        mHandler.removeCallbacks(mPlayDuration);
         isPlay = false;
         liveBackBll.onDestory();
         ProxUtil.getProxUtil().clear(activity);

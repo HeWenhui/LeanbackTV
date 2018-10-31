@@ -149,11 +149,6 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
      * 视频结束的时候，扫描一遍所有的livebackbasebll是否需要做什么事情
      */
     public void resultAllComplete() {
-//        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
-//            if (liveBackBaseBll instanceof StandExperienceEventBaseBll) {
-//                ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
-//            }
-//        }
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             if (liveBackBaseBll instanceof StandExperienceEventBaseBll) {
                 ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
@@ -163,11 +158,6 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
                 showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
             }
         }
-//        showNextWindow(new ExperienceBuyCoursePresenter(activity, this));
-//        showNextWindow(ProxUtil.getProxUtil().get(activity, ExperienceBuyCoursePresenter
-//                .class));
-
-//        showNextWindow(iPresenter);
     }
 
     //    购课完成后专用

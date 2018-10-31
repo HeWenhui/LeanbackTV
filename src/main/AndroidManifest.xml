@@ -103,6 +103,16 @@
         <service
             android:name="ren.yale.android.cachewebviewlib.CachePreLoadService"
             android:process=":livevideo" />
+
+        <receiver
+            android:name=".fragment.standlivevideoexperience.OrderPaySuccessBroadCastReceiver"
+            android:process=":livevideo">
+            <intent-filter>
+                <action android:name="${applicationId}.XesPaySuccess" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -787,6 +787,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (liveBackVideoBll != null) {
             liveBackVideoBll.onDestroy();
         }
+        LiveVideoConfig.isNewArts = false;
         ProxUtil.getProxUtil().clear(activity);
     }
 

@@ -67,6 +67,7 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
         initListener();
     }
 
+
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_stand_experience_recommond_course, null);
