@@ -14,50 +14,18 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline_learn_feedback_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.3"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline_learn_feedback_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.69"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline_learn_feedback_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintGuide_percent="0.26"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline_learn_feedback_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintGuide_percent="0.65"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ScrollView
         android:id="@+id/sv_stand_experience_learn_feedback_select"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/guideline_learn_feedback_bottom"
-        app:layout_constraintLeft_toLeftOf="@id/guideline_learn_feedback_left"
-        app:layout_constraintRight_toRightOf="@id/guideline_learn_feedback_right"
-        app:layout_constraintTop_toTopOf="@id/guideline_learn_feedback_top">
+        android:layout_marginBottom="135dp"
+        android:layout_marginLeft="150dp"
+        android:layout_marginRight="150dp"
+        android:layout_marginTop="105dp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_stand_experience_learn_feedback_background"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_stand_experience_learn_feedback_background"
+        app:layout_constraintRight_toRightOf="@+id/iv_stand_experience_learn_feedback_background"
+        app:layout_constraintTop_toTopOf="@+id/iv_stand_experience_learn_feedback_background">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -83,7 +51,7 @@
                 android:text="其他建议"
                 android:textSize="11sp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rg_stand_experience_learn_feedback_select2" />
+                app:layout_constraintTop_toBottomOf="@+id/item_select_layout2" />
 
             <com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.GestureScrollEditText
                 android:id="@+id/et_stand_experience_learn_feedback_suggest"
@@ -92,6 +60,7 @@
                 android:layout_marginTop="5dp"
                 android:background="@drawable/shape_stand_experience_learn_feedback_edit_text"
                 android:gravity="top"
+                android:imeOptions="flagNoExtractUi"
                 android:textSize="10sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

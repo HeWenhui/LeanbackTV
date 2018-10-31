@@ -28,23 +28,32 @@ import okhttp3.Call;
 public class NewStandPager<T extends LearnFeedBackContract.ISendHttp> extends BasePager {
 
     T presenter;
-
+    /**
+     * 滑动，需要注意EditText可以滑动时的焦点获取问题
+     */
     ScrollView scrollView;
-
+    /**
+     * 两个难度的选择
+     */
     ItemLearnFeedbackPageSelectLayout itemLearnFeedbackPageSelectLayout1, itemLearnFeedbackPageSelectLayout2;
 
-    private GestureScrollEditText gestureScrollEditText;
     /**
      * 反馈弹窗中需要显示的信息
      */
     private List<LiveExperienceEntity.LearnFeedBack> arrayOptions;
 
     private VideoLivePlayBackEntity mVideoEntity;
-
+    /**
+     * 在ScrollView中可以滑动的EditText
+     */
     private GestureScrollEditText etSuggest;
-
+    /**
+     * 提交按钮
+     */
     private ImageView ivSubmit;
-
+    /**
+     * 关闭按钮
+     */
     private ImageView ivClose;
 
     public NewStandPager(Context context, T presenter, VideoLivePlayBackEntity
@@ -52,6 +61,7 @@ public class NewStandPager<T extends LearnFeedBackContract.ISendHttp> extends Ba
         super(context);
         this.presenter = presenter;
         this.arrayOptions = videoLivePlayBackEntity.getLearnFeedback();
+        mVideoEntity = videoLivePlayBackEntity;
         priHandle();
         initData();
         initListener();
@@ -63,7 +73,6 @@ public class NewStandPager<T extends LearnFeedBackContract.ISendHttp> extends Ba
         scrollView = mView.findViewById(R.id.sv_stand_experience_learn_feedback_select);
         itemLearnFeedbackPageSelectLayout1 = mView.findViewById(R.id.item_select_layout1);
         itemLearnFeedbackPageSelectLayout2 = mView.findViewById(R.id.item_select_layout2);
-        gestureScrollEditText = mView.findViewById(R.id.et_stand_experience_learn_feedback_suggest);
         etSuggest = mView.findViewById(R.id.et_stand_experience_learn_feedback_suggest);
         ivSubmit = mView.findViewById(R.id.btn_stand_experience_learn_feedback_submit);
         ivClose = mView.findViewById(R.id.iv_stand_experience_learn_feedback_close);
@@ -136,7 +145,6 @@ public class NewStandPager<T extends LearnFeedBackContract.ISendHttp> extends Ba
                         super.onFailure(call, e);
                     }
 
-
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         logger.d("sendFeedbackFailure:" + msg);
@@ -149,7 +157,6 @@ public class NewStandPager<T extends LearnFeedBackContract.ISendHttp> extends Ba
                         super.onPmError(responseEntity);
                     }
                 };
-
                 presenter.sendHttp(
                         UserBll.getInstance().getMyUserInfoEntity().getStuId(),
                         mVideoEntity.getLiveId(),

@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 
 /**
- * 在ScrollView中嵌套此EditText，EditText字数超过EditText高度时，EditText可以滑动
+ * 在ScrollView中嵌套此EditText，EditText高度超过已经决定好的EditText高度时，EditText可以滑动
  *
  * @author zyy
  */
@@ -20,7 +20,6 @@ public class GestureScrollEditText extends EditText {
         super(context);
         init();
     }
-
 
     public GestureScrollEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
