@@ -779,8 +779,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     }
 
-    private boolean isHalfBodyLive = false;
-
     @Override
     public void onLiveInit(LiveGetInfo getInfo) {
         mGetInfo = getInfo;
@@ -972,7 +970,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * @return
      */
     private boolean isHalfBodyLive() {
-        return true;
+        return false;
     }
 
     @Override
