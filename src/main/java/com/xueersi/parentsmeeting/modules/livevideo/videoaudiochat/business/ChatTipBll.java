@@ -17,7 +17,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
@@ -335,19 +335,25 @@ public class ChatTipBll {
                 initView("raiseHandCount");
                 if ("on".equals(onMic)) {
                     if (tv_livevideo_chat_people != null) {
-                        tv_livevideo_chat_people.setText("当前举手" + raiseHandCount + "人，已连麦" + classmateEntities.size() + "人");
+                        String string = "当前举手" + raiseHandCount + "人，已连麦" + classmateEntities.size() + "人";
+                        tv_livevideo_chat_people.setText(string);
+                        tv_livevideo_chat_people_hind.setText(string);
                     }
                     if (tv_livevideo_chat_people_grey != null) {
-                        tv_livevideo_chat_people_grey.setText("当前举手" + raiseHandCount + "人，已连麦" + classmateEntities.size() + "人");
+                        String string = "当前举手" + raiseHandCount + "人，已连麦" + classmateEntities.size() + "人";
+                        tv_livevideo_chat_people_grey.setText(string);
+                        tv_livevideo_chat_people_grey_hind.setText(string);
                     }
                 } else {
                     if (tv_livevideo_chat_people != null) {
-                        tv_livevideo_chat_people.setText("当前举手" + raiseHandCount + "人，等待连麦中...");
-                        tv_livevideo_chat_people_hind.setText("当前举手" + raiseHandCount + "人，等待连麦中...");
+                        String string = "当前举手" + raiseHandCount + "人，等待连麦中...";
+                        tv_livevideo_chat_people.setText(string);
+                        tv_livevideo_chat_people_hind.setText(string);
                     }
                     if (tv_livevideo_chat_people_grey != null) {
-                        tv_livevideo_chat_people_grey.setText("当前举手" + raiseHandCount + "人，等待连麦中...");
-                        tv_livevideo_chat_people_grey_hind.setText("当前举手" + raiseHandCount + "人，等待连麦中...");
+                        String string = "当前举手" + raiseHandCount + "人，等待连麦中...";
+                        tv_livevideo_chat_people_grey.setText(string);
+                        tv_livevideo_chat_people_grey_hind.setText(string);
                     }
                 }
             }
@@ -406,10 +412,10 @@ public class ChatTipBll {
                 handler.removeCallbacks(waitRun);
                 if ("on".equals(onMic)) {
                     rl_livevideo_chat_raisehand_on.setVisibility(View.VISIBLE);
-                    rl_livevideo_chat_raisehand_off.setVisibility(View.INVISIBLE);
+                    rl_livevideo_chat_raisehand_off.setVisibility(View.GONE);
                 } else {
                     handler.postDelayed(waitRun, 1000);
-                    rl_livevideo_chat_raisehand_on.setVisibility(View.INVISIBLE);
+                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
                     rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
                 }
                 changeRaisehand(contain);
@@ -449,6 +455,11 @@ public class ChatTipBll {
         }
         videoChatInter.updateUser(classmateChange, classmateEntities);
         ll_livevideo_chat_people.addView(videoChatInter.getRootView(), RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        if (micType == 1) {
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_chat_people.getLayoutParams();
+            lp.leftMargin = (int) (15 * ScreenUtils.getScreenDensity());
+            ll_livevideo_chat_people.setLayoutParams(lp);
+        }
     }
 
     public void stopRecord(String method) {
