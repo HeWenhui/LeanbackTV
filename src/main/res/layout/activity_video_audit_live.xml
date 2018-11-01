@@ -214,6 +214,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"></RelativeLayout>
 
+        <Button
+            android:id="@id/bt_course_video_livetimeout"
+            style="@style/text_font14_ffffff_style"
+            android:layout_width="70dp"
+            android:layout_height="33dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/shape_video_refresh_button"
+            android:text="点击重试"
+            android:visibility="gone" />
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
