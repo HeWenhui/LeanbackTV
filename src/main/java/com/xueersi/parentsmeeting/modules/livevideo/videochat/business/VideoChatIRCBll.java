@@ -76,6 +76,8 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
                 liveStandMediaControllerBottom.addOnViewChange(onViewChange);
             }
             putInstance(VideoChatEvent.class, this);
+        } else {
+            mLiveBll.removeBusinessBll(this);
         }
     }
 

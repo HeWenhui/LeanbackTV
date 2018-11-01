@@ -69,7 +69,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        boolean allowLinkMic = getInfo.isAllowLinkMic();
+        boolean allowLinkMic = (1 == getInfo.getAllowLinkMicNew());
         if (allowLinkMic) {
             VideoAudioChatBll videoChatBll = new VideoAudioChatBll(activity, this);
             videoChatBll.initView(mRootView);
@@ -84,6 +84,8 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                 liveStandMediaControllerBottom.addOnViewChange(onViewChange);
             }
             putInstance(VideoChatEvent.class, this);
+        } else {
+            mLiveBll.removeBusinessBll(this);
         }
     }
 

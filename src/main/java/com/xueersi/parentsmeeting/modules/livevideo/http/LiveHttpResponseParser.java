@@ -86,6 +86,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
         LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
         getInfo.setStuPutUpHandsNum(data.optInt("stuPutUpHandsNum"));
+        getInfo.setAllowLinkMicNew(data.optInt("allowLinkMicNew"));
+        if (getInfo.getAllowLinkMicNew() == 1) {
+            getInfo.setAllowLinkMic(false);
+        }
     }
 
     /**

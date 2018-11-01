@@ -165,7 +165,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new ArtsPraiseListBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new WordDictationIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new ArtsAnswerResultBll(activity,mLiveBll));
+            mLiveBll.addBusinessBll(new ArtsAnswerResultBll(activity, mLiveBll));
             VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
             videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             videoChatIRCBll.setLiveFragmentBase(this);
@@ -193,10 +193,18 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
-            VideoAudioChatIRCBll videoAudioChatIRCBll = new VideoAudioChatIRCBll(activity, mLiveBll);
-            videoAudioChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-            videoAudioChatIRCBll.setLiveFragmentBase(this);
-            mLiveBll.addBusinessBll(videoAudioChatIRCBll);
+            int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
+            if (allowLinkMicNew == 1) {
+                VideoAudioChatIRCBll videoAudioChatIRCBll = new VideoAudioChatIRCBll(activity, mLiveBll);
+                videoAudioChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+                videoAudioChatIRCBll.setLiveFragmentBase(this);
+                mLiveBll.addBusinessBll(videoAudioChatIRCBll);
+            } else {
+                VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
+                videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+                videoChatIRCBll.setLiveFragmentBase(this);
+                mLiveBll.addBusinessBll(videoChatIRCBll);
+            }
         }
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }

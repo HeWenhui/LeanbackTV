@@ -193,6 +193,8 @@ public class LiveGetInfo {
      */
     private int urlClick;
     private boolean allowLinkMic;
+    /** 2018新接麦 */
+    private int allowLinkMicNew;
     private int stuLinkMicNum;
     private int stuPutUpHandsNum;
     private ArrayList<String> teamStuIds = new ArrayList<>();
@@ -722,6 +724,14 @@ public class LiveGetInfo {
     public void setAllowLinkMic(boolean allowLinkMic) {
 //        allowLinkMic = false;
         this.allowLinkMic = allowLinkMic;
+    }
+
+    public int getAllowLinkMicNew() {
+        return allowLinkMicNew;
+    }
+
+    public void setAllowLinkMicNew(int allowLinkMicNew) {
+        this.allowLinkMicNew = allowLinkMicNew;
     }
 
     public int getStuLinkMicNum() {
