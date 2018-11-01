@@ -251,10 +251,25 @@ public class LiveGetPlayServer {
         });
     }
 
-    Runnable timeLiveGetPlay = new Runnable() {
+    private long liveGetPlayTime = 0;
+    private long maxTime = 30 * 60 * 1000;
+
+    private Runnable timeLiveGetPlay = new Runnable() {
         @Override
         public void run() {
-            liveGetPlayServer(true);
+            if (liveGetPlayTime == 0) {
+                liveGetPlayTime = System.currentTimeMillis();
+            }
+            long time = System.currentTimeMillis() - liveGetPlayTime;
+            if (time > maxTime) {
+                liveGetPlayTime = 0;
+                mLogtf.d("timeLiveGetPlay:time=" + time);
+                if (mVideoAction != null) {
+                    mVideoAction.onLiveTimeOut();
+                }
+            } else {
+                liveGetPlayServer(true);
+            }
         }
     };
 

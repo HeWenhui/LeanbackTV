@@ -555,6 +555,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }
     };
 
+    public void liveGetPlayServer() {
+        liveGetPlayServer.liveGetPlayServer(false);
+    }
+
     /**
      * 缓冲超时
      */

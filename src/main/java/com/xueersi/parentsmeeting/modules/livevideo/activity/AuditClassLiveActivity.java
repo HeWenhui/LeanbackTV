@@ -861,6 +861,11 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     }
 
     @Override
+    public void onLiveTimeOut() {
+
+    }
+
+    @Override
     public void onStudentLeave(final boolean leave, final String stuPushStatus) {
         this.leave = leave;
         if (leave && !xv_livevideo_student.isPlaying()) {
@@ -1254,7 +1259,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 }
             }
         }
-        logger.d( "addBody:method=" + method + ",url=" + url);
+        logger.d("addBody:method=" + method + ",url=" + url);
         return msg;
     }
 
@@ -1408,7 +1413,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
-        logger.i( "onEvent:netWorkType=" + event.netWorkType);
+        logger.i("onEvent:netWorkType=" + event.netWorkType);
         mLiveBll.onNetWorkChange(event.netWorkType);
     }
 

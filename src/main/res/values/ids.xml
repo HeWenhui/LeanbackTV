@@ -6,6 +6,7 @@
     <item name="vs_course_video_video_texture" type="id" />
     <item name="ltv_course_video_video_texture" type="id" />
     <item name="ll_course_video_loading" type="id" />
+    <item name="bt_course_video_livetimeout" type="id" />
     <item name="rl_livevideo_student_load" type="id" />
     <item name="iv_livevideo_student_camera" type="id" />
     <item name="tv_livevideo_student_camera" type="id" />

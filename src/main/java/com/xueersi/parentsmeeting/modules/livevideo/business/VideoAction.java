@@ -34,6 +34,11 @@ public interface VideoAction {
     void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange);
 
     /**
+     * 直播调度30分钟超时
+     */
+    void onLiveTimeOut();
+
+    /**
      * 课程规定结束时间半小时之后
      */
     // TODO
