@@ -47,9 +47,9 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_ROLE_TEAM = HTTP_HOST + "/LiveCourse/getRolePlayAnswerTeamRank";
         /** 直播课的直播提交测试题-h5课件 */
         public String URL_LIVE_SUBMIT_TEST_H5_ANSWER = HTTP_HOST + "/LiveCourse/sumitCourseWareH5AnswerUseVoice";
-        /** 直播课的文科新版课件对接新提交接口-*/
+        /** 直播课的文科新版课件对接新提交接口- */
         public String URL_LIVE_SUBMIT_NEWARTS_ANSWER = "https://app.arts.xueersi.com/v2/commonTest/submitMultiTest";
-        /** 直播课的文科新版课件对接课件语音答题新提交接口-*/
+        /** 直播课的文科新版课件对接课件语音答题新提交接口- */
         public String URL_LIVE_SUBMIT_NEWARTSH5_ANSWER = "https://app.arts.xueersi.com/v2/CourseH5Test/submitH5Voice";
         /** 直播献花 */
         public String URL_LIVE_PRAISE_TEACHER = HTTP_HOST + "/LiveCourse/praiseTeacher";
@@ -100,9 +100,9 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_GET_QUESTION = HTTP_HOST + "/LiveCourse/getQuestion";
         /** 得到h5课件-不区分文理 */
         public String URL_LIVE_GET_WARE_URL = LiveVideoConfig.HTTP_HOST + "/LiveCourse/getCourseWareUrl";
-        /** 理科一次多发课件*/
+        /** 理科一次多发课件 */
         public String URL_LIVE_GET_MORE_WARE_URL = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/courseWarePreLoad";
-        /** 文科一发多题课件*/
+        /** 文科一发多题课件 */
         public String URL_LIVE_GET_ARTSMORE_COURSEWARE_URL = "https://laoshi.xueersi.com/libarts/v2/preLoad/preLoading";
         /** 互动题满分榜接口 */
         public String LIVE_FULL_MARK_LIST_QUESTION = HTTP_HOST + "/LiveCourse/teamTestFullScoreRank";
@@ -133,6 +133,10 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_SAVESTU_TALK = HTTP_HOST + "/LiveCourse/saveStuTalkSource";
         /** 理科接麦举手接口 */
         public String URL_LIVE_HANDADD = HTTP_HOST + "/LiveCourse/handAdd";
+        /** 理科接麦举手接口 */
+        public String URL_LIVE_ADD_STU_HAND_NUM = HTTP_HOST + "/LiveCourse/addStuPutUpHandsNum";
+        /** 理科2018接麦举手获得用户列表接口 */
+        public String URL_LIVE_STUINFO = HTTP_HOST + "/LiveCourse/getStuInfoByIds";
 
         /** h5课件地址 */
         public String coursewareH5 = "https://live.xueersi.com/" +
@@ -163,8 +167,8 @@ public class LiveVideoSAConfig {
         /** 贡献之星结果 */
         public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStar";
 
-        /**文科表扬榜*/
-        public String URL_ARTS_PRAISE_LIST ="https://app.arts.xueersi.com/LiveRank/getRankData";
+        /** 文科表扬榜 */
+        public String URL_ARTS_PRAISE_LIST = "https://app.arts.xueersi.com/LiveRank/getRankData";
 
         /** 学生端上传用户发言语句，用户统计分词结果 */
         public String URL_UPLOAD_VOICE_BARRAGE = HTTP_HOST + "/LiveCourse/uploadVoiceBarrage";
@@ -182,22 +186,22 @@ public class LiveVideoSAConfig {
         /**
          * 文科新课件平台
          * 加载H5 页面地址
-         * */
+         */
         public String URL_ARTS_H5_URL = "https://static.arts.xueersi.com/kejian/";
 
         public String URL_ARTS_COURSE_H5_URL = "https://live.arts.xueersi.com/v2/live/courseWareH5";
 
-        /** 文科新课件平台 RolePlay 页面加载地址*/
+        /** 文科新课件平台 RolePlay 页面加载地址 */
         public String URL_NEWARTS_ROALPLAY_URL = "https://static.arts.xueersi.com/art_live/roleplay/";
-        /** 文科新课件平台 语文跟读 页面加载地址*/
+        /** 文科新课件平台 语文跟读 页面加载地址 */
         public String URL_NEWARTS_CHINESEREADING_URL = "https://static.arts.xueersi.com/art_live/Chinese-speech-touch/";
         /**
          * 直播间 文科差异化参数配置接口 (注：直播间文科差异化配置参数 获取接口)
          */
         public String URL_ARTS_ROOM_INFO = "https://app.arts.xueersi.com/v2/Live/getInfoBaseData";
 
-        /**文科新课件平台 排名接口*/
-        public String URL_ARTS_TEAM_CLASS_RANK="https://app.arts.xueersi.com/v2/LiveRank/getStuGroupTeamClassRanking";
+        /** 文科新课件平台 排名接口 */
+        public String URL_ARTS_TEAM_CLASS_RANK = "https://app.arts.xueersi.com/v2/LiveRank/getStuGroupTeamClassRanking";
         /** 直播上传精彩瞬间截图接口 */
         public String URL_LIVE_WONDER_MOMENT = HTTP_HOST + "/LiveCourse/uploadWonderfulMomentImg";
     }

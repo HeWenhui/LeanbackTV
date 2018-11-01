@@ -194,6 +194,7 @@ public class LiveGetInfo {
     private int urlClick;
     private boolean allowLinkMic;
     private int stuLinkMicNum;
+    private int stuPutUpHandsNum;
     private ArrayList<String> teamStuIds = new ArrayList<>();
     private int isArts;
     private int isEnglish;
@@ -238,14 +239,14 @@ public class LiveGetInfo {
      * 1 :是pk 直播间  0 :非pk直播间
      */
     private String isAllowTeamPk;
-    /**是否是AI 伴侣直播间*/
+    /** 是否是AI 伴侣直播间 */
     private int isAIPartner;
     private String[] subjectIds;//所有学科id
     /** 小学理科改版，教育阶段，区分献花 */
     private String educationStage;
     /** 直播课年级 */
     private int grade;
-    /** 一发多题的动态接口*/
+    /** 一发多题的动态接口 */
     private String mulpreload;
     private String mulh5url;
 
@@ -253,14 +254,17 @@ public class LiveGetInfo {
      * 是否是高三理科
      */
     private int isSeniorOfHighSchool;
-    /**是否显示文科表扬榜信息*/
+    /** 是否显示文科表扬榜信息 */
     private int showArtsPraise;
+
     public int getShowArtsPraise() {
         return showArtsPraise;
     }
+
     public void setShowArtsPraise(int showArtsPraise) {
         this.showArtsPraise = showArtsPraise;
     }
+
     public void setSmallEnglish(boolean smallEnglish) {
         this.smallEnglish = smallEnglish;
     }
@@ -728,6 +732,14 @@ public class LiveGetInfo {
         this.stuLinkMicNum = stuLinkMicNum;
     }
 
+    public int getStuPutUpHandsNum() {
+        return stuPutUpHandsNum;
+    }
+
+    public void setStuPutUpHandsNum(int stuPutUpHandsNum) {
+        this.stuPutUpHandsNum = stuPutUpHandsNum;
+    }
+
     public int getIsArts() {
         return isArts;
     }
@@ -1142,7 +1154,7 @@ public class LiveGetInfo {
         this.mulh5url = mulh5url;
     }
 
-    /**直播间额外参数信息*/
+    /** 直播间额外参数信息 */
     private ArtsExtLiveInfo artsExtLiveInfo;
 
     public void setArtsExtLiveInfo(ArtsExtLiveInfo artsExtLiveInfo) {

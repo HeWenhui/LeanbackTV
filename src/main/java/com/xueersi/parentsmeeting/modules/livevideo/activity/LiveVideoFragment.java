@@ -54,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
+import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.VideoAudioChatIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -165,6 +166,10 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new WordDictationIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new ArtsAnswerResultBll(activity,mLiveBll));
+            VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
+            videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+            videoChatIRCBll.setLiveFragmentBase(this);
+            mLiveBll.addBusinessBll(videoChatIRCBll);
         } else {
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -188,11 +193,11 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
+            VideoAudioChatIRCBll videoAudioChatIRCBll = new VideoAudioChatIRCBll(activity, mLiveBll);
+            videoAudioChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+            videoAudioChatIRCBll.setLiveFragmentBase(this);
+            mLiveBll.addBusinessBll(videoAudioChatIRCBll);
         }
-        VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
-        videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-        videoChatIRCBll.setLiveFragmentBase(this);
-        mLiveBll.addBusinessBll(videoChatIRCBll);
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }
 
