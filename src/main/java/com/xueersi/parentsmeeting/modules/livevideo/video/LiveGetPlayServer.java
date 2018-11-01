@@ -265,16 +265,17 @@ public class LiveGetPlayServer {
         @Override
         public void run() {
             if (liveGetPlayTime == 0) {
-                liveGetPlayTime = System.currentTimeMillis();
+                liveGetPlayTime = System.currentTimeMillis() - 10000;
             }
             long time = System.currentTimeMillis() - liveGetPlayTime;
             if (time > maxTime) {
                 liveGetPlayTime = 0;
-                mLogtf.d("timeLiveGetPlay:time=" + time);
+                mLogtf.d("timeLiveGetPlay:time1=" + time);
                 if (mVideoAction != null) {
                     mVideoAction.onLiveTimeOut();
                 }
             } else {
+                logger.d("timeLiveGetPlay:time2=" + time);
                 liveGetPlayServer(modechange);
             }
         }
