@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -33,6 +35,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     private FrameLayout flFirstBackgroundContent;
     private LinearLayout ll_course_video_loading;
     private ImageView iv_course_video_loading_bg;
+
     /**
      * 是否已完成首次初始化
      */
@@ -51,7 +54,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
 
     @Override
     public void setFirstParam(LiveVideoPoint liveVideoPoint) {
-        Log.e(TAG, "==========>setFirstParam called");
+        logger.e( "==========>setFirstParam called");
         switchUI(liveVideoPoint);
         mInited = true;
     }
@@ -62,7 +65,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
      * @param liveVideoPoint: 视频锚点信息，用于计算UI 布局 信息
      */
     private void switchUI(LiveVideoPoint liveVideoPoint) {
-        Log.e(TAG, "setFirstParam:mode=" + mode);
+        logger.e("setFirstParam:mode=" + mode);
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             showMainTeacherUI();
         } else {
@@ -108,6 +111,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         ll_course_video_loading.setVisibility(View.VISIBLE);
         iv_course_video_loading_bg.setVisibility(View.VISIBLE);
         rlFirstBackgroundView.setBackgroundColor(0xff000000);
+        logger.e("=====>showSupportTeacherUI:"+params.rightMargin);
     }
 
 
@@ -122,14 +126,14 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
 
-        Log.e(TAG,"=====>showMainTeacherUI called:"+mInited);
+        logger.e("=====>showMainTeacherUI called:"+mInited);
         if (!mInited) {
             //主讲模式去掉外层的RelativeLayout换回FrameLayout
             ViewGroup group = (ViewGroup) rlFirstBackgroundView.getParent();
             if (group != flFirstBackgroundContent) {
-                Log.e(TAG,"=====>showMainTeacherUI called: 222222");
+                logger.e("=====>showMainTeacherUI called: 222222");
                 while (group.getChildCount() > 0) {
-                    Log.e(TAG,"=====>showMainTeacherUI called: 333333");
+                    logger.e("=====>showMainTeacherUI called: 333333");
                     View childView = group.getChildAt(0);
                     group.removeViewAt(0);
                     flFirstBackgroundContent.addView(childView);
@@ -164,9 +168,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
 
     @Override
     public void setFirstBackgroundVisible(int visible) {
-        Log.e(TAG,"=========>setFirstBackgroundVisible called:");
-
-
+        logger.e("=========>setFirstBackgroundVisible called:");
         if (rlFirstBackgroundView == null) {
             return;
         }
@@ -181,8 +183,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
                 setTeacherNotpresent(ivTeacherNotpresent);
             }
         }
-
-
     }
 
 
@@ -190,7 +190,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     public void onTeacherNotPresent(boolean isBefore) {
         //super.onTeacherNotPresent(isBefore);
 
-        Log.e(TAG,"=======>onTeacherNotPresent called");
+        logger.e("=======>onTeacherNotPresent called");
 
     }
 
@@ -199,7 +199,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     public void onModeChange(String mode, boolean isPresent) {
        //super.onModeChange(mode, isPresent);
         this.mode = mode;
-        Log.e(TAG,"=======>onModeChange called");
+        logger.e("=======>onModeChange called");
     }
 
     /**
