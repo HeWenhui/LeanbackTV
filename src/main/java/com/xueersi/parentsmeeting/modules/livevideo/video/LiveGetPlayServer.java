@@ -108,6 +108,10 @@ public class LiveGetPlayServer {
 
     public void liveGetPlayServer(final String mode, final boolean modechange) {
         mHandler.removeCallbacks(timeLiveGetPlay);
+        timeLiveGetPlay.modechange = modechange;
+        if (modechange) {
+            liveGetPlayTime = 0;
+        }
         if (netWorkType == NetWorkHelper.NO_NETWORK) {
             liveGetPlayServerError = true;
             return;
@@ -201,6 +205,7 @@ public class LiveGetPlayServer {
                     if (server != null) {
                         s += ",code=" + server.getCode();
                         if (server.getCode() == 200) {
+                            liveGetPlayTime = 0;
                             if (livePlayLog != null) {
                                 long time = SystemClock.elapsedRealtime() - before;
                                 livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode0, 0, server.getCipdispatch(), urldns, serverurl);
@@ -254,7 +259,9 @@ public class LiveGetPlayServer {
     private long liveGetPlayTime = 0;
     private long maxTime = 30 * 60 * 1000;
 
-    private Runnable timeLiveGetPlay = new Runnable() {
+    private class TimeLiveGetPlay implements Runnable {
+        boolean modechange = false;
+
         @Override
         public void run() {
             if (liveGetPlayTime == 0) {
@@ -268,10 +275,12 @@ public class LiveGetPlayServer {
                     mVideoAction.onLiveTimeOut();
                 }
             } else {
-                liveGetPlayServer(true);
+                liveGetPlayServer(modechange);
             }
         }
-    };
+    }
+
+    private TimeLiveGetPlay timeLiveGetPlay = new TimeLiveGetPlay();
 
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
