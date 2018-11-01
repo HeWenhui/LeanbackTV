@@ -2,9 +2,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
 
+import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
@@ -15,16 +18,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.FollowTypeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
@@ -32,18 +25,25 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.TestInfoE
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.TopicEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MyRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
-import com.xueersi.common.http.ResponseEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -400,7 +400,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             coachStatusEntity.setOpenlike(status.optBoolean("openlike"));
 
             if (status.has("openbarrage")) {
-                logger.i("room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = " + status.getBoolean("openbarrage") + " " + status.toString());
+                logger.i("room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = " + status.getBoolean
+                        ("openbarrage") + " " + status.toString());
                 //新增字段，辅导老师开启礼物与否 true开启
                 coachStatusEntity.setFDLKOpenbarrage(status.getBoolean("openbarrage"));
 
@@ -471,7 +472,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             mainStatusEntity.setId(status.getInt("id"));
             mainStatusEntity.setClassbegin(status.getBoolean("classbegin"));
             mainStatusEntity.setOpenbarrage(status.getBoolean("openbarrage"));
-            liveTopic.getCoachRoomstatus().setZJLKOpenbarrage(status.getBoolean("openbarrage"));//一定不要忘记在topic返回的时候，room1里openbarrage字段的值设置到理科主讲实体中
+            liveTopic.getCoachRoomstatus().setZJLKOpenbarrage(status.getBoolean("openbarrage"));
+            //一定不要忘记在topic返回的时候，room1里openbarrage字段的值设置到理科主讲实体中
             mainStatusEntity.setOpenchat(status.getBoolean("openchat"));
             mainStatusEntity.setOpenFeedback(status.optBoolean("isOpenFeedback"));
             mainStatusEntity.setOpenlike(status.optBoolean("openlike"));
@@ -492,6 +494,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             } else {
                 mainStatusEntity.setHaveExam(false);
             }
+            if (status.has("groupSpeech")) {
+                JSONObject jsonObject = status.optJSONObject("groupSpeech");
+                mainStatusEntity.setGroupSpeechRoom(jsonObject.optString("groupSpeechRoom"));
+                mainStatusEntity.setOnGroupSpeech(jsonObject.optString("onGroupSpeech"));
+            }
+
             if (status.has("vioceChat")) {
                 JSONObject jsonObject = status.getJSONObject("vioceChat");
                 mainStatusEntity.setAgoraVoiceChatRoom(jsonObject.optString("agoraVioceChatRoom"));

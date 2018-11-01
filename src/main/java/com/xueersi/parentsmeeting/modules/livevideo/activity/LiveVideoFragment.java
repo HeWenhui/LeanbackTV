@@ -46,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIR
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechCollectiveIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
@@ -180,7 +181,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new SpeechFeedBackIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new SpeechCollectiveIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new LiveRemarkIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new SpeechBulletScreenIRCBll(activity, mLiveBll));
@@ -349,6 +350,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     }
                 }
             });
+        }
+        if (mLiveBll != null) {
+            mLiveBll.onPause();
         }
     }
 
