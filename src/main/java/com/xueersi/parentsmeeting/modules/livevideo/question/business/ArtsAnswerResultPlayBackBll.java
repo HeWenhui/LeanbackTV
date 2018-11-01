@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -67,14 +66,12 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
     public void initView() {
         mAnswerResultBll = new ArtsAnswerResultBll((Activity) mContext,liveGetInfo.getId(),liveGetInfo.getLiveType(),mRootView);
         mAnswerResultBll.onLiveInited(liveGetInfo);
-        Log.e("ArtsAnswerResultPlayBackBll","=====>initView called");
         EventBus.getDefault().register(this);
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLiveBackQuestionEvent(LiveBackQuestionEvent event) {
-        Log.e("ArtsAnswerResultPlayBackBll", "=====>onLiveBackQuestionEvent:"+ event.getEnvetnType());
         if(event.getEnvetnType() == LiveBackQuestionEvent.QUSTIONS_SHOW){
             mAnswerResultBll.closeAnswerResult(false);
         }else if(event.getEnvetnType() == LiveBackQuestionEvent.QUSTION_CLOSE){
