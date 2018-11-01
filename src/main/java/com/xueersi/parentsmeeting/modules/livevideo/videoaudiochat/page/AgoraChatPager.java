@@ -227,21 +227,21 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                             VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_LANDSCAPE);
                     int setVideoEncoder = mRtcEngine.setVideoEncoderConfiguration(configuration);
                     logger.d("onEngineCreate:setVideoEncoder=" + setVideoEncoder);
-                    if (AppConfig.DEBUG) {
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                ViewGroup container = activity.findViewById(R.id.rl_course_video_live_agora_content);
-                                logger.d("onEngineCreate:containerb=" + container.getChildCount());
-                                SurfaceView surfaceView = RtcEngine.CreateRendererView(activity);
-                                surfaceView.setZOrderMediaOverlay(true);
-                                container.addView(surfaceView, 400, 400);
-                                mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_ADAPTIVE, 0));
-                                logger.d("onEngineCreate:containera=" + container.getChildCount());
-                            }
-                        });
-                    }
+//                    if (AppConfig.DEBUG) {
+//                        Handler handler = new Handler(Looper.getMainLooper());
+//                        handler.post(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                ViewGroup container = activity.findViewById(R.id.rl_course_video_live_agora_content);
+//                                logger.d("onEngineCreate:containerb=" + container.getChildCount());
+//                                SurfaceView surfaceView = RtcEngine.CreateRendererView(activity);
+//                                surfaceView.setZOrderMediaOverlay(true);
+//                                container.addView(surfaceView, 400, 400);
+//                                mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_ADAPTIVE, 0));
+//                                logger.d("onEngineCreate:containera=" + container.getChildCount());
+//                            }
+//                        });
+//                    }
                 }
             });
         }

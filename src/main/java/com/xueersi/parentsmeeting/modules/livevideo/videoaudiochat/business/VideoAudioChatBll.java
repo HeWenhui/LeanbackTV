@@ -229,7 +229,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                        final
                        ArrayList<ClassmateEntity> classmateEntities, final String from, int type) {
         boolean change = false;
-        boolean containMeChange = false;
+        boolean peopleChange = false;
         boolean onMicChange = false;
         if (!this.openNewMic.equals(openNewMic)) {
             change = true;
@@ -267,6 +267,8 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                 if (StringUtils.isEmpty(classmateEntity.getImg())) {
                     classmateEntity.setImg(oldClassmateEntity.getImg());
                 }
+            } else {
+                peopleChange = true;
             }
             allClassmateEntities.add(classmateEntity);
             if ((classmateEntity.getId() + "").equals(getInfo.getStuId())) {
@@ -278,15 +280,15 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
         if (containMe != contain) {
             containMe = contain;
             change = true;
-            containMeChange = true;
+            peopleChange = true;
         }
-        String log = "onmic=" + openNewMic + ",room=" + room + ",onMic=" + onMic + ",containMeChange=" + containMeChange + ",contain=" + contain + ",size=" + allClassmateEntities.size() + ",from=" + from;
+        String log = "onmic=" + openNewMic + ",room=" + room + ",onMic=" + onMic + ",peopleChange=" + peopleChange + ",contain=" + contain + ",size=" + allClassmateEntities.size() + ",from=" + from;
         if (change) {
             mLogtf.d("onJoin1:" + log);
 //            if (onMicChange) {
 //                raisehand(onmic, room, from, "", 2);
 //            }
-            if (containMeChange && "on".equals(this.openNewMic)) {
+            if (peopleChange && "on".equals(this.openNewMic)) {
                 if (contain) {
                     getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
                     AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
@@ -332,6 +334,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     public void onStuMic(String status, final String room, ArrayList<ClassmateEntity> onmicClassmateEntities, ArrayList<ClassmateEntity> offmicClassmateEntities, final String from, int msgFrom) {
         logger.d("onStuMic:status=" + status + ",room=" + room + ",onmic=" + onmicClassmateEntities.size() + ",offmic=" + offmicClassmateEntities.size());
         boolean contain;
+        boolean peopleChange = false;
         if ("off".equals(status)) {
             contain = containMe;
             for (ClassmateEntity classmateEntity : offmicClassmateEntities) {
@@ -357,6 +360,8 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                     if (StringUtils.isEmpty(classmateEntity.getImg())) {
                         classmateEntity.setImg(oldClassmateEntity.getImg());
                     }
+                } else {
+                    peopleChange = true;
                 }
                 allClassmateEntities.add(classmateEntity);
                 if ((classmateEntity.getId() + "").equals(getInfo.getStuId())) {
@@ -374,12 +379,11 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
         }
         this.room = room;
 
-        boolean containMeChange = false;
         if (containMe != contain) {
             containMe = contain;
-            containMeChange = true;
+            peopleChange = true;
         }
-        if (containMeChange) {
+        if (peopleChange) {
             if (containMe) {
                 getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
                 AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);

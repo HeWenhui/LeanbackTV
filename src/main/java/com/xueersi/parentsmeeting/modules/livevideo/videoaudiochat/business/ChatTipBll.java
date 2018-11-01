@@ -193,12 +193,16 @@ public class ChatTipBll {
                 boolean oldRaisehand = raisehand;
                 if (!raisehand) {
                     raisehand(msgFrom);
-                    rl_livevideo_chat_raisehand_on.setVisibility(View.VISIBLE);
-                    rl_livevideo_chat_raisehand_off.setVisibility(View.GONE);
+                    if ("off".equals(onMic)) {
+                        rl_livevideo_chat_raisehand_on.setVisibility(View.VISIBLE);
+                        rl_livevideo_chat_raisehand_off.setVisibility(View.GONE);
+                    }
                 } else {
                     videoChatHttp.giveupMicro(msgFrom);
-                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
-                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
+                    if ("off".equals(onMic)) {
+                        rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
+                        rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
+                    }
                 }
                 changeRaisehand(!raisehand);
                 raisehand = !oldRaisehand;
@@ -258,8 +262,8 @@ public class ChatTipBll {
 
         @Override
         public void onLastmileQuality(int quality) {
-            logger.d("onLastmileQuality:quality=" + quality);
             if (lastquality != quality) {
+//                logger.d("onLastmileQuality:quality=" + quality);
                 videoChatHttp.sendNetWorkQuality(quality);
             }
             lastquality = quality;
@@ -336,7 +340,7 @@ public class ChatTipBll {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                initView("raiseHandCount");
+                initView("raiseHandCount:onMic=" + onMic + ",num=" + num);
                 if ("on".equals(onMic)) {
                     if (tv_livevideo_chat_people != null) {
                         String string = "当前举手" + raiseHandCount + "人，已连麦" + classmateEntities.size() + "人";
@@ -479,6 +483,7 @@ public class ChatTipBll {
             MidToast.showToast(activity, "老师已结束本次举麦");
         }
         raisehand = false;
+        onMic = "off";
         logger.d("stopRecord:method=" + method);
         handler.removeCallbacks(waitRun);
         handler.post(new Runnable() {
