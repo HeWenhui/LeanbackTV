@@ -193,8 +193,12 @@ public class ChatTipBll {
                 boolean oldRaisehand = raisehand;
                 if (!raisehand) {
                     raisehand(msgFrom);
+                    rl_livevideo_chat_raisehand_on.setVisibility(View.VISIBLE);
+                    rl_livevideo_chat_raisehand_off.setVisibility(View.GONE);
                 } else {
                     videoChatHttp.giveupMicro(msgFrom);
+                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
+                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
                 }
                 changeRaisehand(!raisehand);
                 raisehand = !oldRaisehand;
