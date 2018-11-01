@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.view.ViewGroup;
 
@@ -26,30 +27,15 @@ import org.greenrobot.eventbus.ThreadMode;
  * 将VideoView转化为小窗口
  */
 public class VideoPopView {
-//    private static volatile VideoPopView instance;
     private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
-
 
     private VideoView videoView;
 
-    private Activity activity;
-
-    //    private MiniEvent event;
+    private Context activity;
     //是否开启了小窗口
     private Boolean isShow = false;
-//
-//    public static VideoPopView getInstance(Activity activity, VideoView videoView) {
-//        if (instance == null) {
-//            synchronized (VideoPopView.class) {
-//                if (instance == null) {
-//                    instance = new VideoPopView(activity, videoView);
-//                }
-//            }
-//        }
-//        return instance;
-//    }
 
-    public VideoPopView(Activity activity, VideoView videoView) {
+    public VideoPopView(Context activity, VideoView videoView) {
         this.activity = activity;
         this.videoView = videoView;
         EventBus.getDefault().register(this);
@@ -132,12 +118,12 @@ public class VideoPopView {
             logger.i("开启悬浮窗");
             logger.i("courseId = " + courseId + " - classId = " + classId);
             //跳转到支付页面
-            OtherModulesEnter.intentToOrderConfirmActivity(activity, courseId + "-" + classId, 100,
+            OtherModulesEnter.intentToOrderConfirmActivity((Activity) activity, courseId + "-" + classId, 100,
                     "LivePlaybackVideoActivity");
             //开启悬浮窗
             FloatWindowManager.addView(activity, videoView, FloatLayout.INTENT_TO_LivePlaybackVideoActivity);
             isShow = true;
-        }else{
+        } else {
             logger.i("没有权限并且系统大于等于24");
         }
 

@@ -10,8 +10,8 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
@@ -32,7 +32,6 @@ public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll im
         mPager = new StandExperienceUnderstandPager(mContext, mVideoEntity, this);
         registerInBllHideView();
         initData();
-        initListener();
     }
 
     /**
@@ -55,43 +54,6 @@ public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll im
      * 得到懂了么的数据
      */
     private void initData() {
-    }
-
-    private void initListener() {
-        mPager.setUnderStandListener(new IUnderStandContract.IUnderStandListener() {
-            @Override
-            public void onClick(int sign) {
-                HttpCallBack httpCallBack = new HttpCallBack() {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        logger.i("pm success");
-                    }
-                };
-                LivePlayBackHttpManager livePlayBackHttpManager = getCourseHttpManager();
-                String option = "";
-                if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_UNDERSTAND) {//懂了
-                    option = "1";
-                } else if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_LITTLE_UNDERSTAND) {//半懂
-                    option = "2";
-                } else if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_NO_UNDERSTAND) {//没懂
-                    option = "3";
-                }
-                logger.i(option);
-                livePlayBackHttpManager.sendStandExperienceUnderStand(
-                        mVideoEntity.getSubmitUnderStandUrl(),
-                        UserBll.getInstance().getMyUserInfoEntity().getStuId(),
-                        mVideoEntity.getGradId(),
-                        mVideoEntity.getLiveId(),
-                        mVideoEntity.getSubjectId(),
-                        mVideoEntity.getChapterId(),
-                        option,
-                        httpCallBack);
-                //点击完成之后，不管消息是否送到服务器，都要调用关闭按钮
-                if (mPager != null && mPager.getRootView().getParent() == mRootView) {
-                    mRootView.removeView(mPager.getRootView());
-                }
-            }
-        });
     }
 
     //是否移出了懂了么弹窗
@@ -132,6 +94,39 @@ public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll im
         if (mPager != null && mPager.getRootView().getParent() == mRootView) {
             mRootView.removeView(mPager.getRootView());
             isRemoveView = true;
+        }
+    }
+
+    @Override
+    public void onClick(int sign) {
+        HttpCallBack httpCallBack = new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.i("pm success");
+            }
+        };
+        LivePlayBackHttpManager livePlayBackHttpManager = getCourseHttpManager();
+        String option = "";
+        if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_UNDERSTAND) {//懂了
+            option = "1";
+        } else if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_LITTLE_UNDERSTAND) {//半懂
+            option = "2";
+        } else if (sign == StandExperienceUnderstandPager.STAND_EXPERIENCE_NO_UNDERSTAND) {//没懂
+            option = "3";
+        }
+        logger.i(option);
+        livePlayBackHttpManager.sendStandExperienceUnderStand(
+                mVideoEntity.getSubmitUnderStandUrl(),
+                UserBll.getInstance().getMyUserInfoEntity().getStuId(),
+                mVideoEntity.getGradId(),
+                mVideoEntity.getLiveId(),
+                mVideoEntity.getSubjectId(),
+                mVideoEntity.getChapterId(),
+                option,
+                httpCallBack);
+        //点击完成之后，不管消息是否送到服务器，都要调用关闭按钮
+        if (mPager != null && mPager.getRootView().getParent() == mRootView) {
+            mRootView.removeView(mPager.getRootView());
         }
     }
 }
