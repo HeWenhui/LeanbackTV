@@ -44,10 +44,12 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
@@ -441,8 +443,15 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     umsAgentDebugInterSno7();
                 }
 
-                closeSpeechBullet(false);
                 addDanmaku("我", etSpeechbulWords.getText().toString(), presenter.getHeadImgUrl(), false);
+                closeSpeechBullet(false);
+
+                if (ShareDataManager.getInstance().getString(ShareBusinessConfig
+                                .SP_VOICE_BULLET_ID, "",
+                        ShareDataManager.SHAREDATA_USER).equals(presenter.getVoiceId())) {
+                    return;
+                }
+                ShareDataManager.getInstance().put(ShareBusinessConfig.SP_VOICE_BULLET_ID, presenter.getVoiceId(), ShareDataManager.SHAREDATA_USER);
                 presenter.uploadSpeechBulletScreen(etSpeechbulWords.getText().toString(), new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
@@ -881,7 +890,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     private void startSpeechInput() {
         //判断模型是否初始化成功
         if (!SpeechEvaluatorUtils.isRecogOfflineSuccess()) {
-//            XESToastUtils.showToast(mContext, "模型正在启动请稍后");
+//            XESToastUtils.showToast(mContext, "模型正在启动，请稍后");
 //            SpeechEvaluatorUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
 //                @Override
 //                public void onFileSuccess() {
@@ -897,7 +906,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
 //                }
 //
 //            });
-            XESToastUtils.showToast(mContext, "语音识别模型初始化失败，请手动输入");
+            XESToastUtils.showToast(mContext, "模型启动失败，请使用手动输入");
             setRepeatBtnDisenable();
             startTextInput("");
         } else {
