@@ -135,7 +135,13 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     public void onLiveInit(LiveGetInfo getInfo, LiveTopic liveTopic) {
         this.mGetInfo = getInfo;
-        liveGetPlayServer = new LiveGetPlayServer(activity, mLiveBll, mLiveType, getInfo, liveTopic);
+        liveGetPlayServer = new LiveGetPlayServer(activity, new TeacherIsPresent() {
+
+            @Override
+            public boolean isPresent() {
+                return mLiveBll.isPresent();
+            }
+        }, mLiveType, getInfo, liveTopic);
         liveGetPlayServer.setHttpManager(mHttpManager);
         liveGetPlayServer.setHttpResponseParser(mHttpResponseParser);
         liveGetPlayServer.setLivePlayLog(livePlayLog);

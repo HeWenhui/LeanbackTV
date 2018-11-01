@@ -342,37 +342,39 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public PlayServerEntity parsePlayerServer(JSONObject object) {
         PlayServerEntity server = new PlayServerEntity();
         try {
-            server.setAppname(object.getString("appname"));
-            server.setCcode(object.optString("ccode"));
             server.setCode(object.optInt("code"));
-            server.setIcode(object.optString("icode"));
-            server.setPcode(object.optString("pcode"));
-            server.setRtmpkey(object.optString("rtmpkey"));
-            server.setCipdispatch(object.optString("clientip"));
-            JSONArray playserverArray = object.getJSONArray("playserver");
-            List<PlayserverEntity> playserver = new ArrayList<PlayserverEntity>();
-            for (int i = 0; i < playserverArray.length(); i++) {
-                PlayserverEntity entity = new PlayserverEntity();
-                entity.setServer(server);
-                object = playserverArray.getJSONObject(i);
-                entity.setAcode(object.getString("acode"));
-                entity.setAddress(object.getString("address"));
-                entity.setCcode(object.optString("ccode"));
-                entity.setGroup(object.optString("group"));
-                entity.setIcode(object.optString("icode"));
-                entity.setPcode(object.optString("pcode"));
-                entity.setPriority(object.optInt("priority"));
-                entity.setProvide(object.optString("provide"));
-                entity.setRtmpkey(object.optString("rtmpkey"));
-                entity.setHttpport(object.optString("httpport"));
-                entity.setFlvpostfix(object.optString("flvpostfix"));
-                entity.setIp_gslb_addr(object.optString("ip_gslb_addr"));
+            if (server.getCode() == 200) {
+                server.setAppname(object.getString("appname"));
+                server.setCcode(object.optString("ccode"));
+                server.setIcode(object.optString("icode"));
+                server.setPcode(object.optString("pcode"));
+                server.setRtmpkey(object.optString("rtmpkey"));
+                server.setCipdispatch(object.optString("clientip"));
+                JSONArray playserverArray = object.getJSONArray("playserver");
+                List<PlayserverEntity> playserver = new ArrayList<PlayserverEntity>();
+                for (int i = 0; i < playserverArray.length(); i++) {
+                    PlayserverEntity entity = new PlayserverEntity();
+                    entity.setServer(server);
+                    object = playserverArray.getJSONObject(i);
+                    entity.setAcode(object.getString("acode"));
+                    entity.setAddress(object.getString("address"));
+                    entity.setCcode(object.optString("ccode"));
+                    entity.setGroup(object.optString("group"));
+                    entity.setIcode(object.optString("icode"));
+                    entity.setPcode(object.optString("pcode"));
+                    entity.setPriority(object.optInt("priority"));
+                    entity.setProvide(object.optString("provide"));
+                    entity.setRtmpkey(object.optString("rtmpkey"));
+                    entity.setHttpport(object.optString("httpport"));
+                    entity.setFlvpostfix(object.optString("flvpostfix"));
+                    entity.setIp_gslb_addr(object.optString("ip_gslb_addr"));
 //                if (AppConfig.DEBUG && StringUtils.isEmpty(entity.getIp_gslb_addr())) {
 //                    continue;
 //                }
-                playserver.add(entity);
+                    playserver.add(entity);
+                }
+                server.setPlayserver(playserver);
             }
-            server.setPlayserver(playserver);
             return server;
         } catch (JSONException e) {
             MobAgent.httpResponseParserError(TAG, "parsePlayerServer", e.getMessage());
@@ -828,14 +830,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         entity.setGoldNum(Integer.parseInt(total.optString("gold")));
         entity.setRightNum(Integer.parseInt(total.optString("isRight")));
         JSONArray split = jsonObject.optJSONArray("split");
-        for(int i = 0 ; i < split.length() ; i++){
+        for (int i = 0; i < split.length(); i++) {
             JSONObject obj = split.optJSONObject(i);
             entity.setTestId(obj.optString("testId"));
             entity.setResultType(Integer.parseInt(obj.optString("isRight")));
             if (isVoice) {
                 JSONArray standeranswer = obj.optJSONArray("rightAnswer");
                 JSONArray youranswer = obj.optJSONArray("choice");
-                entity.setStandardAnswer( standeranswer.optString(0));
+                entity.setStandardAnswer(standeranswer.optString(0));
                 entity.setYourAnswer(youranswer.optString(0));
             }
         }
@@ -1717,7 +1719,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     }
 
 
-    public ArtsExtLiveInfo parseArtsExtLiveInfo(ResponseEntity responseEntity){
+    public ArtsExtLiveInfo parseArtsExtLiveInfo(ResponseEntity responseEntity) {
         ArtsExtLiveInfo info = new ArtsExtLiveInfo();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
