@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -172,14 +171,14 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
-        Log.e("TeamPk", "=====>onModeChange called1111:" + mode);
+        logger.e("=====>onModeChange called1111:" + mode);
         this.mTeacherMode = mode;
         // TODO: 2018/10/26
         if (isHalfBodyLiveRoom()) {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("teamPk", "=====>onModeChange called2222:");
+                    logger.e("=====>onModeChange called2222:");
                     showPkStateLayout();
                 }
             }, 100);
@@ -192,7 +191,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * @return
      */
     private boolean isHalfBodyLiveRoom() {
-        Log.e("teamPk", "========>isHalfBodyLiveRoom:" + roomInitInfo + ":" + roomInitInfo.getPattern());
+        //logger.e( "========>isHalfBodyLiveRoom:" + roomInitInfo + ":" + roomInitInfo.getPattern());
         return roomInitInfo != null && roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY;
     }
 
@@ -404,7 +403,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             @Override
             public void run() {
                 if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager) {
-                    Log.e("SoundPoolHelper", "=======> team");
                     ((TeamPkTeamSelectPager) mFocusPager).closeTeamSelectPager();
                 } else if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectingPager) {
                     ((TeamPkTeamSelectingPager) mFocusPager).closeTeamSelectPager();
@@ -627,7 +625,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         // step 1
         ViewGroup viewGroup = (ViewGroup) mActivity.getWindow().getDecorView();
         pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
-        Log.e("teamPk", "=====>onModeChange called333:" + pkStateRootView);
         if (pkStateRootView != null) {
             pkStateRootView.setVisibility(View.VISIBLE);
             pkStateRootView.setTeamPkBll(this);
@@ -663,7 +660,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     }
 
     private void getPkState(final boolean showPopWindow) {
-        logger.e("=====> getPkState:" + roomInitInfo.getStuId() + ":" + mHttpManager);
+        //logger.e("=====> getPkState:" + roomInitInfo.getStuId() + ":" + mHttpManager);
         mHttpManager.liveStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
