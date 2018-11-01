@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Rect;
 import android.graphics.Shader;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.os.CountDownTimer;
@@ -187,6 +188,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     /** 语音文件*/
     private  File mVoiceFile;
     private AudioRequest mAudioRequest;
+    /** 模型启动文案*/
+    private String mSpeechFail;
 
 
     public LiveMessageStandPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
@@ -271,6 +274,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 vwvVoiceChatWave.start();
             }
         }, 100);
+        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+        tvVoiceCount.setTypeface(fontFace);
+        tvVoiceContent.setTypeface(fontFace);
+        tvMessageCount.setTypeface(fontFace);
+        etMessageContent.setTypeface(fontFace);
         return mView;
     }
 
@@ -488,7 +496,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         initBtMesOpenAnimation(true);
                     }
                 }else {
-                    XESToastUtils.showToast(mContext,"模型正在启动请稍后");
+                    XESToastUtils.showToast(mContext,mSpeechFail);
                 }
 
 
@@ -697,6 +705,17 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         if (mSpeechEvaluatorUtils == null) {
             mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(true, 1);
         }
+        SpeechEvaluatorUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
+            @Override
+            public void onFileSuccess() {
+                mSpeechFail = "模型正在启动，请稍后";
+            }
+
+            @Override
+            public void onFileFail() {
+                mSpeechFail = "模型启动失败，请使用手动输入";
+            }
+        });
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
@@ -1576,6 +1595,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         String content = resultEntity.getCurString();
         if (content.length() > 40) {
             content = content.substring(0, 40);
+            isSpeechFinished = true;
         }
         if (!"".equals(content)){
             isVoiceMsgSend = false;
