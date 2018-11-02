@@ -140,6 +140,9 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         @Override
         public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
             mLogtf.d("onFirstRemoteVideoDecoded:uid=" + uid);
+            if (!("" + uid).equals(getInfo.getTeacherId())) {
+                return;
+            }
             startRemote.set(true);
             try {
                 videoChatEvent.stopPlay();
@@ -207,7 +210,10 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
 
     @Override
     public void startRecord(String method, final String room, final String nonce, final boolean video) {
-        logger.d("startRecord:method=" + method + ",room=" + room + ",video=" + video);
+        logger.d("startRecord:method=" + method + ",mWorkerThread=null?" + (mWorkerThread == null) + ",containMe=" + containMe + ",room=" + room + ",video=" + video);
+        if (mWorkerThread != null) {
+            return;
+        }
         stuid = Integer.parseInt(getInfo.getStuId());
         containMe = true;
         this.room = room;
@@ -287,11 +293,13 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
             });
             mWorkerThread.eventHandler().removeEventHandler(agEventHandler);
             mWorkerThread.exit();
+            logger.d("stopRecord:mWorkerThread.joinstart");
             try {
                 mWorkerThread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            logger.d("stopRecord:mWorkerThread.joinend");
             mWorkerThread = null;
         }
 
@@ -331,8 +339,10 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
             rl_livevideo_chat_head1.setVisibility(View.VISIBLE);
             if (size == 1) {
                 rl_livevideo_chat_head2.setVisibility(View.GONE);
+                pressLottileView2.setVisibility(View.GONE);
             } else {
                 rl_livevideo_chat_head2.setVisibility(View.VISIBLE);
+                pressLottileView2.setVisibility(View.INVISIBLE);
             }
             {
                 final ClassmateEntity classmateEntity1 = classmateEntities.get(0);
@@ -471,6 +481,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 }
             }
         }
+        logger.d("updateUser:pressLottileView2=" + pressLottileView2.getVisibility());
     }
 
     private class PraiseClick implements View.OnClickListener {

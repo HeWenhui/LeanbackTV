@@ -129,22 +129,31 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                 chatStatusChanges.remove(chatStartChange);
             }
         });
-        chatTipBll = new ChatTipBll(activity);
-        chatTipBll.setVideoChatEvent(videoChatEvent);
     }
 
     public void setVideoChatHttp(VideoAudioChatHttp videoChatHttp) {
         this.videoChatHttp = videoChatHttp;
-        chatTipBll.setVideoChatHttp(videoChatHttp);
     }
 
     public void setLiveAndBackDebug(LiveAndBackDebug liveAndBackDebug) {
         this.liveAndBackDebug = liveAndBackDebug;
     }
 
+    private void createChatTipBll(String method) {
+        if (chatTipBll != null) {
+            return;
+        }
+        mLogtf.d("createChatTipBll:method=" + method);
+        ChatTipBll chatTipBll = new ChatTipBll(activity);
+        chatTipBll.setVideoChatEvent(videoChatEvent);
+        chatTipBll.setVideoChatHttp(videoChatHttp);
+        chatTipBll.setRootView(bottomContent);
+        chatTipBll.setGetInfo(getInfo);
+        this.chatTipBll = chatTipBll;
+    }
+
     public void initView(RelativeLayout bottomContent) {
         this.bottomContent = bottomContent;
-        chatTipBll.setRootView(bottomContent);
 //        videoChatPager = new VideoChatPager(activity);
 //        bottomContent.addView(videoChatPager.getRootView());
     }
@@ -156,7 +165,6 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
             wiredHeadsetReceiver = new WiredHeadsetReceiver();
             activity.registerReceiver(wiredHeadsetReceiver, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
         }
-        chatTipBll.setGetInfo(getInfo);
 //        startRecord();
     }
 
@@ -218,9 +226,13 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
         this.micType = micType;
         this.from = from;
         if ("on".equals(status)) {
+            createChatTipBll("raisehand");
             chatTipBll.raisehand(room, from, nonce, micType);
         } else {
-            chatTipBll.stopRecord("raisehand");
+            if (chatTipBll != null) {
+                chatTipBll.stopRecord("raisehand");
+            }
+            chatTipBll = null;
         }
     }
 
@@ -301,6 +313,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                         audioRequest.release();
                     }
                 }
+                createChatTipBll("onJoin:startMicro");
                 chatTipBll.startMicro(onMic, "", room, from, contain, micType);
                 for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
                     chatStatusChange.onVideoChatStartChange(contain);
@@ -309,17 +322,24 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                 if (onMicChange) {
                     if ("on".equals(this.openNewMic)) {
                         if ("on".equals(onMic)) {
+                            createChatTipBll("onJoin:startMicro2");
                             chatTipBll.startMicro(onMic, "", room, from, contain, micType);
                         } else {
+                            createChatTipBll("onJoin:raisehand");
                             chatTipBll.raisehand("", from, "", type);
                         }
                     } else {
-                        chatTipBll.stopRecord("onJoin");
+                        if (chatTipBll != null) {
+                            chatTipBll.stopRecord("onJoin");
+                            chatTipBll = null;
+                        }
                     }
                 }
             }
             if ("on".equals(this.openNewMic)) {
-                chatTipBll.onClassmateChange(classmateEntities, false);
+                if (chatTipBll != null) {
+                    chatTipBll.onClassmateChange(classmateEntities, false);
+                }
             }
 //            if (classmateChange) {
 //                chatTipBll.onClassmateChange(classmateEntities);
@@ -333,7 +353,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     @Override
     public void onStuMic(String status, final String room, ArrayList<ClassmateEntity> onmicClassmateEntities, ArrayList<ClassmateEntity> offmicClassmateEntities, final String from, int msgFrom) {
         logger.d("onStuMic:status=" + status + ",room=" + room + ",onmic=" + onmicClassmateEntities.size() + ",offmic=" + offmicClassmateEntities.size());
-        boolean contain;
+        boolean contain = containMe;
         boolean peopleChange = false;
         if ("off".equals(status)) {
             contain = containMe;
@@ -347,13 +367,13 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                 }
             }
         } else {
-            contain = false;
-            ArrayList<ClassmateEntity> oldclassmateEntities = new ArrayList<>(allClassmateEntities);
-            allClassmateEntities.clear();
+//            contain = false;
+//            ArrayList<ClassmateEntity> oldclassmateEntities = new ArrayList<>(allClassmateEntities);
+//            allClassmateEntities.clear();
             for (ClassmateEntity classmateEntity : onmicClassmateEntities) {
-                int index = oldclassmateEntities.indexOf(classmateEntity);
+                int index = allClassmateEntities.indexOf(classmateEntity);
                 if (index != -1) {
-                    ClassmateEntity oldClassmateEntity = oldclassmateEntities.get(index);
+                    ClassmateEntity oldClassmateEntity = allClassmateEntities.get(index);
                     if (StringUtils.isEmpty(classmateEntity.getName())) {
                         classmateEntity.setName(oldClassmateEntity.getName());
                     }
@@ -362,8 +382,8 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                     }
                 } else {
                     peopleChange = true;
+                    allClassmateEntities.add(classmateEntity);
                 }
-                allClassmateEntities.add(classmateEntity);
                 if ((classmateEntity.getId() + "").equals(getInfo.getStuId())) {
                     contain = true;
                     classmateEntity.setMe(true);
@@ -383,6 +403,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
             containMe = contain;
             peopleChange = true;
         }
+        createChatTipBll("onStuMic");
         if (peopleChange) {
             if (containMe) {
                 getInfo.setStuLinkMicNum(getInfo.getStuLinkMicNum() + 1);
@@ -420,12 +441,16 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     @Override
     public void quit(String status, String room, String from, int msgFrom) {
         logger.d("quit:status=" + status + ",room=" + room + ",from=" + from + ",msgFrom=" + msgFrom);
-        chatTipBll.stopRecord("quit");
+        if (chatTipBll != null) {
+            chatTipBll.stopRecord("quit");
+            chatTipBll = null;
+        }
     }
 
     @Override
     public void raiseHandCount(int num) {
         logger.d("raiseHandCount:num=" + num);
+        createChatTipBll("raiseHandCount");
         chatTipBll.raiseHandCount(num);
     }
 
@@ -436,7 +461,10 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     }
 
     public void stopRecord() {
-        chatTipBll.stopRecord("stopRecord");
+        if (chatTipBll != null) {
+            chatTipBll.stopRecord("stopRecord");
+            chatTipBll = null;
+        }
         AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
         if (audioRequest != null) {
             audioRequest.release();
@@ -457,7 +485,10 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
             videoChatInter = null;
             mLogtf.d("MIC_TIME:onDestroy:time=" + (System.currentTimeMillis() - startTime));
         }
-        chatTipBll.destory();
+        if (chatTipBll != null) {
+            chatTipBll.destory();
+            chatTipBll = null;
+        }
         chatStatusChanges.clear();
     }
 

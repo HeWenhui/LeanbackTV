@@ -305,7 +305,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         webSetting.setJavaScriptEnabled(true);
         wvSubjectWeb.addJavascriptInterface(this,"wx_xesapp");
 
-        if (LiveVideoConfig.isNewEnglishH5 || LiveVideoConfig.isMulLiveBack) {
+        if (englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack) {
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
                 public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
