@@ -537,6 +537,7 @@ public class PraiseListPager extends LiveBasePager {
 
     /** 开始整个背景动画 */
     public void startBGAnimation() {
+        logger.d("startBGAnimation");
 
         String advanceResPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_advance";
         String advanceJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/data.json";
@@ -565,7 +566,7 @@ public class PraiseListPager extends LiveBasePager {
         goodToAdvanceRes.put("img_8.png", "img_12.png");
         goodToAdvanceRes.put("img_10.png", "img_15.png");
 
-        lottieAnimationBGView.setAnimationFromJson(advanceEffectInfo.getJsonStrFromAssets(mContext));
+        lottieAnimationBGView.setAnimationFromJson(advanceEffectInfo.getJsonStrFromAssets(mContext),"praise_bg");
         lottieAnimationBGView.useHardwareAcceleration(true);
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
@@ -614,7 +615,7 @@ public class PraiseListPager extends LiveBasePager {
         String loopResPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_advance";
         String loopJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/data_loop.json";
         final LottieEffectInfo loopEffectInfo = new LottieEffectInfo(loopResPath, loopJsonPath);
-        lottieAnimationLoopBGView.setAnimationFromJson(loopEffectInfo.getJsonStrFromAssets(mContext));
+        lottieAnimationLoopBGView.setAnimationFromJson(loopEffectInfo.getJsonStrFromAssets(mContext),"praise_loop_bg");
         lottieAnimationLoopBGView.useHardwareAcceleration(true);
         lottieAnimationLoopBGView.setRepeatCount(-1);
         lottieAnimationLoopBGView.setImageAssetDelegate(imageAssetDelegate);
