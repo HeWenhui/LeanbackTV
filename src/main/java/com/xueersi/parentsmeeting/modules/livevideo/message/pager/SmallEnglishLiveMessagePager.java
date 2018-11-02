@@ -108,7 +108,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  * 小英LiveMessagePager，类似于LiveMessagePager，在其基础上面进行修改
  * 献花弹窗，弹幕，聊天信息界面，以及发送消息，小英区别于LiveMessagePager。
  */
-public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePager implements LiveAndBackDebug{
+public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePager implements LiveAndBackDebug {
     //本组在线人数
     private TextView tvOnlineNum;
     private CommonAdapter<LiveMessageEntity> commonAdapter;
@@ -208,11 +208,11 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     boolean isVoice = true;
 
     String mVoiceContent = "";
-    /** 语音转文字的聊天是否已发送*/
+    /** 语音转文字的聊天是否已发送 */
     private boolean isVoiceMsgSend = true;
-    /**发送聊天数目*/
+    /** 发送聊天数目 */
     private int mMsgCount = 0;
-    /**发送语音聊天数目*/
+    /** 发送语音聊天数目 */
     private int mVoiceMsgCount = 0;
     private AudioRequest mAudioRequest;
     private String mSpeechFail = "模型正在启动，请稍后";
@@ -655,12 +655,12 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                             boolean send = ircState.sendMessage(msg, "");
                             if (send) {
-                                if (!isVoiceMsgSend){
+                                if (!isVoiceMsgSend) {
                                     isVoiceMsgSend = true;
-                                    mVoiceMsgCount ++;
+                                    mVoiceMsgCount++;
                                     uploadLOG(msg);
                                 }
-                                mMsgCount ++;
+                                mMsgCount++;
                                 etMessageContent.setText("");
                                 mVoiceContent = "";
                                 addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
@@ -681,7 +681,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     }
                 } else {
                     addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, MESSAGE_EMPTY, "");
-                    XESToastUtils.showToast(mContext,"内容不能为空");
+                    XESToastUtils.showToast(mContext, "内容不能为空");
                 }
             }
         });
@@ -724,15 +724,15 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 boolean hasPermission = XesPermission.hasSelfPermission(liveVideoActivity, Manifest.permission
                         .RECORD_AUDIO);
                 QuestionStatic questionStatic = ProxUtil.getProxUtil().get(mContext, QuestionStatic.class);
-                if ( questionStatic != null && !questionStatic.isAnaswer()){
-                    if (SpeechEvaluatorUtils.isRecogOfflineSuccess()){
+                if (questionStatic != null && !questionStatic.isAnaswer()) {
+                    if (SpeechEvaluatorUtils.isRecogOfflineSuccess()) {
                         if (!hasPermission) {
                             inspectMicPermission();
                         } else {
                             startVoiceInput();
                         }
                     } else {
-                        XESToastUtils.showToast(mContext,mSpeechFail);
+                        XESToastUtils.showToast(mContext, mSpeechFail);
                     }
                 }
 
@@ -1592,7 +1592,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (openbarrage){
+                if (openbarrage) {
 //                    speechToKeyboard(mVoiceContent);
                     stopEvaluator();
                     etMessageContent.setText(mVoiceContent);
@@ -1683,7 +1683,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (isShow){
+                if (isShow) {
                     speechToKeyboard(mVoiceContent);
                     rlMessageContent.setVisibility(View.GONE);
                     rlMessageTextContent.setVisibility(View.GONE);
@@ -1707,18 +1707,18 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (noSpeechTimer != null){
+        if (noSpeechTimer != null) {
             noSpeechTimer.cancel();
         }
-        if (mSpeechEvaluatorUtils != null){
+        if (mSpeechEvaluatorUtils != null) {
             mSpeechEvaluatorUtils.cancel();
         }
         Map<String, String> mData = new HashMap<>();
-        mData.put("userid",getInfo.getStuId());
-        mData.put("liveid",getInfo.getId());
-        mData.put("msgcount",String.valueOf(mMsgCount));
-        mData.put("voicemsgcount",String.valueOf(mVoiceMsgCount));
-        umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_CHAT,mData);
+        mData.put("userid", getInfo.getStuId());
+        mData.put("liveid", getInfo.getId());
+        mData.put("msgcount", String.valueOf(mMsgCount));
+        mData.put("voicemsgcount", String.valueOf(mVoiceMsgCount));
+        umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_CHAT, mData);
     }
     /**
      * ************************************************** 语音识别 **************************************************
@@ -1777,6 +1777,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     };
 
     File mVoiceFile;
+
     private void startEvaluator() {
         mVoiceContent = "";
         logger.d("startEvaluator()");
@@ -1789,7 +1790,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         isSpeechError = false;
                         noSpeechTimer.start();
                         //3秒没有检测到声音提示
-                        mainHandler.postDelayed(mHintRunnable,3000);
+                        mainHandler.postDelayed(mHintRunnable, 3000);
                         //6秒仍没检测到说话
                         mainHandler.postDelayed(mNovoiceRunnable, 6000);
                         //7秒没声音自动停止
@@ -1821,11 +1822,11 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     }
 
     public void stopEvaluator() {
-        logger.d( "stopEvaluator()");
+        logger.d("stopEvaluator()");
         mainHandler.removeCallbacks(mHintRunnable);
         mainHandler.removeCallbacks(mNorecogRunnable);
         mainHandler.removeCallbacks(mNovoiceRunnable);
-        if (mAudioRequest != null){
+        if (mAudioRequest != null) {
             mAudioRequest.release();
         }
         if (mSpeechEvaluatorUtils != null) {
@@ -1847,12 +1848,12 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         //语音录入，限制40字以内
         if (content.length() > 40) {
             content = content.substring(0, 40);
-            isSpeechFinished =true;
+            isSpeechFinished = true;
         }
-        if (!"".equals(content)){
+        if (!"".equals(content)) {
             isVoiceMsgSend = false;
-            if (content.length()>1){
-                content = content.substring(0,1).toUpperCase()+content.substring(1);
+            if (content.length() > 1) {
+                content = content.substring(0, 1).toUpperCase() + content.substring(1);
             } else {
                 content = content.toUpperCase();
             }
@@ -1861,7 +1862,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         mVoiceContent = content;
         logger.d("=====speech evaluating" + content);
         if (isSpeechFinished) {
-            if (noSpeechTimer != null){
+            if (noSpeechTimer != null) {
                 noSpeechTimer.cancel();
             }
             tvVoiceChatCountdown.setVisibility(View.GONE);
@@ -1878,23 +1879,25 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     /**
      * 识别出错
+     *
      * @param resultEntity
      */
     private void onEvaluatorError(ResultEntity resultEntity) {
         logger.d("onEvaluatorError()");
         isSpeechError = true;
-        if (resultEntity.getErrorNo() == ResultCode.SPEECH_START_FILE ) {
-            logger.d( "识别失败，请检查存储权限！");
-            XESToastUtils.showToast(mContext,"识别失败，请检查存储权限！");
+        if (resultEntity.getErrorNo() == ResultCode.SPEECH_START_FILE) {
+            logger.d("识别失败，请检查存储权限！");
+            XESToastUtils.showToast(mContext, "识别失败，请检查存储权限！");
         }
         btnMessageSwitch.performClick();
     }
 
     /**
      * 语音识别状态转键盘输入状态，
+     *
      * @param content
      */
-    private void speechToKeyboard(String content){
+    private void speechToKeyboard(String content) {
         stopEvaluator();
         rlMessageVoiceContent.setVisibility(View.GONE);
         vwvVoiceChatWave.setVisibility(View.GONE);
@@ -1934,9 +1937,10 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     }
 
     LiveAndBackDebug mLiveBll;
+
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null){
+        if (mLiveBll == null) {
             mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
         }
         mLiveBll.umsAgentDebugSys(eventId, mData);
@@ -1944,7 +1948,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     @Override
     public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null){
+        if (mLiveBll == null) {
             mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
         }
         mLiveBll.umsAgentDebugInter(eventId, mData);
@@ -1957,34 +1961,38 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     /**
      * 上传交互日志、阿里云
+     *
      * @param msg
      */
-    private void uploadLOG (String msg){
+    private void uploadLOG(String msg) {
         final Map<String, String> mData = new HashMap<>();
-        mData.put("userid",getInfo.getStuId());
-        mData.put("liveid",getInfo.getId());
-        mData.put("voicecontent",mVoiceContent);
-        mData.put("sendmsg",msg);
+        mData.put("userid", getInfo.getStuId());
+        mData.put("liveid", getInfo.getId());
+        mData.put("voicecontent", mVoiceContent);
+        mData.put("sendmsg", msg);
         uploadCloud(mVoiceFile.getPath(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                XesCloudResult result = (XesCloudResult)objData[0];
-                mData.put("url",result.getHttpPath());
-                mData.put("upload","success");
-                umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_CHAT,mData);
+                XesCloudResult result = (XesCloudResult) objData[0];
+                mData.put("url", result.getHttpPath());
+                mData.put("upload", "success");
+                umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_CHAT, mData);
             }
+
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
-                mData.put("upload","fail");
-                mData.put("url","");
-                umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_CHAT,mData);
+                mData.put("upload", "fail");
+                mData.put("url", "");
+                umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_CHAT, mData);
             }
         });
     }
+
     XesCloudUploadBusiness uploadBusiness;
-    private void uploadCloud(String path, final AbstractBusinessDataCallBack callBack){
-        if (uploadBusiness == null){
+
+    private void uploadCloud(String path, final AbstractBusinessDataCallBack callBack) {
+        if (uploadBusiness == null) {
             uploadBusiness = new XesCloudUploadBusiness(mContext);
         }
         final CloudUploadEntity entity = new CloudUploadEntity();
@@ -1999,14 +2007,14 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
             @Override
             public void onSuccess(XesCloudResult result) {
-                logger.d("upload Success:"+ result.getHttpPath());
+                logger.d("upload Success:" + result.getHttpPath());
                 callBack.onDataSucess(result);
             }
 
             @Override
             public void onError(XesCloudResult result) {
-                logger.e("upload Error:"+result.getErrorMsg());
-                callBack.onDataFail(0,result.getErrorMsg());
+                logger.e("upload Error:" + result.getErrorMsg());
+                callBack.onDataFail(0, result.getErrorMsg());
             }
         });
 
