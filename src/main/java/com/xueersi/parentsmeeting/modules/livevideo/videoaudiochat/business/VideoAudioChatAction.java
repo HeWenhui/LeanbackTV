@@ -30,4 +30,8 @@ public interface VideoAudioChatAction {
 
     void onStuMic(String status, String room, ArrayList<ClassmateEntity>
             onmicClassmateEntities, ArrayList<ClassmateEntity> offmicClassmateEntities, String from, int msgFrom);
+
+    void onConnect();
+
+    void onDisconnect();
 }

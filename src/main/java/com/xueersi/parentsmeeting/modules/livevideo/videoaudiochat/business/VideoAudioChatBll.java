@@ -510,6 +510,20 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
         void onFinish();
     }
 
+    @Override
+    public void onConnect() {
+        if (chatTipBll != null) {
+            chatTipBll.onConnect();
+        }
+    }
+
+    @Override
+    public void onDisconnect() {
+        if (chatTipBll != null) {
+            chatTipBll.onDisconnect();
+        }
+    }
+
     private void checkPermissionUnPerList(final OnPermissionFinish onPermissionFinish) {
         final List<PermissionItem> unList = new ArrayList<>();
         List<PermissionItem> unList2 = XesPermission.checkPermissionUnPerList(activity, new

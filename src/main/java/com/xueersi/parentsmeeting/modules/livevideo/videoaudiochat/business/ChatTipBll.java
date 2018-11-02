@@ -85,7 +85,8 @@ public class ChatTipBll {
     private AgoraVideoChatInter videoChatInter;
     private VideoChatEvent videoChatEvent;
     private LiveGetInfo getInfo;
-    WorkerThread testWorkerThread;
+    private WorkerThread testWorkerThread;
+    private boolean isConnect = false;
 
     public ChatTipBll(Activity activity) {
         this.activity = activity;
@@ -478,6 +479,24 @@ public class ChatTipBll {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_chat_people.getLayoutParams();
             lp.leftMargin = (int) (15 * ScreenUtils.getScreenDensity());
             ll_livevideo_chat_people.setLayoutParams(lp);
+        }
+    }
+
+    public void onConnect() {
+        logger.d("onConnect");
+        isConnect = true;
+    }
+
+    public void onDisconnect() {
+        logger.d("onDisconnect");
+        isConnect = false;
+        if (raisehand) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    bt_livevideo_chat_raisehand.performClick();
+                }
+            });
         }
     }
 
