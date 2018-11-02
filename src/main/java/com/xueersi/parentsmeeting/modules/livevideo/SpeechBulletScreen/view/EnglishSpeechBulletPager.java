@@ -559,7 +559,9 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
 //                }
 //            }.start();
             mWeakHandler.removeCallbacks(showSpeechBulletRunnable);
-            KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
+            if (rlSpeechBulRoot != null) {
+                KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
+            }
             SmallEnglishMicTipDialog startSpeechBulletToast = new SmallEnglishMicTipDialog(mContext);
             startSpeechBulletToast.setText("老师关闭了语音弹幕");
             startSpeechBulletToast.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
@@ -729,6 +731,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                                     tvSpeechbulTitle.setVisibility(View.VISIBLE);
                                     tvSpeechbulTitleCount.setVisibility(View.VISIBLE);
                                     vwvSpeechbulWave.setVisibility(View.VISIBLE);
+                                    hasValidSpeechInput = false;
 
                                     //播放声音
                                     if (soundPool == null)
@@ -806,18 +809,24 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         logger.i("onEvaluatorSuccess(): isSpeechFinish = " + isSpeechFinished);
         String content = curContent;
         //语音录入，60个字符截停
+        if (content.length() > 1) {
+            content = content.substring(0, 1).toUpperCase() + content.substring(1);
+        } else {
+            content = content.toUpperCase();
+        }
         if (content.length() > 60) {
+            //首字母大写
             content = content.substring(0, 60);
             tvSpeechbulTitle.setText(content);
             tvSpeechbulTitleCount.setText("（" + content.length() + "/60）");
             originalText = content;
-            hasValidSpeechInput = true;
+            startTextInput(content);
         }
         logger.i("=====speech evaluating: " + content);
         if (isSpeechFinished) {
             startTextInput(content);
         } else {
-            if (!TextUtils.isEmpty(content)) {
+            if (!StringUtils.isSpace(content)) {
                 tvSpeechbulTitle.setText(content);
                 tvSpeechbulTitleCount.setText("（" + content.length() + "/60）");
                 originalText = content;
@@ -847,12 +856,15 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                 || resultEntity.getErrorNo() == ResultCode.WEBSOCKET_CONN_REFUSE) {
             int netWorkType = NetWorkHelper.getNetWorkState(mContext);
             if (netWorkType == NetWorkHelper.NO_NETWORK) {
-                logger.i("好像没网了，快检查一下");
+                logger.i("好像没网了，快检查一下!");
             } else {
-                logger.i("服务器连接不上");
+                logger.i("服务器连接不上!");
             }
             startTextInput("");
 
+        } else if (resultEntity.getErrorNo() == ResultCode.SPEECH_CANCLE) {
+            logger.i("离线测评重新build，要取消到旧的！");
+            startEvaluator();
         } else {
             if (hasValidSpeechInput) {
                 startTextInput(tvSpeechbulTitle.getText().toString());
@@ -915,7 +927,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     }
 
     /**
-     * 置灰重说按钮
+     * 置灰重说按钮9+
      */
     private void setRepeatBtnDisenable() {
         tvSpeechbulRepeat.setEnabled(false);
@@ -1010,7 +1022,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                         }
                     });
                     try {
-                        Thread.sleep(300);
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
