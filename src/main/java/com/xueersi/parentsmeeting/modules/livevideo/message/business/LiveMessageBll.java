@@ -528,7 +528,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     @Override
     public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
         if (mLiveMessagePager != null) {
-            mLiveMessagePager.onOpenbarrage(openbarrage, fromNotice);
+            mLiveMessagePager.onOpenVoicebarrage(openbarrage, fromNotice);
         }
     }
 
