@@ -96,6 +96,12 @@
             android:screenOrientation="landscape"
             android:theme="@style/style_permission_compat" />
 
+        <activity
+            android:name=".activity.PraiseTestActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <service
             android:name="com.xueersi.parentsmeeting.modules.livevideo.service.LiveService"
             android:process=":livedaemon" />
@@ -103,6 +109,16 @@
         <service
             android:name="ren.yale.android.cachewebviewlib.CachePreLoadService"
             android:process=":livevideo" />
+
+        <receiver
+            android:name=".fragment.standlivevideoexperience.OrderPaySuccessBroadCastReceiver"
+            android:process=":livevideo">
+            <intent-filter>
+                <action android:name="${applicationId}.XesPaySuccess" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

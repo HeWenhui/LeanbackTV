@@ -67,7 +67,7 @@ import okhttp3.Call;
  * 直播间管理类
  *
  * @author chekun
- *         created  at 2018/6/20 10:32
+ * created  at 2018/6/20 10:32
  */
 public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLogs {
     Logger logger = LoggerFactory.getLogger("LiveBll2");
@@ -470,15 +470,17 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
     private static final long MAX_RETRY_TIME = 4;
     private Runnable initArtsExtLiveInfoTask = new Runnable() {
         int retryCount;
+
         @Override
         public void run() {
             logger.e("======>initArtsExtLiveInfoTask run:");
             mHttpManager.getArtsExtLiveInfo(LiveBll2.this.mLiveId, LiveBll2.this.mStuCouId, new HttpCallBack() {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                   ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
-                   mGetInfo.setArtsExtLiveInfo(info);
+                    ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
+                    mGetInfo.setArtsExtLiveInfo(info);
                 }
+
                 @Override
                 public void onPmFailure(Throwable error, String msg) {
                     super.onPmFailure(error, msg);
@@ -495,26 +497,28 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
             });
         }
 
-        private void retry(){
+        private void retry() {
             logger.e("======>retry get ArtsExtLiveInfo");
-            if(retryCount < MAX_RETRY_TIME){
-                retryCount ++;
-                postDelayedIfNotFinish(initArtsExtLiveInfoTask,RETRY_DELAY);
+            if (retryCount < MAX_RETRY_TIME) {
+                retryCount++;
+                postDelayedIfNotFinish(initArtsExtLiveInfoTask, RETRY_DELAY);
             }
         }
     };
 
     private AtomicBoolean exInfoInited = new AtomicBoolean();
+
     /**
      * 初始化直接间额外参数
+     *
      * @param getInfo
      */
     private void initExtInfo(LiveGetInfo getInfo) {
-         if(getInfo != null && getInfo.getIsArts() == 1 && !exInfoInited.get()){
-             logger.e("======>initExtInfo called:");
-             exInfoInited.set(true);
-             postDelayedIfNotFinish(initArtsExtLiveInfoTask,0);
-         }
+        if (getInfo != null && getInfo.getIsArts() == 1 && !exInfoInited.get()) {
+            logger.e("======>initExtInfo called:");
+            exInfoInited.set(true);
+            postDelayedIfNotFinish(initArtsExtLiveInfoTask, 0);
+        }
     }
 
     private final IRCCallback mIRCcallback = new IRCCallback() {
@@ -629,7 +633,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
             }
-            logger.e( "======>onTopic:" + topicstr);
+            logger.e("======>onTopic:" + topicstr);
             if (TextUtils.isEmpty(topicstr)) {
                 return;
             }
@@ -698,7 +702,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
 
         @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-            logger.d( "onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+            logger.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
             if (mMessageActions != null && mMessageActions.size() > 0) {
                 for (MessageAction mesAction : mMessageActions) {
@@ -833,6 +837,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * 发消息
+     *
+     * @param target  目标
+     * @param data 信息
+     */
+    public void sendMessage(String target, JSONObject data) {
+        mIRCMessage.sendMessage(target, data.toString());
     }
 
     public boolean sendMessage(JSONObject data) {
@@ -1008,6 +1022,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
 
     public void setLiveVideoBll(LiveVideoBll liveVideoBll) {
         this.liveVideoBll = liveVideoBll;
+    }
+
+    public void liveGetPlayServer() {
+        if (liveVideoBll != null) {
+            liveVideoBll.liveGetPlayServer();
+        }
     }
 
     /**

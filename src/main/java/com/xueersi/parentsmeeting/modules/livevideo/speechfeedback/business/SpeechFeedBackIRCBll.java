@@ -102,6 +102,10 @@ public class SpeechFeedBackIRCBll extends LiveBaseBll implements SpeechFeedBackH
         String msg = "onNotice";
         switch (type) {
             case XESCODE.SPEECH_FEEDBACK: {
+                final String from = object.optString("roomId");
+                if ("voice_plan_ios".equals(from)) {
+                    return;
+                }
                 msg += ",SPEECH_FEEDBACK";
                 if (speechFeedBackAction != null) {
                     onStaus(object);

@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business;
+package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience;
 
 import android.app.Activity;
 
@@ -11,11 +11,10 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination.StandExperienceEvaluationBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse
-        .ExperienceBuyCoursePresenter;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,6 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class StandExperienceLiveBackBll extends LiveBackBll {
-    private String TAG = getClass().getSimpleName();
 
     public StandExperienceLiveBackBll(Activity activity, VideoLivePlayBackEntity mVideoEntity) {
         super(activity, mVideoEntity);
@@ -97,9 +95,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 
             }
         }
-
     }
-
 
     /**
      * 存储打开聊天区的Event的所有Open-startTime，优先队列
@@ -149,56 +145,25 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
      * 视频结束的时候，扫描一遍所有的livebackbasebll是否需要做什么事情
      */
     public void resultAllComplete() {
-//        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
-//            if (liveBackBaseBll instanceof StandExperienceEventBaseBll) {
-//                ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
-//            }
-//        }
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             if (liveBackBaseBll instanceof StandExperienceEventBaseBll) {
                 ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
             }
-            if (liveBackBaseBll instanceof ExperienceBuyCoursePresenter) {
+//            if (liveBackBaseBll instanceof ExperienceBuyCoursePresenter) {
 //                ((ExperienceBuyCoursePresenter) liveBackBaseBll).showNextWindow();
-                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
+//                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
+//            }
+//            展示定级卷
+            if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
+                showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
             }
-        }
-//        showNextWindow(new ExperienceBuyCoursePresenter(activity, this));
-//        showNextWindow(ProxUtil.getProxUtil().get(activity, ExperienceBuyCoursePresenter
-//                .class));
+//            if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
+//                showNextWindow((ExperienceLearnFeedbackBll) liveBackBaseBll);
+//            }
 
-//        showNextWindow(iPresenter);
+        }
     }
 
-    //    购课完成后专用
-//    public void buyCourseComplete(boolean isSuccess) {
-//        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
-//            if (liveBackBaseBll instanceof RecommondCourseBll) {//只有推荐课程才使用这个方法
-//                ((RecommondCourseBll) liveBackBaseBll).buyRecommondCourseComplete(isSuccess);
-//            }
-//        }
-//    }
-    //学习反馈弹窗bll
-//    private ExperienceLearnFeedbackBll experienceLearnFeedbackBll;
-
-    //展示学习反馈弹窗
-//    public void showFeedBackWindow() {
-//        if (experienceLearnFeedbackBll == null) {
-//            experienceLearnFeedbackBll = new ExperienceLearnFeedbackBll(activity, this);
-//        }
-//        experienceLearnFeedbackBll.showFeedBackPager();
-//    }
-
-    //定级卷Bll
-//    private StandExperienceEvaluationBll standExperienceEvaluationBll;
-
-    //展现定级卷
-//    public void showEvaluation() {
-//        if (standExperienceEvaluationBll == null) {
-//            standExperienceEvaluationBll = new StandExperienceEvaluationBll(activity, this);
-//        }
-//
-//    }
 
     /**
      * 展示下一个View的页面,这里可以做一些下一个View展示前的逻辑处理
@@ -206,6 +171,9 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
      * @param mPresenter
      */
     public void showNextWindow(IPresenter mPresenter) {
+        //定级卷竖屏来做
+//        ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
+//        activityChangeLand.changeLOrP();
         if (mPresenter != null) {
             mPresenter.showWindow();
         }

@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,7 +11,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 
-public class StandExperienceUnderstandPager extends BasePager implements QuestionShowAction {
+public class StandExperienceUnderstandPager<T extends IUnderStandContract.IUnderStandPresenter> extends BasePager
+        implements QuestionShowAction {
 
 //    private static StandExperienceUnderstandPager mPager;
     /**
@@ -44,8 +44,8 @@ public class StandExperienceUnderstandPager extends BasePager implements Questio
     /**
      * 懂了么点击事件监听器
      */
-    private IUnderStandContract.IUnderStandListener iUnderStandListener;
-    private IUnderStandContract.IUnderStandPresenter iUnderStandPresenter;
+//    private IUnderStandContract.IUnderStandListener iUnderStandListener;
+    private T iUnderStandPresenter;
 
     private VideoLivePlayBackEntity mVideoEntity;
 
@@ -56,8 +56,8 @@ public class StandExperienceUnderstandPager extends BasePager implements Questio
 //        return mPager;
 //    }
 
-    public StandExperienceUnderstandPager(Context context, VideoLivePlayBackEntity mVideoEntity, IUnderStandContract
-            .IUnderStandPresenter iUnderStandPresenter) {
+    public StandExperienceUnderstandPager(Context context, VideoLivePlayBackEntity mVideoEntity, T
+            iUnderStandPresenter) {
         super(context);
         this.mVideoEntity = mVideoEntity;
         this.iUnderStandPresenter = iUnderStandPresenter;
@@ -122,15 +122,15 @@ public class StandExperienceUnderstandPager extends BasePager implements Questio
     }
 
     private void clickEvent(int sign) {
-        if (iUnderStandListener != null) {
-            iUnderStandListener.onClick(sign);
+        if (iUnderStandPresenter != null) {
+            iUnderStandPresenter.onClick(sign);
         }
     }
 
 
-    public void setUnderStandListener(IUnderStandContract.IUnderStandListener iUnderStandListener) {
-        this.iUnderStandListener = iUnderStandListener;
-    }
+//    public void setUnderStandListener(IUnderStandContract.IUnderStandListener iUnderStandListener) {
+//        this.iUnderStandPresenter = iUnderStandListener;
+//    }
 
     @Override
     public void onQuestionShow(boolean isShow) {

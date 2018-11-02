@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -50,7 +52,7 @@ public class LiveVideoAction implements VideoAction {
     protected Drawable dwTeacherNotpresen;
     PlayErrorCode lastPlayErrorCode;
     RelativeLayout mContentView;
-    private TextView tvLoadingHint;
+    protected TextView tvLoadingHint;
     /** 缓冲提示 */
     private ImageView ivLoading;
     /** 视频连接 */
@@ -62,7 +64,7 @@ public class LiveVideoAction implements VideoAction {
     /** 直播类型 */
     protected int liveType;
     protected LiveGetInfo mGetInfo;
-    private LiveBll2 mLiveBll;
+    protected LiveBll2 mLiveBll;
     protected LogToFile mLogtf;
 
     public LiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView) {
@@ -257,6 +259,41 @@ public class LiveVideoAction implements VideoAction {
                 }
             }
         });
+    }
+
+    @Override
+    public void onLiveTimeOut() {
+        final Button bt = mContentView.findViewById(R.id.bt_course_video_livetimeout);
+        if (bt != null) {
+            bt.setVisibility(View.VISIBLE);
+            bt.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) bt.getLayoutParams();
+                    lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+//                    lp.leftMargin = LiveVideoPoint.getInstance().x3 / 2 - bt.getWidth() / 2;
+//                    if (tvLoadingHint != null) {
+//                        int[] outLocation = new int[2];
+//                        tvLoadingHint.getLocationInWindow(outLocation);
+//                        lp.topMargin = outLocation[1] + tvLoadingHint.getHeight() + 20;
+//                    } else {
+//                        lp.topMargin = LiveVideoPoint.getInstance().screenHeight * 2 / 3 - 40;
+//                    }
+                    bt.setLayoutParams(lp);
+                    bt.getViewTreeObserver().removeOnPreDrawListener(this);
+                    return false;
+                }
+            });
+            bt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mLiveBll.liveGetPlayServer();
+                    v.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            XESToastUtils.showToast(activity, "老师不在直播间,请退出直播间重试");
+        }
     }
 
     @Override

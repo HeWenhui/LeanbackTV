@@ -6,7 +6,6 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -30,11 +29,6 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
      * 是否是体验课
      */
     private boolean isExperience;
-
-    @Deprecated
-    public LiveBackStandSpeechCreat(LiveBll liveBll) {
-        liveAndBackDebug = liveBll;
-    }
 
     public void setIsExperience(boolean experience) {
         isExperience = experience;

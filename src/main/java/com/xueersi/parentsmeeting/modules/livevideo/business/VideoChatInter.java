@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public interface VideoChatInter {
     View getRootView();
 
-    void startRecord(String method, String room, String nonce);
+    void startRecord(String method, String room, String nonce, boolean video);
 
     void stopRecord();
 

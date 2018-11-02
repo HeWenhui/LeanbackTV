@@ -46,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIR
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechCollectiveIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
@@ -53,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
+import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.VideoAudioChatIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -163,7 +165,11 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new ArtsPraiseListBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new WordDictationIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new ArtsAnswerResultBll(activity,mLiveBll));
+            mLiveBll.addBusinessBll(new ArtsAnswerResultBll(activity, mLiveBll));
+            VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
+            videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+            videoChatIRCBll.setLiveFragmentBase(this);
+            mLiveBll.addBusinessBll(videoChatIRCBll);
         } else {
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -180,18 +186,26 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new SpeechFeedBackIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new SpeechCollectiveIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new LiveRemarkIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new SpeechBulletScreenIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
+            int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
+            if (allowLinkMicNew == 1) {
+                VideoAudioChatIRCBll videoAudioChatIRCBll = new VideoAudioChatIRCBll(activity, mLiveBll);
+                videoAudioChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+                videoAudioChatIRCBll.setLiveFragmentBase(this);
+                mLiveBll.addBusinessBll(videoAudioChatIRCBll);
+            } else {
+                VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
+                videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+                videoChatIRCBll.setLiveFragmentBase(this);
+                mLiveBll.addBusinessBll(videoChatIRCBll);
+            }
         }
-        VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
-        videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-        videoChatIRCBll.setLiveFragmentBase(this);
-        mLiveBll.addBusinessBll(videoChatIRCBll);
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }
 
@@ -349,6 +363,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     }
                 }
             });
+        }
+        if (mLiveBll != null) {
+            mLiveBll.onPause();
         }
     }
 
