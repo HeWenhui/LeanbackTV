@@ -183,8 +183,13 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
             String[] strings = msg.split(" ");
             JSONArray keywords = new JSONArray();
             for (int i = 0; i < strings.length; i++) {
-
-                keywords.put(strings[i]);
+                //过滤特殊符号，统一大小写
+                strings[i] = strings[i].replaceAll("[^a-zA-Z0-9]", "");
+                strings[i] = strings[i].toLowerCase();
+                if (!StringUtils.isSpace(strings[i])) {
+                    keywords.put(strings[i]);
+                    logger.i("keywords[" + i + "]" + strings[i]);
+                }
             }
             data.put("keywords", keywords);
 
