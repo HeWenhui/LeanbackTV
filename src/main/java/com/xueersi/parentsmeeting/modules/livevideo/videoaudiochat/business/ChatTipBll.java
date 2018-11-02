@@ -132,12 +132,23 @@ public class ChatTipBll {
         logger.d("onClassmateChange:size=" + classmateEntities.size() + "，contain=" + contain);
         this.classmateEntities.clear();
         this.classmateEntities.addAll(classmateEntities);
+        String oldMic = onMic;
+        if (classmateEntities.isEmpty()) {
+            onMic = "off";
+        }
+        final boolean modeChange = onMic.equals(oldMic);
         handler.post(new Runnable() {
             @Override
             public void run() {
                 raiseHandCount(raiseHandCount);
                 if (videoChatInter != null) {
                     videoChatInter.updateUser(classmateChange, classmateEntities);
+                }
+                if (modeChange && "off".equals(onMic)) {
+                    handler.removeCallbacks(waitRun);
+                    handler.postDelayed(waitRun, 1000);
+                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
+                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -221,14 +232,14 @@ public class ChatTipBll {
             @Override
             public void onClick(View v) {
                 if (rl_livevideo_content_left.getVisibility() == View.VISIBLE) {
-                    iv_livevideo_chat_small.setImageResource(R.drawable.live_task_zuo_icon_normal);
+                    iv_livevideo_chat_small.setImageResource(R.drawable.live_task_you_icon_normal);
                     rl_livevideo_content_left.setVisibility(View.GONE);
                     if (videoChatInter instanceof AgoraChatPager) {
                         AgoraChatPager agoraChatPager = (AgoraChatPager) videoChatInter;
                         agoraChatPager.hind("onClick");
                     }
                 } else {
-                    iv_livevideo_chat_small.setImageResource(R.drawable.live_task_you_icon_normal);
+                    iv_livevideo_chat_small.setImageResource(R.drawable.live_task_zuo_icon_normal);
                     rl_livevideo_content_left.setVisibility(View.VISIBLE);
                     if (videoChatInter instanceof AgoraChatPager) {
                         AgoraChatPager agoraChatPager = (AgoraChatPager) videoChatInter;
