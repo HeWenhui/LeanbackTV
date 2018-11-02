@@ -5,8 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -46,23 +49,17 @@ public class SpeechCollectivePager extends BasePager {
 
     @Override
     public void initData() {
-        int colors[] = {0x19ffe4aa, 0x32ffe4aa, 0x64ffe4aa, 0x96ffe4aa, 0xFFffe4aa};
+        int colors[] = {0x19ffe4aa, 0x32ffe4aa, 0x64ffe4aa, 0x96ffe4aa, 0xffffe4aa};
         vwvSpeectevalWave.setColors(colors);
-//        vwvSpeectevalWave.setBackColor(Color.TRANSPARENT);
+        Paint paint = new Paint();
+        paint.setColor(Color.parseColor("#a84300"));
+        vwvSpeectevalWave.setCircleBack(paint);
         vwvSpeectevalWave.setIsOnTop(true);
         vwvSpeectevalWave.setZOrderMediaOverlay(true);
         vwvSpeectevalWave.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        vwvSpeectevalWave.setBackColor(Color.parseColor("#a84300"));
         int width = SizeUtils.Dp2Px(mContext, 85);
         int waveWidth = (int) (SizeUtils.Dp2Px(mContext, 70) * 21.5f / 57f);
         int waveHeight = (int) (SizeUtils.Dp2Px(mContext, 70) * 20f / 57f);
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vwvSpeectevalWave.getLayoutParams();
-        layoutParams.width = waveWidth;
-        layoutParams.height = waveHeight;
-        int margin = (width - waveWidth) / 2;
-        layoutParams.leftMargin = margin + 3;
-        layoutParams.topMargin = margin + 5;
-        vwvSpeectevalWave.setLayoutParams(layoutParams);
 
         mView.postDelayed(new Runnable() {
             @Override
