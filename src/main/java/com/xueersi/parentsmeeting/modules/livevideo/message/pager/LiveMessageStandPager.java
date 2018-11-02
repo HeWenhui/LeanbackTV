@@ -62,10 +62,6 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.string.RegexUtils;
-import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
@@ -179,16 +175,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     boolean isVoice = true;
     //当前语音输入转换的文本
     String mVoiceContent = "";
-    /** 语音转文字的聊天是否已发送*/
+    /** 语音转文字的聊天是否已发送 */
     private boolean isVoiceMsgSend = true;
-    /**发送聊天数目*/
+    /** 发送聊天数目 */
     private int mMsgCount = 0;
-    /**发送语音聊天数目*/
+    /** 发送语音聊天数目 */
     private int mVoiceMsgCount = 0;
-    /** 语音文件*/
-    private  File mVoiceFile;
+    /** 语音文件 */
+    private File mVoiceFile;
     private AudioRequest mAudioRequest;
-    /** 模型启动文案*/
+    /** 模型启动文案 */
     private String mSpeechFail;
 
 
@@ -489,14 +485,14 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 }
                 boolean hasPermission = XesPermission.hasSelfPermission(liveVideoActivity, Manifest.permission
                         .RECORD_AUDIO);
-                if (SpeechEvaluatorUtils.isRecogOfflineSuccess()){
+                if (SpeechEvaluatorUtils.isRecogOfflineSuccess()) {
                     if (!hasPermission) {
                         inspectMicPermission();
                     } else {
                         initBtMesOpenAnimation(true);
                     }
-                }else {
-                    XESToastUtils.showToast(mContext,mSpeechFail);
+                } else {
+                    XESToastUtils.showToast(mContext, mSpeechFail);
                 }
 
 
@@ -583,7 +579,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                             boolean send = ircState.sendMessage(msg, getInfo.getStandLiveName());
                             if (send) {
-                                if (!isVoiceMsgSend){
+                                if (!isVoiceMsgSend) {
                                     isVoiceMsgSend = true;
                                     mVoiceMsgCount++;
                                     uploadLOG(msg);
@@ -790,15 +786,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         if (liveSoundPool != null) {
             liveSoundPool.release();
         }
-        if(noSpeechTimer != null){
+        if (noSpeechTimer != null) {
             noSpeechTimer.cancel();
         }
         Map<String, String> mData = new HashMap<>();
-        mData.put("userid",getInfo.getStuId());
-        mData.put("liveid",getInfo.getId());
-        mData.put("msgcount",String.valueOf(mMsgCount));
-        mData.put("voicemsgcount",String.valueOf(mVoiceMsgCount));
-        umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_CHAT,mData);
+        mData.put("userid", getInfo.getStuId());
+        mData.put("liveid", getInfo.getId());
+        mData.put("msgcount", String.valueOf(mMsgCount));
+        mData.put("voicemsgcount", String.valueOf(mVoiceMsgCount));
+        umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_CHAT, mData);
     }
 
     private void initFlower() {
@@ -1531,7 +1527,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     private void startEvaluator() {
         mVoiceContent = "";
         logger.d("startEvaluator()" + mSpeechEvaluatorUtils.toString());
-        mVoiceFile = new File(dir, "voicechat" + System.currentTimeMillis()  + ".mp3");
+        mVoiceFile = new File(dir, "voicechat" + System.currentTimeMillis() + ".mp3");
         SpeechEvaluatorInter speechEvaluatorInter = mSpeechEvaluatorUtils.startSpeechRecognitionOffline(mVoiceFile
                 .getPath(), "2", "30", new EvaluatorListener() {
             @Override
@@ -1540,7 +1536,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 isSpeechError = false;
                 noSpeechTimer.start();
                 //3秒没有检测到声音提示
-                mainHandler.postDelayed(mHintRunnable,3000);
+                mainHandler.postDelayed(mHintRunnable, 3000);
                 //6秒仍没检测到说话
                 mainHandler.postDelayed(mNovoiceRunnable, 6000);
                 //7秒没声音自动停止
@@ -1555,7 +1551,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                     onEvaluatorSuccess(resultEntity, true);
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                     onEvaluatorError(resultEntity);
-                }  else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+                } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                     if (resultEntity.getCurString() != null) {
                         onEvaluatorSuccess(resultEntity, false);
                     }
@@ -1581,10 +1577,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         if (mAM != null) {
             mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
         }
-        if (noSpeechTimer != null){
+        if (noSpeechTimer != null) {
             noSpeechTimer.cancel();
         }
-        if (mAudioRequest != null){
+        if (mAudioRequest != null) {
             mAudioRequest.release();
         }
         tvVoiceChatCountdown.setVisibility(View.GONE);
@@ -1597,10 +1593,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             content = content.substring(0, 40);
             isSpeechFinished = true;
         }
-        if (!"".equals(content)){
+        if (!"".equals(content)) {
             isVoiceMsgSend = false;
-            if (content.length()>1){
-                content = content.substring(0,1).toUpperCase()+content.substring(1);
+            if (content.length() > 1) {
+                content = content.substring(0, 1).toUpperCase() + content.substring(1);
             } else {
                 content = content.toUpperCase();
             }
@@ -1608,7 +1604,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mVoiceContent = content;
         logger.d("=====speech evaluating" + content);
         if (isSpeechFinished) {
-            if (noSpeechTimer != null){
+            if (noSpeechTimer != null) {
                 noSpeechTimer.cancel();
             }
             tvVoiceChatCountdown.setVisibility(View.GONE);
@@ -1629,9 +1625,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     private void onEvaluatorError(ResultEntity resultEntity) {
         logger.d("onEvaluatorError()");
         isSpeechError = true;
-        if (resultEntity.getErrorNo() == ResultCode.SPEECH_START_FILE ) {
-            logger.d( "识别失败，请检查存储权限！");
-            XESToastUtils.showToast(mContext,"识别失败，请检查存储权限！");
+        if (resultEntity.getErrorNo() == ResultCode.SPEECH_START_FILE) {
+            logger.d("识别失败，请检查存储权限！");
+            XESToastUtils.showToast(mContext, "识别失败，请检查存储权限！");
         }
         btMesOpen.performClick();
     }
@@ -1694,9 +1690,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     }
 
     LiveAndBackDebug mLiveBll;
+
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null){
+        if (mLiveBll == null) {
             mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
         }
         mLiveBll.umsAgentDebugSys(eventId, mData);
@@ -1704,7 +1701,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     @Override
     public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-        if (mLiveBll == null){
+        if (mLiveBll == null) {
             mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
         }
         mLiveBll.umsAgentDebugInter(eventId, mData);
@@ -1715,32 +1712,35 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     }
 
-    private void uploadLOG (String msg){
+    private void uploadLOG(String msg) {
         final Map<String, String> mData = new HashMap<>();
-        mData.put("userid",getInfo.getStuId());
-        mData.put("liveid",getInfo.getId());
-        mData.put("voicecontent",mVoiceContent);
-        mData.put("sendmsg",msg);
+        mData.put("userid", getInfo.getStuId());
+        mData.put("liveid", getInfo.getId());
+        mData.put("voicecontent", mVoiceContent);
+        mData.put("sendmsg", msg);
         uploadCloud(mVoiceFile.getPath(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                XesCloudResult result = (XesCloudResult)objData[0];
-                mData.put("url",result.getHttpPath());
-                mData.put("upload","success");
-                umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_CHAT,mData);
+                XesCloudResult result = (XesCloudResult) objData[0];
+                mData.put("url", result.getHttpPath());
+                mData.put("upload", "success");
+                umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_CHAT, mData);
             }
+
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
-                mData.put("url","");
-                mData.put("upload","fail");
-                umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_CHAT,mData);
+                mData.put("url", "");
+                mData.put("upload", "fail");
+                umsAgentDebugInter(LiveVideoConfig.LIVE_VOICE_CHAT, mData);
             }
         });
     }
+
     XesCloudUploadBusiness uploadBusiness;
-    private void uploadCloud(String path, final AbstractBusinessDataCallBack callBack){
-        if (uploadBusiness == null){
+
+    private void uploadCloud(String path, final AbstractBusinessDataCallBack callBack) {
+        if (uploadBusiness == null) {
             uploadBusiness = new XesCloudUploadBusiness(mContext);
         }
         final CloudUploadEntity entity = new CloudUploadEntity();
@@ -1755,14 +1755,14 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
             @Override
             public void onSuccess(XesCloudResult result) {
-                logger.d("upload Success:"+ result.getHttpPath());
+                logger.d("upload Success:" + result.getHttpPath());
                 callBack.onDataSucess(result);
             }
 
             @Override
             public void onError(XesCloudResult result) {
-                logger.e("upload Error:"+result.getErrorMsg());
-                callBack.onDataFail(0,result.getErrorMsg());
+                logger.e("upload Error:" + result.getErrorMsg());
+                callBack.onDataFail(0, result.getErrorMsg());
             }
         });
 
