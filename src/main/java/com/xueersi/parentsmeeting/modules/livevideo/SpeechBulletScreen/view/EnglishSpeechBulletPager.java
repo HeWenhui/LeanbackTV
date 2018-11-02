@@ -498,7 +498,18 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         isShowingSpeechBullet = true;
         showStartSpeechBulletToast();
         mWeakHandler.postDelayed(showSpeechBulletRunnable, 2000);
+        initUmsAgentData();
         umsAgentDebugInterSno2();
+    }
+
+    /**
+     * 初始化日志数据
+     */
+    public void initUmsAgentData() {
+        isSend = "0";
+        aliyunUrl = "";
+        originalText = "";
+        fainalText = "";
     }
 
     private Runnable showSpeechBulletRunnable = new Runnable() {
@@ -795,6 +806,9 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         if (stopSpeechTimer != null) {
 
             stopSpeechTimer.cancel();
+        }
+        if (audioRequest != null) {
+            audioRequest.release();
         }
         hasValidSpeechInput = false;
         mWeakHandler.removeCallbacks(mHintRunnable);
