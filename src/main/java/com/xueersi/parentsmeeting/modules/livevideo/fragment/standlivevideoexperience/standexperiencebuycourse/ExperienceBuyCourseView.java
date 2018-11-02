@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexpe
 
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.Process;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +18,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 
-public class ExperienceBuyCourseView extends BasePager implements IBuyCourseContract.View {
-    protected IPresenter mPresenter;
+/**
+ * @author zyy
+ */
+public class ExperienceBuyCourseView<T extends IPresenter> extends BasePager implements
+        IBuyCourseContract.View {
+    protected T mPresenter;
 
     private TextView recommand;
 
@@ -32,7 +37,7 @@ public class ExperienceBuyCourseView extends BasePager implements IBuyCourseCont
 
     private Button apply;
 
-    public ExperienceBuyCourseView(Context context, IPresenter mPresenter) {
+    public ExperienceBuyCourseView(Context context, T mPresenter) {
         super(context);
         this.mPresenter = mPresenter;
     }
@@ -55,6 +60,7 @@ public class ExperienceBuyCourseView extends BasePager implements IBuyCourseCont
         return result;
     }
 
+    @Override
     public void updateView(final ExperienceResult mData) {
         beat.setText("恭喜，你打败了" + mData.getBeat() + "%的学生");
         if (TextUtils.isEmpty(mData.getRecommend())) {

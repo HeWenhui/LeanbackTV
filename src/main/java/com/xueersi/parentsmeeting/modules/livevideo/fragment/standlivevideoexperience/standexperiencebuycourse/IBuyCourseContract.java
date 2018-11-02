@@ -1,12 +1,17 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse;
 
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
+
 public interface IBuyCourseContract {
 
-    interface View<T extends Presenter> {
-//        void setPresenter(T presenter);
+    interface View {
+        void updateView(ExperienceResult mData);
+
+        //        void setPresenter(T presenter);
+
     }
 
-    interface Presenter<T extends View> {
+    interface Presenter{
         //        void setView(T view);
 //        void removeStudyFeedBackView();
         void removeBuyCourseView();

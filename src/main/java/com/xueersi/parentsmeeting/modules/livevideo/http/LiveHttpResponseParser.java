@@ -50,6 +50,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class LiveHttpResponseParser extends HttpResponseParser {
@@ -84,6 +85,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
         LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
         LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
+        getInfo.setStuPutUpHandsNum(data.optInt("stuPutUpHandsNum"));
+        getInfo.setAllowLinkMicNew(data.optInt("allowLinkMicNew"));
+        if (getInfo.getAllowLinkMicNew() == 1) {
+            getInfo.setAllowLinkMic(false);
+        }
     }
 
     /**
@@ -1724,5 +1730,24 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
         return info;
+    }
+
+    public HashMap<String, ClassmateEntity> parseStuInfoByIds(String stuIds, ResponseEntity responseEntity) {
+        HashMap<String, ClassmateEntity> classmateEntities = new HashMap<>();
+        String[] ids = stuIds.split(",");
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        for (int i = 0; i < ids.length; i++) {
+            String id = ids[i];
+            ClassmateEntity classmateEntity = new ClassmateEntity();
+            try {
+                JSONObject stuJSONObject = jsonObject.getJSONObject(id);
+                classmateEntity.setName(stuJSONObject.optString("nickname"));
+                classmateEntity.setImg(stuJSONObject.optString("avatar_path"));
+                classmateEntities.put(id, classmateEntity);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return classmateEntities;
     }
 }

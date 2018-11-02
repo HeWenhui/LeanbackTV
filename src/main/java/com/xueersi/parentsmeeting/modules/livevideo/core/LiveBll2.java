@@ -839,6 +839,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         return result;
     }
 
+    /**
+     * 发消息
+     *
+     * @param target  目标
+     * @param data 信息
+     */
+    public void sendMessage(String target, JSONObject data) {
+        mIRCMessage.sendMessage(target, data.toString());
+    }
+
     public boolean sendMessage(JSONObject data) {
         mIRCMessage.sendMessage(data.toString());
         return true;

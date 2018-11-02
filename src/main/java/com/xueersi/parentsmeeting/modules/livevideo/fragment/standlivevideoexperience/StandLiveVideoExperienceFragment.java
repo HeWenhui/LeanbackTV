@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
@@ -45,22 +44,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBack
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
-import com.xueersi.parentsmeeting.modules.livevideo.business.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback
-        .ExperienceLearnFeedbackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.livemessage
-        .StandExperienceMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.mediacontroller
-        .StandLiveVideoExperienceMediaController;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination.StandExperienceEvaluationBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.livemessage.StandExperienceMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.mediacontroller.StandLiveVideoExperienceMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse
-        .ExperienceBuyCoursePresenter;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand
-        .StandExperienceUnderstandBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand.StandExperienceUnderstandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceQuestionPlayBackBll;
@@ -75,7 +68,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,42 +84,74 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
     private String TAG = getClass().getSimpleName();
     private RelativeLayout rl_course_video_live_controller_content;
-    /** 互动题的布局下层（垂直方向的下层） */
+    /**
+     * 互动题的布局下层（垂直方向的下层）
+     */
     private RelativeLayout rlQuestionContentBottom;
-    /** 互动题的布局上层（垂直方向的上层，防止被后面的view遮挡住） */
+    /**
+     * 互动题的布局上层（垂直方向的上层，防止被后面的view遮挡住）
+     */
     private RelativeLayout rlQuestionContent;
-    /** 更多课程广告的布局 */
+    /**
+     * 更多课程广告的布局
+     */
     private RelativeLayout rlAdvanceContent;
-    /** 初始进入播放器时的预加载界面 */
+    /**
+     * 初始进入播放器时的预加载界面
+     */
     private RelativeLayout rlFirstBackgroundView;
-    /** 是不是播放失败 */
+    /**
+     * 是不是播放失败
+     */
     boolean resultFailed = false;
-    /** 视频节对象 */
+    /**
+     * 视频节对象
+     */
     VideoLivePlayBackEntity mVideoEntity;
     String beforeAttach;
-    /** 是否显示移动网络提示 */
+    /**
+     * 是否显示移动网络提示
+     */
     private boolean mIsShowMobileAlert = true;
-    /** 是否显示无网络提示 */
+    /**
+     * 是否显示无网络提示
+     */
     private boolean mIsShowNoWifiAlert = true;
-    /** 我的课程业务层 */
+    /**
+     * 我的课程业务层
+     */
     LectureLivePlayBackBll lectureLivePlayBackBll;
-    /** onPause状态不暂停视频 */
+    /**
+     * onPause状态不暂停视频
+     */
     PauseNotStopVideoIml pauseNotStopVideoIml;
-    /** 播放路径名 */
+    /**
+     * 播放路径名
+     */
     private String mWebPath;
-    /** 节名称 */
+    /**
+     * 节名称
+     */
     private String mSectionName;
-    /** 加载视频提示 */
+    /**
+     * 加载视频提示
+     */
     private ImageView ivLoading;
     private TextView tvLoadingContent;
-    /** 从哪个页面跳转 */
+    /**
+     * 从哪个页面跳转
+     */
     String where;
     int isArts;
-    /** 区分文理appid */
+    /**
+     * 区分文理appid
+     */
     String appID = UmsConstants.LIVE_APP_ID_BACK;
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE;
-    /** 本地视频 */
+    /**
+     * 本地视频
+     */
     boolean islocal;
     static int times = -1;
     long createTime;
@@ -139,7 +163,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     protected LiveBackVideoBll liveBackVideoBll;
     /*** 全屏显示*/
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
-    /** 预加载 */
+    /**
+     * 预加载
+     */
     private LiveStandFrameAnim liveStandFrameAnim;
 
     //处理视频小窗口使用
@@ -148,10 +174,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     public static StandLiveVideoExperienceFragment newInstance(boolean isExperience) {
 //        Bundle arguments = new Bundle();
 //        arguments.putBoolean(experience, isExperience);
-//        StandLiveVideoExperienceFragment standLiveVideoExperienceFragment = ;
 //        standLiveVideoExperienceFragment.setArguments(arguments);
-
-
         return new StandLiveVideoExperienceFragment();
     }
 
@@ -192,8 +215,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         // 加载竖屏时显示更多课程广告的布局
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
         //为
-//        videoPopView = new VideoPopView(activity, liveBackPlayVideoFragment.getVideoView());
-//        videoPopView.setVideoView(liveBackPlayVideoFragment.getVideoView());
     }
 
     protected void updateLoadingImage() {
@@ -235,7 +256,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        addOnGlobalLayoutListener();
     }
 
-    /** 竖屏时填充视频列表布局 */
+    /**
+     * 竖屏时填充视频列表布局
+     */
     protected void initData() {
         stuCourId = mVideoEntity.getStuCourseId();
         lectureLivePlayBackBll = new LectureLivePlayBackBll(activity, stuCourId);
@@ -473,8 +496,11 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         liveBackBll.addBusinessBll(new StandExperienceUnderstandBll(activity, liveBackBll));
         //推荐课程信息
         liveBackBll.addBusinessBll(new RecommondCourseBll(activity, liveBackBll, getVideoView()));
+        //播放完成后的定级卷
+        liveBackBll.addBusinessBll(new StandExperienceEvaluationBll(activity, liveBackBll));
+        //定级完成后的结果页
+//        liveBackBll.addBusinessBll(new ExperienceBuyCoursePresenter(activity, liveBackBll));
         //播放完成后的反馈弹窗
-        liveBackBll.addBusinessBll(new ExperienceBuyCoursePresenter(activity, liveBackBll));
         liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
     }
 
@@ -574,14 +600,18 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        }
 //    }
 
-    /** 加载旋转屏时相关布局 */
+    /**
+     * 加载旋转屏时相关布局
+     */
     @Override
     protected void loadLandOrPortView() {
         mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
         super.loadLandOrPortView();
     }
 
-    /** 加载视频异常时出现可重新刷新的背景界面 */
+    /**
+     * 加载视频异常时出现可重新刷新的背景界面
+     */
     @Override
     protected void showRefresyLayout(int arg1, int arg2) {
         super.showRefresyLayout(arg1, arg2);
@@ -620,6 +650,14 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
     @Override
     public void onPause() {
+        if (isInitialized()) {
+            if (!onPauseNotStopVideo.get()) {
+                if (liveBackVideoBll != null) {
+                    liveBackVideoBll.onPause(0);
+                }
+            }
+        }
+
         super.onPause();
     }
 
@@ -638,7 +676,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      */
     private long startTime = -1;
     /**
-     * 每次进入直播时的时间
+     * 每次开始统计一段播放时长(5分钟)的起始时间
      */
     private long everyTime = 0L;
     /**
@@ -862,7 +900,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         return super.getVideoKey();
     }
 
-    /** 发送统计观看视频时长 */
+    /**
+     * 发送统计观看视频时长
+     */
     @Override
     protected void sendPlayVideo() {
 //        if (isArts == 1) {
@@ -880,7 +920,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        }
     }
 
-    /** 视频播放进度实时获取 */
+    /**
+     * 视频播放进度实时获取
+     */
     @Override
     protected void playingPosition(long currentPosition, long duration) {
         super.playingPosition(currentPosition, duration);
@@ -890,7 +932,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         scanQuestion(currentPosition); // 扫描互动题
     }
 
-    /** 扫描是否有需要弹出的互动题 */
+    /**
+     * 扫描是否有需要弹出的互动题
+     */
     public void scanQuestion(long position) {
         if (!mIsLand.get() || vPlayer == null || !vPlayer.isPlaying()) {
             // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
@@ -1019,7 +1063,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         }
     }
 
-    /** 重新打开播放器的监听 */
+    /**
+     * 重新打开播放器的监听
+     */
     public void onRestart() {
         liveBackBll.onRestart();
     }
