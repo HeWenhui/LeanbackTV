@@ -47,7 +47,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="11dp"
             android:text="语音输入中，请大声说英语" />
-
+s
         <TextView
             android:id="@id/tv_livevideo_speechbul_title_count"
             android:layout_width="wrap_content"
@@ -111,7 +111,8 @@
                 android:maxLength="60"
                 android:paddingLeft="20dp"
                 android:paddingRight="54dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:inputType="textEmailAddress"/>
 
             <TextView
                 android:id="@id/tv_livevideo_speechbul_count"
