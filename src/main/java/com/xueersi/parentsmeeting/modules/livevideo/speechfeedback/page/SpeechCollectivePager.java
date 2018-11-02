@@ -49,7 +49,7 @@ public class SpeechCollectivePager extends BasePager {
 
     @Override
     public void initData() {
-        int colors[] = {0x19ffe4aa, 0x32ffe4aa, 0x64ffe4aa, 0x96ffe4aa, 0xffffe4aa};
+        int colors[] = {0xffffe4aa, 0xffffe4aa, 0xffffe4aa, 0xffffe4aa, 0xffffe4aa};
         vwvSpeectevalWave.setColors(colors);
         Paint paint = new Paint();
         paint.setColor(Color.parseColor("#a84300"));

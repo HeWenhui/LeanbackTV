@@ -22,6 +22,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechCollectivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -165,10 +166,7 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
                             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup
                                     .LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.WRAP_CONTENT);
-                            int screenWidth = ScreenUtils.getScreenWidth();
-                            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig
-                                    .VIDEO_WIDTH);
-                            params.rightMargin = wradio;
+                            params.rightMargin = LiveVideoPoint.getInstance().getRightMargin();
                             bottomContent.addView(speechFeedBackPager.getRootView(), params);
                         }
                     });
@@ -258,24 +256,6 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
 
     @Override
     public void setVideoLayout(int width, int height) {
-        if (speechFeedBackPager != null) {
-            final View contentView = activity.findViewById(android.R.id.content);
-            final View actionBarOverlayLayout = (View) contentView.getParent();
-            Rect r = new Rect();
-            actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-            int screenWidth = (r.right - r.left);
-            int screenHeight = ScreenUtils.getScreenHeight();
-            if (width > 0) {
-                int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
-                wradio += (screenWidth - width) / 2;
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) speechFeedBackPager.getRootView()
-                        .getLayoutParams();
-                if (wradio != params.rightMargin) {
-                    params.rightMargin = wradio;
-                    LayoutParamsUtil.setViewLayoutParams(speechFeedBackPager.getRootView(), params);
-                }
-            }
-        }
     }
 
     public void onResume() {
