@@ -1475,6 +1475,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         }
     }
 
+    @Override
+    public void onOpenVoiceNotic(boolean openVoice, String type) {
+
+    }
+
     private void showLKTipsWhenOldModeCloseLW(final String newMode, final boolean isOpenbarrage) {
 
         mainHandler.post(new Runnable() {

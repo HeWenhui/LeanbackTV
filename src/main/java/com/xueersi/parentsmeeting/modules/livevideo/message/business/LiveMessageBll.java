@@ -559,6 +559,13 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
     }
 
+    @Override
+    public void onOpenVoiceNotic(boolean openVoice, String type) {
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.onOpenVoiceNotic(openVoice,type);
+        }
+    }
+
     public void setVideoLayout(int width, int height) {
         if (mLiveMessagePager != null) {
             mLiveMessagePager.setVideoWidthAndHeight(width, height);

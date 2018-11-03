@@ -898,6 +898,11 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
 
     }
 
+    @Override
+    public void onOpenVoiceNotic(boolean openVoice, String type) {
+
+    }
+
     /**
      * 绘制背景(自定义弹幕样式)
      */

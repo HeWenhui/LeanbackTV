@@ -91,4 +91,11 @@ public interface RoomAction {
      * @param isFDLKOpenbarrage
      */
     void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage, boolean isFDLKOpenbarrage);
+
+    /**
+     * 教师端发起语音相关notic时，给出提示 关闭当前语音聊天
+     * @param openVoice
+     * @param type
+     */
+    void onOpenVoiceNotic(final boolean openVoice, String type);
 }

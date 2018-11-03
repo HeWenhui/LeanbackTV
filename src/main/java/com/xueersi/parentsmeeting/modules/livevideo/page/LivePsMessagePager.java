@@ -258,6 +258,11 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         }
     }
 
+    @Override
+    public void onOpenVoiceNotic(boolean openVoice, String type) {
+
+    }
+
     private void showLKTipsWhenOldModeCloseLW(final String newMode, final boolean isOpenbarrage) {
 
         mainHandler.post(new Runnable() {

@@ -1069,6 +1069,11 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
 
     }
 
+    @Override
+    public void onOpenVoiceNotic(boolean openVoice, String type) {
+
+    }
+
     /*添加聊天信息，超过120，移除60个*/
     @Override
     public void addMessage(final String sender, final int type, final String text, String headUrl) {

@@ -10,7 +10,7 @@
 
         <RelativeLayout
             android:id="@id/rl_livevideo_info"
-            android:layout_width="230dp"
+            android:layout_width="170dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -105,9 +105,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/rl_livevideo_message_panelcontent"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="10dp"
             android:layout_toLeftOf="@id/bt_livevideo_message_voice_open"
             android:layout_toRightOf="@id/rl_livevideo_info"
+            android:layout_marginLeft="20dp"
             android:gravity="center"
             android:paddingBottom="15dp"
             android:visibility="gone">
@@ -115,36 +116,43 @@
             <RelativeLayout
                 android:id="@+id/rl_livevideo_message_back"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="65dp"
                 android:background="@drawable/bg_live_stand_chat_input"
                 />
             <RelativeLayout
                 android:id="@id/rl_livevideo_voice_message_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_alignBottom="@id/rl_livevideo_message_back"
                 android:layout_alignTop="@id/rl_livevideo_message_back"
                 android:layout_marginTop="8dp"
                 android:visibility="gone">
 
                 <TextView
-                    android:id="@id/tv_livevideo_voicechat_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text=""
-                    android:textColor="@color/white"
-                    android:layout_marginTop="10dp"
-                    android:textSize="14sp"/>
-                <TextView
                     android:id="@id/tv_livevideo_voicechat_word_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:layout_toRightOf="@id/tv_livevideo_voicechat_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
                     android:text="(0/40)"
-                    android:layout_marginLeft="10dp"
                     android:textSize="10sp"/>
+
+                <TextView
+                    android:id="@id/tv_livevideo_voicechat_content"
+                    android:layout_width="260dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center_horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toLeftOf="@id/tv_livevideo_voicechat_word_count"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:maxLines="2"
+                    android:lineSpacingMultiplier="0.8"
+                    android:layout_marginTop="10dp"
+                    android:textSize="14sp"/>
 
                 <com.xueersi.parentsmeeting.widget.VolumeWaveView
                     android:layout_width="match_parent"
@@ -152,7 +160,7 @@
                     android:layout_below="@id/tv_livevideo_voicechat_content"
                     android:layout_marginRight="63dp"
                     android:layout_marginLeft="63dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="2dp"
                     android:id="@id/vwv_livevideo_voicechat_wave"
                     android:layout_centerHorizontal="true" />
 
@@ -174,6 +182,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/rl_livevideo_message_back"
                 android:layout_alignTop="@id/rl_livevideo_message_back"
+                android:layout_alignStart="@id/rl_livevideo_message_back"
+                android:layout_alignEnd="@id/rl_livevideo_message_back"
                 android:layout_marginTop="8dp"
                 android:visibility="gone">
 
