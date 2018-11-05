@@ -86,6 +86,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     private AuditIRCMessage mIRCMessage;
     private String courseId;
     private String mLiveId;
+    private String mStuCouId;
     private String mCurrentDutyId;
     public final int mLiveType;
     private LiveGetInfo mGetInfo;
@@ -139,6 +140,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     public AuditClassLiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
         super(context);
         this.mLiveId = vSectionID;
+        this.mStuCouId = vStuCourseID;
         this.mLiveType = LIVE_TYPE_LIVE;
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("courseId", courseId);
@@ -697,10 +699,31 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
      * 获取半身直播  旁听数据
      */
     public synchronized void getHalfBodyLiveStudentLiveInfo() {
-        // TODO: 2018/10/31  调用 获取 半身直播旁听 信息接口
         Log.e("AuditClassLiveBll","=========> getHalfBodyLiveStudentLiveInfo called");
-    }
+        mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == 1,new HttpCallBack(false){
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                Log.e("AuditClassLiveBll","=========> getHalfBodyLiveStudentLiveInfo onPmSuccess");
+                String oldMode = mLiveTopic.getMode();
+                HalfBodyLiveStudyInfo stuLiveInfo = mHttpResponseParser.parseStuHalfbodyLiveInfo(responseEntity, oldMode);
+               if (auditClassAction != null) {
+                    auditClassAction.onGetStudyInfo(stuLiveInfo);
+                }
+            }
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                Log.e("AuditClassLiveBll","=========> getHalfBodyLiveStudentLiveInfo onPmFailure");
+                logger.e( "getHalfBodyLiveStudentLiveInfo:onPmFailure:msg=" + msg, error);
+            }
 
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                Log.e("AuditClassLiveBll","=========> getHalfBodyLiveStudentLiveInfo onPmError");
+                logger.e( "getHalfBodyLiveStudentLiveInfo:onPmError:errorMsg=" + responseEntity.getErrorMsg());
+            }
+        });
+
+    }
 
 
     /** 第一次调度，不判断老师状态 */

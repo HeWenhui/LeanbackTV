@@ -764,6 +764,22 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
+    /**
+     * 文理半身直播 旁听数据接口
+     * @param liveId    直播id
+     * @param stuCouId  学生id
+     * @param  isArts   是否是文科
+     */
+    public void getHalfBodyStuLiveInfo(String liveId,String stuCouId,boolean isArts,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        setDefaultParameter(params);
+        String url = isArts?liveVideoSAConfigInner.URL_HALFBODY_LIVE_STULIVEINFO:liveVideoSAConfigInner.URL_HALFBODY_LIVE_STULIVEINFO;
+        sendPost(url, params, requestCallBack);
+    }
+
+
     public void setStuStarCount(int type, String enstuId, String liveId, String starId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();

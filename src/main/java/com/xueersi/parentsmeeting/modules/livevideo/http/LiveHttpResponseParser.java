@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -14,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
@@ -407,7 +409,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             coachStatusEntity.setOpenlike(status.optBoolean("openlike"));
 
             if (status.has("openbarrage")) {
-                logger.i("room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = " + status.getBoolean("openbarrage") + " " + status.toString());
+                logger.i("room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = " + status.getBoolean
+                        ("openbarrage") + " " + status.toString());
                 //新增字段，辅导老师开启礼物与否 true开启
                 coachStatusEntity.setFDLKOpenbarrage(status.getBoolean("openbarrage"));
 
@@ -478,7 +481,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             mainStatusEntity.setId(status.getInt("id"));
             mainStatusEntity.setClassbegin(status.getBoolean("classbegin"));
             mainStatusEntity.setOpenbarrage(status.getBoolean("openbarrage"));
-            liveTopic.getCoachRoomstatus().setZJLKOpenbarrage(status.getBoolean("openbarrage"));//一定不要忘记在topic返回的时候，room1里openbarrage字段的值设置到理科主讲实体中
+            liveTopic.getCoachRoomstatus().setZJLKOpenbarrage(status.getBoolean("openbarrage"));
+            //一定不要忘记在topic返回的时候，room1里openbarrage字段的值设置到理科主讲实体中
             mainStatusEntity.setOpenchat(status.getBoolean("openchat"));
             mainStatusEntity.setOpenFeedback(status.optBoolean("isOpenFeedback"));
             mainStatusEntity.setOpenlike(status.optBoolean("openlike"));
@@ -827,14 +831,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         entity.setGoldNum(Integer.parseInt(total.optString("gold")));
         entity.setRightNum(Integer.parseInt(total.optString("isRight")));
         JSONArray split = jsonObject.optJSONArray("split");
-        for(int i = 0 ; i < split.length() ; i++){
+        for (int i = 0; i < split.length(); i++) {
             JSONObject obj = split.optJSONObject(i);
             entity.setTestId(obj.optString("testId"));
             entity.setResultType(Integer.parseInt(obj.optString("isRight")));
             if (isVoice) {
                 JSONArray standeranswer = obj.optJSONArray("rightAnswer");
                 JSONArray youranswer = obj.optJSONArray("choice");
-                entity.setStandardAnswer( standeranswer.optString(0));
+                entity.setStandardAnswer(standeranswer.optString(0));
                 entity.setYourAnswer(youranswer.optString(0));
             }
         }
@@ -1034,6 +1038,54 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         studyInfo.setMode(data.optString("mode", oldMode));
         return studyInfo;
     }
+
+    /**
+     * 解析文理半身直播 家长旁听数据
+     *
+     * @param responseEntity
+     * @param oldMode
+     * @return
+     */
+    public HalfBodyLiveStudyInfo parseStuHalfbodyLiveInfo(ResponseEntity responseEntity, String oldMode) {
+        HalfBodyLiveStudyInfo result = new HalfBodyLiveStudyInfo();
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            result.setSignTime(data.optString("signTime", ""));
+            result.setOnlineTime(data.optString("onlineTime"));
+            JSONObject teamInfo = data.optJSONObject("teamInfo");
+            result.setMode(oldMode);
+            if (teamInfo != null) {
+                result.setMyRank(teamInfo.optString("myRank"));
+                result.setOurTeamEnergy(teamInfo.optLong("ourTeamEnergy"));
+                result.setHostileTeamEnergy(teamInfo.optLong("hostileTeamEnergy"));
+            }
+
+            JSONObject testInfo = data.optJSONObject("testInfo");
+            if (testInfo != null) {
+                result.setTestRate(testInfo.optString("stuAvgRate"));
+                result.setStuAvgRate(testInfo.optString("stuAvgRate"));
+                JSONArray testListArray = testInfo.optJSONArray("testList");
+                if (testListArray != null && testListArray.length() > 0) {
+                    List<HalfBodyLiveStudyInfo.TestInfo> testInfoList = new ArrayList<>();
+                    HalfBodyLiveStudyInfo.TestInfo info = null;
+                    JSONObject testJsonObj = null;
+                    for (int i = 0; i < testListArray.length(); i++) {
+                        testJsonObj = testListArray.getJSONObject(i);
+                        info = new HalfBodyLiveStudyInfo.TestInfo();
+                        info.setAnsweredStatus(testJsonObj.optInt("answeredStatus"));
+                        info.setOrderNum(testJsonObj.optInt("orderNum"));
+                        info.setPlanAvgRightRate(testJsonObj.optString("planAvgRightRate"));
+                        testInfoList.add(info);
+                    }
+                    result.setTestList(testInfoList);
+                }
+            }
+        } catch (Exception e) {
+            MobAgent.httpResponseParserError(TAG, "parseStuHalfbodyLiveInfo", e.getMessage());
+        }
+        return result;
+    }
+
 
     public AllRankEntity parseAllRank(ResponseEntity responseEntity) {
         AllRankEntity allRankEntity = new AllRankEntity();
@@ -1716,7 +1768,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     }
 
 
-    public ArtsExtLiveInfo parseArtsExtLiveInfo(ResponseEntity responseEntity){
+    public ArtsExtLiveInfo parseArtsExtLiveInfo(ResponseEntity responseEntity) {
         ArtsExtLiveInfo info = new ArtsExtLiveInfo();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
