@@ -555,7 +555,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     isPlay = false;
                 }
                 synchronized (mIjkLock2) {
-                    xv_livevideo_student.stop2();
+                    if(xv_livevideo_student != null){
+                        xv_livevideo_student.stop2();
+                    }
                 }
             }
         });
