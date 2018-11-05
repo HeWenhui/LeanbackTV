@@ -77,7 +77,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     }
 
     RelativeLayout bottomContent;
-    RelativeLayout rlMediaBottom;
+    RelativeLayout rlMessageBottom;
     protected String vStuCourseID;
     protected String courseId;
 
@@ -122,7 +122,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         super.onBusinessCreate();
         List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
         for (LiveBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(rlMediaBottom, bottomContent, mIsLand, mContentView);
+            businessBll.initViewF(rlMessageBottom, bottomContent, mIsLand, mContentView);
         }
     }
 
@@ -223,7 +223,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected void initView() {
         bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
-        rlMediaBottom = mContentView.findViewById(R.id.rl_course_media_bottom);
+        rlMessageBottom = mContentView.findViewById(R.id.rl_course_message_bottom);
         logger.e("========>:initView:" + bottomContent);
         // 预加载布局中退出事件
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);

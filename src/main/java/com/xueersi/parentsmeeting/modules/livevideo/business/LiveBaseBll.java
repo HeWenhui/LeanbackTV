@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class LiveBaseBll extends BaseBll {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected RelativeLayout mRootView;
-    protected RelativeLayout rlMediaBottom;
+    protected RelativeLayout rlMessageBottom;
     protected RelativeLayout mContentView;
     protected LiveBll2 mLiveBll;
     protected Handler mHandler = new Handler(Looper.getMainLooper());
@@ -165,9 +165,9 @@ public class LiveBaseBll extends BaseBll {
         this.mGetInfo = getInfo;
     }
 
-    public final void initViewF(RelativeLayout rlMediaBottom, RelativeLayout bottomContent, AtomicBoolean mIsLand, RelativeLayout mContentView) {
+    public final void initViewF(RelativeLayout rlMessageBottom, RelativeLayout bottomContent, AtomicBoolean mIsLand, RelativeLayout mContentView) {
         mRootView = bottomContent;
-        this.rlMediaBottom = rlMediaBottom;
+        this.rlMessageBottom = rlMessageBottom;
         this.mContentView = mContentView;
         this.mIsLand = mIsLand;
         initView(bottomContent, mIsLand);

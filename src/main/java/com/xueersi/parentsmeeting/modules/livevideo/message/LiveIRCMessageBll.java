@@ -162,7 +162,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             if (getInfo.getPattern() == 2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initViewLiveStand(mRootView);
             } else {
-                mRoomAction.initViewLive(rlMediaBottom);
+                mRoomAction.initViewLive(mRootView);
             }
         }
     }
