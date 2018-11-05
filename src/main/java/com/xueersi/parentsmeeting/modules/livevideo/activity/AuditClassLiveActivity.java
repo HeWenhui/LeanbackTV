@@ -1625,7 +1625,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             }
         }.start();
         AppBll.getInstance().unRegisterAppEvent(this);
-        xv_livevideo_student.onDestroy();
+
+        if(xv_livevideo_student != null){
+            xv_livevideo_student.onDestroy();
+        }
         super.onDestroy();
         mHandler.post(new Runnable() {
             @Override
