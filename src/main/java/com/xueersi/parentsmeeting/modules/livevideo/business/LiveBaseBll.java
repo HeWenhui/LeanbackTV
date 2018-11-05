@@ -26,11 +26,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 直播间 bll 基类
  *
  * @author chekun
- *         created  at 2018/6/20 9:34
+ * created  at 2018/6/20 9:34
  */
 public class LiveBaseBll extends BaseBll {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected RelativeLayout mRootView;
+    protected RelativeLayout rlMediaBottom;
     protected RelativeLayout mContentView;
     protected LiveBll2 mLiveBll;
     protected Handler mHandler = new Handler(Looper.getMainLooper());
@@ -52,12 +53,13 @@ public class LiveBaseBll extends BaseBll {
     }
 
     /**
-     *  为兼容 回放  新增此构造函数
+     * 为兼容 回放  新增此构造函数
+     *
      * @param context
      * @param liveId
      * @param liveType
      */
-    public LiveBaseBll(Activity context,String liveId,int liveType){
+    public LiveBaseBll(Activity context, String liveId, int liveType) {
         super(context);
         this.activity = context;
         this.mLiveId = liveId;
@@ -77,9 +79,9 @@ public class LiveBaseBll extends BaseBll {
     }
 
     public LiveHttpResponseParser getHttpResponseParser() {
-        if(mLiveBll != null){
+        if (mLiveBll != null) {
             return mLiveBll.getHttpResponseParser();
-        }else{
+        } else {
             return null;
         }
     }
@@ -157,14 +159,15 @@ public class LiveBaseBll extends BaseBll {
     /**
      * 直播间初始化完成
      *
-     * @param data 直播间初始化参数
+     * @param getInfo 直播间初始化参数
      */
     public void onLiveInited(LiveGetInfo getInfo) {
         this.mGetInfo = getInfo;
     }
 
-    public final void initViewF(RelativeLayout bottomContent, AtomicBoolean mIsLand, RelativeLayout mContentView) {
+    public final void initViewF(RelativeLayout rlMediaBottom, RelativeLayout bottomContent, AtomicBoolean mIsLand, RelativeLayout mContentView) {
         mRootView = bottomContent;
+        this.rlMediaBottom = rlMediaBottom;
         this.mContentView = mContentView;
         this.mIsLand = mIsLand;
         initView(bottomContent, mIsLand);

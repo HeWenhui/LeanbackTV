@@ -47,7 +47,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPacka
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechCollectiveIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
@@ -78,6 +77,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     }
 
     RelativeLayout bottomContent;
+    RelativeLayout rlMediaBottom;
     protected String vStuCourseID;
     protected String courseId;
 
@@ -122,7 +122,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         super.onBusinessCreate();
         List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
         for (LiveBaseBll businessBll : businessBlls) {
-            businessBll.initViewF(bottomContent, mIsLand, mContentView);
+            businessBll.initViewF(rlMediaBottom, bottomContent, mIsLand, mContentView);
         }
     }
 
@@ -223,6 +223,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected void initView() {
         bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
+        rlMediaBottom = mContentView.findViewById(R.id.rl_course_media_bottom);
         logger.e("========>:initView:" + bottomContent);
         // 预加载布局中退出事件
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);

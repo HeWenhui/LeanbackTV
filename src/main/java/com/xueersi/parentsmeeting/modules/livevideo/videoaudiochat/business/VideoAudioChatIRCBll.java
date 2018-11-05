@@ -75,7 +75,11 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
         boolean allowLinkMic = (1 == getInfo.getAllowLinkMicNew());
         if (allowLinkMic) {
             VideoAudioChatBll videoChatBll = new VideoAudioChatBll(activity, this);
-            videoChatBll.initView(mRootView);
+            if (rlMediaBottom != null) {
+                videoChatBll.initView(rlMediaBottom);
+            } else {
+                videoChatBll.initView(mRootView);
+            }
             videoChatBll.setControllerBottom(baseLiveMediaControllerBottom);
             videoChatBll.setLiveAndBackDebug(mLiveBll);
             videoChatBll.setVideoChatHttp(this);
