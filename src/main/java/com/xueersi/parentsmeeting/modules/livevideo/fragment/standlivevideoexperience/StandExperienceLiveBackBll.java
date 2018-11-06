@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination.StandExperienceEvaluationBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
 
@@ -154,14 +155,14 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 //                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
 //            }
 //            展示定级卷
-//            if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
-//                showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
-//            }
+            if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
+                showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
+            }
 
             //展现学习反馈窗口
-            if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
-                showNextWindow((ExperienceLearnFeedbackBll) liveBackBaseBll);
-            }
+//            if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
+//                showNextWindow((ExperienceLearnFeedbackBll) liveBackBaseBll);
+//            }
 
         }
     }
