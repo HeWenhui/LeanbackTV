@@ -6,6 +6,7 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.MyUserInfoEntity;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.TimeUtils;
@@ -14,7 +15,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination.StandExperienceEvaluationBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
 
 import java.util.List;
@@ -210,6 +210,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
         mData.put("logtype", "play error");
         mData.put("os", "Android");
         mData.put("playurl", mVideoEntity.getVideoPath());
+        mData.put("ip", IpAddressUtil.USER_IP);
 
 //        if ("PublicLiveDetailActivity".equals(where)) {
 //            mData.put("livetype", "" + 2);

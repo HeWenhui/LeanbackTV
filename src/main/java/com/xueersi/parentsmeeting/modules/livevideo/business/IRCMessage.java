@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -50,6 +51,7 @@ public class IRCMessage {
     private boolean onUserList = false;
     /** 和服务器的ping，线程池 */
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+    public static final String EXPERIENCE_MESSAGE_ERROR = "experience_message_connect_error";
 
     public IRCMessage(Context context, int netWorkType, String channel, String login, String nickname) {
         this.netWorkType = netWorkType;
@@ -392,7 +394,14 @@ public class IRCMessage {
             }
             //如果不为null,上传日志（体验课时不为空）
             if (connectService != null) {
-                connectService.connectChatServiceError("", "Error", "Android", talkConfEntity.getHost(), talkConfEntity.getPort(), method + "Connect Failure");
+                connectService.connectChatServiceError(
+                        EXPERIENCE_MESSAGE_ERROR,
+                        "Error",
+                        "Android",
+                        getHost(talkConfEntity.getHost()),
+                        talkConfEntity.getPort(),
+                        method + "Connect Failure",
+                        IpAddressUtil.USER_IP);
             }
             mLogtf.d("connect:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
             mHandler.postDelayed(new Runnable() {
@@ -411,6 +420,29 @@ public class IRCMessage {
                 }
             }, 2000);
 
+        }
+    }
+
+    /**
+     * 根据url获取服务器的ip地址
+     *
+     * @param ip
+     * @return
+     */
+    private String getHost(String ip) {
+        try {
+            int len = ip.length();
+            int pos = ip.indexOf("//");
+            int i = pos + 2;
+            while (i < len) {
+                if (ip.charAt(i) == '/') {
+                    break;
+                }
+                i++;
+            }
+            return ip.substring(pos <= 0 ? 0 : pos + 2, i);
+        } catch (Exception e) {
+            return "";
         }
     }
 
@@ -596,7 +628,14 @@ public class IRCMessage {
          * @param serverPort 聊天服务器端口
          * @param errMsg     链接聊天服务器失败信息
          */
-        void connectChatServiceError(String eventId, String logtype, String os, String serverIp, String serverPort, String errMsg);
+        void connectChatServiceError(
+                String eventId,
+                String logtype,
+                String os,
+                String serverIp,
+                String serverPort,
+                String errMsg,
+                String ip);
     }
 
     private ConnectService connectService;

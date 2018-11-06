@@ -202,12 +202,12 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                 talkConfHosts);
         ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
             @Override
-            public void getChatUrlFailure(String url, String errMsg, String eventId, String logtype, String os) {
+            public void getChatUrlFailure(String urlIp, String errMsg, String eventId, String logtype, String os, String ip) {
                 Map<String, String> map = new HashMap<>();
                 map.put("logtype", logtype);
                 map.put("os", os);
-                map.put("url", url);
-
+                map.put("url", urlIp);
+                map.put("ip", ip);
 //                map.put("",);
                 UmsAgentManager.umsAgentDebug(mContext, eventId, map);
             }
@@ -218,7 +218,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         mIRCMessage.setConnectService(new IRCMessage.ConnectService() {
 
             @Override
-            public void connectChatServiceError(String eventId, String logtype, String os, String serverIp, String serverPort, String errMsg) {
+            public void connectChatServiceError(String eventId, String logtype, String os, String serverIp, String serverPort, String errMsg, String ip) {
                 Map<String, String> map = new HashMap<>();
                 map.put("logtype", logtype);
                 map.put("os", os);
@@ -227,6 +227,8 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                 map.put("errmsg", errMsg);
                 map.put("liveid", mVideoEntity.getLiveId());
                 map.put("orderid", mVideoEntity.getChapterId());
+                map.put("ip", ip);
+                map.put("serverip", serverIp);
                 UmsAgentManager.umsAgentDebug(mContext, eventId, map);
             }
         });
