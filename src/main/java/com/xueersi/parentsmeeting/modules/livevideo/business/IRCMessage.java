@@ -627,6 +627,7 @@ public class IRCMessage {
          * @param serverIp   聊天服务器ip
          * @param serverPort 聊天服务器端口
          * @param errMsg     链接聊天服务器失败信息
+         * @param ip         自己的ip
          */
         void connectChatServiceError(
                 String eventId,
