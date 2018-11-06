@@ -18,16 +18,27 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 将反馈谈弹窗的每个题目（包含一个选项和三个选择按钮）封装成一个Layout
+ */
 public class ItemLearnFeedbackPageSelectLayout extends ConstraintLayout {
 
     private Context mContext;
-
+    /**
+     * 问题的题目
+     */
     private FangZhengCuYuanTextView fzcytvTitle;
-
+    /**
+     * 问题的三个单选按钮
+     */
     private ImageView ivSelectBtn1, ivSelectBtn2, ivSelectBtn3;
-
-    private FangZhengCuYuanTextView fzcytvSelect1, fzcytvSelect2, fzcytvselect3;
-
+    /**
+     * 问题的三个单选按钮的选项文字
+     */
+    private FangZhengCuYuanTextView fzcytvSelect1, fzcytvSelect2, fzcytvSelect3;
+    /**
+     * 第三个单选框是否显示
+     */
     private Group groupSelect3;
 
     public ItemLearnFeedbackPageSelectLayout(Context context) {
@@ -57,13 +68,13 @@ public class ItemLearnFeedbackPageSelectLayout extends ConstraintLayout {
         fzcytvTitle = findViewById(R.id.fzcytv_stand_experience_learn_feedback_title);
         fzcytvSelect1 = findViewById(R.id.fzcytv_stand_experience_learn_feedback_select1_button1);
         fzcytvSelect2 = findViewById(R.id.fzcytv_stand_experience_learn_feedback_select1_button2);
-        fzcytvselect3 = findViewById(R.id.fzcytv_stand_experience_learn_feedback_select1_button3);
+        fzcytvSelect3 = findViewById(R.id.fzcytv_stand_experience_learn_feedback_select1_button3);
         ivSelectBtn1 = findViewById(R.id.iv_stand_experience_learn_feedback_select_button1);
         ivSelectBtn2 = findViewById(R.id.iv_stand_experience_learn_feedback_select_button2);
         ivSelectBtn3 = findViewById(R.id.iv_stand_experience_learn_feedback_select_button3);
+        groupSelect3 = findViewById(R.id.group_stand_experience_learn_feedback_select3);
     }
 
-    private boolean isSelect1 = false, isSelect2 = false, isSelect3 = false;
     /**
      * 最后选择的答案
      */
@@ -126,10 +137,10 @@ public class ItemLearnFeedbackPageSelectLayout extends ConstraintLayout {
             fzcytvSelect1.setText(questionOption.listValue.get(0));
         }
         if (questionOption.listValue.size() > 1) {
-            fzcytvselect3.setText(questionOption.listValue.get(1));
+            fzcytvSelect2.setText(questionOption.listValue.get(1));
         }
         if (questionOption.listKey.size() > 2) {
-            fzcytvselect3.setText(questionOption.listValue.get(2));
+            fzcytvSelect3.setText(questionOption.listValue.get(2));
         }
 
     }

@@ -22,6 +22,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.MyEngineEventHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
@@ -37,7 +38,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import java.util.ArrayList;
 
 public class ChatTipBll {
-    protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
+    String TAG = getClass().getSimpleName();
+    protected Logger logger = LiveLoggerFactory.getLogger(TAG);
     Activity activity;
     private RelativeLayout bottomContent;
     Handler handler = new Handler(Looper.getMainLooper());
@@ -86,11 +88,13 @@ public class ChatTipBll {
     private VideoChatEvent videoChatEvent;
     private LiveGetInfo getInfo;
     private WorkerThread testWorkerThread;
-    private boolean isConnect = false;
+    private boolean isConnect = true;
+    private LogToFile logToFile;
 
     public ChatTipBll(Activity activity) {
         this.activity = activity;
         liveAndBackDebug = new ContextLiveAndBackDebug(activity);
+        logToFile = new LogToFile(activity, TAG);
     }
 
     public void setVideoChatHttp(VideoAudioChatHttp videoChatHttp) {
@@ -201,24 +205,8 @@ public class ChatTipBll {
                         enableLastmileTest();
                     }
                 }
-                haveRaisehand = true;
-                boolean oldRaisehand = raisehand;
-                if (!raisehand) {
-                    raisehand(msgFrom);
-                    if ("off".equals(onMic)) {
-                        rl_livevideo_chat_raisehand_on.setVisibility(View.VISIBLE);
-                        rl_livevideo_chat_raisehand_off.setVisibility(View.GONE);
-                    }
-                } else {
-                    videoChatHttp.giveupMicro(msgFrom);
-                    if ("off".equals(onMic)) {
-                        rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
-                        rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
-                    }
-                }
-                changeRaisehand(!raisehand);
-                raisehand = !oldRaisehand;
-                logger.d("onClick:raisehand=" + raisehand);
+                isConnect = true;
+                raisehandClick();
             }
         });
         tv_livevideo_chat_people = vgRaisehand.findViewById(R.id.tv_livevideo_chat_people);
@@ -315,6 +303,11 @@ public class ChatTipBll {
         } else {
             bt_livevideo_chat_raisehand.setBackgroundResource(R.drawable.live_task_jushou_icon_normal);
             tv_livevideo_chat_raisehand.setText("举手");
+            if (isConnect) {
+                tv_livevideo_chat_in_queue.setText("你已下麦，可以再次举手");
+            } else {
+                tv_livevideo_chat_in_queue.setText("你已掉线，可以再次举手");
+            }
         }
     }
 
@@ -378,6 +371,27 @@ public class ChatTipBll {
                 }
             }
         });
+    }
+
+    private void raisehandClick() {
+        haveRaisehand = true;
+        boolean oldRaisehand = raisehand;
+        if (!raisehand) {
+            raisehand(msgFrom);
+            if ("off".equals(onMic)) {
+                rl_livevideo_chat_raisehand_on.setVisibility(View.VISIBLE);
+                rl_livevideo_chat_raisehand_off.setVisibility(View.GONE);
+            }
+        } else {
+            videoChatHttp.giveupMicro(msgFrom);
+//            if ("off".equals(onMic)) {
+//                rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
+//                rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
+//            }
+        }
+        changeRaisehand(!raisehand);
+        raisehand = !oldRaisehand;
+        logger.d("raisehandClick:raisehand=" + raisehand);
     }
 
     private void raisehand(final String from) {
@@ -456,7 +470,7 @@ public class ChatTipBll {
     }
 
     public void startRecord(final String room, final String nonce, boolean contain, int micType) {
-        logger.d("startRecord:room=" + room + ",contain=" + contain + ",micType=" + micType);
+        logToFile.d("startRecord:room=" + room + ",contain=" + contain + ",micType=" + micType);
         if (videoChatInter != null) {
             if (contain) {
                 videoChatInter.startRecord("startRecord", room, nonce, micType == 1);
@@ -483,18 +497,18 @@ public class ChatTipBll {
     }
 
     public void onConnect() {
-        logger.d("onConnect");
+        logToFile.d("onConnect");
         isConnect = true;
     }
 
     public void onDisconnect() {
-        logger.d("onDisconnect");
+        logToFile.d("onDisconnect:visibility=" + rl_livevideo_chat_raisehand.getVisibility());
         isConnect = false;
-        if (raisehand) {
+        if (raisehand && rl_livevideo_chat_raisehand.getVisibility() == View.VISIBLE) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    bt_livevideo_chat_raisehand.performClick();
+                    raisehandClick();
                 }
             });
         }

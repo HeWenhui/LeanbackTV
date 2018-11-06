@@ -56,60 +56,19 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     private AgoraVideoChatInter videoChatInter;
     private ChatTipBll chatTipBll;
     private RelativeLayout bottomContent;
-    /**
-     * 麦克风权限
-     */
-    private boolean isHasPermission = true;
-    /**
-     * 举麦权限提示
-     */
-    private boolean permissionPrompt = false;
-    /**
-     * 举麦失败
-     */
-    private boolean isFail = false;
-    private boolean isSuccess = false;
-    /**
-     * 举麦包含我
-     */
+    /** 举麦包含我 */
     private boolean containMe = false;
-    /**
-     * 连麦状态
-     */
+    /** 连麦状态 */
     private String openNewMic = "off";
-    /**
-     * 连麦状态
-     */
+    /** 连麦状态 */
     private String onMic = "off";
-
-    /**
-     * 房间号
-     */
+    /** 房间号 */
     private String room = "";
-    /*举麦耳机提示*/
-    private boolean headsetPrompt = false;
-    /**
-     * 连麦人数
-     */
+    /** 连麦人数 */
     private ArrayList<ClassmateEntity> allClassmateEntities = new ArrayList<>();
-    /**
-     * 连麦人数变化
-     */
-    private boolean classmateChange = true;
-    /**
-     * 举手人数
-     */
-    private int raiseHandCount = 0;
-    /**
-     * 举手来源
-     */
+    /** 举手来源 */
     private String from = "";
     int micType = 0;
-    /**
-     * 接麦耳机判断
-     */
-    private boolean hasWiredHeadset = false;
-    private WiredHeadsetReceiver wiredHeadsetReceiver;
     private String onmicStatus = "off";
     private ArrayList<VideoChatStartChange.ChatStartChange> chatStatusChanges = new ArrayList<>();
 
@@ -160,30 +119,6 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
 
     public void onLiveInit(LiveGetInfo getInfo) {
         this.getInfo = getInfo;
-        boolean allowLinkMic = getInfo.isAllowLinkMic();
-        if (allowLinkMic) {
-            wiredHeadsetReceiver = new WiredHeadsetReceiver();
-            activity.registerReceiver(wiredHeadsetReceiver, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
-        }
-//        startRecord();
-    }
-
-    private class WiredHeadsetReceiver extends BroadcastReceiver {
-        private static final int STATE_UNPLUGGED = 0;
-        private static final int STATE_PLUGGED = 1;
-        private static final int HAS_NO_MIC = 0;
-        private static final int HAS_MIC = 1;
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int state = intent.getIntExtra("state", STATE_UNPLUGGED);
-            int microphone = intent.getIntExtra("microphone", HAS_NO_MIC);
-            String name = intent.getStringExtra("name");
-            logger.d("WiredHeadsetReceiver.onReceive:a=" + intent.getAction() + ", s="
-                    + (state == STATE_UNPLUGGED ? "unplugged" : "plugged") + ", m="
-                    + (microphone == HAS_MIC ? "mic" : "no mic") + ", n=" + name);
-            hasWiredHeadset = (state == STATE_PLUGGED);
-        }
     }
 
 //    public void startRecord(final String room, final String nonce) {
@@ -423,25 +358,15 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
         chatTipBll.onClassmateChange(allClassmateEntities, false);
     }
 
-    public void startMicro(String status, String nonce, boolean contain, String room, String from, int msgFrom) {
-        logger.d("startMicro:status=" + status + ",nonce=" + nonce + ",contain=" + contain + ",from=" + from + ",msgFrom=" + msgFrom);
-        if ("on".equals(status)) {
-
-        } else {
-            AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
-            if (audioRequest != null) {
-                audioRequest.release();
-            }
-        }
-        for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
-            chatStatusChange.onVideoChatStartChange(true);
-        }
-    }
-
     @Override
     public void quit(String status, String room, String from, int msgFrom) {
         logger.d("quit:status=" + status + ",room=" + room + ",from=" + from + ",msgFrom=" + msgFrom);
         if (chatTipBll != null) {
+            mLogtf.d("quit:from=" + from + ",msgFrom=" + msgFrom + ",openNewMic=" + openNewMic + ",containMe=" + containMe + ",onMic=" + onMic);
+            openNewMic = "off";
+            containMe = false;
+            onMic = "off";
+            allClassmateEntities.clear();
             chatTipBll.stopRecord("quit");
             chatTipBll = null;
         }
@@ -475,10 +400,6 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     }
 
     public void onDestroy() {
-        if (wiredHeadsetReceiver != null) {
-            activity.unregisterReceiver(wiredHeadsetReceiver);
-            wiredHeadsetReceiver = null;
-        }
         if (videoChatInter != null) {
             bottomContent.removeView(videoChatInter.getRootView());
             stopRecord();
@@ -524,31 +445,5 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
         }
     }
 
-    private void checkPermissionUnPerList(final OnPermissionFinish onPermissionFinish) {
-        final List<PermissionItem> unList = new ArrayList<>();
-        List<PermissionItem> unList2 = XesPermission.checkPermissionUnPerList(activity, new
-                LiveActivityPermissionCallback() {
-                    @Override
-                    public void onFinish() {
-
-                    }
-
-                    @Override
-                    public void onDeny(String permission, int position) {
-
-                    }
-
-                    @Override
-                    public void onGuarantee(String permission, int position) {
-                        unList.remove(0);
-                        if (unList.isEmpty()) {
-                            isHasPermission = true;
-                            onPermissionFinish.onFinish();
-                        }
-                    }
-                }, PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
-        unList.addAll(unList2);
-        isHasPermission = unList.isEmpty();
-    }
 }
 

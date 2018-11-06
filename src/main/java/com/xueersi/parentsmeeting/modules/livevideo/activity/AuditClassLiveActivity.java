@@ -867,37 +867,37 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     @Override
     public void onLiveTimeOut() {
-        final Button bt = findViewById(R.id.bt_course_video_livetimeout);
-        if (bt != null) {
-            bt.setVisibility(View.VISIBLE);
-            bt.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) bt.getLayoutParams();
-//                    lp.leftMargin = LiveVideoPoint.getInstance().x3 / 2 - bt.getWidth() / 2;
-//                    if (tvLoadingHint != null) {
-//                        int[] outLocation = new int[2];
-//                        tvLoadingHint.getLocationInWindow(outLocation);
-//                        lp.topMargin = outLocation[1] + tvLoadingHint.getHeight() + 20;
-//                    } else {
-//                        lp.topMargin = LiveVideoPoint.getInstance().screenHeight * 2 / 3 - 40;
-//                    }
-                    lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-                    bt.setLayoutParams(lp);
-                    bt.getViewTreeObserver().removeOnPreDrawListener(this);
-                    return false;
-                }
-            });
-            bt.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mLiveBll.liveGetPlayServer(false);
-                    v.setVisibility(View.GONE);
-                }
-            });
-        } else {
-            XESToastUtils.showToast(this, "请退出直播间重试");
-        }
+//        final Button bt = findViewById(R.id.bt_course_video_livetimeout);
+//        if (bt != null) {
+//            bt.setVisibility(View.VISIBLE);
+//            bt.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//                @Override
+//                public boolean onPreDraw() {
+//                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) bt.getLayoutParams();
+////                    lp.leftMargin = LiveVideoPoint.getInstance().x3 / 2 - bt.getWidth() / 2;
+////                    if (tvLoadingHint != null) {
+////                        int[] outLocation = new int[2];
+////                        tvLoadingHint.getLocationInWindow(outLocation);
+////                        lp.topMargin = outLocation[1] + tvLoadingHint.getHeight() + 20;
+////                    } else {
+////                        lp.topMargin = LiveVideoPoint.getInstance().screenHeight * 2 / 3 - 40;
+////                    }
+//                    lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+//                    bt.setLayoutParams(lp);
+//                    bt.getViewTreeObserver().removeOnPreDrawListener(this);
+//                    return false;
+//                }
+//            });
+//            bt.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mLiveBll.liveGetPlayServer(false);
+//                    v.setVisibility(View.GONE);
+//                }
+//            });
+//        } else {
+//            XESToastUtils.showToast(this, "请退出直播间重试");
+//        }
     }
 
     @Override

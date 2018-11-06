@@ -12,6 +12,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -19,7 +20,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,7 +45,9 @@ public class IRCTalkConf {
     private LogToFile mLogtf;
     private BaseHttpBusiness baseHttpBusiness;
     private ArrayList<TalkConfHost> hosts;
-    /** 从上面的列表选择一个服务器 */
+    /**
+     * 从上面的列表选择一个服务器
+     */
     private int mSelectTalk = 0;
     private String liveId;
     private LiveGetInfo liveGetInfo;
@@ -58,18 +60,28 @@ public class IRCTalkConf {
     private static final int GET_SERVER_TIMEOUT = 2000;
     private static final int GET_SERVER_NEXT = 2000;
     private static final int GET_SERVER_NEXT_LOOP = 30000;
-    /** 网络类型 */
+    /**
+     * 调度获取聊天服务器地址失败的 回调
+     */
+    private ChatServiceError chatServiceError;
+    /**
+     * 网络类型
+     */
     private int netWorkType;
-    /** 调度是不是在无网络下失败 */
+    /**
+     * 调度是不是在无网络下失败
+     */
     private boolean connectError = false;
-    /** 播放器是不是销毁 */
+    /**
+     * 播放器是不是销毁
+     */
     private boolean mIsDestory = false;
     private static String hostIp = null;
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            logger.d( "handleMessage:what=" + msg.what);
+            logger.d("handleMessage:what=" + msg.what);
             getserver();
         }
     };
@@ -116,7 +128,9 @@ public class IRCTalkConf {
         return true;
     }
 
-    /** 调度获得服务器列表 */
+    /**
+     * 调度获得服务器列表
+     */
     private void getserver() {
         if (mIsDestory) {
             return;
@@ -188,6 +202,18 @@ public class IRCTalkConf {
                 stableLogHashMap.put("ip", getHostIP());
                 stableLogHashMap.put("netWorkType", "" + netWorkType);
                 UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
+                //体验课获取失败
+
+                if (chatServiceError != null) {
+                    chatServiceError.getChatUrlFailure(url, msg, eventId, "Error", "Android");
+                }
+//                if (mLiveType == LiveVideoConfig.LIVE_TYPE_STAND_EXPERIENCE) {
+//                    StableLogHashMap experienceMap = new StableLogHashMap();
+//                    experienceMap.put("url", url);
+//                    experienceMap.put("errmsg", msg);
+//                    experienceMap.put("liveid", liveId);
+//
+//                }
                 reTry();
             }
 
@@ -243,7 +269,9 @@ public class IRCTalkConf {
         }
     }
 
-    /** 播放器销毁 */
+    /**
+     * 播放器销毁
+     */
     public void destory() {
         mIsDestory = true;
         handler.removeMessages(GET_SERVER);
@@ -282,5 +310,18 @@ public class IRCTalkConf {
         }
         return hostIp;
 
+    }
+
+    /**
+     * 回调
+     * 1.调度获取聊天服务器地址失败的
+     * 2.连接聊天服务器失败
+     */
+    public static interface ChatServiceError {
+        void getChatUrlFailure(String url, String errMsg, String eventId, String logtype, String os);
+    }
+
+    public void setChatServiceError(ChatServiceError chatServiceError) {
+        this.chatServiceError = chatServiceError;
     }
 }

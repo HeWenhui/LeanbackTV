@@ -9,6 +9,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexper
 
 import org.json.JSONArray;
 
+/**
+ * 学习反馈窗口的Presenter层
+ */
 public class ExperienceLearnFeedbackBll extends StandExperienceEventBaseBll implements LearnFeedBackContract.ISendHttp {
 
     StandExperienceLearnFeedBackPager mPager;

@@ -25,7 +25,11 @@ import java.util.List;
 
 import okhttp3.Call;
 
-public class NewStandPager<T extends LearnFeedBackContract.ISendHttp> extends BasePager {
+/**
+ * 新的反馈弹窗，如果使用RadioGroup显示时，左边的选择按钮样式不好，采用这个Pager来显示反馈弹窗
+ * @param <T>
+ */
+public class NewStandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.ISendHttp> extends BasePager {
 
     T presenter;
     /**
@@ -56,7 +60,7 @@ public class NewStandPager<T extends LearnFeedBackContract.ISendHttp> extends Ba
      */
     private ImageView ivClose;
 
-    public NewStandPager(Context context, T presenter, VideoLivePlayBackEntity
+    public NewStandExperienceLearnFeedBackPager(Context context, T presenter, VideoLivePlayBackEntity
             videoLivePlayBackEntity) {
         super(context);
         this.presenter = presenter;
@@ -84,6 +88,7 @@ public class NewStandPager<T extends LearnFeedBackContract.ISendHttp> extends Ba
      */
     private void priHandle() {
         //对ScrollView预处理，防止因为EditText获取焦点自动滑动
+        //如果不做处理，每一次点击其它按钮时，都会自动滑动到获取到焦点的EditText这
         scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         scrollView.setFocusable(true);
         scrollView.setFocusableInTouchMode(true);

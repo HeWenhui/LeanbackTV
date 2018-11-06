@@ -13,7 +13,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination.StandExperienceEvaluationBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
 
 import java.util.List;
@@ -154,12 +154,14 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 //                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
 //            }
 //            展示定级卷
-            if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
-                showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
-            }
-//            if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
-//                showNextWindow((ExperienceLearnFeedbackBll) liveBackBaseBll);
+//            if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
+//                showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
 //            }
+
+            //展现学习反馈窗口
+            if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
+                showNextWindow((ExperienceLearnFeedbackBll) liveBackBaseBll);
+            }
 
         }
     }
@@ -171,9 +173,6 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
      * @param mPresenter
      */
     public void showNextWindow(IPresenter mPresenter) {
-        //定级卷竖屏来做
-//        ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
-//        activityChangeLand.changeLOrP();
         if (mPresenter != null) {
             mPresenter.showWindow();
         }
@@ -192,6 +191,12 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
         }
     }
 
+    /**
+     * 上传日志，视频播放错误。
+     *
+     * @param eventId
+     * @param mData
+     */
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
@@ -199,7 +204,12 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
+        mData.put("orderid", mVideoEntity.getChapterId());
         mData.put("livetype", String.valueOf(4));
+        mData.put("logtype", "play error");
+        mData.put("os", "Android");
+        mData.put("playurl", mVideoEntity.getVideoPath());
+
 //        if ("PublicLiveDetailActivity".equals(where)) {
 //            mData.put("livetype", "" + 2);
 //        } else {
@@ -207,7 +217,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 //        }
         mData.put("clits", "" + System.currentTimeMillis());
 //        Loger.d(mContext, eventId, mData, true);
-        UmsAgentManager.umsAgentDebug(activity, appID, eventId, mData);
+        UmsAgentManager.umsAgentDebug(activity, eventId, mData);
     }
 
     @Override

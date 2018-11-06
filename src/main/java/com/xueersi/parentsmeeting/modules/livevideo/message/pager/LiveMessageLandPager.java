@@ -498,10 +498,6 @@ public class LiveMessageLandPager extends BaseLiveMessagePager {
         return cbMessageClock.isChecked();
     }
 
-    @Override
-    public void setVideoWidthAndHeight(int width, int height) {
-    }
-
     /** 聊天开始连接 */
     @Override
     public void onStartConnect() {

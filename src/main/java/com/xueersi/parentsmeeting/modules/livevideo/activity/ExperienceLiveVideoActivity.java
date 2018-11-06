@@ -504,7 +504,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
         mIRCMessage = new IRCMessage(this, mNetWorkType, channel, mGetInfo.getStuName(), chatRoomUid);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(null, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
+        IRCTalkConf ircTalkConf = new IRCTalkConf(this, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();

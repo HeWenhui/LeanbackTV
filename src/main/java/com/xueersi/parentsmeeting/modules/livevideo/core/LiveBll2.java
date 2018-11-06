@@ -454,7 +454,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, channel, mGetInfo.getStuName(), nickname);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(null, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
+        IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
@@ -842,8 +842,8 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
     /**
      * 发消息
      *
-     * @param target  目标
-     * @param data 信息
+     * @param target 目标
+     * @param data   信息
      */
     public void sendMessage(String target, JSONObject data) {
         mIRCMessage.sendMessage(target, data.toString());

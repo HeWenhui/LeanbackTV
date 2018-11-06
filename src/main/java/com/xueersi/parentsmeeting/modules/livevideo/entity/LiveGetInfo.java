@@ -259,6 +259,19 @@ public class LiveGetInfo {
     /** 是否显示文科表扬榜信息 */
     private int showArtsPraise;
 
+    /**
+     * 是否开启集语音互动功能 1,开启，0 不开启
+     */
+    private int isVoiceInteraction;
+
+    public int getIsVoiceInteraction() {
+        return isVoiceInteraction;
+    }
+
+    public void setIsVoiceInteraction(int isVoiceInteraction) {
+        this.isVoiceInteraction = isVoiceInteraction;
+    }
+
     public int getShowArtsPraise() {
         return showArtsPraise;
     }

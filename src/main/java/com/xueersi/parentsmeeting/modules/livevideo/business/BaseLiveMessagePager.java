@@ -384,9 +384,6 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     public void onModeChange(String mode) {
     }
 
-    public void setVideoWidthAndHeight(int width, int height) {
-    }
-
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
 
     }

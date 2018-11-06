@@ -647,57 +647,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         }
     }
 
-
-    @Override
-    public void setVideoWidthAndHeight(int width, int height) {
-        final View contentView = liveVideoActivity.findViewById(android.R.id.content);
-        final View actionBarOverlayLayout = (View) contentView.getParent();
-        Rect r = new Rect();
-        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        int screenWidth = (r.right - r.left);
-        int screenHeight = ScreenUtils.getScreenHeight();
-        if (width > 0) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
-            wradio += (screenWidth - width) / 2;
-            if (wradio != params.width) {
-                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
-                // + ",wradio=" + wradio + "," + params.width);
-                params.width = wradio;
-//                rlInfo.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-            }
-            if (cbMessageClock != null) {
-                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-                if (params.rightMargin != wradio) {
-                    params.rightMargin = wradio;
-//                cbMessageClock.setLayoutParams(params);
-                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
-                }
-            }
-        }
-        if (height > 0) {
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
-            int topMargin = (int) ((LiveVideoConfig.VIDEO_HEIGHT - LiveVideoConfig.VIDEO_HEAD_HEIGHT) * height /
-                    LiveVideoConfig.VIDEO_HEIGHT);
-            topMargin = height - topMargin + (screenHeight - height) / 2;
-            if (topMargin != params.topMargin) {
-                params.topMargin = topMargin;
-//                rlInfo.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-                logger.e( "setVideoWidthAndHeight:topMargin=" + params.topMargin);
-            }
-            int bottomMargin = (ScreenUtils.getScreenHeight() - height) / 2;
-            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
-            if (params.bottomMargin != bottomMargin) {
-                params.bottomMargin = bottomMargin;
-//                lvMessage.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
-            }
-        }
-    }
-
     /** 聊天开始连接 */
     @Override
     public void onStartConnect() {

@@ -145,6 +145,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             //getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             getInfo.setIsSeniorOfHighSchool(data.optInt("isSeniorOfHighSchool"));
+            getInfo.setIsVoiceInteraction(data.optInt("isVoiceInteraction"));
 
             //getInfo.setIsShowCounselorWhisper("1");
             if (data.has("followType")) {

@@ -616,7 +616,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         String nickname = mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         mIRCMessage = new AuditIRCMessage(netWorkType, channel, mGetInfo.getStuName(), nickname, this);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(null, mGetInfo, mLiveType, mHttpManager, mGetInfo.getNewTalkConfHosts());
+        IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, mGetInfo, mLiveType, mHttpManager, mGetInfo.getNewTalkConfHosts());
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
