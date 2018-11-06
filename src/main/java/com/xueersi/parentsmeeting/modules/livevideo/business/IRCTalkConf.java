@@ -140,8 +140,6 @@ public class IRCTalkConf {
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             params.addBodyParam("appid", "1");
             params.addBodyParam("classid", classid);
-        } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_STAND_EXPERIENCE) {
-
         } else {
             params.addBodyParam("appid", "2");
         }
