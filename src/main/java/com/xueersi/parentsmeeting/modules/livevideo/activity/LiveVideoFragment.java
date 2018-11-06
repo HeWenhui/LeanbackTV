@@ -51,6 +51,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyRe
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.AssetsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.VideoAudioChatIRCBll;
@@ -61,6 +63,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.worddictation.business.WordDictationIRCBll;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 /**
@@ -70,7 +77,7 @@ import java.util.List;
  */
 public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, BaseLiveMessagePager.OnMsgUrlClick {
     private String TAG = "LiveVideoFragment";
-    Logger logger = LoggerFactory.getLogger(TAG);
+    Logger logger = LiveLoggerFactory.getLogger(TAG);
 
     public LiveVideoFragment() {
         mLayoutVideo = R.layout.activity_video_live_new;
@@ -149,7 +156,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      */
     private void addBusiness(Activity activity) {
         //是文科
+        String jsonName;
         if (isArts == 1) {
+            jsonName = "live_business_arts.json";
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
@@ -171,6 +180,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             videoChatIRCBll.setLiveFragmentBase(this);
             mLiveBll.addBusinessBll(videoChatIRCBll);
         } else {
+            jsonName = "live_business_science.json";
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
@@ -207,6 +217,30 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             }
         }
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
+        String live_business_arts = AssetsUtil.getJsonStrFromAssets(activity, jsonName);
+        try {
+            JSONObject jsonObject = new JSONObject(live_business_arts);
+            JSONArray business = jsonObject.getJSONArray("business");
+            for (int i = 0; i < business.length(); i++) {
+                try {
+                    JSONObject businessObj = business.getJSONObject(i);
+                    try {
+                        String className = businessObj.getString("class");
+                        Class<? extends LiveBaseBll> clazz = (Class<? extends LiveBaseBll>) Class.forName(className);
+                        Constructor<? extends LiveBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBll2.class});
+                        LiveBaseBll liveBaseBll = constructor.newInstance(activity, mLiveBll);
+                        mLiveBll.addBusinessBll(liveBaseBll);
+                        logger.d("addBusiness:business=" + className);
+                    } catch (Exception e) {
+                        logger.e("addBusiness", e);
+                    }
+                } catch (Exception e) {
+                    logger.d("addBusiness:business=", e);
+                }
+            }
+        } catch (JSONException e) {
+            logger.d("addBusiness:live_business_arts=" + live_business_arts, e);
+        }
     }
 
     @Override
