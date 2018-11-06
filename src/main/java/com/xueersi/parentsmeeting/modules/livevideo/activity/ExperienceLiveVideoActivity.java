@@ -509,13 +509,14 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         //聊天连接调度失败日志
         ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
             @Override
-            public void getChatUrlFailure(String url, String errMsg, String eventId, String logtype, String os) {
+            public void getChatUrlFailure(String url, String errMsg, String eventId, String logtype, String os,
+                                          String ip) {
                 Map<String, String> mData = new HashMap<>();
                 mData.put("os", os);
                 mData.put("logtype",logtype);
                 mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
                 mData.put("url", url);
-                mData.put("ip",IpAddressUtil.USER_IP);
+                mData.put("ip",ip);
                 mData.put("errmsg", errMsg);
                 mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
                 mData.put("orderid", mVideoEntity.getChapterId());
@@ -528,7 +529,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mIRCMessage.setConnectService(new IRCMessage.ConnectService() {
             @Override
             public void connectChatServiceError(String eventId, String logtype, String os, String serverIp, String
-                    serverPort, String errMsg) {
+                    serverPort, String errMsg,String ip) {
                 Map<String, String> mData = new HashMap<>();
                 mData.put("os", os);
                 mData.put("logtype",logtype);
@@ -536,7 +537,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 mData.put("serverip",serverIp);
                 mData.put("serverport",serverPort);
                 mData.put("errmsg", errMsg);
-                mData.put("ip",IpAddressUtil.USER_IP);
+                mData.put("ip",ip);
                 mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
                 mData.put("orderid", mVideoEntity.getChapterId());
                 ums.umsAgentDebugSys(eventId,mData);
