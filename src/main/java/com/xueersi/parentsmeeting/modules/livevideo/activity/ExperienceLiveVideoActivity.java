@@ -104,6 +104,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
@@ -199,6 +200,12 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private List<VideoQuestionEntity> roomChatEvent;
 
     private PopupWindow mFeedbackWindow;
+    /** 视频地址列表 */
+    private List<String> mVideoPaths;
+
+    private int rePlayCount = 0;
+
+    private static final int MAX_REPLAY_COUNT = 4;
 
     // 定时获取聊天记录的任务
     class ScanRunnable implements Runnable {
@@ -513,14 +520,14 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                                           String ip) {
                 Map<String, String> mData = new HashMap<>();
                 mData.put("os", os);
-                mData.put("logtype",logtype);
+                mData.put("logtype", logtype);
                 mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
                 mData.put("url", url);
-                mData.put("ip",ip);
+                mData.put("ip", ip);
                 mData.put("errmsg", errMsg);
                 mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
                 mData.put("orderid", mVideoEntity.getChapterId());
-                ums.umsAgentDebugSys(eventId,mData);
+                ums.umsAgentDebugSys(eventId, mData);
             }
         });
         mIRCMessage.setIrcTalkConf(ircTalkConf);
@@ -529,18 +536,18 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mIRCMessage.setConnectService(new IRCMessage.ConnectService() {
             @Override
             public void connectChatServiceError(String eventId, String logtype, String os, String serverIp, String
-                    serverPort, String errMsg,String ip) {
+                    serverPort, String errMsg, String ip) {
                 Map<String, String> mData = new HashMap<>();
                 mData.put("os", os);
-                mData.put("logtype",logtype);
+                mData.put("logtype", logtype);
                 mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
-                mData.put("serverip",serverIp);
-                mData.put("serverport",serverPort);
+                mData.put("serverip", serverIp);
+                mData.put("serverport", serverPort);
                 mData.put("errmsg", errMsg);
-                mData.put("ip",ip);
+                mData.put("ip", ip);
                 mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
                 mData.put("orderid", mVideoEntity.getChapterId());
-                ums.umsAgentDebugSys(eventId,mData);
+                ums.umsAgentDebugSys(eventId, mData);
             }
         });
         mIRCMessage.create();
@@ -880,7 +887,13 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         // 视频名
         mSectionName = mVideoEntity.getPlayVideoName();
         // 播放视频
-        mWebPath = mVideoEntity.getVideoPath();
+        mVideoPaths = mVideoEntity.getVideoPaths();
+        if (mVideoPaths != null && !mVideoPaths.isEmpty()) {
+            int index = new Random().nextInt(mVideoPaths.size());
+            mWebPath = mVideoPaths.get(index);
+        } else {
+            mWebPath = mVideoEntity.getVideoPath();
+        }
         liveBackBll.addBusinessShareParam("videoView", videoView);
         addBusiness(this);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
@@ -1337,6 +1350,16 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //            if (rlQuestionContent.getChildCount() > 0) {
 //                rlQuestionContent.setVisibility(View.VISIBLE);
 //            }
+            if (mVideoPaths != null && !mVideoPaths.isEmpty()) {
+                for (int i = 0; i < mVideoPaths.size(); i++) {
+                    if (mWebPath.equals(mVideoPaths.get(i))) {
+                        mWebPath = mVideoPaths.get((i + 1) % mVideoPaths.size());
+                        break;
+                    }
+                }
+            } else {
+                mWebPath = mVideoEntity.getVideoPath();
+            }
             playNewVideo(Uri.parse(mWebPath), mSectionName);
         }
         AppBll.getInstance(mBaseApplication);
@@ -1408,7 +1431,22 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     @Override
     protected void resultFailed(int arg1, int arg2) {
-        super.resultFailed(arg1, arg2);
+        if (rePlayCount < MAX_REPLAY_COUNT) {
+            rePlayCount++;
+            if (mVideoPaths != null && !mVideoPaths.isEmpty()) {
+                for (int i = 0; i < mVideoPaths.size(); i++) {
+                    if (mWebPath.equals(mVideoPaths.get(i))) {
+                        mWebPath = mVideoPaths.get((i + 1) % mVideoPaths.size());
+                        break;
+                    }
+                }
+            } else {
+                mWebPath = mVideoEntity.getVideoPath();
+            }
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
+        } else {
+            super.resultFailed(arg1, arg2);
+        }
         resultFailed = true;
         mIsShowQuestion = mIsShowRedpacket = false;
         String errcode = "";
@@ -1426,10 +1464,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mData.put("playurl", mVideoEntity.getVideoPath());
         mData.put("errcode", errcode);
         mData.put("errmsg", errmsg);
-        mData.put("ip",IpAddressUtil.USER_IP);
+        mData.put("ip", IpAddressUtil.USER_IP);
         mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
         mData.put("orderid", mVideoEntity.getChapterId());
-        ums.umsAgentDebugSys(LiveVideoConfig.STAND_EXPERIENCE_LIVE_PLAY_ERROR,mData);
+        ums.umsAgentDebugSys(LiveVideoConfig.STAND_EXPERIENCE_LIVE_PLAY_ERROR, mData);
 
     }
 
