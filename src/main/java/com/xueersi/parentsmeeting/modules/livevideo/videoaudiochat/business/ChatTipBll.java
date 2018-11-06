@@ -66,6 +66,7 @@ public class ChatTipBll {
      */
     private ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
     private ViewGroup vgRaisehand;
+    private boolean destory = false;
     private TextView tv_livevideo_chat_people;
     private TextView tv_livevideo_chat_people_hind;
     private TextView tv_livevideo_chat_people_grey;
@@ -187,7 +188,7 @@ public class ChatTipBll {
         final RelativeLayout.LayoutParams lpRaisehand = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpRaisehand.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         lpRaisehand.leftMargin = LiveVideoPoint.getInstance().x2;
-        logger.d("initView:x2=" + LiveVideoPoint.getInstance().x2);
+        logToFile.d("initView:x2=" + LiveVideoPoint.getInstance().x2 + ",destory=" + destory);
         final int bottom = LiveVideoPoint.getInstance().screenHeight - LiveVideoPoint.getInstance().y4 + 200;
         vgRaisehand.setPadding(vgRaisehand.getLeft(), bottom, vgRaisehand.getRight(), bottom);
         bottomContent.addView(vgRaisehand, lpRaisehand);
@@ -537,6 +538,7 @@ public class ChatTipBll {
                 if (vgRaisehand != null) {
                     bottomContent.removeView(vgRaisehand);
                     vgRaisehand = null;
+                    destory = true;
                 }
                 if (videoChatInter != null) {
                     if (videoChatInter instanceof AgoraChatPager) {
