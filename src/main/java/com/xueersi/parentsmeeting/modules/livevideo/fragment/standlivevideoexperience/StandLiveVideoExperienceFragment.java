@@ -60,7 +60,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExper
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -160,7 +159,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     private PopupWindow mPopupWindows;
     private Handler mHandler;
     protected StandExperienceLiveBackBll liveBackBll;
-    protected LiveBackVideoBll liveBackVideoBll;
+    protected StandExperienceVideoBll liveBackVideoBll;
     /*** 全屏显示*/
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
     /**
@@ -267,7 +266,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         where = intent.getStringExtra("where");
         isArts = intent.getIntExtra("isArts", 0);
 
-        liveBackVideoBll = new LiveBackVideoBll(activity, false);
+        liveBackVideoBll = new StandExperienceVideoBll(activity, false);
         liveBackVideoBll.setVideoEntity(mVideoEntity);
         liveBackVideoBll.setLiveBackPlayVideoFragment(liveBackPlayVideoFragment);
         liveBackVideoBll.setvPlayer(vPlayer);
@@ -762,9 +761,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 
 //    private long lastSendmTime = 0L;
     /**
-     * 播放时长，5分钟统计
+     * 播放时长，1分钟统计
      */
-    private final int mPlayDurTime = 300000;
+    private final int mPlayDurTime = 60000;
 
     //    private long errorContinuedmTime = 0L;
     private long delaymTime = 300000L;

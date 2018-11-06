@@ -6,6 +6,7 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.MyUserInfoEntity;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.TimeUtils;
@@ -13,7 +14,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination.StandExperienceEvaluationBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
 
 import java.util.List;
@@ -154,14 +155,14 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 //                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
 //            }
 //            展示定级卷
-//            if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
-//                showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
-//            }
+            if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
+                showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
+            }
 
             //展现学习反馈窗口
-            if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
-                showNextWindow((ExperienceLearnFeedbackBll) liveBackBaseBll);
-            }
+//            if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
+//                showNextWindow((ExperienceLearnFeedbackBll) liveBackBaseBll);
+//            }
 
         }
     }
@@ -209,6 +210,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
         mData.put("logtype", "play error");
         mData.put("os", "Android");
         mData.put("playurl", mVideoEntity.getVideoPath());
+        mData.put("ip", IpAddressUtil.USER_IP);
 
 //        if ("PublicLiveDetailActivity".equals(where)) {
 //            mData.put("livetype", "" + 2);

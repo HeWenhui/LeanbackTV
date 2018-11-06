@@ -11,6 +11,7 @@ import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
@@ -205,7 +206,14 @@ public class IRCTalkConf {
                 //体验课获取失败
 
                 if (chatServiceError != null) {
-                    chatServiceError.getChatUrlFailure(url, msg, eventId, "Error", "Android");
+                    chatServiceError.getChatUrlFailure(
+                            getHost(url),
+                            msg,
+                            eventId,
+                            "Error",
+                            "Android",
+                            IpAddressUtil.USER_IP
+                    );
                 }
 //                if (mLiveType == LiveVideoConfig.LIVE_TYPE_STAND_EXPERIENCE) {
 //                    StableLogHashMap experienceMap = new StableLogHashMap();
@@ -313,15 +321,38 @@ public class IRCTalkConf {
     }
 
     /**
+     * wiki: https://wiki.xesv5.com/pages/viewpage.action?pageId=13842928
      * 回调
-     * 1.调度获取聊天服务器地址失败的
-     * 2.连接聊天服务器失败
+     * 调度获取聊天服务器地址失败的
      */
     public static interface ChatServiceError {
-        void getChatUrlFailure(String url, String errMsg, String eventId, String logtype, String os);
+        void getChatUrlFailure(String url, String errMsg, String eventId, String logtype, String os, String ip);
     }
 
     public void setChatServiceError(ChatServiceError chatServiceError) {
         this.chatServiceError = chatServiceError;
+    }
+
+    /**
+     * 根据url获取服务器的ip地址
+     *
+     * @param ip
+     * @return
+     */
+    private String getHost(String ip) {
+        try {
+            int len = ip.length();
+            int pos = ip.indexOf("//");
+            int i = pos + 2;
+            while (i < len) {
+                if (ip.charAt(i) == '/') {
+                    break;
+                }
+                i++;
+            }
+            return ip.substring(pos <= 0 ? 0 : pos + 2, i);
+        } catch (Exception e) {
+            return "";
+        }
     }
 }
