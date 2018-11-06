@@ -104,6 +104,9 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
             case XESCODE.SPEECH_FEEDBACK: {
                 final String from = object.optString("roomId");
                 final String status = object.optString("status");
+                if (!"voice_plan_ios".equals(from)) {
+                    return;
+                }
                 if (speechCollectiveBll != null) {
                     onStaus(status, from);
                 } else {
