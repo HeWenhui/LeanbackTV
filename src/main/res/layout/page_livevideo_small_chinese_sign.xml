@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/tv_livevideo_small_chinese_sign_student_background"
+        android:layout_width="498dp"
+        android:layout_height="285dp"
+        android:src="@drawable/bg_livevideo_small_chinese_sign_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_livevideo_small_chinese_sign_student_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:text="风一同学"
+        android:textColor="@color/COLOR_7B583E"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintRight_toRightOf="@+id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintTop_toTopOf="@+id/tv_livevideo_small_chinese_sign_student_background" />
+
+    <TextView
+        android:id="@+id/tv_livevideo_small_chinese_sign_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="现在开始课前点名"
+        android:textColor="@color/COLOR_7B583E"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintRight_toRightOf="@+id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintTop_toBottomOf="@+id/tv_livevideo_small_chinese_sign_student_name" />
+
+    <ImageView
+        android:id="@+id/bg_livevideo_small_chinses_sign_status"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/bg_livevideo_small_chinses_sign_success"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintRight_toRightOf="@+id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintTop_toTopOf="@+id/tv_livevideo_small_chinese_sign_student_background" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/iv_livevideo_small_chinese_sign_close"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="30dp"
+        android:src="@drawable/selector_small_chinese_sign_close"
+        app:layout_constraintRight_toRightOf="@+id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintTop_toTopOf="@+id/tv_livevideo_small_chinese_sign_student_background" />
+
+</android.support.constraint.ConstraintLayout>
