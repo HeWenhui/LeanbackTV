@@ -50,7 +50,9 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
         logger.d("data=" + jsonObject);
         LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
         String status = mainRoomstatus.getOnGroupSpeech();
-        if ("on".equals(status) && LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
+        int isVoiceInteraction = mGetInfo.getIsVoiceInteraction();
+        if (isVoiceInteraction == 1 && "on".equals(status)
+                && LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
             final String roomId = mainRoomstatus.getGroupSpeechRoom();
             if (speechCollectiveBll != null) {
                 speechCollectiveBll.start(roomId);
@@ -73,7 +75,9 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
     private void onStaus(String status, String roomId) {
         if (speechCollectiveBll != null) {
             try {
-                if ("on".equals(status) && LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
+                int isVoiceInteraction = mGetInfo.getIsVoiceInteraction();
+                if (isVoiceInteraction == 1 && "on".equals(status)
+                        && LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
                     speechCollectiveBll.start(roomId);
                 } else {
                     speechCollectiveBll.stop();
@@ -100,9 +104,6 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
             case XESCODE.SPEECH_FEEDBACK: {
                 final String from = object.optString("roomId");
                 final String status = object.optString("status");
-                if (!"voice_plan_ios".equals(from)) {
-                    return;
-                }
                 if (speechCollectiveBll != null) {
                     onStaus(status, from);
                 } else {
