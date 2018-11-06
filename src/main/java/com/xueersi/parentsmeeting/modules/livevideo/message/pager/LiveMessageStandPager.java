@@ -186,7 +186,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     private AudioRequest mAudioRequest;
     /** 模型启动文案 */
     private String mSpeechFail = "模型正在启动，请稍后";
-    /** 语音聊天是否完成*/
+    /** 语音聊天是否完成 */
     boolean isSpeekDone = false;
 
 
@@ -511,7 +511,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 //                btMesOpen.performClick();
                 if (rlMessageVoice.getVisibility() == View.VISIBLE) {
                     stopEvaluator();
-                    isVoice = false;
                     setSpeechFinishView(mVoiceContent);
                 }
                 clearMsgView();
@@ -1324,6 +1323,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         logger.d("openvoice:" + openVoice + "from:" + type);
         if (openVoice) {
             ivMessageClose.performClick();
+            if (!("ENGLISH_H5_COURSEWARE".equals(type) || "ARTS_H5_COURSEWARE".equals(type))) {
+                btnVoiceMesOpen.setEnabled(false);
+            }
+        } else {
+            btnVoiceMesOpen.setEnabled(true);
         }
     }
 
@@ -1438,11 +1442,18 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             @Override
             public void run() {
                 if (isShow) {
+                    //发题时关闭正在进行的语音聊天，
+                    vwvVoiceChatWave.setVisibility(View.GONE);
+                    stopEvaluator();
+                    //判断聊天输入框状态，若为语音输入保存结果
+                    if (rlMessageVoice.getVisibility() == View.VISIBLE) {
+                        setSpeechFinishView(mVoiceContent);
+                    }
+                    clearMsgView();
                     liveStandMessageContent.setVisibility(View.GONE);
                     //现在的隐藏显示和liveStandMessageContent一致
                     btnVoiceMesOpen.setVisibility(View.GONE);
                     btMesOpen.setVisibility(View.GONE);
-                    ivMessageClose.performClick();
                     logger.i("隐藏聊天框");
                 } else {
                     if (ircState.openchat()) {
@@ -1458,26 +1469,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 }
             }
         });
-    }
-
-    private void showTextMessage(boolean isShow) {
-        if (isShow) {
-            initOpenBt(true, false);
-            rlMessageText.setVisibility(View.VISIBLE);
-        } else {
-            initOpenBt(false, false);
-            rlMessageText.setVisibility(View.GONE);
-        }
-    }
-
-    private void showVoiceMessage(boolean isShow) {
-        if (isShow) {
-            initOpenBt(true, true);
-            rlMessageVoice.setVisibility(View.VISIBLE);
-        } else {
-            initOpenBt(false, true);
-            rlMessageVoice.setVisibility(View.GONE);
-        }
     }
 
     /**
@@ -1516,7 +1507,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                     stopEvaluator();
                     setSpeechFinishView(mVoiceContent);
                     btMesOpen.performClick();
-                    isVoice = false;
                 }
             }
         }
@@ -1541,11 +1531,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 stopEvaluator();
                 setSpeechFinishView(mVoiceContent);
                 btMesOpen.performClick();
-                isVoice = false;
                 tvVoiceChatCountdown.setVisibility(View.GONE);
             }
         }
-
     };
 
     private void startEvaluator() {
@@ -1597,9 +1585,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     public void stopEvaluator() {
         logger.d("stopEvaluator()");
         isSpeekDone = true;
+        isVoice = false;
         mainHandler.removeCallbacks(mNorecogRunnable);
         mainHandler.removeCallbacks(mNovoiceRunnable);
         mainHandler.removeCallbacks(mHintRunnable);
+        if (mAudioRequest != null) {
+            mAudioRequest.release();
+        }
         if (mSpeechEvaluatorUtils != null) {
             vwvVoiceChatWave.setVisibility(View.GONE);
             mSpeechEvaluatorUtils.cancel();
@@ -1609,9 +1601,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         }
         if (noSpeechTimer != null) {
             noSpeechTimer.cancel();
-        }
-        if (mAudioRequest != null) {
-            mAudioRequest.release();
         }
         tvVoiceChatCountdown.setVisibility(View.GONE);
     }
@@ -1645,7 +1634,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                     stopEvaluator();
                     setSpeechFinishView(content);
                     btMesOpen.performClick();
-                    isVoice = false;
                 }
             } else {
                 if (!TextUtils.isEmpty(content)) {
@@ -1677,7 +1665,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             stopEvaluator();
             setSpeechFinishView("");
             btMesOpen.performClick();
-            isVoice = false;
         }
 
     }

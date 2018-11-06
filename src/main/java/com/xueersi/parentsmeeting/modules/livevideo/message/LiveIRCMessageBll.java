@@ -611,6 +611,17 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 }
                 break;
             }
+            case XESCODE.ARTS_H5_COURSEWARE:{
+                String status = object.optString("status", "off");
+                if (mRoomAction != null) {
+                    if ("on".equals(status)) {
+                        mRoomAction.onOpenVoiceNotic(true, "ARTS_H5_COURSEWARE");
+                    } else {
+                        mRoomAction.onOpenVoiceNotic(false, "ARTS_H5_COURSEWARE");
+                    }
+                }
+                break;
+            }
             case XESCODE.ENGLISH_H5_COURSEWARE: {
                 String status = object.optString("status", "off");
                 if (mRoomAction != null) {

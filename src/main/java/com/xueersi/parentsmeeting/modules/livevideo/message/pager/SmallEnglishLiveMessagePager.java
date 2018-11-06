@@ -1625,7 +1625,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     }
 
     @Override
-    public void onOpenVoiceNotic(final boolean openVoice, String type) {
+    public void onOpenVoiceNotic(final boolean openVoice, final String type) {
         logger.d("openVoice:" + openVoice + " from:" + type);
         mainHandler.post(new Runnable() {
             @Override
@@ -1638,7 +1638,12 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     etMessageContent.setSelection(etMessageContent.getText().toString().length());
                     btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_voice);
                     onTitleShow(false);
+                    if (!("ENGLISH_H5_COURSEWARE".equals(type)|| "ARTS_H5_COURSEWARE".equals(type))){
+                        btnMessageStartVoice.setEnabled(false);
+                    }
                     isVoice = false;
+                }else {
+                    btnMessageStartVoice.setEnabled(true);
                 }
             }
         });
@@ -1707,8 +1712,11 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             @Override
             public void run() {
                 if (isShow) {
+                    vwvVoiceChatWave.setVisibility(View.GONE);
                     stopEvaluator();
-                    etMessageContent.setText(mVoiceContent);
+                    if (rlMessageContent.getVisibility() ==View.VISIBLE){
+                        etMessageContent.setText(mVoiceContent);
+                    }
                     etMessageContent.requestFocus();
                     etMessageContent.setSelection(etMessageContent.getText().toString().length());
                     btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_voice);
