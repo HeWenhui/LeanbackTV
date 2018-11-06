@@ -601,4 +601,7 @@ public class LiveVideoConfig {
          */
         int TYPE_RED_PACKAGE = 9;
     }
+
+    public static int IRC_TYPE_NOTICE = 0;
+    public static int IRC_TYPE_TOPIC = 1;
 }
