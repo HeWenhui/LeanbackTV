@@ -5,14 +5,13 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,22 +33,36 @@ public class IRCMessage {
     private IRCCallback mIRCCallback;
     private String mChannel;
     private String mNickname;
-    /** 备用用户聊天服务配置列表 */
+    /**
+     * 备用用户聊天服务配置列表
+     */
     private List<NewTalkConfEntity> mNewTalkConf = new ArrayList<>();
     private IRCTalkConf ircTalkConf;
-    /** 从上面的列表选择一个服务器 */
+    /**
+     * 从上面的列表选择一个服务器
+     */
     private int mSelectTalk = 0;
     private LogToFile mLogtf;
-    /** 播放器是不是销毁 */
+    /**
+     * 播放器是不是销毁
+     */
     private boolean mIsDestory = false;
     private Handler mHandler = new Handler(Looper.getMainLooper());
-    /** 网络类型 */
+    /**
+     * 网络类型
+     */
     private int netWorkType;
-    /** 调度是不是在无网络下失败 */
+    /**
+     * 调度是不是在无网络下失败
+     */
     private boolean connectError = false;
-    /** 是不是获得过用户列表 */
+    /**
+     * 是不是获得过用户列表
+     */
     private boolean onUserList = false;
-    /** 和服务器的ping，线程池 */
+    /**
+     * 和服务器的ping，线程池
+     */
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
     public IRCMessage(Context context, int netWorkType, String channel, String login, String nickname) {
@@ -103,7 +116,9 @@ public class IRCMessage {
         }
     }
 
-    /** 自己发的消息，如果没发送出去，暂时保存下来 */
+    /**
+     * 自己发的消息，如果没发送出去，暂时保存下来
+     */
     Vector<String> privMsg = new Vector<>();
 
     public void create() {
@@ -391,6 +406,10 @@ public class IRCMessage {
             if (netWorkType != NetWorkHelper.NO_NETWORK && ircTalkConf != null) {
                 mNewTalkConf.remove(index);
             }
+            //如果不为null,上传日志（体验课时不为空）
+            if (connectService != null) {
+                connectService.connectChatServiceError("", "Error", "Android", talkConfEntity.getHost(), talkConfEntity.getPort(), method + "Connect Failure");
+            }
             mLogtf.d("connect:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
             mHandler.postDelayed(new Runnable() {
 
@@ -490,7 +509,9 @@ public class IRCMessage {
         mConnection.sendMessage("#" + mChannel, message);
     }
 
-    /** 播放器销毁 */
+    /**
+     * 播放器销毁
+     */
     public void destory() {
         mIsDestory = true;
         mHandler.removeCallbacks(mPingRunnable);
@@ -512,13 +533,21 @@ public class IRCMessage {
         this.mIRCCallback = ircCallback;
     }
 
-    /** ping的次数 */
+    /**
+     * ping的次数
+     */
     private int mPingCout = 0;
-    /** 当前ping的时间 */
+    /**
+     * 当前ping的时间
+     */
     private long mPintBefore = 0;
-    /** ping的时间间隔 */
+    /**
+     * ping的时间间隔
+     */
     private final long mPingDelay = 5000;
-    /** pong的的时间间隔 */
+    /**
+     * pong的的时间间隔
+     */
     private final long mPongDelay = 6000;
     /**
      * 循环ping
@@ -576,4 +605,27 @@ public class IRCMessage {
             }, 2000);
         }
     };
+
+    /**
+     * 连接服务器失败,体验课使用
+     */
+    public interface ConnectService {
+        /**
+         * wiki地址 https://wiki.xesv5.com/pages/viewpage.action?pageId=13842928
+         *
+         * @param eventId    eventId
+         * @param logtype    错误日志类型
+         * @param os         操作系统
+         * @param serverIp   聊天服务器ip
+         * @param serverPort 聊天服务器端口
+         * @param errMsg     链接聊天服务器失败信息
+         */
+        void connectChatServiceError(String eventId, String logtype, String os, String serverIp, String serverPort, String errMsg);
+    }
+
+    private ConnectService connectService;
+
+    public void setConnectService(ConnectService connectService) {
+        this.connectService = connectService;
+    }
 }
