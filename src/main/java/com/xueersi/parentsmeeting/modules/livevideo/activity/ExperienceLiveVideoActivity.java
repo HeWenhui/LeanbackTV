@@ -40,6 +40,7 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
@@ -505,8 +506,42 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
         mIRCMessage = new IRCMessage(this, mNetWorkType, channel, mGetInfo.getStuName(), chatRoomUid);
         IRCTalkConf ircTalkConf = new IRCTalkConf(this, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
+        //聊天连接调度失败日志
+        ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
+            @Override
+            public void getChatUrlFailure(String url, String errMsg, String eventId, String logtype, String os) {
+                Map<String, String> mData = new HashMap<>();
+                mData.put("os", os);
+                mData.put("logtype",logtype);
+                mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
+                mData.put("url", url);
+                mData.put("ip",IpAddressUtil.USER_IP);
+                mData.put("errmsg", errMsg);
+                mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
+                mData.put("orderid", mVideoEntity.getChapterId());
+                ums.umsAgentDebugSys(eventId,mData);
+            }
+        });
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
+        //聊天服务器连接失败
+        mIRCMessage.setConnectService(new IRCMessage.ConnectService() {
+            @Override
+            public void connectChatServiceError(String eventId, String logtype, String os, String serverIp, String
+                    serverPort, String errMsg) {
+                Map<String, String> mData = new HashMap<>();
+                mData.put("os", os);
+                mData.put("logtype",logtype);
+                mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
+                mData.put("serverip",serverIp);
+                mData.put("serverport",serverPort);
+                mData.put("errmsg", errMsg);
+                mData.put("ip",IpAddressUtil.USER_IP);
+                mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
+                mData.put("orderid", mVideoEntity.getChapterId());
+                ums.umsAgentDebugSys(eventId,mData);
+            }
+        });
         mIRCMessage.create();
 
     }
@@ -1386,13 +1421,14 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
         Map<String, String> mData = new HashMap<>();
         mData.put("os", "Android");
-        mData.put("currenttime", "");
+        mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
         mData.put("playurl", mVideoEntity.getVideoPath());
         mData.put("errcode", errcode);
         mData.put("errmsg", errmsg);
+        mData.put("ip",IpAddressUtil.USER_IP);
         mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
         mData.put("orderid", mVideoEntity.getChapterId());
-        ums.umsAgentDebugSys("",mData);
+        ums.umsAgentDebugSys(LiveVideoConfig.STAND_EXPERIENCE_LIVE_PLAY_ERROR,mData);
 
     }
 
