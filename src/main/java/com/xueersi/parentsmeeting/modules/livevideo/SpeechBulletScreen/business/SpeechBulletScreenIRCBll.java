@@ -179,19 +179,19 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
         }
 
         //不同组的学生互相不能看弹幕
-        if (haveTeam) {
-            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-            String teamId = studentLiveInfo.getTeamId();
-            try {
-                jsonObject = new JSONObject(message);
-                String to = jsonObject.optString("to");
-                if (!teamId.equals(to)) {
-                    return;
-                }
-            } catch (JSONException e) {
-                return;
-            }
-        }
+//        if (haveTeam) {
+//            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+//            String teamId = studentLiveInfo.getTeamId();
+//            try {
+//                jsonObject = new JSONObject(message);
+//                String to = jsonObject.optString("to");
+//                if (!teamId.equals(to)) {
+//                    return;
+//                }
+//            } catch (JSONException e) {
+//                return;
+//            }
+//        }
 
         if (mSpeechBulletScreenAction == null) {
             SpeechBulletScreenBll speechBulletScreenBll = new SpeechBulletScreenBll(activity);
