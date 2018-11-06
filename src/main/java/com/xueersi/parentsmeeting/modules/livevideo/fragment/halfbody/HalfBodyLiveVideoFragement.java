@@ -6,6 +6,7 @@ import android.view.View;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodyLiveVideoAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerTop;
@@ -22,6 +23,7 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
     private static final String TAG = "HalfBodyLiveVideoFragement";
     private LiveHalfBodyMediaControllerBottom mHalfBodyMediaControllerBottom;
     private LiveHalfBodyMediaControllerTop mMediaControllerTop;
+    private HalfBodySceneTransAnim mTransAnim;
 
     public HalfBodyLiveVideoFragement() {
         Log.e(TAG, "=======>HalfBodyLiveVideoFragement created");
@@ -72,14 +74,25 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
         super.onModeChange(mode, isPresent);
         // 主/辅 状态切换
         Log.e(TAG, "====>onModeChange:" + mode);
+        //延迟 2秒 适配转场动画节奏
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mHalfBodyMediaControllerBottom.onModeChange(mode, mGetInfo);
                 mMediaControllerTop.onModeChange(mode,mGetInfo);
-
             }
         });
+        showSceneTransAnim(mode,isPresent);
+    }
+
+    /**
+     * 切流转场动画
+     */
+    private void showSceneTransAnim(String mode,boolean isPresent) {
+      if(mTransAnim == null){
+          mTransAnim = new HalfBodySceneTransAnim(activity);
+      }
+        mTransAnim.onModeChange(mode,isPresent);
     }
 
 
@@ -97,5 +110,8 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(mTransAnim != null){
+            mTransAnim.release();
+        }
     }
 }

@@ -198,24 +198,27 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         view.setVisibility(View.VISIBLE);
                     }
                 }else if(mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY){
+                    //延迟 1.5 秒 走相关逻辑(适配转场动画 节奏)
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // TODO: 2018/10/23 半身直播
+                            View view = mRoomAction.getView();
+                            if (view != null) {
+                                view.setVisibility(View.INVISIBLE);
+                            }
 
-                    android.util.Log.e("HalfBody","====>LiveIRCMessageBll onModeChange:init HalfBody");
-                    // TODO: 2018/10/23 半身直播
-                    View view = mRoomAction.getView();
-                    if (view != null) {
-                        view.setVisibility(View.INVISIBLE);
-                    }
+                            if (LiveTopic.MODE_CLASS.equals(mode)) {
+                                mRoomAction.initHalfBodyLive(mRootView);
+                            } else {
+                                mRoomAction.initViewLive(mRootView);
+                            }
 
-                    if (LiveTopic.MODE_CLASS.equals(mode)) {
-                        mRoomAction.initHalfBodyLive(mRootView);
-                    } else {
-                        mRoomAction.initViewLive(mRootView);
-                    }
-
-                    if (view != null) {
-                        view.setVisibility(View.VISIBLE);
-                    }
-
+                            if (view != null) {
+                                view.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    },2000);
                 }
             }
         });

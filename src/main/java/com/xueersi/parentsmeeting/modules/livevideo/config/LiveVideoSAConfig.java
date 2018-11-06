@@ -201,10 +201,11 @@ public class LiveVideoSAConfig {
         /** 直播上传精彩瞬间截图接口 */
         public String URL_LIVE_WONDER_MOMENT = HTTP_HOST + "/LiveCourse/uploadWonderfulMomentImg";
 
-        /**文理半身直播 家长旁听数据接口*/
-        public String URL_HALFBODY_LIVE_STULIVEINFO = HTTP_HOST +"/LiveCourse/getStuDateOfVisitedParentPage";
+        /**文理半身直播  理科家长旁听数据接口*/
+        public String URL_HALFBODY_LIVE_STULIVEINFO = "https://laoshi.xueersi.com/science/LiveCourse/getStuDateOfVisitedParentPage";
+        /**文理半身直播  文科科家长旁听数据接口*/
+        public String URL_HALFBODY_LIVE_STULIVEINFO_ARTS = "https://app.arts.xueersi.com/LiveCourse/getStuDataOfVisited";
     }
-
 
 
 }

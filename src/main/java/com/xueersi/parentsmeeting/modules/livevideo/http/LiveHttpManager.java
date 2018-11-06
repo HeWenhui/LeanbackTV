@@ -775,7 +775,8 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("stuCouId", stuCouId);
         setDefaultParameter(params);
-        String url = isArts?liveVideoSAConfigInner.URL_HALFBODY_LIVE_STULIVEINFO:liveVideoSAConfigInner.URL_HALFBODY_LIVE_STULIVEINFO;
+        String url = isArts?liveVideoSAConfigInner.URL_HALFBODY_LIVE_STULIVEINFO_ARTS
+                :liveVideoSAConfigInner.URL_HALFBODY_LIVE_STULIVEINFO;
         sendPost(url, params, requestCallBack);
     }
 
