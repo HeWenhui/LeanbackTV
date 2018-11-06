@@ -108,7 +108,9 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
         if (mLiveBll == null) {
             mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
         }
-        mLiveBll.umsAgentDebugSys(eventId, mData);
+        if (mLiveBll != null) {
+            mLiveBll.umsAgentDebugSys(eventId, mData);
+        }
     }
 
     @Override
@@ -116,7 +118,9 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
         if (mLiveBll == null) {
             mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
         }
-        mLiveBll.umsAgentDebugInter(eventId, mData);
+        if (mLiveBll != null) {
+            mLiveBll.umsAgentDebugInter(eventId, mData);
+        }
     }
 
     @Override
@@ -124,7 +128,9 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
         if (mLiveBll == null) {
             mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
         }
-        mLiveBll.umsAgentDebugPv(eventId, mData);
+        if (mLiveBll != null) {
+            mLiveBll.umsAgentDebugPv(eventId, mData);
+        }
     }
 
     public boolean onUserBackPressed() {

@@ -952,7 +952,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      * ************************************************** 弹 幕 **************************************************
      */
 
-    private static final long ADD_DANMU_TIME = 1200;
+    private static final long ADD_DANMU_TIME = 0;
     private int BITMAP_WIDTH_GUEST = 34;//别人头像的宽度
     private int BITMAP_HEIGHT_GUEST = 34;//别人头像的高度
     private int BITMAP_WIDTH_ME = 42;//自己头像的宽度
@@ -1026,7 +1026,9 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                int i = 30;
+                while (i != 0) {
+                    i--;
                     final int time = new Random().nextInt(300);
                     String content = "" + time + time;
                     mWeakHandler.post(new Runnable() {
@@ -1036,13 +1038,14 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                         }
                     });
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(3000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }).start();
+
     }
 
     /**
@@ -1123,6 +1126,9 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         }
     };
 
+    long latestDanmakuAddtime = -500;
+    int danmakuAddCount = 0;
+
     public void addDanmaku(final String name, final String msg, final String headImgUrl, final boolean isGuest) {
         if (mDanmakuContext == null || mDanmakuView == null || !mDanmakuView.isPrepared()) {
             mWeakHandler.postDelayed(new Runnable() {
@@ -1143,8 +1149,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             return;
         }
         if (isGuest) {
+            danmaku.priority = 0;
             danmaku.padding = DANMU_PADDING;
-
             danmaku.textColor = Color.WHITE;
         } else {
             danmaku.priority = 0;  // 1:一定会显示, 一般用于本机发送的弹幕。但是会导致限制行数和禁止堆叠失效
@@ -1166,7 +1172,17 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     cirDrawable.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
                 }
                 danmaku.text = createSpannable(name, msg, cirDrawable, isGuest);
-                mDanmakuView.addDanmaku(danmaku);
+                if (danmaku.time - latestDanmakuAddtime < 300 + msg.length() * 15) {
+                    //如果两条弹幕时间间隔小于500ms
+                    danmaku.time = latestDanmakuAddtime + 300 + msg.length() * 15;
+                    latestDanmakuAddtime = danmaku.time;
+                    mDanmakuView.addDanmaku(danmaku);
+                    danmakuAddCount++;
+                } else {
+                    danmakuAddCount = 0;
+                    latestDanmakuAddtime = danmaku.time;
+                    mDanmakuView.addDanmaku(danmaku);
+                }
             }
 
             @Override

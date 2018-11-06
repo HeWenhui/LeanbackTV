@@ -26,6 +26,7 @@ import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -159,7 +160,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
     private SpeechEvaluatorUtils mSpeechEvaluatorUtils;
     private SpeechBulletScreenHttp speechBulletScreenHttp;
     /**
-     * 是不是语音识别视图
+     * 是不是移除了语音识别
      */
     boolean isBottomContentRemove = false;
     private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(), new Handler.Callback() {
@@ -284,9 +285,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
 
     @Override
     public void initData() {
-        mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
-        mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
-        mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -498,13 +496,24 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
             }
         }, 10);
 
+        //重要！键盘高度发生变化时，刷新键盘高度
+        switchFSPanelLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (switchFSPanelLinearLayout.getHeight() != KeyboardUtil.getValidPanelHeight(mContext)) {
+                    switchFSPanelLinearLayout.refreshHeight(KeyboardUtil.getValidPanelHeight(mContext));
+                }
+            }
+        });
     }
 
     public void CloseSpeechBulletScreen(boolean hasTips) {
         closetype = "passiveClose";
         if (hasTips) {
-            tvSpeechbulCloseTip.setVisibility(View.VISIBLE);
-            countDownTimer.start();
+            if (issend.equals("0")) {
+                tvSpeechbulCloseTip.setVisibility(View.VISIBLE);
+                countDownTimer.start();
+            }
         } else {
             removeBottomContent();
         }
@@ -530,6 +539,11 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                     @Override
                     public void onBeginOfSpeech() {
                         logger.i("onBeginOfSpeech");
+                        mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
+                        mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
+                        mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
+                        int v = (int) (0.1f * mMaxVolume);
+                        mAM.setStreamVolume(AudioManager.STREAM_MUSIC, v, 0);
                     }
 
                     @Override
@@ -556,8 +570,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                         vwvSpeechbulWave.setVolume(volume * 3);
                     }
                 });
-        int v = (int) (0.1f * mMaxVolume);
-        mAM.setStreamVolume(AudioManager.STREAM_MUSIC, v, 0);
     }
 
     public void stopEvaluator() {
@@ -688,7 +700,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         ivSpeechbulVoice.setVisibility(View.VISIBLE);
         tvSpeechbulRepeat.setVisibility(View.VISIBLE);
     }
-
 
     /**
      * ************************************************** 弹 幕 **************************************************
@@ -878,7 +889,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
     }
 
     @Override
-    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fcromNotice) {
 
     }
 
@@ -1092,7 +1103,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
     public void onDestroy() {
         logger.i("onDestroy()");
         if (dvSpeechbulDanmaku != null)
-            dvSpeechbulDanmaku.stop();
+            dvSpeechbulDanmaku.release();
         stopEvaluator();
     }
 }
