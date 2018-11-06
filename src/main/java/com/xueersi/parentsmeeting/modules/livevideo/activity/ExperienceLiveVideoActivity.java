@@ -41,7 +41,6 @@ import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.lib.analytics.umsagent.SharedPrefUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -50,7 +49,6 @@ import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.Loger;
-import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.event.BrowserEvent;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
@@ -102,9 +100,12 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
  * Created by David on 2018/3/6.
@@ -152,7 +153,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     /**
      * 播放时长定时任务(心跳)
      */
-    private final long mPlayDurTime = 300000;
+    private final long mPlayDurTime = 60000;
     /**
      * 正在播放
      */
@@ -238,7 +239,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 // 上传心跳时间
 //                lastPlayTime = System.currentTimeMillis();
 //                playTime += mPlayDurTime;
-                mLiveBll.uploadExperiencePlayTime(mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), 300L);
+                mLiveBll.uploadExperiencePlayTime(mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), 60L);
                 mHandler.postDelayed(this, mPlayDurTime);
             }
         }
@@ -248,7 +249,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     LiveAndBackDebug ums = new LiveAndBackDebug() {
         @Override
         public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-
+            UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
         }
 
         @Override
@@ -367,7 +368,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     /**
      * 区分文理appid
      */
-    String appID = UmsConstants.OPERAT_APP_ID;
+    String appID = UmsConstants.APP_ID;
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE;
     /**
@@ -830,11 +831,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         where = getIntent().getStringExtra("where");
         isArts = getIntent().getIntExtra("isArts", 0);
         if (isArts == 1) {
-            appID = UmsConstants.ARTS_APP_ID_BACK;
             IS_SCIENCE = false;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
         } else {
-            appID = UmsConstants.LIVE_APP_ID_BACK;
             IS_SCIENCE = true;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         }
@@ -970,7 +969,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
 //            seekTo(590000);
 //            if (vPlayer != null) {
-//                long pos = (long)SharedPrefUtil.getSharedPrefUtil(mContext).getValue(mVideoEntity.getLiveId(),(long)0);
+//                long pos = (long)SharedPrefUtil.getSharedPrefUtil(mContext).getValue(mVideoEntity.getLiveId(),
+// (long)0);
 //                if (pos < getDuration()){
 //                    seekTo(pos);
 //                } else {
@@ -1375,6 +1375,25 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         super.resultFailed(arg1, arg2);
         resultFailed = true;
         mIsShowQuestion = mIsShowRedpacket = false;
+        String errcode = "";
+        String errmsg = "";
+        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+        if (error != null) {
+            errcode = String.valueOf(error.getNum());
+            errmsg = error.getTag();
+        } else {
+            errcode = String.valueOf(arg2);
+        }
+        Map<String, String> mData = new HashMap<>();
+        mData.put("os", "Android");
+        mData.put("currenttime", "");
+        mData.put("playurl", mVideoEntity.getVideoPath());
+        mData.put("errcode", errcode);
+        mData.put("errmsg", errmsg);
+        mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
+        mData.put("orderid", mVideoEntity.getChapterId());
+        ums.umsAgentDebugSys("",mData);
+
     }
 
     @Override
