@@ -153,9 +153,9 @@ public class ChatTipBll {
                 if (modeChange && "off".equals(onMic)) {
                     handler.removeCallbacks(waitRun);
                     handler.postDelayed(waitRun, 1000);
-                    initView("onClassmateChange");
-                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
-                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
+//                    initView("onClassmateChange");
+//                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
+//                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -451,8 +451,8 @@ public class ChatTipBll {
                     rl_livevideo_chat_raisehand_off.setVisibility(View.GONE);
                 } else {
                     handler.postDelayed(waitRun, 1000);
-                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
-                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
+//                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
+//                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
                 }
                 changeRaisehand(contain);
                 raisehand = contain;
