@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.netease.LDNetDiagnoClient.LDNetTraceClient;
@@ -299,13 +300,13 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            long time = System.currentTimeMillis() - frame10Start;
+                            long time = SystemClock.elapsedRealtime() - frame10Start;
                             float averagefps = (float) (((double) (disaplyCount - fistDisaplyCount)) * 1000 / time);
                             logger.d("handleHeartMessage:fps=" + (disaplyCount - fistDisaplyCount) / 15 + ",averagefps=" + averagefps + ",time=" + time);
                             if (lastHeartTime == 0) {
                                 time = 15000;
                             } else {
-                                time = System.currentTimeMillis() - lastHeartTime;
+                                time = SystemClock.elapsedRealtime() - lastHeartTime;
                             }
                             xescdnLogHeart(framesPsTenTemp, averagefps, bufferduration, bitrate, trafficStatisticByteCount - lastTrafficStatisticByteCount, time);
                             if (TextUtils.equals(bufferStartEntity.getTip(), tid)) {
@@ -318,7 +319,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             fistDisaplyCount = disaplyCount;
                             lastTrafficStatisticByteCount = trafficStatisticByteCount;
                             LivePlayLog.this.trafficStatisticByteCount = lastTrafficStatisticByteCount;
-                            lastHeartTime = frame10Start = System.currentTimeMillis();
+                            lastHeartTime = frame10Start = SystemClock.elapsedRealtime();
                         } else {
                             try {
                                 if (vPlayer.isInitialized()) {
@@ -389,7 +390,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             if (lastHeartTime == 0) {
                 heartTime = 0;
             } else {
-                heartTime = (System.currentTimeMillis() - this.lastHeartTime);
+                heartTime = (SystemClock.elapsedRealtime() - this.lastHeartTime);
             }
             dataJson.put("hbDur", heartTime);
             dataJson.put("dnDur", heartTime);
@@ -453,7 +454,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 dataJson.put("bufDur", 0);
             }
             dataJson.put("latency", bufferduration);
-            long time = System.currentTimeMillis() - frame10Start;
+            long time = SystemClock.elapsedRealtime() - frame10Start;
             float averagefps = (float) (((double) (lastDisaplyCount - fistDisaplyCount)) * 1000 / time);
             dataJson.put("avgFps", averagefps);
             dataJson.put("fps", videofps);
@@ -462,7 +463,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             if (lastHeartTime == 0) {
                 heartTime = 0;
             } else {
-                heartTime = (System.currentTimeMillis() - this.lastHeartTime);
+                heartTime = (SystemClock.elapsedRealtime() - this.lastHeartTime);
             }
             dataJson.put("hbDur", heartTime);
             long bytes = trafficStatisticByteCount - lastTrafficStatisticByteCount;
@@ -607,7 +608,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         sip = sipMap.get(mUri);
         lastDisaplyCount = fistDisaplyCount = 0;
         lastTrafficStatisticByteCount = 0;
-        frame10Start = System.currentTimeMillis();
+        frame10Start = SystemClock.elapsedRealtime();
         openSuccess = System.currentTimeMillis();
         handler.sendEmptyMessageDelayed(1, 1000);
         long openTime = (System.currentTimeMillis() - openStart);
@@ -1158,7 +1159,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         if (lastHeartTime == 0) {
             heartTime = 0;
         } else {
-            heartTime = (System.currentTimeMillis() - this.lastHeartTime);
+            heartTime = (SystemClock.elapsedRealtime() - this.lastHeartTime);
         }
         final long delay = System.currentTimeMillis() - openStart;
 //        HashMap<String, String> defaultKey = new HashMap<>();
@@ -1192,6 +1193,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             finalTid = temTid;
             HashMap<String, Object> defaultKey = new HashMap<>();
             addDefault(defaultKey);
+            defaultKey.put("uri", channelname);
             CrashReport.postCatchedException(new Exception("" + defaultKey));
         }
         liveThreadPoolExecutor.execute(new Runnable() {
@@ -1240,7 +1242,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             dataJson.put("bufDur", 0);
                         }
                         dataJson.put("latency", bufferduration);
-                        long time = System.currentTimeMillis() - frame10Start;
+                        long time = SystemClock.elapsedRealtime() - frame10Start;
                         float averagefps = (float) (((double) (lastDisaplyCount - fistDisaplyCount)) * 1000 / time);
                         dataJson.put("avgFps", averagefps);
                         dataJson.put("fps", videofps);
