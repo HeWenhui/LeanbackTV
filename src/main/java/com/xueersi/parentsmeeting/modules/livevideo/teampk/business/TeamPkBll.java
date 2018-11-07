@@ -182,7 +182,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     logger.e("=====>onModeChange called2222:");
                     showPkStateLayout();
                 }
-            }, 3000);
+            }, 2800);
         }
     }
 
