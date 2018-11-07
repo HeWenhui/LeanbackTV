@@ -53,32 +53,6 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                 haveTeam = true;
             }
         }
-
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                JSONObject data = null;
-//                try {
-//                    data = new JSONObject("{\"from\":\"f\",\"open\":true,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                onNotice("","", data,260);
-//            }
-//        },0);
-
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                JSONObject finalData = null;
-//                try {
-//                    finalData = new JSONObject("{\"from\":\"f\",\"open\":false,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                onNotice("","", finalData,260);
-//            }
-//        },10000);
     }
 
     @Override
@@ -283,6 +257,11 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
         @Override
         public String getVoiceId() {
             return voiceId;
+        }
+
+        @Override
+        public String getStuSex() {
+            return mGetInfo.getStuSex();
         }
     }
 

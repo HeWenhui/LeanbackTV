@@ -11,4 +11,5 @@ public interface SpeechBulletScreenHttp {
     public void uploadSpeechBulletScreen(String msg, HttpCallBack requestCallBack);
     public String getHeadImgUrl();
     public String getVoiceId();
+    public String getStuSex();
 }
