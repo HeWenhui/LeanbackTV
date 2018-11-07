@@ -22,6 +22,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.MyEngineEventHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
@@ -37,7 +38,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import java.util.ArrayList;
 
 public class ChatTipBll {
-    protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
+    String TAG = getClass().getSimpleName();
+    protected Logger logger = LiveLoggerFactory.getLogger(TAG);
     Activity activity;
     private RelativeLayout bottomContent;
     Handler handler = new Handler(Looper.getMainLooper());
@@ -64,6 +66,7 @@ public class ChatTipBll {
      */
     private ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
     private ViewGroup vgRaisehand;
+    private boolean destory = false;
     private TextView tv_livevideo_chat_people;
     private TextView tv_livevideo_chat_people_hind;
     private TextView tv_livevideo_chat_people_grey;
@@ -85,11 +88,14 @@ public class ChatTipBll {
     private AgoraVideoChatInter videoChatInter;
     private VideoChatEvent videoChatEvent;
     private LiveGetInfo getInfo;
-    WorkerThread testWorkerThread;
+    private WorkerThread testWorkerThread;
+    private boolean isConnect = true;
+    private LogToFile logToFile;
 
     public ChatTipBll(Activity activity) {
         this.activity = activity;
         liveAndBackDebug = new ContextLiveAndBackDebug(activity);
+        logToFile = new LogToFile(activity, TAG);
     }
 
     public void setVideoChatHttp(VideoAudioChatHttp videoChatHttp) {
@@ -132,12 +138,24 @@ public class ChatTipBll {
         logger.d("onClassmateChange:size=" + classmateEntities.size() + "，contain=" + contain);
         this.classmateEntities.clear();
         this.classmateEntities.addAll(classmateEntities);
+        String oldMic = onMic;
+        if (classmateEntities.isEmpty()) {
+            onMic = "off";
+        }
+        final boolean modeChange = onMic.equals(oldMic);
         handler.post(new Runnable() {
             @Override
             public void run() {
                 raiseHandCount(raiseHandCount);
                 if (videoChatInter != null) {
                     videoChatInter.updateUser(classmateChange, classmateEntities);
+                }
+                if (modeChange && "off".equals(onMic)) {
+                    handler.removeCallbacks(waitRun);
+                    handler.postDelayed(waitRun, 1000);
+                    initView("onClassmateChange");
+                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
+                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -170,7 +188,7 @@ public class ChatTipBll {
         final RelativeLayout.LayoutParams lpRaisehand = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpRaisehand.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         lpRaisehand.leftMargin = LiveVideoPoint.getInstance().x2;
-        logger.d("initView:x2=" + LiveVideoPoint.getInstance().x2);
+        logToFile.d("initView:x2=" + LiveVideoPoint.getInstance().x2 + ",method=" + method + ",destory=" + destory);
         final int bottom = LiveVideoPoint.getInstance().screenHeight - LiveVideoPoint.getInstance().y4 + 200;
         vgRaisehand.setPadding(vgRaisehand.getLeft(), bottom, vgRaisehand.getRight(), bottom);
         bottomContent.addView(vgRaisehand, lpRaisehand);
@@ -189,24 +207,8 @@ public class ChatTipBll {
                         enableLastmileTest();
                     }
                 }
-                haveRaisehand = true;
-                boolean oldRaisehand = raisehand;
-                if (!raisehand) {
-                    raisehand(msgFrom);
-                    if ("off".equals(onMic)) {
-                        rl_livevideo_chat_raisehand_on.setVisibility(View.VISIBLE);
-                        rl_livevideo_chat_raisehand_off.setVisibility(View.GONE);
-                    }
-                } else {
-                    videoChatHttp.giveupMicro(msgFrom);
-                    if ("off".equals(onMic)) {
-                        rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
-                        rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
-                    }
-                }
-                changeRaisehand(!raisehand);
-                raisehand = !oldRaisehand;
-                logger.d("onClick:raisehand=" + raisehand);
+                isConnect = true;
+                raisehandClick();
             }
         });
         tv_livevideo_chat_people = vgRaisehand.findViewById(R.id.tv_livevideo_chat_people);
@@ -221,14 +223,14 @@ public class ChatTipBll {
             @Override
             public void onClick(View v) {
                 if (rl_livevideo_content_left.getVisibility() == View.VISIBLE) {
-                    iv_livevideo_chat_small.setImageResource(R.drawable.live_task_zuo_icon_normal);
+                    iv_livevideo_chat_small.setImageResource(R.drawable.live_task_you_icon_normal);
                     rl_livevideo_content_left.setVisibility(View.GONE);
                     if (videoChatInter instanceof AgoraChatPager) {
                         AgoraChatPager agoraChatPager = (AgoraChatPager) videoChatInter;
                         agoraChatPager.hind("onClick");
                     }
                 } else {
-                    iv_livevideo_chat_small.setImageResource(R.drawable.live_task_you_icon_normal);
+                    iv_livevideo_chat_small.setImageResource(R.drawable.live_task_zuo_icon_normal);
                     rl_livevideo_content_left.setVisibility(View.VISIBLE);
                     if (videoChatInter instanceof AgoraChatPager) {
                         AgoraChatPager agoraChatPager = (AgoraChatPager) videoChatInter;
@@ -303,6 +305,11 @@ public class ChatTipBll {
         } else {
             bt_livevideo_chat_raisehand.setBackgroundResource(R.drawable.live_task_jushou_icon_normal);
             tv_livevideo_chat_raisehand.setText("举手");
+            if (isConnect) {
+                tv_livevideo_chat_in_queue.setText("你已下麦，可以再次举手");
+            } else {
+                tv_livevideo_chat_in_queue.setText("你已掉线，可以再次举手");
+            }
         }
     }
 
@@ -366,6 +373,27 @@ public class ChatTipBll {
                 }
             }
         });
+    }
+
+    private void raisehandClick() {
+        haveRaisehand = true;
+        boolean oldRaisehand = raisehand;
+        if (!raisehand) {
+            raisehand(msgFrom);
+            if ("off".equals(onMic)) {
+                rl_livevideo_chat_raisehand_on.setVisibility(View.VISIBLE);
+                rl_livevideo_chat_raisehand_off.setVisibility(View.GONE);
+            }
+        } else {
+            videoChatHttp.giveupMicro(msgFrom);
+//            if ("off".equals(onMic)) {
+//                rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
+//                rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
+//            }
+        }
+        changeRaisehand(!raisehand);
+        raisehand = !oldRaisehand;
+        logger.d("raisehandClick:raisehand=" + raisehand);
     }
 
     private void raisehand(final String from) {
@@ -444,7 +472,7 @@ public class ChatTipBll {
     }
 
     public void startRecord(final String room, final String nonce, boolean contain, int micType) {
-        logger.d("startRecord:room=" + room + ",contain=" + contain + ",micType=" + micType);
+        logToFile.d("startRecord:room=" + room + ",contain=" + contain + ",micType=" + micType);
         if (videoChatInter != null) {
             if (contain) {
                 videoChatInter.startRecord("startRecord", room, nonce, micType == 1);
@@ -470,6 +498,24 @@ public class ChatTipBll {
         }
     }
 
+    public void onConnect() {
+        logToFile.d("onConnect");
+        isConnect = true;
+    }
+
+    public void onDisconnect() {
+        logToFile.d("onDisconnect:visibility=" + rl_livevideo_chat_raisehand.getVisibility());
+        isConnect = false;
+        if (raisehand && rl_livevideo_chat_raisehand.getVisibility() == View.VISIBLE) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    raisehandClick();
+                }
+            });
+        }
+    }
+
     public void stopRecord(String method) {
         raiseHandCount = 0;
         if (haveRaisehand) {
@@ -492,6 +538,7 @@ public class ChatTipBll {
                 if (vgRaisehand != null) {
                     bottomContent.removeView(vgRaisehand);
                     vgRaisehand = null;
+                    destory = true;
                 }
                 if (videoChatInter != null) {
                     if (videoChatInter instanceof AgoraChatPager) {

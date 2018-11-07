@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 
 /**
- * 在ScrollView中嵌套此EditText，EditText高度超过已经决定好的EditText高度时，EditText可以滑动
+ * 在ScrollView中嵌套此EditText，EditText高度超过已经定好的EditText高度时，EditText可以滑动
  *
  * @author zyy
  */

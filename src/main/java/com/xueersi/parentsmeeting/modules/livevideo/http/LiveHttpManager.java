@@ -802,7 +802,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
                                               requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
 //        params.addBodyParam("enstuId", enstuId);
-        params.addBodyParam("courseId", liveId);
+        params.addBodyParam("courseId", courseId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("classId", classId);
         params.addBodyParam("duration", duration);

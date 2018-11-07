@@ -48,7 +48,7 @@
         app:layout_constraintTop_toTopOf="@+id/iv_stand_experience_learn_feedback_select_button2" />
 
     <android.support.constraint.Group
-        android:id="@+id/group_stand_experience_learn_feedback_select"
+        android:id="@+id/group_stand_experience_learn_feedback_select3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="iv_stand_experience_learn_feedback_select_button3,fzcytv_stand_experience_learn_feedback_select1_button3" />

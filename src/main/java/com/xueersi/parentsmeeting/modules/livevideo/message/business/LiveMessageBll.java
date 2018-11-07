@@ -560,12 +560,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
     }
 
-    public void setVideoLayout(int width, int height) {
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.setVideoWidthAndHeight(width, height);
-        }
-    }
-
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         if (mLiveMessagePager != null) {
             mLiveMessagePager.setVideoLayout(liveVideoPoint);

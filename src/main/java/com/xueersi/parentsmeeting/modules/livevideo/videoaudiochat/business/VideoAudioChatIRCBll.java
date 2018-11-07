@@ -6,9 +6,13 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
@@ -30,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by lyqai on 2018/7/11.
  */
-public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent, NoticeAction, TopicAction, VideoAudioChatHttp {
+public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent, NoticeAction, TopicAction, VideoAudioChatHttp, MessageAction {
     private VideoAudioChatBll videoChatAction;
     private LiveFragmentBase liveFragmentBase;
     /** 接麦已经连接老师 */
@@ -72,7 +76,11 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
         boolean allowLinkMic = (1 == getInfo.getAllowLinkMicNew());
         if (allowLinkMic) {
             VideoAudioChatBll videoChatBll = new VideoAudioChatBll(activity, this);
-            videoChatBll.initView(mRootView);
+            if (rlMessageBottom != null) {
+                videoChatBll.initView(rlMessageBottom);
+            } else {
+                videoChatBll.initView(mRootView);
+            }
             videoChatBll.setControllerBottom(baseLiveMediaControllerBottom);
             videoChatBll.setLiveAndBackDebug(mLiveBll);
             videoChatBll.setVideoChatHttp(this);
@@ -136,65 +144,72 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
     }
 
     @Override
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
+        super.onModeChange(oldMode, mode, isPresent);
+        if (videoChatAction != null) {
+            videoChatAction.quit("off", "", "change", LiveVideoConfig.IRC_TYPE_NOTICE);
+        }
+    }
+
+    @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         if (videoChatAction != null) {
             if (modeChange) {
-                videoChatAction.quit("off", "", "change", 1);
-            } else {
-                String oldVoiceChatStatus = voiceChatStatus;
-                try {
-                    if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
-                        JSONObject room_1 = jsonObject.getJSONObject("room_1");
-                        JSONObject newLinkMic = room_1.optJSONObject("newLinkMic");
-                        if (newLinkMic != null && !(newLinkMic.toString()).equals(lastNewLinkMicT)) {
-                            lastNewLinkMicT = newLinkMic.toString();
-                            String openNewMic = newLinkMic.optString("openNewMic", "off");
-                            String room = newLinkMic.getString("room");
-                            int micType = newLinkMic.optInt("type", 0);
-                            ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
-                            if ("on".equals(openNewMic)) {
-                                JSONArray students = newLinkMic.getJSONArray("students");
-                                for (int i = 0; i < students.length(); i++) {
-                                    ClassmateEntity classmateEntity = new ClassmateEntity();
-                                    JSONObject stuObj = students.getJSONObject(i);
-                                    classmateEntity.setId(stuObj.optString("id"));
-                                    classmateEntities.add(classmateEntity);
-                                }
+                videoChatAction.quit("off", "", "change", LiveVideoConfig.IRC_TYPE_TOPIC);
+            }
+            String oldVoiceChatStatus = voiceChatStatus;
+            try {
+                if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
+                    JSONObject room_1 = jsonObject.getJSONObject("room_1");
+                    JSONObject newLinkMic = room_1.optJSONObject("newLinkMic");
+                    if (newLinkMic != null && !(newLinkMic.toString()).equals(lastNewLinkMicT)) {
+                        lastNewLinkMicT = newLinkMic.toString();
+                        String openNewMic = newLinkMic.optString("openNewMic", "off");
+                        String room = newLinkMic.getString("room");
+                        int micType = newLinkMic.optInt("type", 0);
+                        ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
+                        if ("on".equals(openNewMic)) {
+                            JSONArray students = newLinkMic.getJSONArray("students");
+                            for (int i = 0; i < students.length(); i++) {
+                                ClassmateEntity classmateEntity = new ClassmateEntity();
+                                JSONObject stuObj = students.getJSONObject(i);
+                                classmateEntity.setId(stuObj.optString("id"));
+                                classmateEntities.add(classmateEntity);
                             }
-                            voiceChatStatus = openNewMic;
-                            videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "t", micType);
                         }
-                    } else {
-                        JSONObject room_2 = jsonObject.getJSONObject("room_2");
-                        JSONObject newLinkMic = room_2.optJSONObject("newLinkMic");
-                        if (newLinkMic != null && !(newLinkMic.toString()).equals(lastNewLinkMicF)) {
-                            lastNewLinkMicF = newLinkMic.toString();
-                            String openNewMic = newLinkMic.optString("openNewMic", "off");
-                            String room = newLinkMic.getString("room");
-                            int micType = newLinkMic.optInt("type", 0);
-                            ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
-                            if ("on".equals(openNewMic)) {
-                                JSONArray students = newLinkMic.getJSONArray("students");
-                                for (int i = 0; i < students.length(); i++) {
-                                    ClassmateEntity classmateEntity = new ClassmateEntity();
-                                    JSONObject stuObj = students.getJSONObject(i);
-                                    classmateEntity.setId(stuObj.optString("id"));
-                                    classmateEntities.add(classmateEntity);
-                                }
+                        voiceChatStatus = openNewMic;
+                        videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "t", micType);
+                    }
+                } else {
+                    JSONObject room_2 = jsonObject.getJSONObject("room_2");
+                    JSONObject newLinkMic = room_2.optJSONObject("newLinkMic");
+                    if (newLinkMic != null && !(newLinkMic.toString()).equals(lastNewLinkMicF)) {
+                        lastNewLinkMicF = newLinkMic.toString();
+                        String openNewMic = newLinkMic.optString("openNewMic", "off");
+                        String room = newLinkMic.getString("room");
+                        int micType = newLinkMic.optInt("type", 0);
+                        ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
+                        if ("on".equals(openNewMic)) {
+                            JSONArray students = newLinkMic.getJSONArray("students");
+                            for (int i = 0; i < students.length(); i++) {
+                                ClassmateEntity classmateEntity = new ClassmateEntity();
+                                JSONObject stuObj = students.getJSONObject(i);
+                                classmateEntity.setId(stuObj.optString("id"));
+                                classmateEntities.add(classmateEntity);
                             }
-                            voiceChatStatus = openNewMic;
-                            videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "f", micType);
                         }
+                        voiceChatStatus = openNewMic;
+                        videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "f", micType);
                     }
-                    if (!oldVoiceChatStatus.equals(voiceChatStatus)) {
-                        for (int i = 0; i < chatStatusChanges.size(); i++) {
-                            chatStatusChanges.get(i).onVideoChatStatusChange(voiceChatStatus);
-                        }
-                    }
-                } catch (Exception e) {
-                    logger.e("onTopic", e);
-                    CrashReport.postCatchedException(e);
                 }
+                if (!oldVoiceChatStatus.equals(voiceChatStatus)) {
+                    for (int i = 0; i < chatStatusChanges.size(); i++) {
+                        chatStatusChanges.get(i).onVideoChatStatusChange(voiceChatStatus);
+                    }
+                }
+            } catch (Exception e) {
+                logger.e("onTopic", e);
+                CrashReport.postCatchedException(e);
             }
         }
     }
@@ -406,5 +421,69 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
         if (mGetInfo.getIsArts() == 0) {
             getHttpManager().addStuPutUpHandsNum(call);
         }
+    }
+
+    @Override
+    public void onStartConnect() {
+
+    }
+
+    @Override
+    public void onConnect(IRCConnection connection) {
+        if (videoChatAction != null) {
+            videoChatAction.onConnect();
+        }
+    }
+
+    @Override
+    public void onRegister() {
+
+    }
+
+    @Override
+    public void onDisconnect(IRCConnection connection, boolean isQuitting) {
+        if (videoChatAction != null) {
+            videoChatAction.onDisconnect();
+        }
+    }
+
+    @Override
+    public void onMessage(String target, String sender, String login, String hostname, String text) {
+
+    }
+
+    @Override
+    public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
+
+    }
+
+    @Override
+    public void onChannelInfo(String channel, int userCount, String topic) {
+
+    }
+
+    @Override
+    public void onUserList(String channel, User[] users) {
+
+    }
+
+    @Override
+    public void onJoin(String target, String sender, String login, String hostname) {
+
+    }
+
+    @Override
+    public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+
+    }
+
+    @Override
+    public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
+
+    }
+
+    @Override
+    public void onUnknown(String line) {
+
     }
 }

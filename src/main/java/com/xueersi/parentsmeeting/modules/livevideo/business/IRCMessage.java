@@ -5,14 +5,14 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.network.IpAddressUtil;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +51,7 @@ public class IRCMessage {
     private boolean onUserList = false;
     /** 和服务器的ping，线程池 */
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+    public static final String EXPERIENCE_MESSAGE_ERROR = "experience_message_connect_error";
 
     public IRCMessage(Context context, int netWorkType, String channel, String login, String nickname) {
         this.netWorkType = netWorkType;
@@ -391,6 +392,17 @@ public class IRCMessage {
             if (netWorkType != NetWorkHelper.NO_NETWORK && ircTalkConf != null) {
                 mNewTalkConf.remove(index);
             }
+            //如果不为null,上传日志（体验课时不为空）
+            if (connectService != null) {
+                connectService.connectChatServiceError(
+                        EXPERIENCE_MESSAGE_ERROR,
+                        "Error",
+                        "Android",
+                        getHost(talkConfEntity.getHost()),
+                        talkConfEntity.getPort(),
+                        method + "Connect Failure",
+                        IpAddressUtil.USER_IP);
+            }
             mLogtf.d("connect:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
             mHandler.postDelayed(new Runnable() {
 
@@ -408,6 +420,29 @@ public class IRCMessage {
                 }
             }, 2000);
 
+        }
+    }
+
+    /**
+     * 根据url获取服务器的ip地址
+     *
+     * @param ip
+     * @return
+     */
+    private String getHost(String ip) {
+        try {
+            int len = ip.length();
+            int pos = ip.indexOf("//");
+            int i = pos + 2;
+            while (i < len) {
+                if (ip.charAt(i) == '/') {
+                    break;
+                }
+                i++;
+            }
+            return ip.substring(pos <= 0 ? 0 : pos + 2, i);
+        } catch (Exception e) {
+            return "";
         }
     }
 
@@ -490,7 +525,9 @@ public class IRCMessage {
         mConnection.sendMessage("#" + mChannel, message);
     }
 
-    /** 播放器销毁 */
+    /**
+     * 播放器销毁
+     */
     public void destory() {
         mIsDestory = true;
         mHandler.removeCallbacks(mPingRunnable);
@@ -576,4 +613,35 @@ public class IRCMessage {
             }, 2000);
         }
     };
+
+    /**
+     * 连接服务器失败,体验课使用
+     */
+    public interface ConnectService {
+        /**
+         * wiki地址 https://wiki.xesv5.com/pages/viewpage.action?pageId=13842928
+         *
+         * @param eventId    eventId
+         * @param logtype    错误日志类型
+         * @param os         操作系统
+         * @param serverIp   聊天服务器ip
+         * @param serverPort 聊天服务器端口
+         * @param errMsg     链接聊天服务器失败信息
+         * @param ip         自己的ip
+         */
+        void connectChatServiceError(
+                String eventId,
+                String logtype,
+                String os,
+                String serverIp,
+                String serverPort,
+                String errMsg,
+                String ip);
+    }
+
+    private ConnectService connectService;
+
+    public void setConnectService(ConnectService connectService) {
+        this.connectService = connectService;
+    }
 }
