@@ -79,7 +79,7 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
             Bundle bundle = new Bundle();
             bundle.putString("orderNum", orderId);
             //采用ARouter来跳转
-            XueErSiRouter.startModule(mContext, "/module/Browser", bundle);
+            XueErSiRouter.startModule(mContext, "/xesmallOrderDetail/xrsmodule", bundle);
 //            OtherModulesEnter.intentToOrderConfirmActivity((Activity) mContext, courseId + "-" + classId, 100,
 //                    "LivePlaybackVideoActivity");
         }

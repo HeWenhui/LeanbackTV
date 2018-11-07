@@ -516,18 +516,18 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         //聊天连接调度失败日志
         ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
             @Override
-            public void getChatUrlFailure(String url, String errMsg, String eventId, String logtype, String os,
+            public void getChatUrlFailure(String url, String errMsg,
                                           String ip) {
                 Map<String, String> mData = new HashMap<>();
-                mData.put("os", os);
-                mData.put("logtype", logtype);
+                mData.put("os", "Android");
+                mData.put("logtype", "Error");
                 mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
                 mData.put("url", url);
                 mData.put("ip", ip);
                 mData.put("errmsg", errMsg);
                 mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
                 mData.put("orderid", mVideoEntity.getChapterId());
-                ums.umsAgentDebugSys(eventId, mData);
+                ums.umsAgentDebugSys(LiveVideoConfig.LIVE_CHAT_GSLB, mData);
             }
         });
         mIRCMessage.setIrcTalkConf(ircTalkConf);
@@ -535,11 +535,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         //聊天服务器连接失败
         mIRCMessage.setConnectService(new IRCMessage.ConnectService() {
             @Override
-            public void connectChatServiceError(String eventId, String logtype, String os, String serverIp, String
+            public void connectChatServiceError(String serverIp, String
                     serverPort, String errMsg, String ip) {
                 Map<String, String> mData = new HashMap<>();
-                mData.put("os", os);
-                mData.put("logtype", logtype);
+                mData.put("os", "Android");
+                mData.put("logtype", "Error");
                 mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
                 mData.put("serverip", serverIp);
                 mData.put("serverport", serverPort);
@@ -547,7 +547,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 mData.put("ip", ip);
                 mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
                 mData.put("orderid", mVideoEntity.getChapterId());
-                ums.umsAgentDebugSys(eventId, mData);
+                ums.umsAgentDebugSys(LiveVideoConfig.EXPERIENCE_MESSAGE_CONNECT_ERROR, mData);
             }
         });
         mIRCMessage.create();

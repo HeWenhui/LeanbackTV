@@ -229,7 +229,6 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
-        mData.put("livetype", "" + 100);
         mData.put("livetype", "" + 4);
 //        if ("PublicLiveDetailActivity".equals(where)) {
 //            mData.put("livetype", "" + 2);
