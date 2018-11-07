@@ -166,6 +166,9 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
         } else {
             if (chatTipBll != null) {
                 chatTipBll.stopRecord("raisehand");
+                if (containMe) {
+                    onVideoChatStartChange(false, "raisehand");
+                }
             }
             chatTipBll = null;
         }
@@ -250,9 +253,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                 }
                 createChatTipBll("onJoin:startMicro");
                 chatTipBll.startMicro(onMic, "", room, from, contain, micType);
-                for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
-                    chatStatusChange.onVideoChatStartChange(contain);
-                }
+                onVideoChatStartChange(contain, "onJoin:startMicro");
             } else {
                 if (onMicChange) {
                     if ("on".equals(this.openNewMic)) {
@@ -290,6 +291,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
         logger.d("onStuMic:status=" + status + ",room=" + room + ",onmic=" + onmicClassmateEntities.size() + ",offmic=" + offmicClassmateEntities.size());
         boolean contain = containMe;
         boolean peopleChange = false;
+        boolean containMeChange = false;
         if ("off".equals(status)) {
             contain = containMe;
             for (ClassmateEntity classmateEntity : offmicClassmateEntities) {
@@ -337,6 +339,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
         if (containMe != contain) {
             containMe = contain;
             peopleChange = true;
+            containMeChange = true;
         }
         createChatTipBll("onStuMic");
         if (peopleChange) {
@@ -353,6 +356,9 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                     audioRequest.release();
                 }
                 chatTipBll.startMicro(onMic, "", room, from, false, micType);
+            }
+            if (containMeChange) {
+                onVideoChatStartChange(contain, "onStuMic");
             }
         }
         chatTipBll.onClassmateChange(allClassmateEntities, false);
@@ -394,8 +400,15 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
         if (audioRequest != null) {
             audioRequest.release();
         }
-        for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
-            chatStatusChange.onVideoChatStartChange(false);
+        onVideoChatStartChange(false, "stopRecord");
+    }
+
+    private void onVideoChatStartChange(boolean start, String method) {
+        if (micType == 1) {
+            mLogtf.d("onVideoChatStartChange:start=" + start + ",method=" + method);
+            for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
+                chatStatusChange.onVideoChatStartChange(start);
+            }
         }
     }
 

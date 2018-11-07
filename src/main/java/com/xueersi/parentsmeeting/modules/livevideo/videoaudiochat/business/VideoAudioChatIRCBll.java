@@ -174,6 +174,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                                 ClassmateEntity classmateEntity = new ClassmateEntity();
                                 JSONObject stuObj = students.getJSONObject(i);
                                 classmateEntity.setId(stuObj.optString("id"));
+                                classmateEntity.setPlace(stuObj.optInt("place", i));
                                 classmateEntities.add(classmateEntity);
                             }
                         }
@@ -195,6 +196,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                                 ClassmateEntity classmateEntity = new ClassmateEntity();
                                 JSONObject stuObj = students.getJSONObject(i);
                                 classmateEntity.setId(stuObj.optString("id"));
+                                classmateEntity.setPlace(stuObj.optInt("place", i));
                                 classmateEntities.add(classmateEntity);
                             }
                         }
@@ -266,6 +268,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                             classmateEntity.setId(jsonObject.optString("id"));
                             classmateEntity.setName(jsonObject.optString("name"));
                             classmateEntity.setImg(jsonObject.optString("img"));
+                            classmateEntity.setPlace(jsonObject.optInt("place"));
                             onmicClassmateEntities.add(classmateEntity);
                         }
                     } else {

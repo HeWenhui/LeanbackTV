@@ -42,6 +42,8 @@ import com.xueersi.parentsmeeting.widget.AgoraVolumeWaveView;
 import com.xueersi.ui.widget.CircleImageView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -327,8 +329,16 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         hind("removeMe");
     }
 
+    private Comparator<ClassmateEntity> c = new Comparator<ClassmateEntity>() {
+        @Override
+        public int compare(ClassmateEntity o1, ClassmateEntity o2) {
+            return o1.getPlace() - o2.getPlace();
+        }
+    };
+
     @Override
     public void updateUser(boolean classmateChange, ArrayList<ClassmateEntity> classmateEntities) {
+        Collections.sort(classmateEntities, c);
         final RelativeLayout rl_livevideo_chat_head1 = mView.findViewById(R.id.rl_livevideo_chat_head1);
         final RelativeLayout rl_livevideo_chat_head2 = mView.findViewById(R.id.rl_livevideo_chat_head2);
         final LottieAnimationView pressLottileView1 = mView.findViewById(R.id.lav_livevideo_chat_praise1);
