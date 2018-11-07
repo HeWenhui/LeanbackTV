@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexpe
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -683,12 +684,42 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      */
     private long errorTime = 0L;
     LiveHttpManager liveHttpManager;
-
+    /**
+     * 是否正处于播放状态
+     */
     private boolean isPlay = false;
+    /**
+     * 重试次数
+     */
+    private int rePlayCount = 0;
+    /**
+     * 重试的上线
+     */
+    private static final int MAX_REPLAY_COUNT = 4;
 
+    /**
+     * 视频非正常播放完毕，有可能是断网了，也有可能一开始打开失败了,在父类方法中会调用{@link #showRefresyLayout(int arg1, int arg2)}这个方法
+     */
     @Override
     protected void resultFailed(int arg1, int arg2) {
-        super.resultFailed(arg1, arg2);
+        //循环更换视频地址
+        List<String> mVideoPaths = mVideoEntity.getVideoPaths();
+        if (mVideoPaths != null && !mVideoPaths.isEmpty()) {
+            for (int i = 0; i < mVideoPaths.size(); i++) {
+                if (mWebPath.equals(mVideoPaths.get(i))) {
+                    mWebPath = mVideoPaths.get((i + 1) % mVideoPaths.size());
+                    break;
+                }
+            }
+        } else {
+            mWebPath = mVideoEntity.getVideoPath();
+        }
+        if (rePlayCount < MAX_REPLAY_COUNT) {
+            rePlayCount++;
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
+        } else {
+            super.resultFailed(arg1, arg2);
+        }
         isPlay = false;
         resultFailed = true;
         logger.d("resultFailed:arg2=" + arg2);
@@ -1104,6 +1135,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        onUserBackPressed();
     }
 
+    /**
+     * 点击按钮之后，实现刷新
+     */
     @Override
     protected void onRefresh() {
         resultFailed = false;
