@@ -984,6 +984,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     @Override
     protected void onPlayOpenSuccess() {
         isPlay = true;
+        rePlayCount = 0;
         mTotaltime = getDuration();
         Log.e("mqtt", "mTotaltime:" + mTotaltime);
         Log.e("mqtt", "seekto:" + mVideoEntity.getVisitTimeKey());
