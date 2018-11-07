@@ -19,7 +19,6 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
@@ -79,9 +78,10 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     private LottieEffectInfo bubbleEffectInfo;
     private boolean initLottile1 = false;
     private boolean initLottile2 = false;
+    String msgFrom;
     private int micType;
 
-    public AgoraChatPager(Activity activity, LiveAndBackDebug liveBll, LiveGetInfo getInfo, VideoChatEvent videoChatEvent, VideoAudioChatHttp videoChatHttp, int micType) {
+    public AgoraChatPager(Activity activity, LiveAndBackDebug liveBll, LiveGetInfo getInfo, VideoChatEvent videoChatEvent, VideoAudioChatHttp videoChatHttp, String msgFrom, int micType) {
         logger = LoggerFactory.getLogger(TAG);
         this.activity = activity;
         mContext = activity;
@@ -90,6 +90,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         this.startRemote = videoChatEvent.getStartRemote();
         this.liveBll = liveBll;
         this.getInfo = getInfo;
+        this.msgFrom = msgFrom;
         this.micType = micType;
         netWorkType = NetWorkHelper.getNetWorkState(activity);
         mLogtf = new LogToFile(activity, TAG);
@@ -139,9 +140,15 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
 
         @Override
         public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
-            mLogtf.d("onFirstRemoteVideoDecoded:uid=" + uid);
-            if (!("" + uid).equals(getInfo.getTeacherId())) {
-                return;
+            mLogtf.d("onFirstRemoteVideoDecoded:uid=" + uid + ",from=" + msgFrom);
+            if ("t".equals(msgFrom)) {
+                if (!("" + uid).equals(getInfo.getMainTeacherId())) {
+                    return;
+                }
+            } else if ("f".equals(msgFrom)) {
+                if (!("" + uid).equals(getInfo.getTeacherId())) {
+                    return;
+                }
             }
             startRemote.set(true);
             try {

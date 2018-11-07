@@ -436,6 +436,7 @@ public class ChatTipBll {
     public void startMicro(final String onMic, final String nonce, final String room, String from, final boolean contain, final int micType) {
         logger.d("startMicro:nonce=" + nonce + ",onMic=" + onMic + ",contain=" + contain + ",from=" + from);
         this.onMic = onMic;
+        this.msgFrom = from;
         if (contain) {
             raisehand = true;
         }
@@ -483,7 +484,7 @@ public class ChatTipBll {
             return;
         }
         initView("startRecord");
-        AgoraChatPager agoraChatPager = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp, micType);
+        AgoraChatPager agoraChatPager = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp, msgFrom, micType);
         agoraChatPager.setTestWorkerThread(testWorkerThread);
         videoChatInter = agoraChatPager;
         if (contain) {
