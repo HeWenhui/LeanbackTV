@@ -344,7 +344,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     return super.shouldInterceptRequest(view, s);
                 }
             });
-            if (LiveVideoConfig.isMulLiveBack) {
+            if (isPlayBack) {
                 String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                 // 一题多发的课件预加载(直播回放)
                 String packageId = "";
