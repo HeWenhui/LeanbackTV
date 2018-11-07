@@ -53,10 +53,12 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     EnglishSpeekMode englishSpeekMode;
     SpeakerRecognitioner speakerRecognitioner;
     private VerifyCancelAlertDialog recognizeDialog;
+    private int smallEnglish;
 
     public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         putInstance(LiveAchievementIRCBll.class, this);
+        smallEnglish = activity.getIntent().getIntExtra("smallEnglish", 0);
     }
 
     @Override
@@ -251,26 +253,34 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         @Override
         public void initAchievement(String mode) {
             if (LiveAchievementIRCBll.this.starAction == null) {
-                LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo,//mGetInfo
-                        // .getStarCount(),
-                        //mGetInfo.getGoldCount(),
-                        true);
-                starBll.setLiveBll(LiveAchievementIRCBll.this);
-                starBll.setLiveAndBackDebug(mLiveBll);
-                starBll.initView(mRootView, mContentView);
-                LiveAchievementIRCBll.this.starAction = starBll;
-                //能量条
-                EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(activity, mGetInfo);
-                if (speakerRecognitioner != null) {
-                    englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
-                }
-                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), null, audioRequest, mContentView);
-                if (initView) {
-                    englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
-                    englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
-                    englishSpeekBll.setLiveAndBackDebug(mLiveBll);
-                    englishSpeekBll.setmShareDataManager(mShareDataManager);
-                    LiveAchievementIRCBll.this.englishSpeekAction = englishSpeekBll;
+                if (1 == smallEnglish) {
+                    LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType, mGetInfo, true);
+                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
+                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
+                    liveAchievementEngBll.initView(mRootView, mContentView);
+                    LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
+                } else {
+                    LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo,//mGetInfo
+                            // .getStarCount(),
+                            //mGetInfo.getGoldCount(),
+                            true);
+                    starBll.setLiveBll(LiveAchievementIRCBll.this);
+                    starBll.setLiveAndBackDebug(mLiveBll);
+                    starBll.initView(mRootView, mContentView);
+                    LiveAchievementIRCBll.this.starAction = starBll;
+                    //能量条
+                    EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(activity, mGetInfo);
+                    if (speakerRecognitioner != null) {
+                        englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
+                    }
+                    boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), null, audioRequest, mContentView);
+                    if (initView) {
+                        englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
+                        englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
+                        englishSpeekBll.setLiveAndBackDebug(mLiveBll);
+                        englishSpeekBll.setmShareDataManager(mShareDataManager);
+                        LiveAchievementIRCBll.this.englishSpeekAction = englishSpeekBll;
+                    }
                 }
             }
             if (LiveAchievementIRCBll.this.englishSpeekAction != null) {
@@ -421,7 +431,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        logger.d( "setTotalOpeningLength:onPmSuccess" + responseEntity.getJsonObject());
+                        logger.d("setTotalOpeningLength:onPmSuccess" + responseEntity.getJsonObject());
                         if (starAction != null) {
                             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                             int star = jsonObject.getInt("star");
@@ -433,7 +443,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        logger.d( "setTotalOpeningLength:onFailure");
+                        logger.d("setTotalOpeningLength:onFailure");
                         super.onFailure(call, e);
                         postDelayedIfNotFinish(new Runnable() {
                             @Override
@@ -445,7 +455,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        logger.d( "setTotalOpeningLength:onPmError" + responseEntity.getErrorMsg());
+                        logger.d("setTotalOpeningLength:onPmError" + responseEntity.getErrorMsg());
                         super.onPmError(responseEntity);
                     }
                 });
@@ -457,18 +467,18 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         getHttpManager().setNotOpeningNum(enstuId, mGetInfo.getId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                logger.d( "setNotOpeningNum:onPmSuccess" + responseEntity.getJsonObject());
+                logger.d("setNotOpeningNum:onPmSuccess" + responseEntity.getJsonObject());
             }
 
             @Override
             public void onFailure(Call call, IOException e) {
-                logger.e( "setNotOpeningNum:onFailure", e);
+                logger.e("setNotOpeningNum:onFailure", e);
                 super.onFailure(call, e);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                logger.d( "setNotOpeningNum:onPmError" + responseEntity.getErrorMsg());
+                logger.d("setNotOpeningNum:onPmError" + responseEntity.getErrorMsg());
                 super.onPmError(responseEntity);
             }
         });
@@ -630,7 +640,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
                 englishSpeekAction.start();
-                logger.d( "start:englishSpeekBll.start");
+                logger.d("start:englishSpeekBll.start");
             }
         }
     };
@@ -638,7 +648,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void request(OnAudioRequest onAudioRequest) {
         audioRequest.set(true);
-        logger.d( "request:englishSpeekBll=" + (englishSpeekAction == null));
+        logger.d("request:englishSpeekBll=" + (englishSpeekAction == null));
         if (englishSpeekAction != null) {
             handler.removeMessages(1);
             englishSpeekAction.stop(onAudioRequest);
@@ -652,7 +662,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void release() {
         audioRequest.set(false);
-        logger.d( "release:englishSpeekBll=" + (englishSpeekAction == null));
+        logger.d("release:englishSpeekBll=" + (englishSpeekAction == null));
         if (englishSpeekAction != null) {
             handler.sendEmptyMessageDelayed(1, 2000);
         }
