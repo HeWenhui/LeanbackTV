@@ -12,13 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
@@ -31,6 +34,8 @@ public class SpeechCollectivePager extends BasePager {
     VolumeWaveView vwvSpeectevalWave;
     LottieAnimationView waveView;
     ImageView promtView;
+    View promtGroup;
+    View waveGroup;
 
     public SpeechCollectivePager(Context context) {
         super(context);
@@ -42,14 +47,16 @@ public class SpeechCollectivePager extends BasePager {
         View view = View.inflate(mContext, R.layout.page_livevideo_speech_collective, null);
         vwvSpeectevalWave = (VolumeWaveView) view.findViewById(R.id.vwv_livevideo_speecteval_wave);
         waveView = view.findViewById(R.id.iv_livevideo_feedback_wave);
+        promtGroup = view.findViewById(R.id.rl_livevideo_open_close_layout);
         promtView = view.findViewById(R.id.iv_livevideo_open_close);
+        waveGroup = view.findViewById(R.id.fl_livevideo_wave_layout);
         start();
         return view;
     }
 
     @Override
     public void initData() {
-        int colors[] = {0xffffe4aa, 0xffffe4aa, 0xffffe4aa, 0xffffe4aa, 0xffffe4aa};
+        int colors[] = {0x19ffe4aa, 0x32ffe4aa, 0x64ffe4aa, 0x96ffe4aa, 0xffffe4aa};
         vwvSpeectevalWave.setColors(colors);
         Paint paint = new Paint();
         paint.setColor(Color.parseColor("#a84300"));
@@ -57,9 +64,12 @@ public class SpeechCollectivePager extends BasePager {
         vwvSpeectevalWave.setIsOnTop(true);
         vwvSpeectevalWave.setZOrderMediaOverlay(true);
         vwvSpeectevalWave.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        int width = SizeUtils.Dp2Px(mContext, 85);
-        int waveWidth = (int) (SizeUtils.Dp2Px(mContext, 70) * 21.5f / 57f);
-        int waveHeight = (int) (SizeUtils.Dp2Px(mContext, 70) * 20f / 57f);
+        int topGap = LiveVideoPoint.getInstance().y2;
+        int paddingBottom = (int) (8 * ScreenUtils.getScreenDensity());
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) waveGroup.getLayoutParams();
+        layoutParams.bottomMargin = paddingBottom;
+        layoutParams.rightMargin=LiveVideoPoint.getInstance().getRightMargin()+SizeUtils.Dp2Px(mContext,14);
+        waveGroup.setLayoutParams(layoutParams);
 
         mView.postDelayed(new Runnable() {
             @Override
@@ -112,19 +122,19 @@ public class SpeechCollectivePager extends BasePager {
     }
 
     public void start() {
-        promtView.setVisibility(View.VISIBLE);
+        promtGroup.setVisibility(View.VISIBLE);
         promtView.setImageResource(R.drawable.ic_livevideo_speech_collective_open);
         promtView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                promtView.setVisibility(View.GONE);
+                promtGroup.setVisibility(View.GONE);
             }
         }, 1000);
 
     }
 
     public void stop() {
-        promtView.setVisibility(View.VISIBLE);
+        promtGroup.setVisibility(View.VISIBLE);
         promtView.setImageResource(R.drawable.ic_livevideo_speech_collective_close);
     }
 }
