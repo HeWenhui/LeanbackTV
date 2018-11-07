@@ -40,8 +40,8 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.lib.analytics.umsagent.SharedPrefUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -50,7 +50,6 @@ import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.Loger;
-import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.event.BrowserEvent;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
@@ -102,9 +101,13 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
  * Created by David on 2018/3/6.
@@ -152,7 +155,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     /**
      * 播放时长定时任务(心跳)
      */
-    private final long mPlayDurTime = 300000;
+    private final long mPlayDurTime = 60000;
     /**
      * 正在播放
      */
@@ -197,6 +200,12 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private List<VideoQuestionEntity> roomChatEvent;
 
     private PopupWindow mFeedbackWindow;
+    /** 视频地址列表 */
+    private List<String> mVideoPaths;
+
+    private int rePlayCount = 0;
+
+    private static final int MAX_REPLAY_COUNT = 4;
 
     // 定时获取聊天记录的任务
     class ScanRunnable implements Runnable {
@@ -238,7 +247,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 // 上传心跳时间
 //                lastPlayTime = System.currentTimeMillis();
 //                playTime += mPlayDurTime;
-                mLiveBll.uploadExperiencePlayTime(mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), 300L);
+                mLiveBll.uploadExperiencePlayTime(mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), 60L);
                 mHandler.postDelayed(this, mPlayDurTime);
             }
         }
@@ -248,7 +257,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     LiveAndBackDebug ums = new LiveAndBackDebug() {
         @Override
         public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
-
+            UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
         }
 
         @Override
@@ -367,7 +376,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     /**
      * 区分文理appid
      */
-    String appID = UmsConstants.OPERAT_APP_ID;
+    String appID = UmsConstants.APP_ID;
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE;
     /**
@@ -504,8 +513,43 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
         mIRCMessage = new IRCMessage(this, mNetWorkType, channel, mGetInfo.getStuName(), chatRoomUid);
         IRCTalkConf ircTalkConf = new IRCTalkConf(this, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
+        //聊天连接调度失败日志
+        ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
+            @Override
+            public void getChatUrlFailure(String url, String errMsg, String eventId, String logtype, String os,
+                                          String ip) {
+                Map<String, String> mData = new HashMap<>();
+                mData.put("os", os);
+                mData.put("logtype", logtype);
+                mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
+                mData.put("url", url);
+                mData.put("ip", ip);
+                mData.put("errmsg", errMsg);
+                mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
+                mData.put("orderid", mVideoEntity.getChapterId());
+                ums.umsAgentDebugSys(eventId, mData);
+            }
+        });
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
+        //聊天服务器连接失败
+        mIRCMessage.setConnectService(new IRCMessage.ConnectService() {
+            @Override
+            public void connectChatServiceError(String eventId, String logtype, String os, String serverIp, String
+                    serverPort, String errMsg, String ip) {
+                Map<String, String> mData = new HashMap<>();
+                mData.put("os", os);
+                mData.put("logtype", logtype);
+                mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
+                mData.put("serverip", serverIp);
+                mData.put("serverport", serverPort);
+                mData.put("errmsg", errMsg);
+                mData.put("ip", ip);
+                mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
+                mData.put("orderid", mVideoEntity.getChapterId());
+                ums.umsAgentDebugSys(eventId, mData);
+            }
+        });
         mIRCMessage.create();
 
     }
@@ -830,11 +874,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         where = getIntent().getStringExtra("where");
         isArts = getIntent().getIntExtra("isArts", 0);
         if (isArts == 1) {
-            appID = UmsConstants.ARTS_APP_ID_BACK;
             IS_SCIENCE = false;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
         } else {
-            appID = UmsConstants.LIVE_APP_ID_BACK;
             IS_SCIENCE = true;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         }
@@ -845,7 +887,13 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         // 视频名
         mSectionName = mVideoEntity.getPlayVideoName();
         // 播放视频
-        mWebPath = mVideoEntity.getVideoPath();
+        mVideoPaths = mVideoEntity.getVideoPaths();
+        if (mVideoPaths != null && !mVideoPaths.isEmpty()) {
+            int index = new Random().nextInt(mVideoPaths.size());
+            mWebPath = mVideoPaths.get(index);
+        } else {
+            mWebPath = mVideoEntity.getVideoPath();
+        }
         liveBackBll.addBusinessShareParam("videoView", videoView);
         addBusiness(this);
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
@@ -970,7 +1018,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
 //            seekTo(590000);
 //            if (vPlayer != null) {
-//                long pos = (long)SharedPrefUtil.getSharedPrefUtil(mContext).getValue(mVideoEntity.getLiveId(),(long)0);
+//                long pos = (long)SharedPrefUtil.getSharedPrefUtil(mContext).getValue(mVideoEntity.getLiveId(),
+// (long)0);
 //                if (pos < getDuration()){
 //                    seekTo(pos);
 //                } else {
@@ -1372,9 +1421,45 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     @Override
     protected void resultFailed(int arg1, int arg2) {
-        super.resultFailed(arg1, arg2);
+        //循环更换视频地址
+        if (mVideoPaths != null && !mVideoPaths.isEmpty()) {
+            for (int i = 0; i < mVideoPaths.size(); i++) {
+                if (mWebPath.equals(mVideoPaths.get(i))) {
+                    mWebPath = mVideoPaths.get((i + 1) % mVideoPaths.size());
+                    break;
+                }
+            }
+        } else {
+            mWebPath = mVideoEntity.getVideoPath();
+        }
+        if (rePlayCount < MAX_REPLAY_COUNT) {
+            rePlayCount++;
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
+        } else {
+            super.resultFailed(arg1, arg2);
+        }
         resultFailed = true;
         mIsShowQuestion = mIsShowRedpacket = false;
+        String errcode = "";
+        String errmsg = "";
+        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+        if (error != null) {
+            errcode = String.valueOf(error.getNum());
+            errmsg = error.getTag();
+        } else {
+            errcode = String.valueOf(arg2);
+        }
+        Map<String, String> mData = new HashMap<>();
+        mData.put("os", "Android");
+        mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
+        mData.put("playurl", mVideoEntity.getVideoPath());
+        mData.put("errcode", errcode);
+        mData.put("errmsg", errmsg);
+        mData.put("ip", IpAddressUtil.USER_IP);
+        mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
+        mData.put("orderid", mVideoEntity.getChapterId());
+        ums.umsAgentDebugSys(LiveVideoConfig.STAND_EXPERIENCE_LIVE_PLAY_ERROR, mData);
+
     }
 
     @Override

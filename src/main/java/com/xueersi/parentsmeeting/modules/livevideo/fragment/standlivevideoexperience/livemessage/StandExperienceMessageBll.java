@@ -23,14 +23,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
@@ -46,6 +47,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
@@ -196,10 +198,40 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         }
         mNetWorkType = NetWorkHelper.getNetWorkState(mContext);
         mIRCMessage = new IRCMessage(mContext, mNetWorkType, channel, liveGetInfo.getStuName(), chatRoomUid);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, liveGetInfo, 4, mHttpManager,
+        IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, liveGetInfo, LiveVideoConfig.LIVE_TYPE_STAND_EXPERIENCE, mHttpManager,
                 talkConfHosts);
+        ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
+            @Override
+            public void getChatUrlFailure(String urlIp, String errMsg, String eventId, String logtype, String os, String ip) {
+                Map<String, String> map = new HashMap<>();
+                map.put("logtype", logtype);
+                map.put("os", os);
+                map.put("url", urlIp);
+                map.put("ip", ip);
+//                map.put("",);
+                UmsAgentManager.umsAgentDebug(mContext, eventId, map);
+            }
+        });
+
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
+        mIRCMessage.setConnectService(new IRCMessage.ConnectService() {
+
+            @Override
+            public void connectChatServiceError(String eventId, String logtype, String os, String serverIp, String serverPort, String errMsg, String ip) {
+                Map<String, String> map = new HashMap<>();
+                map.put("logtype", logtype);
+                map.put("os", os);
+                map.put("serverip", serverIp);
+                map.put("serverport", serverPort);
+                map.put("errmsg", errMsg);
+                map.put("liveid", mVideoEntity.getLiveId());
+                map.put("orderid", mVideoEntity.getChapterId());
+                map.put("ip", ip);
+                map.put("serverip", serverIp);
+                UmsAgentManager.umsAgentDebug(mContext, eventId, map);
+            }
+        });
         mIRCMessage.create();
 
     }

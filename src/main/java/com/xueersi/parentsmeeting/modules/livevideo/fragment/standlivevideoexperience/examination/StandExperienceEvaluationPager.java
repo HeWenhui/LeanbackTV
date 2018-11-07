@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
+import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.route.XueErSiRouter;
+import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
@@ -16,26 +16,39 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 import java.util.ArrayList;
 import java.util.List;
 
-import ren.yale.android.cachewebviewlib.CacheWebView;
-
 public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWebviewX5Pager implements
         IEvaluationContract.IEvaluationView {
     private T iPresenter;
 
+    private android.webkit.WebView webView;
+
     public StandExperienceEvaluationPager(Context context, T iPresenter) {
         super(context);
         this.iPresenter = iPresenter;
-
+        initWebView();
+        initData();
     }
 
     @Override
     public View initView() {
 //        addJavascriptInterface();
 //        wvSubjectWeb.addJavascriptInterface(new StandExperienceEvaluation(), "standExperienceEvaluation");
-        View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware_x5, null);
-        mView = wvSubjectWeb = new CacheWebView(mContext);
-        wvSubjectWeb.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//        View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware_x5, null);
+
+        mView = View.inflate(mContext, R.layout.page_livevideo_h5_courseware_x5, null);
+//        wvSubjectWeb = mView.findViewById(R.id.x5_wv_stand_experience_learn_feedback_evaluation);
+
+//        webView = mView.findViewById(R.id.wv_stand_experience_learn_feedback_evaluation);
+
         return mView;
+    }
+
+    @Override
+    public void initData() {
+        super.initData();
+        WebSettings webSetting = wvSubjectWeb.getSettings();
+        webSetting.setBuiltInZoomControls(true);
+        webSetting.setJavaScriptEnabled(true);
     }
 
     @Override
@@ -142,7 +155,9 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
     public void showWebView(String url) {
         if (!TextUtils.isEmpty(url)) {
             logger.i("加载url:" + url);
+            BrowserActivity.CookieSyncNativeWeb.syncWebLogin(url);
             wvSubjectWeb.loadUrl(url);
+//            wvSubjectWeb.loadUrl("https://www.baidu.com/");
         } else {
 //            logger.i("加载url:" + "http://exp-class.xesv5.com/wholeBodyLive/expClassApp/index" +
 //                    ".html#/index?nowLevel=12&liveId=210285&gradeId=1&subjectId=2&teacherId=2671&orderId=2523&userId" +

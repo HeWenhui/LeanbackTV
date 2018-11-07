@@ -33,6 +33,11 @@ import java.util.Map;
 
 import okhttp3.Call;
 
+/**
+ * 学习反馈弹窗，采用RadioGroup来进行单选，如果选项按钮左边的Button样式不好，使用NewStandExperienceLearnFeedBackPager来显示
+ *
+ * @param <T>
+ */
 public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.ISendHttp> extends BasePager {
 
     T presenter;

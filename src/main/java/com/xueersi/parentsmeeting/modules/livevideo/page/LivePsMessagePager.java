@@ -864,7 +864,6 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         lvCommonWord.setAdapter(new CommonAdapter<String>(words) {
             @Override
             public AdapterItemInterface<String> getItemView(Object type) {
-//                return new CommonWordItem(mContext, this);
                 return new CommonWordPsItem(mContext, this);
             }
         });

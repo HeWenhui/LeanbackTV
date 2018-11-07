@@ -6,6 +6,7 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.MyUserInfoEntity;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.TimeUtils;
@@ -157,6 +158,8 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
             if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
                 showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
             }
+
+            //展现学习反馈窗口
 //            if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
 //                showNextWindow((ExperienceLearnFeedbackBll) liveBackBaseBll);
 //            }
@@ -171,9 +174,6 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
      * @param mPresenter
      */
     public void showNextWindow(IPresenter mPresenter) {
-        //定级卷竖屏来做
-//        ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
-//        activityChangeLand.changeLOrP();
         if (mPresenter != null) {
             mPresenter.showWindow();
         }
@@ -192,6 +192,12 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
         }
     }
 
+    /**
+     * 上传日志，视频播放错误。
+     *
+     * @param eventId
+     * @param mData
+     */
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
@@ -199,7 +205,13 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
+        mData.put("orderid", mVideoEntity.getChapterId());
         mData.put("livetype", String.valueOf(4));
+        mData.put("logtype", "play error");
+        mData.put("os", "Android");
+        mData.put("playurl", mVideoEntity.getVideoPath());
+        mData.put("ip", IpAddressUtil.USER_IP);
+
 //        if ("PublicLiveDetailActivity".equals(where)) {
 //            mData.put("livetype", "" + 2);
 //        } else {
@@ -207,7 +219,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 //        }
         mData.put("clits", "" + System.currentTimeMillis());
 //        Loger.d(mContext, eventId, mData, true);
-        UmsAgentManager.umsAgentDebug(activity, appID, eventId, mData);
+        UmsAgentManager.umsAgentDebug(activity, eventId, mData);
     }
 
     @Override

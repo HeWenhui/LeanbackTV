@@ -108,7 +108,7 @@ public class LiveVideoReportBll {
         public void onOpenFailed(int arg1, int arg2) {
             if (isOpenSuccess) {
                 MegId megId = MegId.MEGID_12103;
-                megId.msgid = "fail " + LivePlayLog.getErrorCodeInt(arg2) + " ";
+                megId.detail = "fail " + LivePlayLog.getErrorCodeInt(arg2) + " ";
                 streamReport(megId, mGetInfo.getChannelname(), -1);
             }
             long openTime = System.currentTimeMillis() - openStartTime;
