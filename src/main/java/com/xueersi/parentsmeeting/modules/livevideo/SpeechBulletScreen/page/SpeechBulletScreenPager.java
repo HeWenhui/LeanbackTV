@@ -996,7 +996,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         danmaku.time = dvSpeechbulDanmaku.getCurrentTime() + ADD_DANMU_TIME;
         danmaku.textSize = SizeUtils.Dp2Px(mContext, 14f);
         danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
-        ImageLoader.with(mContext).load(speechBulletScreenHttp.getHeadImgUrl()).asCircle().asBitmap(new SingleConfig.BitmapListener() {
+        ImageLoader.with(mContext).load(headImgUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
                 Drawable circleDrawable = drawable;
@@ -1116,8 +1116,17 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
 
     public void onDestroy() {
         logger.i("onDestroy()");
+        releaseDanmaku();
+        stopEvaluator();
+    }
+
+    public void releaseDanmaku(){
         if (dvSpeechbulDanmaku != null)
             dvSpeechbulDanmaku.release();
-        stopEvaluator();
+    }
+    public void cancelEvaluator(){
+        if (mSpeechEvaluatorUtils != null) {
+            mSpeechEvaluatorUtils.cancel();
+        }
     }
 }

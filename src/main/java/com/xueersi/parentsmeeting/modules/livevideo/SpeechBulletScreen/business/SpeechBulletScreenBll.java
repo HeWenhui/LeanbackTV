@@ -85,20 +85,6 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
     }
 
     @Override
-    public void onStartSpeechBulletScreen() {
-        Log.i(TAG,"onStartSpeechBulletScreen()");
-        mWeakHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp);
-                rlSpeechBulContent.removeAllViews();
-                rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                rlSpeechBulContent.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-    @Override
     public void onShowSpeechBulletScreen() {
         Log.i(TAG,"onStartSpeechBulletScreen()");
         mWeakHandler.post(new Runnable() {
@@ -106,8 +92,8 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
             public void run() {
                 showShortToast("老师开启了语音弹幕");
                 if (mSpeechBulPager != null) {
-                    rlSpeechBulContent.removeAllViews();
-                    mSpeechBulPager.onDestroy();
+                    mSpeechBulPager.releaseDanmaku();
+                    mSpeechBulPager.cancelEvaluator();
                     mSpeechBulPager = null;
                 }
             }
@@ -117,6 +103,7 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
             @Override
             public void run() {
                 mSpeechBulPager = new SpeechBulletScreenPager(activity,speechBulletScreenHttp);
+                rlSpeechBulContent.removeAllViews();
                 rlSpeechBulContent.addView(mSpeechBulPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 rlSpeechBulContent.setVisibility(View.VISIBLE);
                 mSpeechBulPager.ShowSpeechBulletScreen();

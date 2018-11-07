@@ -8,13 +8,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.
  */
 
 public interface SpeechBulletScreenAction {
-
-    /**
-     * 开启语音弹幕
-     */
-    void onStartSpeechBulletScreen();
-
-
     /**
      * 显示语音弹幕
      */
