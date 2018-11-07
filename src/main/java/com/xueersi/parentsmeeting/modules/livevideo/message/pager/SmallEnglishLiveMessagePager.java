@@ -536,6 +536,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 liveMediaControllerBottom.onChildViewClick(v);
                 rlMessageContent.setVisibility(View.VISIBLE);
                 rlMessageVoiceInput.setVisibility(View.VISIBLE);
+                rlMessageVoiceContent.setVisibility(View.GONE);
+                rlMessageTextContent.setVisibility(View.GONE);
                 btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_keyborad);
                 isVoice = true;
 //                KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
@@ -707,15 +709,17 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     rlMessageVoiceInput.setVisibility(View.GONE);
                     speechToKeyboard(mVoiceContent);
                 } else {
-                    isVoice = true;
-                    InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
-                            .INPUT_METHOD_SERVICE);
-                    mInputMethodManager.hideSoftInputFromWindow(etMessageContent.getWindowToken(), 0);
-                    switchFSPanelLinearLayout.setVisibility(View.GONE);
-                    rlMessageContent.setVisibility(View.VISIBLE);
-                    rlMessageVoiceInput.setVisibility(View.VISIBLE);
-                    rlMessageTextContent.setVisibility(View.GONE);
-                    btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_keyborad);
+                    QuestionStatic questionStatic = ProxUtil.getProxUtil().get(mContext, QuestionStatic.class);
+                    if (questionStatic != null && !questionStatic.isAnaswer()) {
+                        isVoice = true;
+                        InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
+                                .INPUT_METHOD_SERVICE);
+                        mInputMethodManager.hideSoftInputFromWindow(etMessageContent.getWindowToken(), 0);
+                        switchFSPanelLinearLayout.setVisibility(View.GONE);
+                        rlMessageTextContent.setVisibility(View.GONE);
+                        btnMessageStartVoice.performClick();
+                        btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_keyborad);
+                    }
                 }
                 btnMessageSwitch.setEnabled(true);
             }
@@ -790,6 +794,29 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             }
         }, 10);
 
+
+        etMessageContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (StringUtils.isEmpty(charSequence)) {
+                    btMessageSend.setEnabled(false);
+                    btMessageSend.setBackgroundResource(R.drawable.play_chat_sent_btn_disabled);
+                } else {
+                    btMessageSend.setEnabled(true);
+                    btMessageSend.setBackgroundResource(R.drawable.selector_livevideo_small_english_chat_send);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     private void startVoiceInput() {

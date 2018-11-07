@@ -114,7 +114,7 @@
         android:layout_width="match_parent"
         android:layout_height="68dp"
         android:layout_above="@id/rl_livevideo_small_english_message_panelcontent"
-        android:background="#cc000000"
+        android:background="#b2000000"
         android:visibility="gone">
         <Button
             android:id="@id/btn_livevideo_small_english_message_switch"
@@ -147,6 +147,7 @@
                 android:layout_marginTop="13dp"
                 android:layout_toRightOf="@id/tv_livevideo_voicechat_content"
                 android:text="(0/40)"
+                android:textColor="#66FFFFFF"
                 android:layout_marginLeft="10dp"
                 android:textSize="12sp"/>
 
@@ -212,8 +213,8 @@
                 android:hint="请输入文字"
                 android:imeOptions="flagNoExtractUi|actionSend"
                 android:maxLength="40"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
                 android:singleLine="true"
                 android:textSize="14sp"
                 android:textColor="@color/white"/>
@@ -233,7 +234,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="15dp"
                 android:layout_toLeftOf="@id/bt_livevideo_small_english_message_send"
                 android:background="@drawable/selector_livevideo_small_english_chat_expression"
                 android:textColor="@color/white" />
@@ -241,7 +242,7 @@
                 android:id="@id/tv_livevideo_small_english_message_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
+                android:textColor="#66FFFFFF"
                 android:textSize="13sp"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/bt_livevideo_small_english_message_express"
