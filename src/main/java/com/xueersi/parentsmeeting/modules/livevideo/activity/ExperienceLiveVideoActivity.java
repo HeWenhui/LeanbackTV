@@ -1350,16 +1350,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //            if (rlQuestionContent.getChildCount() > 0) {
 //                rlQuestionContent.setVisibility(View.VISIBLE);
 //            }
-            if (mVideoPaths != null && !mVideoPaths.isEmpty()) {
-                for (int i = 0; i < mVideoPaths.size(); i++) {
-                    if (mWebPath.equals(mVideoPaths.get(i))) {
-                        mWebPath = mVideoPaths.get((i + 1) % mVideoPaths.size());
-                        break;
-                    }
-                }
-            } else {
-                mWebPath = mVideoEntity.getVideoPath();
-            }
             playNewVideo(Uri.parse(mWebPath), mSectionName);
         }
         AppBll.getInstance(mBaseApplication);
@@ -1431,18 +1421,19 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     @Override
     protected void resultFailed(int arg1, int arg2) {
+        //循环更换视频地址
+        if (mVideoPaths != null && !mVideoPaths.isEmpty()) {
+            for (int i = 0; i < mVideoPaths.size(); i++) {
+                if (mWebPath.equals(mVideoPaths.get(i))) {
+                    mWebPath = mVideoPaths.get((i + 1) % mVideoPaths.size());
+                    break;
+                }
+            }
+        } else {
+            mWebPath = mVideoEntity.getVideoPath();
+        }
         if (rePlayCount < MAX_REPLAY_COUNT) {
             rePlayCount++;
-            if (mVideoPaths != null && !mVideoPaths.isEmpty()) {
-                for (int i = 0; i < mVideoPaths.size(); i++) {
-                    if (mWebPath.equals(mVideoPaths.get(i))) {
-                        mWebPath = mVideoPaths.get((i + 1) % mVideoPaths.size());
-                        break;
-                    }
-                }
-            } else {
-                mWebPath = mVideoEntity.getVideoPath();
-            }
             playNewVideo(Uri.parse(mWebPath), mSectionName);
         } else {
             super.resultFailed(arg1, arg2);
