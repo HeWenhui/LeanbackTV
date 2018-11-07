@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import com.netease.LDNetDiagnoClient.LDNetTraceClient;
 import com.netease.LDNetDiagnoService.JavaTraceResult;
 import com.netease.LDNetDiagnoService.LDNetTraceRoute;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.UserBll;
@@ -148,6 +149,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     private String PRI_KEY_onBufferComplete = "onBufferComplete";
     private String PRI_KEY_HEART = "HEART";
     private String tid = "";
+    private String temTid = "undefined";
     //    private HashMap<String, String> tidAndPri = new HashMap<>();
     private PlayBufferEntity bufferStartEntity = new PlayBufferEntity();
 
@@ -510,6 +512,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         if (StringUtils.isEmpty(tid)) {
             tid = "" + UUID.randomUUID();
         }
+        temTid = tid;
         isOpenSuccess = false;
         framesPsTen.clear();
         handler.removeMessages(1);
@@ -1182,7 +1185,15 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 //        }
 //        xescdnLogPlay(defaultKey, dataJson);
         final boolean isOpenSuccessfinal = isOpenSuccess;
-        final String finalTid = tid;
+        final String finalTid;
+        if (!StringUtils.isEmpty(tid)) {
+            finalTid = tid;
+        } else {
+            finalTid = temTid;
+            HashMap<String, Object> defaultKey = new HashMap<>();
+            addDefault(defaultKey);
+            CrashReport.postCatchedException(new Exception("" + defaultKey));
+        }
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
