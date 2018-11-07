@@ -198,7 +198,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         view.setVisibility(View.VISIBLE);
                     }
                 }else if(mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY){
-                    //延迟 1.5 秒 走相关逻辑(适配转场动画 节奏)
+                    //延迟 2.5 秒 走相关逻辑(适配转场动画 节奏)
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -218,7 +218,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                                 view.setVisibility(View.VISIBLE);
                             }
                         }
-                    },2000);
+                    },2500);
                 }
             }
         });

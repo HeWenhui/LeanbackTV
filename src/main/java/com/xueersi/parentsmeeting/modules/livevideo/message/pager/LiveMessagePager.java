@@ -136,6 +136,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private View mFloatView;
     private PopupWindow mPopupWindow;
     private long mOldTime = 0;//记录点击赠送按钮那一刻的时间
+    private CommonAdapter mCommonWordAdapter;
 
     public LiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                             LiveAndBackDebug ums, BaseLiveMediaControllerBottom
@@ -207,6 +208,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         btMsgCommon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                if(!commonWordInited){
+                    initCommonWord();
+                }
                 liveMediaControllerBottom.onChildViewClick(v);
                 LiveMediaController controller = liveMediaControllerBottom.getController();
                 controller.show();
@@ -464,7 +468,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         });
         logger.i( "initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        initCommonWord();
+        //initCommonWord();
         logger.i( "initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
@@ -484,6 +488,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         }
     }
 
+
+
+    private boolean commonWordInited = false;
+
     private void initCommonWord() {
         final ArrayList<String> words = new ArrayList<>();
         words.add("[e]em_1[e]");
@@ -492,12 +500,15 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         words.add("666");
         words.add("2");
         words.add("1");
-        lvCommonWord.setAdapter(new CommonAdapter<String>(words) {
+
+        mCommonWordAdapter = new CommonAdapter<String>(words) {
             @Override
             public AdapterItemInterface<String> getItemView(Object type) {
                 return new CommonWordItem(mContext, this);
             }
-        });
+        };
+
+        lvCommonWord.setAdapter(mCommonWordAdapter);
 
         lvCommonWord.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -527,6 +538,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 }
             }
         });
+        commonWordInited = true;
     }
 
     @Override

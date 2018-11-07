@@ -88,7 +88,6 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="00989000"
             android:layout_marginLeft="3dp"
             android:layout_toRightOf="@id/iv_teampk_pkstate_coin"
             android:textSize="9sp" />
