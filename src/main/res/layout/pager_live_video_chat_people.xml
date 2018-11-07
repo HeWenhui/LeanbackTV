@@ -60,7 +60,7 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/shape_livevideo_praise_interaction_num"
+                android:background="@drawable/shape_livevideo_video_chat_praise_interaction_num"
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:textColor="@color/white"
