@@ -177,15 +177,17 @@
 
             <com.xueersi.parentsmeeting.widget.AgoraVolumeWaveView
                 android:id="@id/vw_livevideo_chat_voice"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerHorizontal="true" />
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="7dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/vw_livevideo_chat_voice"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="1dp"
                 android:text="已接麦"
                 android:textColor="@color/white"
                 android:textSize="11sp" />
