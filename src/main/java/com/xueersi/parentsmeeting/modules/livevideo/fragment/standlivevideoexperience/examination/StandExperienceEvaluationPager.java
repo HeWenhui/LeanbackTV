@@ -78,8 +78,10 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
             //跳转到商城的订单详情页面
             Bundle bundle = new Bundle();
             bundle.putString("orderNum", orderId);
+            bundle.putString("vCourseId",courseId);
+//            bundle.putString();
             //采用ARouter来跳转
-            XueErSiRouter.startModule(mContext, "/xesmallOrderDetail/xrsmodule", bundle);
+            XueErSiRouter.startModule(mContext, "/xesmallCourseDetail/xrsmodule", bundle);
 //            OtherModulesEnter.intentToOrderConfirmActivity((Activity) mContext, courseId + "-" + classId, 100,
 //                    "LivePlaybackVideoActivity");
         }
