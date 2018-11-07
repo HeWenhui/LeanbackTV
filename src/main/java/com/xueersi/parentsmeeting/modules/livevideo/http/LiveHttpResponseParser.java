@@ -156,6 +156,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 followTypeEntity.setInt4(followType.getInt("4"));
             }
 
+            if (data.has("highFollowType")) {
+                JSONArray jsonArray = data.optJSONArray("highFollowType");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    getInfo.getPraiseGift().add(jsonArray.optInt(i));
+                }
+            }
+
             getInfo.setTeacherId(data.getString("teacherId"));
             getInfo.setTeacherName(data.getString("teacherName"));
             getInfo.setTeacherIMG(data.optString("teacherImg"));

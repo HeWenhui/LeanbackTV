@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -264,6 +265,14 @@ public class LiveGetInfo {
      */
     private int isVoiceInteraction;
 
+    /**
+     * 点赞送礼物，礼物特效对应的扣除金币个数
+     */
+    private ArrayList<Integer> praiseGift = new ArrayList();
+
+    public ArrayList<Integer> getPraiseGift() {
+        return praiseGift;
+    }
     public int getIsVoiceInteraction() {
         return isVoiceInteraction;
     }
