@@ -69,6 +69,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     /** 举手来源 */
     private String from = "";
     int micType = 0;
+    boolean startMic;
     private String onmicStatus = "off";
     private ArrayList<VideoChatStartChange.ChatStartChange> chatStatusChanges = new ArrayList<>();
 
@@ -81,6 +82,9 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
             @Override
             public void addVideoChatStatrtChange(ChatStartChange chatStartChange) {
                 chatStatusChanges.add(chatStartChange);
+                if (startMic) {
+                    chatStartChange.onVideoChatStartChange(true);
+                }
             }
 
             @Override
@@ -404,11 +408,10 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     }
 
     private void onVideoChatStartChange(boolean start, String method) {
-        if (micType == 1) {
-            mLogtf.d("onVideoChatStartChange:start=" + start + ",method=" + method);
-            for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
-                chatStatusChange.onVideoChatStartChange(start);
-            }
+        startMic = start;
+        mLogtf.d("onVideoChatStartChange:start=" + start + ",method=" + method + ",micType=" + micType);
+        for (VideoChatStartChange.ChatStartChange chatStatusChange : chatStatusChanges) {
+            chatStatusChange.onVideoChatStartChange(start);
         }
     }
 
