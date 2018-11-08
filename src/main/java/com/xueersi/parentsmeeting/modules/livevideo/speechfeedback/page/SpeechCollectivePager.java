@@ -23,6 +23,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.InterationVolumeWaveView;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
 /**
@@ -31,7 +32,7 @@ import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
 public class SpeechCollectivePager extends BasePager {
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "feedback/";
-    VolumeWaveView vwvSpeectevalWave;
+    InterationVolumeWaveView vwvSpeectevalWave;
     LottieAnimationView waveView;
     ImageView promtView;
     View promtGroup;
@@ -45,7 +46,8 @@ public class SpeechCollectivePager extends BasePager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_speech_collective, null);
-        vwvSpeectevalWave = (VolumeWaveView) view.findViewById(R.id.vwv_livevideo_speecteval_wave);
+        vwvSpeectevalWave = (InterationVolumeWaveView) view.findViewById(R.id.vwv_livevideo_speecteval_wave);
+
         waveView = view.findViewById(R.id.iv_livevideo_feedback_wave);
         promtGroup = view.findViewById(R.id.rl_livevideo_open_close_layout);
         promtView = view.findViewById(R.id.iv_livevideo_open_close);
@@ -61,14 +63,12 @@ public class SpeechCollectivePager extends BasePager {
         Paint paint = new Paint();
         paint.setColor(Color.parseColor("#a84300"));
         vwvSpeectevalWave.setCircleBack(paint);
-        vwvSpeectevalWave.setIsOnTop(true);
-        vwvSpeectevalWave.setZOrderMediaOverlay(true);
-        vwvSpeectevalWave.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        vwvSpeectevalWave.setOpaque(false);
         int topGap = LiveVideoPoint.getInstance().y2;
         int paddingBottom = (int) (8 * ScreenUtils.getScreenDensity());
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) waveGroup.getLayoutParams();
         layoutParams.bottomMargin = paddingBottom;
-        layoutParams.rightMargin=LiveVideoPoint.getInstance().getRightMargin()+SizeUtils.Dp2Px(mContext,14);
+        layoutParams.rightMargin = LiveVideoPoint.getInstance().getRightMargin() + SizeUtils.Dp2Px(mContext, 14);
         waveGroup.setLayoutParams(layoutParams);
 
         mView.postDelayed(new Runnable() {
@@ -128,12 +128,15 @@ public class SpeechCollectivePager extends BasePager {
             @Override
             public void run() {
                 promtGroup.setVisibility(View.GONE);
+                waveGroup.setVisibility(View.VISIBLE);
             }
         }, 1000);
 
     }
 
     public void stop() {
+        waveGroup.setVisibility(View.GONE);
+        vwvSpeectevalWave.stop();
         promtGroup.setVisibility(View.VISIBLE);
         promtView.setImageResource(R.drawable.ic_livevideo_speech_collective_close);
     }
