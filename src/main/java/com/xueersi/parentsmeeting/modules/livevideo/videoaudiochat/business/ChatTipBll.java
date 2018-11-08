@@ -153,9 +153,9 @@ public class ChatTipBll {
                 if (modeChange && "off".equals(onMic)) {
                     handler.removeCallbacks(waitRun);
                     handler.postDelayed(waitRun, 1000);
-                    initView("onClassmateChange");
-                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
-                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
+//                    initView("onClassmateChange");
+//                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
+//                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -436,6 +436,7 @@ public class ChatTipBll {
     public void startMicro(final String onMic, final String nonce, final String room, String from, final boolean contain, final int micType) {
         logger.d("startMicro:nonce=" + nonce + ",onMic=" + onMic + ",contain=" + contain + ",from=" + from);
         this.onMic = onMic;
+        this.msgFrom = from;
         if (contain) {
             raisehand = true;
         }
@@ -451,8 +452,8 @@ public class ChatTipBll {
                     rl_livevideo_chat_raisehand_off.setVisibility(View.GONE);
                 } else {
                     handler.postDelayed(waitRun, 1000);
-                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
-                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
+//                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
+//                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
                 }
                 changeRaisehand(contain);
                 raisehand = contain;
@@ -483,7 +484,7 @@ public class ChatTipBll {
             return;
         }
         initView("startRecord");
-        AgoraChatPager agoraChatPager = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp, micType);
+        AgoraChatPager agoraChatPager = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp, msgFrom, micType);
         agoraChatPager.setTestWorkerThread(testWorkerThread);
         videoChatInter = agoraChatPager;
         if (contain) {

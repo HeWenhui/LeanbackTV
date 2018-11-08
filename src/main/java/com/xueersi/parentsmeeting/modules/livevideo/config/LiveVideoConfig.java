@@ -170,6 +170,8 @@ public class LiveVideoConfig {
     public static String LIVE_GSLB = "live_gslb";
     /** 调度请求错误失败上报日志 */
     public static String LIVE_CHAT_GSLB = "live_chatgslb";
+    /** 聊天服务器连接失败EventId */
+    public static final String EXPERIENCE_MESSAGE_CONNECT_ERROR = "experience_message_connect_error";
     /** 站立直播-帧动画 */
     public static String LIVE_FRAME_ANIM = "live_frame_anim";
     /** 直播时间-当天据算，live_expe_time按单个场次计算 */

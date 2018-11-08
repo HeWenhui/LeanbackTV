@@ -9,6 +9,7 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
+import com.xueersi.parentsmeeting.module.browser.provider.WebFunctionProvider;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
@@ -46,6 +47,16 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
     @Override
     public void initData() {
         super.initData();
+
+//        wvSubjectWeb.addJavascriptInterface(new WebFunctionProvider(wvSubjectWeb) {
+//            @Override
+//            public void close() {
+////                super.close();
+//                iPresenter.removeWindow();
+//                wvSubjectWeb.destroy();
+//                iPresenter.showNextWindow();
+//            }
+//        }, "xesApp");
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
         webSetting.setJavaScriptEnabled(true);
@@ -73,13 +84,17 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
         if (url.contains(" www.sina.com")) {
             String courseId = findNumber(url, "courseId");
             String classId = findNumber(url, "classId");
-            String orderId = findNumber(url, "orderId");
+//            String orderId = findNumber(url, "orderId");
 //            ARouter.getInstance().build("/xesmall/orderDetail").withString("orderNum", orderId).navigation();
             //跳转到商城的订单详情页面
             Bundle bundle = new Bundle();
-            bundle.putString("orderNum", orderId);
+//            bundle.putString("orderNum", orderId);
+            bundle.putString("vCourseId", courseId);
+            bundle.putString("classId", classId);
+
+//            bundle.putString();
             //采用ARouter来跳转
-            XueErSiRouter.startModule(mContext, "/module/Browser", bundle);
+            XueErSiRouter.startModule(mContext, "/xesmallCourseDetail/xrsmodule", bundle);
 //            OtherModulesEnter.intentToOrderConfirmActivity((Activity) mContext, courseId + "-" + classId, 100,
 //                    "LivePlaybackVideoActivity");
         }

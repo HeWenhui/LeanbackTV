@@ -202,14 +202,14 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                 talkConfHosts);
         ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
             @Override
-            public void getChatUrlFailure(String urlIp, String errMsg, String eventId, String logtype, String os, String ip) {
+            public void getChatUrlFailure(String urlIp, String errMsg, String ip) {
                 Map<String, String> map = new HashMap<>();
-                map.put("logtype", logtype);
-                map.put("os", os);
+                map.put("logtype", "Error");
+                map.put("os", "Android");
                 map.put("url", urlIp);
                 map.put("ip", ip);
 //                map.put("",);
-                UmsAgentManager.umsAgentDebug(mContext, eventId, map);
+                UmsAgentManager.umsAgentDebug(mContext, LiveVideoConfig.LIVE_CHAT_GSLB, map);
             }
         });
 
@@ -218,18 +218,17 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         mIRCMessage.setConnectService(new IRCMessage.ConnectService() {
 
             @Override
-            public void connectChatServiceError(String eventId, String logtype, String os, String serverIp, String serverPort, String errMsg, String ip) {
+            public void connectChatServiceError( String serverIp, String serverPort, String errMsg, String ip) {
                 Map<String, String> map = new HashMap<>();
-                map.put("logtype", logtype);
-                map.put("os", os);
-                map.put("serverip", serverIp);
+                map.put("logtype", "Error");
+                map.put("os", "Android");
                 map.put("serverport", serverPort);
                 map.put("errmsg", errMsg);
                 map.put("liveid", mVideoEntity.getLiveId());
                 map.put("orderid", mVideoEntity.getChapterId());
                 map.put("ip", ip);
                 map.put("serverip", serverIp);
-                UmsAgentManager.umsAgentDebug(mContext, eventId, map);
+                UmsAgentManager.umsAgentDebug(mContext, LiveVideoConfig.EXPERIENCE_MESSAGE_CONNECT_ERROR, map);
             }
         });
         mIRCMessage.create();

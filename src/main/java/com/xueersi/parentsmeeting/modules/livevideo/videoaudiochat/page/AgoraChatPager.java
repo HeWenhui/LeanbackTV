@@ -19,7 +19,6 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
@@ -43,6 +42,8 @@ import com.xueersi.parentsmeeting.widget.AgoraVolumeWaveView;
 import com.xueersi.ui.widget.CircleImageView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -79,9 +80,10 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     private LottieEffectInfo bubbleEffectInfo;
     private boolean initLottile1 = false;
     private boolean initLottile2 = false;
+    String msgFrom;
     private int micType;
 
-    public AgoraChatPager(Activity activity, LiveAndBackDebug liveBll, LiveGetInfo getInfo, VideoChatEvent videoChatEvent, VideoAudioChatHttp videoChatHttp, int micType) {
+    public AgoraChatPager(Activity activity, LiveAndBackDebug liveBll, LiveGetInfo getInfo, VideoChatEvent videoChatEvent, VideoAudioChatHttp videoChatHttp, String msgFrom, int micType) {
         logger = LoggerFactory.getLogger(TAG);
         this.activity = activity;
         mContext = activity;
@@ -90,6 +92,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         this.startRemote = videoChatEvent.getStartRemote();
         this.liveBll = liveBll;
         this.getInfo = getInfo;
+        this.msgFrom = msgFrom;
         this.micType = micType;
         netWorkType = NetWorkHelper.getNetWorkState(activity);
         mLogtf = new LogToFile(activity, TAG);
@@ -139,9 +142,15 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
 
         @Override
         public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
-            mLogtf.d("onFirstRemoteVideoDecoded:uid=" + uid);
-            if (!("" + uid).equals(getInfo.getTeacherId())) {
-                return;
+            mLogtf.d("onFirstRemoteVideoDecoded:uid=" + uid + ",from=" + msgFrom);
+            if ("t".equals(msgFrom)) {
+                if (!("" + uid).equals(getInfo.getMainTeacherId())) {
+                    return;
+                }
+            } else if ("f".equals(msgFrom)) {
+                if (!("" + uid).equals(getInfo.getTeacherId())) {
+                    return;
+                }
             }
             startRemote.set(true);
             try {
@@ -320,8 +329,16 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         hind("removeMe");
     }
 
+    private Comparator<ClassmateEntity> c = new Comparator<ClassmateEntity>() {
+        @Override
+        public int compare(ClassmateEntity o1, ClassmateEntity o2) {
+            return o1.getPlace() - o2.getPlace();
+        }
+    };
+
     @Override
     public void updateUser(boolean classmateChange, ArrayList<ClassmateEntity> classmateEntities) {
+        Collections.sort(classmateEntities, c);
         final RelativeLayout rl_livevideo_chat_head1 = mView.findViewById(R.id.rl_livevideo_chat_head1);
         final RelativeLayout rl_livevideo_chat_head2 = mView.findViewById(R.id.rl_livevideo_chat_head2);
         final LottieAnimationView pressLottileView1 = mView.findViewById(R.id.lav_livevideo_chat_praise1);

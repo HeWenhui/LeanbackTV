@@ -93,7 +93,7 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
 
         @Override
         public void run() {
-            paint.setStrokeWidth(4);
+            paint.setStrokeWidth(1.5f);
             paint.setStyle(Paint.Style.STROKE);
             paint.setAntiAlias(true);
             backPaint.setColor(Color.RED);
@@ -109,6 +109,7 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
                 long before2 = System.currentTimeMillis();
                 int viewWidth = getWidth();
                 int viewHeight = getHeight();
+                board = (int) (viewWidth * 4.0f / 88.0f);
                 width = viewWidth - 2 * board;
                 height = viewHeight - 2 * board;
 //                Rect dirty = new Rect();
@@ -138,8 +139,10 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
                         if (back == null) {
                             Bitmap back2 = BitmapFactory.decodeResource(getResources(), R.drawable.live_task_hongse_icon_normal);
                             if (back2 != null) {
-                                back = Bitmap.createScaledBitmap(back2, viewWidth, viewHeight, false);
-                                back2.recycle();
+                                back = Bitmap.createScaledBitmap(back2, viewWidth, viewHeight, true);
+                                if (back != back2) {
+                                    back2.recycle();
+                                }
                             }
                         }
                         if (back != null) {
@@ -197,6 +200,10 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
                 if (canvas != null) {
                     mSurfaceHolder.unlockCanvasAndPost(canvas);
                 }
+            }
+            if (back != null) {
+                back.recycle();
+                back = null;
             }
         }
 
