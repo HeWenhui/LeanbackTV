@@ -829,4 +829,10 @@
     <item name="tv_livevideo_auditclass_answer_rate" type="id"/>
     <item name="tv_livevideo_auditclass_myrank" type="id"/>
 
+    <item name="iv_live_halfbody_pk_state" type="id"/>
+    <item name="fl_live_halfbody_coin_container" type="id"/>
+    <item name="rl_live_halfbody_energy_contribution" type="id"/>
+    <item name="tv_live_halfbody_energy_contribution" type="id"/>
+
+
 </resources>

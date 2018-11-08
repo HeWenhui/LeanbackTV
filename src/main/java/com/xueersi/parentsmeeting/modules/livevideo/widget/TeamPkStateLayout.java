@@ -64,12 +64,12 @@ public class TeamPkStateLayout extends FrameLayout {
     /**
      * pk状态栏显示时间
      */
-    private static final long PK_STATE_DISPLAY_DURATION = 30 * 1000;
+    protected static final long PK_STATE_DISPLAY_DURATION = 30 * 1000;
 
     /**
      * 我贡献了多少能量显示时间
      */
-    private static final long ENERGY_MY_CONTRIBUTION_DURATION = 4 * 1000;
+    protected static final long ENERGY_MY_CONTRIBUTION_DURATION = 4 * 1000;
 
     private boolean dataInited = false;
     protected TextView tvEnergyMyContribution;
@@ -203,7 +203,7 @@ public class TeamPkStateLayout extends FrameLayout {
         } else {
             ratio = 0.5f;
         }
-        upDataSateText(ratio);
+        updatePkState(ratio);
         int addProgress = (int) (ratio * 100 + 0.5f) - pkProgressBar.getProgress();
         if (addProgress > 0) {
             pkProgressBar.smoothAddProgress(addProgress);
@@ -263,14 +263,14 @@ public class TeamPkStateLayout extends FrameLayout {
         } else {
             ratio = 0.5f;
         }
-        upDataSateText(ratio);
+        updatePkState(ratio);
         int currentProgress = (int) (ratio * 100);
         pkProgressBar.setProgress(currentProgress);
     }
 
-    private static final float HALF_PROGRESS = 0.5f;
+    protected static final float HALF_PROGRESS = 0.5f;
 
-    private void upDataSateText(float ratio) {
+    protected void updatePkState(float ratio) {
         if (this.showPopWindow) {
             this.showPopWindow = false;
             if (ratio > HALF_PROGRESS) {
@@ -328,7 +328,7 @@ public class TeamPkStateLayout extends FrameLayout {
      * @param targetView
      * @param duratrion
      */
-    private void showViewWithFadeInOutEffect(final View targetView, long duratrion) {
+    protected void showViewWithFadeInOutEffect(final View targetView, long duratrion) {
         if (targetView == null) {
             return;
         }
