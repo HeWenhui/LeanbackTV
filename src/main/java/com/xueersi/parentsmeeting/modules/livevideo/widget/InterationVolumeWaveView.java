@@ -120,7 +120,7 @@ public class InterationVolumeWaveView extends TextureView implements TextureView
 
         @Override
         public void run() {
-            paint.setStrokeWidth(4);
+            paint.setStrokeWidth(2);
             paint.setStyle(Paint.Style.STROKE);
             paint.setAntiAlias(true);
             if (paths.isEmpty()) {
@@ -187,7 +187,7 @@ public class InterationVolumeWaveView extends TextureView implements TextureView
                     clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
                     canvas.drawPaint(clearPaint);
                     clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
-                    canvas.drawColor(0xffeaebf9);
+                    canvas.drawColor(0xffa84300);
                     canvas.drawLine(0, height / 2 - 2, width, height / 2 - 2, paint);
                 }
             } catch (Exception e) {
