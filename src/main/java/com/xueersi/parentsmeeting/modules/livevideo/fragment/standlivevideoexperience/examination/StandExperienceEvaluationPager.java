@@ -84,7 +84,7 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
         if (url.contains(" www.sina.com")) {
             String courseId = findNumber(url, "courseId");
             String classId = findNumber(url, "classId");
-            String orderId = findNumber(url, "orderId");
+//            String orderId = findNumber(url, "orderId");
 //            ARouter.getInstance().build("/xesmall/orderDetail").withString("orderNum", orderId).navigation();
             //跳转到商城的订单详情页面
             Bundle bundle = new Bundle();
