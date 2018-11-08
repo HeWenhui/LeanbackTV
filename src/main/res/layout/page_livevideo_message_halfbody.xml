@@ -85,85 +85,57 @@
             </cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout>
         </RelativeLayout>
 
+
         <!--底部聊天框-->
         <RelativeLayout
             android:id="@id/rl_livevideo_message_content2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_above="@id/rl_livevideo_message_panelcontent"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@id/bt_livevideo_message_open"
-            android:gravity="center"
-            android:paddingBottom="1dp"
+            android:background="@color/white"
             android:visibility="gone">
 
-            <RelativeLayout
-                android:id="@+id/rl_livevideo_message_back"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_live_stand_chat_input" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/rl_livevideo_message_back"
-                android:layout_alignTop="@id/rl_livevideo_message_back"
-                android:layout_marginTop="8dp">
-
-                <Button
-                    android:id="@id/bt_livevideo_message_send"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="12dp"
-                    android:background="@drawable/selector_live_stand_chat_send"
-                    android:textColor="@color/white" />
-
-                <Button
-                    android:id="@id/bt_livevideo_message_express"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@id/bt_livevideo_message_send"
-                    android:background="@drawable/selector_live_stand_chat_expression"
-                    android:textColor="@color/white" />
-
-                <EditText
-                    android:id="@id/et_livevideo_message_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@id/bt_livevideo_message_express"
-                    android:background="@color/transparent"
-                    android:hint="请输入文字"
-                    android:imeOptions="flagNoExtractUi|actionSend"
-                    android:maxLength="40"
-                    android:padding="10dp"
-                    android:singleLine="true"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    android:textSize="14sp" />
-
-            </RelativeLayout>
-
-            <ImageView
-                android:id="@id/iv_livevideo_message_close"
+            <Button
+                android:id="@id/bt_livevideo_message_send"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@id/rl_livevideo_message_back"
-                android:layout_alignTop="@id/rl_livevideo_message_back"
-                android:paddingBottom="6dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingTop="6dp"
-                android:src="@drawable/selector_live_stand_chat_close" />
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/shape_livevideo_message_send"
+                android:text="发送"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@id/bt_livevideo_message_express"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/bt_livevideo_message_send"
+                android:background="@drawable/selector_chat_expression"
+                android:textColor="@color/white" />
+
+            <EditText
+                android:id="@id/et_livevideo_message_content"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/bt_livevideo_message_express"
+                android:background="@drawable/shape_corners_4dp_f1f1f1"
+                android:hint="请输入文字"
+                android:imeOptions="flagNoExtractUi|actionSend"
+                android:maxLength="40"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:textSize="14sp" />
         </RelativeLayout>
+
+
 
 
     </RelativeLayout>
