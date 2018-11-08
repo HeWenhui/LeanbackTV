@@ -1437,6 +1437,13 @@ public class LiveHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.setJson(json);
         params.setWriteAndreadTimeOut(10);
-        baseSendPostNoBusinessJson("http://10.99.2.31/v1/push", params, callback);
+        String url;
+//        if (AppConfig.DEBUG) {
+//            url = "http://10.99.2.31/v1/push";
+//        } else {
+//            url = "https://pushirc.arts.xueersi.com/v1/push";
+//        }
+        url = "https://pushirc.arts.xueersi.com/v1/push";
+        baseSendPostNoBusinessJson(url, params, callback);
     }
 }

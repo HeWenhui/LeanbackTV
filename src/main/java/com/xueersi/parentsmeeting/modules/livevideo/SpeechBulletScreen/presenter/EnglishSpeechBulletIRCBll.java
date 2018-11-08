@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.presente
 import android.app.Activity;
 
 import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.Contract.EnglishSpeechBulletContract;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.view.EnglishSpeechBulletPager;
@@ -14,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -88,6 +88,11 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
                 });
             }
         }
+    }
+
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        englishSpeechBulletView.setVideoLayout(liveVideoPoint);
     }
 
     @Override
@@ -227,5 +232,10 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     @Override
     public String getHeadImgUrl() {
         return mGetInfo.getHeadImgPath();
+    }
+
+    @Override
+    public String getStuSex() {
+        return mGetInfo.getStuSex();
     }
 }

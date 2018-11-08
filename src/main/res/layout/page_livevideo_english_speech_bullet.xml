@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="68dp"
         android:layout_above="@id/rl_livevideo_speechbul_panelcontent"
-        android:background="#cc000000"
+        android:background="#B3000000"
         android:visibility="visible">
 
         <TextView
