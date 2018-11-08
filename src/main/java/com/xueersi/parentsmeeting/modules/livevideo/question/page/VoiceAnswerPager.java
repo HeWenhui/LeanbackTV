@@ -121,9 +121,15 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                 if (mIse == null) {
                     mIse = new SpeechEvaluatorUtils(true);
                 }
-                startEvaluator();
+
             }
         });
+        mView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startEvaluator();
+            }
+        },300);
     }
 
     public void setIse(SpeechEvaluatorUtils ise) {
@@ -383,7 +389,20 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                     }
                 }, 1500);
             }
-        } else {
+        } else if (resultEntity.getErrorNo() == ResultCode.SPEECH_CANCLE){
+            mView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mIse.cancel();
+                }
+            });
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startEvaluator();
+                }
+            },1000);
+        }else {
             rlSpeectevalTip.setVisibility(View.VISIBLE);
             ivSpeectevalTip.setImageResource(R.drawable.bg_livevideo_speecteval_tip1);
             tvSpeectevalTip.setText("语音输入有点小问题，\n先手动答题哦（" + resultEntity.getErrorNo() + ")");

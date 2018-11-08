@@ -557,9 +557,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 break;
             case XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE: {
                 //开启/关闭弹幕
-                String open = object.optString("open","false");
+                String open = object.optString("open", "false");
                 if (mRoomAction != null) {
-                    if ("true".equals(open)){
+                    if ("true".equals(open)) {
                         mRoomAction.onOpenVoicebarrage(true, true);
                     } else {
                         mRoomAction.onOpenVoicebarrage(false, true);
@@ -570,7 +570,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.START_MICRO: {
                 String status = object.optString("status", "off");
                 if (mRoomAction != null) {
-                    if ("on".equals(status)){
+                    if ("on".equals(status)) {
                         mRoomAction.onOpenVoiceNotic(true, "START_MICRO");
                     } else {
                         mRoomAction.onOpenVoiceNotic(false, "START_MICRO");
@@ -581,7 +581,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.ARTS_WORD_DICTATION: {
                 int state = object.optInt("state", 0);
                 if (mRoomAction != null) {
-                    if (1 == state){
+                    if (1 == state) {
                         mRoomAction.onOpenVoiceNotic(true, "ARTS_WORD_DICTATION");
                     } else {
                         mRoomAction.onOpenVoiceNotic(false, "ARTS_WORD_DICTATION");
@@ -611,7 +611,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 }
                 break;
             }
-            case XESCODE.ARTS_H5_COURSEWARE:{
+            case XESCODE.ARTS_H5_COURSEWARE: {
                 String status = object.optString("status", "off");
                 if (mRoomAction != null) {
                     if ("on".equals(status)) {
@@ -633,6 +633,27 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 }
                 break;
             }
+            case XESCODE.SENDQUESTION: {
+                mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
+                break;
+            }case XESCODE.STOPQUESTION: {
+                mRoomAction.onOpenVoiceNotic(false, "STOPQUESTION");
+                break;
+            }
+            case XESCODE.ARTS_SEND_QUESTION: {
+                mRoomAction.onOpenVoiceNotic(true, "ARTS_SEND_QUESTION");
+                break;
+            } case XESCODE.ARTS_STOP_QUESTION: {
+                mRoomAction.onOpenVoiceNotic(false, "ARTS_STOP_QUESTION");
+                break;
+            }
+            case XESCODE.EXAM_START: {
+                mRoomAction.onOpenVoiceNotic(true, "EXAM_START");
+                break;
+            } case XESCODE.EXAM_STOP: {
+                mRoomAction.onOpenVoiceNotic(false, "EXAM_STOP");
+                break;
+            }
             default:
                 break;
         }
@@ -643,7 +664,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     public int[] getNoticeFilter() {
         return new int[]{
                 XESCODE.OPENBARRAGE, XESCODE.GAG, XESCODE.OPENCHAT, XESCODE.TEACHER_MESSAGE, XESCODE.START_MICRO,
-                XESCODE.ARTS_WORD_DICTATION,XESCODE.RAISE_HAND,XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE,XESCODE.RAISE_HAND_SELF,XESCODE.ENGLISH_H5_COURSEWARE
+                XESCODE.ARTS_WORD_DICTATION, XESCODE.RAISE_HAND, XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE, XESCODE
+                .RAISE_HAND_SELF, XESCODE.ENGLISH_H5_COURSEWARE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.SENDQUESTION,
+                XESCODE.ARTS_SEND_QUESTION, XESCODE.EXAM_START,XESCODE.STOPQUESTION,XESCODE.EXAM_STOP, XESCODE.ARTS_STOP_QUESTION
         };
     }
 

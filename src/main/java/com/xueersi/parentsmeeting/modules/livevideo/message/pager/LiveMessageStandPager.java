@@ -1323,7 +1323,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         logger.d("openvoice:" + openVoice + "from:" + type);
         if (openVoice) {
             ivMessageClose.performClick();
-            if (!("ENGLISH_H5_COURSEWARE".equals(type) || "ARTS_H5_COURSEWARE".equals(type))) {
+            if (!("ENGLISH_H5_COURSEWARE".equals(type) || "ARTS_H5_COURSEWARE".equals(type) ||
+                    "EXAM_START".equals(type) || "ARTS_SEND_QUESTION".equals(type) || "SENDQUESTION"
+                    .equals(type))) {
                 btnVoiceMesOpen.setEnabled(false);
             }
         } else {
@@ -1443,13 +1445,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             public void run() {
                 if (isShow) {
                     //发题时关闭正在进行的语音聊天，
-                    vwvVoiceChatWave.setVisibility(View.GONE);
-                    stopEvaluator();
-                    //判断聊天输入框状态，若为语音输入保存结果
-                    if (rlMessageVoice.getVisibility() == View.VISIBLE) {
-                        setSpeechFinishView(mVoiceContent);
+                    if (vwvVoiceChatWave.getVisibility() == View.VISIBLE){
+                        vwvVoiceChatWave.setVisibility(View.GONE);
+                        stopEvaluator();
+                        //判断聊天输入框状态，若为语音输入保存结果
+                        if (rlMessageVoice.getVisibility() == View.VISIBLE) {
+                            setSpeechFinishView(mVoiceContent);
+                        }
+                        clearMsgView();
                     }
-                    clearMsgView();
                     liveStandMessageContent.setVisibility(View.GONE);
                     //现在的隐藏显示和liveStandMessageContent一致
                     btnVoiceMesOpen.setVisibility(View.GONE);
