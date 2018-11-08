@@ -1,8 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.support.constraint.Group;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -12,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
@@ -34,9 +33,11 @@ import java.util.Map;
 import okhttp3.Call;
 
 /**
- * 学习反馈弹窗，采用RadioGroup来进行单选，如果选项按钮左边的Button样式不好，使用NewStandExperienceLearnFeedBackPager来显示
+ * 学习反馈弹窗，采用RadioGroup来进行单选，如果选项按钮左边的Button样式不好，使用
  *
  * @param <T>
+ * @see NewStandExperienceLearnFeedBackPager
+ * 来显示
  */
 public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.ISendHttp> extends BasePager {
 
@@ -126,9 +127,7 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
         radioGroup1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (!TextUtils.isEmpty(arrayOptions.get(0).getDefaultOption())) {
-                    radioGroupAns1 = arrayOptions.get(0).getDefaultOption();
-                }
+
                 if (checkedId == R.id.rb_stand_experience_learn_feedback_select1_button1) {
                     radioGroupAns1 = questionList.get(0).listKey.get(0);
                 } else if (checkedId == R.id.rb_stand_experience_learn_feedback_select1_button2) {
@@ -142,9 +141,7 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
             radioGroup2.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    if (!TextUtils.isEmpty(arrayOptions.get(1).getDefaultOption())) {
-                        radioGroupAns1 = arrayOptions.get(1).getDefaultOption();
-                    }
+
                     if (checkedId == R.id.rb_stand_experience_learn_feedback_select2_button1) {
                         radioGroupAns2 = questionList.get(1).listKey.get(0);
                     } else if (checkedId == R.id.rb_stand_experience_learn_feedback_select2_button2) {
@@ -166,11 +163,14 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (TextUtils.isEmpty(radioGroupAns1) || TextUtils.isEmpty(radioGroupAns2)) {
+                    Toast.makeText(mContext, "你至少需要选择一项哦", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 JSONArray jsonArray = new JSONArray();
                 JSONObject jsonObject1 = new JSONObject();
                 JSONObject jsonObject2 = new JSONObject();
                 try {
-
                     jsonObject1.put("1", radioGroupAns1);
                     jsonObject2.put("2", radioGroupAns2);
                     jsonArray.put(jsonObject1);
@@ -262,13 +262,18 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
      */
     int questionSize;
     String title1, title2;
+    /**
+     * 默认选项
+     */
+    String defaultOp1, defaultOp2;
 
     @Override
     public void initData() {
         questionSize = arrayOptions.size();
         title1 = arrayOptions.get(0).getTitle();
         title2 = arrayOptions.get(1).getTitle();
-//        optionArray = new ArrayList<>();
+        defaultOp1 = arrayOptions.get(0).getDefaultOption();
+        defaultOp2 = arrayOptions.get(1).getDefaultOption();
         questionList = new ArrayList<>();
         for (LiveExperienceEntity.LearnFeedBack item : arrayOptions) {
             item.getTitle();
@@ -293,6 +298,15 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
         }
         setView();
         judgeNum();
+
+//        if(radioGroupAns1.)
+
+        if (!TextUtils.isEmpty(arrayOptions.get(0).getDefaultOption())) {
+            radioGroupAns1 = arrayOptions.get(0).getDefaultOption();
+        }
+        if (!TextUtils.isEmpty(arrayOptions.get(1).getDefaultOption())) {
+            radioGroupAns1 = arrayOptions.get(1).getDefaultOption();
+        }
     }
 
     public class QuestionOption {
@@ -311,24 +325,33 @@ public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.I
     private final int column = 3;
     private final int line = 2;
 
+    /**
+     * 根据
+     * {@Link #initData()}
+     */
     private void setView() {
         logger.i(radioButtons.length + " " + radioButtons[0].length);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            Drawable drawable = radioButtons[0][0].getButtonDrawable();
-        }
-        ShapeDrawable shapeDrawable = new ShapeDrawable();
-
-
         for (int i = 0; i < questionList.size(); i++) {
-            List<String> itemList = questionList.get(i).listValue;
-            for (int j = 0; j < itemList.size(); j++) {
+            List<String> itemValueList = questionList.get(i).listValue;
+            List<String> itemKeyList = questionList.get(i).listKey;
+            for (int j = 0; j < itemValueList.size(); j++) {
 
 //                radioButtons[i][j].setTypeface(FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf"));
                 ;
-                radioButtons[i][j].setText(itemList.get(j));
+                radioButtons[i][j].setText(itemValueList.get(j));
+                if (i == 0 && defaultOp1 != null && defaultOp1.equals(itemKeyList.get(j))) {
+                    radioButtons[0][j].setChecked(true);
+                }
+                if (i == 1 && defaultOp2 != null && defaultOp2.equals(itemKeyList.get(j))) {
+                    radioButtons[1][j].setChecked(true);
+                }
 //                radioButtons[i][j].setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
             }
+        }
+        //设置默认选项至
+        for (int i = 0; i < questionList.size(); i++) {
+
         }
         tvTittle1.setText(title1);
         tvTittle2.setText(title2);

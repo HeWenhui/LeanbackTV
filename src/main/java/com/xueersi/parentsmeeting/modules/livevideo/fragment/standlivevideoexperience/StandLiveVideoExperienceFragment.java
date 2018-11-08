@@ -74,7 +74,9 @@ import java.util.Map;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
-//测试提交
+/**
+ * 全身直播体验课，仿照直播回放
+ */
 public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase implements MediaControllerAction,
         ActivityChangeLand {
     {
