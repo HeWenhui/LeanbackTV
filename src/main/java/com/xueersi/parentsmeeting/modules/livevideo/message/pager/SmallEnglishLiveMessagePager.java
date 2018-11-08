@@ -306,7 +306,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         params.width = liveVideoPoint.getRightMargin();
         params.topMargin = liveVideoPoint.y3;
         logger.setLogMethod(false);
-        logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
+        logger.i("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
 
         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
 
@@ -926,7 +926,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 params.topMargin = topMargin;
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-                logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
+                logger.i("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
             }
             int bottomMargin = liveVideoPoint.y2;
             params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
@@ -1633,7 +1633,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     @Override
     public void onOpenVoicebarrage(final boolean openbarrage, boolean fromNotice) {
-        logger.d("OpenVoicebarrage:" + openbarrage);
+        logger.i("OpenVoicebarrage:" + openbarrage);
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -1666,7 +1666,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     @Override
     public void onOpenVoiceNotic(final boolean openVoice, final String type) {
-        logger.d("openVoice:" + openVoice + " from:" + type);
+        logger.i("openVoice:" + openVoice + " from:" + type);
         mView.post(new Runnable() {
             @Override
             public void run() {
@@ -1871,13 +1871,13 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     long mBeginOfSpeech = 0;
     private void startEvaluator() {
         mVoiceContent = "";
-        logger.d("startEvaluator()");
+        logger.i("startEvaluator()");
         mVoiceFile = new File(dir, "voicechat" + System.currentTimeMillis() + ".mp3");
         mSpeechEvaluatorUtils.startSpeechRecognitionOffline(mVoiceFile.getPath(), "2", "30",
                 new EvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
-                        logger.d("onBeginOfSpeech");
+                        logger.i("onBeginOfSpeech");
                         isSpeekDone = false;
                         noSpeechTimer.start();
                         mBeginOfSpeech = System.currentTimeMillis();
@@ -1891,7 +1891,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
                     @Override
                     public void onResult(ResultEntity resultEntity) {
-                        logger.d("onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity
+                        logger.i("onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity
                                 .getErrorNo());
                         if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
                             onEvaluatorSuccess(resultEntity, true);
@@ -1904,17 +1904,17 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
                     @Override
                     public void onVolumeUpdate(int volume) {
-                        logger.d("onVolumeUpdate:volume=" + volume);
+                        logger.i("onVolumeUpdate:volume=" + volume);
                         vwvVoiceChatWave.setVolume(volume * 2);
                     }
                 });
-        int v = (int) (0.1f * mMaxVolume);
+        int v = (int) (0.05f * mMaxVolume);
         mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
         mAM.setStreamVolume(AudioManager.STREAM_MUSIC, v, 0);
     }
 
     public void stopEvaluator() {
-        logger.d("stopEvaluator()");
+        logger.i("stopEvaluator()");
         isSpeekDone = true;
 //        mView.removeCallbacks(mHintRunnable);
 //        mView.removeCallbacks(mNorecogRunnable);
@@ -1922,8 +1922,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         if (mAudioRequest != null) {
             mAudioRequest.release();
         }
+        vwvVoiceChatWave.setVisibility(View.GONE);
         if (mSpeechEvaluatorUtils != null) {
-            vwvVoiceChatWave.setVisibility(View.GONE);
             mSpeechEvaluatorUtils.cancel();
         }
         if (mAM != null) {
@@ -1936,7 +1936,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     }
 
     private void onEvaluatorSuccess(ResultEntity resultEntity, boolean isSpeechFinished) {
-        logger.d("onEvaluatorSuccess():isSpeechFinish=" + isSpeechFinished);
+        logger.i("onEvaluatorSuccess():isSpeechFinish=" + isSpeechFinished);
         String content = resultEntity.getCurString();
         //语音录入，限制40字以内
         if (!isSpeekDone) {
@@ -1966,7 +1966,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 }
             }
             mVoiceContent = content;
-            logger.d("=====speech evaluating" + content);
+            logger.i("=====speech evaluating" + content);
             if (isSpeechFinished) {
                 if (noSpeechTimer != null) {
                     noSpeechTimer.cancel();
@@ -1991,16 +1991,16 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
      * @param resultEntity
      */
     private void onEvaluatorError(ResultEntity resultEntity) {
-        logger.d("onEvaluatorError()");
+        logger.i("onEvaluatorError()");
         if (resultEntity.getErrorNo() == ResultCode.SPEECH_START_FILE) {
-            logger.d("识别失败，请检查存储权限！");
+            logger.i("识别失败，请检查存储权限！");
             XESToastUtils.showToast(mContext, "识别失败，请检查存储权限！");
         } else if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
             startVoiceInput();
             return;
         } else if (resultEntity.getErrorNo() == ResultCode.SPEECH_CANCLE) {
             logger.i("离线测评重新build，要取消到旧的！");
-            startVoiceInput();
+//            startVoiceInput();
             return;
         }
         btnMessageSwitch.performClick();
@@ -2130,7 +2130,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
             @Override
             public void onSuccess(XesCloudResult result) {
-                logger.d("upload Success:" + result.getHttpPath());
+                logger.i("upload Success:" + result.getHttpPath());
                 callBack.onDataSucess(result);
             }
 

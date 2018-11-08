@@ -1662,7 +1662,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             return;
         } else if (resultEntity.getErrorNo() == ResultCode.SPEECH_CANCLE) {
             logger.i("离线测评重新build，要取消到旧的！");
-            startVoiceInput();
+//            startVoiceInput();
             return;
         }
         if (!isSpeekDone) {

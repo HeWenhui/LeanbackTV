@@ -390,12 +390,12 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                 }, 1500);
             }
         } else if (resultEntity.getErrorNo() == ResultCode.SPEECH_CANCLE){
-            mView.post(new Runnable() {
-                @Override
-                public void run() {
-                    mIse.cancel();
-                }
-            });
+//            mView.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    mIse.cancel();
+//                }
+//            });
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
