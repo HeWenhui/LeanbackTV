@@ -8,7 +8,10 @@ import android.view.View;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.route.XueErSiRouter;
+import com.xueersi.parentsmeeting.module.browser.Utils.JsFuncListener;
+import com.xueersi.parentsmeeting.module.browser.Utils.XesProviderListener;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
+import com.xueersi.parentsmeeting.module.browser.provider.WebFunctionProvider;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
@@ -17,14 +20,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWebviewX5Pager implements
-        IEvaluationContract.IEvaluationView {
+        IEvaluationContract.IEvaluationView, JsFuncListener, XesProviderListener {
     private T iPresenter;
 
     private android.webkit.WebView webView;
 
+    /**
+     * 返回键函数
+     */
+    private String backJSListener;
+    private String mJsCallback;
+    private String mCallbackForResult;
+
     public StandExperienceEvaluationPager(Context context, T iPresenter) {
         super(context);
         this.iPresenter = iPresenter;
+
         initWebView();
         initData();
     }
@@ -46,6 +57,7 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
     @Override
     public void initData() {
         super.initData();
+        wvSubjectWeb.addJavascriptInterface(new WebFunctionProvider(wvSubjectWeb), "xesApp");
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
         webSetting.setJavaScriptEnabled(true);
@@ -174,4 +186,41 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
         wvSubjectWeb.onResume();
     }
 
+    @Override
+    public void setJsFunc(String key, String value) {
+        backJSListener = null;
+        mJsCallback = null;
+        if (JsFuncListener.KEY_GOBACK.equals(key)) {
+            backJSListener = value;
+        } else if (JsFuncListener.KEY_CALLBACK.equals(key)) {
+            mJsCallback = value;
+        } else if (JsFuncListener.KEY_CALLBACKFORRESULT.equals(key)) {
+            mCallbackForResult = value;
+        }
+    }
+
+    @Override
+    public void setTitleName(String title) {
+
+    }
+
+    @Override
+    public void setTitleMenu(int menuType) {
+
+    }
+
+    @Override
+    public void setTitleColor(String color) {
+
+    }
+
+    @Override
+    public void onScreenShot(String callBackMethod) {
+
+    }
+
+    @Override
+    public void setTitleVisible(int visible) {
+
+    }
 }

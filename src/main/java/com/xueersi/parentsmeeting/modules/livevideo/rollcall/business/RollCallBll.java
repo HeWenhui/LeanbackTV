@@ -245,7 +245,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                                     .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                             params.addRule(RelativeLayout.CENTER_IN_PARENT);
                             rlRollCallContent.addView(mPrimaryScienceSignPager.getRootView(), params);
-                        } else if (LiveVideoConfig.isSmallChinses) {
+                        } else if (LiveVideoConfig.isSmallChinese) {
                                 chineseClassSignPager = new SmallChineseClassSignPager(activity,classSignEntity);
                         } else {
                             mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity);
@@ -343,7 +343,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                     }
                 });
                 mVPlayVideoControlHandler.sendEmptyMessage(NO_USERSIGN);
-            } else if (LiveVideoConfig.isSmallChinses) {
+            } else if (LiveVideoConfig.isSmallChinese) {
 
             } else {
                 mIsShowUserSign = false;

@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.understand.page.SmallChineseUnderstandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.page.SmallEnglishUnderstandPager;
 
 import java.util.HashMap;
@@ -46,6 +47,10 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
     public final int CANCEL_REDPAG = 1;
 
     SmallEnglishUnderstandPager smallEnglishUnderstandPager;
+    /**
+     * 语文懂了么
+     */
+    SmallChineseUnderstandPager smallChineseUnderstandPager;
 
     public UnderstandBll(Activity activity, LiveAndBackDebug liveAndBackDebug) {
         this.activity = activity;
@@ -108,13 +113,31 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                                 removeView(rlQuestionContent, understandView);
                             }
                         });
+                    } else if (LiveVideoConfig.isSmallChinese) {
+                        smallChineseUnderstandPager = new SmallChineseUnderstandPager(activity);
+                        smallChineseUnderstandPager.setListener(new SmallChineseUnderstandPager.UnderStandListener() {
+                            @Override
+                            public void closeListener() {
+                                removeView(rlQuestionContent, understandView);
+                            }
+
+                            @Override
+                            public void underStandListener(boolean underStand) {
+                                smallChineseUnderstandOnclick(underStand);
+                            }
+
+                            @Override
+                            public void noUnderStandListener(boolean noUnderStand) {
+                                smallChineseUnderstandOnclick(noUnderStand);
+                            }
+                        });
+
                     } else {
                         understandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,
                                 rlQuestionContent,
                                 false);
                         ((TextView) understandView.findViewById(R.id.tv_livevideo_under_user)).setText(mGetInfo
-                                .getStuName
-                                        () + " 你好");
+                                .getStuName() + " 你好");
                     }
                     understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
                             (listener);
@@ -217,6 +240,28 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
     };
 
     private void smallEnglishUnderstandOnclick(boolean isUnderstand) {
+        mLogtf.d("understand:isUnderstand=" + isUnderstand);
+        String nonce = "" + StableLogHashMap.creatNonce();
+        understandHttp.understand(isUnderstand, nonce);
+        mIsShowUnderstand = false;
+        Map<String, String> mData = new HashMap<>();
+        mData.put("logtype", "sendUnderstand");
+        mData.put("answerType", isUnderstand ? "1" : "0");
+        mData.put("expect", "1");
+        mData.put("nonce", "" + nonce);
+        mData.put("sno", "3");
+        mData.put("stable", "1");
+        liveAndBackDebug.umsAgentDebugInter(understandEventId, mData);
+
+        removeView(rlQuestionContent, understandView);
+    }
+
+    /**
+     * 小学语文三分屏懂了吗进行http请求，上传日志，同小英
+     *
+     * @param isUnderstand
+     */
+    private void smallChineseUnderstandOnclick(boolean isUnderstand) {
         mLogtf.d("understand:isUnderstand=" + isUnderstand);
         String nonce = "" + StableLogHashMap.creatNonce();
         understandHttp.understand(isUnderstand, nonce);
