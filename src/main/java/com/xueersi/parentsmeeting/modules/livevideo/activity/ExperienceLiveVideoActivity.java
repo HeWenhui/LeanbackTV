@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tencent.cos.xml.utils.StringUtils;
+import com.tencent.tinker.loader.shareutil.ShareOatUtil;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;
@@ -201,7 +202,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     private PopupWindow mFeedbackWindow;
     /** 视频地址列表 */
-    private List<String> mVideoPaths;
+    private List<String> mVideoPaths = new ArrayList<>();
 
     private int rePlayCount = 0;
 
@@ -1363,6 +1364,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         if (scanRunnable != null) {
             scanRunnable.exit();
         }
+
         // 03.22 统计用户离开体验播放器的时间
         StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayExit");
         logHashMap.put("liveid", mVideoEntity.getLiveId());
@@ -1422,6 +1424,27 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     @Override
     protected void resultFailed(int arg1, int arg2) {
+        resultFailed = true;
+        mIsShowQuestion = mIsShowRedpacket = false;
+        String errcode = "";
+        String errmsg = "";
+        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+        if (error != null) {
+            errcode = String.valueOf(error.getNum());
+            errmsg = error.getTag();
+        } else {
+            errcode = String.valueOf(arg2);
+        }
+        Map<String, String> mData = new HashMap<>();
+        mData.put("os", "Android");
+        mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
+        mData.put("playurl", mWebPath);
+        mData.put("errcode", errcode);
+        mData.put("errmsg", errmsg);
+        mData.put("ip", IpAddressUtil.USER_IP);
+        mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
+        mData.put("orderid", mVideoEntity.getChapterId());
+        ums.umsAgentDebugSys(LiveVideoConfig.STAND_EXPERIENCE_LIVE_PLAY_ERROR, mData);
         //循环更换视频地址
         if (mVideoPaths != null && !mVideoPaths.isEmpty()) {
             for (int i = 0; i < mVideoPaths.size(); i++) {
@@ -1439,28 +1462,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         } else {
             super.resultFailed(arg1, arg2);
         }
-        resultFailed = true;
-        mIsShowQuestion = mIsShowRedpacket = false;
-        String errcode = "";
-        String errmsg = "";
-        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
-        if (error != null) {
-            errcode = String.valueOf(error.getNum());
-            errmsg = error.getTag();
-        } else {
-            errcode = String.valueOf(arg2);
-        }
-        Map<String, String> mData = new HashMap<>();
-        mData.put("os", "Android");
-        mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
-        mData.put("playurl", mVideoEntity.getVideoPath());
-        mData.put("errcode", errcode);
-        mData.put("errmsg", errmsg);
-        mData.put("ip", IpAddressUtil.USER_IP);
-        mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
-        mData.put("orderid", mVideoEntity.getChapterId());
-        ums.umsAgentDebugSys(LiveVideoConfig.STAND_EXPERIENCE_LIVE_PLAY_ERROR, mData);
-
     }
 
     @Override
