@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.HalfBodyLiveCommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -114,7 +115,9 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     private View rlMessageContent;
     private Button btMessageSend;
     private Button btMessageExpress;
-    /**聊天消息适配器*/
+    /**
+     * 聊天消息适配器
+     */
     private CommonAdapter<LiveMessageEntity> messageAdapter;
     private CommonAdapter<LiveMessageEntity> otherMessageAdapter;
     private boolean isTouch = false;
@@ -134,7 +137,9 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     private BaseLiveMediaControllerBottom liveMediaControllerBottom;
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
 
-    /**表情面板 关闭按钮*/
+    /**
+     * 表情面板 关闭按钮
+     */
     private ImageView ivExpressionCancle;
     private Activity liveVideoActivity;
     private KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener;
@@ -148,10 +153,14 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     private View mFloatView;
     private long mOldTime = 0;
     private View liveMessageContent;
-    /**热词*/
+    /**
+     * 热词
+     */
     ListView lvCommonWord;
     private PopupWindow mCommonWordWindow;
 
+    private int mPopWinOffX;
+    private int mPopWinOffY;
 
     public HalfBodyLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                     LiveAndBackDebug ums, BaseLiveMediaControllerBottom
@@ -173,23 +182,23 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         btMesOpen = liveMediaControllerBottom.getBtMesOpen();
         btMsgCommon = liveMediaControllerBottom.getBtMsgCommon();
 
-        if(liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom){
-            ((LiveHalfBodyMediaControllerBottom)liveMediaControllerBottom).setControllerStateListener
-                    (new LiveHalfBodyMediaControllerBottom.ControllerStateListener(){
+        if (liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom) {
+            ((LiveHalfBodyMediaControllerBottom) liveMediaControllerBottom).setControllerStateListener
+                    (new LiveHalfBodyMediaControllerBottom.ControllerStateListener() {
 
-                @Override
-                public void onSHow() {
+                        @Override
+                        public void onSHow() {
 
-                }
+                        }
 
-                @Override
-                public void onHide() {
-                    Log.e(TAG,"======> bottomMediaController hide");
-                    if(mCommonWordWindow != null){
-                        mCommonWordWindow.dismiss();
-                    }
-                }
-            });
+                        @Override
+                        public void onHide() {
+                            Log.e(TAG, "======> bottomMediaController hide");
+                            if (mCommonWordWindow != null) {
+                                mCommonWordWindow.dismiss();
+                            }
+                        }
+                    });
         }
 
         mainHandler.post(new Runnable() {
@@ -341,7 +350,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         });
 
 
-
         // 底部控制栏中的热词按钮 点击事件
 
         btMsgCommon.setOnClickListener(new View.OnClickListener() {
@@ -349,62 +357,67 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             public void onClick(final View v) {
                 LiveMediaController controller = liveMediaControllerBottom.getController();
                 controller.show();
-
-                if(mCommonWordWindow == null){
+                if (mCommonWordWindow == null) {
                     initCommonWord();
                 }
-               if(mCommonWordWindow.isShowing()){
-                   mCommonWordWindow.dismiss();
-                   return;
-               }
-
-                int[] location = new int[2];
-                btMsgCommon.getLocationInWindow(location);
-                int offX = location[0] - (mCommonWordWindow.getContentView().getMeasuredWidth()-btMsgCommon.getMeasuredWidth()) / 2;
-                int offY = location[1] -  mCommonWordWindow.getContentView().getMeasuredHeight();
-                mCommonWordWindow.showAtLocation(btMsgCommon,Gravity.NO_GRAVITY,offX,offY);
-
+                if (mCommonWordWindow.isShowing()) {
+                    mCommonWordWindow.dismiss();
+                } else {
+                    if (mPopWinOffX == 0) {
+                        int[] location = new int[2];
+                        btMsgCommon.getLocationInWindow(location);
+                        int offX = location[0] - (mCommonWordWindow.getContentView().getMeasuredWidth() - btMsgCommon
+                                .getMeasuredWidth()) / 2;
+                        int offY = location[1] - mCommonWordWindow.getContentView().getMeasuredHeight();
+                        mPopWinOffX = (int) (offX - (mCommonWordWindow.getContentView().getMeasuredWidth()) * 13 / 49f);
+                        mPopWinOffY = offY - SizeUtils.Dp2Px(mContext, 5);
+                    }
+                    mCommonWordWindow.showAtLocation(btMsgCommon, Gravity.NO_GRAVITY, mPopWinOffX, mPopWinOffY);
+                }
             }
         });
-
         registLayoutListener();
     }
 
     private int currnetVideoViewWidth;
+
     private void registLayoutListener() {
         mView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                ViewGroup viewGroup = (ViewGroup) ((Activity)mContext).getWindow().getDecorView();
+                ViewGroup viewGroup = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
                 View videoView = viewGroup.findViewById(R.id.vv_course_video_video);
                 ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                if(currnetVideoViewWidth != lp.width && lp.width > 0){
+                if (currnetVideoViewWidth != lp.width && lp.width > 0) {
                     currnetVideoViewWidth = lp.width;
-                     View contentView = liveVideoActivity.findViewById(android.R.id.content);
-                     View actionBarOverlayLayout = (View) contentView.getParent();
-                     Rect r = new Rect();
-                     actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
+                    View contentView = liveVideoActivity.findViewById(android.R.id.content);
+                    View actionBarOverlayLayout = (View) contentView.getParent();
+                    Rect r = new Rect();
+                    actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
                     int screenWidth = (r.right - r.left);
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mView.getLayoutParams();
-                    int rightMargin = (screenWidth - currnetVideoViewWidth)/2;
-                    Log.e("HalfBodyLiveMessagePager","====>onGlobalLayout setMesgLayout rightMargin00000:"+ params.rightMargin);
-                    if(params.rightMargin != rightMargin){
+                    int rightMargin = (screenWidth - currnetVideoViewWidth) / 2;
+                    Log.e("HalfBodyLiveMessagePager", "====>onGlobalLayout setMesgLayout rightMargin00000:" + params
+                            .rightMargin);
+                    if (params.rightMargin != rightMargin) {
                         params.rightMargin = rightMargin;
-                        Log.e("HalfBodyLiveMessagePager","====>onGlobalLayout setMesgLayout rightMargin1111:"+ params.rightMargin);
+                        Log.e("HalfBodyLiveMessagePager", "====>onGlobalLayout setMesgLayout rightMargin1111:" +
+                                params.rightMargin);
                         LayoutParamsUtil.setViewLayoutParams(mView, params);
                     }
 
                     // 底部 热词，发言按钮
                     View bottomControllContainer = viewGroup.findViewById(R.id.ll_livevideo_bottom_controller);
-                    if(bottomControllContainer != null){
-                      ConstraintLayout.LayoutParams controllerParams = (ConstraintLayout.LayoutParams) bottomControllContainer.getLayoutParams();
-                      if(controllerParams.rightMargin != rightMargin){
-                          controllerParams.rightMargin = rightMargin;
-                          LayoutParamsUtil.setViewLayoutParams(bottomControllContainer, controllerParams);
-                      }
+                    if (bottomControllContainer != null) {
+                        ConstraintLayout.LayoutParams controllerParams = (ConstraintLayout.LayoutParams)
+                                bottomControllContainer.getLayoutParams();
+                        if (controllerParams.rightMargin != rightMargin) {
+                            controllerParams.rightMargin = rightMargin;
+                            LayoutParamsUtil.setViewLayoutParams(bottomControllContainer, controllerParams);
+                        }
                     }
                 }
-                Log.e("HalfBodyLiveMessagePager","====>registLayoutListener2222:"+lp.width);
+                Log.e("HalfBodyLiveMessagePager", "====>registLayoutListener2222:" + lp.width);
             }
         });
     }
@@ -504,8 +517,9 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     }
 
 
-
-    /**初始化 热词*/
+    /**
+     * 初始化 热词
+     */
     private void initCommonWord() {
 
         final ArrayList<String> words = new ArrayList<>();
@@ -516,18 +530,17 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         words.add("2");
         words.add("1");
 
-        View contentView = View.inflate(mContext,R.layout.layout_live_commonwrod_popwindow,null);
+        View contentView = View.inflate(mContext, R.layout.layout_live_commonwrod_popwindow, null);
         mCommonWordWindow = new PopupWindow(contentView
-                ,ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,false);
+                , ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, false);
 
-        mCommonWordWindow.setOutsideTouchable(true);
         mCommonWordWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
-        lvCommonWord  = contentView.findViewById(R.id.lv_livevideo_halfbody_common_word);
+        lvCommonWord = contentView.findViewById(R.id.lv_livevideo_halfbody_common_word);
         lvCommonWord.setAdapter(new CommonAdapter<String>(words) {
             @Override
             public AdapterItemInterface<String> getItemView(Object type) {
-                return new CommonWordItem(mContext, this);
+                return new HalfBodyLiveCommonWordItem(mContext, this);
             }
         });
 
@@ -560,7 +573,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             }
         });
         //提前测量 一次尺寸信息，用于 popWindow 显示定位
-        contentView.measure(View.MeasureSpec.UNSPECIFIED,View.MeasureSpec.UNSPECIFIED);
+        contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
     }
 
     @Override
@@ -692,7 +705,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void onTitleShow(boolean show) {
 
-        Log.e(TAG,"======>onTitleShow:"+show);
+        Log.e(TAG, "======>onTitleShow:" + show);
         btMessageExpress.setBackgroundResource(R.drawable.selector_live_stand_chat_expression);
         if (!keyboardShowing && switchFSPanelLinearLayout.getVisibility() != View.GONE) {
             switchFSPanelLinearLayout.postDelayed(new Runnable() {
@@ -725,7 +738,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void setVideoWidthAndHeight(int width, int height) {
-        Log.e("HalfBodyLiveMessagePager","=======>setVideoWidthAndHeight 0000:"+width);
+        Log.e("HalfBodyLiveMessagePager", "=======>setVideoWidthAndHeight 0000:" + width);
         final View contentView = liveVideoActivity.findViewById(android.R.id.content);
         final View actionBarOverlayLayout = (View) contentView.getParent();
         Rect r = new Rect();
@@ -736,8 +749,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mView.getLayoutParams();
             int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
             int videoGap = (screenWidth - width) / 2;
-            Log.e("HalfBodyLiveMessagePager","=======>setVideoWidthAndHeight 1111:"+videoGap);
-            if(videoGap != params.rightMargin){
+            Log.e("HalfBodyLiveMessagePager", "=======>setVideoWidthAndHeight 1111:" + videoGap);
+            if (videoGap != params.rightMargin) {
                 LayoutParamsUtil.setViewLayoutParams(mView, params);
             }
         }
@@ -1123,7 +1136,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mCommonWordWindow != null){
+        if (mCommonWordWindow != null) {
             mCommonWordWindow.dismiss();
         }
 

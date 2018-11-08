@@ -20,39 +20,18 @@
             android:id="@id/bt_livevideo_message_open"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/bg_livevideo_message_open"
-            android:layout_marginRight="15dp"
             android:layout_gravity="bottom"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/bg_livevideo_message_psopen" />
+
+        <Button
+            android:id="@id/bt_livevideo_message_common"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/bg_livevideo_message_pscommon"
             />
-
-
-        <LinearLayout
-            android:layout_width="98dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginRight="15dp"
-            >
-
-            <com.xueersi.ui.widget.AutohListview
-                android:id="@id/lv_livevideo_common_word"
-                style="@style/listview_common_style"
-                android:background="@drawable/shape_livevideo_commonwordps_bg"
-                android:layout_width="98dp"
-                android:layout_height="wrap_content"
-                android:divider="@null"
-                android:layout_centerHorizontal="true"
-                android:scrollbars="none" />
-
-
-            <Button
-                android:id="@id/bt_livevideo_message_common"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/bg_livevideo_message_common"
-                android:layout_gravity="center_horizontal"
-
-                />
-        </LinearLayout>
 
         <!--只是为了接入现有框架，让程序不崩溃-->
         <Button
