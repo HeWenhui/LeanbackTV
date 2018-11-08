@@ -209,7 +209,6 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
         mData.put("livetype", String.valueOf(4));
         mData.put("logtype", "play error");
         mData.put("os", "Android");
-        mData.put("playurl", mVideoEntity.getVideoPath());
         mData.put("ip", IpAddressUtil.USER_IP);
 
 //        if ("PublicLiveDetailActivity".equals(where)) {

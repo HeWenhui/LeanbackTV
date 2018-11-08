@@ -703,6 +703,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     @Override
     protected void resultFailed(int arg1, int arg2) {
         //循环更换视频地址
+        PlayErrorCodeLog.standExperienceLivePlayError(liveBackBll, mWebPath, "playError");
         List<String> mVideoPaths = mVideoEntity.getVideoPaths();
         if (mVideoPaths != null && !mVideoPaths.isEmpty()) {
             for (int i = 0; i < mVideoPaths.size(); i++) {
@@ -717,6 +718,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         if (rePlayCount < MAX_REPLAY_COUNT) {
             rePlayCount++;
             playNewVideo(Uri.parse(mWebPath), mSectionName);
+
         } else {
             super.resultFailed(arg1, arg2);
         }
