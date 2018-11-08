@@ -1,56 +1,48 @@
-package com.xueersi.parentsmeeting.widget;
+package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.SurfaceTexture;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.TextureView;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 import java.util.ArrayList;
 
 /**
- * Created by linyuqiang on 2018/10/22
- * 接麦的波浪线
+ * Created by linyuqiang on 2017/1/3.
  */
-public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Callback {
-    String TAG = "AgoraVolumeWaveView";
+
+public class InterationVolumeWaveView extends TextureView implements TextureView.SurfaceTextureListener {
+    String TAG = "VolumeWaveView";
     Logger logger = LoggerFactory.getLogger(TAG);
-    SurfaceHolder mSurfaceHolder;
     boolean start = false;
     Wave wave;
     private float volume = 0f;
     private float newVolume = 0f;
     private float speed = .1f;
     private int backColor;
-    private int colors[] = {0x196462a2, 0x326462a2, 0x646462a2, 0x966462a2, 0xFF6462a2};
-    private LinearGradient linearGradient;
-    private Bitmap back;
+    int colors[] = {0x196462a2, 0x326462a2, 0x646462a2, 0x966462a2, 0xFF6462a2};
+    LinearGradient linearGradient;
+    private Paint circleBackPaint;
 
-    public AgoraVolumeWaveView(Context context, AttributeSet attrs) {
+    public InterationVolumeWaveView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mSurfaceHolder = getHolder();
-        mSurfaceHolder.addCallback(this);
-        mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT);
-        setZOrderOnTop(true);
+        this.setSurfaceTextureListener(this);
+
     }
 
-    public void setIsOnTop(boolean isOnTop) {
-        setZOrderOnTop(isOnTop);
-    }
 
     public void setColors(int[] colors) {
         this.colors = colors;
@@ -62,8 +54,7 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
 
     public void setVolume(float volume) {
         this.newVolume = volume;
-//        this.volume = volume;
-//        Log.i(TAG, "setVolume:volume=" + volume);
+        Log.i(TAG, "setVolume:volume=" + volume);
     }
 
     @Override
@@ -76,15 +67,51 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
         this.backColor = backColor;
     }
 
+    public void setCircleBack(Paint paint) {
+        circleBackPaint = paint;
+    }
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+
+        if (start) {
+            if (wave != null) {
+                wave.isRun = false;
+                wave = null;
+            }
+            wave = new Wave();
+            wave.isRun = true;
+            new Thread(wave).start();
+        }
+    }
+
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        if (wave != null) {
+            wave.isRun = false;
+            wave = null;
+        }
+        return true;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+    }
+
+
     class Wave implements Runnable {
         private int K = 2;
         private int width = 800;
         private int height = 800;
-        private int board = 5;
         private int F = 6;
         private double phase = 0;
         Paint paint = new Paint();
-        Paint backPaint = new Paint();
         //清除canvas内容
         Paint clearPaint = new Paint();
         boolean isRun = false;
@@ -93,10 +120,9 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
 
         @Override
         public void run() {
-            paint.setStrokeWidth(1.5f);
+            paint.setStrokeWidth(2);
             paint.setStyle(Paint.Style.STROKE);
             paint.setAntiAlias(true);
-            backPaint.setColor(Color.RED);
             if (paths.isEmpty()) {
                 for (int i = 0; i < colors.length; i++) {
                     Path path = new Path();
@@ -107,23 +133,14 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
             long before = System.currentTimeMillis();
             while (isRun) {
                 long before2 = System.currentTimeMillis();
-                int viewWidth = getWidth();
-                int viewHeight = getHeight();
-                board = (int) (viewWidth * 4.0f / 88.0f);
-                width = viewWidth - 2 * board;
-                height = viewHeight - 2 * board;
-//                Rect dirty = new Rect();
-//                dirty.top = 3;
-//                dirty.left = 3;
-//                dirty.right = dirty.left + width;
-//                dirty.bottom = dirty.top + width;
-                Canvas canvas = mSurfaceHolder.lockCanvas();
+                width = getWidth();
+                height = getHeight();
+                Canvas canvas = InterationVolumeWaveView.this.lockCanvas();
                 long time1 = System.currentTimeMillis() - before2;
                 before2 = System.currentTimeMillis();
                 try {
                     if (canvas != null) {
-
-                        float drawVolume = newVolume;
+                        float drawVolume;
                         if (newVolume > volume) {
                             drawVolume = volume++;
                         } else if (newVolume < volume) {
@@ -135,28 +152,13 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
                         clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
                         canvas.drawPaint(clearPaint);
                         clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
-//                        canvas.drawColor(backColor);
-                        if (back == null) {
-                            Bitmap back2 = BitmapFactory.decodeResource(getResources(), R.drawable.live_task_hongse_icon_normal);
-                            if (back2 != null) {
-                                back = Bitmap.createScaledBitmap(back2, viewWidth, viewHeight, true);
-                                if (back != back2) {
-                                    back2.recycle();
-                                }
-                            }
+                        if (circleBackPaint != null) {
+                            canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2, circleBackPaint);
+                        } else {
+                            canvas.drawColor(backColor);
                         }
-                        if (back != null) {
-                            canvas.drawBitmap(back, 0, 0, null);
-                        }
-//                        canvas.drawCircle(width / 2, height / 2, width / 2, backPaint);
-//                        canvas.drawColor(Color.TRANSPARENT);
-                        //
                         phase = ((this.phase + speed) % (Math.PI * 64));
-//                        _drawLine(canvas, drawVolume, -2, 0x196462a2);
-//                        _drawLine(canvas, drawVolume, -6, 0x326462a2);
-//                        _drawLine(canvas, drawVolume, 4, 0x646462a2);
-//                        _drawLine(canvas, drawVolume, 2, 0x966462a2);
-//                        _drawLine(canvas, drawVolume, 1, 0xff6462a2);
+
                         _drawLine(canvas, drawVolume);
                     }
                 } catch (Exception e) {
@@ -166,44 +168,34 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
                     before2 = System.currentTimeMillis();
                     if (canvas != null) {
                         try {
-                            mSurfaceHolder.unlockCanvasAndPost(canvas);
+                            InterationVolumeWaveView.this.unlockCanvasAndPost(canvas);
                         } catch (Exception e) {
 
                         }
                     }
                     long time3 = System.currentTimeMillis() - before2;
-//                    Loger.d(TAG, "Wave.run:time1=" + time1 + "," + time2 + "," + time3);
                 }
                 count++;
                 if (count % 100 == 0) {
                     logger.d("Wave.run:time=" + (System.currentTimeMillis() - before));
                     before = System.currentTimeMillis();
                 }
-//                try {
-//                    Thread.sleep(50);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
             }
-            Canvas canvas = mSurfaceHolder.lockCanvas();
+            Canvas canvas = InterationVolumeWaveView.this.lockCanvas();
             try {
                 if (canvas != null) {
                     clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
                     canvas.drawPaint(clearPaint);
                     clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
-                    canvas.drawColor(0xffeaebf9);
+                    canvas.drawColor(0xffa84300);
                     canvas.drawLine(0, height / 2 - 2, width, height / 2 - 2, paint);
                 }
             } catch (Exception e) {
 
             } finally {
                 if (canvas != null) {
-                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    InterationVolumeWaveView.this.unlockCanvasAndPost(canvas);
                 }
-            }
-            if (back != null) {
-                back.recycle();
-                back = null;
             }
         }
 
@@ -217,7 +209,6 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
                 x = this.width * ((i + this.K) / (this.K * 2));
                 y = (float) (this.height / 2 + drawVolume * this._globalAttenuationFn(i) * (1 / attenuation) * Math
                         .sin(this.F * i - this.phase));
-//                y -= 120;
                 path.lineTo(x, y);
             }
             canvas.drawPath(path, paint);
@@ -227,7 +218,7 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
             for (int i = 0; i < colors.length; i++) {
                 Path path = paths.get(i);
                 path.reset();
-                path.moveTo(board, height / 2 + board);
+                path.moveTo(0, height / 2);
             }
             float x, y;
             for (float i = -this.K; i <= this.K; i += 0.01f) {
@@ -237,7 +228,7 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
                     y = (float) (this.height / 2 + drawVolume * this._globalAttenuationFn(i) * (1 / attenuation) *
                             Math.sin(this.F * i - this.phase));
                     Path path = paths.get(j);
-                    path.lineTo(x + board, y + board);
+                    path.lineTo(x, y);
                 }
             }
             for (int i = 0; i < colors.length; i++) {
@@ -274,30 +265,5 @@ public class AgoraVolumeWaveView extends SurfaceView implements SurfaceHolder.Ca
         }
     }
 
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        if (start) {
-            if (wave != null) {
-                wave.isRun = false;
-                wave = null;
-            }
-            wave = new Wave();
-            wave.isRun = true;
-            new Thread(wave).start();
-        }
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        if (wave != null) {
-            wave.isRun = false;
-            wave = null;
-        }
-    }
 
 }
