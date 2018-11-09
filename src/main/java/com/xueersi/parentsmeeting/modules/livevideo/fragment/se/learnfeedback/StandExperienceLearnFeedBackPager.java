@@ -78,6 +78,7 @@ public class StandExperienceLearnFeedBackPager<T extends IStandExperienceLearnFe
         this.presenter = presenter;
         this.mVideoEntity = videoLivePlayBackEntity;
         arrayOptions = videoLivePlayBackEntity.getLearnFeedback();
+        questionSize = arrayOptions.size();
         initListener();
         initData();
     }
