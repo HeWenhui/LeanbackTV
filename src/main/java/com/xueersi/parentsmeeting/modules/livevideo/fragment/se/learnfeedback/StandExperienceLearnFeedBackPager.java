@@ -305,7 +305,7 @@ public class StandExperienceLearnFeedBackPager<T extends IStandExperienceLearnFe
             radioGroupAns1 = arrayOptions.get(0).getDefaultOption();
         }
         if (!TextUtils.isEmpty(arrayOptions.get(1).getDefaultOption())) {
-            radioGroupAns1 = arrayOptions.get(1).getDefaultOption();
+            radioGroupAns2 = arrayOptions.get(1).getDefaultOption();
         }
     }
 
