@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RoomAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
@@ -186,16 +187,21 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
      */
     public void initHalfBodyLive(RelativeLayout bottomContent){
 
-        Log.e("HalfBody","=====>LiveMessageBll initHalfBodyLive called:");
+        Log.e("HalfBody","=====>LiveMessageBll initHalfBodyLive called:"+rlLiveMessageContent);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         if (rlLiveMessageContent == null) {
             rlLiveMessageContent = new RelativeLayout(activity);
-            bottomContent.addView(rlLiveMessageContent, params);
+            //调整 消息面板的层级
+            RelativeLayout msgContainer = bottomContent.findViewById(R.id.rl_live_halfbody_livemsg_container);
+            msgContainer.addView(rlLiveMessageContent,params);
         } else {
             rlLiveMessageContent.removeAllViews();
+            bottomContent.removeView(rlLiveMessageContent);
+            //调整 消息面板的层级
+            RelativeLayout msgContainer = bottomContent.findViewById(R.id.rl_live_halfbody_livemsg_container);
+            msgContainer.addView(rlLiveMessageContent,params);
         }
-
 
         String text = null;
         boolean isRegister = false;

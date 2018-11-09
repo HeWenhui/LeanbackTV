@@ -77,7 +77,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         mLayoutVideo = R.layout.activity_video_live_new;
     }
 
-    RelativeLayout bottomContent;
+    protected RelativeLayout bottomContent;
     protected String vStuCourseID;
     protected String courseId;
 

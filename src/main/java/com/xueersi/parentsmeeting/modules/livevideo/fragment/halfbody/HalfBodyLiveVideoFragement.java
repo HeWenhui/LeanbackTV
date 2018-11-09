@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.halfbody;
 
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
@@ -113,5 +115,22 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
         if(mTransAnim != null){
             mTransAnim.release();
         }
+    }
+
+    @Override
+    protected void initView() {
+        //super.initView();
+        bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
+        bottomContent.setVisibility(View.VISIBLE);
+        mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
+        RelativeLayout mediaContainer = mContentView.findViewById(R.id.rl_live_halfbody_mediacontroll_container);
+        createMediaControlerTop();
+        mediaContainer.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        createMediaControllerBottom();
+        mediaContainer.addView(liveMediaControllerBottom,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,  ViewGroup.LayoutParams.MATCH_PARENT));
+
+
+
     }
 }

@@ -7,15 +7,11 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.CharacterStyle;
-import android.text.style.ForegroundColorSpan;
-import android.text.util.Linkify;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -44,7 +40,6 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.HalfBodyLiveCommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
@@ -55,20 +50,20 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecyclView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xutils.xutils.view.annotation.ContentView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
@@ -84,6 +79,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     private static String TAG = "HalfBodyLiveMessagePager";
+
     /**
      * 聊天，默认开启
      */
@@ -110,7 +106,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     /**
      * 聊天消息
      */
-    private ListView lvMessage;
+   // private ListView lvMessage;
     private View rlInfo;
     private View rlMessageContent;
     private Button btMessageSend;
@@ -118,8 +114,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     /**
      * 聊天消息适配器
      */
-    private CommonAdapter<LiveMessageEntity> messageAdapter;
-    private CommonAdapter<LiveMessageEntity> otherMessageAdapter;
+  /*  private CommonAdapter<LiveMessageEntity> messageAdapter;
+    private CommonAdapter<LiveMessageEntity> otherMessageAdapter;*/
     private boolean isTouch = false;
     /**
      * 聊天字体大小，最多13个汉字
@@ -161,6 +157,10 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     private int mPopWinOffX;
     private int mPopWinOffY;
+
+    /**聊天消息*/
+    private HalfBodyLiveMsgRecyclView liveMsgReclView;
+    private LiveMsgAdapter mMsgAdapter;
 
     public HalfBodyLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                     LiveAndBackDebug ums, BaseLiveMediaControllerBottom
@@ -215,7 +215,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         mView = View.inflate(mContext, R.layout.page_livevideo_message_halfbody, null);
         tvOnliveNum = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         ivMessageOnline = (ImageView) mView.findViewById(R.id.iv_livevideo_message_online);
-        lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
         dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_message_danmaku);
         rlInfo = mView.findViewById(R.id.rl_livevideo_info);
         rlMessageContent = mView.findViewById(R.id.rl_livevideo_message_content2);
@@ -227,6 +226,11 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
         ivMessageClose = mView.findViewById(R.id.iv_livevideo_message_close);
         liveMessageContent = mView.findViewById(R.id.rl_livevideo_halfbody_msgcontent);
+
+        liveMsgReclView = mView.findViewById(R.id.rcl_live_halfbody_msg);
+        // 从底部添加
+        liveMsgReclView.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,true));
+
         return mView;
     }
 
@@ -428,78 +432,78 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         super.initData();
         // 显示 表情面板
         showExpressionView(true);
-        initMsgListView();
-        //initCommonWord();
+        initMsgRcyclView();
     }
+
+
+
+    private static class MsgItemHolder extends RecyclerView.ViewHolder{
+        private  TextView tvMsg;
+        public MsgItemHolder(View itemView) {
+            super(itemView);
+            tvMsg = itemView.findViewById(R.id.tv_live_halfbody_msg);
+        }
+
+        public void bindData(LiveMessageEntity data){
+            // TODO: 2018/11/9  区分不同消息类型
+            tvMsg.setText(data.getText());
+        }
+
+    }
+
+
+    private static class  LiveMsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+        private  List<LiveMessageEntity> mData;
+
+        public LiveMsgAdapter(List<LiveMessageEntity> data){
+            mData = data;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new MsgItemHolder(View.inflate(parent.getContext(),R.layout.item_livevideo_livemsg,null));
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            int dataIndex = mData.size() -1;
+            ((MsgItemHolder)holder).bindData(mData.get(dataIndex));
+        }
+
+        @Override
+        public int getItemCount() {
+            return mData == null?0:mData.size();
+        }
+    }
+
+
 
     /**
      * 初始化 联通信息
      */
-    private void initMsgListView() {
+    private void initMsgRcyclView() {
         int screenWidth = ScreenUtils.getScreenWidth();
         int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
-        Log.e(TAG, "initMsgListView:minisize=" + minisize);
+        Log.e(TAG, "initMsgRcyclView:minisize=" + minisize);
+        mMsgAdapter = new LiveMsgAdapter(liveMessageEntities);
+        liveMsgReclView.setAdapter(mMsgAdapter);
 
-        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
+        liveMsgReclView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
-            public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
-                return new AdapterItemInterface<LiveMessageEntity>() {
-                    TextView tvMessageItem;
-
-                    @Override
-                    public int getLayoutResId() {
-                        return R.layout.item_livehalfbody_message;
-                    }
-
-                    @Override
-                    public void initViews(View root) {
-                        tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_message_item);
-                        tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
-                    }
-
-                    @Override
-                    public void bindListener() {
-
-                    }
-
-                    @Override
-                    public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
-                        String sender = entity.getSender();
-                        SpannableString spanttt = new SpannableString(sender + ": ");
-                        int color;
-                        switch (entity.getType()) {
-                            case LiveMessageEntity.MESSAGE_MINE:
-                            case LiveMessageEntity.MESSAGE_TEACHER:
-                            case LiveMessageEntity.MESSAGE_TIP:
-                            case LiveMessageEntity.MESSAGE_CLASS:
-                                color = nameColors[entity.getType()];
-                                break;
-                            default:
-                                color = nameColors[0];
-                                break;
-                        }
-                        CharacterStyle characterStyle = new ForegroundColorSpan(color);
-                        spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
-                            tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
-                            tvMessageItem.setText(entity.getText());
-                            urlClick(tvMessageItem);
-                            CharSequence text = tvMessageItem.getText();
-                            tvMessageItem.setText(spanttt);
-                            tvMessageItem.append(text);
-                        } else {
-                            tvMessageItem.setAutoLinkMask(0);
-                            tvMessageItem.setText(spanttt);
-                            tvMessageItem.append(entity.getText());
-                        }
-                    }
-                };
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                int itemPosition = parent.getChildAdapterPosition(view);
+                int left = 0;
+                int right = 0;
+                int top = 0;
+                int bottom = 0;
+                if (itemPosition < liveMessageEntities.size()) {
+                    top = SizeUtils.Dp2Px(mContext, 9);
+                }
+                outRect.set(left, top, right, bottom);
             }
-        };
-
-        lvMessage.setAdapter(messageAdapter);
+        });
     }
 
     @Override
@@ -1072,6 +1076,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void addMessage(final String sender, final int type, final String text, final String headUrl) {
         final Exception e = new Exception();
+
+        // TODO: 2018/11/9 收到新 聊天消息 刷新UI
         pool.execute(new Runnable() {
             @Override
             public void run() {
@@ -1092,18 +1098,15 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                             }
                             otherLiveMessageEntities.add(entity);
                         }
-                        if (otherMessageAdapter != null) {
-                            otherMessageAdapter.notifyDataSetChanged();
-                        }
-                        if (messageAdapter != null) {
-                            messageAdapter.notifyDataSetChanged();
+
+                        if (mMsgAdapter != null) {
+                            mMsgAdapter.notifyItemInserted(0);
                         } else {
                             Loger.e(BaseApplication.getContext(), TAG, "" + mContext + "," + sender + "," + type, e,
                                     true);
                         }
-                        if (!isTouch) {
-                            lvMessage.setSelection(lvMessage.getCount() - 1);
-                        }
+                        //滚动到底部
+                        liveMsgReclView.scrollToPosition(0);
                     }
                 });
             }
@@ -1114,12 +1117,12 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public CommonAdapter<LiveMessageEntity> getMessageAdapter() {
-        return messageAdapter;
+        return null;
     }
 
     @Override
     public void setOtherMessageAdapter(CommonAdapter<LiveMessageEntity> otherMessageAdapter) {
-        this.otherMessageAdapter = otherMessageAdapter;
+       // this.otherMessageAdapter = otherMessageAdapter;
     }
 
     @Override
