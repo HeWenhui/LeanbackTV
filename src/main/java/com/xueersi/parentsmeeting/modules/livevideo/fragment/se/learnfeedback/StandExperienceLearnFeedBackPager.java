@@ -152,6 +152,10 @@ public class StandExperienceLearnFeedBackPager<T extends IStandExperienceLearnFe
                     }
                 }
             });
+
+
+        } else {
+            radioGroup2.setVisibility(View.GONE);
         }
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,7 +168,12 @@ public class StandExperienceLearnFeedBackPager<T extends IStandExperienceLearnFe
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(radioGroupAns1) || TextUtils.isEmpty(radioGroupAns2)) {
+                if (TextUtils.isEmpty(radioGroupAns1)) {
+                    Toast.makeText(mContext, "你至少需要选择一项哦", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (questionSize > 2 && TextUtils.isEmpty(radioGroupAns2)) {
+//                    if (TextUtils.isEmpty(radioGroupAns1) || TextUtils.isEmpty(radioGroupAns2)) {
                     Toast.makeText(mContext, "你至少需要选择一项哦", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -364,7 +373,8 @@ public class StandExperienceLearnFeedBackPager<T extends IStandExperienceLearnFe
      */
     private void judgeNum() {
         if (arrayOptions.size() == 1) {
-            select2.setVisibility(View.GONE);
+//            select2.setVisibility(View.GONE);
+            radioGroup2.setVisibility(View.GONE);
             if (arrayOptions.get(0).getOptions().size() < 3) {//如果只有两个选项，隐藏第三个.
                 radioButtons[0][2].setVisibility(View.INVISIBLE);
             }
