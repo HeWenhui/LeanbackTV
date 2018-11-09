@@ -670,7 +670,17 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             public boolean isPresent() {
                 return AuditClassLiveBll.this.isPresent();
             }
-        }, mLiveType, mGetInfo, mLiveTopic);
+        }, mLiveType, mGetInfo, mLiveTopic) {
+
+            @Override
+            public void liveGetPlayServer(String mode, boolean modechange) {
+                logger.d("liveGetPlayServer:fluentMode=" + fluentMode.get());
+                if (fluentMode.get()) {
+                    return;
+                }
+                super.liveGetPlayServer(mode, modechange);
+            }
+        };
         liveGetPlayServer.setHttpManager(mHttpManager);
         liveGetPlayServer.setHttpResponseParser(mHttpResponseParser);
         liveGetPlayServer.setLivePlayLog(livePlayLog);
@@ -701,6 +711,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
     private void liveGetPlayServer(final String mode, final boolean modechange) {
         if (fluentMode.get()) {
+            liveGetPlayServer.onDestroy();
             return;
         }
         liveGetPlayServer.liveGetPlayServer(mode, modechange);
