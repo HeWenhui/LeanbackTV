@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.SurfaceView;
@@ -22,6 +23,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
@@ -555,6 +557,24 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         }
     }
 
+    class AgoraBitmapListener implements SingleConfig.BitmapListener {
+        CircleImageView circleImageView;
+
+        AgoraBitmapListener(CircleImageView circleImageView) {
+            this.circleImageView = circleImageView;
+        }
+
+        @Override
+        public void onSuccess(Drawable drawable) {
+
+        }
+
+        @Override
+        public void onFail() {
+
+        }
+    }
+
     private void setName(final ClassmateEntity classmateEntity, final CircleImageView civ_livevideo_chat_head, final TextView tv_livevideo_chat_head) {
         logger.d("setName:id=" + classmateEntity.getId() + ",name=" + classmateEntity.getName() + ",img=" + classmateEntity.getImg());
         tv_livevideo_chat_head.setText(classmateEntity.getName());
@@ -562,7 +582,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
             if (StringUtils.isEmpty(classmateEntity.getImg())) {
                 civ_livevideo_chat_head.setImageResource(R.drawable.defult_head_img);
             } else {
-                ImageLoader.with(activity).load(classmateEntity.getImg()).error(R.drawable.defult_head_img).into(civ_livevideo_chat_head);
+                ImageLoader.with(activity).load(classmateEntity.getImg()).error(R.drawable.defult_head_img).into(civ_livevideo_chat_head, new AgoraBitmapListener(civ_livevideo_chat_head));
             }
             videoChatHttp.getStuInfoByIds(classmateEntity.getId(), new AbstractBusinessDataCallBack() {
                 @Override
@@ -570,7 +590,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                     HashMap<String, ClassmateEntity> classmateEntityHashMap = (HashMap<String, ClassmateEntity>) objData[0];
                     logger.d("onDataSucess:classmateEntityHashMap=" + classmateEntityHashMap.size());
                     ClassmateEntity classmateEntity1 = classmateEntityHashMap.get(classmateEntity.getId());
-                    ImageLoader.with(activity).load(classmateEntity1.getImg()).error(R.drawable.defult_head_img).into(civ_livevideo_chat_head);
+                    ImageLoader.with(activity).load(classmateEntity1.getImg()).error(R.drawable.defult_head_img).into(civ_livevideo_chat_head, new AgoraBitmapListener(civ_livevideo_chat_head));
                     tv_livevideo_chat_head.setText(classmateEntity1.getName());
                 }
 
@@ -581,7 +601,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 }
             });
         } else {
-            ImageLoader.with(activity).load(classmateEntity.getImg()).error(R.drawable.defult_head_img).into(civ_livevideo_chat_head);
+            ImageLoader.with(activity).load(classmateEntity.getImg()).error(R.drawable.defult_head_img).into(civ_livevideo_chat_head, new AgoraBitmapListener(civ_livevideo_chat_head));
             tv_livevideo_chat_head.setText(classmateEntity.getName());
         }
     }
