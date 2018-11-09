@@ -172,7 +172,7 @@ public class StandExperienceLearnFeedBackPager<T extends IStandExperienceLearnFe
                     Toast.makeText(mContext, "你至少需要选择一项哦", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (questionSize > 2 && TextUtils.isEmpty(radioGroupAns2)) {
+                if (questionSize == 2 && TextUtils.isEmpty(radioGroupAns2)) {
 //                    if (TextUtils.isEmpty(radioGroupAns1) || TextUtils.isEmpty(radioGroupAns2)) {
                     Toast.makeText(mContext, "你至少需要选择一项哦", Toast.LENGTH_SHORT).show();
                     return;
