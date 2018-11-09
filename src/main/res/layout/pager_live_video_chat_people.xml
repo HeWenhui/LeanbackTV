@@ -21,7 +21,6 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_centerInParent="true"
-                android:scaleType="fitXY"
                 app:border_width="0dp" />
 
         </RelativeLayout>
@@ -97,7 +96,6 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_centerInParent="true"
-                android:scaleType="fitXY"
                 app:border_width="0dp" />
 
         </RelativeLayout>

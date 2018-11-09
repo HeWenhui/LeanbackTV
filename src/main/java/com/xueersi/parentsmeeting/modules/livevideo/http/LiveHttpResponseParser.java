@@ -7,6 +7,7 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
@@ -1749,7 +1750,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             ClassmateEntity classmateEntity = new ClassmateEntity();
             try {
                 JSONObject stuJSONObject = jsonObject.getJSONObject(id);
-                classmateEntity.setName(stuJSONObject.optString("nickname"));
+                String realname = stuJSONObject.optString("realname");
+                if (!StringUtils.isEmpty(realname)) {
+                    classmateEntity.setName(realname);
+                } else {
+                    String nickname = stuJSONObject.optString("nickname");
+                    if (!StringUtils.isEmpty(nickname)) {
+                        classmateEntity.setName(nickname);
+                    } else {
+                        classmateEntity.setName(stuJSONObject.optString("name"));
+                    }
+                }
                 classmateEntity.setImg(stuJSONObject.optString("avatar_path"));
                 classmateEntities.put(id, classmateEntity);
             } catch (JSONException e) {
