@@ -360,9 +360,9 @@ public class StandExperienceLearnFeedBackPager<T extends IStandExperienceLearnFe
             }
         }
         //设置默认选项至
-        for (int i = 0; i < questionList.size(); i++) {
+//        for (int i = 0; i < questionList.size(); i++) {
 
-        }
+//        }
         tvTittle1.setText(title1);
         tvTittle2.setText(title2);
 
