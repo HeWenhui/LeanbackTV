@@ -84,6 +84,7 @@ public class ChatTipBll {
      */
     private int raiseHandCount = 0;
     private String msgFrom;
+    private int micType;
     private String room;
     private AgoraVideoChatInter videoChatInter;
     private VideoChatEvent videoChatEvent;
@@ -96,6 +97,10 @@ public class ChatTipBll {
         this.activity = activity;
         liveAndBackDebug = new ContextLiveAndBackDebug(activity);
         logToFile = new LogToFile(activity, TAG);
+    }
+
+    public void setMicType(int micType) {
+        this.micType = micType;
     }
 
     public void setVideoChatHttp(VideoAudioChatHttp videoChatHttp) {
@@ -254,6 +259,14 @@ public class ChatTipBll {
 //                });
             }
         });
+        if (micType == 0) {
+            View view = vgRaisehand.findViewById(R.id.v_livevideo_chat_myline);
+            view.setVisibility(View.GONE);
+            RelativeLayout relativeLayout = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand2);
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) relativeLayout.getLayoutParams();
+            lp.leftMargin = (int) (15 * ScreenUtils.getScreenDensity());
+            relativeLayout.setLayoutParams(lp);
+        }
     }
 
     /**
@@ -437,6 +450,7 @@ public class ChatTipBll {
         logger.d("startMicro:nonce=" + nonce + ",onMic=" + onMic + ",contain=" + contain + ",from=" + from);
         this.onMic = onMic;
         this.msgFrom = from;
+        this.micType = micType;
         if (contain) {
             raisehand = true;
         }

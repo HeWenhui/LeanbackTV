@@ -104,6 +104,7 @@
                     android:background="@drawable/shape_livevideo_chat_myline" />
 
                 <RelativeLayout
+                    android:id="@id/rl_livevideo_chat_raisehand2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="23dp"

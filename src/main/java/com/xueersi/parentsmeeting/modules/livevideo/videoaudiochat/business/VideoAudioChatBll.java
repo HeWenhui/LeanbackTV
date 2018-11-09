@@ -112,6 +112,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
         chatTipBll.setVideoChatHttp(videoChatHttp);
         chatTipBll.setRootView(bottomContent);
         chatTipBll.setGetInfo(getInfo);
+        chatTipBll.setMicType(micType);
         this.chatTipBll = chatTipBll;
     }
 
