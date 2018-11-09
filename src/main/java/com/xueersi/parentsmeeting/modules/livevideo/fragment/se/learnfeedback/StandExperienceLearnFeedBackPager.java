@@ -311,12 +311,12 @@ public class StandExperienceLearnFeedBackPager<T extends IStandExperienceLearnFe
 
 //        if(radioGroupAns1.)
 
-        if (!TextUtils.isEmpty(arrayOptions.get(0).getDefaultOption())) {
-            radioGroupAns1 = arrayOptions.get(0).getDefaultOption();
-        }
-        if (!TextUtils.isEmpty(arrayOptions.get(1).getDefaultOption())) {
-            radioGroupAns2 = arrayOptions.get(1).getDefaultOption();
-        }
+//        if (!TextUtils.isEmpty(arrayOptions.get(0).getDefaultOption())) {
+//            radioGroupAns1 = arrayOptions.get(0).getDefaultOption();
+//        }
+//        if (!TextUtils.isEmpty(arrayOptions.get(1).getDefaultOption())) {
+//            radioGroupAns2 = arrayOptions.get(1).getDefaultOption();
+//        }
     }
 
     public class QuestionOption {
@@ -352,9 +352,12 @@ public class StandExperienceLearnFeedBackPager<T extends IStandExperienceLearnFe
                 radioButtons[i][j].setText(itemValueList.get(j));
                 if (i == 0 && defaultOp1 != null && defaultOp1.equals(itemKeyList.get(j))) {
                     radioButtons[0][j].setChecked(true);
+                    radioGroupAns1 = defaultOp1;
                 }
+
                 if (i == 1 && defaultOp2 != null && defaultOp2.equals(itemKeyList.get(j))) {
                     radioButtons[1][j].setChecked(true);
+                    radioGroupAns2 = defaultOp2;
                 }
 //                radioButtons[i][j].setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
             }

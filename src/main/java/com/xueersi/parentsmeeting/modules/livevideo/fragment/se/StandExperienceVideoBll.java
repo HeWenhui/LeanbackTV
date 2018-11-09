@@ -138,6 +138,7 @@ public class StandExperienceVideoBll {
     }
 
     public void playNewVideo() {
+        index = index < 0 ? 0 : index;
         String url = mWebPaths.get(index++ % mWebPaths.size());
         logger.d("playNewVideo:url=" + url);
         liveBackPlayVideoFragment.playNewVideo(Uri.parse(url), mSectionName);
