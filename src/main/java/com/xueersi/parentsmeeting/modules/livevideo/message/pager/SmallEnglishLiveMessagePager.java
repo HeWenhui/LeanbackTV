@@ -1805,6 +1805,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         if (mSpeechEvaluatorUtils != null) {
             mSpeechEvaluatorUtils.cancel();
         }
+        if (mAM != null) {
+            mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
+        }
         Map<String, String> mData = new HashMap<>();
         mData.put("userid", getInfo.getStuId());
         mData.put("liveid", getInfo.getId());

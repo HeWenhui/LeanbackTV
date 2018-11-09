@@ -483,7 +483,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                 onAudioRequest.requestSuccess();
                 onAudioRequest = null;
             }
-            talAsrJni.LangIDFree();
+//            talAsrJni.LangIDFree();
         }
 
         @Override
@@ -603,9 +603,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                 onAudioRequest.requestSuccess();
                 onAudioRequest = null;
             }
-            if (isDestory && isDestory2) {
-                talAsrJni.LangIDFree();
-            }
+//            if (isDestory && isDestory2) {
+//                talAsrJni.LangIDFree();
+//            }
         }
     }
 

@@ -705,7 +705,14 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                     }
                 }, 1500);
             }
-        } else {
+        } else if (resultEntity.getErrorNo() == ResultCode.SPEECH_CANCLE){
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startEvaluator();
+                }
+            },1000);
+        }else {
 //            errorSetVisible();
 //            tvSpeectevalTip.setText("语音输入有点小问题，\n先手动答题哦（" + resultEntity.getErrorNo() + ")");
 //            tvSpeectevalTip.setTag("5");
