@@ -53,32 +53,6 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                 haveTeam = true;
             }
         }
-
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                JSONObject data = null;
-//                try {
-//                    data = new JSONObject("{\"from\":\"f\",\"open\":true,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                onNotice("","", data,260);
-//            }
-//        },0);
-
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                JSONObject finalData = null;
-//                try {
-//                    finalData = new JSONObject("{\"from\":\"f\",\"open\":false,\"type\":\"260\",\"voiceId\":\"2567_1533872215382\"}");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//                onNotice("","", finalData,260);
-//            }
-//        },10000);
     }
 
     @Override
@@ -119,7 +93,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                         mSpeechBulletScreenAction.onCloseSpeechBulletScreen(true);
                     }
                 } else if ("".equals(voiceId)) {
-                // 教师端退出情况：如果收到的260消息中的voiceId字段为空，学生退出弹幕但不要弹出提示窗口。
+                    // 教师端退出情况：如果收到的260消息中的voiceId字段为空，学生退出弹幕但不要弹出提示窗口。
                     if (mSpeechBulletScreenAction != null) {
                         mSpeechBulletScreenAction.onCloseSpeechBulletScreen(false);
                     }
@@ -179,19 +153,19 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
         }
 
         //不同组的学生互相不能看弹幕
-        if (haveTeam) {
-            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
-            String teamId = studentLiveInfo.getTeamId();
-            try {
-                jsonObject = new JSONObject(message);
-                String to = jsonObject.optString("to");
-                if (!teamId.equals(to)) {
-                    return;
-                }
-            } catch (JSONException e) {
-                return;
-            }
-        }
+//        if (haveTeam) {
+//            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+//            String teamId = studentLiveInfo.getTeamId();
+//            try {
+//                jsonObject = new JSONObject(message);
+//                String to = jsonObject.optString("to");
+//                if (!teamId.equals(to)) {
+//                    return;
+//                }
+//            } catch (JSONException e) {
+//                return;
+//            }
+//        }
 
         if (mSpeechBulletScreenAction == null) {
             SpeechBulletScreenBll speechBulletScreenBll = new SpeechBulletScreenBll(activity);
@@ -283,6 +257,11 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
         @Override
         public String getVoiceId() {
             return voiceId;
+        }
+
+        @Override
+        public String getStuSex() {
+            return mGetInfo.getStuSex();
         }
     }
 

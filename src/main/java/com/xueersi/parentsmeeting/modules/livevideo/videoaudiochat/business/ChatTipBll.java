@@ -461,6 +461,7 @@ public class ChatTipBll {
                     haveRaisehand = true;
                     haveContainMe = true;
                     rl_livevideo_chat_raisehand.setVisibility(View.GONE);
+                    tv_livevideo_chat_in_queue.setText("恭喜你已连麦");
                 } else {
                     rl_livevideo_chat_raisehand.setVisibility(View.VISIBLE);
                     if (oldcontainMe != containMe) {

@@ -1325,10 +1325,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
     /**
      * 理科2018接麦举手接口
      *
+     * @param stuId
      * @param requestCallBack
      */
-    public void addStuPutUpHandsNum(HttpCallBack requestCallBack) {
+    public void addStuPutUpHandsNum(String stuId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId",stuId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_ADD_STU_HAND_NUM, params, requestCallBack);
     }
