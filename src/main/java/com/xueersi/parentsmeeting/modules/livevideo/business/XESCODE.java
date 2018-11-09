@@ -174,6 +174,8 @@ public interface XESCODE {
 
     /** 班级点赞数量消息 */
     int PRAISE_CLASS_NUM = 267;
+    /** 集体语言互动消息 */
+    int SPEECH_COLLECTIVE= 270;
 
     /** 2018接麦 */
     interface AgoraChat {
