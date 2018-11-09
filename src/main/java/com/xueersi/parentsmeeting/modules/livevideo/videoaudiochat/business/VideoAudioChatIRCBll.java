@@ -422,7 +422,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
     @Override
     public void chatHandAdd(HttpCallBack call) {
         if (mGetInfo.getIsArts() == 0) {
-            getHttpManager().addStuPutUpHandsNum(call);
+            getHttpManager().addStuPutUpHandsNum(mGetInfo.getStuId(), call);
         }
     }
 
