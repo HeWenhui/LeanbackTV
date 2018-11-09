@@ -15,12 +15,12 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.StandExperienceRecommondCourseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.VideoPopView;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
@@ -37,9 +37,9 @@ import static android.content.Context.MODE_PRIVATE;
 /**
  * 课中推荐课程的业务逻辑
  */
-public class RecommondCourseBll extends StandExperienceEventBaseBll {
+public class StandExperienceRecommondBll extends StandExperienceEventBaseBll {
     LiveAndBackDebug liveAndBackDebug;
-    private RecommondCoursePager mPager;
+    private StandExperienceRecommondPager mPager;
     private VideoPopView turnToOrder;
     private SharedPreferences sharedPreferences;
 
@@ -48,7 +48,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     //是否购买成功
     private Boolean isBuyRecommondCourse;
 
-    public RecommondCourseBll(Activity activity, StandExperienceLiveBackBll liveBackBll, VideoView videoView) {
+    public StandExperienceRecommondBll(Activity activity, StandExperienceLiveBackBll liveBackBll, VideoView videoView) {
         super(activity, liveBackBll);
 
 
@@ -72,7 +72,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
     @Override
     public void initView() {
         super.initView();
-        mPager = new RecommondCoursePager(mContext, isBuyRecommondCourse, liveGetInfo.getUname());
+        mPager = new StandExperienceRecommondPager(mContext, isBuyRecommondCourse, liveGetInfo.getUname());
 
 
         initListener();
@@ -97,7 +97,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
 
     private void initListener() {
         if (mPager != null) {
-            mPager.setClickListener(new RecommondCoursePager.ClickListener() {
+            mPager.setClickListener(new StandExperienceRecommondPager.ClickListener() {
                 //跳转到购课页面
                 @Override
                 public void clickBuyCourse() {
@@ -129,7 +129,7 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
 //        }
         if (mPager == null) {
             logger.i("isBuyRecommondCourse" + isBuyRecommondCourse);
-            mPager = new RecommondCoursePager(mContext, isBuyRecommondCourse, liveGetInfo.getUname());
+            mPager = new StandExperienceRecommondPager(mContext, isBuyRecommondCourse, liveGetInfo.getUname());
             initListener();
             registerInBllHideView();
         }
@@ -225,15 +225,6 @@ public class RecommondCourseBll extends StandExperienceEventBaseBll {
                 LocalCourseConfig.CATEGORY_RECOMMOND_COURSE
         };
 
-    }
-
-    /**
-     * 任务完成后去掉
-     */
-    @Override
-    public void resultComplete() {
-        super.resultComplete();
-//        removeView();
     }
 
     private void removeView() {

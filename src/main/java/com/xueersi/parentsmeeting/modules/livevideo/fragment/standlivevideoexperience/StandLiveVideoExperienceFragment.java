@@ -50,10 +50,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination.StandExperienceEvaluationBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.livemessage.StandExperienceMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.mediacontroller.StandLiveVideoExperienceMediaController;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.StandExperienceRecommondBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand.StandExperienceUnderstandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll;
@@ -497,13 +497,13 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         //懂了吗
         liveBackBll.addBusinessBll(new StandExperienceUnderstandBll(activity, liveBackBll));
         //推荐课程信息
-        liveBackBll.addBusinessBll(new RecommondCourseBll(activity, liveBackBll, getVideoView()));
+        liveBackBll.addBusinessBll(new StandExperienceRecommondBll(activity, liveBackBll, getVideoView()));
         //播放完成后的定级卷
         liveBackBll.addBusinessBll(new StandExperienceEvaluationBll(activity, liveBackBll));
         //定级完成后的结果页
 //        liveBackBll.addBusinessBll(new ExperienceBuyCoursePresenter(activity, liveBackBll));
         //播放完成后的反馈弹窗
-        liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new StandExperienceLearnFeedbackBll(activity, liveBackBll));
     }
 
     @Override

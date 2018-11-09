@@ -1,14 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 
 import com.tencent.smtt.sdk.WebSettings;
-import com.tencent.smtt.sdk.WebView;
-import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.provider.WebFunctionProvider;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -19,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWebviewX5Pager implements
-        IEvaluationContract.IEvaluationView {
+        IStandExperienceEvaluationContract.IEvaluationView {
     private T iPresenter;
 
     private android.webkit.WebView webView;
@@ -33,15 +30,7 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
 
     @Override
     public View initView() {
-//        addJavascriptInterface();
-//        wvSubjectWeb.addJavascriptInterface(new StandExperienceEvaluation(), "standExperienceEvaluation");
-//        View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware_x5, null);
-
         mView = View.inflate(mContext, R.layout.page_livevideo_h5_courseware_x5, null);
-//        wvSubjectWeb = mView.findViewById(R.id.x5_wv_stand_experience_learn_feedback_evaluation);
-
-//        webView = mView.findViewById(R.id.wv_stand_experience_learn_feedback_evaluation);
-
         return mView;
     }
 
@@ -59,8 +48,6 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
                 iPresenter.showNextWindow();
             }
         }, "xesApp");
-
-
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
         webSetting.setJavaScriptEnabled(true);

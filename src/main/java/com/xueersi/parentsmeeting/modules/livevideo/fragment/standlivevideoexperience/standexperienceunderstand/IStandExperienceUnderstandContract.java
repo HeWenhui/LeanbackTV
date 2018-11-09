@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperienceunderstand;
 
-public interface IUnderStandContract {
+public interface IStandExperienceUnderstandContract {
     interface IUnderStandPresenter extends IUnderStandListener {
         void removeView();
     }

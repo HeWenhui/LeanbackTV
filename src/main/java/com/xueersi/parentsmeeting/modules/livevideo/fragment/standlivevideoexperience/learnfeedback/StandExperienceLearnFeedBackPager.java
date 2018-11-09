@@ -39,7 +39,7 @@ import okhttp3.Call;
  * @see NewStandExperienceLearnFeedBackPager
  * 来显示
  */
-public class StandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.ISendHttp> extends BasePager {
+public class StandExperienceLearnFeedBackPager<T extends IStandExperienceLearnFeedbackContract.ISendHttp> extends BasePager {
 
     T presenter;
 

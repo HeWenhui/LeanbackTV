@@ -15,7 +15,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination.StandExperienceEvaluationBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.RecommondCourseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.StandExperienceRecommondBll;
 
 import java.util.List;
 import java.util.Map;
@@ -149,6 +149,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
             if (liveBackBaseBll instanceof StandExperienceEventBaseBll) {
                 ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
+
             }
 //            if (liveBackBaseBll instanceof ExperienceBuyCoursePresenter) {
 //                ((ExperienceBuyCoursePresenter) liveBackBaseBll).showNextWindow();
@@ -160,8 +161,8 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
             }
 
             //展现学习反馈窗口
-//            if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
-//                showNextWindow((ExperienceLearnFeedbackBll) liveBackBaseBll);
+//            if (liveBackBaseBll instanceof StandExperienceLearnFeedbackBll) {
+//                showNextWindow((StandExperienceLearnFeedbackBll) liveBackBaseBll);
 //            }
 
         }
@@ -186,8 +187,8 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 
     public void onResume() {
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
-            if (liveBackBaseBll instanceof RecommondCourseBll) {
-                ((RecommondCourseBll) liveBackBaseBll).onResume();
+            if (liveBackBaseBll instanceof StandExperienceRecommondBll) {
+                ((StandExperienceRecommondBll) liveBackBaseBll).onResume();
             }
         }
     }

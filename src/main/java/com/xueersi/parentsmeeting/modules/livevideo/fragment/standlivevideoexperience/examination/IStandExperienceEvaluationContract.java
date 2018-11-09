@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexpe
 
 import android.view.View;
 
-public interface IEvaluationContract {
+public interface IStandExperienceEvaluationContract {
     interface IEvaluationPresenter {
 
     }

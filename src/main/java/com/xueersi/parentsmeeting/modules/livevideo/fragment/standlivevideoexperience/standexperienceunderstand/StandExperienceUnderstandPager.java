@@ -11,7 +11,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 
-public class StandExperienceUnderstandPager<T extends IUnderStandContract.IUnderStandPresenter> extends BasePager
+public class StandExperienceUnderstandPager<T extends IStandExperienceUnderstandContract.IUnderStandPresenter> extends BasePager
         implements QuestionShowAction {
 
 //    private static StandExperienceUnderstandPager mPager;
@@ -44,7 +44,6 @@ public class StandExperienceUnderstandPager<T extends IUnderStandContract.IUnder
     /**
      * 懂了么点击事件监听器
      */
-//    private IUnderStandContract.IUnderStandListener iUnderStandListener;
     private T iUnderStandPresenter;
 
     private VideoLivePlayBackEntity mVideoEntity;
@@ -128,7 +127,7 @@ public class StandExperienceUnderstandPager<T extends IUnderStandContract.IUnder
     }
 
 
-//    public void setUnderStandListener(IUnderStandContract.IUnderStandListener iUnderStandListener) {
+//    public void setUnderStandListener(IStandExperienceUnderstandContract.IUnderStandListener iUnderStandListener) {
 //        this.iUnderStandPresenter = iUnderStandListener;
 //    }
 

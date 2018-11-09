@@ -12,11 +12,11 @@ import org.json.JSONArray;
 /**
  * 学习反馈窗口的Presenter层
  */
-public class ExperienceLearnFeedbackBll extends StandExperienceEventBaseBll implements LearnFeedBackContract.ISendHttp {
+public class StandExperienceLearnFeedbackBll extends StandExperienceEventBaseBll implements IStandExperienceLearnFeedbackContract.ISendHttp {
 
     StandExperienceLearnFeedBackPager mPager;
 
-    public ExperienceLearnFeedbackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    public StandExperienceLearnFeedbackBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         initListener();
     }

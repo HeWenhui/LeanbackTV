@@ -8,18 +8,23 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceLiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 public class StandExperienceEvaluationBll extends
         StandExperienceEventBaseBll implements IPresenter {
 
-    private IEvaluationContract.IEvaluationView mView;
+    private IStandExperienceEvaluationContract.IEvaluationView mView;
 
     public StandExperienceEvaluationBll(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         mView = new StandExperienceEvaluationPager(activity, this);
     }
+
+//    @Override
+//    public void resultComplete() {
+//        super.resultComplete();
+//    }
 
     /**
      * 加载url:
@@ -63,9 +68,9 @@ public class StandExperienceEvaluationBll extends
         ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
         activityChangeLand.changeLOrP();
         for (LiveBackBaseBll liveBackBaseBll : liveBackBll.getLiveBackBaseBlls()) {
-            if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
+            if (liveBackBaseBll instanceof StandExperienceLearnFeedbackBll) {
 //                ().showWindow();
-                ((StandExperienceLiveBackBll) liveBackBll).showNextWindow((ExperienceLearnFeedbackBll) liveBackBaseBll);
+                ((StandExperienceLiveBackBll) liveBackBll).showNextWindow((StandExperienceLearnFeedbackBll) liveBackBaseBll);
             }
         }
     }

@@ -5,7 +5,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexper
 
 import org.json.JSONArray;
 
-public interface LearnFeedBackContract {
+public interface IStandExperienceLearnFeedbackContract {
 
     interface ISendHttp extends IPresenter {
         void sendHttp(String useId, String liveId, String subjectId, String gradId, String chapterId, String

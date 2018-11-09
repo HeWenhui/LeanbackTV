@@ -13,8 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexper
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandExperienceEventBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback
-        .ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.StandExperienceLearnFeedbackBll;
 
 public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll implements IPresenter {
     //第一次拿到数据才暂时，第二次再请求就不展示了
@@ -38,10 +37,10 @@ public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll im
     public void showNextWindow() {
         if (liveBackBll instanceof StandExperienceLiveBackBll) {
             // 不采用这种方式，在展示下一个View前可能会有业务逻辑去处理所以交给LiveBackBll去处理。
-//            (new ExperienceLearnFeedbackBll(activity, (StandExperienceLiveBackBll) liveBackBll)).showWindow();
+//            (new StandExperienceLearnFeedbackBll(activity, (StandExperienceLiveBackBll) liveBackBll)).showWindow();
             for (LiveBackBaseBll liveBackBaseBll : liveBackBll.getLiveBackBaseBlls()) {
-                if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
-                    ((StandExperienceLiveBackBll) liveBackBll).showNextWindow((ExperienceLearnFeedbackBll)
+                if (liveBackBaseBll instanceof StandExperienceLearnFeedbackBll) {
+                    ((StandExperienceLiveBackBll) liveBackBll).showNextWindow((StandExperienceLearnFeedbackBll)
                             liveBackBaseBll);
                 }
             }

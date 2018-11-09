@@ -16,7 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 
-public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll implements IUnderStandContract
+public class StandExperienceUnderstandBll extends StandExperienceEventBaseBll implements IStandExperienceUnderstandContract
         .IUnderStandPresenter {
 
     StandExperienceUnderstandPager mPager;

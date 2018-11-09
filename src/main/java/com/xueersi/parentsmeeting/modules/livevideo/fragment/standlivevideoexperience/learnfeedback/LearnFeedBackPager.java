@@ -43,7 +43,7 @@
 //
 //    private VideoLivePlayBackEntity mVideoEntity;
 //
-//    public LearnFeedBackPager(Context context, ExperienceLearnFeedbackBll presenter, VideoLivePlayBackEntity
+//    public LearnFeedBackPager(Context context, StandExperienceLearnFeedbackBll presenter, VideoLivePlayBackEntity
 //            videoLivePlayBackEntity) {
 //        super(context);
 //        this.mPresenter = presenter;

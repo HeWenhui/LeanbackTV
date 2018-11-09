@@ -22,7 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSh
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class RecommondCoursePager extends BasePager implements QuestionShowAction {
+public class StandExperienceRecommondPager extends BasePager implements QuestionShowAction {
     private final String TAG = getClass().getSimpleName();
     //动画持续时间
     private final int Duration = 500;
@@ -56,7 +56,7 @@ public class RecommondCoursePager extends BasePager implements QuestionShowActio
     //    private VideoLivePlayBackEntity mVideoEntity;
     String userName;
 
-    public RecommondCoursePager(Context context, boolean isBuyCourseSuccess, String userName) {
+    public StandExperienceRecommondPager(Context context, boolean isBuyCourseSuccess, String userName) {
         super(context);
         this.isBuyCourseSuccess = isBuyCourseSuccess;
         this.userName = userName;
