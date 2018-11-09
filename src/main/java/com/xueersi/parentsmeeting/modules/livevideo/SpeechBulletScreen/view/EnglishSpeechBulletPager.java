@@ -194,6 +194,10 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      */
     private int mVolume = 0;
     /**
+     * 是不是恢复了音量
+     */
+    private boolean isVolumeResume = false;
+    /**
      * 语音评测工具类
      */
     private SpeechEvaluatorUtils mSpeechEvaluatorUtils;
@@ -781,6 +785,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                                     mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
                                     mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
                                     mAM.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (0.0f * mMaxVolume), 0);
+                                    isVolumeResume = false;
                                     stopSpeechTimer.start();
                                     //3秒没有检测到声音提示
                                     mWeakHandler.postDelayed(mHintRunnable, 3000);
@@ -822,8 +827,9 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         if (mSpeechEvaluatorUtils != null) {
             mSpeechEvaluatorUtils.cancel();
         }
-        if (mAM != null) {
+        if (mAM != null && !isVolumeResume) {
             mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
+            isVolumeResume = true;
         }
         if (stopSpeechTimer != null) {
 
