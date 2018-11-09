@@ -57,7 +57,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexper
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceQuestionPlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackagePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -486,7 +485,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     //添加功能模块
     protected void addBusiness(Activity activity) {
         liveBackBll.addBusinessBll(new StandExperienceQuestionPlayBackBll(activity, liveBackBll));
-        RedPackagePlayBackBll redPackagePlayBackBll = new RedPackagePlayBackBll(activity, liveBackBll);
+        StandExperienceRedPackageBll redPackagePlayBackBll = new StandExperienceRedPackageBll(activity, liveBackBll);
         liveBackBll.addBusinessBll(redPackagePlayBackBll);
         liveBackBll.addBusinessBll(new StandExperienceEnglishH5PlayBackBll(activity, liveBackBll));
         //站立直播体验课聊天区的添加

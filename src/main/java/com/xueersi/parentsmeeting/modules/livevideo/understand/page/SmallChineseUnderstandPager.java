@@ -62,8 +62,15 @@ public class SmallChineseUnderstandPager extends BasePager {
      * 同小英
      */
     public interface UnderStandListener {
+        /**
+         * 关闭当前监听器
+         */
         void closeListener();
 
+        /**
+         * 是否懂了
+         * @param underStand
+         */
         void underStandListener(boolean underStand);
 
         void noUnderStandListener(boolean noUnderStand);
