@@ -974,7 +974,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      * ************************************************** 弹 幕 **************************************************
      */
 
-    private static final long ADD_DANMU_TIME = 0;
+    private static final long ADD_DANMU_TIME = 1200;
     private int BITMAP_WIDTH_GUEST = 34;//别人头像的宽度
     private int BITMAP_HEIGHT_GUEST = 34;//别人头像的高度
     private int BITMAP_WIDTH_ME = 42;//自己头像的宽度

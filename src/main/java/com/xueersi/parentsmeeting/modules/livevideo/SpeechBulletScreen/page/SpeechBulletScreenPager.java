@@ -152,6 +152,10 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
      * 当前音量
      */
     private int mVolume = 0;
+    /**
+     * 是不是恢复了音量
+     */
+    private boolean isVolumeResume = false;
 
     /**
      * 语音评测工具类
@@ -525,6 +529,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                         mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
                         int v = (int) (0.1f * mMaxVolume);
                         mAM.setStreamVolume(AudioManager.STREAM_MUSIC, v, 0);
+                        isVolumeResume = false;
                     }
 
                     @Override
@@ -558,8 +563,9 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         if (mSpeechEvaluatorUtils != null) {
             mSpeechEvaluatorUtils.cancel();
         }
-        if (mAM != null) {
+        if (mAM != null && !isVolumeResume) {
             mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
+            isVolumeResume = true;
         }
     }
 
@@ -1120,13 +1126,8 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         stopEvaluator();
     }
 
-    public void releaseDanmaku(){
+    public void releaseDanmaku() {
         if (dvSpeechbulDanmaku != null)
             dvSpeechbulDanmaku.release();
-    }
-    public void cancelEvaluator(){
-        if (mSpeechEvaluatorUtils != null) {
-            mSpeechEvaluatorUtils.cancel();
-        }
     }
 }

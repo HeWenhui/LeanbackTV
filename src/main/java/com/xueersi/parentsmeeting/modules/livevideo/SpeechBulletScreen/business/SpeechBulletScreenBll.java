@@ -92,8 +92,7 @@ public class  SpeechBulletScreenBll implements SpeechBulletScreenAction {
             public void run() {
                 showShortToast("老师开启了语音弹幕");
                 if (mSpeechBulPager != null) {
-                    mSpeechBulPager.releaseDanmaku();
-                    mSpeechBulPager.cancelEvaluator();
+                    mSpeechBulPager.onDestroy();
                     mSpeechBulPager = null;
                 }
             }
