@@ -101,7 +101,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
     public void onNotice(String sourceNick, String target, final JSONObject object, int type) {
         logger.d("data=" + object);
         switch (type) {
-            case XESCODE.SPEECH_FEEDBACK: {
+            case XESCODE.SPEECH_COLLECTIVE: {
                 final String from = object.optString("roomId");
                 final String status = object.optString("status");
                 if (!"voice_plan_ios".equals(from)) {
@@ -143,7 +143,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
     @Override
     public int[] getNoticeFilter() {
         return new int[]{
-                XESCODE.SPEECH_FEEDBACK};
+                XESCODE.SPEECH_COLLECTIVE};
     }
 
     @Override
