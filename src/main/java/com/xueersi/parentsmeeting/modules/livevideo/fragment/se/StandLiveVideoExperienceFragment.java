@@ -49,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.buycourse.ExperienceBuyCoursePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.livemessage.StandExperienceMessageBll;
@@ -499,9 +500,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         //推荐课程信息
         liveBackBll.addBusinessBll(new StandExperienceRecommondBll(activity, liveBackBll, getVideoView()));
         //播放完成后的定级卷
-        liveBackBll.addBusinessBll(new StandExperienceEvaluationBll(activity, liveBackBll));
+//        liveBackBll.addBusinessBll(new StandExperienceEvaluationBll(activity, liveBackBll));
         //定级完成后的结果页
-//        liveBackBll.addBusinessBll(new ExperienceBuyCoursePresenter(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new ExperienceBuyCoursePresenter(activity, liveBackBll));
         //播放完成后的反馈弹窗
         liveBackBll.addBusinessBll(new StandExperienceLearnFeedbackBll(activity, liveBackBll));
     }
