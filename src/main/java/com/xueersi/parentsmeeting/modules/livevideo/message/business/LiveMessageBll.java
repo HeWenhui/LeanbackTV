@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -185,10 +186,10 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
      * 半身直播 聊天
      * @param bottomContent
      */
-    public void initHalfBodyLive(RelativeLayout bottomContent){
+    public void initHalfBodyLive(final RelativeLayout bottomContent){
 
         Log.e("HalfBody","=====>LiveMessageBll initHalfBodyLive called:"+rlLiveMessageContent);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+        final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         if (rlLiveMessageContent == null) {
             rlLiveMessageContent = new RelativeLayout(activity);
@@ -196,9 +197,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             RelativeLayout msgContainer = bottomContent.findViewById(R.id.rl_live_halfbody_livemsg_container);
             msgContainer.addView(rlLiveMessageContent,params);
         } else {
-            rlLiveMessageContent.removeAllViews();
-            bottomContent.removeView(rlLiveMessageContent);
             //调整 消息面板的层级
+            rlLiveMessageContent.removeAllViews();
+            ((ViewGroup)rlLiveMessageContent.getParent()).removeView(rlLiveMessageContent);
             RelativeLayout msgContainer = bottomContent.findViewById(R.id.rl_live_halfbody_livemsg_container);
             msgContainer.addView(rlLiveMessageContent,params);
         }

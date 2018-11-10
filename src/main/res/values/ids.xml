@@ -836,6 +836,8 @@
 
     <item name="rcl_live_halfbody_msg" type="id"/>
     <item name="tv_live_halfbody_msg" type="id"/>
+    <item name="tv_live_halfbody_sys_msg" type="id"/>
+
     <item name="rl_live_halfbody_livemsg_container" type="id"/>
     <item name="rl_live_halfbody_mediacontroll_container" type="id"/>
 

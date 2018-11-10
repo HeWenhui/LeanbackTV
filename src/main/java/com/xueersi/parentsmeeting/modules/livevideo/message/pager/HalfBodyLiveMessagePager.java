@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -11,9 +12,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -54,8 +57,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecyclView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.MsgItemAnimator;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
@@ -106,16 +111,10 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     /**
      * 聊天消息
      */
-   // private ListView lvMessage;
     private View rlInfo;
     private View rlMessageContent;
     private Button btMessageSend;
     private Button btMessageExpress;
-    /**
-     * 聊天消息适配器
-     */
-  /*  private CommonAdapter<LiveMessageEntity> messageAdapter;
-    private CommonAdapter<LiveMessageEntity> otherMessageAdapter;*/
     private boolean isTouch = false;
     /**
      * 聊天字体大小，最多13个汉字
@@ -175,9 +174,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
-        nameColors[0] = resources.getColor(R.color.COLOR_32B16C);
-        nameColors[1] = resources.getColor(R.color.COLOR_E74C3C);
-        nameColors[2] = resources.getColor(R.color.COLOR_20ABFF);
 
         btMesOpen = liveMediaControllerBottom.getBtMesOpen();
         btMsgCommon = liveMediaControllerBottom.getBtMsgCommon();
@@ -231,7 +227,21 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         // 从底部添加
         liveMsgReclView.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,true));
 
+        //测试代码
+        Button btnTest = mView.findViewById(R.id.btn_anim_test);
+        btnTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testItemFadeOut();
+            }
+        });
+
         return mView;
+    }
+
+    private void testItemFadeOut() {
+      /*  liveMsgReclView.postDelayed(new)
+        mMsgAdapter.notifyItemChanged();*/
     }
 
     @Override
@@ -435,20 +445,47 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         initMsgRcyclView();
     }
 
-
-
     private static class MsgItemHolder extends RecyclerView.ViewHolder{
         private  TextView tvMsg;
+        /**展示带图片的消息*/
+        private TextView tvSysMsg;
+
         public MsgItemHolder(View itemView) {
             super(itemView);
             tvMsg = itemView.findViewById(R.id.tv_live_halfbody_msg);
+            tvSysMsg = itemView.findViewById(R.id.tv_live_halfbody_sys_msg);
         }
 
         public void bindData(LiveMessageEntity data){
-            // TODO: 2018/11/9  区分不同消息类型
-            tvMsg.setText(data.getText());
+            Drawable drawable = null;
+            if(data.getType() == LiveMessageEntity.MESSAGE_MINE){
+                tvMsg.setTextColor(Color.parseColor("#FFDB5C"));
+                tvSysMsg.setTextColor(Color.parseColor("#FFDB5C"));
+            }else{
+                tvMsg.setTextColor(Color.parseColor("#ffffff"));
+                tvSysMsg.setTextColor(Color.parseColor("#ffffff"));
+            }
+            if(LiveMessageEntity.MESSAGE_TIP ==  data.getType()){
+                drawable = tvMsg.getResources().getDrawable(R.drawable.icon_live_sys_msg);
+            }else if(LiveMessageEntity.MESSAGE_TEACHER == data.getType()){
+                drawable = tvMsg.getResources().getDrawable(R.drawable.icon_live_teacher_msg);
+            }
+            if(drawable != null){
+                tvMsg.setVisibility(View.INVISIBLE);
+                SpannableStringBuilder ssb = new SpannableStringBuilder("  ");
+                drawable.setBounds(0, 0, SizeUtils.Dp2Px(tvMsg.getContext(),40), SizeUtils.Dp2Px(tvMsg.getContext(),18));
+                CenterAlignImageSpan imageSpan = new CenterAlignImageSpan(drawable);
+                ssb.setSpan(imageSpan, 0, 1, ImageSpan.ALIGN_BASELINE);
+                tvSysMsg.setText(ssb);
+                tvSysMsg.append(data.getText());
+                tvSysMsg.setVisibility(View.VISIBLE);
+            }else{
+                tvSysMsg.setVisibility(View.INVISIBLE);
+                tvMsg.setVisibility(View.VISIBLE);
+                tvMsg.setText(data.getSender()+"：");
+                tvMsg.append(data.getText());
+            }
         }
-
     }
 
 
@@ -461,12 +498,13 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new MsgItemHolder(View.inflate(parent.getContext(),R.layout.item_livevideo_livemsg,null));
+            return new MsgItemHolder(View.inflate(parent.getContext(),R.layout.item_livevideo_halfbody_msg,null));
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            int dataIndex = mData.size() -1;
+            Log.e("HalfBodyLiveMsgPager","====>onBindViewHolder:"+position);
+            int dataIndex = (mData.size() -1)-position;
             ((MsgItemHolder)holder).bindData(mData.get(dataIndex));
         }
 
@@ -502,6 +540,20 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                     top = SizeUtils.Dp2Px(mContext, 9);
                 }
                 outRect.set(left, top, right, bottom);
+            }
+        });
+
+        MsgItemAnimator msgItemAnimator = new MsgItemAnimator();
+        msgItemAnimator.setAddDuration(500);
+        msgItemAnimator.setMoveDuration(300);
+        msgItemAnimator.setRemoveDuration(300);
+        msgItemAnimator.setChangeDuration(400);
+        liveMsgReclView.setItemAnimator(msgItemAnimator);
+        //不支持滑动
+        liveMsgReclView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
             }
         });
     }
@@ -1071,19 +1123,15 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         }
     }
 
-
     /*添加聊天信息，超过120，移除60个*/
     @Override
     public void addMessage(final String sender, final int type, final String text, final String headUrl) {
         final Exception e = new Exception();
 
-        // TODO: 2018/11/9 收到新 聊天消息 刷新UI
         pool.execute(new Runnable() {
             @Override
             public void run() {
-                final SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
-                                .chatSendContentDeal(text), mContext,
-                        messageSize);
+                final SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(text,mContext, messageSize);
                 mView.post(new Runnable() {
                     @Override
                     public void run() {

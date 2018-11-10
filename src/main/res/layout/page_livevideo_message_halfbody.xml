@@ -16,8 +16,7 @@
         <RelativeLayout
             android:id="@id/rl_livevideo_info"
             android:layout_width="300dp"
-            android:layout_height="214dp"
-            android:background="@color/COLOR50_7F20ABFF"
+            android:layout_height="240dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="15dp"
             android:layout_alignParentBottom="true"
@@ -145,5 +144,14 @@
         android:layout_marginRight="18dp"
          />
 
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AnimTest"
+        android:id="@+id/btn_anim_test"
+        android:layout_marginTop="80dp"
+        />
 
 </RelativeLayout>
