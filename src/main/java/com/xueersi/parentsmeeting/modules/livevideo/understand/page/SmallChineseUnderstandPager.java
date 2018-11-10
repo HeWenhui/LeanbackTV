@@ -18,6 +18,8 @@ public class SmallChineseUnderstandPager extends BasePager {
     private ImageView ivUnderstandNo;
 
 
+    private ImageView ivClose;
+
     public SmallChineseUnderstandPager(Context context) {
         super(context);
         initListener();
@@ -28,7 +30,7 @@ public class SmallChineseUnderstandPager extends BasePager {
         View view = View.inflate(mContext, R.layout.page_livevideo_small_chinese_understand, null);
         ivUnderstandYes = view.findViewById(R.id.iv_livevideo_small_chinese_understand_yes);
         ivUnderstandNo = view.findViewById(R.id.iv_livevideo_small_chinese_understand_no);
-
+        ivClose = view.findViewById(R.id.iv_livevideo_small_chinese_understand_close);
         return view;
     }
 
@@ -43,7 +45,9 @@ public class SmallChineseUnderstandPager extends BasePager {
         ivUnderstandYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (mUnderStandListener != null) {
+                    mUnderStandListener.underStand(v.getId() == R.id.iv_livevideo_small_chinese_understand_yes);
+                }
 
             }
 
@@ -52,10 +56,19 @@ public class SmallChineseUnderstandPager extends BasePager {
         ivUnderstandNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (mUnderStandListener != null) {
+                    mUnderStandListener.underStand(v.getId() == R.id.iv_livevideo_small_chinese_understand_yes);
+                }
             }
         });
-
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mUnderStandListener != null) {
+                    mUnderStandListener.close();
+                }
+            }
+        });
     }
 
     /**
@@ -65,15 +78,16 @@ public class SmallChineseUnderstandPager extends BasePager {
         /**
          * 关闭当前监听器
          */
-        void closeListener();
+        void close();
 
         /**
          * 是否懂了
+         *
          * @param underStand
          */
-        void underStandListener(boolean underStand);
+        void underStand(boolean underStand);
 
-        void noUnderStandListener(boolean noUnderStand);
+//        void noUnderStandListener(boolean noUnderStand);
     }
 
     private UnderStandListener mUnderStandListener;

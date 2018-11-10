@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_background"
+        android:layout_width="660dp"
+        android:layout_height="350dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_close"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="84dp"
+        android:src="@drawable/selector_livevideo_small_chinese_send_gift_close"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_background"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_background" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_small_gift_background"
+        android:layout_width="wrap_content"
+        android:layout_height="110dp"
+        android:layout_marginTop="115dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_gift_background"
+        app:layout_constraintRight_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift_background"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_background" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_small_gift"
+        android:layout_width="wrap_content"
+        android:layout_height="110dp"
+        android:layout_marginTop="115dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_small"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift_background"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_background" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_small_select"
+        android:layout_width="37dp"
+        android:layout_height="33dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_select_icon"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_small_gift_value_icon"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="3dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_money_icon"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift"
+        app:layout_constraintTop_toBottomOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="10金币"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift_value_icon"
+        app:layout_constraintLeft_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift_value_icon"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift_value_icon" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_middle_gift_background"
+        android:layout_width="wrap_content"
+        android:layout_height="110dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_gift_background"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_background"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_background"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift_background" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_middle_gift"
+        android:layout_width="wrap_content"
+        android:layout_height="110dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_middlel"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift_background"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift_background" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_middle_select"
+        android:layout_width="37dp"
+        android:layout_height="33dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_select_icon"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_middle_gift_value_icon"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="3dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_money_icon"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift"
+        app:layout_constraintTop_toBottomOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="50金币"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift_value_icon"
+        app:layout_constraintLeft_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift_value_icon"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift_value_icon" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_big_gift_background"
+        android:layout_width="wrap_content"
+        android:layout_height="110dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_gift_background"
+        app:layout_constraintLeft_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift_background"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift_background" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_big_gift"
+        android:layout_width="wrap_content"
+        android:layout_height="110dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_big"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift_background"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift_background" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_big_select"
+        android:layout_width="37dp"
+        android:layout_height="33dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_select_icon"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_big_gift_value_icon"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="3dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_money_icon"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift"
+        app:layout_constraintTop_toBottomOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift" />
+
+    <TextView
+        android:id="@+id/tv_livevideo_small_chinese_send_gift_money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="100金币"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift_value_icon"
+        app:layout_constraintLeft_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift_value_icon"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift_value_icon" />
+
+    <TextView
+        android:id="@+id/tv_livevideo_small_chinese_send_gift_money_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="90dp"
+        android:layout_marginBottom="6dp"
+        android:text="金币余额:"
+        android:textColor="@color/COLOR_7B583E"
+        android:textSize="21sp"
+        app:layout_constraintBottom_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift_background"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_background"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_background" />
+
+    <TextView
+        android:id="@+id/tv_livevideo_small_chinese_send_gift_money_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="0"
+        android:textColor="@color/COLOR_FF8400"
+        android:textSize="21sp"
+        app:layout_constraintLeft_toRightOf="@+id/tv_livevideo_small_chinese_send_gift_money_tip"
+        app:layout_constraintTop_toTopOf="@+id/tv_livevideo_small_chinese_send_gift_money_tip" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_money_remain_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_money_remaining"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_livevideo_small_chinese_send_gift_money_value"
+        app:layout_constraintLeft_toRightOf="@+id/tv_livevideo_small_chinese_send_gift_money_value"
+        app:layout_constraintTop_toTopOf="@+id/tv_livevideo_small_chinese_send_gift_money_value" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_send_gift_send"
+        android:layout_width="170dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="35dp"
+        android:src="@drawable/selector_small_chinese_send_gift_send"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_small_chinese_send_gift_background"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_background"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_background" />
+
+</android.support.constraint.ConstraintLayout>

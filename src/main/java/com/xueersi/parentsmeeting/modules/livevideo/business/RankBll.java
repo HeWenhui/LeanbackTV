@@ -24,10 +24,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RankItem;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
-
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -36,7 +34,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -180,22 +177,23 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     };
 
     public void getAllRanking(final AbstractBusinessDataCallBack callBack) {
-        logger.e("======> rankBll getAllRanking called:"+":"+mGetInfo.getArtsExtLiveInfo());
-        if(mGetInfo.getArtsExtLiveInfo() != null
-                && mGetInfo.getArtsExtLiveInfo().getNewCourseWarePlatform().equals("1")){
+        logger.e("======> rankBll getAllRanking called:" + ":" + mGetInfo.getArtsExtLiveInfo());
+        if (mGetInfo.getArtsExtLiveInfo() != null
+                && mGetInfo.getArtsExtLiveInfo().getNewCourseWarePlatform().equals("1")) {
             getArtsNewAllRanking(callBack);
-        }else{
+        } else {
             getOldRankingData(callBack);
         }
     }
 
     /**
      * 获取文科新课件平台 排名
+     *
      * @param callBack
      */
     private void getArtsNewAllRanking(final AbstractBusinessDataCallBack callBack) {
-        logger.e("======> rankBll getArtsNewAllRanking called:"+":"+mGetInfo.getArtsExtLiveInfo().getNewCourseWarePlatform());
-        getHttpManager().getNewArtsAllRank(mGetInfo.getId(),mGetInfo.getStuCouId(),new HttpCallBack() {
+        logger.e("======> rankBll getArtsNewAllRanking called:" + ":" + mGetInfo.getArtsExtLiveInfo().getNewCourseWarePlatform());
+        getHttpManager().getNewArtsAllRank(mGetInfo.getId(), mGetInfo.getStuCouId(), new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 AllRankEntity allRankEntity = getHttpResponseParser().parseAllRank(responseEntity);
@@ -367,8 +365,10 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     }
                 }
             });
+        } else if (LiveVideoConfig.isSmallChinese) {//如果是小学语文
+
         } else {
-            if(LiveVideoConfig.isPrimary){
+            if (LiveVideoConfig.isPrimary) {
                 relativeLayout = LayoutInflater.from(activity).inflate(R.layout.layout_livevideo_psrank, bottomContent,
                         false);
             } else {
@@ -412,9 +412,9 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     index = 1;
                     tv_livevideo_rank_subtitle_mid.setText("学员");
                     v_livevideo_rank_mygroup.setVisibility(View.VISIBLE);
-                    if(LiveVideoConfig.isPrimary){
+                    if (LiveVideoConfig.isPrimary) {
                         tv_livevideo_rank_mygroup.setTextColor(slider);
-                    }else{
+                    } else {
                         tv_livevideo_rank_mygroup.setTextColor(COLOR_F13232);
                     }
                     v_livevideo_rank_groups.setVisibility(View.GONE);
@@ -441,9 +441,9 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     v_livevideo_rank_mygroup.setVisibility(View.GONE);
                     tv_livevideo_rank_mygroup.setTextColor(white);
                     v_livevideo_rank_groups.setVisibility(View.VISIBLE);
-                    if(LiveVideoConfig.isPrimary){
+                    if (LiveVideoConfig.isPrimary) {
                         tv_livevideo_rank_groups.setTextColor(slider);
-                    }else{
+                    } else {
                         tv_livevideo_rank_groups.setTextColor(COLOR_F13232);
                     }
                     v_livevideo_rank_class.setVisibility(View.GONE);
@@ -470,9 +470,9 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     v_livevideo_rank_groups.setVisibility(View.GONE);
                     tv_livevideo_rank_groups.setTextColor(white);
                     v_livevideo_rank_class.setVisibility(View.VISIBLE);
-                    if(LiveVideoConfig.isPrimary){
+                    if (LiveVideoConfig.isPrimary) {
                         tv_livevideo_rank_class.setTextColor(slider);
-                    }else{
+                    } else {
                         tv_livevideo_rank_class.setTextColor(COLOR_F13232);
                     }
                     if (allRankEntity == null) {
