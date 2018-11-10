@@ -46,7 +46,7 @@
                     android:src="@drawable/bg_livevideo_message_offline" />
             </RelativeLayout>
 
-            <com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecyclView
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView
                 android:layout_width="match_parent"
                 android:layout_marginTop="25dp"
                 android:layout_height="match_parent"
@@ -143,15 +143,5 @@
         android:layout_marginTop="18dp"
         android:layout_marginRight="18dp"
          />
-
-
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="AnimTest"
-        android:id="@+id/btn_anim_test"
-        android:layout_marginTop="80dp"
-        />
 
 </RelativeLayout>

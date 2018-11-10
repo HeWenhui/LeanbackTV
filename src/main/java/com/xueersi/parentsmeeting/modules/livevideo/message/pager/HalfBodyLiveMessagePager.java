@@ -37,7 +37,6 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
@@ -58,7 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessage
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecyclView;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.MsgItemAnimator;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -133,6 +132,11 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
 
     /**
+     * 聊天消息数据源    因为涉及到清空 数据源问题 所以单独有集合管理数据
+     * */
+    private ArrayList<LiveMessageEntity> mLiveMsgList = new ArrayList<>();
+
+    /**
      * 表情面板 关闭按钮
      */
     private ImageView ivExpressionCancle;
@@ -158,8 +162,9 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     private int mPopWinOffY;
 
     /**聊天消息*/
-    private HalfBodyLiveMsgRecyclView liveMsgReclView;
+    private HalfBodyLiveMsgRecycelView liveMsgReclView;
     private LiveMsgAdapter mMsgAdapter;
+    private LinearLayoutManager mLiveMsgLayoutManager;
 
     public HalfBodyLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                     LiveAndBackDebug ums, BaseLiveMediaControllerBottom
@@ -174,6 +179,10 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
+
+        if(liveMessageEntities != null && liveMessageEntities.size() > 0){
+            mLiveMsgList.addAll(liveMessageEntities);
+        }
 
         btMesOpen = liveMediaControllerBottom.getBtMesOpen();
         btMsgCommon = liveMediaControllerBottom.getBtMsgCommon();
@@ -225,24 +234,11 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
         liveMsgReclView = mView.findViewById(R.id.rcl_live_halfbody_msg);
         // 从底部添加
-        liveMsgReclView.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,true));
-
-        //测试代码
-        Button btnTest = mView.findViewById(R.id.btn_anim_test);
-        btnTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                testItemFadeOut();
-            }
-        });
-
+        mLiveMsgLayoutManager = new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,true);
+        liveMsgReclView.setLayoutManager(mLiveMsgLayoutManager);
         return mView;
     }
 
-    private void testItemFadeOut() {
-      /*  liveMsgReclView.postDelayed(new)
-        mMsgAdapter.notifyItemChanged();*/
-    }
 
     @Override
     public void initListener() {
@@ -525,9 +521,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
         Log.e(TAG, "initMsgRcyclView:minisize=" + minisize);
-        mMsgAdapter = new LiveMsgAdapter(liveMessageEntities);
+        mMsgAdapter = new LiveMsgAdapter(mLiveMsgList);
         liveMsgReclView.setAdapter(mMsgAdapter);
-
         liveMsgReclView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
@@ -536,26 +531,28 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                 int right = 0;
                 int top = 0;
                 int bottom = 0;
-                if (itemPosition < liveMessageEntities.size()) {
+                if (itemPosition < mLiveMsgList.size()) {
                     top = SizeUtils.Dp2Px(mContext, 9);
                 }
                 outRect.set(left, top, right, bottom);
             }
         });
 
-        MsgItemAnimator msgItemAnimator = new MsgItemAnimator();
-        msgItemAnimator.setAddDuration(500);
-        msgItemAnimator.setMoveDuration(300);
-        msgItemAnimator.setRemoveDuration(300);
-        msgItemAnimator.setChangeDuration(400);
-        liveMsgReclView.setItemAnimator(msgItemAnimator);
-        //不支持滑动
-        liveMsgReclView.setOnTouchListener(new View.OnTouchListener() {
+        //监听 item淡出动画  动画结束后 清空数据源
+        liveMsgReclView.setItemFadeAnimListener(new HalfBodyLiveMsgRecycelView.ItemFadeAnimListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
+            public void onAllItemFadeOut() {
+                mLiveMsgList.clear();
+                mMsgAdapter.notifyDataSetChanged();
             }
         });
+        /*// FIXME: 2018/11/10  解决从同步辅导态消息后  item显示异常
+        liveMsgReclView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                addMessage("",LiveMessageEntity.MESSAGE_TIP,"聊天服务器连接成功","");
+            }
+        },300);*/
     }
 
     @Override
@@ -572,12 +569,10 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         }
     }
 
-
     /**
      * 初始化 热词
      */
     private void initCommonWord() {
-
         final ArrayList<String> words = new ArrayList<>();
         words.add("[e]em_1[e]");
         words.add("[e]em_11[e]");
@@ -1147,12 +1142,18 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                             otherLiveMessageEntities.add(entity);
                         }
 
+                        if(mLiveMsgList.size()>29){
+                            mLiveMsgList.remove(0);
+                        }
+                        mLiveMsgList.add(entity);
+                        Log.e("HalfBodyLiveMsgPager","=====>adddMsg:"+mLiveMsgList.size());
                         if (mMsgAdapter != null) {
                             mMsgAdapter.notifyItemInserted(0);
                         } else {
                             Loger.e(BaseApplication.getContext(), TAG, "" + mContext + "," + sender + "," + type, e,
                                     true);
                         }
+
                         //滚动到底部
                         liveMsgReclView.scrollToPosition(0);
                     }
@@ -1189,6 +1190,10 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         super.onDestroy();
         if (mCommonWordWindow != null) {
             mCommonWordWindow.dismiss();
+        }
+
+        if(mLiveMsgList != null){
+            mLiveMsgList.clear();
         }
 
     }
