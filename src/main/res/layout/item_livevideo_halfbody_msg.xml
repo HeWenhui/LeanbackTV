@@ -5,7 +5,7 @@
     android:layout_gravity="right"
     >
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minHeight="30dp"
@@ -23,7 +23,7 @@
         android:visibility="invisible"
         />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minHeight="30dp"
