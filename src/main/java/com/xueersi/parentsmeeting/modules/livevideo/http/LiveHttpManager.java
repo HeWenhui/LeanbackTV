@@ -802,7 +802,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
                                               requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
 //        params.addBodyParam("enstuId", enstuId);
-        params.addBodyParam("courseId", liveId);
+        params.addBodyParam("courseId", courseId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("classId", classId);
         params.addBodyParam("duration", duration);
@@ -1320,6 +1320,31 @@ public class LiveHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_HANDADD, params, requestCallBack);
+    }
+
+    /**
+     * 理科2018接麦举手接口
+     *
+     * @param stuId
+     * @param requestCallBack
+     */
+    public void addStuPutUpHandsNum(String stuId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId",stuId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_ADD_STU_HAND_NUM, params, requestCallBack);
+    }
+
+    /**
+     * 理科2018接麦举手获得用户列表接口
+     *
+     * @param requestCallBack
+     */
+    public void getStuInfoByIds(String stuIds, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("stuIds",stuIds);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_STUINFO, params, requestCallBack);
     }
 
     /**

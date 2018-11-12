@@ -49,11 +49,8 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordPsItem;
-import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
@@ -872,7 +869,6 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         lvCommonWord.setAdapter(new CommonAdapter<String>(words) {
             @Override
             public AdapterItemInterface<String> getItemView(Object type) {
-//                return new CommonWordItem(mContext, this);
                 return new CommonWordPsItem(mContext, this);
             }
         });

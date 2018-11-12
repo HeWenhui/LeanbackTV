@@ -2,9 +2,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
 
+import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
@@ -15,16 +19,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.FollowTypeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
@@ -32,24 +26,32 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.TestInfoE
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.TopicEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MyRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
-import com.xueersi.common.http.ResponseEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class LiveHttpResponseParser extends HttpResponseParser {
@@ -84,6 +86,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
         LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
         LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
+        getInfo.setStuPutUpHandsNum(data.optInt("stuPutUpHandsNum"));
+        getInfo.setAllowLinkMicNew(data.optInt("allowLinkMicNew"));
+        if (getInfo.getAllowLinkMicNew() == 1) {
+            getInfo.setAllowLinkMic(false);
+        }
     }
 
     /**
@@ -139,6 +146,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             //getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             getInfo.setIsSeniorOfHighSchool(data.optInt("isSeniorOfHighSchool"));
+            getInfo.setIsVoiceInteraction(data.optInt("isVoiceInteraction"));
 
             //getInfo.setIsShowCounselorWhisper("1");
             if (data.has("followType")) {
@@ -147,6 +155,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 followTypeEntity.setInt2(followType.getInt("2"));
                 followTypeEntity.setInt3(followType.getInt("3"));
                 followTypeEntity.setInt4(followType.getInt("4"));
+            }
+
+            if (data.has("highFollowType")) {
+                JSONArray jsonArray = data.optJSONArray("highFollowType");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    getInfo.getPraiseGift().add(jsonArray.optInt(i));
+                }
             }
 
             getInfo.setTeacherId(data.getString("teacherId"));
@@ -342,37 +357,39 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public PlayServerEntity parsePlayerServer(JSONObject object) {
         PlayServerEntity server = new PlayServerEntity();
         try {
-            server.setAppname(object.getString("appname"));
-            server.setCcode(object.optString("ccode"));
             server.setCode(object.optInt("code"));
-            server.setIcode(object.optString("icode"));
-            server.setPcode(object.optString("pcode"));
-            server.setRtmpkey(object.optString("rtmpkey"));
-            server.setCipdispatch(object.optString("clientip"));
-            JSONArray playserverArray = object.getJSONArray("playserver");
-            List<PlayserverEntity> playserver = new ArrayList<PlayserverEntity>();
-            for (int i = 0; i < playserverArray.length(); i++) {
-                PlayserverEntity entity = new PlayserverEntity();
-                entity.setServer(server);
-                object = playserverArray.getJSONObject(i);
-                entity.setAcode(object.getString("acode"));
-                entity.setAddress(object.getString("address"));
-                entity.setCcode(object.optString("ccode"));
-                entity.setGroup(object.optString("group"));
-                entity.setIcode(object.optString("icode"));
-                entity.setPcode(object.optString("pcode"));
-                entity.setPriority(object.optInt("priority"));
-                entity.setProvide(object.optString("provide"));
-                entity.setRtmpkey(object.optString("rtmpkey"));
-                entity.setHttpport(object.optString("httpport"));
-                entity.setFlvpostfix(object.optString("flvpostfix"));
-                entity.setIp_gslb_addr(object.optString("ip_gslb_addr"));
+            if (server.getCode() == 200) {
+                server.setAppname(object.getString("appname"));
+                server.setCcode(object.optString("ccode"));
+                server.setIcode(object.optString("icode"));
+                server.setPcode(object.optString("pcode"));
+                server.setRtmpkey(object.optString("rtmpkey"));
+                server.setCipdispatch(object.optString("clientip"));
+                JSONArray playserverArray = object.getJSONArray("playserver");
+                List<PlayserverEntity> playserver = new ArrayList<PlayserverEntity>();
+                for (int i = 0; i < playserverArray.length(); i++) {
+                    PlayserverEntity entity = new PlayserverEntity();
+                    entity.setServer(server);
+                    object = playserverArray.getJSONObject(i);
+                    entity.setAcode(object.getString("acode"));
+                    entity.setAddress(object.getString("address"));
+                    entity.setCcode(object.optString("ccode"));
+                    entity.setGroup(object.optString("group"));
+                    entity.setIcode(object.optString("icode"));
+                    entity.setPcode(object.optString("pcode"));
+                    entity.setPriority(object.optInt("priority"));
+                    entity.setProvide(object.optString("provide"));
+                    entity.setRtmpkey(object.optString("rtmpkey"));
+                    entity.setHttpport(object.optString("httpport"));
+                    entity.setFlvpostfix(object.optString("flvpostfix"));
+                    entity.setIp_gslb_addr(object.optString("ip_gslb_addr"));
 //                if (AppConfig.DEBUG && StringUtils.isEmpty(entity.getIp_gslb_addr())) {
 //                    continue;
 //                }
-                playserver.add(entity);
+                    playserver.add(entity);
+                }
+                server.setPlayserver(playserver);
             }
-            server.setPlayserver(playserver);
             return server;
         } catch (JSONException e) {
             MobAgent.httpResponseParserError(TAG, "parsePlayerServer", e.getMessage());
@@ -400,7 +417,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             coachStatusEntity.setOpenlike(status.optBoolean("openlike"));
 
             if (status.has("openbarrage")) {
-                logger.i("room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = " + status.getBoolean("openbarrage") + " " + status.toString());
+                logger.i("room2中有openbarrage字段 理科 status.getBoolean(\"openbarrage\") = " + status.getBoolean
+                        ("openbarrage") + " " + status.toString());
                 //新增字段，辅导老师开启礼物与否 true开启
                 coachStatusEntity.setFDLKOpenbarrage(status.getBoolean("openbarrage"));
 
@@ -471,7 +489,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             mainStatusEntity.setId(status.getInt("id"));
             mainStatusEntity.setClassbegin(status.getBoolean("classbegin"));
             mainStatusEntity.setOpenbarrage(status.getBoolean("openbarrage"));
-            liveTopic.getCoachRoomstatus().setZJLKOpenbarrage(status.getBoolean("openbarrage"));//一定不要忘记在topic返回的时候，room1里openbarrage字段的值设置到理科主讲实体中
+            liveTopic.getCoachRoomstatus().setZJLKOpenbarrage(status.getBoolean("openbarrage"));
+            //一定不要忘记在topic返回的时候，room1里openbarrage字段的值设置到理科主讲实体中
             mainStatusEntity.setOpenchat(status.getBoolean("openchat"));
             mainStatusEntity.setOpenFeedback(status.optBoolean("isOpenFeedback"));
             mainStatusEntity.setOpenlike(status.optBoolean("openlike"));
@@ -492,6 +511,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             } else {
                 mainStatusEntity.setHaveExam(false);
             }
+            if (status.has("groupSpeech")) {
+                JSONObject jsonObject = status.optJSONObject("groupSpeech");
+                mainStatusEntity.setGroupSpeechRoom(jsonObject.optString("groupSpeechRoom"));
+                mainStatusEntity.setOnGroupSpeech(jsonObject.optString("onGroupSpeech"));
+            }
+
             if (status.has("vioceChat")) {
                 JSONObject jsonObject = status.getJSONObject("vioceChat");
                 mainStatusEntity.setAgoraVoiceChatRoom(jsonObject.optString("agoraVioceChatRoom"));
@@ -822,14 +847,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         entity.setGoldNum(Integer.parseInt(total.optString("gold")));
         entity.setRightNum(Integer.parseInt(total.optString("isRight")));
         JSONArray split = jsonObject.optJSONArray("split");
-        for(int i = 0 ; i < split.length() ; i++){
+        for (int i = 0; i < split.length(); i++) {
             JSONObject obj = split.optJSONObject(i);
             entity.setTestId(obj.optString("testId"));
             entity.setResultType(Integer.parseInt(obj.optString("isRight")));
             if (isVoice) {
                 JSONArray standeranswer = obj.optJSONArray("rightAnswer");
                 JSONArray youranswer = obj.optJSONArray("choice");
-                entity.setStandardAnswer( standeranswer.optString(0));
+                entity.setStandardAnswer(standeranswer.optString(0));
                 entity.setYourAnswer(youranswer.optString(0));
             }
         }
@@ -1711,10 +1736,39 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     }
 
 
-    public ArtsExtLiveInfo parseArtsExtLiveInfo(ResponseEntity responseEntity){
+    public ArtsExtLiveInfo parseArtsExtLiveInfo(ResponseEntity responseEntity) {
         ArtsExtLiveInfo info = new ArtsExtLiveInfo();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
         return info;
+    }
+
+    public HashMap<String, ClassmateEntity> parseStuInfoByIds(String stuIds, ResponseEntity responseEntity) {
+        HashMap<String, ClassmateEntity> classmateEntities = new HashMap<>();
+        String[] ids = stuIds.split(",");
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        for (int i = 0; i < ids.length; i++) {
+            String id = ids[i];
+            ClassmateEntity classmateEntity = new ClassmateEntity();
+            try {
+                JSONObject stuJSONObject = jsonObject.getJSONObject(id);
+                String realname = stuJSONObject.optString("realname");
+                if (!StringUtils.isEmpty(realname)) {
+                    classmateEntity.setName(realname);
+                } else {
+                    String nickname = stuJSONObject.optString("nickname");
+                    if (!StringUtils.isEmpty(nickname)) {
+                        classmateEntity.setName(nickname);
+                    } else {
+                        classmateEntity.setName(stuJSONObject.optString("name"));
+                    }
+                }
+                classmateEntity.setImg(stuJSONObject.optString("avatar_path"));
+                classmateEntities.put(id, classmateEntity);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return classmateEntities;
     }
 }

@@ -10,11 +10,11 @@ import android.widget.RelativeLayout;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseInteractionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechCollectivePager;
 
 @Route(path = "/livevideo/praise")
 public class PraiseTestActivity extends Activity {
-    PraiseInteractionPager praiseInteractionPager;
+    SpeechCollectivePager praiseInteractionPager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -25,15 +25,11 @@ public class PraiseTestActivity extends Activity {
 
         setContentView(R.layout.activity_livevideo_praise_test);
         RelativeLayout conntLayout = findViewById(R.id.iv_livevideo_praise_test_content);
-        praiseInteractionPager = new PraiseInteractionPager(this,0, null,null);
+        praiseInteractionPager = new SpeechCollectivePager(this);
         View rootView = praiseInteractionPager.getRootView();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
-        int rightMargin = 600;
-        params.rightMargin = rightMargin;
         conntLayout.addView(praiseInteractionPager.getRootView(), params);
-
-        praiseInteractionPager.startEnterStarAnimation();
     }
 
 }

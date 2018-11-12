@@ -290,7 +290,9 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42_ANSWER, params, requestCallBack);
     }
 
-    /** 获得广告信息 */
+    /**
+     * 获得广告信息
+     */
     public void getAdOnLL(String enstuId, String liveId, String courseId, final HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);

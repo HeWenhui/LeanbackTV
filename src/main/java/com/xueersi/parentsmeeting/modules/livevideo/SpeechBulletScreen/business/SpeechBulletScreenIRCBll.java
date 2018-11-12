@@ -93,7 +93,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                         mSpeechBulletScreenAction.onCloseSpeechBulletScreen(true);
                     }
                 } else if ("".equals(voiceId)) {
-                // 教师端退出情况：如果收到的260消息中的voiceId字段为空，学生退出弹幕但不要弹出提示窗口。
+                    // 教师端退出情况：如果收到的260消息中的voiceId字段为空，学生退出弹幕但不要弹出提示窗口。
                     if (mSpeechBulletScreenAction != null) {
                         mSpeechBulletScreenAction.onCloseSpeechBulletScreen(false);
                     }

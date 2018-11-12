@@ -186,7 +186,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
                     mWeakHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            addDanmaKuFlowers(time + "",time + "","http://xesfile.xesimg.com/user/h/ic_livevideo_default_head_boyideo_default_head_boy.png" ,true);
+                            addDanmaKuFlowers(time + "",time + "","http://xesfile.xesimg.com/user/h/def10002.png" ,true);
                         }
                     });
                     try {

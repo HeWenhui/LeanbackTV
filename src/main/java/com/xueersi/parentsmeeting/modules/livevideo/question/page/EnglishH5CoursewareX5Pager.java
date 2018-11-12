@@ -25,7 +25,6 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -306,7 +305,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         webSetting.setJavaScriptEnabled(true);
         wvSubjectWeb.addJavascriptInterface(this,"wx_xesapp");
 
-        if (LiveVideoConfig.isNewEnglishH5 || LiveVideoConfig.isMulLiveBack) {
+        if (englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack) {
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
                 public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
@@ -345,7 +344,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     return super.shouldInterceptRequest(view, s);
                 }
             });
-            if (LiveVideoConfig.isMulLiveBack) {
+            if (isPlayBack) {
                 String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                 // 一题多发的课件预加载(直播回放)
                 String packageId = "";

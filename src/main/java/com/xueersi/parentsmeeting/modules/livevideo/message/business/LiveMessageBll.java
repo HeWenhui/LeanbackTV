@@ -28,7 +28,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLi
 import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
-
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 
@@ -141,7 +140,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         LiveMessageStandPager liveMessagePager = new LiveMessageStandPager(activity, this,
                 baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
-        logger.d( "initViewLiveStand:time1=" + (System.currentTimeMillis() - before));
+        logger.d("initViewLiveStand:time1=" + (System.currentTimeMillis() - before));
 
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
@@ -204,11 +203,17 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
         long before = System.currentTimeMillis();
         if (!isSmallEnglish) {
-            if(LiveVideoConfig.isPrimary){
-                LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+            if (LiveVideoConfig.isPrimary) {
+                LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
+                        baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
-            } else {
-                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+            }
+//            else if(){//如果是语文
+
+//            }
+            else {
+                LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
+                        baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
             }
         } else {
@@ -218,7 +223,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
 
 
-        logger.d( "initViewLive:time1=" + (System.currentTimeMillis() - before));
+        logger.d("initViewLive:time1=" + (System.currentTimeMillis() - before));
 
         mLiveMessagePager.setGetInfo(getInfo);
         mLiveMessagePager.urlclick = urlclick;
@@ -291,7 +296,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                             null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                     mLiveMessagePager = liveMessagePager;
                 }
-                logger.d( "initView:time1=" + (System.currentTimeMillis() - before));
+                logger.d("initView:time1=" + (System.currentTimeMillis() - before));
             }
         } else {
             mLiveMessagePager = new LiveMessagePortPager(activity, this, liveMessagePortEntities,
@@ -534,6 +539,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
     /**
      * 理科辅导老师开启关闭鲜花
+     *
      * @param openFDbarrage
      * @param fromNotice
      */
@@ -553,9 +559,11 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     }
 
     @Override
-    public void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage, boolean isFDLKOpenbarrage) {
+    public void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage,
+                                    boolean isFDLKOpenbarrage) {
         if (mLiveMessagePager != null) {
-            mLiveMessagePager.onTeacherModeChange(oldMode, mode, isShowNoticeTips, iszjlkOpenbarrage, isFDLKOpenbarrage);
+            mLiveMessagePager.onTeacherModeChange(oldMode, mode, isShowNoticeTips, iszjlkOpenbarrage,
+                    isFDLKOpenbarrage);
         }
     }
 
@@ -563,12 +571,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public void onOpenVoiceNotic(boolean openVoice, String type) {
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onOpenVoiceNotic(openVoice,type);
-        }
-    }
-
-    public void setVideoLayout(int width, int height) {
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.setVideoWidthAndHeight(width, height);
         }
     }
 

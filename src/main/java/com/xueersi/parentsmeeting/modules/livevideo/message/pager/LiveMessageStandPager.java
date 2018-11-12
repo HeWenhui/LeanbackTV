@@ -969,34 +969,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         return false;
     }
 
-    @Override
-    public void setVideoWidthAndHeight(int width, int height) {
-        final View contentView = liveVideoActivity.findViewById(android.R.id.content);
-        final View actionBarOverlayLayout = (View) contentView.getParent();
-        Rect r = new Rect();
-        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        int screenWidth = (r.right - r.left);
-        int screenHeight = ScreenUtils.getScreenHeight();
-        if (width > 0) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
-            int videoGap = (screenWidth - width) / 2;
-            if (videoGap != params.leftMargin) {
-                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
-                // + ",wradio=" + wradio + "," + params.width);
-                params.leftMargin = videoGap;
-//                rlInfo.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-            }
-            params = (RelativeLayout.LayoutParams) btMesOpen.getLayoutParams();
-            if (params.rightMargin != videoGap) {
-                params.rightMargin = videoGap;
-//                cbMessageClock.setLayoutParams(params);
-                LayoutParamsUtil.setViewLayoutParams(btMesOpen, params);
-            }
-        }
-    }
-
     /** 聊天开始连接 */
     public void onStartConnect() {
         mainHandler.post(new Runnable() {

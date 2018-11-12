@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -193,7 +194,10 @@ public class LiveGetInfo {
      */
     private int urlClick;
     private boolean allowLinkMic;
+    /** 2018新接麦 */
+    private int allowLinkMicNew;
     private int stuLinkMicNum;
+    private int stuPutUpHandsNum;
     private ArrayList<String> teamStuIds = new ArrayList<>();
     private int isArts;
     private int isEnglish;
@@ -238,14 +242,14 @@ public class LiveGetInfo {
      * 1 :是pk 直播间  0 :非pk直播间
      */
     private String isAllowTeamPk;
-    /**是否是AI 伴侣直播间*/
+    /** 是否是AI 伴侣直播间 */
     private int isAIPartner;
     private String[] subjectIds;//所有学科id
     /** 小学理科改版，教育阶段，区分献花 */
     private String educationStage;
     /** 直播课年级 */
     private int grade;
-    /** 一发多题的动态接口*/
+    /** 一发多题的动态接口 */
     private String mulpreload;
     private String mulh5url;
 
@@ -253,14 +257,38 @@ public class LiveGetInfo {
      * 是否是高三理科
      */
     private int isSeniorOfHighSchool;
-    /**是否显示文科表扬榜信息*/
+    /** 是否显示文科表扬榜信息 */
     private int showArtsPraise;
+
+    /**
+     * 是否开启集语音互动功能 1,开启，0 不开启
+     */
+    private int isVoiceInteraction;
+
+    /**
+     * 点赞送礼物，礼物特效对应的扣除金币个数
+     */
+    private ArrayList<Integer> praiseGift = new ArrayList();
+
+    public ArrayList<Integer> getPraiseGift() {
+        return praiseGift;
+    }
+    public int getIsVoiceInteraction() {
+        return isVoiceInteraction;
+    }
+
+    public void setIsVoiceInteraction(int isVoiceInteraction) {
+        this.isVoiceInteraction = isVoiceInteraction;
+    }
+
     public int getShowArtsPraise() {
         return showArtsPraise;
     }
+
     public void setShowArtsPraise(int showArtsPraise) {
         this.showArtsPraise = showArtsPraise;
     }
+
     public void setSmallEnglish(boolean smallEnglish) {
         this.smallEnglish = smallEnglish;
     }
@@ -720,12 +748,28 @@ public class LiveGetInfo {
         this.allowLinkMic = allowLinkMic;
     }
 
+    public int getAllowLinkMicNew() {
+        return allowLinkMicNew;
+    }
+
+    public void setAllowLinkMicNew(int allowLinkMicNew) {
+        this.allowLinkMicNew = allowLinkMicNew;
+    }
+
     public int getStuLinkMicNum() {
         return stuLinkMicNum;
     }
 
     public void setStuLinkMicNum(int stuLinkMicNum) {
         this.stuLinkMicNum = stuLinkMicNum;
+    }
+
+    public int getStuPutUpHandsNum() {
+        return stuPutUpHandsNum;
+    }
+
+    public void setStuPutUpHandsNum(int stuPutUpHandsNum) {
+        this.stuPutUpHandsNum = stuPutUpHandsNum;
     }
 
     public int getIsArts() {
@@ -1142,7 +1186,7 @@ public class LiveGetInfo {
         this.mulh5url = mulh5url;
     }
 
-    /**直播间额外参数信息*/
+    /** 直播间额外参数信息 */
     private ArtsExtLiveInfo artsExtLiveInfo;
 
     public void setArtsExtLiveInfo(ArtsExtLiveInfo artsExtLiveInfo) {

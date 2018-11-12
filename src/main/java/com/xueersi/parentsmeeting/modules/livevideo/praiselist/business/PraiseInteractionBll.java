@@ -137,7 +137,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
             mHandler.removeCallbacks(delayRemoveRunalbe);
             isOpen = true;
-            praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll);
+            praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll,mGetInfo);
             rlPraiseContentView.removeAllViews();
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);

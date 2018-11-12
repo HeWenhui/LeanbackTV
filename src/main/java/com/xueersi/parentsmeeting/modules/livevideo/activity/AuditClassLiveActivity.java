@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -40,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic.RoomStatusEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -176,6 +178,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     AtomicBoolean fluentMode = new AtomicBoolean(false);
     static int times = -1;
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
+    protected LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
 
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         times++;
@@ -405,6 +408,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
                 (int) VIDEO_HEIGHT, VIDEO_RATIO);
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+        LiveVideoPoint.initLiveVideoPoint(this, liveVideoPoint, lp);
         setFirstParam(lp);
         final View contentView = findViewById(android.R.id.content);
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -421,6 +425,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
                         (int) VIDEO_HEIGHT, VIDEO_RATIO);
                 ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+                boolean change = LiveVideoPoint.initLiveVideoPoint(AuditClassLiveActivity.this, liveVideoPoint, lp);
                 setFirstParam(lp);
             }
         });
@@ -861,6 +866,41 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     }
 
     @Override
+    public void onLiveTimeOut() {
+//        final Button bt = findViewById(R.id.bt_course_video_livetimeout);
+//        if (bt != null) {
+//            bt.setVisibility(View.VISIBLE);
+//            bt.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//                @Override
+//                public boolean onPreDraw() {
+//                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) bt.getLayoutParams();
+////                    lp.leftMargin = LiveVideoPoint.getInstance().x3 / 2 - bt.getWidth() / 2;
+////                    if (tvLoadingHint != null) {
+////                        int[] outLocation = new int[2];
+////                        tvLoadingHint.getLocationInWindow(outLocation);
+////                        lp.topMargin = outLocation[1] + tvLoadingHint.getHeight() + 20;
+////                    } else {
+////                        lp.topMargin = LiveVideoPoint.getInstance().screenHeight * 2 / 3 - 40;
+////                    }
+//                    lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+//                    bt.setLayoutParams(lp);
+//                    bt.getViewTreeObserver().removeOnPreDrawListener(this);
+//                    return false;
+//                }
+//            });
+//            bt.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mLiveBll.liveGetPlayServer(false);
+//                    v.setVisibility(View.GONE);
+//                }
+//            });
+//        } else {
+//            XESToastUtils.showToast(this, "请退出直播间重试");
+//        }
+    }
+
+    @Override
     public void onStudentLeave(final boolean leave, final String stuPushStatus) {
         this.leave = leave;
         if (leave && !xv_livevideo_student.isPlaying()) {
@@ -1254,7 +1294,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 }
             }
         }
-        logger.d( "addBody:method=" + method + ",url=" + url);
+        logger.d("addBody:method=" + method + ",url=" + url);
         return msg;
     }
 
@@ -1408,7 +1448,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(AppEvent event) {
-        logger.i( "onEvent:netWorkType=" + event.netWorkType);
+        logger.i("onEvent:netWorkType=" + event.netWorkType);
         mLiveBll.onNetWorkChange(event.netWorkType);
     }
 
