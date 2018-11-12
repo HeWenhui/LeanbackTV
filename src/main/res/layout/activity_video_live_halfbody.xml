@@ -29,6 +29,7 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true">
 
+
             <RelativeLayout
                 android:id="@id/rl_course_video_first_backgroud"
                 android:layout_width="match_parent"
