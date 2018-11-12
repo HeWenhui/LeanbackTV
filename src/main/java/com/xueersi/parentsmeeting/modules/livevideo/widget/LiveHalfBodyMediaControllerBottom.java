@@ -33,21 +33,16 @@ public class LiveHalfBodyMediaControllerBottom extends LiveStandMediaControllerB
 
     @Override
     public View inflateLayout() {
-        Log.e(TAG,"=====>inflateLayout called 000000:"+mode);
 
         View view;
         if (LiveTopic.MODE_CLASS.equals(mode)) {
-            Log.e(TAG,"=====>inflateLayout called 11111:"+ mainLiveView);
             if (mainLiveView == null) {
                 mainLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livehalfbody_mediacontroller_bottom,
                         this, false);
             }
             view = mainLiveView;
             addView(view);
-            Log.e(TAG,"=====>inflateLayout called 2222222:");
         } else {
-            Log.e(TAG,"=====>inflateLayout called 33333333:"+tranLiveView);
-
             if(tranLiveView == null){
                 if (LiveVideoConfig.isPrimary) {
                     tranLiveView  = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom, this,false);
@@ -56,11 +51,8 @@ public class LiveHalfBodyMediaControllerBottom extends LiveStandMediaControllerB
                 }
             }
             view = tranLiveView;
-
             addView(view);
-            Log.e(TAG,"=====>inflateLayout called 444444:");
         }
-        Log.e(TAG,"=====>inflateLayout called 55555:"+view);
         return  view;
     }
 

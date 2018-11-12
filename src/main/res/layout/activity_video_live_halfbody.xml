@@ -33,8 +33,14 @@
                 android:id="@id/rl_course_video_first_backgroud"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#000000"> <!--此处设置背景图片-->
-                <!-- 退出按钮 （横屏的时候变成竖屏，竖屏的时候退出当前Activity） -->
+                > <!--此处设置背景图片-->
+                <!--背景图片-->
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/live_halfbody_bg"
+                    android:scaleType="centerCrop"
+                    />
                 <ImageView
                     android:id="@id/iv_course_video_back"
                     android:layout_width="wrap_content"

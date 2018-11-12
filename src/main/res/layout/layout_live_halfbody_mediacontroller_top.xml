@@ -7,11 +7,10 @@
     <RelativeLayout
         android:id="@id/rl_video_mediacontroller_info_panel"
         android:layout_width="match_parent"
+        style="@style/InfoPanel_Container"
         android:layout_height="35dp"
         android:layout_alignParentTop="true">
-
         <!-- 退出按钮 （横屏的时候变成竖屏，竖屏的时候退出当前Activity） -->
-
         <ImageView
             android:id="@id/iv_video_mediacontroller_back"
             android:layout_width="wrap_content"
@@ -20,7 +19,6 @@
             android:layout_centerVertical="true"
             android:contentDescription="@string/content_desc_lock"
             android:paddingLeft="20dp"
-            android:background="@color/COLOR_1A89CC"
             android:src="@drawable/cy_bars_bockwite_icon_normal" />
 
         <!-- 播放的视频名称 -->

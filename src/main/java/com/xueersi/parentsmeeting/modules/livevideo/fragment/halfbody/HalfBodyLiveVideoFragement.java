@@ -129,8 +129,5 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         createMediaControllerBottom();
         mediaContainer.addView(liveMediaControllerBottom,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,  ViewGroup.LayoutParams.MATCH_PARENT));
-
-
-
     }
 }
