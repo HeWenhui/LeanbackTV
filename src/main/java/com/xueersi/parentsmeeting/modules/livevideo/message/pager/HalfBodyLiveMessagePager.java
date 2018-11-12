@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -59,6 +60,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMsgLayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.MsgItemAnimator;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
@@ -133,7 +135,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     /**
      * 聊天消息数据源    因为涉及到清空 数据源问题 所以单独有集合管理数据
-     * */
+     */
     private ArrayList<LiveMessageEntity> mLiveMsgList = new ArrayList<>();
 
     /**
@@ -161,10 +163,16 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     private int mPopWinOffX;
     private int mPopWinOffY;
 
-    /**聊天消息*/
+    /**
+     * 聊天消息
+     */
     private HalfBodyLiveMsgRecycelView liveMsgReclView;
     private LiveMsgAdapter mMsgAdapter;
-    private LinearLayoutManager mLiveMsgLayoutManager;
+    private LiveMsgLayoutManager mLiveMsgLayoutManager;
+    /**
+     * 辅导模式下最后一条消息
+     */
+    private LiveMessageEntity mLastMsg;
 
     public HalfBodyLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                     LiveAndBackDebug ums, BaseLiveMediaControllerBottom
@@ -180,7 +188,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
 
-        if(liveMessageEntities != null && liveMessageEntities.size() > 0){
+        if (liveMessageEntities != null && liveMessageEntities.size() > 0) {
             mLiveMsgList.addAll(liveMessageEntities);
         }
 
@@ -234,7 +242,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
         liveMsgReclView = mView.findViewById(R.id.rcl_live_halfbody_msg);
         // 从底部添加
-        mLiveMsgLayoutManager = new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,true);
+        mLiveMsgLayoutManager = new LiveMsgLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
+        mLiveMsgLayoutManager.setVScrollAble(false);
         liveMsgReclView.setLayoutManager(mLiveMsgLayoutManager);
         return mView;
     }
@@ -441,9 +450,11 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         initMsgRcyclView();
     }
 
-    private static class MsgItemHolder extends RecyclerView.ViewHolder{
-        private  TextView tvMsg;
-        /**展示带图片的消息*/
+    private  class MsgItemHolder extends RecyclerView.ViewHolder{
+        private TextView tvMsg;
+        /**
+         * 展示带图片的消息
+         */
         private TextView tvSysMsg;
 
         public MsgItemHolder(View itemView) {
@@ -452,64 +463,72 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             tvSysMsg = itemView.findViewById(R.id.tv_live_halfbody_sys_msg);
         }
 
-        public void bindData(LiveMessageEntity data){
+        public void bindData(LiveMessageEntity data) {
             Drawable drawable = null;
-            if(data.getType() == LiveMessageEntity.MESSAGE_MINE){
+            if (data.getType() == LiveMessageEntity.MESSAGE_MINE) {
                 tvMsg.setTextColor(Color.parseColor("#FFDB5C"));
                 tvSysMsg.setTextColor(Color.parseColor("#FFDB5C"));
-            }else{
+            } else {
                 tvMsg.setTextColor(Color.parseColor("#ffffff"));
                 tvSysMsg.setTextColor(Color.parseColor("#ffffff"));
             }
-            if(LiveMessageEntity.MESSAGE_TIP ==  data.getType()){
+            if (LiveMessageEntity.MESSAGE_TIP == data.getType()) {
                 drawable = tvMsg.getResources().getDrawable(R.drawable.icon_live_sys_msg);
-            }else if(LiveMessageEntity.MESSAGE_TEACHER == data.getType()){
+            } else if (LiveMessageEntity.MESSAGE_TEACHER == data.getType()) {
                 drawable = tvMsg.getResources().getDrawable(R.drawable.icon_live_teacher_msg);
             }
-            if(drawable != null){
+            if (drawable != null) {
                 tvMsg.setVisibility(View.INVISIBLE);
                 SpannableStringBuilder ssb = new SpannableStringBuilder("  ");
-                drawable.setBounds(0, 0, SizeUtils.Dp2Px(tvMsg.getContext(),40), SizeUtils.Dp2Px(tvMsg.getContext(),18));
+                drawable.setBounds(0, 0, SizeUtils.Dp2Px(tvMsg.getContext(), 40), SizeUtils.Dp2Px(tvMsg.getContext(),
+                        18));
                 CenterAlignImageSpan imageSpan = new CenterAlignImageSpan(drawable);
                 ssb.setSpan(imageSpan, 0, 1, ImageSpan.ALIGN_BASELINE);
-                tvSysMsg.setText(ssb);
-                tvSysMsg.append(data.getText());
                 tvSysMsg.setVisibility(View.VISIBLE);
-            }else{
+                if(urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == data.getType() ){
+                    tvSysMsg.setAutoLinkMask(Linkify.WEB_URLS);
+                    tvSysMsg.setText(data.getText());
+                    urlClick(tvSysMsg);
+                    tvSysMsg.setText(ssb);
+                    tvSysMsg.append(data.getText());
+                }else{
+                    tvSysMsg.setAutoLinkMask(0);
+                    tvSysMsg.setText(ssb);
+                    tvSysMsg.append(data.getText());
+                }
+            } else {
                 tvSysMsg.setVisibility(View.INVISIBLE);
                 tvMsg.setVisibility(View.VISIBLE);
-                tvMsg.setText(data.getSender()+"：");
+                tvMsg.setText(data.getSender() + "：");
                 tvMsg.append(data.getText());
             }
         }
     }
 
 
-    private static class  LiveMsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-        private  List<LiveMessageEntity> mData;
+    private  class LiveMsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        private List<LiveMessageEntity> mData;
 
-        public LiveMsgAdapter(List<LiveMessageEntity> data){
+        public LiveMsgAdapter(List<LiveMessageEntity> data) {
             mData = data;
         }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new MsgItemHolder(View.inflate(parent.getContext(),R.layout.item_livevideo_halfbody_msg,null));
+            return new MsgItemHolder(View.inflate(parent.getContext(), R.layout.item_livevideo_halfbody_msg, null));
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            Log.e("HalfBodyLiveMsgPager","====>onBindViewHolder:"+position);
-            int dataIndex = (mData.size() -1)-position;
-            ((MsgItemHolder)holder).bindData(mData.get(dataIndex));
+            int dataIndex = (mData.size() - 1) - position;
+            ((MsgItemHolder) holder).bindData(mData.get(dataIndex));
         }
 
         @Override
         public int getItemCount() {
-            return mData == null?0:mData.size();
+            return mData == null ? 0 : mData.size();
         }
     }
-
 
 
     /**
@@ -521,6 +540,12 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
         Log.e(TAG, "initMsgRcyclView:minisize=" + minisize);
+        mLastMsg = null;
+
+        if(mLiveMsgList != null && mLiveMsgList.size() > 0){
+            mLastMsg = mLiveMsgList.remove((mLiveMsgList.size()-1));
+        }
+
         mMsgAdapter = new LiveMsgAdapter(mLiveMsgList);
         liveMsgReclView.setAdapter(mMsgAdapter);
         liveMsgReclView.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -546,13 +571,25 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                 mMsgAdapter.notifyDataSetChanged();
             }
         });
-        /*// FIXME: 2018/11/10  解决从同步辅导态消息后  item显示异常
-        liveMsgReclView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                addMessage("",LiveMessageEntity.MESSAGE_TIP,"聊天服务器连接成功","");
-            }
-        },300);*/
+        initReclItemState();
+    }
+
+    /**
+     * 初始化 item 初始状态
+     */
+    private void initReclItemState() {
+        //FIXME: 2018/11/10  解决从同步辅导态消息后  item显示异常
+        if(mLastMsg != null){
+            liveMsgReclView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mLiveMsgList.add(mLastMsg);
+                    mMsgAdapter.notifyItemInserted(0);
+                    //滚动到底部
+                    liveMsgReclView.scrollToPosition(0);
+                }
+            },100);
+        }
     }
 
     @Override
@@ -755,7 +792,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onTitleShow(boolean show) {
-
         Log.e(TAG, "======>onTitleShow:" + show);
         btMessageExpress.setBackgroundResource(R.drawable.selector_live_stand_chat_expression);
         if (!keyboardShowing && switchFSPanelLinearLayout.getVisibility() != View.GONE) {
@@ -1126,7 +1162,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         pool.execute(new Runnable() {
             @Override
             public void run() {
-                final SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(text,mContext, messageSize);
+                final SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(text, mContext,
+                        messageSize);
                 mView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -1142,11 +1179,11 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                             otherLiveMessageEntities.add(entity);
                         }
 
-                        if(mLiveMsgList.size()>29){
+                        if (mLiveMsgList.size() > 29) {
                             mLiveMsgList.remove(0);
                         }
                         mLiveMsgList.add(entity);
-                        Log.e("HalfBodyLiveMsgPager","=====>adddMsg:"+mLiveMsgList.size());
+                        Log.e("HalfBodyLiveMsgPager", "=====>adddMsg:" + mLiveMsgList.size());
                         if (mMsgAdapter != null) {
                             mMsgAdapter.notifyItemInserted(0);
                         } else {
@@ -1171,7 +1208,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void setOtherMessageAdapter(CommonAdapter<LiveMessageEntity> otherMessageAdapter) {
-       // this.otherMessageAdapter = otherMessageAdapter;
+        // this.otherMessageAdapter = otherMessageAdapter;
     }
 
     @Override
@@ -1192,7 +1229,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             mCommonWordWindow.dismiss();
         }
 
-        if(mLiveMsgList != null){
+        if (mLiveMsgList != null) {
             mLiveMsgList.clear();
         }
 

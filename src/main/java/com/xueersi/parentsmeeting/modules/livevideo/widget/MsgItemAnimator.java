@@ -9,13 +9,11 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.LogRecord;
 
 /**
  * 半身直播 聊天消息通
@@ -33,7 +31,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
 
     private static final float DEF_MIN_ALPHA = 0.25f;
     /**
-     * 没个item 消失动画持续时间
+     * 每个item 消失动画持续时间
      */
     private static final long ITEM_FADE_OUT_DURATION = 600L;
     /**
@@ -45,9 +43,12 @@ public class MsgItemAnimator extends BaseItemAnimator {
      */
     private static final long ITEM_VISIBLE_DURATION = 2000L;
     private Handler mHandler;
-    private static final float MARQUEE_ANIM_DISPATCH_FRACTION = 0.3f;
+    private static final float MARQUEE_ANIM_DISPATCH_FRACTION = 0.5f;
     private ItemFadeOutListener itemFadeOutListener;
 
+
+    public MsgItemAnimator(){
+    }
 
     @Override
     public void setRemoveAnimation(RecyclerView.ViewHolder holder, ViewPropertyAnimatorCompat animator) {
@@ -173,21 +174,82 @@ public class MsgItemAnimator extends BaseItemAnimator {
     private void cancleFadeOut() {
         itemIndex = 0;
         fadeOutCancle = true;
+        if(animatorList.size() > 0){
+            for (int i = 0; i < animatorList.size(); i++) {
+                   if(animatorList.get(i).isRunning()){
+                       animatorList.get(i).cancelAnim();
+                   }
+            }
+        }
     }
+
+
+    private List<FadeOutAnimator> animatorList = new ArrayList<>();
 
     private void itemFadeOut(RecyclerView.ViewHolder holder) {
-        ObjectAnimator fadeOutAnim = ObjectAnimator.ofFloat(holder.itemView, "alpha",
-                holder.itemView.getAlpha(), 0);
-        fadeOutAnim.setDuration(ITEM_FADE_OUT_DURATION).addUpdateListener(new ItemAnimUpdateListener(itemIndex));
-        fadeOutAnim.start();
+        FadeOutAnimator animator = null;
+        //从复用池中寻找
+        if(animatorList != null && animatorList.size() > 0){
+            for (int i = 0; i < animatorList.size(); i++) {
+                 if(!animatorList.get(i).isRunning()){
+                     animator = animatorList.get(i);
+                 }
+            }
+        }
+        if(animator == null){
+            animator = new FadeOutAnimator();
+            //添加到复用池中
+            animatorList.add(animator);
+        }
+        animator.bind2View(holder.itemView,itemIndex);
+        animator.startAnim();
+
     }
 
-    class ItemAnimUpdateListener implements ValueAnimator.AnimatorUpdateListener {
-        private boolean animDispatched = false;
+
+     class FadeOutAnimator implements ValueAnimator.AnimatorUpdateListener {
+        ObjectAnimator fadeOutAnim;
         private int mItemIndex;
-        public ItemAnimUpdateListener(int index){
-            mItemIndex = index;
+        private View mTargetView;
+        private float mStartAlpha;
+        private boolean animDispatched = false;
+
+        public FadeOutAnimator(){}
+
+        public void bind2View(View targetView,int itemIndex){
+            if(fadeOutAnim != null){
+                fadeOutAnim.cancel();
+                fadeOutAnim.removeAllUpdateListeners();
+                fadeOutAnim.removeAllListeners();
+            }
+            animDispatched = false;
+            mItemIndex = itemIndex;
+            mTargetView = targetView;
+            mStartAlpha = targetView.getAlpha();
+            fadeOutAnim = ObjectAnimator.ofFloat(targetView, "alpha",mStartAlpha, 0);
+            fadeOutAnim.setDuration(ITEM_FADE_OUT_DURATION).addUpdateListener(this);
         }
+
+
+        public boolean isRunning(){
+            return fadeOutAnim.isRunning();
+        }
+
+        public void startAnim(){
+            fadeOutAnim.start();
+        }
+
+        /**
+         * 取消当前动画，并把View 恢复成初始状态
+         */
+        public void cancelAnim(){
+            fadeOutAnim.cancel();
+            fadeOutAnim.removeAllUpdateListeners();
+            fadeOutAnim.removeAllListeners();
+            animDispatched = false;
+        }
+
+
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             if (!animDispatched && !fadeOutCancle && animation.getAnimatedFraction() > MARQUEE_ANIM_DISPATCH_FRACTION) {
@@ -215,6 +277,10 @@ public class MsgItemAnimator extends BaseItemAnimator {
             mVisibleItemList.clear();
         }
         itemFadeOutListener = null;
+
+        if(animatorList != null){
+            animatorList.clear();
+        }
     }
 
     public void addFadeOutAnimListener(ItemFadeOutListener listener){

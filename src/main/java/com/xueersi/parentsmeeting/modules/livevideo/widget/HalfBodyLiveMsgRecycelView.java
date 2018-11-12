@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 /**
  * 半身直播聊天面板
@@ -19,11 +20,11 @@ public class HalfBodyLiveMsgRecycelView extends RecyclerView implements MsgItemA
     private ItemFadeAnimListener mItemFadeAnimListener;
 
     public HalfBodyLiveMsgRecycelView(Context context) {
-        super(context);
+        this(context,null);
     }
 
     public HalfBodyLiveMsgRecycelView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs,0);
     }
 
     public HalfBodyLiveMsgRecycelView(Context context, @Nullable AttributeSet attrs, int defStyle) {
@@ -36,15 +37,9 @@ public class HalfBodyLiveMsgRecycelView extends RecyclerView implements MsgItemA
         initItemAnimator();
     }
 
-    /**不支持滑动*/
-    @Override
-    public boolean onTouchEvent(MotionEvent e) {
-        return false;
-    }
-
     private void initItemAnimator() {
         mItemAnimator = new MsgItemAnimator();
-        mItemAnimator.setAddDuration(500);
+        mItemAnimator.setAddDuration(400);
         mItemAnimator.setMoveDuration(300);
         mItemAnimator.setRemoveDuration(300);
         this.setItemAnimator(mItemAnimator);
