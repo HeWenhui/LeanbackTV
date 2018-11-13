@@ -1330,7 +1330,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      */
     public void addStuPutUpHandsNum(String stuId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("stuId",stuId);
+        params.addBodyParam("stuId", stuId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_ADD_STU_HAND_NUM, params, requestCallBack);
     }
@@ -1343,7 +1343,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     public void getStuInfoByIds(String stuIds, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        params.addBodyParam("stuIds",stuIds);
+        params.addBodyParam("stuIds", stuIds);
         sendPost(liveVideoSAConfigInner.URL_LIVE_STUINFO, params, requestCallBack);
     }
 
@@ -1449,5 +1449,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("url", url);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_WONDER_MOMENT, params, requestCallBack);
+    }
+
+    public void saveStuPlanOnlineTime(String stuId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", "" + stuId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_STU_ONLINE_TIME, params, requestCallBack);
     }
 }
