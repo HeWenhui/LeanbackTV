@@ -1,13 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.examination;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.tencent.smtt.sdk.WebSettings;
-import com.tencent.smtt.sdk.WebView;
-import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.parentsmeeting.module.browser.Utils.JsFuncListener;
 import com.xueersi.parentsmeeting.module.browser.Utils.XesProviderListener;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
@@ -69,34 +66,34 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
         wvSubjectWeb.onPause();
     }
 
-    @Override
-    protected boolean shouldOverrideUrlLoading(WebView view, String url) {
-        logger.i("shouldOverrideUrlLoading:url=" + url);
-        //关闭页面  https://www.baidu.com
-        if (url.contains("baidu.com")) {
+//    @Override
+//    protected boolean shouldOverrideUrlLoading(WebView view, String url) {
+//        logger.i("shouldOverrideUrlLoading:url=" + url);
+    //关闭页面  https://www.baidu.com
+//        if (url.contains("baidu.com")) {
 //            onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
 //            iPresenter.removeWindow();
-            iPresenter.removeWindow();
-            wvSubjectWeb.destroy();
-            iPresenter.showNextWindow();
-
-        }
-        //进入推荐的课程   https://www.sina.com?courseId=**&classId=**
-        if (url.contains(" www.sina.com")) {
-            String courseId = findNumber(url, "courseId");
-            String classId = findNumber(url, "classId");
-            String orderId = findNumber(url, "orderId");
+//            iPresenter.removeWindow();
+//            wvSubjectWeb.destroy();
+//            iPresenter.showNextWindow();
+//
+//        }
+    //进入推荐的课程   https://www.sina.com?courseId=**&classId=**
+//        if (url.contains(" www.sina.com")) {
+//            String courseId = findNumber(url, "courseId");
+//            String classId = findNumber(url, "classId");
+//            String orderId = findNumber(url, "orderId");
 //            ARouter.getInstance().build("/xesmall/orderDetail").withString("orderNum", orderId).navigation();
-            //跳转到商城的订单详情页面
-            Bundle bundle = new Bundle();
-            bundle.putString("orderNum", orderId);
-            //采用ARouter来跳转
-            XueErSiRouter.startModule(mContext, "/module/Browser", bundle);
+    //跳转到商城的订单详情页面
+//            Bundle bundle = new Bundle();
+//            bundle.putString("orderNum", orderId);
+    //采用ARouter来跳转
+//            XueErSiRouter.startModule(mContext, "/module/Browser", bundle);
 //            OtherModulesEnter.intentToOrderConfirmActivity((Activity) mContext, courseId + "-" + classId, 100,
 //                    "LivePlaybackVideoActivity");
-        }
-        return false;
-    }
+//        }
+//        return false;
+//    }
 
 
     /**

@@ -6,7 +6,7 @@
 
     <ImageView
         android:id="@+id/iv_livevideo_small_chinese_understand_background"
-        android:layout_width="500dp"
+        android:layout_width="497dp"
         android:layout_height="292dp"
         android:src="@drawable/bg_livevideo_small_chinese_sign_background"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -17,8 +17,8 @@
     <ImageView
 
         android:id="@+id/iv_livevideo_small_chinese_understand_text"
-        android:layout_width="150dp"
-        android:layout_height="40dp"
+        android:layout_width="183dp"
+        android:layout_height="38dp"
         android:layout_marginTop="70dp"
         android:src="@drawable/bg_livevideo_small_chinese_understand_text"
         app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_understand_background"
@@ -28,7 +28,7 @@
     <ImageView
         android:id="@+id/iv_livevideo_small_chinese_understand_yes"
         android:layout_width="130dp"
-        android:layout_height="55dp"
+        android:layout_height="49dp"
         android:layout_marginRight="120dp"
         android:layout_marginBottom="110dp"
         android:src="@drawable/selector_livevideo_small_chinese_understand_yes"
@@ -38,7 +38,7 @@
     <ImageView
         android:id="@+id/iv_livevideo_small_chinese_understand_no"
         android:layout_width="130dp"
-        android:layout_height="55dp"
+        android:layout_height="49dp"
         android:layout_marginLeft="110dp"
         android:layout_marginBottom="110dp"
         android:src="@drawable/selector_livevideo_small_chinese_understand_no_click"

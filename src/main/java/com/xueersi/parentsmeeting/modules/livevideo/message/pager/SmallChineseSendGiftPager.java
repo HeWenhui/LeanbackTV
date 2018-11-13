@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -7,7 +8,7 @@ import android.widget.TextView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
-public class SmallChineseSendGift extends BasePager {
+public class SmallChineseSendGiftPager extends BasePager {
     /** 关闭按钮 */
     private ImageView ivClose;
     /** 提交按钮 */
@@ -26,6 +27,10 @@ public class SmallChineseSendGift extends BasePager {
     private ImageView ivBigGiftSelect;
     /** 金钱剩余数量 */
     private TextView tvMoneyValue;
+
+    public SmallChineseSendGiftPager(Context context) {
+        super(context);
+    }
 
     @Override
     public View initView() {

@@ -187,7 +187,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
      * @param operateId
      * @param requestCallBack
      */
-    public void getLivePlayRedPacket(String enStuId, String operateId, String liveId, HttpCallBack
+    public void  getLivePlayRedPacket(String enStuId, String operateId, String liveId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
