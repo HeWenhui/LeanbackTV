@@ -285,6 +285,8 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                             liveMessageLandEntities, liveMessagePortEntities);
                     mLiveMessagePager = liveMessagePager;
                 }
+            } else if (LiveVideoConfig.isSmallChinese) {
+
             } else {
                 long before = System.currentTimeMillis();
                 if (!isSmallEnglish) {

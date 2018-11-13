@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <master.flame.danmaku.danmaku.ui.widget.DanmakuView
         android:id="@+id/dv_livevideo_small_chinese_message_danmaku"
         android:layout_width="match_parent"
@@ -31,7 +30,7 @@
                 android:visibility="gone" />
 
             <RelativeLayout
-                android:id="@id/rl_livevideo_english_content"
+                android:id="@+id/rl_livevideo_chinese_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rl_livevideo_star_content"
@@ -47,13 +46,32 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/rl_livevideo_message_top"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/livevideo_small_english_play_achievement_board"></RelativeLayout>
+            android:background="@drawable/bg_livevideo_small_chinese_play_achievement_board" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/fzcytv_livevideo_small_chinese_live_message_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="11dp"
+            android:layout_marginTop="8dp"
+            android:text="本组在线"
+            android:textSize="11sp" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/fzcytv_livevideo_small_chinese_live_message_online"
+            android:layout_alignBottom="@+id/fzcytv_livevideo_small_chinese_live_message_online"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/fzcytv_livevideo_small_chinese_live_message_online"
+            android:text="12343"
+            android:textSize="9sp" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -63,7 +81,7 @@
             android:layout_alignParentBottom="true">
 
             <TextView
-                android:id="@id/tv_livevideo_small_english_online_people_num"
+                android:id="@+id/tv_livevideo_small_chinese_online_people_num"
                 style="@style/text_font10_ffffff_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,7 +94,7 @@
             <!--android:layout_marginBottom="10dp">-->
 
             <ListView
-                android:id="@id/lv_livevideo_small_english_live_message"
+                android:id="@+id/lv_livevideo_small_chinese_live_message"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="13dp"
@@ -90,13 +108,13 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@id/rl_livevideo_small_english_message_panelcontent"
+        android:id="@+id/rl_livevideo_small_chinese_message_panelcontent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
         <cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout
-            android:id="@id/rl_livevideo_small_english_message_panelroot"
+            android:id="@+id/rl_livevideo_small_chinese_message_panelroot"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/panel_height"
             android:visibility="gone">
@@ -110,15 +128,15 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@id/rl_livevideo_small_english_message_content2"
+        android:id="@+id/rl_livevideo_small_chinese_message_content2"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_above="@id/rl_livevideo_small_english_message_panelcontent"
+        android:layout_above="@+id/rl_livevideo_small_chinese_message_panelcontent"
         android:background="@color/white"
         android:visibility="gone">
 
         <Button
-            android:id="@id/bt_livevideo_small_english_message_send"
+            android:id="@+id/bt_livevideo_small_chinese_message_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -130,23 +148,23 @@
             android:textColor="@color/white" />
 
         <Button
-            android:id="@id/bt_livevideo_small_english_message_express"
+            android:id="@+id/bt_livevideo_small_chinese_message_express"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@id/bt_livevideo_small_english_message_send"
+            android:layout_toLeftOf="@+id/bt_livevideo_small_chinese_message_send"
             android:background="@drawable/selector_chat_expression"
             android:textColor="@color/white" />
 
         <EditText
-            android:id="@id/et_livevideo_small_english_message_content"
+            android:id="@+id/et_livevideo_small_chinese_message_content"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@id/bt_livevideo_small_english_message_express"
+            android:layout_toLeftOf="@+id/bt_livevideo_small_chinese_message_express"
             android:background="@drawable/shape_corners_4dp_f1f1f1"
             android:hint="请输入文字"
             android:imeOptions="flagNoExtractUi|actionSend"
