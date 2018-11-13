@@ -29,19 +29,11 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true">
 
-
             <RelativeLayout
                 android:id="@id/rl_course_video_first_backgroud"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 > <!--此处设置背景图片-->
-                <!--背景图片-->
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/live_halfbody_bg"
-                    android:scaleType="centerCrop"
-                    />
                 <ImageView
                     android:id="@id/iv_course_video_back"
                     android:layout_width="wrap_content"
@@ -108,7 +100,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone" />
+
+            <!--文理半身直播 视频加载中loading-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@id/rl_live_halfbody_video_loading"
+                >
+                <ImageView
+                    android:layout_width="160dp"
+                    android:layout_height="43dp"
+                    android:src="@drawable/icon_live_halfbody_video_loading"
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerCrop"
+                    />
+            </RelativeLayout>
+
         </FrameLayout>
+
+
+
 
         <!-- 接麦老师视频界面位置 -->
         <RelativeLayout

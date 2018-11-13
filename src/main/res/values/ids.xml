@@ -844,6 +844,7 @@
     <item name="rl_live_halfbody_video_loading" type="id"/>
     <item name="tv_live_halfbody_live_state" type="id"/>
     <item name="iv_live_halfbody_video_loading" type="id"/>
+    <item name="iv_live_halfbody_hotwrod" type="id"/>
 
 
 </resources>

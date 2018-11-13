@@ -69,5 +69,9 @@ public class LiveHalfBodyMediaControllerTop extends BaseLiveMediaControllerTop {
           findViewItems();
     }
 
-
+    @Override
+    public void setFileName(String name) {
+        super.setFileName(name);
+        Log.e("HalfBodyTop","======>setFileName:"+name);
+    }
 }

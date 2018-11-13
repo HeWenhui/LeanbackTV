@@ -50,7 +50,7 @@ public class LiveVideoAction implements VideoAction {
     protected Drawable dwTeacherNotpresen;
     PlayErrorCode lastPlayErrorCode;
     RelativeLayout mContentView;
-    private TextView tvLoadingHint;
+    protected TextView tvLoadingHint;
     /** 缓冲提示 */
     private ImageView ivLoading;
     /** 视频连接 */
@@ -62,7 +62,7 @@ public class LiveVideoAction implements VideoAction {
     /** 直播类型 */
     protected int liveType;
     protected LiveGetInfo mGetInfo;
-    private LiveBll2 mLiveBll;
+    protected LiveBll2 mLiveBll;
     protected LogToFile mLogtf;
 
     public LiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView) {
