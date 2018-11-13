@@ -278,6 +278,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     String[] arrSubjIds = strSubjIds.split(",");
                     liveGetInfo.setSubjectIds(arrSubjIds);
                 }
+                mCourseHttpResponseParser.parseLiveGetInfo(liveInfo, liveGetInfo, mLiveType, isArts);
             }
         } catch (Exception e) {
             logger.e("onCreate", e);

@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.deskmate.business.DeskmateBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -205,6 +206,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 videoChatIRCBll.setLiveFragmentBase(this);
                 mLiveBll.addBusinessBll(videoChatIRCBll);
             }
+            mLiveBll.addBusinessBll(new DeskmateBll(activity, mLiveBll));
         }
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }

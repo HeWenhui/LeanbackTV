@@ -76,11 +76,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (1 == data.optInt("isPrimarySchool")) {
+        int isPrimarySchool = data.optInt("isPrimarySchool");
+        if (1 == isPrimarySchool) {
             LiveVideoConfig.isPrimary = true;
         } else {
             LiveVideoConfig.isPrimary = false;
         }
+        getInfo.setIsPrimarySchool(isPrimarySchool);
         LiveVideoConfig.isScience = true;
         getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
