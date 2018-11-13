@@ -18,9 +18,11 @@ import org.json.JSONObject;
  */
 public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBackHttp, NoticeAction, TopicAction {
     SpeechCollectiveBll speechCollectiveBll;
+    private boolean isFirstCreate = true;
 
     public SpeechCollectiveIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
+        isFirstCreate = true;
     }
 
     @Override
@@ -46,8 +48,20 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
     }
 
     @Override
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
+        super.onModeChange(oldMode, mode, isPresent);
+        if (speechCollectiveBll != null) {
+            speechCollectiveBll.stop();
+        }
+    }
+
+    @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         logger.d("data=" + jsonObject);
+        if (!isFirstCreate) {
+            return;
+        }
+        isFirstCreate = false;
         LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
         String status = mainRoomstatus.getOnGroupSpeech();
         int isVoiceInteraction = mGetInfo.getIsVoiceInteraction();
