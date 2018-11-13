@@ -83,6 +83,8 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     private File mMorecacheout;
     /** 公共资源 */
     private File mPublicCacheout;
+    /** 公共资源 */
+    public static String mPublicCacheoutName = "publicRes";
     private File mArtsMorecachein;
     private File mArtsMorecacheout;
     private ArrayList<String> mUrls;
@@ -188,15 +190,18 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 new Thread() {
                     @Override
                     public void run() {
+                        //删除除了公共资源的文件夹
                         File files[] = cacheFile.listFiles();
                         if (files != null) {
                             for (int i = 0; i < files.length; i++) {
                                 File delectFile = files[i];
                                 if (!delectFile.getPath().equals(todayCacheDir.getPath())) {
-                                    if (delectFile.isDirectory()) {
-                                        FileUtils.deleteDir(delectFile);
-                                    } else {
-                                        FileUtils.deleteFile(delectFile);
+                                    if (!delectFile.getName().startsWith(mPublicCacheoutName)) {
+                                        if (delectFile.isDirectory()) {
+                                            FileUtils.deleteDir(delectFile);
+                                        } else {
+                                            FileUtils.deleteFile(delectFile);
+                                        }
                                     }
                                 }
                             }
@@ -264,7 +269,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 logger.e("getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
             }
         });
-        mPublicCacheout = new File(cacheFile, "public");
+        mPublicCacheout = new File(cacheFile, mPublicCacheoutName);
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
         }
