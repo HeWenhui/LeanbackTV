@@ -2,7 +2,14 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clickable="true">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.6"
+        android:src="@color/COLOR_000000" />
 
     <ImageView
         android:id="@+id/iv_livevideo_small_chinese_send_gift_background"
@@ -62,7 +69,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift"
         app:layout_constraintTop_toBottomOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="10金币"
@@ -107,7 +114,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift"
         app:layout_constraintTop_toBottomOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="50金币"
@@ -151,7 +158,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift"
         app:layout_constraintTop_toBottomOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_small_chinese_send_gift_money"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -161,7 +168,7 @@
         app:layout_constraintLeft_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift_value_icon"
         app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift_value_icon" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_small_chinese_send_gift_money_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -174,7 +181,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_background"
         app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_background" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_small_chinese_send_gift_money_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

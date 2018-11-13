@@ -72,7 +72,7 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
     @Override
     protected void initDanmaku() {
         if (flowsTips != null) {
-            flowsTips = new String[]{"送老师一朵太阳花", "送老师一束太阳花", "送老师一捧太阳花"};
+            flowsTips = new String[]{"送老师一座埃菲尔铁塔", "送老师一座自由女神", "送老师一座长城"};
         }
 
         if (flowsDrawLittleTips != null) {
