@@ -15,6 +15,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.buycourse.ExperienceBuyCoursePresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationPager;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.recommodcourse.StandExperienceRecommondBll;
 
 import java.util.List;
@@ -151,9 +153,13 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
                 ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
             }
             //展示购课窗口
-            if (liveBackBaseBll instanceof ExperienceBuyCoursePresenter) {
+//            if (liveBackBaseBll instanceof ExperienceBuyCoursePresenter) {
 //                ((ExperienceBuyCoursePresenter) liveBackBaseBll).showNextWindow();
-                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
+//                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
+//            }
+            //定级卷展示窗口
+            if(liveBackBaseBll instanceof StandExperienceEvaluationBll){
+                showNextWindow((StandExperienceEvaluationBll)liveBackBaseBll);
             }
         }
     }
