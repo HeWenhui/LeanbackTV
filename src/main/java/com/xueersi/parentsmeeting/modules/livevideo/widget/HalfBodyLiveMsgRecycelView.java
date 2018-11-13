@@ -37,10 +37,15 @@ public class HalfBodyLiveMsgRecycelView extends RecyclerView implements MsgItemA
         initItemAnimator();
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        return false;
+    }
+
     private void initItemAnimator() {
         mItemAnimator = new MsgItemAnimator();
         mItemAnimator.setAddDuration(400);
-        mItemAnimator.setMoveDuration(300);
+        mItemAnimator.setMoveDuration(400);
         mItemAnimator.setRemoveDuration(300);
         this.setItemAnimator(mItemAnimator);
         mItemAnimator.addFadeOutAnimListener(this);

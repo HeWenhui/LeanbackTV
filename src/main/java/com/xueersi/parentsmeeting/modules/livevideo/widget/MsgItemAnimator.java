@@ -9,14 +9,18 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 半身直播 聊天消息通
+ * 当前存在问题： 恰好在 data.clear 时来新消息 ，此时该消息展示不出来
  *
  * @author chekun
  * created  at 2018/11/9 10:06
@@ -33,26 +37,22 @@ public class MsgItemAnimator extends BaseItemAnimator {
     /**
      * 每个item 消失动画持续时间
      */
-    private static final long ITEM_FADE_OUT_DURATION = 600L;
-    /**
-     * item 消失  间隔时间
-     */
-    private static final long ITEM_FADE_OUT_DELAY = 800L;
+    private static final long ITEM_FADE_OUT_DURATION = 400L;
     /**
      * item 可见 持续时间
      */
-    private static final long ITEM_VISIBLE_DURATION = 2000L;
+    private static final long ITEM_VISIBLE_DURATION = 3000L;
     private Handler mHandler;
     private static final float MARQUEE_ANIM_DISPATCH_FRACTION = 0.5f;
     private ItemFadeOutListener itemFadeOutListener;
 
 
-    public MsgItemAnimator(){
+    public MsgItemAnimator() {
     }
 
     @Override
     public void setRemoveAnimation(RecyclerView.ViewHolder holder, ViewPropertyAnimatorCompat animator) {
-        animator.alpha(0);
+        //animator.alpha(0);
     }
 
     @Override
@@ -63,14 +63,15 @@ public class MsgItemAnimator extends BaseItemAnimator {
 
     @Override
     public void addAnimationInit(RecyclerView.ViewHolder holder) {
+        Log.e("MsgItemAnim", "=====>addAnimationInit called");
         ViewCompat.setScaleX(holder.itemView, 0);
         ViewCompat.setScaleY(holder.itemView, 0);
         ViewCompat.setAlpha(holder.itemView, 1f);
-
     }
 
     @Override
     public void setAddAnimation(RecyclerView.ViewHolder holder, ViewPropertyAnimatorCompat animator) {
+        cancleFadeOut();
         if (mHandler == null) {
             mHandler = new Handler();
         } else {
@@ -79,21 +80,34 @@ public class MsgItemAnimator extends BaseItemAnimator {
         ViewCompat.setPivotX(holder.itemView, holder.itemView.getWidth());
         ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight());
         animator.scaleX(1).scaleY(1);
+        ViewCompat.setAlpha(holder.itemView, 1f);
+        Log.e("MsgItemAnim", "=====>setAddAnimation called");
         mVisibleItemList.add(holder);
-        cancleFadeOut();
         //2秒内无新消息自动消失
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                fadeOut();
+                startItemsFadeOut();
             }
-        }, ITEM_VISIBLE_DURATION );
+        }, ITEM_VISIBLE_DURATION);
+    }
+
+    /**
+     * 所有item 条目 淡出动效
+     */
+    private void startItemsFadeOut() {
+        Log.e("MsgItemAnim", "=====>startItemsFadeOut");
+        fadeOutCancle = false;
+        mCurrentItemIndex = 0;
+        fadeOut();
     }
 
     @Override
     public void addAnimationCancel(RecyclerView.ViewHolder holder) {
         ViewCompat.setScaleX(holder.itemView, 1);
         ViewCompat.setScaleY(holder.itemView, 1);
+        ViewCompat.setAlpha(holder.itemView, 1);
+        Log.e("MsgItemAnim", "=====>addAnimationCancel called");
     }
 
     @Override
@@ -101,18 +115,22 @@ public class MsgItemAnimator extends BaseItemAnimator {
         ViewCompat.setPivotX(holder.itemView, holder.itemView.getWidth());
         ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight());
         animator.scaleX(0).scaleY(0);
+        ViewCompat.setAlpha(holder.itemView, 1);
     }
 
     @Override
     public void oldChangeAnimationEnd(RecyclerView.ViewHolder holder) {
         ViewCompat.setScaleX(holder.itemView, 1);
         ViewCompat.setScaleY(holder.itemView, 1);
+        ViewCompat.setAlpha(holder.itemView, 1);
+
     }
 
     @Override
     public void newChangeAnimationInit(RecyclerView.ViewHolder holder) {
         ViewCompat.setScaleX(holder.itemView, 0);
         ViewCompat.setScaleY(holder.itemView, 0);
+        ViewCompat.setAlpha(holder.itemView, 1);
     }
 
     @Override
@@ -120,22 +138,22 @@ public class MsgItemAnimator extends BaseItemAnimator {
         ViewCompat.setPivotX(holder.itemView, holder.itemView.getWidth());
         ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight());
         animator.scaleX(1).scaleY(1);
+        ViewCompat.setAlpha(holder.itemView, 1);
     }
 
     @Override
     public void newChangeAnimationEnd(RecyclerView.ViewHolder holder) {
         ViewCompat.setScaleX(holder.itemView, 1);
         ViewCompat.setScaleY(holder.itemView, 1);
+        ViewCompat.setAlpha(holder.itemView, 1);
     }
+
 
     @Override
     public void itemMoveAnimationStart(ViewPropertyAnimatorCompat animator,
                                        RecyclerView.ViewHolder holder, int startX, int startY, int toX, int toY) {
         float alphaValue = getItemAlpha(holder, toY);
         animator.alpha(alphaValue);
-        if (alphaValue == 0) {
-            mVisibleItemList.remove(holder);
-        }
     }
 
     private float getItemAlpha(RecyclerView.ViewHolder holder, int toY) {
@@ -143,42 +161,49 @@ public class MsgItemAnimator extends BaseItemAnimator {
         if (toY < 0) {
             alphaValue = 0.0f;
         } else {
-            float itemCenterY = toY - holder.itemView.getHeight() / 2;
-            alphaValue = itemCenterY * 1.0f / (float) ((ViewGroup) holder.itemView.getParent()).getMeasuredHeight();
+            if ((toY - holder.itemView.getHeight()) > 0) {
+                float offsetY = toY + holder.itemView.getHeight() * 1.5f;
+                alphaValue = offsetY * 1.0f / (float) ((ViewGroup) holder.itemView.getParent()).getMeasuredHeight();
+            } else {
+                float offsetY = toY + holder.itemView.getHeight() / 2;
+                alphaValue = offsetY * 1.0f / (float) ((ViewGroup) holder.itemView.getParent()).getMeasuredHeight();
+            }
             alphaValue = alphaValue <= DEF_MIN_ALPHA ? DEF_MIN_ALPHA : alphaValue;
         }
+        Log.e("MsgItemAlpha", "----->getItemAlpha:" + alphaValue);
         return alphaValue;
     }
 
     @Override
     public void itemMoveAnimationEnd(RecyclerView.ViewHolder holder) {
-        super.itemMoveAnimationEnd(holder);
+        if (holder.itemView.getAlpha() <= 0) {
+            mVisibleItemList.remove(holder);
+        }
     }
 
 
-    int itemIndex = 0;
     private boolean fadeOutCancle;
+    private int mCurrentItemIndex;
 
     /**
      * item 价格逐渐消失
      */
     private void fadeOut() {
-        fadeOutCancle = false;
-        if (itemIndex < mVisibleItemList.size()) {
-            RecyclerView.ViewHolder holder = mVisibleItemList.get(itemIndex);
-            itemFadeOut(holder);
+        Log.e("MsgItemAnim", "=====>fadeOut called:" + mVisibleItemList.size());
+        if (mCurrentItemIndex < mVisibleItemList.size()) {
+            RecyclerView.ViewHolder holder = mVisibleItemList.get(mCurrentItemIndex);
+            itemFadeOut(holder, mCurrentItemIndex);
         }
     }
 
 
     private void cancleFadeOut() {
-        itemIndex = 0;
         fadeOutCancle = true;
-        if(animatorList.size() > 0){
+        if (animatorList.size() > 0) {
             for (int i = 0; i < animatorList.size(); i++) {
-                   if(animatorList.get(i).isRunning()){
-                       animatorList.get(i).cancelAnim();
-                   }
+                if (animatorList.get(i).isRunning()) {
+                    animatorList.get(i).cancelAnim();
+                }
             }
         }
     }
@@ -186,38 +211,40 @@ public class MsgItemAnimator extends BaseItemAnimator {
 
     private List<FadeOutAnimator> animatorList = new ArrayList<>();
 
-    private void itemFadeOut(RecyclerView.ViewHolder holder) {
+    private void itemFadeOut(RecyclerView.ViewHolder holder, int itemIndex) {
         FadeOutAnimator animator = null;
+        Log.e("MsgItemAnim", "=====>itemFadeOut ListSize:" + animatorList.size());
         //从复用池中寻找
-        if(animatorList != null && animatorList.size() > 0){
+        if (animatorList != null && animatorList.size() > 0) {
             for (int i = 0; i < animatorList.size(); i++) {
-                 if(!animatorList.get(i).isRunning()){
-                     animator = animatorList.get(i);
-                 }
+                if (!animatorList.get(i).isRunning()) {
+                    animator = animatorList.get(i);
+                }
             }
         }
-        if(animator == null){
+        if (animator == null) {
             animator = new FadeOutAnimator();
             //添加到复用池中
             animatorList.add(animator);
         }
-        animator.bind2View(holder.itemView,itemIndex);
+        animator.bind2View(holder.itemView, itemIndex);
         animator.startAnim();
 
     }
 
 
-     class FadeOutAnimator implements ValueAnimator.AnimatorUpdateListener {
+    class FadeOutAnimator implements ValueAnimator.AnimatorUpdateListener {
         ObjectAnimator fadeOutAnim;
         private int mItemIndex;
         private View mTargetView;
         private float mStartAlpha;
         private boolean animDispatched = false;
 
-        public FadeOutAnimator(){}
+        public FadeOutAnimator() {
+        }
 
-        public void bind2View(View targetView,int itemIndex){
-            if(fadeOutAnim != null){
+        public void bind2View(View targetView, int itemIndex) {
+            if (fadeOutAnim != null) {
                 fadeOutAnim.cancel();
                 fadeOutAnim.removeAllUpdateListeners();
                 fadeOutAnim.removeAllListeners();
@@ -226,27 +253,29 @@ public class MsgItemAnimator extends BaseItemAnimator {
             mItemIndex = itemIndex;
             mTargetView = targetView;
             mStartAlpha = targetView.getAlpha();
-            fadeOutAnim = ObjectAnimator.ofFloat(targetView, "alpha",mStartAlpha, 0);
+            fadeOutAnim = ObjectAnimator.ofFloat(targetView, "alpha", mStartAlpha, 0);
             fadeOutAnim.setDuration(ITEM_FADE_OUT_DURATION).addUpdateListener(this);
         }
 
 
-        public boolean isRunning(){
+        public boolean isRunning() {
             return fadeOutAnim.isRunning();
         }
 
-        public void startAnim(){
+        public void startAnim() {
             fadeOutAnim.start();
         }
 
         /**
          * 取消当前动画，并把View 恢复成初始状态
          */
-        public void cancelAnim(){
+        public void cancelAnim() {
             fadeOutAnim.cancel();
             fadeOutAnim.removeAllUpdateListeners();
             fadeOutAnim.removeAllListeners();
-            animDispatched = false;
+            if (mTargetView.getAlpha() <= DEF_MIN_ALPHA) {
+                mTargetView.setAlpha(DEF_MIN_ALPHA);
+            }
         }
 
 
@@ -254,12 +283,12 @@ public class MsgItemAnimator extends BaseItemAnimator {
         public void onAnimationUpdate(ValueAnimator animation) {
             if (!animDispatched && !fadeOutCancle && animation.getAnimatedFraction() > MARQUEE_ANIM_DISPATCH_FRACTION) {
                 animDispatched = true;
-                itemIndex++;
+                mCurrentItemIndex++;
                 fadeOut();
             }
             //最后一个item 动画执行结束
-            if(animation.getAnimatedFraction() >=1 && mItemIndex == (mVisibleItemList.size()-1)){
-                if(itemFadeOutListener != null){
+            if (animation.getAnimatedFraction() >= 1 && mItemIndex == (mVisibleItemList.size() - 1) && !fadeOutCancle) {
+                if (itemFadeOutListener != null) {
                     itemFadeOutListener.onAnimEnd();
                     mVisibleItemList.clear();
                 }
@@ -270,31 +299,31 @@ public class MsgItemAnimator extends BaseItemAnimator {
     /**
      * 释放资源
      */
-    public void release(){
+    public void release() {
         cancleFadeOut();
         mHandler = null;
-        if(mVisibleItemList != null){
+        if (mVisibleItemList != null) {
             mVisibleItemList.clear();
         }
         itemFadeOutListener = null;
 
-        if(animatorList != null){
+        if (animatorList != null) {
             animatorList.clear();
         }
     }
 
-    public void addFadeOutAnimListener(ItemFadeOutListener listener){
+    public void addFadeOutAnimListener(ItemFadeOutListener listener) {
         itemFadeOutListener = listener;
     }
 
     /**
      * item 淡出动画监听
      */
-    public static interface ItemFadeOutListener{
+    public static interface ItemFadeOutListener {
         /**
          * 动画结束
          */
-       void onAnimEnd();
+        void onAnimEnd();
     }
 
 }

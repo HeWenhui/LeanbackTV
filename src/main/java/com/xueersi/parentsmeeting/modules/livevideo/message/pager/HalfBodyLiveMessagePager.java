@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -548,6 +549,15 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
         mMsgAdapter = new LiveMsgAdapter(mLiveMsgList);
         liveMsgReclView.setAdapter(mMsgAdapter);
+
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) liveMsgReclView.getLayoutParams();
+        Point point = new Point();
+        ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
+        int screenHeight = Math.min(point.x, point.y);
+        int height = (int) (screenHeight * 0.573);
+        params.height = height;
+        liveMsgReclView.setLayoutParams(params);
+
         liveMsgReclView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {

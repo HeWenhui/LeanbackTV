@@ -16,7 +16,7 @@
         <RelativeLayout
             android:id="@id/rl_livevideo_info"
             android:layout_width="300dp"
-            android:layout_height="240dp"
+            android:layout_height="215dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="15dp"
             android:layout_alignParentBottom="true"
@@ -25,8 +25,8 @@
             <!--链接状态栏-->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:visibility="visible"
+                android:layout_height="0dp"
+                android:visibility="gone"
                 >
                 <TextView
                     android:id="@id/tv_livevideo_message_count"
@@ -48,7 +48,6 @@
 
             <com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView
                 android:layout_width="match_parent"
-                android:layout_marginTop="25dp"
                 android:layout_height="match_parent"
                 android:scrollbars="none"
                 android:overScrollMode="never"
