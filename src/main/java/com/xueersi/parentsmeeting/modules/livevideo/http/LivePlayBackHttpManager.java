@@ -59,7 +59,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     public void saveTestRecord(String enStuId, String srcType, String testId, String testResult, String testDay,
                                String classId,
                                int livePlayType, boolean voice, boolean isRight, HttpCallBack requestCallBack) {
-        if(LiveVideoConfig.isNewArts){
+        if (LiveVideoConfig.isNewArts) {
             HttpRequestParams params = new HttpRequestParams();
             String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSTEST_ANSWER;
             params.addBodyParam("liveId", classId);
@@ -126,7 +126,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     public void sumitCourseWareH5(String enStuId, String srcType, String testId, String testResult, String testDay,
                                   String classId, String isSubmit, String type,
                                   double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
-        if(LiveVideoConfig.isNewArts){
+        if (LiveVideoConfig.isNewArts) {
             HttpRequestParams params = new HttpRequestParams();
             String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
             setDefaultParameter(params);
@@ -136,7 +136,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
             params.addBodyParam("isForce", "1");
             params.addBodyParam("Cookie", AppBll.getInstance().getUserToken());
             sendPost(url, params, requestCallBack);
-        }else{
+        } else {
             String liveUrl = liveVideoSAConfigInner.URL_LIVE_SUBMIT_TEST_H5_ANSWER;
             HttpRequestParams params = new HttpRequestParams();
             setDefaultParameter(params);
@@ -255,7 +255,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
     //语音评测2期答案提交
     public void sendSpeechEvalResult2(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack
             requestCallBack) {
-        if(LiveVideoConfig.isNewArts){
+        if (LiveVideoConfig.isNewArts) {
             HttpRequestParams params = new HttpRequestParams();
             params.addBodyParam("liveId", liveId);
             params.addBodyParam("testId", id);
@@ -265,7 +265,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
             setDefaultParameter(params);
             Loger.i("Duncan", "sendSpeechEvalResult2:enstuId=" + enstuId + ",liveId=" + liveId);
             sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVALUATEARTS, params, requestCallBack);
-        }else{
+        } else {
             HttpRequestParams params = new HttpRequestParams();
             setDefaultParameter(params);
 //        params.addBodyParam("enstuId", enstuId);
@@ -316,6 +316,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 
     /**
      * 提交体验课交互信息
+     *
      * @param termId
      * @param times
      * @param requestCallBack
@@ -603,4 +604,12 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("orderId", orderId);
         sendPost(url, params, httpCallBack);
     }
+
+    public void saveStuPlanOnlineTime(String stuId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", "" + stuId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_STU_ONLINE_TIME, params, requestCallBack);
+    }
+
 }
