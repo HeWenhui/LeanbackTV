@@ -1,0 +1,96 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@id/iv_livevideo_en_teampk_mine"
+        android:layout_width="62dp"
+        android:layout_height="67dp"
+        android:layout_marginRight="17dp"
+        android:layout_marginTop="7dp"
+        android:layout_toLeftOf="@id/iv_livevideo_en_teampk_vs"
+        android:src="@drawable/livevideo_enteampk_benchangzhanduifenzu_01sweetheartkate_pic_normal" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_en_teampk_vs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/bg_livevideo_en_tempk_vs" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_en_teampk_other"
+        android:layout_width="62dp"
+        android:layout_height="67dp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginTop="7dp"
+        android:layout_toRightOf="@id/iv_livevideo_en_teampk_vs"
+        android:src="@drawable/livevideo_enteampk_benchangzhanduifenzu_02rockstarjohn_pic_normal" />
+
+    <View
+        android:id="@id/v_livevideo_en_teampk_center"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_centerInParent="true" />
+
+    <GridView
+        android:id="@id/gv_livevideo_en_teampk_rank_mine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_livevideo_en_teampk_mine"
+        android:layout_marginTop="6dp"
+        android:layout_toLeftOf="@id/v_livevideo_en_teampk_center"
+        android:listSelector="@null"
+        android:numColumns="3" />
+
+    <GridView
+        android:id="@id/gv_livevideo_en_teampk_rank_other"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_livevideo_en_teampk_other"
+        android:layout_marginTop="6dp"
+        android:layout_toRightOf="@id/v_livevideo_en_teampk_center"
+        android:listSelector="@null"
+        android:numColumns="3" />
+
+    <Button
+        android:id="@id/bt_livevideo_en_teampk_rank_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gv_livevideo_en_teampk_rank_mine"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_live_enteampk_startpk" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_en_teampk_rank_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/bt_livevideo_en_teampk_rank_start"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/selector_live_enteampk_startpk_score" />
+
+    <RelativeLayout
+        android:id="@id/rv_livevideo_en_teampk_rank_score_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/iv_livevideo_en_teampk_rank_score"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="7dp"
+        android:clickable="true"
+        android:background="@drawable/zhanduipk_fenzhandui_defenmiij_btn_normal1"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@id/tv_livevideo_en_teampk_rank_start_close"
+        android:layout_width="66dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bt_livevideo_en_teampk_rank_start"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="3dp"
+        android:text="10s后自动关闭"
+        android:textColor="#ffbebebe"
+        android:textSize="10sp" />
+</RelativeLayout>

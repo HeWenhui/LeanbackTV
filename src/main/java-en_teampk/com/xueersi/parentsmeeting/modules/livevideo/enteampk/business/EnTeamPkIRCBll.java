@@ -17,6 +17,7 @@ import org.json.JSONObject;
  * 英语战队PK 相关业务处理
  */
 public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
+    EnTeamPkAction enTeamPkAction;
 
     public EnTeamPkIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -26,6 +27,12 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         logger.d("onLiveInited");
+        EnTeamPkBll teamPkBll = new EnTeamPkBll(activity);
+        teamPkBll.setRootView(mRootView);
+        enTeamPkAction = teamPkBll;
+//        enTeamPkAction.onRankStart();
+//        enTeamPkAction.onRankResult();
+        enTeamPkAction.onRankLead();
     }
 
     @Override
