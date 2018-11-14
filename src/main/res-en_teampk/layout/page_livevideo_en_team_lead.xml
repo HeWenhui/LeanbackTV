@@ -105,20 +105,12 @@
             android:text="100" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@id/tv_livevideo_en_teampk_lead_star"
+    <RelativeLayout
+        android:id="@id/rl_livevideo_en_teampk_lead_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/pg_livevideo_en_teampk_lead"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="13dp"
-        android:text="贡献之星"
-        android:textColor="@color/white" />
+        android:layout_below="@id/pg_livevideo_en_teampk_lead">
 
-    <GridView
-        android:id="@id/gv_livevideo_en_teampk_rank"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_livevideo_en_teampk_lead_star"
-        android:numColumns="4" />
+    </RelativeLayout>
+
 </RelativeLayout>
