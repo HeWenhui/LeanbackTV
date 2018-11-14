@@ -137,6 +137,11 @@ public class TeamPkResultPager extends BasePager {
      */
     private static final float CONTRIBUTION_VIEW_RIGHTMARGIN = 0.046f;
 
+    /**
+     * 半身直播 贡献之星 右边距
+     */
+    private static final float CONTRIBUTION_VIEW_RIGHTMARGIN_HALFBODY =0.15f;
+
 
     public TeamPkResultPager(Context context, TeamPkBll pkBll) {
         super(context);
@@ -195,7 +200,11 @@ public class TeamPkResultPager extends BasePager {
         int spanCount = 5;
         // 多屏幕 适配
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rclContributionRank.getLayoutParams();
-        params.rightMargin = (int) (mView.getMeasuredWidth() * CONTRIBUTION_VIEW_RIGHTMARGIN);
+        if(mTeamPkBll != null && mTeamPkBll.isHalfBodyLiveRoom()){
+            params.rightMargin = (int) (mView.getMeasuredWidth() * CONTRIBUTION_VIEW_RIGHTMARGIN_HALFBODY);
+        }else{
+            params.rightMargin = (int) (mView.getMeasuredWidth() * CONTRIBUTION_VIEW_RIGHTMARGIN);
+        }
         rclContributionRank.setLayoutParams(params);
         mLayoutManager = new ContributionLayoutManager(spanCount);
         int itemWidth = rclContributionRank.getMeasuredWidth() / spanCount;

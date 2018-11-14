@@ -191,7 +191,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      *
      * @return
      */
-    private boolean isHalfBodyLiveRoom() {
+    public boolean isHalfBodyLiveRoom() {
         //logger.e( "========>isHalfBodyLiveRoom:" + roomInitInfo + ":" + roomInitInfo.getPattern());
         return roomInitInfo != null && roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY;
     }
