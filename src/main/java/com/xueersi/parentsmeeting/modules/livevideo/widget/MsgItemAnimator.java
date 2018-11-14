@@ -67,6 +67,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
         ViewCompat.setScaleX(holder.itemView, 0);
         ViewCompat.setScaleY(holder.itemView, 0);
         ViewCompat.setAlpha(holder.itemView, 1f);
+        mVisibleItemList.add(holder);
     }
 
     @Override
@@ -80,9 +81,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
         ViewCompat.setPivotX(holder.itemView, holder.itemView.getWidth());
         ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight());
         animator.scaleX(1).scaleY(1);
-        ViewCompat.setAlpha(holder.itemView, 1f);
         Log.e("MsgItemAnim", "=====>setAddAnimation called");
-        mVisibleItemList.add(holder);
         //2秒内无新消息自动消失
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -170,7 +169,6 @@ public class MsgItemAnimator extends BaseItemAnimator {
             }
             alphaValue = alphaValue <= DEF_MIN_ALPHA ? DEF_MIN_ALPHA : alphaValue;
         }
-        Log.e("MsgItemAlpha", "----->getItemAlpha:" + alphaValue);
         return alphaValue;
     }
 
