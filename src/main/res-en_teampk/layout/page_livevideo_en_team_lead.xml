@@ -42,9 +42,8 @@
         style="@style/ProgressBar_live_enspeek"
         android:layout_width="364dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/iv_livevideo_en_teampk_mine"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="191dp"
         android:max="100"
         android:progress="30" />
 

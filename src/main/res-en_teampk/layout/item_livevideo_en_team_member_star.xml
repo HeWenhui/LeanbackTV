@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@id/iv_livevideo_en_teampk_member"
+        android:layout_width="58dp"
+        android:layout_height="51dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/livevideo_enteampk_touxiang3" />
+
+    <TextView
+        android:id="@id/tv_livevideo_en_teampk_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_livevideo_en_teampk_member"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/tv_livevideo_en_teampk_name"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/livevideo_enteampk_touxiang1" />
+</RelativeLayout>

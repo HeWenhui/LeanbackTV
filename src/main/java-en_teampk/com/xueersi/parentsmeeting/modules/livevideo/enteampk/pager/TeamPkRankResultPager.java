@@ -71,7 +71,6 @@ public class TeamPkRankResultPager extends LiveBasePager {
 
     @Override
     public void initData() {
-
         for (int i = 0; i < 6; i++) {
             TeamMemberEntity teamEntity = new TeamMemberEntity();
             teamEntity.name = "测试我" + i;
