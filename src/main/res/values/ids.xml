@@ -846,5 +846,8 @@
     <item name="iv_live_halfbody_video_loading" type="id"/>
     <item name="iv_live_halfbody_hotwrod" type="id"/>
 
+    <item name="ll_live_halfbody_understand_btns" type="id"/>
+
+
 
 </resources>

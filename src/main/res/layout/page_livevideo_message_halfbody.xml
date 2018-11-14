@@ -13,7 +13,7 @@
         >
 
         <!--聊天区域UI-->
-        <RelativeLayout
+      <!--  <RelativeLayout
             android:id="@id/rl_livevideo_info"
             android:layout_width="300dp"
             android:layout_height="215dp"
@@ -22,7 +22,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="18dp"
             >
-            <!--链接状态栏-->
+            &lt;!&ndash;链接状态栏&ndash;&gt;
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -46,18 +46,23 @@
                     android:src="@drawable/bg_livevideo_message_offline" />
             </RelativeLayout>
 
-            <com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="none"
-                android:overScrollMode="never"
-                android:id="@id/rcl_live_halfbody_msg"
-                android:paddingBottom="15dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                />
+        </RelativeLayout>-->
 
-        </RelativeLayout>
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView
+            android:layout_width="300dp"
+            android:layout_height="215dp"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            android:id="@id/rcl_live_halfbody_msg"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="18dp"
+            />
+
+
 
         <!--表情-->
         <RelativeLayout

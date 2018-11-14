@@ -103,14 +103,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     private ImageView ivMessageClose;
 
     /**
-     * 聊天人数
-     */
-    private TextView tvOnliveNum;
-    /**
-     * 聊天IRC一下状态，正在连接，在线等
-     */
-    private ImageView ivMessageOnline;
-    /**
      * 聊天消息
      */
     private View rlInfo;
@@ -227,8 +219,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_message_halfbody, null);
-        tvOnliveNum = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
-        ivMessageOnline = (ImageView) mView.findViewById(R.id.iv_livevideo_message_online);
+    /*    tvOnliveNum = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
+        ivMessageOnline = (ImageView) mView.findViewById(R.id.iv_livevideo_message_online);*/
         dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_message_danmaku);
         rlInfo = mView.findViewById(R.id.rl_livevideo_info);
         rlMessageContent = mView.findViewById(R.id.rl_livevideo_message_content2);
@@ -555,7 +547,10 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
         int screenHeight = Math.min(point.x, point.y);
         int height = (int) (screenHeight * 0.573);
+        int width = (int) (screenWidth *0.45f);
         params.height = height;
+        params.width = width;
+        params.bottomMargin = (int) (screenHeight *0.054f);
         liveMsgReclView.setLayoutParams(params);
 
         liveMsgReclView.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -858,22 +853,22 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
      */
     @Override
     public void onStartConnect() {
-        mainHandler.post(new Runnable() {
+       /* mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
             }
-        });
+        });*/
     }
 
     @Override
     public void setIsRegister(boolean isRegister) {
         super.setIsRegister(isRegister);
-        if (isRegister) {
+     /*   if (isRegister) {
             ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_online);
         } else {
             ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
-        }
+        }*/
     }
 
     @Override
@@ -890,9 +885,9 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
-                if (!isRegister) {
+            /*    if (!isRegister) {
                     ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
-                }
+                }*/
             }
         });
     }
@@ -900,7 +895,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     // 03.16 设置模拟的聊天连接
     public void onConnects() {
         addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, CONNECT, "");
-        ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_online);
+       // ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_online);
     }
 
     /**
@@ -912,7 +907,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 isRegister = true;
-                ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_online);
+               // ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_online);
             }
         });
     }
@@ -927,14 +922,14 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             public void run() {
                 isRegister = false;
                 addMessage(SYSTEM_TIP, LiveMessageEntity.MESSAGE_TIP, DISCONNECT, "");
-                ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
+              //  ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_offline);
             }
         });
     }
 
     @Override
     public void onUserList(String channel, final User[] users) {
-        mainHandler.post(new Runnable() {
+       /* mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
@@ -947,7 +942,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                     }
                 }
             }
-        });
+        });*/
     }
 
     @Override
@@ -989,7 +984,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
-        mainHandler.post(new Runnable() {
+        /*mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
@@ -1002,12 +997,12 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                     }
                 }
             }
-        });
+        });*/
     }
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        mainHandler.post(new Runnable() {
+      /*  mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
@@ -1020,7 +1015,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                     }
                 }
             }
-        });
+        });*/
     }
 
     @Override
@@ -1228,7 +1223,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
 
     public void showPeopleCount(int num) {
-        tvOnliveNum.setText(num + "人正在上课");
+       // tvOnliveNum.setText(num + "人正在上课");
     }
 
 
