@@ -90,6 +90,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     private ArrayList<String> mUrls;
     private ArrayList<String> mArtsUrls;
     private LiveHttpManager mHttpManager;
+    /** 公共资源 */
     private ArrayList<String> mtexts;
     private ArrayList<String> mfonts;
     private int count = 0;
@@ -414,30 +415,60 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 mUrls.add(mList.get(i).getTemplateUrl());
             }
         }
-        // 添加字体的下载链接
+        // 公共资源的下载链接
         if (mtexts.size() > 0) {
-            // 字体文件直接下载到zip解压的文件夹中
             for (int i = 0; i < mtexts.size(); i++) {
-                String url = mtexts.get(i);
-                final String fileName = MD5Utils.getMD5(url);
-                final File save = new File(mPublicCacheout, fileName);
-                if (!fileIsExists(save.getPath())) {
-                    final File tempFile = new File(mPublicCacheout, fileName + ".temp");
-                    mHttpManager.download(mtexts.get(i), tempFile.getPath(), new DownloadCallBack() {
-                        @Override
-                        protected void onDownloadSuccess() {
-                            boolean renameTo = tempFile.renameTo(save);
-                            logger.d("onDownloadSuccess(mtexts):fileName=" + fileName + ",renameTo=" + renameTo);
-                        }
+                final String url = mtexts.get(i);
+                //带zip的下载解压
+                if (url.endsWith(".zip")) {
+                    final String fileName;
+                    int index = url.lastIndexOf("/");
+                    if (index != -1) {
+                        fileName = url.substring(index + 1);
+                    } else {
+                        fileName = MD5Utils.getMD5(url);
+                    }
+                    final File save = new File(mPublicCacheout, fileName);
+                    if (!fileIsExists(save.getPath())) {
+                        final File tempFile = new File(mPublicCacheout, fileName + ".temp");
+                        mHttpManager.download(mtexts.get(i), tempFile.getPath(), new DownloadCallBack() {
+                            @Override
+                            protected void onDownloadSuccess() {
+                                boolean renameTo = tempFile.renameTo(save);
+                                logger.d("onDownloadSuccess(mtexts zip):fileName=" + fileName + ",renameTo=" + renameTo);
+                                new ZipExtractorTask(save, mPublicCacheout, true, new Progresses()).execute();
+                            }
 
-                        @Override
-                        protected void onDownloadFailed() {
-                            logger.d("onDownloadFailed(mtexts):fileName=" + fileName);
+                            @Override
+                            protected void onDownloadFailed() {
+                                logger.d("onDownloadFailed(mtexts zip):fileName=" + fileName);
 //                            XESToastUtils.showToast(context, "下载字体包失败");
-                        }
-                    });
+                            }
+                        });
+                    } else {
+                        logger.d("fileIsExists(mtexts zip):fileName=" + fileName);
+                    }
                 } else {
-                    logger.d("fileIsExists(mtexts):fileName=" + fileName);
+                    final String fileName = MD5Utils.getMD5(url);
+                    final File save = new File(mPublicCacheout, fileName);
+                    if (!fileIsExists(save.getPath())) {
+                        final File tempFile = new File(mPublicCacheout, fileName + ".temp");
+                        mHttpManager.download(mtexts.get(i), tempFile.getPath(), new DownloadCallBack() {
+                            @Override
+                            protected void onDownloadSuccess() {
+                                boolean renameTo = tempFile.renameTo(save);
+                                logger.d("onDownloadSuccess(mtexts):fileName=" + fileName + ",renameTo=" + renameTo);
+                            }
+
+                            @Override
+                            protected void onDownloadFailed() {
+                                logger.d("onDownloadFailed(mtexts):fileName=" + fileName);
+//                            XESToastUtils.showToast(context, "下载字体包失败");
+                            }
+                        });
+                    } else {
+                        logger.d("fileIsExists(mtexts):fileName=" + fileName);
+                    }
                 }
             }
         }

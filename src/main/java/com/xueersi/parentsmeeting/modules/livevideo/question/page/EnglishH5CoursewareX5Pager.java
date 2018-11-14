@@ -316,7 +316,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
                 public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
-                    File file;
+                    File file = null;
                     int index = s.indexOf("courseware_pages");
                     if (index != -1) {
                         String url2 = s.substring(index + "courseware_pages".length());
@@ -327,13 +327,20 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         file = new File(mMorecacheout, url2);
                         logger.d("shouldInterceptRequest:file=" + file + ",file=" + file.exists());
                     } else {
-                        String filemd5 = MD5Utils.getMD5(s);
-                        file = new File(mMorecacheout, filemd5);
-                        if (!file.exists()) {
-                            File pubFile = new File(mPublicCacheout, filemd5);
-                            if (pubFile.exists()) {
-                                file = pubFile;
+                        index = s.indexOf("MathJax");
+                        if (index != -1) {
+                            String name;
+                            int questionIndex = s.indexOf("?");
+                            if (questionIndex != -1) {
+                                name = s.substring(index + 8, questionIndex);
+                            } else {
+                                name = s.substring(index + 8);
                             }
+                            File pubFile = new File(mPublicCacheout, name);
+                            file = pubFile;
+                        } else {
+                            String filemd5 = MD5Utils.getMD5(s);
+                            file = new File(mMorecacheout, filemd5);
                         }
                         index = s.lastIndexOf("/");
                         String name = s;
