@@ -81,11 +81,16 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     private List<ArtsMoreChoice> mArtsList;
     private File mMorecachein;
     private File mMorecacheout;
+    /** 公共资源 */
+    private File mPublicCacheout;
+    /** 公共资源 */
+    public static String mPublicCacheoutName = "publicRes";
     private File mArtsMorecachein;
     private File mArtsMorecacheout;
     private ArrayList<String> mUrls;
     private ArrayList<String> mArtsUrls;
     private LiveHttpManager mHttpManager;
+    /** 公共资源 */
     private ArrayList<String> mtexts;
     private ArrayList<String> mfonts;
     private int count = 0;
@@ -128,7 +133,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
-            logger.d( "handleMessage:cacheReceiver=" + (cacheReceiver == null));
+            logger.d("handleMessage:cacheReceiver=" + (cacheReceiver == null));
             if (cacheReceiver == null) {
                 return;
             }
@@ -155,7 +160,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     };
 
     @Override
-    public void  getCourseWareUrl() {
+    public void getCourseWareUrl() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         final String today = dateFormat.format(date);
@@ -166,7 +171,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         if (!todayLiveCacheDir.exists()) {
             mkdirs = todayLiveCacheDir.mkdirs();
         }
-        logger.d( "getCourseWareUrl:exists=" + exists + ",mkdirs=" + mkdirs);
+        logger.d("getCourseWareUrl:exists=" + exists + ",mkdirs=" + mkdirs);
         CacheWebView.getCacheConfig().init(context, todayLiveCacheDir.getPath(), 1024 * 1024 * 100, 1024 * 1024 * 10)
                 .enableDebug(AppConfig.DEBUG);//100M 磁盘缓存空间,10M 内存缓存空间
         //替换x5浏览器，缓存mp3经常出问题
@@ -186,15 +191,18 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 new Thread() {
                     @Override
                     public void run() {
+                        //删除除了公共资源的文件夹
                         File files[] = cacheFile.listFiles();
                         if (files != null) {
                             for (int i = 0; i < files.length; i++) {
                                 File delectFile = files[i];
                                 if (!delectFile.getPath().equals(todayCacheDir.getPath())) {
-                                    if (delectFile.isDirectory()) {
-                                        FileUtils.deleteDir(delectFile);
-                                    } else {
-                                        FileUtils.deleteFile(delectFile);
+                                    if (!delectFile.getName().startsWith(mPublicCacheoutName)) {
+                                        if (delectFile.isDirectory()) {
+                                            FileUtils.deleteDir(delectFile);
+                                        } else {
+                                            FileUtils.deleteFile(delectFile);
+                                        }
                                     }
                                 }
                             }
@@ -202,7 +210,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     }
                 }.start();
                 final JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                logger.d( "getCourseWareUrl:onPmSuccess:jsonObject=" + jsonObject);
+                logger.d("getCourseWareUrl:onPmSuccess:jsonObject=" + jsonObject);
                 try {
                     JSONObject liveIdObj = jsonObject.getJSONObject(liveId);
                     JSONArray urlArray = liveIdObj.getJSONArray("url");
@@ -217,7 +225,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         }
 //                        urls.add(play_url);
                     }
-                    logger.d( "getCourseWareUrl:onPmSuccess:urlArray=" + urlArray.length() + ",urls=" + urls.size());
+                    logger.d("getCourseWareUrl:onPmSuccess:urlArray=" + urlArray.length() + ",urls=" + urls.size());
                     JSONArray infoArray = liveIdObj.getJSONArray("infos");
                     for (int i = 0; i < infoArray.length(); i++) {
                         JSONObject infoObj = infoArray.getJSONObject(i);
@@ -225,7 +233,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         String courseware_type = infoObj.getString("type");
                         String play_url = "https://live.xueersi.com/Live/coursewareH5/" + liveId + "/" + id + "/" + courseware_type
                                 + "/123456";
-                        logger.d( "getCourseWareUrl:onPmSuccess:play_url=" + play_url);
+                        logger.d("getCourseWareUrl:onPmSuccess:play_url=" + play_url);
 //                        urls.add(play_url);
                     }
                     if (urls.isEmpty()) {
@@ -246,43 +254,46 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         handler.sendMessageDelayed(msg, i * 5000);
                     }
                 } catch (JSONException e) {
-                    logger.e( "onPmSuccess", e);
+                    logger.e("onPmSuccess", e);
                 }
             }
 
             @Override
             public void onFailure(Call call, IOException e) {
                 super.onFailure(call, e);
-                logger.e( "getCourseWareUrl:onFailure:e=" + e);
+                logger.e("getCourseWareUrl:onFailure:e=" + e);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                logger.e( "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
+                logger.e("getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
             }
         });
-
+        mPublicCacheout = new File(cacheFile, mPublicCacheoutName);
+        if (!mPublicCacheout.exists()) {
+            mPublicCacheout.mkdirs();
+        }
         // 一次多发的接口调用
-       if(LiveVideoConfig.isScience){
-           ScienceMulPreDownLoad(todayLiveCacheDir);
-       }else{
-           ArtsMulPreDownLoad(todayLiveCacheDir);
-       }
+        if (LiveVideoConfig.isScience) {
+            ScienceMulPreDownLoad(todayLiveCacheDir);
+        } else {
+            ArtsMulPreDownLoad(todayLiveCacheDir);
+        }
     }
 
     private void ArtsMulPreDownLoad(final File path) {
         mHttpManager.getArtsMoreCoureWareUrl(liveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                logger.e( "responseEntity.getJsonObject=" + responseEntity.getJsonObject());
+                logger.e("responseEntity.getJsonObject=" + responseEntity.getJsonObject());
 //                final Object jsonObject = responseEntity.getJsonObject();
                 JSONObject objects = new JSONObject(responseEntity.getJsonObject().toString());
                 JSONArray array = objects.optJSONArray("List");
                 JSONArray font = objects.optJSONArray("Font");
                 mArtsList = new ArrayList<>();
                 mfonts = new ArrayList<>();
-                for(int i = 0 ; i < array.length() ; i++){
+                for (int i = 0; i < array.length(); i++) {
                     ArtsMoreChoice cache = new ArtsMoreChoice();
                     JSONObject object = array.getJSONObject(i);
                     cache.setSourceId(object.optString("sourceId"));
@@ -294,7 +305,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     String txt = font.optString(i);
                     mfonts.add(txt);
                 }
-                if(mArtsList.size() > 0){
+                if (mArtsList.size() > 0) {
                     Artsdownload(path);
                 }
 
@@ -303,13 +314,13 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             @Override
             public void onFailure(Call call, IOException e) {
                 super.onFailure(call, e);
-                logger.e( "getCourseWareUrl:onFailure:e=" + e);
+                logger.e("getCourseWareUrl:onFailure:e=" + e);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                logger.e( "getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
+                logger.e("getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
             }
         });
     }
@@ -325,7 +336,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             mArtsMorecacheout.mkdirs();
         }
         // 文科一发多题下载及解压预加载的文件
-        for(int i = 0 ; i < mArtsList.size() ; i++){
+        for (int i = 0; i < mArtsList.size(); i++) {
             if (!TextUtils.isEmpty(mArtsList.get(i).getResourceUrl()) && !mArtsUrls.contains(mArtsList.get(i).getResourceUrl())) {
                 mArtsUrls.add(mArtsList.get(i).getResourceUrl());
             }
@@ -348,7 +359,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
 
                     @Override
                     protected void onDownloadFailed() {
-                        logger.d( "onDownloadFailed(mUrls):url=" + url);
+                        logger.d("onDownloadFailed(mUrls):url=" + url);
 //                        XESToastUtils.showToast(context, "下载文科资源包失败");
                     }
                 });
@@ -369,17 +380,17 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         @Override
                         protected void onDownloadSuccess() {
                             boolean renameTo = tempFile.renameTo(save);
-                            logger.d( "onDownloadSuccess(mtexts):fileName=" + fileName + ",renameTo=" + renameTo);
+                            logger.d("onDownloadSuccess(mtexts):fileName=" + fileName + ",renameTo=" + renameTo);
                         }
 
                         @Override
                         protected void onDownloadFailed() {
-                            logger.d( "onDownloadFailed(mtexts):fileName=" + fileName);
+                            logger.d("onDownloadFailed(mtexts):fileName=" + fileName);
 //                            XESToastUtils.showToast(context, "下载文科字体包失败");
                         }
                     });
                 } else {
-                    logger.d( "fileIsExists(mtexts):fileName=" + fileName);
+                    logger.d("fileIsExists(mtexts):fileName=" + fileName);
                 }
             }
         }
@@ -404,30 +415,60 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 mUrls.add(mList.get(i).getTemplateUrl());
             }
         }
-        // 添加字体的下载链接
+        // 公共资源的下载链接
         if (mtexts.size() > 0) {
-            // 字体文件直接下载到zip解压的文件夹中
             for (int i = 0; i < mtexts.size(); i++) {
-                String url = mtexts.get(i);
-                final String fileName = MD5Utils.getMD5(url);
-                final File save = new File(mMorecacheout, fileName);
-                if (!fileIsExists(save.getPath())) {
-                    final File tempFile = new File(mMorecacheout, fileName + ".temp");
-                    mHttpManager.download(mtexts.get(i), tempFile.getPath(), new DownloadCallBack() {
-                        @Override
-                        protected void onDownloadSuccess() {
-                            boolean renameTo = tempFile.renameTo(save);
-                            logger.d( "onDownloadSuccess(mtexts):fileName=" + fileName + ",renameTo=" + renameTo);
-                        }
+                final String url = mtexts.get(i);
+                //带zip的下载解压
+                if (url.endsWith(".zip")) {
+                    final String fileName;
+                    int index = url.lastIndexOf("/");
+                    if (index != -1) {
+                        fileName = url.substring(index + 1);
+                    } else {
+                        fileName = MD5Utils.getMD5(url);
+                    }
+                    final File save = new File(mPublicCacheout, fileName);
+                    if (!fileIsExists(save.getPath())) {
+                        final File tempFile = new File(mPublicCacheout, fileName + ".temp");
+                        mHttpManager.download(mtexts.get(i), tempFile.getPath(), new DownloadCallBack() {
+                            @Override
+                            protected void onDownloadSuccess() {
+                                boolean renameTo = tempFile.renameTo(save);
+                                logger.d("onDownloadSuccess(mtexts zip):fileName=" + fileName + ",renameTo=" + renameTo);
+                                new ZipExtractorTask(save, mPublicCacheout, true, new Progresses()).execute();
+                            }
 
-                        @Override
-                        protected void onDownloadFailed() {
-                            logger.d( "onDownloadFailed(mtexts):fileName=" + fileName);
+                            @Override
+                            protected void onDownloadFailed() {
+                                logger.d("onDownloadFailed(mtexts zip):fileName=" + fileName);
 //                            XESToastUtils.showToast(context, "下载字体包失败");
-                        }
-                    });
+                            }
+                        });
+                    } else {
+                        logger.d("fileIsExists(mtexts zip):fileName=" + fileName);
+                    }
                 } else {
-                    logger.d( "fileIsExists(mtexts):fileName=" + fileName);
+                    final String fileName = MD5Utils.getMD5(url);
+                    final File save = new File(mPublicCacheout, fileName);
+                    if (!fileIsExists(save.getPath())) {
+                        final File tempFile = new File(mPublicCacheout, fileName + ".temp");
+                        mHttpManager.download(mtexts.get(i), tempFile.getPath(), new DownloadCallBack() {
+                            @Override
+                            protected void onDownloadSuccess() {
+                                boolean renameTo = tempFile.renameTo(save);
+                                logger.d("onDownloadSuccess(mtexts):fileName=" + fileName + ",renameTo=" + renameTo);
+                            }
+
+                            @Override
+                            protected void onDownloadFailed() {
+                                logger.d("onDownloadFailed(mtexts):fileName=" + fileName);
+//                            XESToastUtils.showToast(context, "下载字体包失败");
+                            }
+                        });
+                    } else {
+                        logger.d("fileIsExists(mtexts):fileName=" + fileName);
+                    }
                 }
             }
         }
@@ -440,18 +481,18 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     @Override
                     protected void onDownloadSuccess() {
                         boolean renameTo = tempFile.renameTo(save);
-                        logger.d( "onDownloadSuccess(mUrls):url=" + url + ",renameTo=" + renameTo);
+                        logger.d("onDownloadSuccess(mUrls):url=" + url + ",renameTo=" + renameTo);
                         new ZipExtractorTask(new File(mMorecachein, url), mMorecacheout, true, new Progresses()).execute();
                     }
 
                     @Override
                     protected void onDownloadFailed() {
-                        logger.d( "onDownloadFailed(mUrls):url=" + url);
+                        logger.d("onDownloadFailed(mUrls):url=" + url);
 //                        XESToastUtils.showToast(context, "下载资源包失败");
                     }
                 });
             } else {
-                logger.d( "fileIsExists(mtexts):fileName=" + url);
+                logger.d("fileIsExists(mtexts):fileName=" + url);
             }
         }
 
@@ -474,11 +515,11 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         }
     }
 
-    public void ScienceMulPreDownLoad(final File path){
+    public void ScienceMulPreDownLoad(final File path) {
         mHttpManager.getMoreCoureWareUrl(liveId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                logger.e( "responseEntity.getJsonObject=" + responseEntity.getJsonObject());
+                logger.e("responseEntity.getJsonObject=" + responseEntity.getJsonObject());
                 JSONObject objects = new JSONObject(responseEntity.getJsonObject().toString());
                 JSONArray array = objects.optJSONArray("list");
                 JSONArray res = objects.optJSONArray("resource");
@@ -504,8 +545,8 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                     String txt = loadpages.optString(i);
                     mtexts.add(txt);
                 }
-                logger.e( "list=" + mList.size());
-                logger.e( "text=" + mtexts.size());
+                logger.e("list=" + mList.size());
+                logger.e("text=" + mtexts.size());
                 if (mList.size() > 0) {
                     download(path);
                 }
@@ -514,7 +555,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             @Override
             public void onFailure(Call call, IOException e) {
                 super.onFailure(call, e);
-                logger.e( "getCourseWareUrl:onFailure:e=" + e);
+                logger.e("getCourseWareUrl:onFailure:e=" + e);
             }
 
             @Override
@@ -578,7 +619,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             } else {
                 error(url);
             }
-            logger.d( "onReceive:status=" + status + ",time=" + time + ",url=" + url);
+            logger.d("onReceive:status=" + status + ",time=" + time + ",url=" + url);
         }
 
         private void success(String url) {
@@ -590,19 +631,19 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            logger.d( "onReceive:success:urls=" + urls.size() + ",errorUrls=" + errorUrls.size());
+            logger.d("onReceive:success:urls=" + urls.size() + ",errorUrls=" + errorUrls.size());
         }
 
         private void error(String url) {
             urls.remove(url);
             errorUrls.add(url);
-            logger.d( "onReceive:error:urls=" + urls.size() + ",errorUrls=" + errorUrls.size());
+            logger.d("onReceive:error:urls=" + urls.size() + ",errorUrls=" + errorUrls.size());
             ifOnEnd();
         }
 
         private void ifOnEnd() {
             if (urls.isEmpty()) {
-                logger.d( "onReceive:ifOnEnd:errorUrls=" + errorUrls.size() + ",successUrls=" + successUrls.size() + ",isRetry=" + isRetry);
+                logger.d("onReceive:ifOnEnd:errorUrls=" + errorUrls.size() + ",successUrls=" + successUrls.size() + ",isRetry=" + isRetry);
                 if (isRetry) {
                     if (cacheReceiver != null) {
                         context.unregisterReceiver(cacheReceiver);
@@ -646,7 +687,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
 
         private void retry() {
             isRetry = true;
-            logger.d( "retry");
+            logger.d("retry");
             final ArrayList<String> errorUrls2 = new ArrayList<>();
             errorUrls2.addAll(errorUrls);
             errorUrls.clear();
@@ -670,7 +711,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             return;
         }
         if (cacheReceiver != null) {
-            logger.d( "onNetWorkChange:urls=" + cacheReceiver.urls.size() + ",errorUrls=" + cacheReceiver.errorUrls.size());
+            logger.d("onNetWorkChange:urls=" + cacheReceiver.urls.size() + ",errorUrls=" + cacheReceiver.errorUrls.size());
             if (cacheReceiver.urls.isEmpty() && !cacheReceiver.errorUrls.isEmpty()) {
                 cacheReceiver.retry();
             }
@@ -711,7 +752,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             }
         });
         cacheWebView.loadUrl(url);
-        logger.i( "loadUrl:url=" + url);
+        logger.i("loadUrl:url=" + url);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
