@@ -211,6 +211,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         if (visible == View.GONE) {
             ivTeacherNotpresent.setVisibility(View.GONE);
             rlFirstBackgroundView.setVisibility(View.GONE);
+            showVedioLoading(visible);
         } else {
             if (ivTeacherNotpresent.getVisibility() == View.VISIBLE) {
                 Log.e("VideoFlow", "====>setFirstBackgroundVisible 66666 ");
