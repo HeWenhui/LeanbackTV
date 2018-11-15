@@ -695,13 +695,22 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVALUATEARTS, params, requestCallBack);
     }
 
-    /** 语音评测排行榜 */
+    /** 语音评测排行榜  兼容全身直播新课件平台改版的Top3*/
     public void getSpeechEvalAnswerTeamRank(String id, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("testId", id);
-        setDefaultParameter(params);
-        logger.i("getSpeechEvalAnswerTeamRank:id=" + id);
-        sendPost(liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM_RAND, params, requestCallBack);
+        if(LiveVideoConfig.isNewArts){
+            HttpRequestParams params = new HttpRequestParams();
+            params.addBodyParam("testId", id);
+            setDefaultParameter(params);
+            logger.i("getSpeechEvalAnswerTeamRank:id=" + id);
+            sendPost(liveVideoSAConfigInner.URL_LIVE_ROLE_SPEECH_TEAM_TOP3, params, requestCallBack);
+        }else{
+            HttpRequestParams params = new HttpRequestParams();
+            params.addBodyParam("testId", id);
+            setDefaultParameter(params);
+            logger.i("getSpeechEvalAnswerTeamRank:id=" + id);
+            sendPost(liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM_RAND, params, requestCallBack);
+        }
+
     }
 
     public void speechEval42IsAnswered(String enstuId, String liveId, String id, HttpCallBack requestCallBack) {
@@ -1114,12 +1123,20 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_TEMPK_PKTEAMINFO, params, requestCallBack);
     }
 
-    /** roleplay组内排行榜 */
+    /** roleplay组内排行榜 兼容全身直播新课件的改版Top3*/
     public void getRolePlayAnswerTeamRank(String testId, HttpCallBack callBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("testId", testId);
-        setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_LIVE_ROLE_TEAM, params, callBack);
+        if(LiveVideoConfig.isNewArts){
+            HttpRequestParams params = new HttpRequestParams();
+            params.addBodyParam("testId", testId);
+            setDefaultParameter(params);
+            sendPost(liveVideoSAConfigInner.URL_LIVE_ROLE_TOP3, params, callBack);
+        }else{
+            HttpRequestParams params = new HttpRequestParams();
+            params.addBodyParam("testId", testId);
+            setDefaultParameter(params);
+            sendPost(liveVideoSAConfigInner.URL_LIVE_ROLE_TEAM, params, callBack);
+        }
+
     }
 
     /** 直播讲座获取更多课程的信息 */
