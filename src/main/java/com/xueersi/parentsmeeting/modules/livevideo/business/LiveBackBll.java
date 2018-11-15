@@ -173,6 +173,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                         oldSize = lstVideoQuestion.size();
                         for (int i = 0; i < lstVideoQuestion.size(); i++) {
                             VideoQuestionEntity questionEntity = lstVideoQuestion.get(i);
+                            //战队pk分队
                             if (questionEntity.getvCategory() == 23) {
                                 lstVideoQuestion.remove(i);
                                 i--;
