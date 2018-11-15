@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.se;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -14,9 +15,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.buycourse.ExperienceBuyCoursePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationPager;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.recommodcourse.StandExperienceRecommondBll;
 
 import java.util.List;
@@ -152,14 +152,21 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
             if (liveBackBaseBll instanceof StandExperienceEventBaseBll) {
                 ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
             }
-            //展示购课窗口
+            //如果prek为false，并且examUrl不为null,则加载定级卷
+            if (!mVideoEntity.isPrek() && !TextUtils.isEmpty(mVideoEntity.getExamUrl())) {
+                //展示购课窗口
 //            if (liveBackBaseBll instanceof ExperienceBuyCoursePresenter) {
 //                ((ExperienceBuyCoursePresenter) liveBackBaseBll).showNextWindow();
 //                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
 //            }
-            //定级卷展示窗口
-            if(liveBackBaseBll instanceof StandExperienceEvaluationBll){
-                showNextWindow((StandExperienceEvaluationBll)liveBackBaseBll);
+                //定级卷展示窗口
+                if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
+                    showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
+                }
+            } else {//反过来，prek为true，或者examUrl为null，不加载定级卷
+                if (liveBackBaseBll instanceof StandExperienceLearnFeedbackBll) {
+                    showNextWindow((StandExperienceLearnFeedbackBll) liveBackBaseBll);
+                }
             }
         }
     }
