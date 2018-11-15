@@ -99,6 +99,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     private Button btMessageSend;
     //聊天表情的表情包
     private Button btMessageExpress;
+    //聊天适配器
     private CommonAdapter<LiveMessageEntity> messageAdapter;
     private CommonAdapter<LiveMessageEntity> otherMessageAdapter;
     private boolean isTouch = false;
@@ -137,11 +138,11 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
 
     /** 小学语文送花的pager */
     private SmallChineseSendGiftPager giftPager;
-
-    public SmallChineseLiveMessagePager(Context context) {
-        super(context);
-
-    }
+    /**
+     * 聊天消息的颜色
+     */
+    private int[] messageColors;
+    private Drawable messageBackgroundColors[];
 
     public SmallChineseLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                         LiveAndBackDebug ums, BaseLiveMediaControllerBottom liveMediaControllerBottom,
@@ -170,10 +171,33 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             }
         });
         setVideoLayout(LiveVideoPoint.getInstance());
-        //重写color mine teacher class tip
+        /**
+         *重写说话人的color
+         *0.mine
+         *1.teacher
+         *3.class
+         *4.tip
+         */
+
         Resources resources = context.getResources();
-        nameColors = new int[]{resources.getColor(R.color.COLOR_FFFFFF), resources.getColor(R.color.COLOR_FFB400),
-                resources.getColor(R.color.COLOR_C3DAFF), resources.getColor(R.color.COLOR_FFB400)};
+        nameColors = new int[]{
+                resources.getColor(R.color.COLOR_005B56),
+                resources.getColor(R.color.COLOR_005B56),
+                resources.getColor(R.color.COLOR_005952),
+                resources.getColor(R.color.COLOR_005B56)
+        };
+        messageColors = new int[]{
+                resources.getColor(R.color.COLOR_FEFFFF),
+                resources.getColor(R.color.COLOR_00867F),
+                resources.getColor(R.color.COLOR_005952),
+                resources.getColor(R.color.COLOR_00867F),
+        };
+        messageBackgroundColors = new Drawable[]{
+                mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_message_my_one_line_background),
+                mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_message_other_one_line_background),
+                mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_message_other_one_line_background),
+                mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_message_other_one_line_background)
+        };
     }
 
     @Override
@@ -224,18 +248,22 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
                 return new AdapterItemInterface<LiveMessageEntity>() {
+                    /** 说话的内容 */
                     FangZhengCuYuanTextView tvMessageWords;
+                    /** 说话人使用的方式 */
                     FangZhengCuYuanTextView tvMessageSpeaker;
+                    /** 聊天使用的背景色 */
+                    Drawable backgroundDrawable;
 
                     @Override
                     public int getLayoutResId() {
-                        return R.layout.item_livevideo_message;
+                        return R.layout.item_small_chinese_message_item;
                     }
 
                     @Override
                     public void initViews(View root) {
                         tvMessageSpeaker = root.findViewById(R.id.tv_livevideo_small_chinese_live_message_author);
-                        tvMessageWords = root.findViewById(R.id.tv_livevideo_message_item);
+                        tvMessageWords = root.findViewById(R.id.tv_livevideo_small_chinese_live_message_content);
                         tvMessageWords.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
                     }
 
@@ -247,55 +275,54 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                     public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
                         String sender = entity.getSender();
                         SpannableString spanttt = new SpannableString(sender + ": ");
-                        int color, messageColor;
+                        int nameColor, messageColor;
                         switch (entity.getType()) {
                             case LiveMessageEntity.MESSAGE_MINE://如果是我的消息
-                                color = nameColors[entity.getType()];
-                                messageColor = mContext.getResources().getColor(R.color.COLOR_FFFFFFFF);
+                                nameColor = nameColors[entity.getType()];
+                                messageColor = messageColors[entity.getType()];
+                                backgroundDrawable = messageBackgroundColors[entity.getType()];
 //                                logger.i();
                                 break;
                             case LiveMessageEntity.MESSAGE_TEACHER://如果是老师的消息
-                                color = nameColors[entity.getType()];
-                                messageColor = mContext.getResources().getColor(R.color.COLOR_FFC3DAFF);
+                                nameColor = nameColors[entity.getType()];
+                                messageColor = messageColors[entity.getType()];
+                                backgroundDrawable = messageBackgroundColors[entity.getType()];
 //                                logger.i();
                                 break;
                             case LiveMessageEntity.MESSAGE_TIP://如果是系统提示
-                                color = nameColors[entity.getType()];
-                                messageColor = mContext.getResources().getColor(R.color.COLOR_FFFFFFFF);
+                                nameColor = nameColors[entity.getType()];
+                                messageColor = messageColors[entity.getType()];
+                                backgroundDrawable = messageBackgroundColors[entity.getType()];
 //                                logger.i();
                                 break;
                             case LiveMessageEntity.MESSAGE_CLASS://如果是同学的消息
-                                color = nameColors[entity.getType()];
-                                messageColor = mContext.getResources().getColor(R.color.COLOR_FFC3DAFF);
+                                nameColor = nameColors[entity.getType()];
+                                messageColor = messageColors[entity.getType()];
+                                backgroundDrawable = messageBackgroundColors[entity.getType()];
 //                                logger.i();
                                 break;
                             default:
-                                color = nameColors[0];
-                                messageColor = mContext.getResources().getColor(R.color.COLOR_FFFFFFFF);
-//                                Log.w(TAG, "5:" + messageColor);
+                                nameColor = nameColors[0];
+                                messageColor = messageColors[entity.getType()];
+                                backgroundDrawable = messageBackgroundColors[entity.getType()];
                                 break;
                         }
+
                         SpannableStringBuilder messageSpan = new SpannableStringBuilder(entity.getText());
-                        CharacterStyle characterStyle = new ForegroundColorSpan(color);
+                        CharacterStyle nameStyle = new ForegroundColorSpan(nameColor);
                         CharacterStyle messageStyle = new ForegroundColorSpan(messageColor);
-                        spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        messageSpan.setSpan(messageStyle, 0, entity.getText().length(), Spanned
-                                .SPAN_INCLUSIVE_EXCLUSIVE);
+                        spanttt.setSpan(nameStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        messageSpan.setSpan(messageStyle, 0, entity.getText().length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                         if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
                             tvMessageWords.setAutoLinkMask(Linkify.WEB_URLS);
-//                            tvMessageWords.setText(entity.getText());
                             urlClick(tvMessageWords);
-//                            CharSequence text = tvMessageItem.getText();
-                            tvMessageWords.setText(spanttt);
-                            tvMessageWords.append(messageSpan);
-//                            Log.w(TAG, "6:" + messageColor + " " + entity.getText());
-//                            tvMessageItem.append(text);
                         } else {
                             tvMessageWords.setAutoLinkMask(0);
-                            tvMessageWords.setText(spanttt);
-                            tvMessageWords.append(messageSpan);
-//                            Log.w(TAG, "7:" + messageColor + " " + entity.getText());
                         }
+                        tvMessageSpeaker.setText(sender);
+//                            tvMessageWords.append(messageSpan);
+                        tvMessageWords.setText(messageSpan);
+                        tvMessageWords.setBackgroundDrawable(backgroundDrawable);
                     }
                 };
             }
@@ -431,13 +458,15 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                 }
                 //小英
                 if (smallChineseSendGiftPager != null) {
-                    //设置蒙层
-//                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
-//                            .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//                    decorView.addView(frameLayout, layoutParams);
+                    //添加到正中间
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
+                            .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    decorView.addView(smallChineseSendGiftPager.getRootView(), layoutParams);
 //                    mFlowerWindow.setBackgroundDrawable(dw);
 //                    mFlowerWindow.setContentView(smallChineseSendGiftPager.getRootView());
 //                    mFlowerWindow.showAtLocation(mView, Gravity.LEFT, 0, 0);
+
                 }
                 isHaveFlowers = true;
             }

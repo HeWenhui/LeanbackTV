@@ -5,27 +5,131 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/bg_livevideo_small_chinese_rank_top_icon"
+        android:id="@+id/iv_livevideo_small_chinese_rank_top_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_livevideo_small_chinese_rank_top_icon"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:src="@drawable/bg_livevideo_small_chinese_rank_top_icon"
+        android:id="@+id/iv_livevideo_small_chinese_rank_rank_background"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="68dp"
+        android:background="@drawable/bg_livevideo_small_chinese_rank_background"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_rank_left_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="55dp" />
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="49dp"
+        android:src="@drawable/bg_livevideo_small_chinese_rank_btn_nor"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="组内"
+        android:textColor="@color/COLOR_172C06"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_small_chinese_rank_left_btn"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_rank_left_btn"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_rank_left_btn"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_rank_left_btn" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_rank_middle_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bg_livevideo_small_chinese_rank_btn_nor"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_rank_top_icon"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_rank_top_icon"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_rank_left_btn" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="小组"
+        android:textColor="@color/COLOR_172C06"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_small_chinese_rank_middle_btn"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_rank_middle_btn"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_rank_middle_btn"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_rank_middle_btn" />
+
+    <ImageView
+        android:id="@+id/iv_livevideo_small_chinese_rank_right_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="4dp"
+        android:src="@drawable/bg_livevideo_small_chinese_rank_btn_nor"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_rank_top_icon"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_rank_left_btn" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="班级"
+        android:textColor="@color/COLOR_172C06"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_small_chinese_rank_right_btn"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_rank_right_btn"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_rank_right_btn"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_rank_right_btn" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@+id/fzcytv_livevideo_small_chinese_left_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="23dp"
+        android:text="排名"
+        android:textColor="@color/COLOR_005952"
+        android:textSize="13sp"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_rank_rank_background"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_rank_rank_background" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@+id/fzcytv_livevideo_small_chinese_middle_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="小组"
+        android:textColor="@color/COLOR_005952"
+        android:textSize="13sp"
+        app:layout_constraintLeft_toLeftOf="@+id/fzcytv_livevideo_small_chinese_left_text"
+        app:layout_constraintRight_toRightOf="@+id/fzcytv_livevideo_small_chinese_right_text"
+        app:layout_constraintTop_toTopOf="@+id/fzcytv_livevideo_small_chinese_left_text" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@+id/fzcytv_livevideo_small_chinese_right_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:text="班级"
+        android:textColor="@color/COLOR_005952"
+        android:textSize="13sp"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_rank_rank_background"
+        app:layout_constraintTop_toTopOf="@+id/fzcytv_livevideo_small_chinese_left_text" />
+
+    <ListView
+        android:id="@+id/lv_livevideo_small_chinese_rank"
+        style="@style/listview_common_style"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="13dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="30dp"
+        android:divider="@color/transparent"
+        android:dividerHeight="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_small_chinese_rank_rank_background"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_rank_rank_background"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_rank_rank_background"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_rank_rank_background" />
 </android.support.constraint.ConstraintLayout>

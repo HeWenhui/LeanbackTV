@@ -22,6 +22,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RankItem;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RankPage.SmallChineseRankPager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
@@ -366,6 +367,8 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 }
             });
         } else if (LiveVideoConfig.isSmallChinese) {//如果是小学语文
+            SmallChineseRankPager mPager = new SmallChineseRankPager(mContext, allRankEntity);
+            relativeLayout = mPager.getRootView();
 
         } else {
             if (LiveVideoConfig.isPrimary) {
