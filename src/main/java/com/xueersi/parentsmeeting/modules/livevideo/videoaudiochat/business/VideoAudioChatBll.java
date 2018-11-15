@@ -53,7 +53,6 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     private int times = 0;
     private LogToFile mLogtf;
     private long startTime;
-    private AgoraVideoChatInter videoChatInter;
     private ChatTipBll chatTipBll;
     private RelativeLayout bottomContent;
     /** 举麦包含我 */
@@ -391,14 +390,15 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     }
 
     public void onNetWorkChange(int netWorkType) {
-        if (videoChatInter != null) {
-            videoChatInter.onNetWorkChange(netWorkType);
+        if (chatTipBll != null) {
+            chatTipBll.onNetWorkChange(netWorkType);
         }
     }
 
     public void stopRecord() {
         if (chatTipBll != null) {
             chatTipBll.stopRecord("stopRecord");
+            chatTipBll.destory();
             chatTipBll = null;
         }
         AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
@@ -417,15 +417,9 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     }
 
     public void onDestroy() {
-        if (videoChatInter != null) {
-            bottomContent.removeView(videoChatInter.getRootView());
-            stopRecord();
-            videoChatInter = null;
-            mLogtf.d("MIC_TIME:onDestroy:time=" + (System.currentTimeMillis() - startTime));
-        }
         if (chatTipBll != null) {
-            chatTipBll.destory();
-            chatTipBll = null;
+            stopRecord();
+            mLogtf.d("MIC_TIME:onDestroy:time=" + (System.currentTimeMillis() - startTime));
         }
         chatStatusChanges.clear();
     }

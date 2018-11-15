@@ -415,6 +415,7 @@ public class ChatTipBll {
             public void run() {
                 String nonce = StableLogHashMap.creatNonce();
                 VideoChatLog.sno4(liveAndBackDebug, nonce);
+                getInfo.setStuPutUpHandsNum(stuPutUpHandsNum + 1);
                 videoChatHttp.requestMicro(nonce, room, from);
                 videoChatHttp.chatHandAdd(new HttpCallBack(false) {
                     @Override
@@ -529,6 +530,12 @@ public class ChatTipBll {
                     raisehandClick();
                 }
             });
+        }
+    }
+
+    public void onNetWorkChange(int netWorkType) {
+        if (videoChatInter != null) {
+            videoChatInter.onNetWorkChange(netWorkType);
         }
     }
 
