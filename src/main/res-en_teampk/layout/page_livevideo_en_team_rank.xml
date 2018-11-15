@@ -3,16 +3,27 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="108.5dp"
-        android:layout_height="23dp"
+        android:id="@id/iv_livevideo_en_teampk_rank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:src="@drawable/livevideo_enteampk_benchangfenzu_title_pic_nor" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_en_teampk_rank_select"
+        android:layout_width="118dp"
+        android:layout_height="130dp"
+        android:src="@drawable/livevideo_enteampk_benchangzhanduifenzu_xuanze_pic_normal"
+        android:visibility="gone" />
 
     <GridView
         android:id="@id/gv_livevideo_en_teampk_rank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="39dp"
-        android:numColumns="4" />
+        android:layout_below="@id/iv_livevideo_en_teampk_rank"
+        android:layout_marginTop="17dp"
+        android:horizontalSpacing="9dp"
+        android:numColumns="4"
+        android:verticalSpacing="14dp" />
 </RelativeLayout>

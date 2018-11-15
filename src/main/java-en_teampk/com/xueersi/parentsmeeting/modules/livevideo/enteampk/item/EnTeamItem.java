@@ -11,7 +11,6 @@ import com.xueersi.ui.adapter.AdapterItemInterface;
 
 public class EnTeamItem implements AdapterItemInterface<EnTeamEntity> {
     private ImageView iv_livevideo_en_teampk_member;
-    private TextView tv_livevideo_en_teampk_name;
 
     @Override
     public int getLayoutResId() {
@@ -21,7 +20,6 @@ public class EnTeamItem implements AdapterItemInterface<EnTeamEntity> {
     @Override
     public void initViews(View root) {
         iv_livevideo_en_teampk_member = root.findViewById(R.id.iv_livevideo_en_teampk_member);
-        tv_livevideo_en_teampk_name = root.findViewById(R.id.tv_livevideo_en_teampk_name);
     }
 
     @Override
@@ -31,6 +29,6 @@ public class EnTeamItem implements AdapterItemInterface<EnTeamEntity> {
 
     @Override
     public void updateViews(EnTeamEntity entity, int position, Object objTag) {
-        tv_livevideo_en_teampk_name.setText(entity.name);
+        iv_livevideo_en_teampk_member.setImageResource(entity.resId);
     }
 }

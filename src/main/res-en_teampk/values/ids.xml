@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--开始分队-->
+    <item name="iv_livevideo_en_teampk_rank" type="id" />
     <item name="gv_livevideo_en_teampk_rank" type="id" />
+    <item name="iv_livevideo_en_teampk_rank_select" type="id" />
     <!--分队结果-->
     <item name="iv_livevideo_en_teampk_mine" type="id" />
     <item name="iv_livevideo_en_teampk_vs" type="id" />
@@ -14,6 +16,7 @@
     <item name="iv_livevideo_en_teampk_rank_score" type="id" />
     <item name="rv_livevideo_en_teampk_rank_score_tip" type="id" />
     <!--分队成员-->
+    <item name="fl_livevideo_en_teampk_member" type="id" />
     <item name="iv_livevideo_en_teampk_member" type="id" />
     <item name="tv_livevideo_en_teampk_name" type="id" />
     <!--答题领先-->

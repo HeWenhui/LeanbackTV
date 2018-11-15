@@ -30,9 +30,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         EnTeamPkBll teamPkBll = new EnTeamPkBll(activity);
         teamPkBll.setRootView(mRootView);
         enTeamPkAction = teamPkBll;
-//        enTeamPkAction.onRankStart();
+        enTeamPkAction.onRankStart();
 //        enTeamPkAction.onRankResult();
-        enTeamPkAction.onRankLead();
+//        enTeamPkAction.onRankLead();
     }
 
     @Override

@@ -64,9 +64,9 @@ public class TeamPkLeadPager extends LiveBasePager {
                         };
                         gv_livevideo_en_teampk_lead_star.setAdapter(myTeamAdapter);
                     }
-                }, 2500);
+                }, 100);
             }
-        }, 2000);
+        }, 100);
     }
 
     @Override
