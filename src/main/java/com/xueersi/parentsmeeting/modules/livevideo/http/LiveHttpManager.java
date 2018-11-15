@@ -479,12 +479,21 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     public void getSpeechEvalAnswerTeamStatus(String testId, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        String url = liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM;
+        if(LiveVideoConfig.isNewArts){
+            HttpRequestParams params = new HttpRequestParams();
+            String url = liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM_STATUS;
+            setDefaultParameter(params);
+            params.addBodyParam("testId", testId);
+            sendPost(url, params, requestCallBack);
+        }else{
+            HttpRequestParams params = new HttpRequestParams();
+            String url = liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM;
 //        params.addBodyParam("enstuId", enstuId);
-        setDefaultParameter(params);
-        params.addBodyParam("testId", testId);
-        sendPost(url, params, requestCallBack);
+            setDefaultParameter(params);
+            params.addBodyParam("testId", testId);
+            sendPost(url, params, requestCallBack);
+        }
+
     }
 
     public void liveSubmitTestH5Answer(String enstuId, String srcType, String testId, String liveId, String
