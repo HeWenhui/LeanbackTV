@@ -539,21 +539,23 @@ public class ChatTipBll {
         }
     }
 
-    public void stopRecord(String method) {
+    public void stopRecord(String method, boolean isDestory) {
         raiseHandCount = 0;
-        if (haveRaisehand) {
-            if (haveContainMe) {
-                MidToast.showToast(activity, "老师已结束本次举麦");
+        if (!isDestory) {
+            if (haveRaisehand) {
+                if (haveContainMe) {
+                    MidToast.showToast(activity, "老师已结束本次举麦");
+                } else {
+                    MidToast.showToast(activity, "很遗憾本次没有轮到你，下次再见哦");
+                }
+                haveRaisehand = false;
             } else {
-                MidToast.showToast(activity, "很遗憾本次没有轮到你，下次再见哦");
+                MidToast.showToast(activity, "老师已结束本次举麦");
             }
-            haveRaisehand = false;
-        } else {
-            MidToast.showToast(activity, "老师已结束本次举麦");
         }
         raisehand = false;
         onMic = "off";
-        logger.d("stopRecord:method=" + method);
+        logToFile.d("stopRecord:method=" + method);
         handler.removeCallbacks(waitRun);
         handler.post(new Runnable() {
             @Override
