@@ -415,6 +415,7 @@ public class ChatTipBll {
             public void run() {
                 String nonce = StableLogHashMap.creatNonce();
                 VideoChatLog.sno4(liveAndBackDebug, nonce);
+                getInfo.setStuPutUpHandsNum(stuPutUpHandsNum + 1);
                 videoChatHttp.requestMicro(nonce, room, from);
                 videoChatHttp.chatHandAdd(new HttpCallBack(false) {
                     @Override
@@ -532,21 +533,29 @@ public class ChatTipBll {
         }
     }
 
-    public void stopRecord(String method) {
+    public void onNetWorkChange(int netWorkType) {
+        if (videoChatInter != null) {
+            videoChatInter.onNetWorkChange(netWorkType);
+        }
+    }
+
+    public void stopRecord(String method, boolean isDestory) {
         raiseHandCount = 0;
-        if (haveRaisehand) {
-            if (haveContainMe) {
-                MidToast.showToast(activity, "老师已结束本次举麦");
+        if (!isDestory) {
+            if (haveRaisehand) {
+                if (haveContainMe) {
+                    MidToast.showToast(activity, "老师已结束本次举麦");
+                } else {
+                    MidToast.showToast(activity, "很遗憾本次没有轮到你，下次再见哦");
+                }
+                haveRaisehand = false;
             } else {
-                MidToast.showToast(activity, "很遗憾本次没有轮到你，下次再见哦");
+                MidToast.showToast(activity, "老师已结束本次举麦");
             }
-            haveRaisehand = false;
-        } else {
-            MidToast.showToast(activity, "老师已结束本次举麦");
         }
         raisehand = false;
         onMic = "off";
-        logger.d("stopRecord:method=" + method);
+        logToFile.d("stopRecord:method=" + method);
         handler.removeCallbacks(waitRun);
         handler.post(new Runnable() {
             @Override
