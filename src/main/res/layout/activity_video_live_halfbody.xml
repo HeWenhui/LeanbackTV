@@ -101,25 +101,26 @@
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
-            <!--文理半身直播 视频加载中loading-->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@id/rl_live_halfbody_video_loading"
-                >
-                <ImageView
-                    android:layout_width="160dp"
-                    android:layout_height="43dp"
-                    android:src="@drawable/icon_live_halfbody_video_loading"
-                    android:layout_centerInParent="true"
-                    android:scaleType="centerCrop"
-                    />
-            </RelativeLayout>
-
         </FrameLayout>
 
+        <!--文理半身直播 视频加载中loading-->
+       <!-- <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@id/rl_live_halfbody_video_loading"
+            android:visibility="visible"
+            >
+        </RelativeLayout>-->
 
-
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.VideoLoadingImgView
+            android:layout_width="115dp"
+            android:layout_height="28dp"
+            android:id="@id/rl_live_halfbody_video_loading"
+            android:src="@drawable/anim_live_video_loading"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            />
 
         <!-- 接麦老师视频界面位置 -->
         <RelativeLayout

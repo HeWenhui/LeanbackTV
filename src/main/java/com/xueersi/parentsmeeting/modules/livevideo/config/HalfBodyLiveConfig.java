@@ -9,8 +9,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
 
 public interface HalfBodyLiveConfig {
     /**半身直播直播类型*/
-    int LIVE_TYPE_HALFBODY = 11;
-
-
+    int LIVE_TYPE_HALFBODY = 6;
 
 }

@@ -33,11 +33,11 @@
             android:background="@drawable/bg_livevideo_message_pscommon"
             />
 
-        <!--只是为了接入现有框架，让程序不崩溃-->
+     <!--   &lt;!&ndash;只是为了接入现有框架，让程序不崩溃&ndash;&gt;-->
         <Button
             android:id="@id/bt_livevideo_voicechat_raise_hands"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginLeft="20dp"
             android:background="@drawable/bg_livevideo_voicechat_raise_hands"
             android:visibility="gone" />
