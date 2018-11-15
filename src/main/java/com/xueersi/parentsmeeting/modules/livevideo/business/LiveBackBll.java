@@ -8,6 +8,7 @@ import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -165,6 +166,24 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 appID = UmsConstants.LIVE_APP_ID_BACK;
                 IS_SCIENCE = true;
                 liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
+                try {
+                    List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+                    int oldSize = -1;
+                    if (lstVideoQuestion != null) {
+                        oldSize = lstVideoQuestion.size();
+                        for (int i = 0; i < lstVideoQuestion.size(); i++) {
+                            VideoQuestionEntity questionEntity = lstVideoQuestion.get(i);
+                            if (questionEntity.getvCategory() == 23) {
+                                lstVideoQuestion.remove(i);
+                                i--;
+                            }
+                        }
+                    }
+                    int size = lstVideoQuestion.size();
+                    logger.d("LiveBackBll:oldSize=" + oldSize + ",size=" + size);
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(e);
+                }
             }
         }
         logToFile = new LogToFile(this, TAG);
