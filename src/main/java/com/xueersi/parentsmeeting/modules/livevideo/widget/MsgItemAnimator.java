@@ -37,13 +37,13 @@ public class MsgItemAnimator extends BaseItemAnimator {
     /**
      * 每个item 消失动画持续时间
      */
-    private static final long ITEM_FADE_OUT_DURATION = 400L;
+    private static final long ITEM_FADE_OUT_DURATION = 6000L;
     /**
      * item 可见 持续时间
      */
     private static final long ITEM_VISIBLE_DURATION = 3000L;
     private Handler mHandler;
-    private static final float MARQUEE_ANIM_DISPATCH_FRACTION = 0.5f;
+    private static final float MARQUEE_ANIM_DISPATCH_FRACTION = 0f;
     private ItemFadeOutListener itemFadeOutListener;
 
 
@@ -161,7 +161,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
             alphaValue = 0.0f;
         } else {
             if ((toY - holder.itemView.getHeight()) > 0) {
-                float offsetY = toY + holder.itemView.getHeight() * 1.5f;
+                float offsetY = toY + holder.itemView.getHeight();
                 alphaValue = offsetY * 1.0f / (float) ((ViewGroup) holder.itemView.getParent()).getMeasuredHeight();
             } else {
                 float offsetY = toY + holder.itemView.getHeight() / 2;
@@ -252,7 +252,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
             mTargetView = targetView;
             mStartAlpha = targetView.getAlpha();
             fadeOutAnim = ObjectAnimator.ofFloat(targetView, "alpha", mStartAlpha, 0);
-            fadeOutAnim.setDuration(ITEM_FADE_OUT_DURATION).addUpdateListener(this);
+            fadeOutAnim.setDuration((long) (ITEM_FADE_OUT_DURATION*mStartAlpha)).addUpdateListener(this);
         }
 
 
@@ -271,9 +271,9 @@ public class MsgItemAnimator extends BaseItemAnimator {
             fadeOutAnim.cancel();
             fadeOutAnim.removeAllUpdateListeners();
             fadeOutAnim.removeAllListeners();
-            if (mTargetView.getAlpha() <= DEF_MIN_ALPHA) {
+           /* if (mTargetView.getAlpha() <= DEF_MIN_ALPHA) {
                 mTargetView.setAlpha(DEF_MIN_ALPHA);
-            }
+            }*/
         }
 
 
