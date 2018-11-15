@@ -605,9 +605,10 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         sendPost(url, params, httpCallBack);
     }
 
-    public void saveStuPlanOnlineTime(String stuId, HttpCallBack requestCallBack) {
+    public void saveStuPlanOnlineTime(String stuId, String gradeId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("stuId", "" + stuId);
+        params.addBodyParam("gradeId", gradeId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_STU_ONLINE_TIME, params, requestCallBack);
     }

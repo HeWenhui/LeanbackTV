@@ -288,9 +288,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         liveGetInfo.setClientLog(clientLog);
         liveUidRx.setLiveGetInfo(liveGetInfo);
         liveUidRx.onCreate();
-        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+        ArrayList<LiveBackBaseBll> templiveBackBaseBlls = new ArrayList<>(liveBackBaseBlls);
+        for (LiveBackBaseBll liveBackBaseBll : templiveBackBaseBlls) {
             liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
+        templiveBackBaseBlls.clear();
     }
 
     public ArrayList<LiveBackBaseBll> getLiveBackBaseBlls() {
