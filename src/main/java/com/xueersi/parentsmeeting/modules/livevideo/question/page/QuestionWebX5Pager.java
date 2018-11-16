@@ -299,7 +299,12 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
         if (wvSubjectWeb instanceof CacheWebView) {
             CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
-            cacheWebView.getWebViewCache().setNeedHttpDns(true);
+            if (IS_SCIENCE){
+                cacheWebView.getWebViewCache().setNeedHttpDns(true);
+            }else {
+                cacheWebView.getWebViewCache().setNeedHttpDns(false);
+            }
+            cacheWebView.getWebViewCache().setIsScience(IS_SCIENCE);
         }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);
