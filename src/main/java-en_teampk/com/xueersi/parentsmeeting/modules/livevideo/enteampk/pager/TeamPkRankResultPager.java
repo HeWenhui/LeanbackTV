@@ -2,11 +2,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
@@ -18,8 +20,8 @@ import com.xueersi.ui.adapter.CommonAdapter;
 import java.util.ArrayList;
 
 public class TeamPkRankResultPager extends LiveBasePager {
-    private GridView gv_livevideo_en_teampk_rank_mine;
-    private GridView gv_livevideo_en_teampk_rank_other;
+    private RelativeLayout gv_livevideo_en_teampk_rank_mine;
+    private RelativeLayout gv_livevideo_en_teampk_rank_other;
     private Button bt_livevideo_en_teampk_rank_start;
     private ImageView iv_livevideo_en_teampk_rank_score;
     private RelativeLayout rv_livevideo_en_teampk_rank_score_tip;
@@ -73,12 +75,17 @@ public class TeamPkRankResultPager extends LiveBasePager {
     public void initData() {
         for (int i = 0; i < 6; i++) {
             TeamMemberEntity teamEntity = new TeamMemberEntity();
-            teamEntity.name = "测试我" + i;
+            if (i == 2) {
+                teamEntity.isMy = true;
+                teamEntity.name = "我";
+            } else {
+                teamEntity.name = "测试左" + i;
+            }
             myTeamEntitys.add(teamEntity);
         }
         for (int i = 0; i < 6; i++) {
             TeamMemberEntity teamEntity = new TeamMemberEntity();
-            teamEntity.name = "测试他" + i;
+            teamEntity.name = "测试右" + i;
             otherTeamEntitys.add(teamEntity);
         }
         myTeamAdapter = new CommonAdapter<TeamMemberEntity>(myTeamEntitys) {
@@ -87,14 +94,36 @@ public class TeamPkRankResultPager extends LiveBasePager {
                 return new TeamMemberItem();
             }
         };
-        gv_livevideo_en_teampk_rank_mine.setAdapter(myTeamAdapter);
+        for (int i = 0; i < myTeamAdapter.getCount(); i++) {
+            View view = myTeamAdapter.getView(i, null, gv_livevideo_en_teampk_rank_mine);
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
+            if (lp == null) {
+                lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            }
+            if (i > 2) {
+                lp.topMargin = (int) (70 * ScreenUtils.getScreenDensity());
+            }
+            lp.leftMargin = (int) ((i % 3) * (73 * ScreenUtils.getScreenDensity()));
+            gv_livevideo_en_teampk_rank_mine.addView(view, lp);
+        }
         otherTeamAdapter = new CommonAdapter<TeamMemberEntity>(otherTeamEntitys) {
             @Override
             public AdapterItemInterface<TeamMemberEntity> getItemView(Object type) {
                 return new TeamMemberItem();
             }
         };
-        gv_livevideo_en_teampk_rank_other.setAdapter(otherTeamAdapter);
+        for (int i = 0; i < otherTeamAdapter.getCount(); i++) {
+            View view = otherTeamAdapter.getView(i, null, gv_livevideo_en_teampk_rank_other);
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view.getLayoutParams();
+            if (lp == null) {
+                lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            }
+            if (i > 2) {
+                lp.topMargin = (int) (70 * ScreenUtils.getScreenDensity());
+            }
+            lp.leftMargin = (int) ((i % 3) * (73 * ScreenUtils.getScreenDensity()));
+            gv_livevideo_en_teampk_rank_other.addView(view, lp);
+        }
     }
 
     public interface OnStartClick {

@@ -18,6 +18,8 @@
     <!--分队成员-->
     <item name="fl_livevideo_en_teampk_member" type="id" />
     <item name="iv_livevideo_en_teampk_member" type="id" />
+    <item name="rl_livevideo_en_teampk_head" type="id" />
+    <item name="civ_livevideo_en_teampk_head" type="id" />
     <item name="tv_livevideo_en_teampk_name" type="id" />
     <!--答题领先-->
     <item name="iv_livevideo_en_teampk_lead_left" type="id" />

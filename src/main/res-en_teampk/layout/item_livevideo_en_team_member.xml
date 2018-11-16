@@ -1,19 +1,39 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="78dp"
+    android:layout_height="78dp">
 
     <ImageView
         android:id="@id/iv_livevideo_en_teampk_member"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/app_livevideo_enteampk_morentouxiang_light_bg_img_nor" />
+        android:layout_centerHorizontal="true" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_livevideo_en_teampk_member"
+        android:layout_alignLeft="@id/iv_livevideo_en_teampk_member"
+        android:layout_alignRight="@id/iv_livevideo_en_teampk_member"
+        android:layout_alignTop="@id/iv_livevideo_en_teampk_member">
+
+        <com.xueersi.ui.widget.CircleImageView
+            android:id="@id/civ_livevideo_en_teampk_head"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_centerInParent="true"
+            app:border_width="0dp" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@id/tv_livevideo_en_teampk_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/iv_livevideo_en_teampk_member"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/white" />
+        android:layout_marginTop="66dp"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:textColor="@color/white"
+        android:textSize="11sp" />
 </RelativeLayout>
