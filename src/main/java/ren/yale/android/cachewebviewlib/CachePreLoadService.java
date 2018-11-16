@@ -9,15 +9,13 @@ import android.widget.RelativeLayout;
 
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
-import com.xueersi.lib.log.LoggerFactory;
-import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.Map;
-
-import ren.yale.android.cachewebviewlib.utils.NetworkUtils;
 
 /**
  * Created by yale on 2017/10/27.

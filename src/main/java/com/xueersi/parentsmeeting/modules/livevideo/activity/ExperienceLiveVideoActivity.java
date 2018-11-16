@@ -31,7 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tencent.cos.xml.utils.StringUtils;
-import com.tencent.tinker.loader.shareutil.ShareOatUtil;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;

@@ -23,10 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-
-import okhttp3.Call;
-
 /**
  * Created by：WangDe on 2018/8/23 19:40
  */

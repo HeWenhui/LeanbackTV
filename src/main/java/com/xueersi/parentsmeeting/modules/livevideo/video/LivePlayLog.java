@@ -39,7 +39,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.HardWareUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

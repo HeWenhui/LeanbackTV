@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 
 /**

@@ -13,15 +13,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.QuesReslutEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.QuesReslutEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.ui.adapter.XsBaseAdapter;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import com.xueersi.ui.widget.button.progressbutton.CircularProgressButton;
-import com.xueersi.ui.adapter.XsBaseAdapter;
 
 import java.util.List;
 

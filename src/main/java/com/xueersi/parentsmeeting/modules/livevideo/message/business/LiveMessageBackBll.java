@@ -1,8 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message.business;
 
 import android.app.Activity;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;

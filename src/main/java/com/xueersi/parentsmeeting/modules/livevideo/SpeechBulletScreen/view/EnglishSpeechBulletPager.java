@@ -39,9 +39,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.Constants;
+import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
@@ -49,7 +51,8 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.common.speech.SpeechConfig;
+import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
@@ -103,7 +106,8 @@ import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
  * MVP：View层
  */
 
-public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSpeechBulletContract.EnglishSpeechBulletView {
+public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSpeechBulletContract
+        .EnglishSpeechBulletView {
     /**
      * MVP:Presenter层接口
      */
@@ -200,7 +204,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     /**
      * 语音评测工具类
      */
-    private SpeechEvaluatorUtils mSpeechEvaluatorUtils;
+//    private SpeechEvaluatorUtils mSpeechEvaluatorUtils;
+    private SpeechUtils mSpeechUtils;
     /**
      * 语音保存位置-目录
      */
@@ -229,6 +234,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      * 阿里云业务
      */
     XesCloudUploadBusiness uploadBusiness;
+    SpeechParamEntity mParam;
     /**
      * 弱引用Handler
      */
@@ -273,7 +279,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             @Override
             public void onGlobalLayout() {
                 vwvSpeechbulWave.setLinearGradient(new LinearGradient(0, 0, vwvSpeechbulWave.getMeasuredWidth(), 0,
-                        new int[]{0xFFEA9CF9, 0xFF9DBBFA, 0xFF80F9FD}, new float[]{0, 0.5f, 1.0f}, Shader.TileMode.CLAMP));
+                        new int[]{0xFFEA9CF9, 0xFF9DBBFA, 0xFF80F9FD}, new float[]{0, 0.5f, 1.0f}, Shader.TileMode
+                        .CLAMP));
             }
         });
         vwvSpeechbulWave.setBackColor(Color.TRANSPARENT);
@@ -300,9 +307,14 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             }
         }, 100);
 
-        if (mSpeechEvaluatorUtils == null) {
-            mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
+//        if (mSpeechEvaluatorUtils == null) {
+//            mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
+//        }
+        if (mSpeechUtils == null) {
+            mSpeechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
+            mSpeechUtils.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
         }
+        mParam = new SpeechParamEntity();
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
@@ -388,7 +400,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
 //                    }
 //                }, 2000);
                 String str = editable.toString();
-                String repickStr = str.replaceAll("[\u4e00-\u9fa5]","");
+                String repickStr = str.replaceAll("[\u4e00-\u9fa5]", "");
                 if (!repickStr.equals(str)) {
                     rlSpeechbulTips.setVisibility(View.VISIBLE);
                     mWeakHandler.removeCallbacks(setTipsGoneRunnable);
@@ -455,7 +467,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                         ShareDataManager.SHAREDATA_USER).equals(presenter.getVoiceId())) {
                     return;
                 }
-                ShareDataManager.getInstance().put(ShareBusinessConfig.SP_VOICE_BULLET_ID, presenter.getVoiceId(), ShareDataManager.SHAREDATA_USER);
+                ShareDataManager.getInstance().put(ShareBusinessConfig.SP_VOICE_BULLET_ID, presenter.getVoiceId(),
+                        ShareDataManager.SHAREDATA_USER);
                 presenter.uploadSpeechBulletScreen(etSpeechbulWords.getText().toString(), new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
@@ -478,7 +491,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         }, 10);
 
         //重要！键盘高度发生变化时，刷新键盘高度
-        switchFSPanelLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        switchFSPanelLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                .OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 if (switchFSPanelLinearLayout.getHeight() != KeyboardUtil.getValidPanelHeight(mContext)) {
@@ -528,15 +542,19 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             if (rlSpeechBulContent == null) {
                 rlSpeechBulContent = new RelativeLayout(mContext);
                 rlSpeechBulContent.setId(R.id.rl_livevideo_content_speechbul);
-                rootView.addView(rlSpeechBulContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                rootView.addView(rlSpeechBulContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
             }
             if (mDanmakuView == null) {
-                rlSpeechBulContent.addView(initDanmaku(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-//                    RelativeLayout.LayoutParams rp = (RelativeLayout.LayoutParams) dvSpeechbulDanmaku.getLayoutParams();
+                rlSpeechBulContent.addView(initDanmaku(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                        .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//                    RelativeLayout.LayoutParams rp = (RelativeLayout.LayoutParams) dvSpeechbulDanmaku
+// .getLayoutParams();
 //                    rp.setMargins(0, SizeUtils.Dp2Px(mContext, 0), 0, 0);
 //                    dvSpeechbulDanmaku.setLayoutParams(rp);
             }
-            rlSpeechBulContent.addView(prepareView().getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            rlSpeechBulContent.addView(prepareView().getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                    .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             rlSpeechBulContent.setVisibility(View.VISIBLE);
             initData();
             initListener();
@@ -606,14 +624,17 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      * @param rootView
      */
     @Override
-    public void receiveDanmakuMsg(String name, String msg, String headImgUrl, boolean isGuset, RelativeLayout rootView) {
+    public void receiveDanmakuMsg(String name, String msg, String headImgUrl, boolean isGuset, RelativeLayout
+            rootView) {
         if (rlSpeechBulContent == null) {
             rlSpeechBulContent = new RelativeLayout(mContext);
             rlSpeechBulContent.setId(R.id.rl_livevideo_content_speechbul);
-            rootView.addView(rlSpeechBulContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            rootView.addView(rlSpeechBulContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
         }
         if (mDanmakuView == null) {
-            rlSpeechBulContent.addView(initDanmaku(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            rlSpeechBulContent.addView(initDanmaku(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
         }
 
         if (!StringUtils.isEmpty(name) && !StringUtils.isEmpty(msg) & !StringUtils.isEmpty(headImgUrl)) {
@@ -650,7 +671,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         int speechbulWidth = liveVideoPoint.x4 - liveVideoPoint.x2;
         int margin = (liveVideoPoint.screenWidth - speechbulWidth) / 2 + SizeUtils.Dp2Px(mContext, 10);
-        RelativeLayout.LayoutParams repeatLayoutParams = (RelativeLayout.LayoutParams) tvSpeechbulRepeat.getLayoutParams();
+        RelativeLayout.LayoutParams repeatLayoutParams = (RelativeLayout.LayoutParams) tvSpeechbulRepeat
+                .getLayoutParams();
         repeatLayoutParams.setMargins(margin, 0, 0, 0);
         tvSpeechbulRepeat.setLayoutParams(repeatLayoutParams);
 
@@ -753,66 +775,137 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                 @Override
                 public void requestSuccess() {
                     saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
-                    mSpeechEvaluatorUtils.startSpeechRecognitionOffline(saveFile.getPath(), "3", "30",
-                            new EvaluatorListener() {
-                                @Override
-                                public void onBeginOfSpeech() {
-                                    logger.i("onBeginOfSpeech()");
-                                    KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
-                                    tvSpeechbulTitle.setText(VOICE_RECOG_HINT);
-                                    tvSpeechbulTitleCount.setText("");
-                                    rlSpeechbulInputContent.setVisibility(View.GONE);
-                                    tvSpeechbulTitle.setVisibility(View.VISIBLE);
-                                    tvSpeechbulTitleCount.setVisibility(View.VISIBLE);
-                                    vwvSpeechbulWave.setVisibility(View.VISIBLE);
-                                    hasValidSpeechInput = false;
+                    mParam.setRecogType(SpeechConfig.SPEECH_RECOGNITIYON_OFFINE);
+                    mParam.setLocalSavePath(saveFile.getPath());
+                    mParam.setVad_pause_sec("3");
+                    mParam.setVad_max_sec("30");
+                    mSpeechUtils.startRecog(mParam, new EvaluatorListenerWithPCM() {
+                        @Override
+                        public void onBeginOfSpeech() {
+                            logger.i("onBeginOfSpeech()");
+                            KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
+                            tvSpeechbulTitle.setText(VOICE_RECOG_HINT);
+                            tvSpeechbulTitleCount.setText("");
+                            rlSpeechbulInputContent.setVisibility(View.GONE);
+                            tvSpeechbulTitle.setVisibility(View.VISIBLE);
+                            tvSpeechbulTitleCount.setVisibility(View.VISIBLE);
+                            vwvSpeechbulWave.setVisibility(View.VISIBLE);
+                            hasValidSpeechInput = false;
 
-                                    //播放声音
-                                    if (soundPool == null)
-                                        soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-                                    if (soundStartEvaluator == 0) {
-                                        soundStartEvaluator = soundPool.load(mContext, R.raw.start_evaluator, 1);
-                                        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-                                            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                                                // TODO Auto-generated method stub
-                                                soundPool.play(soundStartEvaluator, 1, 1, 0, 0, 1);
-                                            }
-                                        });
-                                    } else {
+                            //播放声音
+                            if (soundPool == null)
+                                soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+                            if (soundStartEvaluator == 0) {
+                                soundStartEvaluator = soundPool.load(mContext, R.raw.start_evaluator, 1);
+                                soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                                    public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                                        // TODO Auto-generated method stub
                                         soundPool.play(soundStartEvaluator, 1, 1, 0, 0, 1);
                                     }
-                                    mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
-                                    mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
-                                    mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
-                                    mAM.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (0.0f * mMaxVolume), 0);
-                                    isVolumeResume = false;
-                                    stopSpeechTimer.start();
-                                    //3秒没有检测到声音提示
-                                    mWeakHandler.postDelayed(mHintRunnable, 3000);
-                                    //6秒仍没检测到说话
-                                    mWeakHandler.postDelayed(mNovoiceRunnable, 6000);
-                                    //7秒没声音自动停止
-                                    mWeakHandler.postDelayed(mNorecogRunnable, 7000);
-                                }
+                                });
+                            } else {
+                                soundPool.play(soundStartEvaluator, 1, 1, 0, 0, 1);
+                            }
+                            mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
+                            mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
+                            mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
+                            mAM.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (0.0f * mMaxVolume), 0);
+                            isVolumeResume = false;
+                            stopSpeechTimer.start();
+                            //3秒没有检测到声音提示
+                            mWeakHandler.postDelayed(mHintRunnable, 3000);
+                            //6秒仍没检测到说话
+                            mWeakHandler.postDelayed(mNovoiceRunnable, 6000);
+                            //7秒没声音自动停止
+                            mWeakHandler.postDelayed(mNorecogRunnable, 7000);
+                        }
 
-                                @Override
-                                public void onResult(ResultEntity resultEntity) {
-                                    logger.i("onResult:status = " + resultEntity.getStatus() + ", errorNo = " + resultEntity.getErrorNo());
-                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                                        onEvaluatorSuccess(resultEntity.getCurString(), true);
-                                    } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                                        onEvaluatorError(resultEntity);
-                                    } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                                        onEvaluatorSuccess(resultEntity.getCurString(), false);
-                                    }
-                                }
+                        @Override
+                        public void onResult(ResultEntity resultEntity) {
+                            logger.i("onResult:status = " + resultEntity.getStatus() + ", errorNo = " + resultEntity
+                                    .getErrorNo());
+                            if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+                                onEvaluatorSuccess(resultEntity.getCurString(), true);
+                            } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+                                onEvaluatorError(resultEntity);
+                            } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+                                onEvaluatorSuccess(resultEntity.getCurString(), false);
+                            }
+                        }
 
-                                @Override
-                                public void onVolumeUpdate(int volume) {
-                                    logger.i("onVolumeUpdate: volume = " + volume);
-                                    vwvSpeechbulWave.setVolume(volume * 2);
-                                }
-                            });
+                        @Override
+                        public void onVolumeUpdate(int volume) {
+                            logger.i("onVolumeUpdate: volume = " + volume);
+                            vwvSpeechbulWave.setVolume(volume * 2);
+                        }
+
+                        @Override
+                        public void onRecordPCMData(short[] pcmBuffer, int length) {
+
+                        }
+                    });
+//                    mSpeechEvaluatorUtils.startSpeechRecognitionOffline(saveFile.getPath(), "3", "30",
+//                            new EvaluatorListener() {
+//                                @Override
+//                                public void onBeginOfSpeech() {
+//                                    logger.i("onBeginOfSpeech()");
+//                                    KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
+//                                    tvSpeechbulTitle.setText(VOICE_RECOG_HINT);
+//                                    tvSpeechbulTitleCount.setText("");
+//                                    rlSpeechbulInputContent.setVisibility(View.GONE);
+//                                    tvSpeechbulTitle.setVisibility(View.VISIBLE);
+//                                    tvSpeechbulTitleCount.setVisibility(View.VISIBLE);
+//                                    vwvSpeechbulWave.setVisibility(View.VISIBLE);
+//                                    hasValidSpeechInput = false;
+//
+//                                    //播放声音
+//                                    if (soundPool == null)
+//                                        soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+//                                    if (soundStartEvaluator == 0) {
+//                                        soundStartEvaluator = soundPool.load(mContext, R.raw.start_evaluator, 1);
+//                                        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+//                                            public void onLoadComplete(SoundPool soundPool, int sampleId, int
+// status) {
+//                                                // TODO Auto-generated method stub
+//                                                soundPool.play(soundStartEvaluator, 1, 1, 0, 0, 1);
+//                                            }
+//                                        });
+//                                    } else {
+//                                        soundPool.play(soundStartEvaluator, 1, 1, 0, 0, 1);
+//                                    }
+//                                    mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
+//                                    mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
+//                                    mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
+//                                    mAM.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (0.0f * mMaxVolume), 0);
+//                                    isVolumeResume = false;
+//                                    stopSpeechTimer.start();
+//                                    //3秒没有检测到声音提示
+//                                    mWeakHandler.postDelayed(mHintRunnable, 3000);
+//                                    //6秒仍没检测到说话
+//                                    mWeakHandler.postDelayed(mNovoiceRunnable, 6000);
+//                                    //7秒没声音自动停止
+//                                    mWeakHandler.postDelayed(mNorecogRunnable, 7000);
+//                                }
+//
+//                                @Override
+//                                public void onResult(ResultEntity resultEntity) {
+//                                    logger.i("onResult:status = " + resultEntity.getStatus() + ", errorNo = " +
+// resultEntity.getErrorNo());
+//                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+//                                        onEvaluatorSuccess(resultEntity.getCurString(), true);
+//                                    } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+//                                        onEvaluatorError(resultEntity);
+//                                    } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+//                                        onEvaluatorSuccess(resultEntity.getCurString(), false);
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onVolumeUpdate(int volume) {
+//                                    logger.i("onVolumeUpdate: volume = " + volume);
+//                                    vwvSpeechbulWave.setVolume(volume * 2);
+//                                }
+//                            });
                 }
             });
         }
@@ -824,8 +917,11 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      */
     private void stopEvaluator() {
         logger.i("stopEvaluator()");
-        if (mSpeechEvaluatorUtils != null) {
-            mSpeechEvaluatorUtils.cancel();
+//        if (mSpeechEvaluatorUtils != null) {
+//            mSpeechEvaluatorUtils.cancel();
+//        }
+        if (mSpeechUtils != null) {
+            mSpeechUtils.cancel();
         }
         if (mAM != null && !isVolumeResume) {
             mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
@@ -894,7 +990,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         } else if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
             logger.i("麦克风不可用，快去检查一下！");
             startTextInput("");
-        } else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() == ResultCode.NETWORK_FAIL
+        } else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() ==
+                ResultCode.NETWORK_FAIL
                 || resultEntity.getErrorNo() == ResultCode.WEBSOCKET_CONN_REFUSE) {
             int netWorkType = NetWorkHelper.getNetWorkState(mContext);
             if (netWorkType == NetWorkHelper.NO_NETWORK) {
@@ -943,7 +1040,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      */
     private void startSpeechInput() {
         //判断模型是否初始化成功
-        if (!SpeechEvaluatorUtils.isRecogOfflineSuccess()) {
+        if (!mSpeechUtils.isRecogOfflineSuccess()) {
 //            XESToastUtils.showToast(mContext, "模型正在启动，请稍后");
 //            SpeechEvaluatorUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
 //                @Override
@@ -1011,7 +1108,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                 .setDuplicateMergingEnabled(false)
                 .setScrollSpeedFactor(1.2f) // 越大速度越慢
                 .setScaleTextSize(1.2f)
-                .setCacheStuffer(new BackgroundCacheStuffer(), mCacheStufferAdapter) // 图文混排使用BaseCacheStuffer,绘制背景使用BackgroundCacheStuffer
+                .setCacheStuffer(new BackgroundCacheStuffer(), mCacheStufferAdapter) // 图文混排使用BaseCacheStuffer,
+                // 绘制背景使用BackgroundCacheStuffer
                 .setMaximumLines(maxLinesPair)
                 .preventOverlapping(overlappingEnablePair);
         mDanmakuView.setCallback(new DrawHandler.Callback() {
@@ -1062,7 +1160,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     mWeakHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            addDanmaku(time + "", "i am a speech bullets", "http://xesfile.xesimg.com/user/h/ic_livevideo_default_head_boyideo_default_head_boy.png", true);
+                            addDanmaku(time + "", "i am a speech bullets", "http://xesfile.xesimg" +
+                                    ".com/user/h/ic_livevideo_default_head_boyideo_default_head_boy.png", true);
                         }
                     });
                     try {
@@ -1096,7 +1195,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
 //    private void prepareDefaultHeadImg() {
 //        defaultHeadMe = zoomCircleDrable(R.drawable.ic_default_head_square, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
 //        defaultHeadMe.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
-//        defaultHeadGuest = zoomCircleDrable(R.drawable.ic_default_head_square, BITMAP_WIDTH_GUEST, BITMAP_WIDTH_GUEST);
+//        defaultHeadGuest = zoomCircleDrable(R.drawable.ic_default_head_square, BITMAP_WIDTH_GUEST,
+// BITMAP_WIDTH_GUEST);
 //        defaultHeadGuest.setBounds(0, 0, BITMAP_WIDTH_GUEST, BITMAP_WIDTH_GUEST);
 //    }
 
@@ -1119,20 +1219,25 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             paint.setAlpha((int) (255 * 0.6)); //  透明度0.6
 
             if (danmaku.isGuest) {
-                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding +
+                                (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1
                                 , left + danmaku.paintWidth - danmaku.padding,
-                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1 + danmaku.padding),
+                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 +
+                                        1 + danmaku.padding),
                         DANMU_RADIUS, DANMU_RADIUS, paint);
             } else {
-                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_ME
+                                - DANMU_BACKGROUND_HEIGHT) / 2 + 1
                                 , left + danmaku.paintWidth - danmaku.padding,
-                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1 + danmaku.padding),
+                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                                        + danmaku.padding),
                         DANMU_RADIUS, DANMU_RADIUS, paint);
             }
         }
 
         @Override
-        public void drawStroke(BaseDanmaku danmaku, String lineText, Canvas canvas, float left, float top, Paint paint) {
+        public void drawStroke(BaseDanmaku danmaku, String lineText, Canvas canvas, float left, float top, Paint
+                paint) {
             // 禁用描边绘制
         }
     }
@@ -1311,7 +1416,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                 circlePaint.setStyle(Paint.Style.STROKE);
                 circlePaint.setColor(Color.parseColor("#72DAFB"));
                 circlePaint.setStrokeWidth(SizeUtils.Dp2Px(mContext, 1));
-                canvas.drawCircle(x + BITMAP_WIDTH_ME / 2, transY + BITMAP_WIDTH_ME / 2, BITMAP_WIDTH_ME / 2, circlePaint);
+                canvas.drawCircle(x + BITMAP_WIDTH_ME / 2, transY + BITMAP_WIDTH_ME / 2, BITMAP_WIDTH_ME / 2,
+                        circlePaint);
             }
         }
 

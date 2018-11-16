@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -26,21 +25,32 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
-import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.speech.SpeechConfig;
+import com.xueersi.common.speech.SpeechUtils;
+import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.LiveStandQuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
-import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -49,15 +59,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
-import com.xueersi.common.permission.XesPermission;
-import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.file.FileUtils;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
-import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.lib.imageloader.SingleConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,7 +81,8 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  * @date 2017/12/5
  */
 public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
-    private SpeechEvaluatorUtils mIse;
+//    private SpeechEvaluatorUtils mIse;
+    private SpeechUtils mIse;
     /** 所有帧动画 */
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
     /** 组内战况已经被加入的学生 */
@@ -187,8 +189,11 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         mView.post(new Runnable() {
             @Override
             public void run() {
+//                if (mIse == null) {
+//                    mIse = new SpeechEvaluatorUtils(true);
+//                }
                 if (mIse == null) {
-                    mIse = new SpeechEvaluatorUtils(true);
+                    mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
                 }
                 rgivStandReadygo.setAnimationListener(new FrameAnimation.AnimationListener() {
                     @Override
@@ -397,7 +402,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         }
     }
 
-    public void setIse(SpeechEvaluatorUtils ise) {
+    public void setIse(SpeechUtils ise) {
         this.mIse = ise;
     }
 
@@ -603,10 +608,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             mIse.stop();
         }
     }
-
-    class VoiceEvaluatorListener implements EvaluatorListener {
+    class VoiceEvaluatorListener implements EvaluatorListenerWithPCM {
         File saveVideoFile;
-
         @Override
         public void onBeginOfSpeech() {
             isSpeechError = false;
@@ -624,9 +627,38 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         }
 
         @Override
-        public void onVolumeUpdate(int volume) {
+        public void onVolumeUpdate(int volume)  {
+
+        }
+
+        @Override
+        public void onRecordPCMData(short[] pcmBuffer, int length) {
+
         }
     }
+//    class VoiceEvaluatorListener implements EvaluatorListener {
+//        File saveVideoFile;
+//
+//        @Override
+//        public void onBeginOfSpeech() {
+//            isSpeechError = false;
+//            logger.d( "onBeginOfSpeech");
+//        }
+//
+//        @Override
+//        public void onResult(ResultEntity resultEntity) {
+//            logger.d( "onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd);
+//            if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+//                onEvaluatorSuccess(resultEntity);
+//            } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+//                onEvaluatorError(resultEntity);
+//            }
+//        }
+//
+//        @Override
+//        public void onVolumeUpdate(int volume) {
+//        }
+//    }
 
     VoiceEvaluatorListener listener = new VoiceEvaluatorListener();
 
@@ -941,7 +973,13 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         }
         saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
         listener.saveVideoFile = saveVideoFile;
-        mIse.startEnglishEvaluatorOffline(assess_ref.toString(), saveVideoFile.getPath(), multRef, listener);
+        SpeechParamEntity param = new SpeechParamEntity();
+        param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
+        param.setLocalSavePath(saveVideoFile.getPath());
+        param.setStrEvaluator(assess_ref.toString());
+        param.setMultRef(multRef);
+        mIse.startRecog(param,listener);
+//        mIse.startEnglishEvaluatorOffline(assess_ref.toString(), saveVideoFile.getPath(), multRef, listener);
     }
 
     private void errorSetVisible() {
