@@ -227,10 +227,10 @@ public class WebViewCache {
         HttpURLConnection httpURLConnection = null;
         boolean isFail = false;
         try {
-            if (dnsFailMap.containsKey(url)) {
-                isFail = dnsFailMap.get(url);
-            }
             URL oldUrl = new URL(url);
+            if (dnsFailMap.containsKey(oldUrl.getHost())) {
+                isFail = dnsFailMap.get(oldUrl.getHost());
+            }
             if (needHttpDns || isFail) {
                 String ip3 = TxHttpDns.getInstance().getTxEnterpriseDns(oldUrl.getHost());
                 if (!StringUtils.isEmpty(ip3)) {
@@ -304,11 +304,29 @@ public class WebViewCache {
             if (!isScience) {
                 dnsFailMap.put(url, true);
                 Map<String, String> mData = new HashMap<>();
-                mData.put("error_message", Log.getStackTraceString(e));
+                mData.put("message", Log.getStackTraceString(e));
                 mData.put("url", url);
+                try {
+                    mData.put("host",new URL(url).getHost());
+                } catch (MalformedURLException e1) {
+                    e1.printStackTrace();
+                }
                 mData.put("ishttpdns", (isFail || needHttpDns) ? "true" : "false");
                 UmsAgentManager.umsAgentDebug(mContext, "1305801", "dns_fail", mData);
-                return httpRequest(client, cacheStrategy, url);
+                InputStream inputStream = httpRequest(client, cacheStrategy, url);
+                if (inputStream != null){
+                    mData.clear();
+                    mData.put("message", "success");
+                    mData.put("url", url);
+                    try {
+                        mData.put("host",new URL(url).getHost());
+                    } catch (MalformedURLException e1) {
+                        e1.printStackTrace();
+                    }
+                    mData.put("ishttpdns",  "true");
+                    UmsAgentManager.umsAgentDebug(mContext, "1305801", "dns_fail", mData);
+                    return inputStream;
+                }
             }
         } catch (IOException e) {
             CacheWebViewLog.d(e.toString() + " " + url, e);
