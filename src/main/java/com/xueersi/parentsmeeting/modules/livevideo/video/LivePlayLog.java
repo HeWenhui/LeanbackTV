@@ -1491,7 +1491,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     return new PlayFailCode(arg2, "" + error.getTag());
             }
         }
-        return new PlayFailCode(arg2, "other");
+        return new PlayFailCode(arg2, "other-"+arg2);
     }
 
     private int getNet() {
