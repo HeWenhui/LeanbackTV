@@ -170,8 +170,8 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
 
         @Override
         public void onUserJoined(int uid, int elapsed) {
+            mLogtf.d("onUserJoined:uid=" + uid + ",elapsed=" + elapsed);
             if (uid == stuid) {
-                mLogtf.d("onUserJoined:uid=" + uid + ",elapsed=" + elapsed);
                 vw_livevideo_chat_voice.start();
             }
         }
@@ -231,12 +231,16 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         if (testWorkerThread != null) {
             testWorkerThread.disableLastmileTest();
         }
-        mWorkerThread = new WorkerThread(activity.getApplicationContext(), stuid, true);
+        mWorkerThread = new WorkerThread(activity.getApplicationContext(), stuid, false);
         if (video) {
             mWorkerThread.setEnableLocalVideo(true);
-            mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
-                @Override
-                public void onEngineCreate(final RtcEngine mRtcEngine) {
+        }
+        mWorkerThread.eventHandler().setFeadback(true);
+        mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
+            @Override
+            public void onEngineCreate(final RtcEngine mRtcEngine) {
+                mRtcEngine.enableAudioVolumeIndication(500, 3);
+                if (video) {
                     VideoEncoderConfiguration.VideoDimensions dimensions = VideoEncoderConfiguration.VD_320x240;
                     VideoEncoderConfiguration configuration = new VideoEncoderConfiguration(dimensions,
                             VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_10,
@@ -244,24 +248,9 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                             VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_LANDSCAPE);
                     int setVideoEncoder = mRtcEngine.setVideoEncoderConfiguration(configuration);
                     logger.d("onEngineCreate:setVideoEncoder=" + setVideoEncoder);
-//                    if (AppConfig.DEBUG) {
-//                        Handler handler = new Handler(Looper.getMainLooper());
-//                        handler.post(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                ViewGroup container = activity.findViewById(R.id.rl_course_video_live_agora_content);
-//                                logger.d("onEngineCreate:containerb=" + container.getChildCount());
-//                                SurfaceView surfaceView = RtcEngine.CreateRendererView(activity);
-//                                surfaceView.setZOrderMediaOverlay(true);
-//                                container.addView(surfaceView, 400, 400);
-//                                mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_ADAPTIVE, 0));
-//                                logger.d("onEngineCreate:containera=" + container.getChildCount());
-//                            }
-//                        });
-//                    }
                 }
-            });
-        }
+            }
+        });
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
         mWorkerThread.start();
         mWorkerThread.waitForReady();

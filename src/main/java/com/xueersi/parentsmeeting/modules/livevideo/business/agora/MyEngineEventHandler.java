@@ -2,8 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.agora;
 
 import android.content.Context;
 
-import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,7 +12,7 @@ import io.agora.rtc.IRtcEngineEventHandler;
 
 public class MyEngineEventHandler {
     public static final String TAG = "MyEngineEventHandler";
-    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    protected Logger logger = LiveLoggerFactory.getLogger(this.getClass().getSimpleName());
     boolean feadback;
     private OnLastmileQuality onLastmileQuality;
 
@@ -38,6 +38,10 @@ public class MyEngineEventHandler {
 
     public void removeEventHandler(AGEventHandler handler) {
         this.mEventHandlerList.remove(handler);
+    }
+
+    public void setFeadback(boolean feadback) {
+        this.feadback = feadback;
     }
 
     final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
