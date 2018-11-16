@@ -314,11 +314,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             getInfo.setTotalOpeningLength(totalOpeningLength);
 
-            // TODO: 2018/10/23 测试代码   当上线时需打开下面代码
-           // getInfo.setPattern(data.optInt("pattern", 1));
+            getInfo.setPattern(data.optInt("pattern", 1));
             getInfo.setAllowLinkMic(data.optInt("allowLinkMic", 1) == 1);
-            getInfo.setPattern(HalfBodyLiveConfig.LIVE_TYPE_HALFBODY);
-
             getInfo.setRequestTime(data.optString("requestTime"));
             //解析学科id
             if (data.has("subject_ids")) {
