@@ -113,22 +113,30 @@ public class TeamPkProgressBar extends View {
      */
     private float progressRightBound = -1;
 
+    /**边框颜色*/
+    private int mBorderColor;
+
     public TeamPkProgressBar(Context context) {
         this(context, null);
     }
 
     public TeamPkProgressBar(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
+    }
+
+
+    public TeamPkProgressBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.TeamPkProgressBar);
         innerBarHeight = typedArray.getDimension(R.styleable.TeamPkProgressBar_innerProgressBarHeight,
                 DEFUALT_INNERBAR_HEIGHT);
         slidHearResId = typedArray.getResourceId(R.styleable.TeamPkProgressBar_sliderHeader, -1);
         sliderBgResId = typedArray.getResourceId(R.styleable.TeamPkProgressBar_sliderHeaderBg, -1);
+        mBorderColor = typedArray.getResourceId(R.styleable.TeamPkProgressBar_border_line_color, Color.BLACK);
         typedArray.recycle();
-
         initSlidHeader();
+        initPaint();
     }
-
 
     private void initSlidHeader() {
         if (slidHearResId != -1) {
@@ -152,11 +160,6 @@ public class TeamPkProgressBar extends View {
             mHeight = (int) innerBarHeight;
         }
 
-    }
-
-    public TeamPkProgressBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initPaint();
     }
 
 
@@ -190,7 +193,7 @@ public class TeamPkProgressBar extends View {
         borderPaint.setAntiAlias(true);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(strokeWidth);
-        borderPaint.setColor(Color.BLACK);
+        borderPaint.setColor(mBorderColor);
 
 
         currentProgressPaint = new Paint();

@@ -6,6 +6,7 @@
         <!--滑动头图片资源引用-->
         <attr name="sliderHeader" format="reference"></attr>
         <attr name="sliderHeaderBg" format="reference"></attr>
+        <attr name="border_line_color" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="SmoothAddNumTextView">

@@ -47,5 +47,8 @@
 
     <color name="COLOR_FFDB5C">#FFDB5C</color>
 
+    <!--半身直播 语文颜色资源-->
+    <color name="COLOR_EEF7C4">#EEF7C4</color>
+    <color name="COLOR_40621F">#40621F</color>
 
 </resources>

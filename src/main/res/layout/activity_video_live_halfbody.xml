@@ -80,9 +80,9 @@
                             android:indeterminateDrawable="@drawable/animlst_video_loading" />
                     </RelativeLayout>
 
-                    <TextView
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                         android:id="@id/tv_course_video_loading_content"
-                        style="@style/text_font12_ffffff_style"
+                        android:textSize="17sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"

@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -192,7 +193,12 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
 
         Drawable dwTeacherNotPresent = activity.getResources().getDrawable(R.drawable.live_halfbody_bg);
         rlFirstBackgroundView.setBackground(dwTeacherNotPresent);
-        tvLoadingHint.setTextColor(Color.parseColor("#3B9699"));
+        if(mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE){
+            tvLoadingHint.setTextColor(Color.WHITE);
+        }else{
+            tvLoadingHint.setTextColor(Color.parseColor("#3B9699"));
+        }
+
         ll_course_video_loading.setVisibility(View.VISIBLE);
         iv_course_video_loading_bg.setVisibility(View.INVISIBLE);
         mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);

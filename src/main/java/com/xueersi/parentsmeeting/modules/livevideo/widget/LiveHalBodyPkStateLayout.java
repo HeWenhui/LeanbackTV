@@ -44,7 +44,7 @@ public class LiveHalBodyPkStateLayout extends TeamPkStateLayout {
 
     @Override
     protected void initView() {
-        LayoutInflater.from(getContext()).inflate(R.layout.halfbody_team_pk_state_layout, this);
+        LayoutInflater.from(getContext()).inflate(getLayoutId(), this);
         pkProgressBar = findViewById(R.id.tpb_teampk_pkstate_energy_bar);
         tvMyTeamEnergy = findViewById(R.id.tv_teampk_pkstate_myteam_energy);
         tvOtherTeamEnergy = findViewById(R.id.tv_teampk_pkstate_otherteam_energy);
@@ -56,6 +56,14 @@ public class LiveHalBodyPkStateLayout extends TeamPkStateLayout {
         tvEnergyMyContribution = findViewById(R.id.tv_live_halfbody_energy_contribution);
         ivPkState = findViewById(R.id.iv_live_halfbody_pk_state);
 
+    }
+
+    /**
+     * 获取布局layout
+     * @return
+     */
+    protected int getLayoutId() {
+        return R.layout.halfbody_team_pk_state_layout;
     }
 
 

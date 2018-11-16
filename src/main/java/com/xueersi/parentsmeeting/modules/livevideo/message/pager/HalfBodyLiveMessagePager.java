@@ -167,6 +167,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
      */
     private LiveMessageEntity mLastMsg;
 
+
+
     public HalfBodyLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                     LiveAndBackDebug ums, BaseLiveMediaControllerBottom
                                             liveMediaControllerBottom, ArrayList<LiveMessageEntity>
@@ -185,8 +187,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             mLiveMsgList.addAll(liveMessageEntities);
         }
 
-        btMesOpen = liveMediaControllerBottom.getBtMesOpen();
-        btMsgCommon = liveMediaControllerBottom.getBtMsgCommon();
+        initBottomControllBtn();
 
         if (liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom) {
             ((LiveHalfBodyMediaControllerBottom) liveMediaControllerBottom).setControllerStateListener
@@ -216,9 +217,31 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         });
     }
 
+    private void initBottomControllBtn() {
+        btMesOpen = liveMediaControllerBottom.getBtMesOpen();
+        btMesOpen.setBackgroundResource(getMsgBtnResId());
+        btMsgCommon = liveMediaControllerBottom.getBtMsgCommon();
+        btMsgCommon.setBackgroundResource(getHotwordBtnResId());
+    }
+
+    /**
+     * 获取热词按钮 资源图片
+     * @return
+     */
+    protected int getHotwordBtnResId() {
+        return R.drawable.bg_livevideo_message_pscommon;
+    }
+    /**
+     * 获取聊天按钮 资源图片
+     * @return
+     */
+    protected int getMsgBtnResId() {
+        return R.drawable.bg_livevideo_message_psopen;
+    }
+
     @Override
     public View initView() {
-        mView = View.inflate(mContext, R.layout.page_livevideo_message_halfbody, null);
+        mView = View.inflate(mContext, getLayoutId(), null);
     /*    tvOnliveNum = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         ivMessageOnline = (ImageView) mView.findViewById(R.id.iv_livevideo_message_online);*/
         dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_message_danmaku);
@@ -239,6 +262,14 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         mLiveMsgLayoutManager.setVScrollAble(false);
         liveMsgReclView.setLayoutManager(mLiveMsgLayoutManager);
         return mView;
+    }
+
+    /**
+     * 获取 布局layout
+     * @return
+     */
+    protected int getLayoutId() {
+        return R.layout.page_livevideo_message_halfbody;
     }
 
 
@@ -329,7 +360,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                         keyboardShowing = isShowing;
                         keyboardShowingListener.onKeyboardShowing(isShowing);
                         if (keyboardShowing) {
-                            btMessageExpress.setBackgroundResource(R.drawable.selector_live_stand_chat_expression);
+                            btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
                         }
                     }
                 });
@@ -338,11 +369,10 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                             @Override
                             public void onClickSwitch(boolean switchToPanel) {
                                 if (switchToPanel) {
-                                    btMessageExpress.setBackgroundResource(R.drawable.selector_live_stand_chat_input);
+                                    btMessageExpress.setBackgroundResource(R.drawable.im_input_jianpan_icon_normal);
                                     etMessageContent.clearFocus();
                                 } else {
-                                    btMessageExpress.setBackgroundResource(R.drawable
-                                            .selector_live_stand_chat_expression);
+                                    btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
                                     etMessageContent.requestFocus();
                                 }
                             }
@@ -361,9 +391,11 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             }
         });
 
+       //默认显示顶部状态栏
+        LiveMediaController controller = liveMediaControllerBottom.getController();
+        controller.show();
 
         // 底部控制栏中的热词按钮 点击事件
-
         btMsgCommon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -623,7 +655,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         words.add("2");
         words.add("1");
 
-        View contentView = View.inflate(mContext, R.layout.layout_live_commonwrod_popwindow, null);
+        View contentView = View.inflate(mContext, getHotWordPopwindLayout(), null);
         mCommonWordWindow = new PopupWindow(contentView
                 , ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, false);
@@ -667,6 +699,14 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         });
         //提前测量 一次尺寸信息，用于 popWindow 显示定位
         contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+    }
+
+    /**
+     * 获取热词弹框 布局id
+     * @return
+     */
+    protected int getHotWordPopwindLayout() {
+        return R.layout.layout_live_commonwrod_popwindow;
     }
 
     @Override
@@ -798,7 +838,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void onTitleShow(boolean show) {
         Log.e(TAG, "======>onTitleShow:" + show);
-        btMessageExpress.setBackgroundResource(R.drawable.selector_live_stand_chat_expression);
+        btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
         if (!keyboardShowing && switchFSPanelLinearLayout.getVisibility() != View.GONE) {
             switchFSPanelLinearLayout.postDelayed(new Runnable() {
                 @Override
@@ -1043,23 +1083,25 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                         XESToastUtils.showToast(mContext, "你被老师禁言了");
                     }
                     btMesOpen.setAlpha(0.4f);
-                    btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
+                    btMesOpen.setBackgroundResource(getMsgBtnResId());
                 } else {
                     if (fromNotice) {
                         XESToastUtils.showToast(mContext, "老师解除了你的禁言");
                     }
                     if (ircState.openchat()) {
                         btMesOpen.setAlpha(1.0f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
+                        btMesOpen.setBackgroundResource(getMsgBtnResId());
                     } else {
                         btMesOpen.setAlpha(0.4f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
+                        btMesOpen.setBackgroundResource(getMsgBtnResId());
                     }
                 }
             }
         });
 
     }
+
+
 
     /**
      * 关闭开启聊天
@@ -1071,14 +1113,14 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             public void run() {
                 if (ircState.isDisable()) {
                     btMesOpen.setAlpha(0.4f);
-                    btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
+                    btMesOpen.setBackgroundResource(getMsgBtnResId());
                 } else {
                     if (openchat) {
                         btMesOpen.setAlpha(1.0f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
+                        btMesOpen.setBackgroundResource(getMsgBtnResId());
                     } else {
                         btMesOpen.setAlpha(0.4f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
+                        btMesOpen.setBackgroundResource(getMsgBtnResId());
                     }
                     if (fromNotice) {
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
