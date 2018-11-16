@@ -236,43 +236,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         }
                     }
                 } else {
-//                    JSONObject coursewareH5 = jsonObject.getJSONObject("coursewareH5");
-//                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-//                    videoQuestionLiveEntity.setNewArtsCourseware(true);
-//                    videoQuestionLiveEntity.gold = coursewareH5.optDouble("gold");
-//                    videoQuestionLiveEntity.package_socurce = coursewareH5.optInt("package_socurce");
-//                    videoQuestionLiveEntity.time = coursewareH5.optDouble("time");
-//                    videoQuestionLiveEntity.setIsVoice(coursewareH5.optString("isVoice"));
-//                    videoQuestionLiveEntity.type = coursewareH5.optString("ptype");
-//                    String status = coursewareH5.optString("status", "off");
-//                    if ("on".equals(status)) {
-//                        videoQuestionLiveEntity.id = coursewareH5.optString("id");
-//                        JSONArray idObject = coursewareH5.getJSONArray("id");
-//                        String idStr = getIdStr(idObject);
-//                        videoQuestionLiveEntity.setUrl(buildCourseUrl(idStr));
-//                        if ("1".equals(videoQuestionLiveEntity.getIsVoice())) {
-//                            videoQuestionLiveEntity.type = videoQuestionLiveEntity.questiontype = coursewareH5
-//                                    .optString("questiontype");
-//                            videoQuestionLiveEntity.assess_ref = coursewareH5.optString("assess_ref");
-//                        }
-//                        Loger.e("QuestionIRCBll", "======> onTopic 1111:" + mQuestionAction);
-//                        if (mQuestionAction != null) {
-//                            mQuestionAction.showQuestion(videoQuestionLiveEntity);
-//                            if (mAnswerRankBll != null) {
-//                                mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
-//                            }
-//                            if (mLiveAutoNoticeBll != null) {
-//                                mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
-//                                mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.package_socurce + "");
-//                            }
-//                        }
-//                    }
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.e("======>QuestionIRCBlle:" + e.toString());
             }
-        } else {
+        }
+        if (true) {
             LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
             if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
                 String num = mainRoomstatus.getExamNum();
@@ -287,8 +258,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mQuestionAction.onExamStop(num);
                 }
             }
-
-
             if (liveTopic.getVideoQuestionLiveEntity() != null) {
                 logger.e("======>QuestionIRCBlle:" + "走了错误的逻辑");
                 if (mQuestionAction != null) {
