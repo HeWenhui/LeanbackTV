@@ -118,7 +118,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
 
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
     //        private ImageView ivExpressionCancle;
-    private Activity liveVideoActivity;
+//    private Activity liveVideoActivity;
     private KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener;
     /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
@@ -150,7 +150,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                                                 otherLiveMessageEntities) {
         super(context);
         logger = LoggerFactory.getLogger(getClass().getSimpleName());
-        liveVideoActivity = (Activity) context;
+//        liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
         this.keyboardShowingListener = keyboardShowingListener;
         this.liveAndBackDebug = ums;

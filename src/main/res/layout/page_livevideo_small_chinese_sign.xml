@@ -39,8 +39,16 @@
         app:layout_constraintRight_toRightOf="@+id/tv_livevideo_small_chinese_sign_student_background"
         app:layout_constraintTop_toBottomOf="@+id/tv_livevideo_small_chinese_sign_student_name" />
 
+    <android.support.constraint.Group
+        android:id="@+id/group_livevideo_small_chinese_sign_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tv_livevideo_small_chinese_sign_student_name,
+        tv_livevideo_small_chinese_sign_tip,
+        iv_livevideo_small_chinese_sign_sign" />
+
     <ImageView
-        android:id="@+id/bg_livevideo_small_chinses_sign_status"
+        android:id="@+id/iv_livevideo_small_chinses_sign_status"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"

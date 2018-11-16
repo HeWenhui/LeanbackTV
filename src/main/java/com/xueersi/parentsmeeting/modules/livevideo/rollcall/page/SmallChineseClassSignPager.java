@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.rollcall.page;
 
 import android.content.Context;
+import android.support.constraint.Group;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,6 +30,8 @@ public class SmallChineseClassSignPager extends BasePager {
      */
     private ImageView ivSign;
 
+    private Group groupName;
+
     public SmallChineseClassSignPager(Context context, ClassSignEntity classSignEntity) {
         super(context);
         this.classSignEntity = classSignEntity;
@@ -38,9 +41,10 @@ public class SmallChineseClassSignPager extends BasePager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_small_chinese_sign, null);
-        ivSignStatus = view.findViewById(R.id.bg_livevideo_small_chinses_sign_status);
+        ivSignStatus = view.findViewById(R.id.iv_livevideo_small_chinses_sign_status);
         ivClose = view.findViewById(R.id.iv_livevideo_small_chinese_sign_close);
         ivSign = view.findViewById(R.id.iv_livevideo_small_chinese_sign_sign);
+        groupName = view.findViewById(R.id.group_livevideo_small_chinese_sign_name);
 
         return view;
     }
@@ -50,14 +54,19 @@ public class SmallChineseClassSignPager extends BasePager {
         updateStatus(classSignEntity.getStatus());
     }
 
-    private void updateStatus(int status) {
+    public void updateStatus(int status) {
         //准备签到
         if (status == Config.SIGN_STATE_CODE_UNSIGN) {
-
+            groupName.setVisibility(View.VISIBLE);
+            ivSignStatus.setVisibility(View.GONE);
         } else if (status == Config.SIGN_STATE_CODE_SIGNED) {//签到成功
-
+            ivSignStatus.setVisibility(View.VISIBLE);
+            ivSignStatus.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_sign_success));
+            groupName.setVisibility(View.GONE);
         } else {//签到失败
-
+            ivSignStatus.setVisibility(View.VISIBLE);
+            ivSignStatus.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_sign_fail));
+            groupName.setVisibility(View.GONE);
         }
     }
 
@@ -67,13 +76,17 @@ public class SmallChineseClassSignPager extends BasePager {
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (sign != null && sign.containsView()) {
+                    sign.close();
+                }
             }
         });
         ivSign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sign.sign(mHttpCallBack);
+                if (sign != null) {
+                    sign.sign(mHttpCallBack);
+                }
             }
         });
     }

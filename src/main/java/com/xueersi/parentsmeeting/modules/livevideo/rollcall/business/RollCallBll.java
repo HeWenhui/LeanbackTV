@@ -245,8 +245,32 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                                     .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                             params.addRule(RelativeLayout.CENTER_IN_PARENT);
                             rlRollCallContent.addView(mPrimaryScienceSignPager.getRootView(), params);
-                        } else if (LiveVideoConfig.isSmallChinese) {
-                                chineseClassSignPager = new SmallChineseClassSignPager(activity,classSignEntity);
+                        } else if (LiveVideoConfig.isSmallChinese) {//
+                            if (chineseClassSignPager != null) {
+                                chineseClassSignPager.updateStatus(classSignEntity.getStatus());
+                                return;
+                            }
+                            chineseClassSignPager = new SmallChineseClassSignPager(activity, classSignEntity);
+                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                            rlRollCallContent.addView(chineseClassSignPager.getRootView(), layoutParams);
+                            chineseClassSignPager.setSign(new SmallChineseClassSignPager.Sign() {
+                                @Override
+                                public void close() {
+                                    stopRollCall();
+                                }
+
+                                @Override
+                                public void sign(HttpCallBack httpCallBack) {
+                                    userSign(classSignEntity, httpCallBack);
+                                }
+
+                                @Override
+                                public boolean containsView() {
+                                    return smallEnglishClassSignPager != null && smallEnglishClassSignPager.getRootView()
+                                            .getParent() == rlRollCallContent;
+                                }
+                            });
                         } else {
                             mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity);
                             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
@@ -344,7 +368,17 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                 });
                 mVPlayVideoControlHandler.sendEmptyMessage(NO_USERSIGN);
             } else if (LiveVideoConfig.isSmallChinese) {
-
+                mIsShowUserSign = false;
+                mVPlayVideoControlHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mClassSignPager != null) {
+                            rlRollCallContent.removeView(mClassSignPager.getRootView());
+                            chineseClassSignPager = null;
+                        }
+                        mVPlayVideoControlHandler.sendEmptyMessage(NO_USERSIGN);
+                    }
+                });
             } else {
                 mIsShowUserSign = false;
                 mVPlayVideoControlHandler.post(new Runnable() {

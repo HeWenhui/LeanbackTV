@@ -59,8 +59,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="11dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
             android:text="本组在线"
+            android:textColor="@color/COLOR_172C06"
             android:textSize="11sp" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
@@ -68,9 +69,11 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/fzcytv_livevideo_small_chinese_live_message_online"
             android:layout_alignBottom="@+id/fzcytv_livevideo_small_chinese_live_message_online"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/fzcytv_livevideo_small_chinese_live_message_online"
+            android:gravity="center"
             android:text="12343"
+            android:textColor="@color/COLOR_405D27"
             android:textSize="9sp" />
 
         <RelativeLayout
@@ -80,7 +83,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true">
 
-            <TextView
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@+id/tv_livevideo_small_chinese_online_people_num"
                 style="@style/text_font10_ffffff_style"
                 android:layout_width="wrap_content"

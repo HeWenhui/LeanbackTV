@@ -65,7 +65,7 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
         CIRCEL_HEIGHT = SizeUtils.Dp2Px(context, CIRCEL_HEIGHT);
         CIRCEL_WIDTH = SizeUtils.Dp2Px(context, CIRCEL_WIDTH);
         backgroundDrawable = mContext.getResources().getDrawable(R.drawable //采用.9的方式来显示
-                .bg_livevideo_send_flower_screen_bullet_background);
+                .bg_livevideo_small_chinese_gift_danmu_other_background);
 
     }
 
