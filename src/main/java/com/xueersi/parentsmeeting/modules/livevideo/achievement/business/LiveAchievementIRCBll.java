@@ -255,8 +255,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             if (LiveAchievementIRCBll.this.starAction == null) {
                 if (1 == smallEnglish) {
                     LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType, mGetInfo, true);
-                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
-                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
+//                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
+//                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
                     liveAchievementEngBll.initView(mRootView, mContentView);
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
                 } else {

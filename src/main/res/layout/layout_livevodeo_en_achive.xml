@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/app_livevideo_enteampk_benchangchengjiu_bg1_pic_nor">
+
+        <ImageView
+            android:id="@id/iv_livevideo_en_achive_title"
+            android:layout_width="48dp"
+            android:layout_height="12dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="7dp"
+            android:src="@drawable/app_livevideo_enteampk_benchangchengjiu_title_pic_nor" />
+
+        <CheckBox
+            android:id="@id/cb_livevideo_en_achive_title"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/iv_livevideo_en_achive_title"
+            android:background="@drawable/selector_live_en_achive_open"
+            android:button="@null" />
+
+        <ImageView
+            android:id="@id/iv_livevideo_en_achive_num_fire"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="27dp"
+            android:src="@drawable/livevideo_enteampk_benchangchengjiu_fair_img_nor" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_en_achive_num_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="27dp"
+            android:layout_toLeftOf="@id/iv_livevideo_en_achive_num_fire"
+            android:src="@drawable/livevideo_enteampk_benchangchengjiu_star_img_nor" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_en_achive_num_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="27dp"
+            android:layout_toRightOf="@id/iv_livevideo_en_achive_num_fire"
+            android:src="@drawable/livevideo_enteampk_benchangchengjiu_gold_img_nor" />
+    </RelativeLayout>
+</RelativeLayout>
