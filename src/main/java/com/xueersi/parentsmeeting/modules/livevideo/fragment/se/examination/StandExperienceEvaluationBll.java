@@ -39,6 +39,7 @@ public class StandExperienceEvaluationBll extends
 //                        "&gradeId=" + mVideoEntity.getGradId() + "&subjectId=" + mVideoEntity.getSubjectId() +
 //                        "&teacherId=" + mVideoEntity.getTeacherId() + "&orderId=" + mVideoEntity.getChapterId() +
 //                        "&userId=" + UserBll.getInstance().getMyUserInfoEntity().getStuId();
+
             ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
             activityChangeLand.changeLOrP();
             logger.i("旋转屏幕");
@@ -56,7 +57,7 @@ public class StandExperienceEvaluationBll extends
     @Override
     public void removeWindow() {
 
-        if (mView != null && mView.getRootView() != null && mView.getRootView().getParent() == mRootView) {
+        if (mView.getRootView() != null && mView.getRootView().getParent() == mRootView) {
             mRootView.removeView(mView.getRootView());
         }
     }
