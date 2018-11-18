@@ -114,6 +114,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } else {
             getInfo.setSmallEnglish(false);
         }
+        JSONObject englishPkObj = data.optJSONObject("englishPk");
+        if (englishPkObj != null) {
+            LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
+            englishPk.canUsePK=englishPkObj.optInt("canUsePK");
+            englishPk.historyScore=englishPkObj.optInt("historyScore");
+            englishPk.isTwoLose=englishPkObj.optInt("isTwoLose");
+            englishPk.canGroup=englishPkObj.optInt("canGroup");
+        }
     }
 
     /**

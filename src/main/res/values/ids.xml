@@ -841,6 +841,7 @@
     <item name="tv_livevideo_en_achive_num_right" type="id" />
     <item name="tv_livevideo_en_achive_num_target" type="id" />
     <item name="vs_livevideo_en_achive_bottom" type="id" />
+    <item name="vs_livevideo_en_achive_bottom2" type="id" />
     <!--英语战队pk-->
     <item name="rl_livevideo_en_achive_pk_back" type="id" />
     <item name="tv_livevideo_en_achive_pk_energy_my_lable" type="id" />

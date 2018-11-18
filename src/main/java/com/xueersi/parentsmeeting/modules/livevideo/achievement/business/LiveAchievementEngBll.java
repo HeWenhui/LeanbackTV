@@ -44,12 +44,14 @@ import java.util.Map;
 public class LiveAchievementEngBll implements StarInteractAction {
     private String TAG = "LiveAchievementEngBll";
     protected Logger logger = LiveLoggerFactory.getLogger(this.getClass().getSimpleName());
+    private LiveGetInfo mLiveGetInfo;
     private Activity activity;
     private RelativeLayout bottomContent;
     private EnAchievePager enAchievePager;
 
     public LiveAchievementEngBll(Activity activity, int liveType, LiveGetInfo mLiveGetInfo, boolean mIsLand) {
         this.activity = activity;
+        this.mLiveGetInfo = mLiveGetInfo;
     }
 
     public void initView(RelativeLayout bottomContent, RelativeLayout mContentView) {
@@ -60,7 +62,7 @@ public class LiveAchievementEngBll implements StarInteractAction {
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         relativeLayout.setLayoutParams(layoutParams);
         relativeLayout.setBackgroundColor(Color.TRANSPARENT);
-        enAchievePager = new EnAchievePager(activity, relativeLayout);
+        enAchievePager = new EnAchievePager(activity, relativeLayout, mLiveGetInfo);
         relativeLayout.addView(enAchievePager.getRootView());
     }
 

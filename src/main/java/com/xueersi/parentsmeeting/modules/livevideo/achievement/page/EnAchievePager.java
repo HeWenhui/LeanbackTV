@@ -13,20 +13,23 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.standexperiencebuycourse.IBuyCourseContract;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 public class EnAchievePager extends LiveBasePager {
     RelativeLayout parent;
+    LiveGetInfo mLiveGetInfo;
     CheckBox cb_livevideo_en_achive_title;
     RelativeLayout rl_livevideo_en_achive_back;
     RelativeLayout rl_livevideo_en_achive_content;
     ViewStub vs_livevideo_en_achive_bottom;
+    ViewStub vs_livevideo_en_achive_bottom2;
     Activity activity;
 
-    public EnAchievePager(Context context, RelativeLayout relativeLayout) {
+    public EnAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
         this.parent = relativeLayout;
+        this.mLiveGetInfo = mLiveGetInfo;
         activity = (Activity) context;
         initView();
         initData();
@@ -40,6 +43,7 @@ public class EnAchievePager extends LiveBasePager {
         rl_livevideo_en_achive_back = mView.findViewById(R.id.rl_livevideo_en_achive_back);
         rl_livevideo_en_achive_content = mView.findViewById(R.id.rl_livevideo_en_achive_content);
         vs_livevideo_en_achive_bottom = mView.findViewById(R.id.vs_livevideo_en_achive_bottom);
+        vs_livevideo_en_achive_bottom2 = mView.findViewById(R.id.vs_livevideo_en_achive_bottom2);
         return mView;
     }
 
@@ -73,6 +77,11 @@ public class EnAchievePager extends LiveBasePager {
                 }
             }
         });
-        vs_livevideo_en_achive_bottom.inflate();
+        LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
+        if (1 == englishPk.canUsePK) {
+            vs_livevideo_en_achive_bottom.inflate();
+        } else {
+            vs_livevideo_en_achive_bottom2.inflate();
+        }
     }
 }
