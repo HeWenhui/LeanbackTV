@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -42,8 +44,9 @@ import java.util.Map;
 public class LiveAchievementEngBll implements StarInteractAction {
     private String TAG = "LiveAchievementEngBll";
     protected Logger logger = LiveLoggerFactory.getLogger(this.getClass().getSimpleName());
-    Activity activity;
-    RelativeLayout bottomContent;
+    private Activity activity;
+    private RelativeLayout bottomContent;
+    private EnAchievePager enAchievePager;
 
     public LiveAchievementEngBll(Activity activity, int liveType, LiveGetInfo mLiveGetInfo, boolean mIsLand) {
         this.activity = activity;
@@ -53,7 +56,12 @@ public class LiveAchievementEngBll implements StarInteractAction {
         this.bottomContent = bottomContent;
         RelativeLayout relativeLayout = bottomContent.findViewById(R.id.rl_livevideo_star_content);
         relativeLayout.setVisibility(View.VISIBLE);
-        View view = LayoutInflater.from(activity).inflate(R.layout.layout_livevodeo_en_achive, relativeLayout);
+        ViewGroup.LayoutParams layoutParams = relativeLayout.getLayoutParams();
+        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        relativeLayout.setLayoutParams(layoutParams);
+        relativeLayout.setBackgroundColor(Color.TRANSPARENT);
+        enAchievePager = new EnAchievePager(activity, relativeLayout);
+        relativeLayout.addView(enAchievePager.getRootView());
     }
 
     @Override

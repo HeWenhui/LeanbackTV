@@ -14,8 +14,14 @@
         android:id="@id/rl_livevideo_info"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:background="@color/COLOR_78C6FF">
+        android:layout_alignParentRight="true">
+
+        <ImageView
+            android:id="@id/iv_livevideo_message_small_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="73dp"
+            android:src="@drawable/app_livevideo_enteampk_bg_img_nor" />
 
         <RelativeLayout
             android:id="@id/rl_livevideo_message_top"

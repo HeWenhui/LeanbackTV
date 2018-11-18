@@ -199,6 +199,7 @@
     <item name="tv_livevideo_message_flowers_disable" type="id" />
     <item name="cb_livevideo_message_clock" type="id" />
     <item name="rl_livevideo_message_top" type="id" />
+    <item name="iv_livevideo_message_small_bg" type="id" />
     <item name="rl_livevideo_star_content" type="id" />
     <item name="rl_livevideo_english_content" type="id" />
     <item name="rl_livevideo_message_status" type="id" />
@@ -830,9 +831,21 @@
     <item name="rl_livevideo_chat_voice" type="id" />
     <item name="vw_livevideo_chat_voice" type="id" />
     <!--英语本场成就-->
+    <item name="rl_livevideo_en_achive_back" type="id" />
     <item name="iv_livevideo_en_achive_title" type="id" />
     <item name="cb_livevideo_en_achive_title" type="id" />
+    <item name="rl_livevideo_en_achive_content" type="id" />
     <item name="iv_livevideo_en_achive_num_gold" type="id" />
     <item name="iv_livevideo_en_achive_num_fire" type="id" />
     <item name="iv_livevideo_en_achive_num_star" type="id" />
+    <item name="tv_livevideo_en_achive_num_right" type="id" />
+    <item name="tv_livevideo_en_achive_num_target" type="id" />
+    <item name="vs_livevideo_en_achive_bottom" type="id" />
+    <!--英语战队pk-->
+    <item name="rl_livevideo_en_achive_pk_back" type="id" />
+    <item name="tv_livevideo_en_achive_pk_energy_my_lable" type="id" />
+    <item name="tv_livevideo_en_achive_pk_energy_my" type="id" />
+    <item name="tv_livevideo_en_achive_pk_energy_other_lable" type="id" />
+    <item name="tv_livevideo_en_achive_pk_energy_other" type="id" />
+    <item name="pg_livevideo_en_achive_pk" type="id" />
 </resources>
