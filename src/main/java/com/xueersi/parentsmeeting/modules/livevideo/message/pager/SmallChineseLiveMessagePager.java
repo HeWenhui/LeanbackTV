@@ -142,7 +142,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
      * 聊天消息的颜色
      */
     private int[] messageColors;
-    private Drawable messageBackgroundColors[];
+//    private Drawable messageBackgroundColors[];
 
     public SmallChineseLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                         LiveAndBackDebug ums, BaseLiveMediaControllerBottom liveMediaControllerBottom,
@@ -181,30 +181,30 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
 
         Resources resources = context.getResources();
         nameColors = new int[]{
-                resources.getColor(R.color.COLOR_005B56),
-                resources.getColor(R.color.COLOR_005B56),
-                resources.getColor(R.color.COLOR_005952),
-                resources.getColor(R.color.COLOR_005B56)
+                resources.getColor(R.color.COLOR_FFFFFF),
+                resources.getColor(R.color.COLOR_F0A61B),
+                resources.getColor(R.color.COLOR_008B97),
+                resources.getColor(R.color.COLOR_F0A61B)
         };
         messageColors = new int[]{
                 resources.getColor(R.color.COLOR_FEFFFF),
-                resources.getColor(R.color.COLOR_00867F),
-                resources.getColor(R.color.COLOR_005952),
-                resources.getColor(R.color.COLOR_00867F),
+                resources.getColor(R.color.COLOR_008B97),
+                resources.getColor(R.color.COLOR_008B97),
+                resources.getColor(R.color.COLOR_008B97),
         };
-        messageBackgroundColors = new Drawable[]{
-                mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_message_my_one_line_background),
-                mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_message_other_one_line_background),
-                mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_message_other_one_line_background),
-                mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_message_other_one_line_background)
-        };
+//        messageBackgroundColors = new Drawable[]{
+//                mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_message_my_one_line_background),
+//                mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_message_other_one_line_background),
+//                mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_message_other_one_line_background),
+//                mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_message_other_one_line_background)
+//        };
     }
 
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_small_chinese_live_message, null);
         lvMessage = mView.findViewById(R.id.lv_livevideo_small_chinese_live_message);
-        tvOnlineNum = mView.findViewById(R.id.tv_livevideo_small_chinese_online_people_num);
+        tvOnlineNum = mView.findViewById(R.id.tzcytv_livevideo_small_chinese_live_message_online_people_num);
 
         dvMessageDanmaku = mView.findViewById(R.id.dv_livevideo_small_chinese_message_danmaku);
         rlInfo = mView.findViewById(R.id.rl_livevideo_info);
@@ -248,12 +248,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
                 return new AdapterItemInterface<LiveMessageEntity>() {
-                    /** 说话的内容 */
-                    FangZhengCuYuanTextView tvMessageWords;
-                    /** 说话人使用的方式 */
-                    FangZhengCuYuanTextView tvMessageSpeaker;
-                    /** 聊天使用的背景色 */
-                    Drawable backgroundDrawable;
+                    TextView tvMessageItem;
 
                     @Override
                     public int getLayoutResId() {
@@ -262,67 +257,68 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
 
                     @Override
                     public void initViews(View root) {
-                        tvMessageSpeaker = root.findViewById(R.id.tv_livevideo_small_chinese_live_message_author);
-                        tvMessageWords = root.findViewById(R.id.tv_livevideo_small_chinese_live_message_content);
-                        tvMessageWords.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
+                        tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_small_chinese_message_item);
+                        tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
                     }
 
                     @Override
                     public void bindListener() {
+
                     }
 
                     @Override
                     public void updateViews(LiveMessageEntity entity, int position, Object objTag) {
                         String sender = entity.getSender();
                         SpannableString spanttt = new SpannableString(sender + ": ");
-                        int nameColor, messageColor;
+                        int color, messageColor;
                         switch (entity.getType()) {
-                            case LiveMessageEntity.MESSAGE_MINE://如果是我的消息
-                                nameColor = nameColors[entity.getType()];
+                            case LiveMessageEntity.MESSAGE_MINE:
+                                color = nameColors[entity.getType()];
                                 messageColor = messageColors[entity.getType()];
-                                backgroundDrawable = messageBackgroundColors[entity.getType()];
-//                                logger.i();
+//                                Log.w(TAG, "1:" + messageColor);
                                 break;
-                            case LiveMessageEntity.MESSAGE_TEACHER://如果是老师的消息
-                                nameColor = nameColors[entity.getType()];
+                            case LiveMessageEntity.MESSAGE_TEACHER:
+                                color = nameColors[entity.getType()];
                                 messageColor = messageColors[entity.getType()];
-                                backgroundDrawable = messageBackgroundColors[entity.getType()];
-//                                logger.i();
+//                                Log.w(TAG, "2:" + messageColor);
                                 break;
-                            case LiveMessageEntity.MESSAGE_TIP://如果是系统提示
-                                nameColor = nameColors[entity.getType()];
+                            case LiveMessageEntity.MESSAGE_TIP:
+                                color = nameColors[entity.getType()];
                                 messageColor = messageColors[entity.getType()];
-                                backgroundDrawable = messageBackgroundColors[entity.getType()];
-//                                logger.i();
+//                                Log.w(TAG, "3:" + messageColor);
                                 break;
-                            case LiveMessageEntity.MESSAGE_CLASS://如果是同学的消息
-                                nameColor = nameColors[entity.getType()];
+                            case LiveMessageEntity.MESSAGE_CLASS:
+                                color = nameColors[entity.getType()];
                                 messageColor = messageColors[entity.getType()];
-                                backgroundDrawable = messageBackgroundColors[entity.getType()];
-//                                logger.i();
+//                                Log.w(TAG, "4:" + messageColor);
                                 break;
                             default:
-                                nameColor = nameColors[0];
+                                color = nameColors[0];
                                 messageColor = messageColors[entity.getType()];
-                                backgroundDrawable = messageBackgroundColors[entity.getType()];
+//                                Log.w(TAG, "5:" + messageColor);
                                 break;
                         }
-
                         SpannableStringBuilder messageSpan = new SpannableStringBuilder(entity.getText());
-                        CharacterStyle nameStyle = new ForegroundColorSpan(nameColor);
+                        CharacterStyle characterStyle = new ForegroundColorSpan(color);
                         CharacterStyle messageStyle = new ForegroundColorSpan(messageColor);
-                        spanttt.setSpan(nameStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        messageSpan.setSpan(messageStyle, 0, entity.getText().length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        messageSpan.setSpan(messageStyle, 0, entity.getText().length(), Spanned
+                                .SPAN_INCLUSIVE_EXCLUSIVE);
                         if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
-                            tvMessageWords.setAutoLinkMask(Linkify.WEB_URLS);
-                            urlClick(tvMessageWords);
+                            tvMessageItem.setAutoLinkMask(Linkify.WEB_URLS);
+                            tvMessageItem.setText(entity.getText());
+                            urlClick(tvMessageItem);
+//                            CharSequence text = tvMessageItem.getText();
+                            tvMessageItem.setText(spanttt);
+                            tvMessageItem.append(messageSpan);
+//                            Log.w(TAG, "6:" + messageColor + " " + entity.getText());
+//                            tvMessageItem.append(text);
                         } else {
-                            tvMessageWords.setAutoLinkMask(0);
+                            tvMessageItem.setAutoLinkMask(0);
+                            tvMessageItem.setText(spanttt);
+                            tvMessageItem.append(messageSpan);
+//                            Log.w(TAG, "7:" + messageColor + " " + entity.getText());
                         }
-                        tvMessageSpeaker.setText(sender);
-//                            tvMessageWords.append(messageSpan);
-                        tvMessageWords.setText(messageSpan);
-                        tvMessageWords.setBackgroundDrawable(backgroundDrawable);
                     }
                 };
             }
@@ -646,6 +642,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     /** 聊天开始连接 */
     @Override
     public void onStartConnect() {
+        logger.i("开始连接");
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -687,6 +684,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     /** 聊天连上 */
     @Override
     public void onConnect() {
+        logger.i("聊天连接成功");
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -739,6 +737,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     /** 聊天断开 */
     @Override
     public void onDisconnect() {
+        logger.i("聊天连接失败");
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -1044,12 +1043,12 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                    tvOnlineNum.setText("(" + peopleCount + "/" + getInfo.getTeamStuIds().size() + ")");
+                    tvOnlineNum.setText(String.valueOf(peopleCount));
                 } else {
                     if (ircState.isHaveTeam()) {
-                        tvOnlineNum.setText("(" + peopleCount + "/" + getInfo.getTeamStuIds().size() + ")");
+                        tvOnlineNum.setText(String.valueOf(peopleCount));
                     } else {
-                        tvOnlineNum.setText("(" + peopleCount + "/" + getInfo.getTeamStuIds().size() + ")");
+                        tvOnlineNum.setText(String.valueOf(peopleCount));
                     }
                 }
             }
@@ -1062,12 +1061,12 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                    tvOnlineNum.setText("(" + peopleCount + "/" + getInfo.getTeamStuIds().size() + ")");
+                    tvOnlineNum.setText(String.valueOf(peopleCount));
                 } else {
                     if (ircState.isHaveTeam()) {
-                        tvOnlineNum.setText("(" + peopleCount + "/" + getInfo.getTeamStuIds().size() + ")");
+                        tvOnlineNum.setText(String.valueOf(peopleCount));
                     } else {
-                        tvOnlineNum.setText("(" + peopleCount + "/" + getInfo.getTeamStuIds().size() + ")");
+                        tvOnlineNum.setText(String.valueOf(peopleCount));
                     }
                 }
             }
@@ -1212,12 +1211,13 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     @Override
     public void addMessage(final String sender, final int type, final String text, final String headUrl) {
         final Exception e = new Exception();
+        logger.i("sender:" + sender + ",text=" + text);
         pool.execute(new Runnable() {
             @Override
             public void run() {
+                logger.i("聊天的数量：" + liveMessageEntities.size());
                 final SpannableStringBuilder sBuilder = LiveMessageEmojiParser.convertToHtml(RegexUtils
-                                .chatSendContentDeal(text), mContext,
-                        messageSize);
+                        .chatSendContentDeal(text), mContext, messageSize);
                 mView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -1226,6 +1226,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                         }
                         LiveMessageEntity entity = new LiveMessageEntity(sender, type, sBuilder, headUrl);
                         liveMessageEntities.add(entity);
+                        logger.i("聊天的数量：" + liveMessageEntities.size() + "，最后一条是" + liveMessageEntities.get(liveMessageEntities.size() - 1));
                         if (otherLiveMessageEntities != null) {
                             if (otherLiveMessageEntities.size() > 29) {
                                 otherLiveMessageEntities.remove(0);

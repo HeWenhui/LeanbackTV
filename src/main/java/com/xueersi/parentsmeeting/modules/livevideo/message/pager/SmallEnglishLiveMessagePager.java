@@ -1082,7 +1082,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        logger.e( "=====>onMessage called");
+        logger.e("=====>onMessage called");
         if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
             sender = "主讲老师";
         } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
@@ -1345,7 +1345,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
             liveAndBackDebug.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
         }
-        logger.e( "sender:" + sender);
+        logger.e("sender:" + sender);
     }
 
     @Override

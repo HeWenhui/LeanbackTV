@@ -1,11 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.understand.page.SmallChineseUnderstandPager;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
 /**
@@ -25,11 +25,17 @@ public class SmallChineseRedPackagePager extends BasePager {
     /** 组别的金钱 */
     private ImageView groupMoney;
 
+    public SmallChineseRedPackagePager(Context context) {
+        super(context);
+        initListener();
+        updateView(false, 0);
+    }
+
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_small_chinese_redpackage, null);
         ivClose = view.findViewById(R.id.iv_livevideo_small_chinese_red_package_close);
-        ivReceive = view.findViewById(R.id.bg_livevideo_small_chinese_red_package_receive);
+        ivReceive = view.findViewById(R.id.iv_livevideo_small_chinese_red_package_receive);
         ivRedPackageBackground = view.findViewById(R.id.iv_livevideo_small_chinese_red_package_background);
         ivRedPackageTip = view.findViewById(R.id.iv_livevideo_small_chinese_red_package_open_tip);
         fzcytvMoney = view.findViewById(R.id.fzcytv_livevideo_small_chinese_red_package_red_value);
@@ -71,13 +77,17 @@ public class SmallChineseRedPackagePager extends BasePager {
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (listener != null) {
+                    listener.close();
+                }
             }
         });
         ivReceive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (listener != null) {
+                    listener.submit();
+                }
             }
         });
     }
@@ -90,9 +100,9 @@ public class SmallChineseRedPackagePager extends BasePager {
         void submit();
     }
 
-    private SmallChineseUnderstandPager listener;
+    private SmallChineseRedPackageListener listener;
 
-    public void setListener(SmallChineseUnderstandPager listener) {
+    public void setListener(SmallChineseRedPackageListener listener) {
         this.listener = listener;
     }
 }

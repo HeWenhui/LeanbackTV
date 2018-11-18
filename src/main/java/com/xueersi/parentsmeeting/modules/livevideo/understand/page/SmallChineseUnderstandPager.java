@@ -8,16 +8,11 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 public class SmallChineseUnderstandPager extends BasePager {
-    /**
-     *
-     */
+    /** 懂了 */
     private ImageView ivUnderstandYes;
-    /**
-     *
-     */
+    /** 没懂 */
     private ImageView ivUnderstandNo;
-
-
+    /** 关闭 */
     private ImageView ivClose;
 
     public SmallChineseUnderstandPager(Context context) {
@@ -48,7 +43,6 @@ public class SmallChineseUnderstandPager extends BasePager {
                 if (mUnderStandListener != null) {
                     mUnderStandListener.underStand(v.getId() == R.id.iv_livevideo_small_chinese_understand_yes);
                 }
-
             }
 
         });
@@ -86,8 +80,6 @@ public class SmallChineseUnderstandPager extends BasePager {
          * @param underStand
          */
         void underStand(boolean underStand);
-
-//        void noUnderStandListener(boolean noUnderStand);
     }
 
     private UnderStandListener mUnderStandListener;

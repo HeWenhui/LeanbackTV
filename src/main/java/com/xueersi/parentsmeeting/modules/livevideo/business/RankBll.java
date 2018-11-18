@@ -63,6 +63,8 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     int colorWhite;
 
     private Boolean isSmallEnglish = false;
+    /** 小学语文排名 */
+    private SmallChineseRankPager chineseRankPager;
 
     public RankBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -145,21 +147,28 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 
                         @Override
                         public void onDataSucess(Object... objData) {
+                            /** 异步获取的实体数据，这个时候 */
                             allRankEntity = (AllRankEntity) objData[0];
-                            ArrayList<RankEntity> rankEntities;
-                            if (index == 1) {
-                                rankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
-                            } else if (index == 2) {
-                                rankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
-                            } else {
-                                rankEntities = allRankEntity.getMyRankEntityClass().getRankEntities();
-                            }
-                            lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
-                                @Override
-                                public AdapterItemInterface<RankEntity> getItemView(Object type) {
-                                    return new RankItem(colorYellow, colorWhite, isSmallEnglish);
+                            if (!LiveVideoConfig.isSmallChinese) {
+                                ArrayList<RankEntity> rankEntities;
+                                if (index == 1) {
+                                    rankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
+                                } else if (index == 2) {
+                                    rankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
+                                } else {
+                                    rankEntities = allRankEntity.getMyRankEntityClass().getRankEntities();
                                 }
-                            });
+                                lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
+                                    @Override
+                                    public AdapterItemInterface<RankEntity> getItemView(Object type) {
+                                        return new RankItem(colorYellow, colorWhite, isSmallEnglish);
+                                    }
+                                });
+                            } else {
+                                chineseRankPager.setRankEntity(allRankEntity);
+                                chineseRankPager.initData();
+
+                            }
                         }
                     });
                     relativeLayout.setVisibility(View.VISIBLE);
@@ -367,8 +376,8 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 }
             });
         } else if (LiveVideoConfig.isSmallChinese) {//如果是小学语文
-            SmallChineseRankPager mPager = new SmallChineseRankPager(mContext, allRankEntity);
-            relativeLayout = mPager.getRootView();
+            chineseRankPager = new SmallChineseRankPager(mContext);
+            relativeLayout = chineseRankPager.getRootView();
 
         } else {
             if (LiveVideoConfig.isPrimary) {

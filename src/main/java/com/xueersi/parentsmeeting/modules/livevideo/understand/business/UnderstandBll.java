@@ -116,7 +116,6 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                     } else if (LiveVideoConfig.isSmallChinese) {
                         smallChineseUnderstandPager = new SmallChineseUnderstandPager(activity);
                         smallChineseUnderstandPager.setListener(new SmallChineseUnderstandPager.UnderStandListener() {
-
                             /**关闭当前监听器*/
                             @Override
                             public void close() {
@@ -128,8 +127,8 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                             public void underStand(boolean underStand) {
                                 smallChineseUnderstandOnclick(underStand);
                             }
-
                         });
+
 
                     } else {
                         understandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,

@@ -1,28 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-
-    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@+id/tv_livevideo_small_chinese_live_message_author"
+    <TextView
+        android:id="@+id/tv_livevideo_small_chinese_message_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="124434324"
-        android:textColor="@color/COLOR_005B56" />
-
-    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@+id/tv_livevideo_small_chinese_live_message_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_livevideo_small_chinese_message_my_one_line_background"
-        android:gravity="center"
         android:includeFontPadding="false"
-        android:text="13315465454564654654665748564"
-        android:textColor="@color/COLOR_00867F"
-        android:textSize="11sp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_livevideo_small_chinese_live_message_author" />
+        android:textColor="@color/white"
+        android:textSize="11sp" />
 
-
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

@@ -65,6 +65,7 @@
             android:textSize="11sp" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tzcytv_livevideo_small_chinese_live_message_online_people_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/fzcytv_livevideo_small_chinese_live_message_online"
@@ -83,27 +84,20 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true">
 
-            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-                android:id="@+id/tv_livevideo_small_chinese_online_people_num"
-                style="@style/text_font10_ffffff_style"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="72dp"
-                android:layout_marginTop="5dp" />
             <!--<RelativeLayout-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="match_parent"-->
             <!--android:layout_marginBottom="10dp">-->
 
             <ListView
+
                 android:id="@+id/lv_livevideo_small_chinese_live_message"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="13dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginRight="12dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="13dp"
                 android:divider="@null"
                 android:dividerHeight="10dp"
                 android:listSelector="@color/transparent" />
