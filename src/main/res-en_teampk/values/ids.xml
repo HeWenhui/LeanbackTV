@@ -14,7 +14,10 @@
     <item name="bt_livevideo_en_teampk_rank_start" type="id" />
     <item name="tv_livevideo_en_teampk_rank_start_close" type="id" />
     <item name="iv_livevideo_en_teampk_rank_score" type="id" />
-    <item name="rv_livevideo_en_teampk_rank_score_tip" type="id" />
+    <item name="ll_livevideo_en_teampk_rank_score_tip" type="id" />
+    <item name="tv_livevideo_en_teampk_rank_score_tip_lable" type="id" />
+    <item name="iv_livevideo_en_teampk_rank_score_tip" type="id" />
+    <item name="tv_livevideo_en_teampk_rank_score_tip" type="id" />
     <!--分队成员-->
     <item name="fl_livevideo_en_teampk_member" type="id" />
     <item name="iv_livevideo_en_teampk_member" type="id" />

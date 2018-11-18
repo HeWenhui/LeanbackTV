@@ -76,8 +76,8 @@
         android:layout_marginTop="10dp"
         android:src="@drawable/selector_live_enteampk_startpk_score" />
 
-    <RelativeLayout
-        android:id="@id/rv_livevideo_en_teampk_rank_score_tip"
+    <LinearLayout
+        android:id="@id/ll_livevideo_en_teampk_rank_score_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/iv_livevideo_en_teampk_rank_score"
@@ -85,6 +85,7 @@
         android:layout_marginRight="7dp"
         android:background="@drawable/zhanduipk_fenzhandui_defenmiij_btn_normal1"
         android:clickable="true"
+        android:orientation="vertical"
         android:visibility="gone" />
 
     <TextView
