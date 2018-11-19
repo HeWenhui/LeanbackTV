@@ -49,7 +49,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
 
     public EnglishSpeechBulletIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
-        this.englishSpeechBulletView = new EnglishSpeechBulletPager(context);
+        this.englishSpeechBulletView = new EnglishSpeechBulletPager(context, false);
         englishSpeechBulletView.setPresenter(this);
     }
 

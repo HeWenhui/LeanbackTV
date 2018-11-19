@@ -244,17 +244,19 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             return false;
         }
     });
-
+    /**
+     * 点赞页面
+     */
     private EnglishSpeekPager englishSpeekPager;
 
-    public EnglishSpeechBulletPager(Context context) {
-        super(context);
+    public EnglishSpeechBulletPager(Context context, boolean isNewView) {
+        super(context, isNewView);
     }
 
     /**
      * 初始化布局
      */
-    public View prepareView() {
+    public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_english_speech_bullet, null);
         rlSpeechBulRoot = mView.findViewById(R.id.rl_livevideo_speechbul_root);
         tvSpeechbulCloseTip = mView.findViewById(R.id.tv_livevideo_speechbul_closetip);
@@ -528,6 +530,16 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     }
 
     /**
+     * 展示老师开启语音弹幕Toast
+     */
+    public void showStartSpeechBulletToast() {
+        SmallEnglishMicTipDialog startSpeechBulletToast = new SmallEnglishMicTipDialog(mContext);
+        startSpeechBulletToast.setText("老师开启了语音弹幕");
+        startSpeechBulletToast.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
+        startSpeechBulletToast.showDialogAutoClose(2000);
+    }
+
+    /**
      * 初始化日志数据
      */
     public void initUmsAgentData() {
@@ -553,7 +565,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
 //                    rp.setMargins(0, SizeUtils.Dp2Px(mContext, 0), 0, 0);
 //                    dvSpeechbulDanmaku.setLayoutParams(rp);
             }
-            rlSpeechBulContent.addView(prepareView().getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+            rlSpeechBulContent.addView(initView().getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             rlSpeechBulContent.setVisibility(View.VISIBLE);
             initData();
@@ -568,10 +580,11 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      */
     @Override
     public void closeSpeechBullet(boolean hasTip) {
+        logger.i("closeSpeechBullet");
         if (!isShowingSpeechBullet) {
             return;
         }
-        logger.i("closeSpeechBullet");
+        isShowingSpeechBullet = false;
 //        if (tvSpeechbulTitle.getVisibility() == View.VISIBLE) {
 //            if (!StringUtils.isEmpty(tvSpeechbulTitleCount.getText())) {
 //                startTextInput(tvSpeechbulTitle.getText().toString());
@@ -598,20 +611,17 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
 //                }
 //            }.start();
             mWeakHandler.removeCallbacks(showSpeechBulletRunnable);
-            if (rlSpeechBulRoot != null) {
-                KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
-            }
             SmallEnglishMicTipDialog startSpeechBulletToast = new SmallEnglishMicTipDialog(mContext);
             startSpeechBulletToast.setText("老师关闭了语音弹幕");
             startSpeechBulletToast.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
             startSpeechBulletToast.showDialogAutoClose(2000);
             umsAgentDebugInterSno9();
         }
-
-        KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
-        rlSpeechBulContent.removeView(rlSpeechBulRoot);
-        rlSpeechBulRoot.setClickable(false);
-        isShowingSpeechBullet = false;
+        if (rlSpeechBulRoot != null) {
+            KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
+            rlSpeechBulContent.removeView(rlSpeechBulRoot);
+            rlSpeechBulRoot.setClickable(false);
+        }
         stopEvaluator();
     }
 
@@ -700,15 +710,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         this.presenter = presenter;
     }
 
-    /**
-     * 展示老师开启语音弹幕Toast
-     */
-    public void showStartSpeechBulletToast() {
-        SmallEnglishMicTipDialog startSpeechBulletToast = new SmallEnglishMicTipDialog(mContext);
-        startSpeechBulletToast.setText("老师开启了语音弹幕");
-        startSpeechBulletToast.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
-        startSpeechBulletToast.showDialogAutoClose(2000);
-    }
 
     /**
      * ************************************************** 语音识别 **************************************************
@@ -1041,22 +1042,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     private void startSpeechInput() {
         //判断模型是否初始化成功
         if (!mSpeechUtils.isRecogOfflineSuccess()) {
-//            XESToastUtils.showToast(mContext, "模型正在启动，请稍后");
-//            SpeechEvaluatorUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
-//                @Override
-//                public void onFileSuccess() {
-//                    XESToastUtils.showToast(mContext, "模型启动成功");
-//                    startEvaluator();
-//                }
-//
-//                @Override
-//                public void onFileFail() {
-//                    XESToastUtils.showToast(mContext, "模型启动失败");
-//                    setRepeatBtnDisenable();
-//                    startTextInput("");
-//                }
-//
-//            });
             XESToastUtils.showToast(mContext, "模型启动失败，请使用手动输入");
             setRepeatBtnDisenable();
             startTextInput("");
@@ -1066,7 +1051,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     }
 
     /**
-     * 置灰重说按钮9+
+     * 置灰重说按钮
      */
     private void setRepeatBtnDisenable() {
         tvSpeechbulRepeat.setEnabled(false);
@@ -1086,8 +1071,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     private int DANMU_PADDING = 5;//控制两行弹幕之间的间距
     private int DANMU_RADIUS = 16;//圆角半径
     private int DANMU_BACKGROUND_HEIGHT = 33;
-//    private CircleDrawable defaultHeadMe;
-//    private CircleDrawable defaultHeadGuest;
+    private long latestDanmakuAddtime = -300;
+    private int danmakuAddCount = 0;
 
     /**
      * 初始化弹幕
@@ -1160,12 +1145,11 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     mWeakHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            addDanmaku(time + "", "i am a speech bullets", "http://xesfile.xesimg" +
-                                    ".com/user/h/ic_livevideo_default_head_boyideo_default_head_boy.png", true);
+                            addDanmaku(time + "", "i am a speech bullets", "", true);
                         }
                     });
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(300);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -1188,17 +1172,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         DANMU_TEXT_SIZE = SizeUtils.Dp2Px(context, DANMU_TEXT_SIZE);
         DANMU_BACKGROUND_HEIGHT = SizeUtils.Dp2Px(context, DANMU_BACKGROUND_HEIGHT);
     }
-
-    /**
-     * 加载默认头像
-     */
-//    private void prepareDefaultHeadImg() {
-//        defaultHeadMe = zoomCircleDrable(R.drawable.ic_default_head_square, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
-//        defaultHeadMe.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
-//        defaultHeadGuest = zoomCircleDrable(R.drawable.ic_default_head_square, BITMAP_WIDTH_GUEST,
-// BITMAP_WIDTH_GUEST);
-//        defaultHeadGuest.setBounds(0, 0, BITMAP_WIDTH_GUEST, BITMAP_WIDTH_GUEST);
-//    }
 
     /**
      * 绘制背景(自定义弹幕样式)
@@ -1258,9 +1231,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             }
         }
     };
-
-    long latestDanmakuAddtime = -300;
-    int danmakuAddCount = 0;
 
     public void addDanmaku(final String name, final String msg, final String headImgUrl, final boolean isGuest) {
         if (mDanmakuContext == null || mDanmakuView == null || !mDanmakuView.isPrepared()) {
