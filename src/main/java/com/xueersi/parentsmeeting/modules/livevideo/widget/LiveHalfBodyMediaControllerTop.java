@@ -1,9 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -69,9 +71,25 @@ public class LiveHalfBodyMediaControllerTop extends BaseLiveMediaControllerTop {
           findViewItems();
     }
 
+    String videoName;
     @Override
     public void setFileName(String name) {
-        super.setFileName(name);
-        Log.e("HalfBodyTop","======>setFileName:"+name);
+        videoName = name;
+        //super.setFileName(name);
+        Log.e("HalfBodyTop","======>setFileName:"+name+":"+tvFileName.getVisibility());
+      /*  tvFileName.setText(name);
+        tvFileName.setTextColor(Color.RED);
+        tvFileName.invalidate();*/
+
+        tvFileName.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tvFileName.setText(videoName);
+                Log.e("HalfBodyTop","======>setFileName 2222:"+videoName+":"+tvFileName.getVisibility());
+            }
+        },3000);
+
+        //TextView tv =mainLiveView.findViewById(R.id.tv_video_name);
+        //tv.setText("哈哈哈哈哈");
     }
 }

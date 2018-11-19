@@ -14,7 +14,9 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -35,8 +37,18 @@ public class HalfBodySceneTransAnim {
      */
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "halfbody_live_translate";
 
-    public HalfBodySceneTransAnim(Activity context){
+    /**
+     * lottie 文科 主/辅讲  切换动画
+     */
+    private static final String LOTTIE_RES_ASSETS_ROOTDIR_ARTS = "halfbody_live_translate_arts";
+    /**直播间初始参数*/
+    private final LiveGetInfo mGetInfo;
+
+
+    public HalfBodySceneTransAnim(Activity context, LiveGetInfo liveInfo){
         mContext = context;
+        mGetInfo = liveInfo;
+
     }
     /**
      * 主辅讲状态切换
@@ -80,8 +92,15 @@ public class HalfBodySceneTransAnim {
 
     private void startAnim() {
         if (animationView != null) {
-            String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
-            String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
+            String lottieResPath = null;
+            String lottieJsonPath = null;
+            if(mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE){
+                lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR_ARTS  +"/images";
+                lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR_ARTS +"/data.json";
+            }else{
+                 lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
+                 lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
+            }
             final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
             animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
             animationView.setImageAssetDelegate(new ImageAssetDelegate() {
