@@ -103,7 +103,7 @@ public class LiveVideoSAConfig {
         /** 理科一次多发课件 */
         public String URL_LIVE_GET_MORE_WARE_URL = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/courseWarePreLoad";
         /** 文科一发多题课件 */
-        public String URL_LIVE_GET_ARTSMORE_COURSEWARE_URL = "https://laoshi.xueersi.com/libarts/v2/preLoad/preLoading";
+        public String URL_LIVE_GET_ARTSMORE_COURSEWARE_URL = "https://app.arts.xueersi.com/v2/preLoad/preLoading";
         /** 互动题满分榜接口 */
         public String LIVE_FULL_MARK_LIST_QUESTION = HTTP_HOST + "/LiveCourse/teamTestFullScoreRank";
         /** 互动课件满分榜接口 */
