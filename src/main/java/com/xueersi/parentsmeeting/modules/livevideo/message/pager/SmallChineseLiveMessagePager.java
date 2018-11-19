@@ -143,6 +143,8 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
      */
     private int[] messageColors;
 //    private Drawable messageBackgroundColors[];
+    /** 小学语文测试，一直发弹幕， */
+    private boolean isSendFlower = false;
 
     public SmallChineseLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                         LiveAndBackDebug ums, BaseLiveMediaControllerBottom liveMediaControllerBottom,
@@ -559,7 +561,21 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                         });
             }
         }, 10);
-
+        if (isSendFlower) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (true) {
+                        addDanmaKuFlowers(FLOWERS_SMALL, "me");
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }).start();
+        }
     }
 
     @Override

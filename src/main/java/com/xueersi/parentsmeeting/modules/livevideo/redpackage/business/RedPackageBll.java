@@ -164,7 +164,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
                 chineseRedPackagePager.setListener(new SmallChineseRedPackagePager.SmallChineseRedPackageListener() {
                     @Override
                     public void close() {
-                        if (chineseRedPackagePager.getRootView().getParent() == rlRedpacketContent) {
+                        if (chineseRedPackagePager != null && chineseRedPackagePager.getRootView().getParent() == rlRedpacketContent) {
                             rlRedpacketContent.removeView(chineseRedPackagePager.getRootView());
                         }
                     }
