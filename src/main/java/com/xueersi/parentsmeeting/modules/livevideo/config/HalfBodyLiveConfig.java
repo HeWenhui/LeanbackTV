@@ -12,6 +12,6 @@ public interface HalfBodyLiveConfig {
     int LIVE_TYPE_HALFBODY = 6;
 
     /**直播类型:语文*/
-    int LIVE_TYPE_CHINESE = 0;
+    int LIVE_TYPE_CHINESE = 1;
 
 }
