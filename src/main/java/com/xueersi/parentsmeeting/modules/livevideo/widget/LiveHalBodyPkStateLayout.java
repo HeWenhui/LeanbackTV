@@ -26,8 +26,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 public class LiveHalBodyPkStateLayout extends TeamPkStateLayout {
 
 
-    private View vContributionCotanier;
-    private ImageView ivPkState;
+    protected View vContributionCotanier;
+    protected ImageView ivPkState;
 
     public LiveHalBodyPkStateLayout(@NonNull Context context) {
         super(context);
