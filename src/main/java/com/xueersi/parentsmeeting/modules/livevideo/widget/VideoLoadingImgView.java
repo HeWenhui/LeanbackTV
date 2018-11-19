@@ -33,11 +33,18 @@ public class VideoLoadingImgView extends ImageView {
         startLoadingAnim();
     }
 
+    @Override
+    public void setImageResource(int resId) {
+        super.setImageResource(resId);
+        startLoadingAnim();
+    }
+
     private void startLoadingAnim() {
         if (getDrawable() != null && getDrawable() instanceof AnimationDrawable) {
             ((AnimationDrawable) getDrawable()).start();
         }
     }
+
 
     @Override
     public void setVisibility(int visibility) {

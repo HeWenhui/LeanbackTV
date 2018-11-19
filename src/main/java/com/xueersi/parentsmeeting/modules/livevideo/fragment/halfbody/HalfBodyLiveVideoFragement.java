@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodyLiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerTop;
 
@@ -24,7 +25,7 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
 
     private static final String TAG = "HalfBodyLiveVideoFragement";
     private LiveHalfBodyMediaControllerBottom mHalfBodyMediaControllerBottom;
-    private LiveHalfBodyMediaControllerTop mMediaControllerTop;
+    //private LiveHalfBodyMediaControllerTop mMediaControllerTop;
     private HalfBodySceneTransAnim mTransAnim;
 
     public HalfBodyLiveVideoFragement() {
@@ -52,8 +53,8 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
 
     @Override
     protected void createMediaControlerTop() {
-        mMediaControllerTop = new LiveHalfBodyMediaControllerTop(activity,mMediaController,videoFragment);
-        baseLiveMediaControllerTop = mMediaControllerTop;
+      //  mMediaControllerTop = new LiveHalfBodyMediaControllerTop(activity,mMediaController,videoFragment);
+        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity,mMediaController,videoFragment);//mMediaControllerTop;
     }
 
     @Override
@@ -67,7 +68,7 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
         super.onLiveInit(getInfo);
         Log.e(TAG, "=======>onLiveInit");
         mHalfBodyMediaControllerBottom.onModeChange(getInfo.getMode(),getInfo);
-        mMediaControllerTop.onModeChange(getInfo.getMode(),getInfo);
+       // mMediaControllerTop.onModeChange(getInfo.getMode(),getInfo);
     }
 
 
@@ -81,7 +82,7 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
             @Override
             public void run() {
                 mHalfBodyMediaControllerBottom.onModeChange(mode, mGetInfo);
-                mMediaControllerTop.onModeChange(mode,mGetInfo);
+                //mMediaControllerTop.onModeChange(mode,mGetInfo);
             }
         });
         showSceneTransAnim(mode,isPresent);
