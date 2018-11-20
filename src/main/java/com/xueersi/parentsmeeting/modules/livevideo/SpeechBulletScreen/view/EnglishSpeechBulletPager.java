@@ -53,6 +53,7 @@ import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.speech.SpeechConfig;
+import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
@@ -236,6 +237,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      */
     XesCloudUploadBusiness uploadBusiness;
     SpeechParamEntity mParam;
+    private boolean showSpeechRecog = false;
     /**
      * 弱引用Handler
      */
@@ -302,6 +304,13 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      */
     @Override
     public void initData() {
+        ShareDataManager sdm = ShareDataManager.getInstance();
+        showSpeechRecog = sdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager.SHAREDATA_USER);
+        if (!showSpeechRecog) {
+            setRepeatBtnDisenable();
+            startTextInput("");
+            return;
+        }
         mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -357,22 +366,19 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                 KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etSpeechbulWords);
             }
         });
-        //监听软件通
+        //监听软键盘的状态变化
         etSpeechbulWords.addTextChangedListener(new TextWatcher() {
+            private int selectionEnd;
+            private int lengthBefore;
+
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                selectionEnd = etSpeechbulWords.getSelectionEnd();
+                lengthBefore = charSequence.length();
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (StringUtils.isSpace(charSequence.toString())) {
-                    tvSpeechbulSend.setEnabled(false);
-                    tvSpeechbulSend.setAlpha(0.6f);
-                } else {
-                    tvSpeechbulSend.setEnabled(true);
-                    tvSpeechbulSend.setAlpha(1.0f);
-                }
-                tvSpeechbulCount.setText(charSequence.toString().length() + "/60");
             }
 
             @Override
@@ -405,13 +411,23 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                 String str = editable.toString();
                 String repickStr = str.replaceAll("[\u4e00-\u9fa5]", "");
                 if (!repickStr.equals(str)) {
+                    int selectionAdditon = repickStr.length() - lengthBefore;
                     rlSpeechbulTips.setVisibility(View.VISIBLE);
                     mWeakHandler.removeCallbacks(setTipsGoneRunnable);
                     mWeakHandler.postDelayed(setTipsGoneRunnable, 2000);
+                    etSpeechbulWords.removeTextChangedListener(this);
+                    editable.replace(0, editable.length(), repickStr);
+                    etSpeechbulWords.setSelection(selectionEnd + selectionAdditon);
+                    etSpeechbulWords.addTextChangedListener(this);
                 }
-                etSpeechbulWords.removeTextChangedListener(this);
-                editable.replace(0, editable.length(), repickStr.trim());
-                etSpeechbulWords.addTextChangedListener(this);
+                if (StringUtils.isSpace(repickStr)) {
+                    tvSpeechbulSend.setEnabled(false);
+                    tvSpeechbulSend.setAlpha(0.6f);
+                } else {
+                    tvSpeechbulSend.setEnabled(true);
+                    tvSpeechbulSend.setAlpha(1.0f);
+                }
+                tvSpeechbulCount.setText(repickStr.length() + "/60");
             }
         });
         //监听软键盘发送按钮
@@ -912,7 +928,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         }
     }
 
-
     /**
      * 结束语音识别
      */
@@ -1244,7 +1259,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         }
 
         //如果长时间没有弹幕，可能会休眠
-        if (mDanmakuView != null && mDanmakuView.isPrepared() && mDanmakuView.isPaused()) {
+        if (mDanmakuView != null) {
+            mDanmakuView.pause();
             mDanmakuView.resume();
         }
         final BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
