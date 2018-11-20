@@ -398,8 +398,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                 }
 
                 @Override
-                public void onFailure(Call call, IOException e) {
-                    super.onFailure(call, e);
+                public void onPmFailure(Throwable error, String msg) {
                     giftSendText.setText("发送失败");
                     giftSendView.setVisibility(View.VISIBLE);
                     timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_SEND_DISMISS, 2000);
