@@ -1,9 +1,16 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.widget.RelativeLayout;
 
 import com.tencent.cos.xml.utils.StringUtils;
+import com.xueersi.common.permission.PermissionItem;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
@@ -13,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
@@ -20,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChat
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by linyuqiang on 2018/10/17.

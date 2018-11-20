@@ -39,6 +39,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.tal.speech.speechrecognizer.Constants;
+import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
@@ -1555,7 +1556,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mParam.setLocalSavePath(mVoiceFile.getPath());
         mParam.setVad_pause_sec("2");
         mParam.setVad_max_sec("30");
-        mSpeechUtils.startRecog(mParam, new EvaluatorListenerWithPCM() {
+        mSpeechUtils.startRecog(mParam, new EvaluatorListener() {
             @Override
             public void onBeginOfSpeech() {
                 logger.d("onBeginOfSpeech");
@@ -1592,10 +1593,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 vwvVoiceChatWave.setVolume(volume);
             }
 
-            @Override
-            public void onRecordPCMData(short[] pcmBuffer, int length) {
-
-            }
         });
 //        SpeechEvaluatorInter speechEvaluatorInter = mSpeechUtils.startSpeechRecognitionOffline(mVoiceFile
 //                .getPath(), "2", "30", new EvaluatorListener() {

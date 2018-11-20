@@ -8,8 +8,8 @@ import android.os.Looper;
 import com.alibaba.android.arouter.utils.TextUtils;
 import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.BaseHttpBusiness;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -1330,7 +1330,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      */
     public void addStuPutUpHandsNum(String stuId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("stuId",stuId);
+        params.addBodyParam("stuId", stuId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_ADD_STU_HAND_NUM, params, requestCallBack);
     }
@@ -1343,7 +1343,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     public void getStuInfoByIds(String stuIds, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        params.addBodyParam("stuIds",stuIds);
+        params.addBodyParam("stuIds", stuIds);
         sendPost(liveVideoSAConfigInner.URL_LIVE_STUINFO, params, requestCallBack);
     }
 
@@ -1470,5 +1470,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
 //        }
         url = "https://pushirc.arts.xueersi.com/v1/push";
         baseSendPostNoBusinessJson(url, params, callback);
+    }
+
+    public void saveStuPlanOnlineTime(String stuId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", "" + stuId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_STU_ONLINE_TIME, params, requestCallBack);
     }
 }

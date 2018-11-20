@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
@@ -307,8 +308,9 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        mParam = new SpeechParamEntity();
-
+        if (mParam == null){
+            mParam = new SpeechParamEntity();
+        }
         boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO); //
         // 检查用户麦克风权限
         if (hasAudidoPermission) {
@@ -489,8 +491,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         }, 10);
 
         //重要！键盘高度发生变化时，刷新键盘高度
-        switchFSPanelLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
-                .OnGlobalLayoutListener() {
+        switchFSPanelLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 if (switchFSPanelLinearLayout.getHeight() != KeyboardUtil.getValidPanelHeight(mContext)) {
@@ -533,7 +534,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         mParam.setRecogType(SpeechConfig.SPEECH_BULLET_RECOGNIZE_ONLINE);
         mParam.setLocalSavePath(saveFile.getPath());
         mParam.setLang(SpeechEvaluatorUtils.RECOGNIZE_CHINESE);
-        mSpeechUtils.startRecog(mParam, new EvaluatorListenerWithPCM() {
+        mSpeechUtils.startRecog(mParam, new EvaluatorListener() {
             @Override
             public void onBeginOfSpeech() {
                 logger.i("onBeginOfSpeech");
@@ -568,11 +569,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
             public void onVolumeUpdate(int volume) {
                 logger.d("onVolumeUpdate:volume=" + volume);
                 vwvSpeechbulWave.setVolume(volume * 3);
-            }
-
-            @Override
-            public void onRecordPCMData(short[] pcmBuffer, int length) {
-
             }
         });
 //        mSpeechUtils.startSpeechBulletScreenRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,

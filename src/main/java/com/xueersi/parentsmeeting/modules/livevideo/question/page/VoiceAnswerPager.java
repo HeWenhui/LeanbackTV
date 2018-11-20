@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
@@ -317,7 +318,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         }
     }
 
-    class VoiceEvaluatorListener implements EvaluatorListenerWithPCM {
+    class VoiceEvaluatorListener implements EvaluatorListener {
         File saveVideoFile;
 
         @Override
@@ -342,10 +343,6 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
             vwvSpeectevalWave.setVolume(volume * 3);
         }
 
-        @Override
-        public void onRecordPCMData(short[] pcmBuffer, int length) {
-
-        }
     }
 //    class VoiceEvaluatorListener implements EvaluatorListener {
 //        File saveVideoFile;

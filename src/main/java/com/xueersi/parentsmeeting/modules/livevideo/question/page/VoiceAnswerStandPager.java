@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
@@ -608,7 +609,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             mIse.stop();
         }
     }
-    class VoiceEvaluatorListener implements EvaluatorListenerWithPCM {
+    class VoiceEvaluatorListener implements EvaluatorListener {
         File saveVideoFile;
         @Override
         public void onBeginOfSpeech() {
@@ -628,11 +629,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
         @Override
         public void onVolumeUpdate(int volume)  {
-
-        }
-
-        @Override
-        public void onRecordPCMData(short[] pcmBuffer, int length) {
 
         }
     }

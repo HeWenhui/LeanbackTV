@@ -203,6 +203,8 @@ public class LiveVideoSAConfig {
         public String URL_ARTS_TEAM_CLASS_RANK = "https://app.arts.xueersi.com/v2/LiveRank/getStuGroupTeamClassRanking";
         /** 直播上传精彩瞬间截图接口 */
         public String URL_LIVE_WONDER_MOMENT = HTTP_HOST + "/LiveCourse/uploadWonderfulMomentImg";
+        /**  储存学生直播在线时长(App端) https://wiki.xesv5.com/pages/viewpage.action?pageId=13838543 */
+        public String URL_LIVE_STU_ONLINE_TIME = HTTP_HOST + "/LiveCourse/saveStuPlanOnlineTime";
     }
 
 }

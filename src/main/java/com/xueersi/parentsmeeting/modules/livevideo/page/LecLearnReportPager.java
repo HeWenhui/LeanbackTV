@@ -1,12 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
+import android.os.Environment;
 import android.view.View;
 import android.widget.TextView;
 
+import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LecLearnReportBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 
 /**
  * @author linyuqiang 学习报告

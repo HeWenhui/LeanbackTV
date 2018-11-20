@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
@@ -402,7 +403,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mParam.setLocalSavePath(saveVideoFile.getPath());
         mParam.setMultRef(false);
         mParam.setLearning_stage(learning_stage);
-        mIse.startRecog(mParam, new EvaluatorListenerWithPCM() {
+        mIse.startRecog(mParam, new EvaluatorListener() {
             int lastVolume = 0;
 
             @Override
@@ -444,10 +445,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 lastVolume = volume;
             }
 
-            @Override
-            public void onRecordPCMData(short[] pcmBuffer, int length) {
-
-            }
         });
 //        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false,
 // learning_stage, new EvaluatorListener() {
@@ -630,7 +627,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         rlSpeectevalError.setVisibility(View.GONE);
     }
 
-    private void onEvaluatorSuccess(final ResultEntity resultEntity, final EvaluatorListenerWithPCM evaluatorListener) {
+    private void onEvaluatorSuccess(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
         final int score = resultEntity.getScore();
         mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
         mParam.setStrEvaluator(content2);
@@ -848,7 +845,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         umsAgentDebugPv(eventId, mData);
     }
 
-    private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListenerWithPCM evaluatorListener) {
+    private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
         mLogtf.d("onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd + ",isOfflineFail=" + mIse
                 .isOfflineFail());
         tvSpeectevalError.removeCallbacks(autoUploadRunnable);

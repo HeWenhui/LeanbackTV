@@ -40,6 +40,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tal.speech.speechrecognizer.Constants;
+import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
@@ -779,7 +780,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     mParam.setLocalSavePath(saveFile.getPath());
                     mParam.setVad_pause_sec("3");
                     mParam.setVad_max_sec("30");
-                    mSpeechUtils.startRecog(mParam, new EvaluatorListenerWithPCM() {
+                    mSpeechUtils.startRecog(mParam, new EvaluatorListener() {
                         @Override
                         public void onBeginOfSpeech() {
                             logger.i("onBeginOfSpeech()");
@@ -839,10 +840,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                             vwvSpeechbulWave.setVolume(volume * 2);
                         }
 
-                        @Override
-                        public void onRecordPCMData(short[] pcmBuffer, int length) {
-
-                        }
                     });
 //                    mSpeechEvaluatorUtils.startSpeechRecognitionOffline(saveFile.getPath(), "3", "30",
 //                            new EvaluatorListener() {

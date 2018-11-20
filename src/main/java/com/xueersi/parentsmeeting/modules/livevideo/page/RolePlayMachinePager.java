@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
@@ -703,7 +704,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         param.setLocalSavePath(saveVideoFile.getAbsolutePath());
         param.setMultRef(false);
         param.setPcm(true);
-        mIse.startRecog(param, new EvaluatorListenerWithPCM() {
+        mIse.startRecog(param, new EvaluatorListener() {
             @Override
             public void onBeginOfSpeech() {
                 logger.i("开始测评 mCurrentReadIndex = " + mCurrentReadIndex);
@@ -750,10 +751,6 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 logger.i("volume = " + volume);
             }
 
-            @Override
-            public void onRecordPCMData(short[] pcmBuffer, int length) {
-
-            }
         });
 //        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(spechMsg, saveVideoFile.getAbsolutePath(), false,
 //                new RolePlayerPager.RoleEvaluatorListener() {

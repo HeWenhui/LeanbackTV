@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 
+import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
@@ -585,7 +586,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                 param.setMultRef(false);
                 if (isEnglish) {
                     param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
-                    mIse.startRecog(param, new EvaluatorListenerWithPCM() {
+                    mIse.startRecog(param, new EvaluatorListener() {
                         @Override
                         public void onBeginOfSpeech() {
                             jsRecord();
@@ -624,10 +625,6 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                             jsUpdateVolume(volume);
                         }
 
-                        @Override
-                        public void onRecordPCMData(short[] pcmBuffer, int length) {
-
-                        }
                     });
                 } else {
                     param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_ONLINE);

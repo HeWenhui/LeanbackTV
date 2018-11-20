@@ -934,17 +934,17 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         {
-            int chartWidth = liveVideoPoint.x4 - liveVideoPoint.x2;
-            int margin = (liveVideoPoint.screenWidth - chartWidth) / 2 ;
+            int margin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+            int leftmargin = liveVideoPoint.x2 + SizeUtils.Dp2Px(mContext,10);
             RelativeLayout.LayoutParams rmcLayoutParams = (RelativeLayout.LayoutParams)rlMessageContent
                     .getLayoutParams();
-            rmcLayoutParams.setMargins(margin, 0, margin, 0);
+            rmcLayoutParams.setMargins(0, 0, margin, 0);
             rlMessageContent.setLayoutParams(rmcLayoutParams);
-//
-//            RelativeLayout.LayoutParams repeatLayoutParams = (RelativeLayout.LayoutParams) btnMessageSwitch
-//                    .getLayoutParams();
-//            repeatLayoutParams.setMargins(margin, 0, 0, 0);
-//            btnMessageSwitch.setLayoutParams(repeatLayoutParams);
+
+            RelativeLayout.LayoutParams repeatLayoutParams = (RelativeLayout.LayoutParams) btnMessageSwitch
+                    .getLayoutParams();
+            repeatLayoutParams.setMargins(leftmargin, 0, 0, 0);
+            btnMessageSwitch.setLayoutParams(repeatLayoutParams);
 //
 //            RelativeLayout.LayoutParams sendLayoutParams = (RelativeLayout.LayoutParams) btMessageSend.getLayoutParams();
 //            sendLayoutParams.setMargins(0, 0, margin, 0);

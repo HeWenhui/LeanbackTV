@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -258,7 +259,8 @@ public class LiveGetInfo {
     private int isSeniorOfHighSchool;
     /** 是否显示文科表扬榜信息 */
     private int showArtsPraise;
-
+    /** 是否是小学理科 */
+    private int isPrimarySchool;
     /**
      * 是否开启集语音互动功能 1,开启，0 不开启
      */
@@ -272,6 +274,7 @@ public class LiveGetInfo {
     public ArrayList<Integer> getPraiseGift() {
         return praiseGift;
     }
+
     public int getIsVoiceInteraction() {
         return isVoiceInteraction;
     }
@@ -358,6 +361,14 @@ public class LiveGetInfo {
 
     public int getIsSeniorOfHighSchool() {
         return isSeniorOfHighSchool;
+    }
+
+    public int getIsPrimarySchool() {
+        return isPrimarySchool;
+    }
+
+    public void setIsPrimarySchool(int isPrimarySchool) {
+        this.isPrimarySchool = isPrimarySchool;
     }
 
     public LiveGetInfo(LiveTopic liveTopic) {

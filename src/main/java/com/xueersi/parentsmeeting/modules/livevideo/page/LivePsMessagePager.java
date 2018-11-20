@@ -34,6 +34,8 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
@@ -49,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordPsItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -69,6 +72,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -77,6 +81,9 @@ import java.util.ArrayList;
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
+import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.liveBll;
 
 
 /**
