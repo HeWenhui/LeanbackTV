@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -117,10 +118,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         JSONObject englishPkObj = data.optJSONObject("englishPk");
         if (englishPkObj != null) {
             LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
-            englishPk.canUsePK=englishPkObj.optInt("canUsePK");
-            englishPk.historyScore=englishPkObj.optInt("historyScore");
-            englishPk.isTwoLose=englishPkObj.optInt("isTwoLose");
-            englishPk.canGroup=englishPkObj.optInt("canGroup");
+            englishPk.canUsePK = englishPkObj.optInt("canUsePK");
+            if (AppConfig.DEBUG) {
+                englishPk.canUsePK = 1;
+            }
+            englishPk.historyScore = englishPkObj.optInt("historyScore");
+            englishPk.isTwoLose = englishPkObj.optInt("isTwoLose");
+            englishPk.canGroup = englishPkObj.optInt("canGroup");
         }
     }
 

@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
 public class EnAchievePager extends LiveBasePager {
     RelativeLayout parent;
@@ -26,6 +29,8 @@ public class EnAchievePager extends LiveBasePager {
     RelativeLayout rl_livevideo_en_achive_content;
     ViewStub vs_livevideo_en_achive_bottom;
     ViewStub vs_livevideo_en_achive_bottom2;
+    private ProgressBar pg_livevideo_en_achive_pk;
+    private ImageView progressImageView;
     Activity activity;
     private TextView tv_livevideo_en_achive_num_star;
     private TextView tv_livevideo_en_achive_num_gold;
@@ -92,7 +97,9 @@ public class EnAchievePager extends LiveBasePager {
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
         View view = activity.findViewById(R.id.iv_livevideo_message_small_bg);
         if (1 == englishPk.canUsePK) {
-            vs_livevideo_en_achive_bottom.inflate();
+            View v = vs_livevideo_en_achive_bottom.inflate();
+            pg_livevideo_en_achive_pk = v.findViewById(R.id.pg_livevideo_en_achive_pk);
+            setEngPro(20);
         } else {
             vs_livevideo_en_achive_bottom2.inflate();
         }
@@ -113,5 +120,39 @@ public class EnAchievePager extends LiveBasePager {
     public void onStarAdd(int star, float x, float y) {
         starCount += star;
         tv_livevideo_en_achive_num_star.setText("" + starCount);
+    }
+
+    private void setEngPro(int progress) {
+        pg_livevideo_en_achive_pk.setProgress(progress);
+        final ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
+        if (rl_livevideo_info != null) {
+            if (progressImageView == null) {
+                progressImageView = new ImageView(activity);
+                progressImageView.setImageResource(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
+                progressImageView.setVisibility(View.INVISIBLE);
+                rl_livevideo_info.addView(progressImageView);
+                pg_livevideo_en_achive_pk.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        pg_livevideo_en_achive_pk.getViewTreeObserver().removeOnPreDrawListener(this);
+                        setLayout();
+                        return false;
+                    }
+                });
+            } else {
+                setLayout();
+            }
+        }
+    }
+
+    private void setLayout() {
+        ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
+        int[] loc = ViewUtil.getLoc(pg_livevideo_en_achive_pk, rl_livevideo_info);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
+        lp.leftMargin = loc[0] - progressImageView.getWidth() / 2 + pg_livevideo_en_achive_pk.getWidth() * pg_livevideo_en_achive_pk.getProgress() / pg_livevideo_en_achive_pk.getMax();
+        lp.topMargin = loc[1] - (progressImageView.getHeight() - pg_livevideo_en_achive_pk.getHeight()) / 2;
+        logger.d("initListener:left=" + loc[0] + ",top=" + loc[1]);
+        progressImageView.setLayoutParams(lp);
+        progressImageView.setVisibility(View.VISIBLE);
     }
 }
