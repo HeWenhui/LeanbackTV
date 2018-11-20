@@ -816,6 +816,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     @Override
                     public void onKeyboardShowing(boolean isShowing) {
                         logger.i("onKeyboardShowing:isShowing=" + isShowing);
+                        setMessageLayout(LiveVideoPoint.getInstance(),isShowing);
                         keyboardShowing = isShowing;
                         keyboardShowingListener.onKeyboardShowing(isShowing);
                         if (keyboardShowing) {
@@ -931,21 +932,29 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         return cbMessageClock.isChecked();
     }
 
+    private void setMessageLayout(LiveVideoPoint liveVideoPoint,boolean isKeyboardShow){
+        int margin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+        int leftmargin = liveVideoPoint.x2 + SizeUtils.Dp2Px(mContext, 10);
+        RelativeLayout.LayoutParams rmcLayoutParams = (RelativeLayout.LayoutParams) rlMessageContent
+                .getLayoutParams();
+        if (isKeyboardShow){
+            rmcLayoutParams.setMargins(0, 0, margin, 0);
+        }else {
+            rmcLayoutParams.setMargins(0, 0, margin, liveVideoPoint.y2);
+        }
+        rmcLayoutParams.height = SizeUtils.Dp2Px(mContext, 68);
+        rlMessageContent.setLayoutParams(rmcLayoutParams);
+
+        RelativeLayout.LayoutParams repeatLayoutParams = (RelativeLayout.LayoutParams) btnMessageSwitch
+                .getLayoutParams();
+        repeatLayoutParams.setMargins(leftmargin, 0, 0, 0);
+        btnMessageSwitch.setLayoutParams(repeatLayoutParams);
+    }
+
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         {
-            int margin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
-            int leftmargin = liveVideoPoint.x2 + SizeUtils.Dp2Px(mContext, 10);
-            RelativeLayout.LayoutParams rmcLayoutParams = (RelativeLayout.LayoutParams) rlMessageContent
-                    .getLayoutParams();
-            rmcLayoutParams.setMargins(0, 0, margin, liveVideoPoint.y2);
-            rmcLayoutParams.height = SizeUtils.Dp2Px(mContext, 68);
-            rlMessageContent.setLayoutParams(rmcLayoutParams);
-
-            RelativeLayout.LayoutParams repeatLayoutParams = (RelativeLayout.LayoutParams) btnMessageSwitch
-                    .getLayoutParams();
-            repeatLayoutParams.setMargins(leftmargin, 0, 0, 0);
-            btnMessageSwitch.setLayoutParams(repeatLayoutParams);
+            setMessageLayout(liveVideoPoint,false);
 //
 //            RelativeLayout.LayoutParams sendLayoutParams = (RelativeLayout.LayoutParams) btMessageSend
 // .getLayoutParams();
