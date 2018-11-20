@@ -45,6 +45,8 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_SPEECH_TEAM_STATUS = "https://app.arts.xuersi.com/v2/standLiveStatus/getSpeechEvalAnswerTeamStatus ";
         /** 直播课的语音答题小组排名 */
         public String URL_LIVE_ANSWER_TEAM = HTTP_HOST + "/LiveCourse/getTestAnswerTeamStatus";
+        /** 全身直播语音答题的小组排名(新课件平台) */
+        public String URL_LIVE_NEWSTAND_ANSWER = "https://app.arts.xueersi.com/v2/standLiveStatus/getTestAnswerTeamStatus";
         /** roleplay组内排行榜 */
         public String URL_LIVE_ROLE_TEAM = HTTP_HOST + "/LiveCourse/getRolePlayAnswerTeamRank";
         /** 全身直播roleplayTop3排行榜*/
