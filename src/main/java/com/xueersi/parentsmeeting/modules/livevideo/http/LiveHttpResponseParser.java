@@ -165,6 +165,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     getInfo.getPraiseGift().add(jsonArray.optInt(i));
                 }
             }
+            if (data.has("highLiveFlowerRate")) {
+                JSONArray jsonArray = data.optJSONArray("highLiveFlowerRate");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    getInfo.getPraiseGiftRate().add(jsonArray.optDouble(i));
+                }
+            }
+            getInfo.setPraiseAutoBarrageTime(data.optInt("praiseAutoBarrageTime", 1));
+            getInfo.setPraiseAutoCutTime(data.optInt("praiseAutoCutTime", 5));
 
             getInfo.setTeacherId(data.getString("teacherId"));
             getInfo.setTeacherName(data.getString("teacherName"));

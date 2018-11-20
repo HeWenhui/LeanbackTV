@@ -515,7 +515,12 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                 if (praiseTimeList.size() > 1) {
                     long lastTime = praiseTimeList.get(praiseTimeList.size() - 1);
                     long firstTime = praiseTimeList.get(0);
-                    if (lastTime - firstTime > 1000) {
+                    int time = 1000;
+                    int praiseAutoBarrageTime = mGetInfo.getPraiseAutoBarrageTime();
+                    if (praiseAutoBarrageTime > 0) {
+                        time = praiseAutoBarrageTime * 1000;
+                    }
+                    if (lastTime - firstTime > time) {
                         caculatePraiseTotalNumPosition();
                         praiseTotalNumView.setText(getDisplayNum(praiseNumAmount));
                         continuePraiseNum = 0;
@@ -590,7 +595,12 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                 playPraiseNumAnimation();
             } else {
                 continuePraiseNum++;
-                if (currentPraiseTime - praiseTimeList.get(0) > 5000) {
+                //连续点赞大于5秒直接弹出
+                int time = 5000;
+                if (mGetInfo.getPraiseAutoCutTime() > 0) {
+                    time = mGetInfo.getPraiseAutoCutTime() * 1000;
+                }
+                if (currentPraiseTime - praiseTimeList.get(0) > time) {
                     //push总数
                     praiseTimeList.clear();
                     caculatePraiseTotalNumPosition();
@@ -739,11 +749,18 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
      * @return
      */
     private int getProbabilityNum() {
+        ArrayList<Double> praiseGiftRate = mGetInfo.getPraiseGiftRate();
+        int rate0 = 20;
+        int rate1 = 30;
+        if (praiseGiftRate.size() > 2) {
+            rate0 = (int) (praiseGiftRate.get(0) * 100);
+            rate1 = (int) (praiseGiftRate.get(1) * 100);
+        }
         int randomInt = new Random().nextInt(100) + 1;
         int num;
-        if (randomInt <= 20) {
+        if (randomInt <= rate0) {
             num = 1;
-        } else if (randomInt <= 50) {
+        } else if (randomInt <= (rate0 + rate1)) {
             num = 2;
         } else {
             num = 3;

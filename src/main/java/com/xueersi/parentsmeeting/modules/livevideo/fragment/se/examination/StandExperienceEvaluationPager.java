@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination;
 
 import android.content.Context;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -43,9 +44,20 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
             @Override
             public void close() {
 //                super.close();
-                iPresenter.removeWindow();
-                wvSubjectWeb.destroy();
-                iPresenter.showNextWindow();
+                logger.i(Thread.currentThread().getId() + " " +
+                        Thread.currentThread().getName() + "," +
+                        Looper.getMainLooper().getThread().getName() + " " +
+                        Looper.getMainLooper().getThread().getId());
+                if (mView.getParent() != null) {
+                    mView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            iPresenter.removeWindow();
+                            wvSubjectWeb.destroy();
+                            iPresenter.showNextWindow();
+                        }
+                    });
+                }
             }
         }, "xesApp");
         WebSettings webSetting = wvSubjectWeb.getSettings();

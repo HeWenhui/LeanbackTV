@@ -271,6 +271,41 @@ public class LiveGetInfo {
      */
     private ArrayList<Integer> praiseGift = new ArrayList();
 
+    /**
+     * 点赞送礼物，礼物特效对应的弹出概率
+     */
+    private ArrayList<Double> praiseGiftRate = new ArrayList();
+
+    //连续点赞多长时间弹出礼物
+    private int praiseAutoCutTime=5;
+
+    //暂停点赞多长时间弹出礼物
+    private int praiseAutoBarrageTime=1;
+
+    public int getPraiseAutoCutTime() {
+        return praiseAutoCutTime;
+    }
+
+    public void setPraiseAutoCutTime(int praiseAutoCutTime) {
+        this.praiseAutoCutTime = praiseAutoCutTime;
+    }
+
+    public int getPraiseAutoBarrageTime() {
+        return praiseAutoBarrageTime;
+    }
+
+    public void setPraiseAutoBarrageTime(int praiseAutoBarrageTime) {
+        this.praiseAutoBarrageTime = praiseAutoBarrageTime;
+    }
+
+    public ArrayList<Double> getPraiseGiftRate() {
+        return praiseGiftRate;
+    }
+
+    public void setPraiseGiftRate(ArrayList<Double> praiseGiftRate) {
+        this.praiseGiftRate = praiseGiftRate;
+    }
+
     public ArrayList<Integer> getPraiseGift() {
         return praiseGift;
     }
