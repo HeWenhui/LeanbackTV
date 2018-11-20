@@ -634,7 +634,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             startSpeechBulletToast.showDialogAutoClose(2000);
             umsAgentDebugInterSno9();
         }
-        if (rlSpeechBulRoot != null) {
+        if (rlSpeechBulRoot != null && rlSpeechBulContent != null) {
             KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
             rlSpeechBulContent.removeView(rlSpeechBulRoot);
             rlSpeechBulRoot.setClickable(false);
