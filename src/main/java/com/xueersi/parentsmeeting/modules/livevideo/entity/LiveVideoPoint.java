@@ -68,7 +68,7 @@ public class LiveVideoPoint {
         final View actionBarOverlayLayout = (View) contentView.getParent();
         Rect r = new Rect();
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        int screenWidth = (r.right - r.left);
+        int screenWidth = Math.min((r.right - r.left), ScreenUtils.getScreenWidth());
         int screenHeight = ScreenUtils.getScreenHeight();
         if (liveVideoPoint.screenWidth == screenWidth && liveVideoPoint.videoWidth == lp.width && liveVideoPoint.videoHeight == lp.height) {
             return false;

@@ -259,6 +259,13 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
                     liveAchievementEngBll.initView(mRootView, mContentView);
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
+                    EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
+                    if (speakerRecognitioner != null) {
+                        englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
+                    }
+                    englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
+                    englishSpeekBll.initView(mRootView, mGetInfo.getMode(), null, audioRequest, mContentView);
+                    LiveAchievementIRCBll.this.englishSpeekAction = englishSpeekBll;
                 } else {
                     LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo,//mGetInfo
                             // .getStarCount(),

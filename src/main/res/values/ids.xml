@@ -836,8 +836,11 @@
     <item name="cb_livevideo_en_achive_title" type="id" />
     <item name="rl_livevideo_en_achive_content" type="id" />
     <item name="iv_livevideo_en_achive_num_gold" type="id" />
+    <item name="tv_livevideo_en_achive_num_gold" type="id" />
     <item name="iv_livevideo_en_achive_num_fire" type="id" />
+    <item name="tv_livevideo_en_achive_num_fire" type="id" />
     <item name="iv_livevideo_en_achive_num_star" type="id" />
+    <item name="tv_livevideo_en_achive_num_star" type="id" />
     <item name="tv_livevideo_en_achive_num_right" type="id" />
     <item name="tv_livevideo_en_achive_num_target" type="id" />
     <item name="vs_livevideo_en_achive_bottom" type="id" />

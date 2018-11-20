@@ -52,6 +52,7 @@ public class LiveAchievementEngBll implements StarInteractAction {
     public LiveAchievementEngBll(Activity activity, int liveType, LiveGetInfo mLiveGetInfo, boolean mIsLand) {
         this.activity = activity;
         this.mLiveGetInfo = mLiveGetInfo;
+        mLiveGetInfo.getStarCount();
     }
 
     public void initView(RelativeLayout bottomContent, RelativeLayout mContentView) {
@@ -83,11 +84,15 @@ public class LiveAchievementEngBll implements StarInteractAction {
 
     @Override
     public void onGetStar(StarAndGoldEntity starAndGoldEntity) {
-
+        if (enAchievePager != null) {
+            enAchievePager.onGetStar(starAndGoldEntity);
+        }
     }
 
     @Override
     public void onStarAdd(int star, float x, float y) {
-
+        if (enAchievePager != null) {
+            enAchievePager.onStarAdd(star, x, y);
+        }
     }
 }

@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -19,6 +20,7 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
@@ -1341,7 +1343,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     public void getStuInfoByIds(String stuIds, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        params.addBodyParam("stuIds",stuIds);
+        params.addBodyParam("stuIds", stuIds);
         sendPost(liveVideoSAConfigInner.URL_LIVE_STUINFO, params, requestCallBack);
     }
 
@@ -1447,5 +1449,36 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("url", url);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_WONDER_MOMENT, params, requestCallBack);
+    }
+
+    /**
+     * 直播上传精彩瞬间截图接口
+     *
+     * @param requestCallBack
+     */
+    public void getSelfTeamInfo(String stu_id, String unique_id, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stu_id", "" + stu_id);
+        params.addBodyParam("unique_id", unique_id);
+        setDefaultParameter(params);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_SELF_TEAM, params, requestCallBack);
+    }
+
+    /**
+     * 学生上报个人信息
+     *
+     * @param requestCallBack
+     */
+    public void reportStuInfo(String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stu_id", "" + stu_id);
+        params.addBodyParam("stu_name", stu_name);
+        params.addBodyParam("stu_head", stu_head);
+        params.addBodyParam("stu_energy", stu_energy);
+        params.addBodyParam("stu_lose_flag", stu_lose_flag);
+        params.addBodyParam("nick_name", nick_name);
+        params.addBodyParam("unique_id", unique_id);
+        setDefaultParameter(params);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_STUINFO, params, requestCallBack);
     }
 }

@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkRankPager;
@@ -17,9 +18,14 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction {
     private TeamPkRankPager teamPkRankPager;
     private TeamPkRankResultPager teamPkRankResultPager;
     private TeamPkLeadPager teamPkLeadPager;
+    private EnTeamPkHttp enTeamPkHttp;
 
     public EnTeamPkBll(Context context) {
         super(context);
+    }
+
+    public void setEnTeamPkHttp(EnTeamPkHttp enTeamPkHttp) {
+        this.enTeamPkHttp = enTeamPkHttp;
     }
 
     public void setRootView(RelativeLayout rootView) {
@@ -28,9 +34,9 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction {
 
     @Override
     public void onRankStart() {
-        handler.post(new Runnable() {
+        enTeamPkHttp.reportStuInfo(new AbstractBusinessDataCallBack() {
             @Override
-            public void run() {
+            public void onDataSucess(Object... objects) {
                 if (teamPkRankPager == null) {
                     teamPkRankPager = new TeamPkRankPager(mContext);
                 }
@@ -43,9 +49,9 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction {
 
     @Override
     public void onRankResult() {
-        handler.post(new Runnable() {
+        enTeamPkHttp.getSelfTeamInfo(new AbstractBusinessDataCallBack() {
             @Override
-            public void run() {
+            public void onDataSucess(Object... objects) {
                 if (teamPkRankResultPager == null) {
                     teamPkRankResultPager = new TeamPkRankResultPager(mContext);
                 }

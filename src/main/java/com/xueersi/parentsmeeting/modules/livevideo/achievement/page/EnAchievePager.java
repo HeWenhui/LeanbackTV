@@ -10,10 +10,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 public class EnAchievePager extends LiveBasePager {
@@ -25,11 +27,17 @@ public class EnAchievePager extends LiveBasePager {
     ViewStub vs_livevideo_en_achive_bottom;
     ViewStub vs_livevideo_en_achive_bottom2;
     Activity activity;
+    private TextView tv_livevideo_en_achive_num_star;
+    private TextView tv_livevideo_en_achive_num_gold;
+    private int starCount;
+    private int goldCount;
 
     public EnAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
         this.parent = relativeLayout;
         this.mLiveGetInfo = mLiveGetInfo;
+        starCount = mLiveGetInfo.getStarCount();
+        goldCount = mLiveGetInfo.getGoldCount();
         activity = (Activity) context;
         initView();
         initData();
@@ -44,12 +52,16 @@ public class EnAchievePager extends LiveBasePager {
         rl_livevideo_en_achive_content = mView.findViewById(R.id.rl_livevideo_en_achive_content);
         vs_livevideo_en_achive_bottom = mView.findViewById(R.id.vs_livevideo_en_achive_bottom);
         vs_livevideo_en_achive_bottom2 = mView.findViewById(R.id.vs_livevideo_en_achive_bottom2);
+        tv_livevideo_en_achive_num_star = mView.findViewById(R.id.tv_livevideo_en_achive_num_star);
+        tv_livevideo_en_achive_num_gold = mView.findViewById(R.id.tv_livevideo_en_achive_num_gold);
         return mView;
     }
 
     @Override
     public void initData() {
         super.initData();
+        tv_livevideo_en_achive_num_star.setText("" + starCount);
+        tv_livevideo_en_achive_num_gold.setText("" + goldCount);
     }
 
     @Override
@@ -78,10 +90,28 @@ public class EnAchievePager extends LiveBasePager {
             }
         });
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
+        View view = activity.findViewById(R.id.iv_livevideo_message_small_bg);
         if (1 == englishPk.canUsePK) {
             vs_livevideo_en_achive_bottom.inflate();
         } else {
             vs_livevideo_en_achive_bottom2.inflate();
         }
+        if (view != null) {
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            lp.topMargin = (int) (73 * ScreenUtils.getScreenDensity());
+            view.setLayoutParams(lp);
+        }
+    }
+
+    public void onGetStar(StarAndGoldEntity starAndGoldEntity) {
+        int starCountAdd = starAndGoldEntity.getStarCount() - starCount;
+        int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
+        tv_livevideo_en_achive_num_star.setText("" + starAndGoldEntity.getStarCount());
+        tv_livevideo_en_achive_num_gold.setText("" + starAndGoldEntity.getGoldCount());
+    }
+
+    public void onStarAdd(int star, float x, float y) {
+        starCount += star;
+        tv_livevideo_en_achive_num_star.setText("" + starCount);
     }
 }
