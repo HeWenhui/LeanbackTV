@@ -213,6 +213,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     boolean isVoice = true;
 
     String mVoiceContent = "";
+    String mMsgContent = "";
     /** 语音转文字的聊天是否已发送 */
     private boolean isVoiceMsgSend = true;
     /** 发送聊天数目 */
@@ -698,6 +699,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                 mMsgCount++;
                                 etMessageContent.setText("");
                                 mVoiceContent = "";
+                                mMsgContent = "";
                                 addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, "");
                                 lastSendMsg = System.currentTimeMillis();
                                 onTitleShow(true);
@@ -740,7 +742,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         //隐藏
                         rlMessageVoiceInput.setVisibility(View.GONE);
                         rlMessageVoiceContent.setVisibility(View.GONE);
-                        speechToKeyboard(mVoiceContent);
+
+                        speechToKeyboard("".equals(mVoiceContent) ? mMsgContent : mVoiceContent);
                     } else {
                         QuestionStatic questionStatic = ProxUtil.getProxUtil().get(mContext, QuestionStatic.class);
                         if (questionStatic != null && !questionStatic.isAnaswer() && btnMessageStartVoice.isEnabled()) {
@@ -813,9 +816,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     @Override
                     public void onKeyboardShowing(boolean isShowing) {
                         logger.i("onKeyboardShowing:isShowing=" + isShowing);
-//                        if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
-//                            onTitleShow(true);
-//                        }
                         keyboardShowing = isShowing;
                         keyboardShowingListener.onKeyboardShowing(isShowing);
                         if (keyboardShowing) {
@@ -876,7 +876,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         }
         tvMessageVoiceContent.setText(VOICE_RECOG_HINT);
         tvMessageVoiceCount.setText("");
-//        OfflineAssess.autoTestShurufa();
 
         if (mAudioRequest != null) {
             mAudioRequest.request(new AudioRequest.OnAudioRequest() {
@@ -899,6 +898,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             if (speechUtils != null) {
                 speechUtils.cancel();
             }
+            mMsgContent = etMessageContent.getText().toString();
             rlMessageContent.setVisibility(View.GONE);
             rlMessageTextContent.setVisibility(View.GONE);
             rlMessageVoiceContent.setVisibility(View.GONE);
@@ -935,10 +935,11 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         {
             int margin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
-            int leftmargin = liveVideoPoint.x2 + SizeUtils.Dp2Px(mContext,10);
-            RelativeLayout.LayoutParams rmcLayoutParams = (RelativeLayout.LayoutParams)rlMessageContent
+            int leftmargin = liveVideoPoint.x2 + SizeUtils.Dp2Px(mContext, 10);
+            RelativeLayout.LayoutParams rmcLayoutParams = (RelativeLayout.LayoutParams) rlMessageContent
                     .getLayoutParams();
-            rmcLayoutParams.setMargins(0, 0, margin, 0);
+            rmcLayoutParams.setMargins(0, 0, margin, liveVideoPoint.y2);
+            rmcLayoutParams.height = SizeUtils.Dp2Px(mContext, 68);
             rlMessageContent.setLayoutParams(rmcLayoutParams);
 
             RelativeLayout.LayoutParams repeatLayoutParams = (RelativeLayout.LayoutParams) btnMessageSwitch
@@ -946,13 +947,16 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             repeatLayoutParams.setMargins(leftmargin, 0, 0, 0);
             btnMessageSwitch.setLayoutParams(repeatLayoutParams);
 //
-//            RelativeLayout.LayoutParams sendLayoutParams = (RelativeLayout.LayoutParams) btMessageSend.getLayoutParams();
+//            RelativeLayout.LayoutParams sendLayoutParams = (RelativeLayout.LayoutParams) btMessageSend
+// .getLayoutParams();
 //            sendLayoutParams.setMargins(0, 0, margin, 0);
 //            btMessageSend.setLayoutParams(sendLayoutParams);
-//            RelativeLayout.LayoutParams etLayoutParams = (RelativeLayout.LayoutParams) etMessageContent.getLayoutParams();
+//            RelativeLayout.LayoutParams etLayoutParams = (RelativeLayout.LayoutParams) etMessageContent
+// .getLayoutParams();
 //            etLayoutParams.setMargins(SizeUtils.Dp2Px(mContext,10), 0, margin, 0);
 //            etMessageContent.setLayoutParams(etLayoutParams);
-//            RelativeLayout.LayoutParams msvLayoutParams = (RelativeLayout.LayoutParams) btnMessageStartVoice.getLayoutParams();
+//            RelativeLayout.LayoutParams msvLayoutParams = (RelativeLayout.LayoutParams) btnMessageStartVoice
+// .getLayoutParams();
 //            msvLayoutParams.setMargins(SizeUtils.Dp2Px(mContext,10), 0, margin, 0);
 //            btnMessageStartVoice.setLayoutParams(etLayoutParams);
 
@@ -1687,11 +1691,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                         etMessageContent.setSelection(etMessageContent.getText().toString().length());
                         btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_voice);
                         onTitleShow(false);
-//                        if (!("ENGLISH_H5_COURSEWARE".equals(type) || "ARTS_H5_COURSEWARE".equals(type) ||
-//                                "EXAM_START".equals(type) || "ARTS_SEND_QUESTION".equals(type) || "SENDQUESTION"
-//                                .equals(type))) {
-//
-//                        }
                         btnMessageStartVoice.setEnabled(false);
                         isVoice = false;
                     }
@@ -1769,26 +1768,6 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 }
             }
         });
-
-//        mainHandler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (isShow) {
-//                    if (vwvVoiceChatWave.getVisibility() == View.VISIBLE){
-//                        vwvVoiceChatWave.setVisibility(View.GONE);
-//                        stopEvaluator();
-//                        if (rlMessageContent.getVisibility() == View.VISIBLE) {
-//                            etMessageContent.setText(mVoiceContent);
-//                        }
-//                        etMessageContent.requestFocus();
-//                        etMessageContent.setSelection(etMessageContent.getText().toString().length());
-//                        btnMessageSwitch.setBackgroundResource(R.drawable.selector_livevideo_small_english_voice);
-//                        onTitleShow(false);
-//                        isVoice = false;
-//                    }
-//                }
-//            }
-//        });
 
     }
 

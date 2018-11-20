@@ -204,16 +204,6 @@
             android:layout_toRightOf="@id/btn_livevideo_small_english_message_switch"
             android:visibility="gone"
             >
-            <Button
-                android:id="@id/bt_livevideo_small_english_message_send"
-                android:layout_width="75dp"
-                android:layout_height="40dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="16dp"
-                android:clickable="true"
-                android:background="@drawable/selector_livevideo_small_english_chat_send"
-                />
             <EditText
                 android:id="@id/et_livevideo_small_english_message_content"
                 android:layout_width="match_parent"
@@ -232,7 +222,16 @@
                 android:singleLine="true"
                 android:textSize="14sp"
                 android:textColor="@color/white"/>
-
+            <Button
+                android:id="@id/bt_livevideo_small_english_message_send"
+                android:layout_width="75dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:clickable="true"
+                android:background="@drawable/selector_livevideo_small_english_chat_send"
+                />
             <Button
                 android:id="@id/bt_livevideo_small_english_message_express"
                 android:layout_width="24dp"
