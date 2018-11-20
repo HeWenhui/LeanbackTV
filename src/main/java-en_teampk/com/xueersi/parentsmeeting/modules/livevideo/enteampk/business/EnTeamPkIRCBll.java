@@ -6,12 +6,15 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -22,6 +25,7 @@ import org.json.JSONObject;
 public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
     private EnTeamPkAction enTeamPkAction;
     private String unique_id;
+    private boolean psOpen = false;
 
     public EnTeamPkIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -36,33 +40,36 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         teamPkBll.setRootView(mRootView);
         teamPkBll.setEnTeamPkHttp(new EnTeamPkHttpImp());
         enTeamPkAction = teamPkBll;
-        enTeamPkAction.onRankStart();
 //        enTeamPkAction.onRankLead();
     }
 
     class EnTeamPkHttpImp implements EnTeamPkHttp {
         @Override
-        public void getSelfTeamInfo(AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
+        public void getSelfTeamInfo(final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
             getHttpManager().getSelfTeamInfo(mGetInfo.getStuId(), unique_id, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) {
                     logger.d("getSelfTeamInfo:onPmSuccess" + responseEntity.getJsonObject());
+                    PkTeamEntity pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
+                    abstractBusinessDataCallBack.onDataSucess(pkTeamEntity);
                 }
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
                     logger.e("getSelfTeamInfo:onPmError" + responseEntity.getErrorMsg());
+                    abstractBusinessDataCallBack.onDataFail(1, responseEntity.getErrorMsg());
                 }
 
                 @Override
                 public void onPmFailure(Throwable error, String msg) {
                     logger.e("getSelfTeamInfo:onPmFailure" + msg, error);
+                    abstractBusinessDataCallBack.onDataFail(0, msg);
                 }
             });
         }
 
         @Override
-        public void reportStuInfo(AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
+        public void reportStuInfo(final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
             //s_lliveID_liveType_stuID_sex
             String nick_name = "s_" + mGetInfo.getId() + "_3_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
             LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
@@ -70,7 +77,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) {
                     logger.d("reportStuInfo:onPmSuccess" + responseEntity.getJsonObject());
-                    enTeamPkAction.onRankResult();
+                    abstractBusinessDataCallBack.onDataSucess(responseEntity);
                 }
 
                 @Override
@@ -88,16 +95,48 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-
+        switch (type) {
+            case XESCODE.XCR_ROOM_TEAMPK_OPEN:
+                logger.d("onNotice:XCR_ROOM_TEAMPK_OPEN");
+                if (!psOpen) {
+                    psOpen = true;
+                    if (enTeamPkAction != null) {
+                        enTeamPkAction.onRankStart();
+                    }
+                }
+                break;
+            case XESCODE.XCR_ROOM_TEAMPK_RESULT:
+                logger.d("onNotice:XCR_ROOM_TEAMPK_RESULT");
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[0];
+        return new int[]{XESCODE.XCR_ROOM_TEAMPK_OPEN, XESCODE.XCR_ROOM_TEAMPK_RESULT};
     }
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-
+        try {
+            JSONObject room_2 = jsonObject.getJSONObject("room_2");
+            JSONObject teamPKObj = room_2.optJSONObject("teamPK");
+            if (teamPKObj != null) {
+                boolean status = teamPKObj.optBoolean("stastus", false);
+                if (status) {
+                    logger.d("onTopic:psOpen=" + psOpen);
+                    if (!psOpen) {
+                        psOpen = true;
+                        if (enTeamPkAction != null) {
+                            enTeamPkAction.onRankStart();
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

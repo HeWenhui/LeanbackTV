@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpResponseParser;
@@ -10,6 +11,8 @@ import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
@@ -1763,4 +1766,52 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         }
         return classmateEntities;
     }
+
+    public PkTeamEntity parsegetSelfTeamInfo(ResponseEntity responseEntity, String stu_id) {
+        try {
+            PkTeamEntity pkTeamEntity = new PkTeamEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            {
+                pkTeamEntity.setaId(jsonObject.getInt("team_a_id"));
+                ArrayList<TeamMemberEntity> aTeamMemberEntity = pkTeamEntity.getaTeamMemberEntity();
+                JSONArray team_a_mate = jsonObject.getJSONArray("team_a_mate");
+                for (int i = 0; i < team_a_mate.length(); i++) {
+                    JSONObject jsonObject1 = team_a_mate.getJSONObject(i);
+                    TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                    teamMemberEntity.id = jsonObject1.optInt("stu_id");
+                    if (stu_id.equals("" + teamMemberEntity.id)) {
+                        teamMemberEntity.isMy = true;
+                        pkTeamEntity.setMyTeam(pkTeamEntity.getaId());
+                    }
+                    teamMemberEntity.name = jsonObject1.optString("stu_name");
+                    teamMemberEntity.headurl = jsonObject1.optString("stu_head");
+                    aTeamMemberEntity.add(teamMemberEntity);
+                }
+            }
+            {
+                pkTeamEntity.setbId(jsonObject.getInt("team_b_id"));
+                ArrayList<TeamMemberEntity> bTeamMemberEntity = pkTeamEntity.getbTeamMemberEntity();
+                JSONArray team_b_mate = jsonObject.getJSONArray("team_b_mate");
+                for (int i = 0; i < team_b_mate.length(); i++) {
+                    JSONObject jsonObject1 = team_b_mate.getJSONObject(i);
+                    TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                    teamMemberEntity.id = jsonObject1.optInt("stu_id");
+                    if (stu_id.equals("" + teamMemberEntity.id)) {
+                        teamMemberEntity.isMy = true;
+                        pkTeamEntity.setMyTeam(pkTeamEntity.getbId());
+                    }
+                    teamMemberEntity.name = jsonObject1.optString("stu_name");
+                    teamMemberEntity.headurl = jsonObject1.optString("stu_head");
+                    bTeamMemberEntity.add(teamMemberEntity);
+                }
+            }
+            return pkTeamEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parsegetSelfTeamInfo", e.getMessage());
+            CrashReport.postCatchedException(e);
+        }
+        return null;
+    }
+
 }

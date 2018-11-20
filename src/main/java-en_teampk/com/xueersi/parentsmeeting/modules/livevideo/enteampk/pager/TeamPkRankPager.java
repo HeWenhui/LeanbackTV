@@ -12,8 +12,11 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.toast.XesToast;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.item.EnTeamItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -29,11 +32,21 @@ public class TeamPkRankPager extends LiveBasePager {
     Handler handler = new Handler(Looper.getMainLooper());
     int index = 0;
     boolean isFinish = false;
+    PkTeamEntity pkTeamEntity;
+    OnTeamSelect onTeamSelect;
 
     public TeamPkRankPager(Context context) {
         super(context);
         initData();
         initListener();
+    }
+
+    public void setPkTeamEntity(PkTeamEntity pkTeamEntity) {
+        this.pkTeamEntity = pkTeamEntity;
+    }
+
+    public void setOnTeamSelect(OnTeamSelect onTeamSelect) {
+        this.onTeamSelect = onTeamSelect;
     }
 
     @Override
@@ -99,6 +112,15 @@ public class TeamPkRankPager extends LiveBasePager {
                 iv_livevideo_en_teampk_rank_select.setLayoutParams(lp);
                 logger.d("select:top=" + childView.getTop() + ",left=" + childView.getLeft()
                         + ",width=" + childView.getWidth() + ",height=" + childView.getHeight() + ",x=" + x + ",y=" + y);
+                if (pkTeamEntity != null) {
+                    if ((index % 8 + 1) == pkTeamEntity.getMyTeam()) {
+                        logger.d("select:index=" + index);
+                        if (onTeamSelect != null) {
+                            onTeamSelect.onTeamSelect(pkTeamEntity);
+                        }
+                        return;
+                    }
+                }
                 index++;
                 handler.postDelayed(this, 1000);
             }
@@ -108,5 +130,9 @@ public class TeamPkRankPager extends LiveBasePager {
     @Override
     public void initListener() {
         super.initListener();
+    }
+
+    public interface OnTeamSelect {
+        void onTeamSelect(PkTeamEntity pkTeamEntity);
     }
 }

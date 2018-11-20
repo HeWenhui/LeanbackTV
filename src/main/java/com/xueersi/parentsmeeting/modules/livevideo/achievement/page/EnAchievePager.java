@@ -32,7 +32,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
-import java.io.IOException;
 import java.util.Random;
 
 public class EnAchievePager extends LiveBasePager {
@@ -141,16 +140,25 @@ public class EnAchievePager extends LiveBasePager {
         }
     }
 
-    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/fir_energy";
-
     public void onGetStar(StarAndGoldEntity starAndGoldEntity) {
         ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
         if (rl_livevideo_info != null) {
+            final int energyCountAdd = starAndGoldEntity.getEnergyCount() - energyCount;
+            final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
+            String LOTTIE_RES_ASSETS_ROOTDIR;
+            if (energyCountAdd > 0 && goldCountAdd > 0) {
+                LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/gold_energy";
+            } else if (energyCountAdd > 0) {
+                LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/nogold_energy";
+            } else if (goldCountAdd > 0) {
+                LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/gold_noenergy";
+            } else {
+                return;
+            }
             String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
             String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
             final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath);
-            final int energyCountAdd = starAndGoldEntity.getEnergyCount() - energyCount;
-            final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
+
             final ViewGroup viewGroup = (ViewGroup) rl_livevideo_info.getParent();
             final LottieAnimationView lottieAnimationView = new LottieAnimationView(activity);
             lottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(activity), "fir_energy");

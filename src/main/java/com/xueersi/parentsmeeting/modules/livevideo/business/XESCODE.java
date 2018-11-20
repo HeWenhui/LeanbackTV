@@ -216,4 +216,7 @@ public interface XESCODE {
     int ARTS_PRAISE_ANSWER_RIGHT_SINGLE = 1162;
     /** 文科单词听写 */
     int ARTS_WORD_DICTATION = 1003;
+
+    int XCR_ROOM_TEAMPK_OPEN = 1004;//  ("1004")  //通知战队pk分组
+    int XCR_ROOM_TEAMPK_RESULT = 1005;//     ("1005")  //发布战队PK结果
 }

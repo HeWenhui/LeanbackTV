@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.item.TeamMemberItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -33,9 +34,11 @@ public class TeamPkRankResultPager extends LiveBasePager {
     CommonAdapter<TeamMemberEntity> otherTeamAdapter;
     ArrayList<TeamMemberEntity> myTeamEntitys = new ArrayList<>();
     ArrayList<TeamMemberEntity> otherTeamEntitys = new ArrayList<>();
+    PkTeamEntity pkTeamEntity;
 
-    public TeamPkRankResultPager(Context context) {
+    public TeamPkRankResultPager(Context context, PkTeamEntity pkTeamEntity) {
         super(context);
+        this.pkTeamEntity = pkTeamEntity;
         initData();
         initListener();
     }
@@ -76,21 +79,8 @@ public class TeamPkRankResultPager extends LiveBasePager {
 
     @Override
     public void initData() {
-        for (int i = 0; i < 6; i++) {
-            TeamMemberEntity teamEntity = new TeamMemberEntity();
-            if (i == 2) {
-                teamEntity.isMy = true;
-                teamEntity.name = "我";
-            } else {
-                teamEntity.name = "测试左" + i;
-            }
-            myTeamEntitys.add(teamEntity);
-        }
-        for (int i = 0; i < 6; i++) {
-            TeamMemberEntity teamEntity = new TeamMemberEntity();
-            teamEntity.name = "测试右" + i;
-            otherTeamEntitys.add(teamEntity);
-        }
+        myTeamEntitys = pkTeamEntity.getaTeamMemberEntity();
+        otherTeamEntitys = pkTeamEntity.getbTeamMemberEntity();
         myTeamAdapter = new CommonAdapter<TeamMemberEntity>(myTeamEntitys) {
             @Override
             public AdapterItemInterface<TeamMemberEntity> getItemView(Object type) {

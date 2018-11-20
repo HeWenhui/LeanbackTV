@@ -1459,9 +1459,8 @@ public class LiveHttpManager extends BaseHttpBusiness {
     public void getSelfTeamInfo(String stu_id, String unique_id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("stu_id", "" + stu_id);
-        params.addBodyParam("unique_id", unique_id);
         setDefaultParameter(params);
-        sendPost(LiveVideoHttpEnConfig.URL_LIVE_SELF_TEAM, params, requestCallBack);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_SELF_TEAM + "?unique_id=" + unique_id, params, requestCallBack);
     }
 
     /**
@@ -1479,6 +1478,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("nick_name", nick_name);
         params.addBodyParam("unique_id", unique_id);
         setDefaultParameter(params);
-        sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_STUINFO, params, requestCallBack);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_STUINFO + "?unique_id=" + unique_id, params, requestCallBack);
     }
 }
