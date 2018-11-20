@@ -679,15 +679,18 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
 
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
-        int speechbulWidth = liveVideoPoint.x4 - liveVideoPoint.x2;
-        int margin = (liveVideoPoint.screenWidth - speechbulWidth) / 2 + SizeUtils.Dp2Px(mContext, 10);
+        if (tvSpeechbulRepeat == null || tvSpeechbulSend == null) {
+            return;
+        }
+        int marginLeft = liveVideoPoint.x2;
+        int marginRight = liveVideoPoint.screenWidth - liveVideoPoint.x4;
         RelativeLayout.LayoutParams repeatLayoutParams = (RelativeLayout.LayoutParams) tvSpeechbulRepeat
                 .getLayoutParams();
-        repeatLayoutParams.setMargins(margin, 0, 0, 0);
+        repeatLayoutParams.setMargins(marginLeft, 0, 0, 0);
         tvSpeechbulRepeat.setLayoutParams(repeatLayoutParams);
 
         RelativeLayout.LayoutParams sendLayoutParams = (RelativeLayout.LayoutParams) tvSpeechbulSend.getLayoutParams();
-        sendLayoutParams.setMargins(0, 0, margin, 0);
+        sendLayoutParams.setMargins(0, 0, marginRight, 0);
         tvSpeechbulSend.setLayoutParams(sendLayoutParams);
     }
 
@@ -1133,19 +1136,20 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     /**
      * 随机生成一些弹幕内容以供测试
      */
+    /**
+     * 随机生成一些弹幕内容以供测试
+     */
     private void generateSomeDanmaku() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                int i = 30;
-                while (i != 0) {
-                    i--;
+                while (true) {
                     final int time = new Random().nextInt(300);
                     String content = "" + time + time;
                     mWeakHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            addDanmaku(time + "", "i am a speech bullets", "", true);
+                            addDanmaku(time + "", time + "", "", true);
                         }
                     });
                     try {
@@ -1156,7 +1160,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                 }
             }
         }).start();
-
     }
 
     /**
@@ -1225,7 +1228,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
 
         @Override
         public void releaseResource(BaseDanmaku danmaku) {
-            // 重要！清理含有ImageSpan的text中的一些占用内存的资源 例如drawable
+            // TODO 重要:清理含有ImageSpan的text中的一些占用内存的资源 例如drawable
             if (danmaku.text instanceof Spanned) {
                 danmaku.text = "";
             }
