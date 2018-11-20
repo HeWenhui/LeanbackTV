@@ -221,7 +221,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                         if (isInitialized()) {
                             if (openSuccess) {
                                 mLiveVideoBll.stopPlayDuration();
-                                logger.d( "onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
+                                logger.d("onPause:playTime=" + (System.currentTimeMillis() - lastPlayTime));
                             }
                             vPlayer.releaseSurface();
                             vPlayer.stop();
@@ -242,7 +242,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         liveMediaControllerBottom.setVisibility(View.VISIBLE);
         long before = System.currentTimeMillis();
         mMediaController.setFileName(getInfo.getName());
-        logger.d( "onLiveInit:time3=" + (System.currentTimeMillis() - before));
+        logger.d("onLiveInit:time3=" + (System.currentTimeMillis() - before));
     }
 
     @Override
@@ -257,6 +257,9 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
             logger.d("onConfigurationChanged:videoView2=" + lp.width + "," + lp.height);
         }
         changeLandAndPort();
+//        if (lecLiveVideoAction != null) {
+//            lecLiveVideoAction.onConfigurationChanged();
+//        }
     }
 
     @Override
@@ -303,7 +306,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                 before = System.currentTimeMillis();
                 List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
                 for (LiveBaseBll businessBll : businessBlls) {
-                    businessBll.initViewF(bottomContent, mIsLand, mContentView);
+                    businessBll.initViewF(null, bottomContent, mIsLand, mContentView);
                 }
                 logger.d("changeLandAndPort:time2=" + (System.currentTimeMillis() - before));
 //                liveMessageBll.initView(questionContent, mIsLand);
@@ -354,7 +357,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                 before = System.currentTimeMillis();
                 List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
                 for (LiveBaseBll businessBll : businessBlls) {
-                    businessBll.initViewF(bottomContent, mIsLand, mContentView);
+                    businessBll.initViewF(null, bottomContent, mIsLand, mContentView);
                 }
                 logger.d("changeLandAndPort:time4=" + (System.currentTimeMillis() - before));
 //                liveMessageBll.initView(questionContent, mIsLand);

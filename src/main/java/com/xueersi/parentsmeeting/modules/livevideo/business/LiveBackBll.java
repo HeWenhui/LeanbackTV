@@ -8,6 +8,7 @@ import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -49,8 +50,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -58,49 +57,71 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick,
         LiveOnLineLogs {
-    private String TAG = "LiveBackBll";
-    Logger logger = LoggerFactory.getLogger(TAG);
-    Activity activity;
+    protected String TAG = "LiveBackBll";
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+    protected Activity activity;
     private LiveGetInfo mGetInfo;
     LiveHttpManager mHttpManager;
     private AllLiveBasePagerIml allLiveBasePagerIml;
-    /** 购课id */
+    /**
+     * 购课id
+     */
     protected String stuCourId;
-    /** 视频节对象 */
-    VideoLivePlayBackEntity mVideoEntity;
-    /** 从哪个页面跳转 */
+    /**
+     * 视频节对象
+     */
+    protected VideoLivePlayBackEntity mVideoEntity;
+    /**
+     * 从哪个页面跳转
+     */
     String where;
     int isArts;
     int mLiveType;
-    /** 区分文理appid */
-    String appID = UmsConstants.LIVE_APP_ID_BACK;
+    /**
+     * 区分文理appid
+     */
+    protected String appID = UmsConstants.LIVE_APP_ID_BACK;
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE = false;
-    /** 播放器核心服务 */
+    /**
+     * 播放器核心服务
+     */
     protected PlayerService vPlayer;
-    /** 互动题 */
+    /**
+     * 互动题
+     */
     protected VideoQuestionEntity mQuestionEntity;
     private HashMap<VideoQuestionEntity, VideoQuestionLiveEntity> liveEntityHashMap = new HashMap<>();
-    /** 显示互动题 */
+    /**
+     * 显示互动题
+     */
     private static final int SHOW_QUESTION = 0;
-    /** 没有互动题 */
+    /**
+     * 没有互动题
+     */
     private static final int NO_QUESTION = 1;
-    /** 当前是否正在显示互动题 */
+    /**
+     * 当前是否正在显示互动题
+     */
     private boolean mIsShowQuestion = false;
-    ArrayList<LiveBackBaseBll> liveBackBaseBlls = new ArrayList<>();
-    SparseArray<LiveBackBaseBll> array = new SparseArray<>();
-    /** 直播间内模块间 数据共享池 */
+    protected ArrayList<LiveBackBaseBll> liveBackBaseBlls = new ArrayList<>();
+    protected SparseArray<LiveBackBaseBll> array = new SparseArray<>();
+    /**
+     * 直播间内模块间 数据共享池
+     */
     private HashMap<String, Object> businessShareParamMap = new HashMap<String, Object>();
     private AtomicBoolean mIsLand = new AtomicBoolean(true);
     private LivePlayBackHttpManager mCourseHttpManager;
     private LivePlayBackHttpResponseParser mCourseHttpResponseParser;
-    /** 本地视频 */
+    /**
+     * 本地视频
+     */
     boolean islocal;
     /**
      * 2 代表全身直播
      */
     private int pattern = 1;
-    ShowQuestion showQuestion;
+    protected ShowQuestion showQuestion;
     private LiveUidRx liveUidRx;
     LogToFile logToFile;
     /**
@@ -145,6 +166,37 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 appID = UmsConstants.LIVE_APP_ID_BACK;
                 IS_SCIENCE = true;
                 liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
+                try {
+                    List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+                    int oldSize = -1;
+                    if (lstVideoQuestion != null) {
+                        oldSize = lstVideoQuestion.size();
+                        for (int i = 0; i < lstVideoQuestion.size(); i++) {
+                            VideoQuestionEntity questionEntity = lstVideoQuestion.get(i);
+                            //战队pk分队
+                            if (questionEntity.getvCategory() == 23 || questionEntity.getvCategory() == 25) {
+                                lstVideoQuestion.remove(i);
+                                i--;
+                            }
+                        }
+                        int size = lstVideoQuestion.size();
+                        if (size != oldSize) {
+                            try {
+                                HashMap<String, String> hashMap = new HashMap();
+                                hashMap.put("logtype", "removepk");
+                                hashMap.put("livetype", "" + mLiveType);
+                                hashMap.put("where", "" + where);
+                                hashMap.put("liveid", "" + mVideoEntity.getLiveId());
+                                hashMap.put("size", oldSize + "-" + size);
+                                UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
+                            } catch (Exception e) {
+                                CrashReport.postCatchedException(e);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(e);
+                }
             }
         }
         logToFile = new LogToFile(this, TAG);
@@ -258,6 +310,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     String[] arrSubjIds = strSubjIds.split(",");
                     liveGetInfo.setSubjectIds(arrSubjIds);
                 }
+                mCourseHttpResponseParser.parseLiveGetInfo(liveInfo, liveGetInfo, mLiveType, isArts);
             }
         } catch (Exception e) {
             logger.e("onCreate", e);
@@ -267,9 +320,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         liveGetInfo.setClientLog(clientLog);
         liveUidRx.setLiveGetInfo(liveGetInfo);
         liveUidRx.onCreate();
-        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+        ArrayList<LiveBackBaseBll> templiveBackBaseBlls = new ArrayList<>(liveBackBaseBlls);
+        for (LiveBackBaseBll liveBackBaseBll : templiveBackBaseBlls) {
             liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
+        templiveBackBaseBlls.clear();
     }
 
     public ArrayList<LiveBackBaseBll> getLiveBackBaseBlls() {
@@ -296,7 +351,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         return liveVideoSAConfig;
     }
 
-    /** 扫描是否有需要弹出的互动题 */
+    /**
+     * 扫描是否有需要弹出的互动题
+     */
     public void scanQuestion(long position) {
 
         VideoQuestionEntity oldQuestionEntity = mQuestionEntity;
@@ -531,6 +588,18 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         LiveBackBaseBll liveBackBaseBll = array.get(mQuestionEntity.getvCategory());
         if (liveBackBaseBll != null) {
             liveBackBaseBll.showQuestion(oldQuestionEntity, mQuestionEntity, showQuestion);
+        } else {
+            try {
+                HashMap<String, String> hashMap = new HashMap();
+                hashMap.put("logtype", "showQuestion");
+                hashMap.put("livetype", "" + mLiveType);
+                hashMap.put("where", "" + where);
+                hashMap.put("liveid", "" + mVideoEntity.getLiveId());
+                hashMap.put("category", "" + mQuestionEntity.getvCategory());
+                UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
+            } catch (Exception e) {
+                CrashReport.postCatchedException(e);
+            }
         }
     }
 

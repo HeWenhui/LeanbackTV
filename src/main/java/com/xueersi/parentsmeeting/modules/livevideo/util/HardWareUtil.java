@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 public class HardWareUtil {
     private static String TAG = "HardWareUtil";
-    protected static Logger logger = LoggerFactory.getLogger(TAG);
+    protected static Logger logger = LiveLoggerFactory.getLogger(TAG);
 
     /**
      * 获得cpu型号名字
@@ -196,7 +196,7 @@ public class HardWareUtil {
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                logger.d("getCPURateDesc", e);
             } finally {
                 if (bufferedReader != null) {
                     try {

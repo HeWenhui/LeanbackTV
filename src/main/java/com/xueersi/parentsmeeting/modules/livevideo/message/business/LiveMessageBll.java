@@ -34,7 +34,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLi
 import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
-
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 
@@ -319,7 +318,11 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
-            } else {
+            }
+//            else if(){//如果是语文
+
+//            }
+            else {
                 LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
@@ -666,12 +669,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onTeacherModeChange(oldMode, mode, isShowNoticeTips, iszjlkOpenbarrage,
                     isFDLKOpenbarrage);
-        }
-    }
-
-    public void setVideoLayout(int width, int height) {
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.setVideoWidthAndHeight(width, height);
         }
     }
 

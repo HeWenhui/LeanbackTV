@@ -3,8 +3,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -70,6 +74,79 @@ public class LecLiveVideoAction extends LiveVideoAction {
             setFirstParamPort();
         }
     }
+
+    public void onConfigurationChanged() {
+        final Button bt = mContentView.findViewById(R.id.bt_course_video_livetimeout);
+        if (bt != null) {
+            if (bt.getVisibility() == View.VISIBLE) {
+                bt.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        bt.getViewTreeObserver().removeOnPreDrawListener(this);
+                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) bt.getLayoutParams();
+//                        if (mIsLand.get()) {
+//                            lp.leftMargin = LiveVideoPoint.getInstance().x3 / 2 - bt.getWidth() / 2;
+//                            lp.topMargin = LiveVideoPoint.getInstance().screenHeight * 2 / 3 - 40;
+//                        } else {
+//                            lp.leftMargin = ScreenUtils.getScreenWidth() / 2 - bt.getWidth() / 2;
+//                            lp.topMargin = ScreenUtils.getScreenWidth() * 9 / 16 * 2 / 3 - 40;
+//                        }
+//                        if (tvLoadingHint != null) {
+//                            int[] outLocation = new int[2];
+//                            tvLoadingHint.getLocationInWindow(outLocation);
+//                            lp.topMargin = outLocation[1] + tvLoadingHint.getHeight() + 20;
+//                        } else {
+//                            lp.topMargin = LiveVideoPoint.getInstance().screenHeight * 2 / 3 - 40;
+//                        }
+                        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                        logger.d("onConfigurationChanged:mIsLand=" + mIsLand.get() + ",left=" + lp.leftMargin + "," + lp.topMargin);
+                        bt.setLayoutParams(lp);
+                        return false;
+                    }
+                });
+            }
+        }
+    }
+
+//    @Override
+//    public void onLiveTimeOut() {
+//        final Button bt = mContentView.findViewById(R.id.bt_course_video_livetimeout);
+//        if (bt != null) {
+//            bt.setVisibility(View.VISIBLE);
+//            bt.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//                @Override
+//                public boolean onPreDraw() {
+//                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) bt.getLayoutParams();
+////                    if (mIsLand.get()) {
+////                        lp.leftMargin = LiveVideoPoint.getInstance().x3 / 2 - bt.getWidth() / 2;
+////                    } else {
+////                        lp.leftMargin = ScreenUtils.getScreenWidth() / 2 - bt.getWidth() / 2;
+////                    }
+////                    if (tvLoadingHint != null) {
+////                        int[] outLocation = new int[2];
+////                        tvLoadingHint.getLocationInWindow(outLocation);
+////                        lp.topMargin = outLocation[1] + tvLoadingHint.getHeight() + 20;
+////                    } else {
+////                        lp.topMargin = LiveVideoPoint.getInstance().screenHeight * 2 / 3 - 40;
+////                    }
+//                    lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+//                    bt.setLayoutParams(lp);
+//                    logger.d("onLiveTimeOut:mIsLand=" + mIsLand.get() + ",left=" + lp.leftMargin + "," + lp.topMargin);
+//                    bt.getViewTreeObserver().removeOnPreDrawListener(this);
+//                    return false;
+//                }
+//            });
+//            bt.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mLiveBll.liveGetPlayServer();
+//                    v.setVisibility(View.GONE);
+//                }
+//            });
+//        } else {
+//            XESToastUtils.showToast(activity, "老师不在直播间,请退出直播间重试");
+//        }
+//    }
 
     public void setFirstParamPort() {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();

@@ -14,7 +14,6 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
@@ -45,7 +44,7 @@ public class LiveGetPlayServer {
     private final LiveTopic mLiveTopic;
     /** 渠道前缀 */
     private final String CNANNEL_PREFIX = "x_";
-    LiveBll2 liveBll;
+    private TeacherIsPresent isPresent;
     public final int mLiveType;
     private LiveGetInfo mGetInfo;
     private PlayServerEntity mServer;
@@ -58,9 +57,9 @@ public class LiveGetPlayServer {
     private Handler mHandler = new Handler(Looper.getMainLooper());
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
-    LiveGetPlayServer(Activity context, LiveBll2 liveBll, int mLiveType, LiveGetInfo mGetInfo, LiveTopic liveTopic) {
+    public LiveGetPlayServer(Activity context, TeacherIsPresent isPresent, int mLiveType, LiveGetInfo mGetInfo, LiveTopic liveTopic) {
         this.context = context;
-        this.liveBll = liveBll;
+        this.isPresent = isPresent;
         this.mLiveType = mLiveType;
         this.mGetInfo = mGetInfo;
         this.mLiveTopic = liveTopic;
@@ -95,7 +94,7 @@ public class LiveGetPlayServer {
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                boolean isPresent = liveBll.isPresent();
+                boolean isPresent = LiveGetPlayServer.this.isPresent.isPresent();
                 mLogtf.d("liveGetPlayServer:isPresent=" + isPresent);
                 if (!isPresent && mVideoAction != null) {
                     mVideoAction.onTeacherNotPresent(true);
@@ -108,6 +107,11 @@ public class LiveGetPlayServer {
     private long lastGetPlayServer;
 
     public void liveGetPlayServer(final String mode, final boolean modechange) {
+        mHandler.removeCallbacks(timeLiveGetPlay);
+        if (timeLiveGetPlay.modechange != modechange) {
+            timeLiveGetPlay.modechange = modechange;
+            liveGetPlayTime = 0;
+        }
         if (netWorkType == NetWorkHelper.NO_NETWORK) {
             liveGetPlayServerError = true;
             return;
@@ -133,7 +137,7 @@ public class LiveGetPlayServer {
             livePlayLog.setChannelname(mGetInfo.getChannelname());
         }
         final String serverurl = mGetInfo.getGslbServerUrl() + "?cmd=live_get_playserver&userid=" + mGetInfo.getStuId()
-                + "&username=" + mGetInfo.getUname() + "&channelname=" + mGetInfo.getChannelname();
+                + "&username=" + mGetInfo.getUname() + "&channelname=" + mGetInfo.getChannelname() + "&cType=1";
         mLogtf.d("liveGetPlayServer:serverurl=" + serverurl);
         if (mGetPlayServerCancle != null) {
             mGetPlayServerCancle.cancel();
@@ -199,19 +203,25 @@ public class LiveGetPlayServer {
                     JSONObject object = new JSONObject(result);
                     PlayServerEntity server = mHttpResponseParser.parsePlayerServer(object);
                     if (server != null) {
-                        if (livePlayLog != null) {
-                            long time = SystemClock.elapsedRealtime() - before;
-                            livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode0, 0, server.getCipdispatch(), urldns, serverurl);
-                        }
-                        s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
-                        if (LiveTopic.MODE_CLASS.equals(mode)) {
-                            mGetInfo.setSkeyPlayT(server.getRtmpkey());
+                        s += ",code=" + server.getCode();
+                        if (server.getCode() == 200) {
+                            liveGetPlayTime = 0;
+                            if (livePlayLog != null) {
+                                long time = SystemClock.elapsedRealtime() - before;
+                                livePlayLog.liveGetPlayServer(time, PlayFailCode.PlayFailCode0, 0, server.getCipdispatch(), urldns, serverurl);
+                            }
+                            s += ",mode=" + mode + ",server=" + server.getAppname() + ",rtmpkey=" + server.getRtmpkey();
+                            if (LiveTopic.MODE_CLASS.equals(mode)) {
+                                mGetInfo.setSkeyPlayT(server.getRtmpkey());
+                            } else {
+                                mGetInfo.setSkeyPlayF(server.getRtmpkey());
+                            }
+                            mServer = server;
+                            if (mVideoAction != null && mLiveTopic != null) {
+                                mVideoAction.onLiveStart(server, mLiveTopic, modechange);
+                            }
                         } else {
-                            mGetInfo.setSkeyPlayF(server.getRtmpkey());
-                        }
-                        mServer = server;
-                        if (mVideoAction != null && mLiveTopic != null) {
-                            mVideoAction.onLiveStart(server, mLiveTopic, modechange);
+                            postDelayedIfNotFinish(timeLiveGetPlay, 10000);
                         }
                     } else {
                         s += ",server=null,result=" + result;
@@ -246,10 +256,37 @@ public class LiveGetPlayServer {
         });
     }
 
+    private long liveGetPlayTime = 0;
+    private long maxTime = 30 * 60 * 1000;
+
+    private class TimeLiveGetPlay implements Runnable {
+        boolean modechange = false;
+
+        @Override
+        public void run() {
+            if (liveGetPlayTime == 0) {
+                liveGetPlayTime = System.currentTimeMillis() - 10000;
+            }
+            long time = System.currentTimeMillis() - liveGetPlayTime;
+            if (time > maxTime) {
+                liveGetPlayTime = 0;
+                mLogtf.d("timeLiveGetPlay:time1=" + time);
+                if (mVideoAction != null) {
+                    mVideoAction.onLiveTimeOut();
+                }
+            } else {
+                logger.d("timeLiveGetPlay:time2=" + time);
+                liveGetPlayServer(modechange);
+            }
+        }
+    }
+
+    private TimeLiveGetPlay timeLiveGetPlay = new TimeLiveGetPlay();
+
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
         if (netWorkType != NetWorkHelper.NO_NETWORK) {
-            logger.i( "onNetWorkChange:liveGetPlayServerError=" + liveGetPlayServerError);
+            logger.i("onNetWorkChange:liveGetPlayServerError=" + liveGetPlayServerError);
             if (liveGetPlayServerError) {
                 liveGetPlayServerError = false;
                 liveGetPlayServer(mLiveTopic.getMode(), false);
@@ -286,6 +323,7 @@ public class LiveGetPlayServer {
     }
 
     public void onDestroy() {
+        mHandler.removeCallbacks(timeLiveGetPlay);
         if (mGetPlayServerCancle != null) {
             mGetPlayServerCancle.cancel();
             mGetPlayServerCancle = null;

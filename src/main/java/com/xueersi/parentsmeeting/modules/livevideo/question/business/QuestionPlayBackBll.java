@@ -149,6 +149,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
+                LiveVideoConfig.isNewArts = false;
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.id = questionEntity.getvQuestionID();
                 videoQuestionLiveEntity.type = questionEntity.getvQuestionType();
@@ -166,15 +167,15 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                 videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
                 videoQuestionLiveEntity.roles = questionEntity.getRoles();
-                int isArts = liveBackBll.getIsArts();
-                if (isArts == 0 && mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-                    String[] ss = videoQuestionLiveEntity.id.split("-");
-                    if (ss.length > 1) {
-                        if ("0".equals(ss[1])) {
-                            videoQuestionLiveEntity.isTestUseH5 = true;
-                        }
-                    }
-                }
+//                int isArts = liveBackBll.getIsArts();
+//                if (isArts == 0 && mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+//                    String[] ss = videoQuestionLiveEntity.id.split("-");
+//                    if (ss.length > 1) {
+//                        if ("0".equals(ss[1])) {
+//                            videoQuestionLiveEntity.isTestUseH5 = true;
+//                        }
+//                    }
+//                }
 
                 if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !"1".equals(videoQuestionLiveEntity.multiRolePlay) ){
                     logger.i("走人机start,拉取试题");
@@ -188,6 +189,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
+                LiveVideoConfig.isNewArts = false;
                 VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
                         .getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);

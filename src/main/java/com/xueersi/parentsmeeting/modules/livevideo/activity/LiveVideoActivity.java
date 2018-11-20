@@ -1008,7 +1008,7 @@
 //            if (IS_SCIENCE) {
 //                SpeechFeedBackBll speechFeedBackBll = new SpeechFeedBackBll(this, mLiveBll);
 //                speechFeedBackBll.setGetInfo(getInfo);
-////                SpeechFeedBackBllOld speechFeedBackBll = new SpeechFeedBackBllOld(this, mLiveBll);
+////                SpeechCollectiveBll speechFeedBackBll = new SpeechCollectiveBll(this, mLiveBll);
 //                speechFeedBackBll.setBottomContent(bottomContent);
 //                speechFeedBackAction = speechFeedBackBll;
 //                mLiveBll.setSpeechFeedBackAction(speechFeedBackBll);

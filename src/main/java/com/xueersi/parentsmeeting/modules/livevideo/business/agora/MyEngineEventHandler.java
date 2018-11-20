@@ -2,8 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.agora;
 
 import android.content.Context;
 
-import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,13 +12,18 @@ import io.agora.rtc.IRtcEngineEventHandler;
 
 public class MyEngineEventHandler {
     public static final String TAG = "MyEngineEventHandler";
-    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    protected Logger logger = LiveLoggerFactory.getLogger(this.getClass().getSimpleName());
     boolean feadback;
+    private OnLastmileQuality onLastmileQuality;
 
     public MyEngineEventHandler(Context ctx, EngineConfig config, boolean feadback) {
         this.mContext = ctx;
         this.mConfig = config;
         this.feadback = feadback;
+    }
+
+    public void setOnLastmileQuality(OnLastmileQuality onLastmileQuality) {
+        this.onLastmileQuality = onLastmileQuality;
     }
 
     private final EngineConfig mConfig;
@@ -35,10 +40,14 @@ public class MyEngineEventHandler {
         this.mEventHandlerList.remove(handler);
     }
 
+    public void setFeadback(boolean feadback) {
+        this.feadback = feadback;
+    }
+
     final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
 
         public void onAudioRouteChanged(int routing) {
-            logger.d( "onAudioRouteChanged:routing=" + routing);
+            logger.d("onAudioRouteChanged:routing=" + routing);
         }
 
         @Override
@@ -50,14 +59,14 @@ public class MyEngineEventHandler {
                             handler.onVolume(info.volume);
                         }
                     }
-                    logger.d( "onAudioVolumeIndication:info=" + info.uid + "," + info.volume);
+//                    logger.d("onAudioVolumeIndication:info=" + info.uid + "," + info.volume);
                 }
             }
         }
 
         @Override
         public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
-            logger.d( "onFirstRemoteVideoDecoded " + (uid & 0xFFFFFFFFL) + width + " " + height + " " + elapsed);
+            logger.d("onFirstRemoteVideoDecoded " + (uid & 0xFFFFFFFFL) + width + " " + height + " " + elapsed);
 
             Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
@@ -68,12 +77,12 @@ public class MyEngineEventHandler {
 
         @Override
         public void onFirstLocalVideoFrame(int width, int height, int elapsed) {
-            logger.d( "onFirstLocalVideoFrame " + width + " " + height + " " + elapsed);
+            logger.d("onFirstLocalVideoFrame " + width + " " + height + " " + elapsed);
         }
 
         @Override
         public void onUserJoined(int uid, int elapsed) {
-            logger.d( "onUserJoined:uid=" + uid + ",elapsed=" + elapsed);
+            logger.d("onUserJoined:uid=" + uid + ",elapsed=" + elapsed);
             Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
                 AGEventHandler handler = it.next();
@@ -107,13 +116,16 @@ public class MyEngineEventHandler {
 
         @Override
         public void onLastmileQuality(int quality) {
-            logger.d( "onLastmileQuality:quality=" + quality);
+            logger.d("onLastmileQuality:quality=" + quality);
+            if (onLastmileQuality != null) {
+                onLastmileQuality.onLastmileQuality(quality);
+            }
         }
 
         @Override
         public void onError(int err) {
             super.onError(err);
-            logger.e( "onError:err=" + err);
+            logger.e("onError:err=" + err);
             Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
                 AGEventHandler handler = it.next();
@@ -123,7 +135,7 @@ public class MyEngineEventHandler {
 
         @Override
         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-            logger.d( "onJoinChannelSuccess:channel=" + channel + ",uid=" + uid + " " + (uid & 0xFFFFFFFFL) + " " + elapsed);
+            logger.d("onJoinChannelSuccess:channel=" + channel + ",uid=" + uid + " " + (uid & 0xFFFFFFFFL) + " " + elapsed);
 
             Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
             while (it.hasNext()) {
@@ -133,12 +145,17 @@ public class MyEngineEventHandler {
         }
 
         public void onRejoinChannelSuccess(String channel, int uid, int elapsed) {
-            logger.d( "onRejoinChannelSuccess " + channel + " " + uid + " " + elapsed);
+            logger.d("onRejoinChannelSuccess " + channel + " " + uid + " " + elapsed);
         }
 
         public void onWarning(int warn) {
-            logger.e( "onWarning " + warn);
+            logger.e("onWarning " + warn);
         }
     };
 
+    public interface OnLastmileQuality {
+        void onLastmileQuality(int quality);
+
+        void onQuit();
+    }
 }

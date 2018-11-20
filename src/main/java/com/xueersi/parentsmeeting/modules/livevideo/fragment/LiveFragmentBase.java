@@ -411,6 +411,15 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     }
 
     @Override
+    public void onLiveTimeOut() {
+        mLogtf.d("onLiveStart:onLiveTimeOut");
+        if (liveVideoAction == null) {
+            return;
+        }
+        liveVideoAction.onLiveTimeOut();
+    }
+
+    @Override
     public void onModeChange(String mode, boolean isPresent) {
 
     }
