@@ -849,6 +849,8 @@
     <item name="ll_live_halfbody_understand_btns" type="id"/>
     <item name="iv_live_halfbody_understand_top" type="id"/>
 
-
+    <item name="tv_live_auditclass_checktime_anchor" type="id"/>
+    <item name="gl_live_auditclass_tile_anchor" type="id"/>
+    <item name="gl_live_auditclass_item_anchor" type="id"/>
 
 </resources>

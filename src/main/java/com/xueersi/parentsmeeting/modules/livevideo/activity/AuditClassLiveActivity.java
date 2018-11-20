@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AuditVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodyAuditClassBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -972,7 +973,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * @return
      */
     private boolean isHalfBodyLive() {
-        return false;
+        return mGetInfo != null && mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY;
     }
 
     @Override
@@ -1020,7 +1021,12 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     tv_livevideo_student_load_tip.setVisibility(View.GONE);
                     iv_livevideo_student_camera.setVisibility(View.VISIBLE);
                     tv_livevideo_student_camera.setVisibility(View.VISIBLE);
-                    tv_livevideo_student_camera.setText(mGetInfo.getStuName() + "同学\n未在直播间");
+                    //半身直播单行显示
+                    if(isHalfBodyLive()){
+                        tv_livevideo_student_camera.setText(mGetInfo.getStuName() + "同学未在直播间");
+                    }else{
+                        tv_livevideo_student_camera.setText(mGetInfo.getStuName() + "同学\n未在直播间");
+                    }
                 } else {
                     iv_livevideo_student_camera.setVisibility(View.GONE);
                     tv_livevideo_student_camera.setVisibility(View.GONE);

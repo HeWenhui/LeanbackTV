@@ -182,11 +182,11 @@ public class HalfBodyAuditClassBll implements AuditClassAction {
         private int getStateRes(int orderNum) {
             int resId = 0;
             if (orderNum == HalfBodyLiveStudyInfo.ANSWER_STATE_RIGHT) {
-                resId = R.drawable.icon_live_correct;
+                resId = R.drawable.icon_live_auditclass_correct;
             } else if (orderNum == HalfBodyLiveStudyInfo.ANSWER_STATE_PART_RIGHT) {
-                resId = R.drawable.icon_live_prart_correct;
+                resId = R.drawable.icon_live_auditclass_part_correct;
             } else {
-                resId = R.drawable.icon_live_wrong;
+                resId = R.drawable.icon_live_auditclass_wrong;
             }
             return resId;
         }
