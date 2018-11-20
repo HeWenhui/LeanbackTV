@@ -682,8 +682,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         if (tvSpeechbulRepeat == null || tvSpeechbulSend == null) {
             return;
         }
-        int marginLeft = liveVideoPoint.x2;
-        int marginRight = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+        int marginLeft = liveVideoPoint.x2 + SizeUtils.Dp2Px(mContext, 10);
+        int marginRight = liveVideoPoint.screenWidth - liveVideoPoint.x4 + SizeUtils.Dp2Px(mContext, 10);
         RelativeLayout.LayoutParams repeatLayoutParams = (RelativeLayout.LayoutParams) tvSpeechbulRepeat
                 .getLayoutParams();
         repeatLayoutParams.setMargins(marginLeft, 0, 0, 0);
