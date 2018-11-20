@@ -79,7 +79,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     }
 
     protected RelativeLayout bottomContent;
-    RelativeLayout rlMessageBottom;
+    protected RelativeLayout rlMessageBottom;
     protected String vStuCourseID;
     protected String courseId;
 
@@ -377,9 +377,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     }
                 }
             });
-        }
-        if (mLiveBll != null) {
-            mLiveBll.onPause();
         }
     }
 

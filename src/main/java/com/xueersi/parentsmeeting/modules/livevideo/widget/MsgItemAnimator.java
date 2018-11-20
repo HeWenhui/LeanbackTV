@@ -153,6 +153,10 @@ public class MsgItemAnimator extends BaseItemAnimator {
                                        RecyclerView.ViewHolder holder, int startX, int startY, int toX, int toY) {
         float alphaValue = getItemAlpha(holder, toY);
         animator.alpha(alphaValue);
+
+        if(!mVisibleItemList.contains(holder)){
+            mVisibleItemList.add(holder);
+        }
     }
 
     private float getItemAlpha(RecyclerView.ViewHolder holder, int toY) {
@@ -187,7 +191,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
      * item 价格逐渐消失
      */
     private void fadeOut() {
-        Log.e("MsgItemAnim", "=====>fadeOut called:" + mVisibleItemList.size());
+        Log.e("MsgItemAnim", "=====>fadeOut called:visibleItemSize=" + mVisibleItemList.size()+":"+mCurrentItemIndex);
         if (mCurrentItemIndex < mVisibleItemList.size()) {
             RecyclerView.ViewHolder holder = mVisibleItemList.get(mCurrentItemIndex);
             itemFadeOut(holder, mCurrentItemIndex);

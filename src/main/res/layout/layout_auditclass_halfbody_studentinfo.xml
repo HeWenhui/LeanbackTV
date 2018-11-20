@@ -136,7 +136,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/rl_livevideo_student_video"
-        android:background="@color/COLOR_333333">
+        android:background="@color/COLOR_333333"
+        >
 
         <android.support.v7.widget.RecyclerView
             android:id="@id/rcl_livevideo_auditclass_anwser_state"
@@ -146,6 +147,19 @@
             android:scrollbars="none"
             android:background="#2A2A33"
             />
+        
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="70dp"
+            android:src="@drawable/icon_live_auditclass_nodata"
+            android:scaleType="centerCrop"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="66dp"
+            android:id="@id/iv_live_auditclass_nodata"
+            android:visibility="gone"
+            />
+        
     </RelativeLayout>
 
 </RelativeLayout>

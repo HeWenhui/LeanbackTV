@@ -54,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -868,19 +869,16 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         return false;
     }
 
+
     @Override
-    public void setVideoWidthAndHeight(int width, int height) {
-        Log.e("HalfBodyLiveMessagePager", "=======>setVideoWidthAndHeight 0000:" + width);
-        final View contentView = liveVideoActivity.findViewById(android.R.id.content);
-        final View actionBarOverlayLayout = (View) contentView.getParent();
-        Rect r = new Rect();
-        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        int screenWidth = (r.right - r.left);
-        int screenHeight = ScreenUtils.getScreenHeight();
-        if (width > 0) {
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint){
+        int videoWidth = liveVideoPoint.videoWidth;
+        Log.e("HalfBodyLiveMessagePager", "=======>setVideoWidthAndHeight 0000:" + videoWidth);
+        if(videoWidth > 0){
+            int screenWidth = liveVideoPoint.screenWidth;
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mView.getLayoutParams();
-            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
-            int videoGap = (screenWidth - width) / 2;
+            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * videoWidth / LiveVideoConfig.VIDEO_WIDTH);
+            int videoGap = (screenWidth - videoWidth) / 2;
             Log.e("HalfBodyLiveMessagePager", "=======>setVideoWidthAndHeight 1111:" + videoGap);
             if (videoGap != params.rightMargin) {
                 LayoutParamsUtil.setViewLayoutParams(mView, params);

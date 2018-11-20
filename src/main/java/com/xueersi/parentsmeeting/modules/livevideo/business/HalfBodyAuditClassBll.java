@@ -28,6 +28,7 @@ public class HalfBodyAuditClassBll implements AuditClassAction {
     private RecyclerView rclAnwerState;
     private HalfBodyLiveStudyInfo mLiveStudyInfo;
     private StuLiveInfoAdapter mAdapter;
+    private ImageView ivNodata;
 
 
     public HalfBodyAuditClassBll(Activity activity) {
@@ -39,13 +40,18 @@ public class HalfBodyAuditClassBll implements AuditClassAction {
         tvOnlineTime = activity.findViewById(R.id.tv_livevideo_student_online);
         rclAnwerState = activity.findViewById(R.id.rcl_livevideo_auditclass_anwser_state);
         rclAnwerState.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false));
+        ivNodata = activity.findViewById(R.id.iv_live_auditclass_nodata);
     }
 
     @Override
     public void onGetStudyInfo(StudyInfo studyInfo) {
         if (studyInfo != null && studyInfo instanceof HalfBodyLiveStudyInfo) {
             mLiveStudyInfo = (HalfBodyLiveStudyInfo) studyInfo;
-            Log.e("HalfBodyAuditClassBll", "======>onGetStudyInfo:" + mLiveStudyInfo.getTestList());
+            if(mLiveStudyInfo.getTestList() == null || mLiveStudyInfo.getTestList().size() == 0){
+                ivNodata.setVisibility(View.VISIBLE);
+            }else{
+                ivNodata.setVisibility(View.GONE);
+            }
             tvCheckTime.setText(studyInfo.getSignTime());
             tvOnlineTime.setText(studyInfo.getOnlineTime());
             if (mAdapter == null) {
@@ -130,13 +136,11 @@ public class HalfBodyAuditClassBll implements AuditClassAction {
         private TextView tvOurEnergy;
         private TextView tvAgainstEnergy;
         private TextView tvRate;
-        private View vNodata;
         private View vTitleContainer;
 
         public PkItemHolder(View itemView) {
             super(itemView);
             vTitleContainer = itemView.findViewById(R.id.consl_livevideo_auditclass_test_tilte_container);
-            vNodata = itemView.findViewById(R.id.tv_livevideo_auditclass_no_testinfo);
             tvRate = itemView.findViewById(R.id.tv_livevideo_auditclass_rate);
             tvAgainstEnergy = itemView.findViewById(R.id.tv_livevideo_auditclass_against_energy);
             tvOurEnergy = itemView.findViewById(R.id.tv_livevideo_auditclass_energy);
@@ -149,10 +153,8 @@ public class HalfBodyAuditClassBll implements AuditClassAction {
             tvAgainstEnergy.setText(data.getHostileTeamEnergy() + "");
             tvRate.setText(data.getStuAvgRate());
             if (data.getTestList() == null || data.getTestList().size() == 0) {
-                vNodata.setVisibility(View.VISIBLE);
                 vTitleContainer.setVisibility(View.GONE);
             } else {
-                vNodata.setVisibility(View.GONE);
                 vTitleContainer.setVisibility(View.VISIBLE);
             }
         }
