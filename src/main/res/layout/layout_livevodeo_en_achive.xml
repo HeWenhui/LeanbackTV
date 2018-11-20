@@ -141,7 +141,7 @@
     <ViewStub
         android:id="@id/vs_livevideo_en_achive_bottom2"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/rl_livevideo_en_achive_back"
         android:layout="@layout/layout_livevodeo_en_achive_nopk" />
 

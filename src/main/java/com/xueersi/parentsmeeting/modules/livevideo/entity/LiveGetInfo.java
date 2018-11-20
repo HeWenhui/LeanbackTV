@@ -203,6 +203,7 @@ public class LiveGetInfo {
     private int isAllowStar;
     private int starCount;
     private int goldCount;
+    private int energyCount;
     private String testPaperUrl;
     private boolean blockChinese;
     private String subjectiveTestAnswerResult;
@@ -802,6 +803,14 @@ public class LiveGetInfo {
 
     public void setGoldCount(int goldCount) {
         this.goldCount = goldCount;
+    }
+
+    public int getEnergyCount() {
+        return energyCount;
+    }
+
+    public void setEnergyCount(int energyCount) {
+        this.energyCount = energyCount;
     }
 
     public String getTestPaperUrl() {
