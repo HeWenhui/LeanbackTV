@@ -40,7 +40,6 @@ import android.widget.TextView;
 
 import com.tal.speech.speechrecognizer.Constants;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
-import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
@@ -177,6 +176,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     boolean isVoice = true;
     //当前语音输入转换的文本
     String mVoiceContent = "";
+    String mMsgContent = "";
     /** 语音转文字的聊天是否已发送 */
     private boolean isVoiceMsgSend = true;
     /** 发送聊天数目 */
@@ -195,6 +195,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     private boolean isShowSpeechRecog = false;
     private long cpuRecogTime;
+    //聊天/语音按钮被隐藏时输入框是否显示
+    private boolean isMessageLayoutShow = false;
 
     public LiveMessageStandPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                  BaseLiveMediaControllerBottom
@@ -475,7 +477,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 if (btMesOpenAnimation != null) {
                     btMesOpenAnimation.pauseAnimation();
                 }
-                setSpeechFinishView(mVoiceContent);
+                setSpeechFinishView("".equals(mVoiceContent) ? mMsgContent : mVoiceContent);
                 initBtMesOpenAnimation(false);
 
 //                liveMediaControllerBottom.onChildViewClick(v);
@@ -529,6 +531,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                     stopEvaluator();
                     setSpeechFinishView(mVoiceContent);
                 }
+                mMsgContent = etMessageContent.getText().toString();
                 clearMsgView();
 
             }
@@ -606,6 +609,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                                 mMsgCount++;
                                 etMessageContent.setText("");
                                 mVoiceContent = "";
+                                mMsgContent = "";
                                 addMessage("我", LiveMessageEntity.MESSAGE_MINE, msg, getInfo.getHeadImgPath());
                                 lastSendMsg = System.currentTimeMillis();
                                 onTitleShow(true);
@@ -1232,8 +1236,17 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         if (isShowSpeechRecog) {
                             btnVoiceMesOpen.startAnimation(animation);
                         }
+                        if (fromNotice && isMessageLayoutShow) {
+                            btMesOpen.performClick();
+                            isMessageLayoutShow = false;
+                        }
+
                         logger.i("显示聊天框");
                     } else {
+                        if (rlMessageContent.getVisibility() == View.VISIBLE || rlMessageVoice.getVisibility() ==
+                                View.VISIBLE) {
+                            isMessageLayoutShow = true;
+                        }
                         liveStandMessageContent.setVisibility(View.GONE);
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.GONE);
@@ -1459,6 +1472,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         //判断聊天输入框状态，若为语音输入保存结果
                         if (rlMessageVoice.getVisibility() == View.VISIBLE) {
                             setSpeechFinishView(mVoiceContent);
+                            isMessageLayoutShow = true;
+                        }
+                        if (rlMessageContent.getVisibility() == View.VISIBLE) {
+                            isMessageLayoutShow = true;
                         }
                         clearMsgView();
                     }
@@ -1477,6 +1494,11 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
                         btnVoiceMesOpen.setVisibility(View.VISIBLE);
+                        if (isMessageLayoutShow) {
+                            btMesOpen.performClick();
+                            isMessageLayoutShow = false;
+                        }
+
                     }
                 }
             }
