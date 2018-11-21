@@ -198,6 +198,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     //聊天/语音按钮被隐藏时输入框是否显示
     private boolean isMessageLayoutShow = false;
 
+    private long mRecogtestBeginTime;
+    private long mRecogtestEndTime;
+    private ShareDataManager mSdm;
+
     public LiveMessageStandPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                  BaseLiveMediaControllerBottom
                                          liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities,
@@ -685,9 +689,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         super.initData();
         logger.i("initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        ShareDataManager sdm = ShareDataManager.getInstance();
-        isShowSpeechRecog = sdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager.SHAREDATA_USER);
-        cpuRecogTime = sdm.getLong(SpeechEvaluatorUtils.RECOG_TIME, 2500l, ShareDataManager.SHAREDATA_USER);
+        mSdm = ShareDataManager.getInstance();
+        isShowSpeechRecog = mSdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager.SHAREDATA_USER);
+        cpuRecogTime = mSdm.getLong(SpeechEvaluatorUtils.RECOG_TIME, 2500l, ShareDataManager.SHAREDATA_USER);
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -725,24 +729,55 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
         mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
         mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
-        if (mSpeechUtils == null && isShowSpeechRecog) {
+        if (mSpeechUtils == null) {
             mSpeechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
             mSpeechUtils.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
         }
         mParam = new SpeechParamEntity();
-        if (isShowSpeechRecog) {
-            mSpeechUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
-                @Override
-                public void onFileSuccess() {
-                    mSpeechFail = "模型正在启动，请稍后";
-                }
+        mSpeechUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
+            @Override
+            public void onFileSuccess() {
+                mSpeechFail = "模型正在启动，请稍后";
+                if (!isShowSpeechRecog) {
+                    mainHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSpeechUtils.checkRecogCPUPerformance(new EvaluatorListener() {
+                                @Override
+                                public void onBeginOfSpeech() {
+                                    mRecogtestBeginTime = System.currentTimeMillis();
+                                }
 
-                @Override
-                public void onFileFail() {
-                    mSpeechFail = "模型启动失败，请使用手动输入";
+                                @Override
+                                public void onResult(ResultEntity result) {
+                                    if (result.getStatus() == ResultEntity.EVALUATOR_ING) {
+                                        mRecogtestEndTime = System.currentTimeMillis();
+                                    }
+                                    if (result.getStatus() == ResultEntity.SUCCESS) {
+                                        isShowSpeechRecog = (mRecogtestEndTime - mRecogtestBeginTime) < 3000l ? true
+                                                : false;
+                                        if (isShowSpeechRecog) {
+                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog, ShareDataManager.SHAREDATA_USER);
+                                            initOpenBt(false, true);
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onVolumeUpdate(int volume) {
+
+                                }
+                            });
+                        }
+                    },4000);
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onFileFail() {
+                mSpeechFail = "模型启动失败，请使用手动输入";
+            }
+        });
+
 //        SpeechEvaluatorUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
 //            @Override
 //            public void onFileSuccess() {
@@ -756,10 +791,15 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 //        });
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
-        if (!dir.exists()) {
+        if (!dir.exists())
+
+        {
             dir.mkdirs();
         }
-        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5) {
+
+        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5)
+
+        {
             String fileName = "live_stand_head.json";
 
             @Override
@@ -781,7 +821,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                     });
                 }
             }
-        };
+        }
+
+        ;
         lvMessage.setVerticalFadingEdgeEnabled(false);
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
         lp.topMargin = ScreenUtils.getScreenHeight() / 3;
@@ -799,27 +841,37 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         liveSoundPool = LiveSoundPool.createSoundPool();
         logger.i("initData:time2=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        mView.post(new Runnable() {
-            @Override
-            public void run() {
-                initDanmaku();
-            }
-        });
+        mView.post(new
+
+                           Runnable() {
+                               @Override
+                               public void run() {
+                                   initDanmaku();
+                               }
+                           });
         logger.i("initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         logger.i("initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        mView.post(new Runnable() {
-            @Override
-            public void run() {
-                initFlower();
-            }
-        });
+        mView.post(new
+
+                           Runnable() {
+                               @Override
+                               public void run() {
+                                   initFlower();
+                               }
+                           });
         logger.i("initData:time5=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
+
         initOpenBt(false, false);
+
         initOpenBt(false, true);
-        mAudioRequest = ProxUtil.getProxUtil().get(liveVideoActivity, AudioRequest.class);
+
+        mAudioRequest = ProxUtil.getProxUtil().
+
+                get(liveVideoActivity, AudioRequest.class);
+
     }
 
     @Override
