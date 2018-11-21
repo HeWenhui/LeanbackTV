@@ -678,8 +678,10 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
-                englishSpeekAction.start();
-                logger.d( "start:englishSpeekBll.start");
+                if(englishSpeekAction != null){
+                    englishSpeekAction.start();
+                    logger.d( "start:englishSpeekBll.start");
+                }
             }
         }
     };
