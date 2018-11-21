@@ -165,7 +165,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 mRoomAction.initViewLiveStand(mRootView);
             } else if(getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
                     && LiveTopic.MODE_CLASS.equals(getInfo.getMode())){
-                // TODO: 2018/10/23  初始化 半身直播 聊天
                 mRoomAction.initHalfBodyLive(mRootView);
             } else {
                 mRoomAction.initViewLive(mRootView);
@@ -202,7 +201,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            // TODO: 2018/10/23 半身直播
                             View view = mRoomAction.getView();
                             if (view != null) {
                                 view.setVisibility(View.INVISIBLE);
