@@ -12,9 +12,8 @@
     <RelativeLayout
         android:id="@id/rl_livevideo_info"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:background="@color/COLOR_78C6FF">
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true">
 
         <RelativeLayout
             android:id="@id/rl_livevideo_message_top"
@@ -45,10 +44,17 @@
                 android:visibility="gone" />
 
         </RelativeLayout>
-
+        <!--战队pk后面的背景石头-->
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_livevideo_small_chinese_live_message_top_icon"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_small_chinese_play_achievement_board"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@id/rl_livevideo_message_top"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
@@ -58,6 +64,8 @@
             android:id="@+id/fzcytv_livevideo_small_chinese_live_message_online"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/iv_livevideo_small_chinese_play_achievement_board"
+            android:layout_alignTop="@+id/iv_livevideo_small_chinese_play_achievement_board"
             android:layout_marginLeft="11dp"
             android:layout_marginTop="5dp"
             android:text="本组在线"
@@ -73,7 +81,6 @@
             android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/fzcytv_livevideo_small_chinese_live_message_online"
             android:gravity="center"
-            android:text="12343"
             android:textColor="@color/COLOR_405D27"
             android:textSize="9sp" />
 
@@ -90,7 +97,6 @@
             <!--android:layout_marginBottom="10dp">-->
 
             <ListView
-
                 android:id="@+id/lv_livevideo_small_chinese_live_message"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

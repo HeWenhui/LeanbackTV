@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -28,6 +30,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  */
 
 public class UnderstandBll implements UnderstandAction, Handler.Callback {
+    private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private String TAG = "UnderstandBll";
     private String understandEventId = LiveVideoConfig.LIVE_DOYOUSEE;
     private Activity activity;
@@ -103,6 +106,7 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                 RelativeLayout.LayoutParams params = null;
                 //如果不是小英
                 if (!isSmallEnglish) {
+                    logger.i("进入到非小英");
                     if (LiveVideoConfig.isPrimary) {
                         understandView = activity.getLayoutInflater().inflate(
                                 R.layout.dialog_livevideo_primary_understand, rlQuestionContent, false);
@@ -113,7 +117,11 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                                 removeView(rlQuestionContent, understandView);
                             }
                         });
+                        understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
+                                (listener);
+                        understandView.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
                     } else if (LiveVideoConfig.isSmallChinese) {
+                        logger.i("显示语文三分屏");
                         smallChineseUnderstandPager = new SmallChineseUnderstandPager(activity);
                         smallChineseUnderstandPager.setListener(new SmallChineseUnderstandPager.UnderStandListener() {
                             /**关闭当前监听器*/
@@ -128,7 +136,7 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                                 smallChineseUnderstandOnclick(underStand);
                             }
                         });
-
+                        understandView = smallChineseUnderstandPager.getRootView();
 
                     } else {
                         understandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,
@@ -136,10 +144,14 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                                 false);
                         ((TextView) understandView.findViewById(R.id.tv_livevideo_under_user)).setText(mGetInfo
                                 .getStuName() + " 你好");
+                        understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
+                                (listener);
+                        understandView.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
                     }
-                    understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
-                            (listener);
-                    understandView.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
+
+//                    understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
+//                            (listener);
+//                    understandView.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
 //                    ((TextView) understandView.findViewById(R.id.tv_livevideo_under_user)).setText(mGetInfo.getStuName
 //                            () + " 你好");
                     params = (RelativeLayout.LayoutParams) understandView.getLayoutParams();
@@ -237,6 +249,11 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
         }
     };
 
+    /**
+     * 小学英语三分屏上传日志
+     *
+     * @param isUnderstand
+     */
     private void smallEnglishUnderstandOnclick(boolean isUnderstand) {
         mLogtf.d("understand:isUnderstand=" + isUnderstand);
         String nonce = "" + StableLogHashMap.creatNonce();

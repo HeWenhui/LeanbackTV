@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 
 /**
@@ -15,6 +14,12 @@ public class LiveVideoSAConfig {
         HTTP_HOST = LiveVideoConfig.HTTP_HOST + "/" + hostStr;
 //        HTTP_HOST = AppConfig.HTTP_HOST;
         this.IS_SCIENCE = IS_SCIENCE;
+        inner = new Inner();
+    }
+
+    public LiveVideoSAConfig(String host) {
+        HTTP_HOST = host;
+        IS_SCIENCE = false;
         inner = new Inner();
     }
 

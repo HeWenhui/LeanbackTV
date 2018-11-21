@@ -137,7 +137,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     private ViewGroup decorView;
 
     /** 小学语文送花的pager */
-    private SmallChineseSendGiftPager giftPager;
+//    private SmallChineseSendGiftPager smallChineseSendGiftPager;
     /**
      * 聊天消息的颜色
      */
@@ -164,7 +164,6 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         btMessageFlowers = liveMediaControllerBottom.getBtMessageFlowers();
         cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
         lvCommonWord = liveMediaControllerBottom.getLvCommonWord();
-        giftPager = new SmallChineseSendGiftPager(context);
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -566,9 +565,9 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                 @Override
                 public void run() {
                     while (true) {
-                        addDanmaKuFlowers(FLOWERS_SMALL, "me");
+                        addDanmaKuFlowers(FLOWERS_SMALL, "me", false);
                         try {
-                            Thread.sleep(500);
+                            Thread.sleep(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -685,11 +684,11 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             if (haveFlowers) {
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
                         .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                decorView.addView(giftPager.getRootView(), layoutParams);
+                decorView.addView(smallChineseSendGiftPager.getRootView(), layoutParams);
 //                mFlowerWindow.showAtLocation(btMessageFlowers, Gravity.BOTTOM, 0, 0);
             } else {
-                if (giftPager != null && giftPager.getRootView().getParent() == decorView) {
-                    decorView.removeView(giftPager.getRootView());
+                if (smallChineseSendGiftPager != null && smallChineseSendGiftPager.getRootView().getParent() == decorView) {
+                    decorView.removeView(smallChineseSendGiftPager.getRootView());
                 }
 
 //                mFlowerWindow.dismiss();
@@ -788,8 +787,8 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             @Override
             public void close() {
                 //去掉背景色
-                if (giftPager.getRootView().getParent() == decorView) {
-                    decorView.removeView(giftPager.getRootView());
+                if (smallChineseSendGiftPager.getRootView().getParent() == decorView) {
+                    decorView.removeView(smallChineseSendGiftPager.getRootView());
                 }
             }
 
@@ -819,12 +818,12 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                                                 }
                                             }
                                             addDanmaKuFlowers(smallChineseSendGiftPager
-                                                    .getWhich(), getInfo.getStuName());
+                                                    .getWhich(), getInfo.getStuName(), true);
                                             mView.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    if (giftPager != null && giftPager.getRootView().getParent() == decorView) {
-                                                        decorView.removeView(giftPager.getRootView());
+                                                    if (smallChineseSendGiftPager != null && smallChineseSendGiftPager.getRootView().getParent() == decorView) {
+                                                        decorView.removeView(smallChineseSendGiftPager.getRootView());
                                                     }
 //                                                    mFlowerWindow.dismiss();
                                                 }
@@ -833,16 +832,16 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
 
                                         @Override
                                         public void onPmFailure(Throwable error, String msg) {
-                                            if (giftPager.getRootView() != null && giftPager.getRootView().getParent() == decorView) {
-                                                decorView.removeView(giftPager.getRootView());
+                                            if (smallChineseSendGiftPager.getRootView() != null && smallChineseSendGiftPager.getRootView().getParent() == decorView) {
+                                                decorView.removeView(smallChineseSendGiftPager.getRootView());
                                             }
                                         }
 
                                         @Override
                                         public void onPmError(ResponseEntity responseEntity) {
 //                                            mFlowerWindow.dismiss();
-                                            if (giftPager.getRootView() != null && giftPager.getRootView().getParent() == decorView) {
-                                                decorView.removeView(giftPager.getRootView());
+                                            if (smallChineseSendGiftPager.getRootView() != null && smallChineseSendGiftPager.getRootView().getParent() == decorView) {
+                                                decorView.removeView(smallChineseSendGiftPager.getRootView());
                                             }
                                         }
                                     });
@@ -863,7 +862,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                 @Override
                 public void run() {
                     while (blTestSEBullet) {
-                        addDanmaKuFlowers(FLOWERS_SMALL, "zyy");
+                        addDanmaKuFlowers(FLOWERS_SMALL, "zyy", false);
                         try {
                             Thread.sleep(500);
                         } catch (InterruptedException e) {
@@ -1043,7 +1042,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                                 .getString("msg"), "");
                     } else if (type == XESCODE.FLOWERS) {
                         //{"ftype":2,"name":"林玉强","type":"110"}
-                        addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
+                        addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"), false);
                     }
                 } catch (JSONException e) {
                     addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message, "");

@@ -37,6 +37,7 @@ public class SmallChineseSendGiftPager extends BasePager {
 
     public SmallChineseSendGiftPager(Context context) {
         super(context);
+        initListener();
     }
 
     @Override
@@ -66,7 +67,6 @@ public class SmallChineseSendGiftPager extends BasePager {
             @Override
             public void onClick(View v) {
                 if (giftListaner != null) {
-
                     giftListaner.close();
                 }
             }

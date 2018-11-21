@@ -2,12 +2,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
-import com.xueersi.lib.log.Loger;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.StandLiveVideoExperienceFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandLiveVideoExperienceFragment;
 
 /**
  * Created by linyuqiang on 2018/7/23.

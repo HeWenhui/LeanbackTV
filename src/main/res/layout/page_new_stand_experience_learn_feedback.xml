@@ -33,12 +33,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ItemLearnFeedbackPageSelectLayout
+            <com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.ItemLearnFeedbackPageSelectLayout
                 android:id="@+id/item_select_layout1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ItemLearnFeedbackPageSelectLayout
+            <com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.ItemLearnFeedbackPageSelectLayout
                 android:id="@+id/item_select_layout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_select_layout2" />
 
-            <com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.GestureScrollEditText
+            <com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.GestureScrollEditText
                 android:id="@+id/et_stand_experience_learn_feedback_suggest"
                 android:layout_width="0dp"
                 android:layout_height="50dp"

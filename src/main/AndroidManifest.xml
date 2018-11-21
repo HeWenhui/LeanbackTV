@@ -111,7 +111,7 @@
             android:process=":livevideo" />
 
         <receiver
-            android:name=".fragment.standlivevideoexperience.OrderPaySuccessBroadCastReceiver"
+            android:name=".fragment.se.OrderPaySuccessBroadCastReceiver"
             android:process=":livevideo">
             <intent-filter>
                 <action android:name="${applicationId}.XesPaySuccess" />

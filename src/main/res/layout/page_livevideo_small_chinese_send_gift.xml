@@ -56,6 +56,7 @@
         android:layout_marginLeft="6dp"
         android:layout_marginTop="5dp"
         android:src="@drawable/bg_livevideo_small_chinese_send_gift_select_icon"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift"
         app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift" />
 
@@ -101,6 +102,7 @@
         android:layout_marginLeft="6dp"
         android:layout_marginTop="5dp"
         android:src="@drawable/bg_livevideo_small_chinese_send_gift_select_icon"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift"
         app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift" />
 
@@ -145,6 +147,7 @@
         android:layout_marginLeft="6dp"
         android:layout_marginTop="5dp"
         android:src="@drawable/bg_livevideo_small_chinese_send_gift_select_icon"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift"
         app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift" />
 

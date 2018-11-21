@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
@@ -43,6 +45,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by linyuqiang on 2016/9/23.
  */
 public class RedPackageBll implements RedPackageAction, Handler.Callback {
+    private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private static final String TAG = "RedPackageBll";
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
@@ -159,6 +162,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
 
         } else if (LiveVideoConfig.isSmallChinese) {
             //
+            logger.i("在家小英的红包");
             if (chineseRedPackagePager == null) {
                 chineseRedPackagePager = new SmallChineseRedPackagePager(activity);
                 chineseRedPackagePager.setListener(new SmallChineseRedPackagePager.SmallChineseRedPackageListener() {
@@ -177,6 +181,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             } else {//再次发红包
                 chineseRedPackagePager.updateView(false, 0);
             }
+            view = chineseRedPackagePager.getRootView();
             params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             params.addRule(RelativeLayout.CENTER_IN_PARENT);
         } else {
@@ -291,8 +296,11 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
 //            }, 3000);
         } else if (LiveVideoConfig.isSmallChinese) {
             /** 移除这个view */
-            if (chineseRedPackagePager != null && chineseRedPackagePager.getRootView().getParent() == rlRedpacketContent) {
-                rlRedpacketContent.removeView(chineseRedPackagePager.getRootView());
+//            if (chineseRedPackagePager != null && chineseRedPackagePager.getRootView().getParent() == rlRedpacketContent) {
+//                rlRedpacketContent.removeView(chineseRedPackagePager.getRootView());
+//            }
+            if (chineseRedPackagePager == null) {
+                return;
             }
             chineseRedPackagePager.updateView(true, goldNum);
             postDelayedIfNotFinish(new Runnable() {

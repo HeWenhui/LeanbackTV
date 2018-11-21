@@ -12,6 +12,7 @@ import com.xueersi.common.entity.EnglishH5Entity;
  */
 public class LiveVideoConfig {
     public static String HTTP_HOST = "https://laoshi.xueersi.com";
+    public static String HTTP_PRIMARY_CHINESE_HOST = "https://app.chs.xueersi.com";
     /** 直播辅导用户在线心跳 */
     public final static String URL_LIVE_TUTORIAL_USER_ONLINE = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/userOnline";
     /** 公开直播用户在线心跳 */

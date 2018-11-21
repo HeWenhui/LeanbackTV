@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager;
 
 import android.content.Context;
+import android.support.constraint.Group;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -23,7 +24,7 @@ public class SmallChineseRedPackagePager extends BasePager {
     /** 红包具体金额 */
     private FangZhengCuYuanTextView fzcytvMoney;
     /** 组别的金钱 */
-    private ImageView groupMoney;
+    private Group groupMoney;
 
     public SmallChineseRedPackagePager(Context context) {
         super(context);
@@ -60,7 +61,7 @@ public class SmallChineseRedPackagePager extends BasePager {
             ivRedPackageTip.setBackground(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_redpackage_open_tip));
             ivReceive.setVisibility(View.GONE);
             fzcytvMoney.setVisibility(View.VISIBLE);
-            fzcytvMoney.setText(goldNum);
+            fzcytvMoney.setText(String.valueOf(goldNum));
             groupMoney.setVisibility(View.VISIBLE);
         } else {
             ivRedPackageBackground.setBackground(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_redpackage_not_open_background));

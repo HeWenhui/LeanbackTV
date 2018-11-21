@@ -42,11 +42,11 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
 
     private BaseDanmakuParser mParser;
     //    private int DANMU_RADIUS = 20;//圆角半径
-    public int DANMU_PADDING = 0;
+    public int DANMU_PADDING = 0;//弹幕之间的间距
 
     //    private int DANMU_BACKGROUND_HEIGHT = 45;
-    private int BITMAP_WIDTH_ME = 28;//头像的宽度
-    private int BITMAP_HEIGHT_ME = 52;//头像的高度
+    private int BITMAP_WIDTH_ME = 28;// 弹幕上面实际显示的头像的宽度
+    private int BITMAP_HEIGHT_ME = 52;//弹幕上面实际显示的头像的高度
 
     private int CIRCEL_WIDTH = 40;
     private int CIRCEL_HEIGHT = 40;
@@ -54,6 +54,8 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
     private Drawable backgroundDrawable, flowerDrawable;
 
     private Drawable[] sendFlowerArray;
+    //** 是否是自己的图 */
+//    protected boolean self = false;
 
     public BaseSmallChineseLiveMessagePager(Context context) {
         super(context);
@@ -64,21 +66,27 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
         BITMAP_HEIGHT_ME = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_ME);
         CIRCEL_HEIGHT = SizeUtils.Dp2Px(context, CIRCEL_HEIGHT);
         CIRCEL_WIDTH = SizeUtils.Dp2Px(context, CIRCEL_WIDTH);
-        backgroundDrawable = mContext.getResources().getDrawable(R.drawable //采用.9的方式来显示
-                .bg_livevideo_small_chinese_gift_danmu_other_background);
-
+//        backgroundDrawable = mContext.getResources().getDrawable(self ?
+//                R.drawable //采用.9的方式来显示
+//                .bg_livevideo_small_chinese_gift_danmu_my_background
+//                        .bg_livevideo_small_chinese_gift_danmu_my_background_mid
+//                : R.drawable //采用.9的方式来显示
+//                .bg_livevideo_small_chinese_gift_danmu_other_background);
+//                .bg_livevideo_small_chinese_gift_danmu_other_backgroud_mid);
+//                .bg_livevideo_small_chinese_gift_danmu_my_background_mid);
+//                .bg_livevideo_small_chinese_live_message_danmu_background_small);
     }
 
     @Override
     protected void initDanmaku() {
         if (flowsTips != null) {
-            flowsTips = new String[]{"送老师一座埃菲尔铁塔", "送老师一座自由女神", "送老师一座长城"};
+            flowsTips = new String[]{"送老师一座自由女神", "送老师一座埃菲尔铁塔", "送老师一座长城"};
         }
 
         if (flowsDrawLittleTips != null) {
-            flowsDrawLittleTips = new int[]{R.drawable.bg_livevideo_small_english_sendflower_oneflower_img,
-                    R.drawable.bg_livevideo_small_english_sendflower_threeflowers_img,
-                    R.drawable.bg_livevideo_small_english_sendflower_fiveflowers_img};
+            flowsDrawLittleTips = new int[]{R.drawable.bg_livevideo_small_chinese_danmu_small_gift,
+                    R.drawable.bg_livevideo_small_chinese_danmu_middle_gift,
+                    R.drawable.bg_livevideo_small_chinese_danmu_big_gift};
             sendFlowerArray = new Drawable[]{
                     mContext.getResources().getDrawable(flowsDrawLittleTips[0]),
                     mContext.getResources().getDrawable(flowsDrawLittleTips[1]),
@@ -182,13 +190,13 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
         return parser;
     }
 
-    @Override
-    public void addDanmaKuFlowers(final int ftype, final String name) {
+    //    @Override
+    public void addDanmaKuFlowers(final int ftype, final String name, final boolean isSelf) {
         if (mDanmakuContext == null) {
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    addDanmaKuFlowers(ftype, name);
+                    addDanmaKuFlowers(ftype, name, isSelf);
                 }
             }, 20);
             return;
@@ -198,25 +206,28 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
         if (danmaku == null || dvMessageDanmaku == null) {
             return;
         }
+
         switch (ftype) {
             case FLOWERS_SMALL:
             case FLOWERS_MIDDLE:
             case FLOWERS_BIG:
                 flowerDrawable = sendFlowerArray[ftype - 2];
-                danmaku.textColor = Color.WHITE;
+                danmaku.textColor = isSelf ? mContext.getResources().getColor(R.color.COLOR_FFD93D) : Color.WHITE;
                 break;
             default:
                 flowerDrawable = mContext.getResources().getDrawable(R.drawable.ic_launcher);
                 danmaku.textColor = Color.BLUE;
                 break;
         }
-        flowerDrawable.setBounds(0, 0, BITMAP_HEIGHT_ME, BITMAP_HEIGHT_ME);
+        flowerDrawable.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_HEIGHT_ME);
         SpannableStringBuilder spannable = createSpannable(ftype, name, flowerDrawable);
         danmaku.text = spannable;
+        danmaku.isGuest = isSelf;//是不是自己，false代表不是自己，true代表是自己。
         danmaku.padding = DANMU_PADDING;
         danmaku.priority = 1;  // 一定会显示, 一般用于本机发送的弹幕
         danmaku.isLive = false;
         danmaku.time = dvMessageDanmaku.getCurrentTime() + 1200;
+
         danmaku.textSize = SizeUtils.Sp2Px(mContext, 14);//25f * (mParser.getDisplayer().getDensity() - 0.6f);
         danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
 //        danmaku.underlineColor = Color.GREEN;
@@ -224,6 +235,7 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
         dvMessageDanmaku.addDanmaku(danmaku);
     }
 
+    /** 创建图文混排,即屏幕显示的最终结果 */
     @Override
     protected SpannableStringBuilder createSpannable(int ftype, String name, Drawable drawable) {
         String tip = "";
@@ -234,18 +246,21 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
                 tip = flowsTips[ftype - 2];
                 break;
         }
-        String msg = name + ":" + tip;
+        String replace = name + ":" + tip;
+        String pre = "  ";
+        String suffix = "  ";
+        String msg = pre + replace + suffix;
         SpannableStringBuilder spannable = new TypeSpannableStringBuilder(msg, name, ftype);
 //        int color = mContext.getResources().getColor(R.color.COLOR_FFFFFF);
 
-        spannable.append(msg).append("   ");
+        spannable.append(replace).append("  ");
 //        spannable.setSpan(new BackgroundColorSpan(color), msg.length(), msg.length() + 1, Spannable
 //                .SPAN_EXCLUSIVE_EXCLUSIVE);
 //        BackgroundColorSpan backgroundColorSpan = new BackgroundColorSpan(R.drawable
 //                .bg_livevideo_send_flower_screen_bullet_background);
 //        spannable.setSpan(backgroundColorSpan, 0, spannable.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         ImageSpan imgSpan = new VerticalImageSpan(drawable);
-        spannable.setSpan(imgSpan, 0, msg.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(imgSpan, pre.length(), pre.length() + replace.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 
 //
 
@@ -256,8 +271,6 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
     /**
      * 绘制背景(自定义弹幕样式)
      */
-
-
     private class BackgroundCacheStuffer extends SpannedCacheStuffer {
 
         // 通过扩展SimpleTextCacheStuffer或SpannedCacheStuffer个性化你的弹幕样式
@@ -271,14 +284,21 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
 
         @Override
         public void drawBackground(BaseDanmaku danmaku, Canvas canvas, float left, float top) {
+            backgroundDrawable = mContext.getResources().getDrawable(danmaku.isGuest ?
+                    R.drawable //采用.9的方式来显示
+//                .bg_livevideo_small_chinese_gift_danmu_my_background
+                            .bg_livevideo_small_chinese_gift_danmu_my_background_mid
+                    : R.drawable //采用.9的方式来显示
+                    .bg_livevideo_small_chinese_gift_danmu_other_backgroud_mid);
             float height = backgroundDrawable.getIntrinsicHeight();
             float offsetRight = (BITMAP_HEIGHT_ME - CIRCEL_HEIGHT) / 2;
+            logger.i("height = " + height + ", offsetRight = " + offsetRight + ",padding = " + danmaku.padding + ", left = " + left + ", bitmap_height = " + BITMAP_HEIGHT_ME);
             backgroundDrawable.setBounds(
-                    (int) (left + danmaku.padding + offsetRight),
-                    (int) (top + danmaku.padding + (BITMAP_HEIGHT_ME - height) / 2),
+                    (int) (left + danmaku.padding),
+                    (int) (top + danmaku.padding + (BITMAP_HEIGHT_ME > height ? BITMAP_HEIGHT_ME - height : height - BITMAP_HEIGHT_ME) / 2),
                     (int) (left + danmaku.paintWidth),
-                    (int) (top + height + (BITMAP_HEIGHT_ME - height) / 2
-                            + danmaku.padding));
+                    (int) (top + height + danmaku.padding + (BITMAP_HEIGHT_ME > height ? BITMAP_HEIGHT_ME - height : height - BITMAP_HEIGHT_ME) / 2))
+            ;
             backgroundDrawable.draw(canvas);
         }
 

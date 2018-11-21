@@ -234,7 +234,8 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                         if (mPrimaryScienceSignPager != null && LiveVideoConfig.isPrimary) {
                             mPrimaryScienceSignPager.updateStatus(classSignEntity.getStatus());
                             return;
-                        } else if (mClassSignPager != null && !LiveVideoConfig.isPrimary) {
+                        } else if (mClassSignPager != null && !LiveVideoConfig.isPrimary &&
+                                !LiveVideoConfig.isSmallChinese) {
                             mClassSignPager.updateStatus(classSignEntity.getStatus());
                             return;
                         }
@@ -267,7 +268,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
                                 @Override
                                 public boolean containsView() {
-                                    return smallEnglishClassSignPager != null && smallEnglishClassSignPager.getRootView()
+                                    return chineseClassSignPager != null && chineseClassSignPager.getRootView()
                                             .getParent() == rlRollCallContent;
                                 }
                             });
@@ -355,7 +356,9 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                 }
             });
         } else {
-            if (LiveVideoConfig.isPrimary) {
+            logger.i("显示弹窗");
+            if (LiveVideoConfig.isPrimary && !LiveVideoConfig.isSmallChinese) {
+
                 mIsShowUserSign = false;
                 mVPlayVideoControlHandler.post(new Runnable() {
                     @Override
@@ -368,12 +371,13 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                 });
                 mVPlayVideoControlHandler.sendEmptyMessage(NO_USERSIGN);
             } else if (LiveVideoConfig.isSmallChinese) {
+                logger.i("显示语文弹窗");
                 mIsShowUserSign = false;
                 mVPlayVideoControlHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (mClassSignPager != null) {
-                            rlRollCallContent.removeView(mClassSignPager.getRootView());
+                        if (chineseClassSignPager != null) {
+                            rlRollCallContent.removeView(chineseClassSignPager.getRootView());
                             chineseClassSignPager = null;
                         }
                         mVPlayVideoControlHandler.sendEmptyMessage(NO_USERSIGN);
@@ -550,6 +554,9 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                     } else if (mClassSignPager != null && !LiveVideoConfig.isPrimary) {
                         rlRollCallContent.removeView(mClassSignPager.getRootView());
                         mClassSignPager = null;
+                    } else if (chineseClassSignPager != null && LiveVideoConfig.isSmallChinese) {
+                        rlRollCallContent.removeView(chineseClassSignPager.getRootView());
+                        chineseClassSignPager = null;
                     }
                 } else {
                     if (smallEnglishClassSignPager != null && smallEnglishClassSignPager.getRootView().getParent() ==
