@@ -12,9 +12,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.toast.XesToast;
-import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.item.EnTeamItem;
@@ -60,17 +59,9 @@ public class TeamPkRankPager extends LiveBasePager {
     @Override
     public void initData() {
         super.initData();
-        final int[] res = new int[]{R.drawable.livevideo_enteampk_benchangzhanduifenzu_01sweetheartkate_pic_normal,
-                R.drawable.livevideo_enteampk_benchangzhanduifenzu_02rockstarjohn_pic_normal,
-                R.drawable.livevideo_enteampk_benchangzhanduifenzu_03artistleo_pic_normal,
-                R.drawable.livevideo_enteampk_benchangzhanduifenzu_04babygenius_pic_normal,
-                R.drawable.livevideo_enteampk_benchangzhanduifenzu_05wonderchildpau_pic_normal,
-                R.drawable.livevideo_enteampk_benchangzhanduifenzu_06armstrong_pic_normal,
-                R.drawable.livevideo_enteampk_benchangzhanduifenzu_07shelly_pic_normal,
-                R.drawable.livevideo_enteampk_benchangzhanduifenzu_08detectivefocus_pic_normal};
+        final int[] res = EnTeamPkConfig.TEAM_RES;
         for (int i = 0; i < res.length; i++) {
             EnTeamEntity teamEntity = new EnTeamEntity();
-            teamEntity.name = "测试我" + i;
             teamEntity.resId = res[i];
             teamEntitys.add(teamEntity);
         }
@@ -113,9 +104,10 @@ public class TeamPkRankPager extends LiveBasePager {
                 logger.d("select:top=" + childView.getTop() + ",left=" + childView.getLeft()
                         + ",width=" + childView.getWidth() + ",height=" + childView.getHeight() + ",x=" + x + ",y=" + y);
                 if (pkTeamEntity != null) {
-                    if ((index % 8 + 1) == pkTeamEntity.getMyTeam()) {
+                    if ((index % 8) == pkTeamEntity.getMyTeam()) {
                         logger.d("select:index=" + index);
                         if (onTeamSelect != null) {
+                            isFinish = true;
                             onTeamSelect.onTeamSelect(pkTeamEntity);
                         }
                         return;

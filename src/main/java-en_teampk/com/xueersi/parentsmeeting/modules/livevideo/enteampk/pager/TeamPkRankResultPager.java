@@ -3,9 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -14,6 +12,7 @@ import android.widget.TextView;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.item.TeamMemberItem;
@@ -24,6 +23,8 @@ import com.xueersi.ui.adapter.CommonAdapter;
 import java.util.ArrayList;
 
 public class TeamPkRankResultPager extends LiveBasePager {
+    private ImageView iv_livevideo_en_teampk_mine;
+    private ImageView iv_livevideo_en_teampk_other;
     private RelativeLayout gv_livevideo_en_teampk_rank_mine;
     private RelativeLayout gv_livevideo_en_teampk_rank_other;
     private Button bt_livevideo_en_teampk_rank_start;
@@ -46,6 +47,8 @@ public class TeamPkRankResultPager extends LiveBasePager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_en_team_rank_result, null);
+        iv_livevideo_en_teampk_mine = mView.findViewById(R.id.iv_livevideo_en_teampk_mine);
+        iv_livevideo_en_teampk_other = mView.findViewById(R.id.iv_livevideo_en_teampk_other);
         gv_livevideo_en_teampk_rank_mine = view.findViewById(R.id.gv_livevideo_en_teampk_rank_mine);
         gv_livevideo_en_teampk_rank_other = view.findViewById(R.id.gv_livevideo_en_teampk_rank_other);
         bt_livevideo_en_teampk_rank_start = view.findViewById(R.id.bt_livevideo_en_teampk_rank_start);
@@ -79,6 +82,9 @@ public class TeamPkRankResultPager extends LiveBasePager {
 
     @Override
     public void initData() {
+        int[] res = EnTeamPkConfig.TEAM_RES;
+        iv_livevideo_en_teampk_mine.setImageResource(res[pkTeamEntity.getaId()]);
+        iv_livevideo_en_teampk_other.setImageResource(res[pkTeamEntity.getbId()]);
         myTeamEntitys = pkTeamEntity.getaTeamMemberEntity();
         otherTeamEntitys = pkTeamEntity.getbTeamMemberEntity();
         myTeamAdapter = new CommonAdapter<TeamMemberEntity>(myTeamEntitys) {

@@ -9,8 +9,7 @@
         android:layout_height="67dp"
         android:layout_marginRight="17dp"
         android:layout_marginTop="7dp"
-        android:layout_toLeftOf="@id/iv_livevideo_en_teampk_vs"
-        android:src="@drawable/livevideo_enteampk_benchangzhanduifenzu_01sweetheartkate_pic_normal" />
+        android:layout_toLeftOf="@id/iv_livevideo_en_teampk_vs"  />
 
     <ImageView
         android:id="@id/iv_livevideo_en_teampk_vs"
@@ -26,8 +25,7 @@
         android:layout_height="67dp"
         android:layout_marginLeft="17dp"
         android:layout_marginTop="7dp"
-        android:layout_toRightOf="@id/iv_livevideo_en_teampk_vs"
-        android:src="@drawable/livevideo_enteampk_benchangzhanduifenzu_02rockstarjohn_pic_normal" />
+        android:layout_toRightOf="@id/iv_livevideo_en_teampk_vs"  />
 
     <View
         android:id="@id/v_livevideo_en_teampk_center"
