@@ -252,6 +252,10 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
         @Override
         public void initAchievement(String mode) {
+            EnglishSpeekAction oldEnglishSpeekAction = LiveAchievementIRCBll.this.englishSpeekAction;
+            if (oldEnglishSpeekAction != null) {
+                oldEnglishSpeekAction.stop(null);
+            }
             if (LiveAchievementIRCBll.this.starAction == null) {
                 if (1 == smallEnglish) {
                     LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType, mGetInfo, true);
@@ -301,59 +305,30 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         @Override
         public void initAchievement(String mode) {
             EnglishSpeekAction oldEnglishSpeekAction = LiveAchievementIRCBll.this.englishSpeekAction;
-            TalLanguage talLanguage = null;
             if (oldEnglishSpeekAction != null) {
                 oldEnglishSpeekAction.stop(null);
-                talLanguage = oldEnglishSpeekAction.getTalLanguage();
             }
-            StarInteractAction starAction;
-            EnglishSpeekAction englishSpeekAction = null;
             if (LiveTopic.MODE_CLASS.equals(mode)) {
-                LiveStandAchievementBll starBll = new LiveStandAchievementBll(activity, mLiveType, mGetInfo
-                        .getStarCount(), mGetInfo.getGoldCount(), true);
-                starBll.setLiveBll(LiveAchievementIRCBll.this);
-                starBll.setLiveAndBackDebug(mLiveBll);
-                starBll.initView(mRootView, mContentView);
-                starAction = starBll;
-
-                //能量条
-                EnglishStandSpeekBll englishSpeekBll = new EnglishStandSpeekBll(activity);
+                LiveAchievementEngStandBll liveAchievementEngBll = new LiveAchievementEngStandBll(activity, mLiveType, mGetInfo, true);
+//                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
+//                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
+                liveAchievementEngBll.initView(mRootView, mContentView);
+                LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
+                EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
                 if (speakerRecognitioner != null) {
                     englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
                 }
-                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
-                if (initView) {
-                    englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
-                    englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
-                    starBll.setLiveAndBackDebug(mLiveBll);
-                    englishSpeekBll.setmShareDataManager(mShareDataManager);
-                    englishSpeekAction = englishSpeekBll;
-                }
+                englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
+                englishSpeekBll.initView(mRootView, mGetInfo.getMode(), null, audioRequest, mContentView);
+                LiveAchievementIRCBll.this.englishSpeekAction = englishSpeekBll;
             } else {
-                LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo// mGetInfo
-                        // .getStarCount(),
-                        //mGetInfo.getGoldCount()
-                        , true);
-                starBll.setLiveBll(LiveAchievementIRCBll.this);
-                starBll.setLiveAndBackDebug(mLiveBll);
-                starBll.initView(mRootView, mContentView);
-                starAction = starBll;
-
-                //能量条
-                EnglishSpeekBll englishSpeekBll = new EnglishSpeekBll(activity, mGetInfo);
-                if (speakerRecognitioner != null) {
-                    englishSpeekBll.setSpeakerRecognitioner(speakerRecognitioner);
-                }
-                boolean initView = englishSpeekBll.initView(mRootView, mGetInfo.getMode(), talLanguage, audioRequest, mContentView);
-                if (initView) {
-                    englishSpeekBll.setTotalOpeningLength(mGetInfo.getTotalOpeningLength());
-                    englishSpeekBll.setLiveBll(LiveAchievementIRCBll.this);
-                    englishSpeekBll.setmShareDataManager(mShareDataManager);
-                    englishSpeekAction = englishSpeekBll;
-                }
+                LiveAchievementEngBll liveAchievementEngBll = new LiveAchievementEngBll(activity, mLiveType, mGetInfo, true);
+//                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
+//                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
+                liveAchievementEngBll.initView(mRootView, mContentView);
+                LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
+                LiveAchievementIRCBll.this.englishSpeekAction = null;
             }
-            LiveAchievementIRCBll.this.starAction = starAction;
-            LiveAchievementIRCBll.this.englishSpeekAction = englishSpeekAction;
         }
     }
 
