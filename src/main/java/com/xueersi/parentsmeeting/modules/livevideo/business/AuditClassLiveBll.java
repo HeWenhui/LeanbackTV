@@ -697,8 +697,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
      * 获取半身直播  旁听数据
      */
     public synchronized void getHalfBodyLiveStudentLiveInfo() {
-      //  test();
-
 
         mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == 1,new HttpCallBack(false){
             @Override
@@ -719,52 +717,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
                 logger.e( "getHalfBodyLiveStudentLiveInfo:onPmError:errorMsg=" + responseEntity.getErrorMsg());
             }
         });
-    }
-
-
-    /**
-     * 接口测试
-     */
-    private void test() {
-        // 测试数据
-        String dataStr =" {\n" +
-                "            \"signTime\": \"17:22\",\n" +
-                "            \"onlineTime\": \"00:05:00\",\n" +
-                "            \"teamInfo\": {\n" +
-                "                \"ourTeamEnergy\": 220,\n" +
-                "                \"hostileTeamEnergy\": 198,\n" +
-                "                \"myRank\": 1\n" +
-                "            },\n" +
-                "            \"testInfo\": {\n" +
-                "                \"stuAvgRate\": \"93%\",\n" +
-                "                \"testList\": [\n" +
-                "                    {\n" +
-                "                        \"orderNum\": 1,\n" +
-                "                        \"answeredStatus\": \"0\",\n" +
-                "                        \"planAvgRightRate\": \"60%\"\n" +
-                "                    },\n" +
-                "                    {\n" +
-                "                        \"orderNum\": 2,\n" +
-                "                        \"answeredStatus\": \"1\",\n" +
-                "                        \"planAvgRightRate\": \"100%\"\n" +
-                "                    },\n" +
-                "                    {\n" +
-                "                        \"orderNum\": 3,\n" +
-                "                        \"answeredStatus\": \"1\",\n" +
-                "                        \"planAvgRightRate\": \"50%\"\n" +
-                "                    }\n" +
-                "                ]\n" +
-                "            }\n" +
-                "        }\t";
-
-        try {
-            ResponseEntity entity = new ResponseEntity();
-            entity.setJsonObject(new JSONObject(dataStr));
-            HalfBodyLiveStudyInfo stuLiveInfo = mHttpResponseParser.parseStuHalfbodyLiveInfo(entity,mLiveTopic.getMode());
-            auditClassAction.onGetStudyInfo(stuLiveInfo);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
 
