@@ -1103,11 +1103,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
             @Override
             public void onFail() {
                 Drawable circleDrawable;
-                if ("0".equals(presenter.getStuSex())) {
-                    circleDrawable = mContext.getResources().getDrawable(R.drawable.ic_livevideo_default_head_girl);
-                } else {
-                    circleDrawable = mContext.getResources().getDrawable(R.drawable.ic_livevideo_default_head_boy);
-                }
+                circleDrawable = mContext.getResources().getDrawable(R.drawable.ic_livevideo_default_head_boy);
                 if (isGuest) {
                     circleDrawable.setBounds(0, 0, BITMAP_WIDTH_GUEST, BITMAP_WIDTH_GUEST);
                 } else {
