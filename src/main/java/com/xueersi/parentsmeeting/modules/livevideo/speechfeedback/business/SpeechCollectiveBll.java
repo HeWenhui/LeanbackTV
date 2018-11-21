@@ -8,6 +8,7 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.media.audiofx.AcousticEchoCanceler;
+import android.os.CountDownTimer;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,7 +72,7 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
         this.activity = activity;
     }
 
-    private void initAudio() throws IOException {
+    private void initAudio() {
         mBufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLING_RATE,
                 DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT.getAudioFormat());
         int bytesPerFrame = DEFAULT_AUDIO_FORMAT.getBytesPerFrame();
@@ -152,44 +153,60 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
 
     }
 
-    private void initData() {
-        liveThreadPoolExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    logger.d("start:startRecording:mAudioRecord=" + (mAudioRecord == null));
-                    initAudio();
-                    bottomContent.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            speechFeedBackPager = new SpeechCollectivePager(activity);
-                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup
-                                    .LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.MATCH_PARENT);
-                            int screenWidth = ScreenUtils.getScreenWidth();
-                            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
-//                            params.rightMargin = wradio;
-                            bottomContent.addView(speechFeedBackPager.getRootView(), params);
+    class AudioRecordRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                logger.d("start:startRecording:mAudioRecord=" + (mAudioRecord == null));
+                long time = System.currentTimeMillis();
+                mAudioRecord.startRecording();
+                mAudioTrack.play();
+                while (isStart) {
+                    if (mAudioRecord != null) {
+                        int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
+                        if (readSize > 0) {
+                            calculateRealVolume(mPCMBuffer, readSize);
                         }
-                    });
-                    long time = System.currentTimeMillis();
-                    mAudioRecord.startRecording();
-                    mAudioTrack.play();
-                    while (isStart) {
-                        if (mAudioRecord != null) {
-                            int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
-                            if (readSize > 0) {
-                                calculateRealVolume(mPCMBuffer, readSize);
-                            }
-                            mAudioTrack.write(mPCMBuffer, 0, mPCMBuffer.length);
-                        }
+                        mAudioTrack.write(mPCMBuffer, 0, mPCMBuffer.length);
                     }
-                    logger.d("start:startRecording:end;time=" + (System.currentTimeMillis() - time));
-                } catch (IOException e) {
-                    logger.e("initAudioRecorder", e);
                 }
+                logger.d("start:startRecording:end;time=" + (System.currentTimeMillis() - time));
+            } catch (Exception e) {
+                logger.e("initAudioRecorder", e);
             }
-        });
+        }
+    }
+
+    private CountDownTimer countDownTimer = new CountDownTimer(5000, 1000) {
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            if (speechFeedBackPager != null) {
+                speechFeedBackPager.setCountDownText(millisUntilFinished);
+            }
+
+        }
+
+        @Override
+        public void onFinish() {
+            liveThreadPoolExecutor.execute(new AudioRecordRunnable());
+            if (speechFeedBackPager != null) {
+                speechFeedBackPager.setCountDownFinish();
+            }
+
+        }
+    };
+
+
+    private void initData() {
+        initAudio();
+        speechFeedBackPager = new SpeechCollectivePager(activity);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup
+                .LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        bottomContent.addView(speechFeedBackPager.getRootView(), params);
+        countDownTimer.start();
 
     }
 
@@ -215,8 +232,8 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
             mAudioTrack.release();
             mAudioTrack = null;
         }
+        countDownTimer.cancel();
         if (speechFeedBackPager != null) {
-
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -268,7 +285,8 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
 //            if (width > 0) {
 //                int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
 //                wradio += (screenWidth - width) / 2;
-//                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) speechFeedBackPager.getRootView().getLayoutParams();
+//                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) speechFeedBackPager.getRootView
+// ().getLayoutParams();
 //                if (wradio != params.rightMargin) {
 //                    params.rightMargin = wradio;
 //                    LayoutParamsUtil.setViewLayoutParams(speechFeedBackPager.getRootView(), params);

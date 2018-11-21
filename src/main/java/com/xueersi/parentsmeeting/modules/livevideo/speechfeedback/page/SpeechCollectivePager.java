@@ -8,11 +8,14 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.Typeface;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
@@ -37,6 +40,8 @@ public class SpeechCollectivePager extends BasePager {
     ImageView promtView;
     View promtGroup;
     View waveGroup;
+    TextView countDownView;
+
 
     public SpeechCollectivePager(Context context) {
         super(context);
@@ -48,13 +53,27 @@ public class SpeechCollectivePager extends BasePager {
         View view = View.inflate(mContext, R.layout.page_livevideo_speech_collective, null);
         vwvSpeectevalWave = (InterationVolumeWaveView) view.findViewById(R.id.vwv_livevideo_speecteval_wave);
 
+        countDownView = view.findViewById(R.id.tv_livevideo_speechcollective_countdown);
         waveView = view.findViewById(R.id.iv_livevideo_feedback_wave);
         promtGroup = view.findViewById(R.id.rl_livevideo_open_close_layout);
         promtView = view.findViewById(R.id.iv_livevideo_open_close);
         waveGroup = view.findViewById(R.id.fl_livevideo_wave_layout);
+        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+        countDownView.setTypeface(fontFace);
         start();
         return view;
     }
+
+
+
+    public void setCountDownText(long millisUntilFinished) {
+        countDownView.setText((millisUntilFinished / 1000) + "秒后开启集体发言");
+    }
+
+    public void setCountDownFinish() {
+        countDownView.setVisibility(View.GONE);
+    }
+
 
     @Override
     public void initData() {
