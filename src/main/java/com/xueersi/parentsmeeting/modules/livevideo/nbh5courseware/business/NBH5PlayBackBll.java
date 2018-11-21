@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business;
 
 import android.app.Activity;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
@@ -14,7 +13,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by lyqai on 2018/7/17.

@@ -2,16 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertPlayBackBll;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by linyuqiang on 2018/7/23.

@@ -4,14 +4,12 @@ import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.FileLogger;
 import com.xueersi.lib.log.LoggerFactory;

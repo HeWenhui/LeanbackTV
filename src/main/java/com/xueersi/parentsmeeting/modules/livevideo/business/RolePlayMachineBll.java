@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
@@ -11,7 +10,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.PermissionItem;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -30,7 +29,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import okhttp3.Call;
 
@@ -118,7 +116,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                         logger.i( "开启了" + permission + "权限");
                         unList.remove(0);
                         if (unList.isEmpty()) {
-                            if (SpeechEvaluatorUtils.isOfflineSuccess()) {
+                            if (SpeechUtils.getInstance(mContext.getApplicationContext()).isOfflineSuccess()) {
                                 isCanRolePlay = true;
                                 logger.i( "开启了录音权限，且离线加载成功开始去人机");
                                 if (isGoToRobot) {
@@ -134,11 +132,11 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                 }, PermissionConfig.PERMISSION_CODE_AUDIO);
 
         logger.i( "unpermissionItems " + unPermissionItems.size() + "  SpeechEvaluatorUtils" +
-                ".isOfflineSuccess() = " + SpeechEvaluatorUtils.isOfflineSuccess());
+                ".isOfflineSuccess() = " + SpeechUtils.getInstance(mContext.getApplicationContext()).isOfflineSuccess());
 
         unList.addAll(unPermissionItems);
         if (unList.isEmpty()) {
-            if (SpeechEvaluatorUtils.isOfflineSuccess()) {
+            if (SpeechUtils.getInstance(mContext.getApplicationContext()).isOfflineSuccess()) {
                 logger.i( "开启了录音拍照权限，且离线加载成功开始去人机");
                 isCanRolePlay = true;
                 if (isGoToRobot) {

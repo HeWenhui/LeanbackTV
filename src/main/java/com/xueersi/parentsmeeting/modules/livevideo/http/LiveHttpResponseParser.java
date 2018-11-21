@@ -565,6 +565,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 mainStatusEntity.getClassmateEntities().clear();
             }
             mainStatusEntity.setOpenDbEnergy(status.optBoolean("openDbEnergy", false));
+            mainStatusEntity.setOpenVoiceBarrage(status.optBoolean("openVoiceBarrage", false));
+            mainStatusEntity.setVoiceBarrageCount(status.optInt("voiceBarrageCount", 0));
         }
         liveTopic.setTeamPkEntity(teamPkEntity);
 //        topic":{"gold_count":3,"id":"161870","num":1,"time":3,"type":"2"}}

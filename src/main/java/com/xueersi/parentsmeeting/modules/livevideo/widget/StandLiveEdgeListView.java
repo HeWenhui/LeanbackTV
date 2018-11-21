@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -16,9 +15,9 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ListView;
 
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 
 /**
  * Created by linyuqiang on 2018/5/3.

@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.view.Gravity;
@@ -31,8 +30,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.liveBll;
 
 /**
  * Created by lyqai on 2018/7/31.

@@ -2,9 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
 
-import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.common.speech.SpeechUtils;
 
 /**
  * Created by linyuqiang on 2018/4/3.
@@ -15,7 +14,7 @@ public abstract class BaseVoiceAnswerPager extends LiveBasePager {
         super(context);
     }
 
-    public abstract void setIse(SpeechEvaluatorUtils mIse);
+    public abstract void setIse(SpeechUtils mIse);
 
     public abstract BaseVideoQuestionEntity getBaseVideoQuestionEntity();
 
