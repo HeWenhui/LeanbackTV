@@ -64,7 +64,6 @@ public class LiveHalfBodyMediaControllerBottom extends LiveStandMediaControllerB
      */
     @Override
     public void onModeChange(String mode,LiveGetInfo getInfo){
-        Log.e(TAG,"=======>onModeChange called:"+mode);
         this.mode = mode;
         removeAllViews();
         inflateLayout();

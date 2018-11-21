@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 
 import com.tal.speech.language.TalLanguage;
@@ -338,8 +337,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
         @Override
         public void initAchievement(String mode) {
-            Log.e("LiveHalfBodyAchievement","=====>LiveAchievementIRCBLL called:1111");
-
             EnglishSpeekAction oldEnglishSpeekAction = LiveAchievementIRCBll.this.englishSpeekAction;
             TalLanguage talLanguage = null;
             if (oldEnglishSpeekAction != null) {
@@ -349,7 +346,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             StarInteractAction starAction;
             EnglishSpeekAction englishSpeekAction = null;
             if (LiveTopic.MODE_CLASS.equals(mode)) {
-                Log.e("LiveHalfBodyAchievement","=====>LiveAchievementIRCBLL called:2222");
                 // 本场成就 ：金币 + 星星
                LiveHalfBodyAchievementBll starBll = new LiveHalfBodyAchievementBll(activity,mLiveType,mGetInfo
                        .getStarCount(), mGetInfo.getGoldCount(), true);
@@ -402,7 +398,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("LiveHalfBodyAchievement","=====>LiveAchievementIRCBLL initAchievement:000000");
                     englishSpeekMode.initAchievement(mode);
                 }
             });

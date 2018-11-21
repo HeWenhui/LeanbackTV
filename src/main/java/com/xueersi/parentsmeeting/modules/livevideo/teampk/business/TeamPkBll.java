@@ -417,8 +417,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     private void getTeamInfo() {
 
-        android.util.Log.e("TeamPk", "========>getTeamInfo:" + mHttpManager + ":" + roomInitInfo);
-
         mHttpManager.getTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
                     @Override

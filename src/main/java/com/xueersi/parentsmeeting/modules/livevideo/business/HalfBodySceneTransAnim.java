@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -56,7 +55,6 @@ public class HalfBodySceneTransAnim {
      * @param isPresent 老师是否在直播间
      */
     public void onModeChange(String mode,boolean isPresent){
-        Log.e("HalfBodySceneTransAnim","======>onModeChange ");
         showAnim();
     }
 

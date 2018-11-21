@@ -15,7 +15,6 @@ import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -201,7 +200,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
                         @Override
                         public void onHide() {
-                            Log.e(TAG, "======> bottomMediaController hide");
                             if (mCommonWordWindow != null) {
                                 mCommonWordWindow.dismiss();
                             }
@@ -354,7 +352,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                         .OnKeyboardShowingListener() {
                     @Override
                     public void onKeyboardShowing(boolean isShowing) {
-                        Log.e(TAG, "onKeyboardShowing:isShowing=" + isShowing);
                         if (!isShowing && switchFSPanelLinearLayout.getVisibility() == View.GONE) {
                             onTitleShow(true);
                         }
@@ -442,12 +439,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                     int screenWidth = (r.right - r.left);
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mView.getLayoutParams();
                     int rightMargin = (screenWidth - currnetVideoViewWidth) / 2;
-                    Log.e("HalfBodyLiveMessagePager", "====>onGlobalLayout setMesgLayout rightMargin00000:" + params
-                            .rightMargin);
                     if (params.rightMargin != rightMargin) {
                         params.rightMargin = rightMargin;
-                        Log.e("HalfBodyLiveMessagePager", "====>onGlobalLayout setMesgLayout rightMargin1111:" +
-                                params.rightMargin);
                         LayoutParamsUtil.setViewLayoutParams(mView, params);
                     }
 
@@ -462,7 +455,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                         }
                     }
                 }
-                Log.e("HalfBodyLiveMessagePager", "====>registLayoutListener2222:" + lp.width);
             }
         });
     }
@@ -565,7 +557,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
-        Log.e(TAG, "initMsgRcyclView:minisize=" + minisize);
         mLastMsg = null;
 
         if(mLiveMsgList != null && mLiveMsgList.size() > 0){
@@ -838,7 +829,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onTitleShow(boolean show) {
-        Log.e(TAG, "======>onTitleShow:" + show);
         btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
         if (!keyboardShowing && switchFSPanelLinearLayout.getVisibility() != View.GONE) {
             switchFSPanelLinearLayout.postDelayed(new Runnable() {
@@ -873,13 +863,11 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint){
         int videoWidth = liveVideoPoint.videoWidth;
-        Log.e("HalfBodyLiveMessagePager", "=======>setVideoWidthAndHeight 0000:" + videoWidth);
         if(videoWidth > 0){
             int screenWidth = liveVideoPoint.screenWidth;
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mView.getLayoutParams();
             int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * videoWidth / LiveVideoConfig.VIDEO_WIDTH);
             int videoGap = (screenWidth - videoWidth) / 2;
-            Log.e("HalfBodyLiveMessagePager", "=======>setVideoWidthAndHeight 1111:" + videoGap);
             if (videoGap != params.rightMargin) {
                 LayoutParamsUtil.setViewLayoutParams(mView, params);
             }
@@ -1228,7 +1216,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                             mLiveMsgList.remove(0);
                         }
                         mLiveMsgList.add(entity);
-                        Log.e("HalfBodyLiveMsgPager", "=====>adddMsg:" + mLiveMsgList.size());
                         if (mMsgAdapter != null) {
                             mMsgAdapter.notifyItemInserted(0);
                         } else {
@@ -1242,7 +1229,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                 });
             }
         });
-        Log.e(TAG, "sender:" + sender);
 
     }
 
