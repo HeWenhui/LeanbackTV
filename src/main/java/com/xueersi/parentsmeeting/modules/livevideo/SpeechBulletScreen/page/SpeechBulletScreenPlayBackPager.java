@@ -55,13 +55,13 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
 
     public SpeechBulletScreenPlayBackPager(Context context) {
         super(context);
+        transformSize(mContext);
     }
 
     @Override
     public View initView() {
-        logger.i("initView()");
-        mView = initDanmaku();
-        return mView;
+        View mDanmukuView = initDanmaku();
+        return mDanmukuView;
     }
 
     /**
@@ -93,8 +93,6 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
     }
 
     protected View initDanmaku() {
-        logger.i("initDanmaku()");
-        transformSize(mContext);
         // 设置最大显示行数
         HashMap<Integer, Integer> maxLinesPair = new HashMap<>();
         maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 3); // 滚动弹幕最大显示3行
@@ -189,12 +187,12 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
             paint.setColor(Color.BLACK);
             paint.setAlpha((int) (255 * 0.6)); //  透明度0.6
             if (danmaku.isGuest) {
-                canvas.drawRoundRect(new RectF(left + danmaku.padding, top + danmaku.padding + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1
                                 , left + danmaku.paintWidth - danmaku.padding,
                                 top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1 + danmaku.padding),
                         DANMU_RADIUS, DANMU_RADIUS, paint);
             } else {
-                canvas.drawRoundRect(new RectF(left + danmaku.padding, top + danmaku.padding + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
                                 , left + danmaku.paintWidth - danmaku.padding,
                                 top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1 + danmaku.padding),
                         DANMU_RADIUS, DANMU_RADIUS, paint);
@@ -235,7 +233,8 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
             return;
         }
         //如果长时间没有弹幕，可能会休眠
-        if (mDanmakuView != null && mDanmakuView.isPaused()) {
+        if (mDanmakuView != null) {
+            mDanmakuView.pause();
             mDanmakuView.resume();
         }
         final BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);

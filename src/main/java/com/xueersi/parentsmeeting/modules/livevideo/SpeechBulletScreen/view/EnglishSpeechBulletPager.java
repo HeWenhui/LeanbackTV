@@ -1205,20 +1205,15 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             paint.setAntiAlias(true);
             paint.setColor(Color.BLACK);
             paint.setAlpha((int) (255 * 0.6)); //  透明度0.6
-
             if (danmaku.isGuest) {
-                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding +
-                                (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1
                                 , left + danmaku.paintWidth - danmaku.padding,
-                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 +
-                                        1 + danmaku.padding),
+                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1 + danmaku.padding),
                         DANMU_RADIUS, DANMU_RADIUS, paint);
             } else {
-                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_ME
-                                - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
                                 , left + danmaku.paintWidth - danmaku.padding,
-                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
-                                        + danmaku.padding),
+                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1 + danmaku.padding),
                         DANMU_RADIUS, DANMU_RADIUS, paint);
             }
         }

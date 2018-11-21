@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -16,8 +14,6 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.page.SpeechBulletScreenPager;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.page.SpeechBulletScreenPlayBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
@@ -90,19 +86,16 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
         getCourseHttpManager().getVoiceBarrageMsg(liveId, stuCouId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                Log.i(TAG, "onDataSucess: json=" + responseEntity.getJsonObject());
                 callBack.onDataSucess(responseEntity);
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                Log.i(TAG, "onPmFailure: msg=" + msg);
                 callBack.onDataFail(0, msg);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                Log.i(TAG, "onPmError: json=" + responseEntity.getJsonObject());
                 callBack.onDataFail(1, responseEntity.getErrorMsg());
             }
         });
