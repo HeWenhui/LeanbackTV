@@ -159,15 +159,19 @@ public class EnAchievePager extends LiveBasePager {
             logger.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd);
             String LOTTIE_RES_ASSETS_ROOTDIR;
             String[] targetFileNames;
+            final int type;
             if (energyCountAdd > 0 && goldCountAdd > 0) {
                 LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/gold_energy";
                 targetFileNames = new String[]{"img_0.png", "img_1.png"};
+                type = 1;
             } else if (energyCountAdd > 0) {
                 LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/nogold_energy";
                 targetFileNames = new String[]{"img_0.png"};
+                type = 2;
             } else if (goldCountAdd > 0) {
                 LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/gold_noenergy";
                 targetFileNames = new String[]{"img_0.png"};
+                type = 3;
             } else {
                 return;
             }
@@ -177,9 +181,21 @@ public class EnAchievePager extends LiveBasePager {
                 @Override
                 public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
                     if ("img_0.png".equals(fileName)) {
-                        Bitmap bitmap2 = createBitmap(energyCountAdd, width, height);
-                        if (bitmap2 != null) {
-                            return bitmap2;
+                        if (type == 1) {
+                            Bitmap bitmap2 = createBitmap(energyCountAdd, width, height);
+                            if (bitmap2 != null) {
+                                return bitmap2;
+                            }
+                        } else if (type == 2) {
+                            Bitmap bitmap2 = createBitmap(energyCountAdd, width, height);
+                            if (bitmap2 != null) {
+                                return bitmap2;
+                            }
+                        } else {
+                            Bitmap bitmap2 = createBitmap(goldCountAdd, width, height);
+                            if (bitmap2 != null) {
+                                return bitmap2;
+                            }
                         }
                     } else if ("img_1.png".equals(fileName)) {
                         Bitmap bitmap2 = createBitmap(goldCountAdd, width, height);
