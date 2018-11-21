@@ -3,33 +3,35 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 import java.util.List;
 
 /**
- *
  * 文科 答题结果
+ *
  * @author chenkun
  * @version 1.0, 2018/8/16 上午10:20
  */
 
 public class AnswerResultEntity {
 
-    /**文科新课件平台 老课件 答题结果*/
+    /** 文科新课件平台 老课件 答题结果 */
     public static final int RESULT_TYPE_OLD_COURSE_WARE = 1;
-    /**文科课件平台 新课件*/
+    /** 文科课件平台 新课件 */
     public static final int RESULT_TYPE_NEW_COURSE_WARE = 2;
 
     private String liveId;
     private String stuId;
-    /**后端生成的虚拟id*/
+    /** 后端生成的虚拟id */
     private String virtualId;
-    /**试题个数*/
+    /** 试题个数 */
     private int testCount;
-    /**答题状态 0 :全错 1: 对一半  2:全对*/
+    /** 答题状态 0 :全错 1: 对一半  2:全对 */
     private int isRight;
-    /**获得的金币数*/
+    /** 获得的金币数 */
     private int gold;
-    /**正确率*/
+    /** 获得的能量数 */
+    private int energy;
+    /** 正确率 */
     private double rightRate;
     private long createTime;
-    /**答题结果对应的试题类型*/
+    /** 答题结果对应的试题类型 */
     private int type;
 
     public int getType() {
@@ -48,10 +50,10 @@ public class AnswerResultEntity {
         this.idArray = idArray;
     }
 
-    /**档次答题所有试题id集合*/
+    /** 档次答题所有试题id集合 */
     private List<String> idArray;
 
-    private int  resultType;
+    private int resultType;
 
     private List<Answer> answerList;
 
@@ -103,6 +105,14 @@ public class AnswerResultEntity {
         this.gold = gold;
     }
 
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
+    }
+
     public double getRightRate() {
         return rightRate;
     }
@@ -136,24 +146,24 @@ public class AnswerResultEntity {
     }
 
 
-    public static class Answer{
+    public static class Answer {
 
         private String liveId;
         private String stuId;
         private String testId;
         private String testSrc;
-        /**试题类型  1 填空题   2选择题*/
+        /** 试题类型  1 填空题   2选择题 */
         private int testType;
-        /**用户自己 选择题答案*/
+        /** 用户自己 选择题答案 */
         private List<String> choiceList;
-        /**用户自己 填空题答案*/
+        /** 用户自己 填空题答案 */
         private List<String> blankList;
-        /**标准答案*/
+        /** 标准答案 */
         private List<String> rightAnswers;
 
-        /**这道小题是否正确 0:全错 1:对一半 2:全对*/
+        /** 这道小题是否正确 0:全错 1:对一半 2:全对 */
         private int isRight;
-        /**这道小题的正确率*/
+        /** 这道小题的正确率 */
         private double rightRate;
         private long createTime;
 

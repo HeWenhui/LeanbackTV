@@ -1480,4 +1480,16 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_STUINFO + "?unique_id=" + unique_id, params, requestCallBack);
     }
+
+    /**
+     * go-战队pk-更新用户分组
+     *
+     * @param requestCallBack
+     */
+    public void updataEnglishPkGroup(String isNewGroup, String isA, String robotId, String stuId, String info, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("isNewGroup", "" + isNewGroup);
+        setDefaultParameter(params);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_UPDATA_GROUP, params, requestCallBack);
+    }
 }

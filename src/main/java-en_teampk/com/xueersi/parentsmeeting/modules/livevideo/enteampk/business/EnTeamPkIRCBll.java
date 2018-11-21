@@ -58,12 +58,24 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 public void onPmError(ResponseEntity responseEntity) {
                     logger.e("getSelfTeamInfo:onPmError" + responseEntity.getErrorMsg());
                     abstractBusinessDataCallBack.onDataFail(1, responseEntity.getErrorMsg());
+                    postDelayedIfNotFinish(new Runnable() {
+                        @Override
+                        public void run() {
+                            getSelfTeamInfo(abstractBusinessDataCallBack);
+                        }
+                    }, 2000);
                 }
 
                 @Override
                 public void onPmFailure(Throwable error, String msg) {
                     logger.e("getSelfTeamInfo:onPmFailure" + msg, error);
                     abstractBusinessDataCallBack.onDataFail(0, msg);
+                    postDelayedIfNotFinish(new Runnable() {
+                        @Override
+                        public void run() {
+                            getSelfTeamInfo(abstractBusinessDataCallBack);
+                        }
+                    }, 1000);
                 }
             });
         }
@@ -83,11 +95,34 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
                     logger.e("reportStuInfo:onPmError" + responseEntity.getErrorMsg());
+                    postDelayedIfNotFinish(new Runnable() {
+                        @Override
+                        public void run() {
+                            reportStuInfo(abstractBusinessDataCallBack);
+                        }
+                    }, 2000);
                 }
 
                 @Override
                 public void onPmFailure(Throwable error, String msg) {
                     logger.e("reportStuInfo:onPmFailure" + msg, error);
+                    postDelayedIfNotFinish(new Runnable() {
+                        @Override
+                        public void run() {
+                            reportStuInfo(abstractBusinessDataCallBack);
+                        }
+                    }, 1000);
+                }
+            });
+        }
+
+        @Override
+        public void updataEnglishPkGroup(final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
+            getHttpManager().updataEnglishPkGroup("", "", "", "", "", new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) {
+                    logger.d("updataEnglishPkGroup:onPmSuccess=" + responseEntity.getJsonObject());
+                    abstractBusinessDataCallBack.onDataSucess();
                 }
             });
         }

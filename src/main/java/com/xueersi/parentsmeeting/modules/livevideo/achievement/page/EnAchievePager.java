@@ -118,8 +118,19 @@ public class EnAchievePager extends LiveBasePager {
                 if (AppConfig.DEBUG) {
                     Random random = new Random();
                     StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
-                    starAndGoldEntity.setGoldCount(goldCount + random.nextInt(20));
-                    starAndGoldEntity.setEnergyCount(energyCount + +random.nextInt(20));
+                    int nextInt = random.nextInt();
+                    int goldCount2 = goldCount;
+                    int energyCount2 = energyCount;
+                    if (nextInt % 3 == 0) {
+                        goldCount2 += random.nextInt(20);
+                        energyCount2 += random.nextInt(20);
+                    } else if (nextInt % 3 == 1) {
+                        goldCount2 += random.nextInt(20);
+                    } else {
+                        energyCount2 += random.nextInt(20);
+                    }
+                    starAndGoldEntity.setGoldCount(goldCount2);
+                    starAndGoldEntity.setEnergyCount(energyCount2);
                     onGetStar(starAndGoldEntity);
                 }
             }
@@ -145,20 +156,40 @@ public class EnAchievePager extends LiveBasePager {
         if (rl_livevideo_info != null) {
             final int energyCountAdd = starAndGoldEntity.getEnergyCount() - energyCount;
             final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
+            logger.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd);
             String LOTTIE_RES_ASSETS_ROOTDIR;
+            String[] targetFileNames;
             if (energyCountAdd > 0 && goldCountAdd > 0) {
                 LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/gold_energy";
+                targetFileNames = new String[]{"img_0.png", "img_1.png"};
             } else if (energyCountAdd > 0) {
                 LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/nogold_energy";
+                targetFileNames = new String[]{"img_0.png"};
             } else if (goldCountAdd > 0) {
                 LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/gold_noenergy";
+                targetFileNames = new String[]{"img_0.png"};
             } else {
                 return;
             }
             String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
             String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
-            final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath);
-
+            final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath, targetFileNames) {
+                @Override
+                public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
+                    if ("img_0.png".equals(fileName)) {
+                        Bitmap bitmap2 = createBitmap(energyCountAdd, width, height);
+                        if (bitmap2 != null) {
+                            return bitmap2;
+                        }
+                    } else if ("img_1.png".equals(fileName)) {
+                        Bitmap bitmap2 = createBitmap(goldCountAdd, width, height);
+                        if (bitmap2 != null) {
+                            return bitmap2;
+                        }
+                    }
+                    return null;
+                }
+            };
             final ViewGroup viewGroup = (ViewGroup) rl_livevideo_info.getParent();
             final LottieAnimationView lottieAnimationView = new LottieAnimationView(activity);
             lottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(activity), "fir_energy");
@@ -169,19 +200,6 @@ public class EnAchievePager extends LiveBasePager {
                     String fileName = lottieImageAsset.getFileName();
                     Bitmap bitmap = bubbleEffectInfo.fetchBitmapFromAssets(lottieAnimationView, fileName,
                             lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), activity);
-                    if ("img_0.png".equals(fileName)) {
-                        Bitmap bitmap2 = createBitmap(energyCountAdd, bitmap.getWidth(), bitmap.getHeight());
-                        if (bitmap2 != null) {
-                            bitmap.recycle();
-                            return bitmap2;
-                        }
-                    } else if ("img_1.png".equals(fileName)) {
-                        Bitmap bitmap2 = createBitmap(goldCountAdd, bitmap.getWidth(), bitmap.getHeight());
-                        if (bitmap2 != null) {
-                            bitmap.recycle();
-                            return bitmap2;
-                        }
-                    }
                     return bitmap;
                 }
             };

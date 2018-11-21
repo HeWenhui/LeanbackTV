@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -18,6 +19,9 @@ public class EnStandAchievePager extends LiveBasePager {
     Activity activity;
     ViewStub vs_livevideo_en_achive_bottom;
     ViewStub vs_livevideo_en_achive_bottom2;
+    private TextView tv_livevideo_en_achive_num_fire;
+    private TextView tv_livevideo_en_achive_num_star;
+    private TextView tv_livevideo_en_achive_num_gold;
     private int starCount;
     private int goldCount;
     private int energyCount;
@@ -38,6 +42,9 @@ public class EnStandAchievePager extends LiveBasePager {
     @Override
     public View initView() {
         mView = LayoutInflater.from(mContext).inflate(R.layout.layout_livevodeo_en_stand_achive, parent, false);
+        tv_livevideo_en_achive_num_fire = mView.findViewById(R.id.tv_livevideo_en_achive_num_fire);
+        tv_livevideo_en_achive_num_star = mView.findViewById(R.id.tv_livevideo_en_achive_num_star);
+        tv_livevideo_en_achive_num_gold = mView.findViewById(R.id.tv_livevideo_en_achive_num_gold);
         vs_livevideo_en_achive_bottom = mView.findViewById(R.id.vs_livevideo_en_achive_bottom);
         vs_livevideo_en_achive_bottom2 = mView.findViewById(R.id.vs_livevideo_en_achive_bottom2);
         return mView;
@@ -60,11 +67,14 @@ public class EnStandAchievePager extends LiveBasePager {
     }
 
     public void onGetStar(StarAndGoldEntity starAndGoldEntity) {
-
+        tv_livevideo_en_achive_num_fire.setText(starAndGoldEntity.getEnergyCount());
+        tv_livevideo_en_achive_num_star.setText(starAndGoldEntity.getStarCount());
+        tv_livevideo_en_achive_num_gold.setText(starAndGoldEntity.getGoldCount());
     }
 
     public void onStarAdd(int star, float x, float y) {
-
+        starCount += star;
+        tv_livevideo_en_achive_num_star.setText("" + starCount);
     }
 
 }

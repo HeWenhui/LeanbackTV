@@ -13,7 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkRankPag
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkRankResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 
-public class EnTeamPkBll extends BaseBll implements EnTeamPkAction {
+public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpdata {
     private Handler handler = new Handler(Looper.getMainLooper());
     private RelativeLayout rootView;
     private TeamPkRankPager teamPkRankPager;
@@ -86,4 +86,15 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction {
             }
         });
     }
+
+    @Override
+    public void updataEnglishPkGroup() {
+        enTeamPkHttp.updataEnglishPkGroup(new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objects) {
+
+            }
+        });
+    }
+
 }

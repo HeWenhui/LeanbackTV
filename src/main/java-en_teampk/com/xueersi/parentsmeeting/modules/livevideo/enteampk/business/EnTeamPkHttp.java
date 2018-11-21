@@ -6,4 +6,6 @@ public interface EnTeamPkHttp {
     void getSelfTeamInfo(AbstractBusinessDataCallBack abstractBusinessDataCallBack);
 
     void reportStuInfo(AbstractBusinessDataCallBack abstractBusinessDataCallBack);
+
+    void updataEnglishPkGroup(AbstractBusinessDataCallBack abstractBusinessDataCallBack);
 }

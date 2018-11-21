@@ -31,6 +31,8 @@ import java.io.InputStream;
 public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
 
     private String mCoinStr;
+    /** 获得的能量数 */
+    private String energyStr;
     protected Logger logger = LoggerFactory.getLogger("ArtsAnswerStateLottieEffectInfo");
 
     private static final String TEXTCOLOR = "#FFDB2A";
@@ -90,9 +92,7 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
      * @param filePath
      */
     public void setTilteFilePath(String filePath) {
-
         mTitlePath = filePath;
-
     }
 
     /**
@@ -101,9 +101,7 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
      * @param filePath
      */
     public void setTitleBgFilePath(String filePath) {
-
         mTitleBgPath = filePath;
-
     }
 
 
@@ -111,6 +109,9 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
         this.mCoinStr = coinStr;
     }
 
+    public void setEnergyStr(String energyStr) {
+        this.energyStr = energyStr;
+    }
 
     private Bitmap generateCoinNum(int width, int height) {
 
