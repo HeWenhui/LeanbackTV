@@ -28,15 +28,15 @@ public class BaseEnglishStandSpeekBll implements SpeakerRecognitioner.SpeakerPre
         if (loadSuccess) {
             return;
         }
-        try {
-            logger.i("loadLibrary");
-            System.loadLibrary(SpeechEvaluatorUtils.TAL_ASSESS_LIB);
-            logger.i("loadLibrary ok");
-            loadSuccess = true;
-        } catch (Throwable e) {
-            loadSuccess = false;
-            UmsAgentManager.umsAgentException(BaseApplication.getContext(), "BaseEnglishStandSpeekBll" + "loadLibrary", e);
-        }
+//        try {
+//            logger.i("loadLibrary");
+////            System.loadLibrary(SpeechEvaluatorUtils.TAL_ASSESS_LIB);
+//            logger.i("loadLibrary ok");
+//            loadSuccess = true;
+//        } catch (Throwable e) {
+//            loadSuccess = false;
+//            UmsAgentManager.umsAgentException(BaseApplication.getContext(), "BaseEnglishStandSpeekBll" + "loadLibrary", e);
+//        }
     }
 
 }

@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -29,23 +28,39 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+
 import com.xueersi.common.event.MiniEvent;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.speech.SpeechConfig;
+import com.xueersi.common.speech.SpeechUtils;
+import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.imageloader.SingleConfig;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.LiveStandQuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
-import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -54,15 +69,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
-import com.xueersi.common.permission.XesPermission;
-import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.file.FileUtils;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
-import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.lib.imageloader.SingleConfig;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -88,7 +94,8 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  * @date 2017/12/5
  */
 public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
-    private SpeechEvaluatorUtils mIse;
+//    private SpeechEvaluatorUtils mIse;
+    private SpeechUtils mIse;
     /** 所有帧动画 */
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
     /** 组内战况已经被加入的学生 */
@@ -198,8 +205,11 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         mView.post(new Runnable() {
             @Override
             public void run() {
+//                if (mIse == null) {
+//                    mIse = new SpeechEvaluatorUtils(true);
+//                }
                 if (mIse == null) {
-                    mIse = new SpeechEvaluatorUtils(true);
+                    mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
                 }
                 rgivStandReadygo.setAnimationListener(new FrameAnimation.AnimationListener() {
                     @Override
@@ -408,7 +418,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         }
     }
 
-    public void setIse(SpeechEvaluatorUtils ise) {
+    public void setIse(SpeechUtils ise) {
         this.mIse = ise;
     }
 
@@ -614,10 +624,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             mIse.stop();
         }
     }
-
     class VoiceEvaluatorListener implements EvaluatorListener {
         File saveVideoFile;
-
         @Override
         public void onBeginOfSpeech() {
             isSpeechError = false;
@@ -635,9 +643,33 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         }
 
         @Override
-        public void onVolumeUpdate(int volume) {
+        public void onVolumeUpdate(int volume)  {
+
         }
     }
+//    class VoiceEvaluatorListener implements EvaluatorListener {
+//        File saveVideoFile;
+//
+//        @Override
+//        public void onBeginOfSpeech() {
+//            isSpeechError = false;
+//            logger.d( "onBeginOfSpeech");
+//        }
+//
+//        @Override
+//        public void onResult(ResultEntity resultEntity) {
+//            logger.d( "onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd);
+//            if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+//                onEvaluatorSuccess(resultEntity);
+//            } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+//                onEvaluatorError(resultEntity);
+//            }
+//        }
+//
+//        @Override
+//        public void onVolumeUpdate(int volume) {
+//        }
+//    }
 
     VoiceEvaluatorListener listener = new VoiceEvaluatorListener();
 
@@ -716,7 +748,14 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                     }
                 }, 1500);
             }
-        } else {
+        } else if (resultEntity.getErrorNo() == ResultCode.SPEECH_CANCLE){
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startEvaluator();
+                }
+            },1000);
+        }else {
 //            errorSetVisible();
 //            tvSpeectevalTip.setText("语音输入有点小问题，\n先手动答题哦（" + resultEntity.getErrorNo() + ")");
 //            tvSpeectevalTip.setTag("5");
@@ -945,7 +984,13 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         }
         saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
         listener.saveVideoFile = saveVideoFile;
-        mIse.startEnglishEvaluatorOffline(assess_ref.toString(), saveVideoFile.getPath(), multRef, listener);
+        SpeechParamEntity param = new SpeechParamEntity();
+        param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
+        param.setLocalSavePath(saveVideoFile.getPath());
+        param.setStrEvaluator(assess_ref.toString());
+        param.setMultRef(multRef);
+        mIse.startRecog(param,listener);
+//        mIse.startEnglishEvaluatorOffline(assess_ref.toString(), saveVideoFile.getPath(), multRef, listener);
     }
 
     private void errorSetVisible() {
@@ -1318,155 +1363,4 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 //    你可以说的更好，再来一次哦！");
 //    录音上传中");
 //    题目已作答");
-
-// 刷新数据
-@Subscribe(threadMode = ThreadMode.POSTING)
-public void onEvent(MiniEvent event) {
-    if("standlive".equals(event.getAdId())){
-        onAnswerResult(event.getMin(),event.getCourseId());
-    }
-}
-
-    private void onAnswerResult(String datasource,String types) {
-        //boolean showAnswerResult = false;
-        try {
-            JSONObject jsonObject = new JSONObject(datasource);
-            int stat = jsonObject.optInt("stat");
-            Log.e("AnswerResultBll","======>onAnswerResult2222:"+stat+":"+jsonObject.has("data"));
-            boolean resultFromVoice = Integer.parseInt(types) == ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK;
-            JSONObject dataObject = null;
-            if(resultFromVoice){
-                dataObject = jsonObject;
-            }else{
-                dataObject = jsonObject.optJSONObject("data");
-            }
-
-            if ((stat == 1 || resultFromVoice) && dataObject != null) {
-                mAnswerReulst = new AnswerResultEntity();
-                mAnswerReulst.setResultType(AnswerResultEntity.RESULT_TYPE_NEW_COURSE_WARE);
-                if (dataObject.has("total")) {
-                    JSONObject totalObject = dataObject.getJSONObject("total");
-                    mAnswerReulst.setLiveId(totalObject.optString("liveId"));
-                    mAnswerReulst.setStuId(totalObject.optString("stuId"));
-                    mAnswerReulst.setVirtualId(totalObject.optString("virtualId"));
-                    mAnswerReulst.setTestCount(totalObject.optInt("testCount"));
-                    mAnswerReulst.setIsRight(totalObject.optInt("isRight"));
-                    mAnswerReulst.setGold(totalObject.optInt("gold"));
-                    mAnswerReulst.setRightRate(totalObject.optDouble("rightRate"));
-                    mAnswerReulst.setCreateTime(totalObject.optLong("createTime"));
-                    JSONArray testIds = totalObject.optJSONArray("testIds");
-                    if (testIds != null && testIds.length() > 0) {
-                        List<String> idList = new ArrayList<>();
-                        for (int i = 0; i < testIds.length(); i++) {
-                            idList.add(testIds.getString(i));
-                        }
-                        mAnswerReulst.setIdArray(idList);
-                        Log.e( "AnswerResultBll","=======>parseAnswerResult:" + idList.size());
-                    }
-
-                    int type = totalObject.optInt("type");
-                    //不是游戏类型的试题 就显示 统计面板  (仿照pc端处理逻辑)
-                    //showAnswerResult = (type != TEST_TYPE_GAME);
-                    mAnswerReulst.setType(type);
-
-                    if (dataObject.has("split")) {
-                        JSONArray splitArray = dataObject.getJSONArray("split");
-                        JSONObject answerObject = null;
-                        AnswerResultEntity.Answer answer = null;
-                        JSONArray choiceArray = null;
-                        JSONArray blankArray = null;
-                        JSONArray rightAnswerArray = null;
-
-                        List<AnswerResultEntity.Answer> answerList = new ArrayList<AnswerResultEntity.Answer>();
-                        List<String> choiceList = null;
-                        List<String> blankList = null;
-                        List<String> rightAnswerList = null;
-
-                        for (int i = 0; i < splitArray.length(); i++) {
-                            choiceList = new ArrayList<>();
-                            blankList = new ArrayList<>();
-                            rightAnswerList = new ArrayList<>();
-                            answerObject = splitArray.getJSONObject(i);
-                            answer = new AnswerResultEntity.Answer();
-                            answer.setLiveId(answerObject.optString("liveId"));
-                            answer.setStuId(answerObject.optString("stuId"));
-                            answer.setTestId(answerObject.optString("testId"));
-                            answer.setTestSrc(answerObject.optString("testSrc"));
-                            answer.setTestType(answerObject.optInt("testType"));
-                         /*   // 答题结果里是否有选择题
-                            if(answer.getTestType() == TEST_TYPE_SELECT || answer.getTestType() == TEST_TYPE_BLANK){
-                                showAnswerResult = true;
-                            }*/
-                            answer.setIsRight(answerObject.optInt("isRight"));
-                            answer.setRightRate(answerObject.optDouble("rightRate"));
-                            answer.setCreateTime(answerObject.optLong("createTime"));
-
-                            choiceArray = answerObject.optJSONArray("choice");
-                            for (int i1 = 0; i1 < choiceArray.length(); i1++) {
-                                choiceList.add(choiceArray.getString(i1));
-                            }
-                            answer.setChoiceList(choiceList);
-                            blankArray = answerObject.optJSONArray("blank");
-
-                            for (int i1 = 0; i1 < blankArray.length(); i1++) {
-                                blankList.add(blankArray.getString(i1));
-                            }
-                            answer.setBlankList(blankList);
-                            rightAnswerArray = answerObject.optJSONArray("rightAnswer");
-                            if (rightAnswerArray != null) {
-                                for (int i1 = 0; i1 < rightAnswerArray.length(); i1++) {
-                                    rightAnswerList.add(rightAnswerArray.getString(i1));
-                                }
-                            }
-                            answer.setRightAnswers(rightAnswerList);
-
-                            answerList.add(answer);
-                        }
-                        mAnswerReulst.setAnswerList(answerList);
-                    }
-
-                } else {
-                    // TODO: 2018/9/18 新平台老课件
-                    mAnswerReulst.setResultType(AnswerResultEntity.RESULT_TYPE_OLD_COURSE_WARE);
-                    mAnswerReulst.setGold(dataObject.optInt("goldnum"));
-                    JSONArray testIds = dataObject.optJSONArray("testId");
-                    if (testIds != null && testIds.length() > 0) {
-                        List<String> idList = new ArrayList<>();
-                        for (int i = 0; i < testIds.length(); i++) {
-                            idList.add(testIds.getString(i));
-                        }
-                        mAnswerReulst.setIdArray(idList);
-                    }
-                    mAnswerReulst.setIsRight(dataObject.optInt("isRight"));
-
-                    Log.e("AnswerResultBll","======>:"+mAnswerReulst.getIsRight() +":"+mAnswerReulst.getIdArray());
-                    JSONArray jsonArray = dataObject.optJSONArray("result");
-                    if (jsonArray != null && jsonArray.length() > 0) {
-                        List<AnswerResultEntity.Answer> answerList = new ArrayList<AnswerResultEntity.Answer>();
-                        AnswerResultEntity.Answer answer = null;
-                        JSONObject answerObj = null;
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            answerObj = jsonArray.getJSONObject(i);
-                            answer = new AnswerResultEntity.Answer();
-                            answer.setTestId(answerObj.optString("id"));
-                            answer.setIsRight(answerObj.optInt("isright"));
-                            answer.setRightRate(answerObj.optDouble("rate"));
-                        }
-                        mAnswerReulst.setAnswerList(answerList);
-                    }
-                }
-            } else {
-                String errorMsg = jsonObject.optString("msg");
-                if (!TextUtils.isEmpty(errorMsg)) {
-                    XESToastUtils.showToast(mContext, errorMsg);
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            XESToastUtils.showToast(mContext, "答题结果数据解析失败");
-        }
-        VideoResultEntity entitys = new VideoResultEntity();
-        entitys.setResultType(mAnswerReulst.getIsRight());
-        onCommit(entitys,100);
-    }
 }

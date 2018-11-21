@@ -4,16 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
+import com.xueersi.common.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
-import com.xueersi.common.event.MiniEvent;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 import org.greenrobot.eventbus.EventBus;

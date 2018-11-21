@@ -13,8 +13,6 @@ found at http://www.jibble.org/licenses/
 
 package com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot;
 
-import android.util.Log;
-
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 

@@ -12,8 +12,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
-import com.nineoldandroids.animation.AnimatorInflater;
-import com.nineoldandroids.animation.AnimatorSet;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 

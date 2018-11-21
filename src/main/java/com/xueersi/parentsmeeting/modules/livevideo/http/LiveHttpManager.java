@@ -1492,4 +1492,26 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_STU_ONLINE_TIME, params, requestCallBack);
     }
+
+    /**
+     * 弹幕推送
+     *
+     * @param json            json数据
+     * @param callback
+     */
+    public void pushSpeechBullet(String json, okhttp3.Callback callback) {
+        logger.i("speechbul,pushSpeechBullet: json = " + json);
+        HttpRequestParams params = new HttpRequestParams();
+        params.setJson(json);
+        params.setWriteAndreadTimeOut(10);
+        String url;
+//        if (AppConfig.DEBUG) {
+//            url = "http://10.99.2.31/v1/push";
+//        } else {
+//            url = "https://pushirc.arts.xueersi.com/v1/push";
+//        }
+        url = "https://pushirc.arts.xueersi.com/v1/push";
+        baseSendPostNoBusinessJson(url, params, callback);
+    }
 }
+

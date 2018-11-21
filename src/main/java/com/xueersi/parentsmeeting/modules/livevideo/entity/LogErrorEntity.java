@@ -2,8 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import android.text.TextUtils;
 
-import com.xueersi.lib.framework.utils.string.StringUtils;
-
 /**
  * Created by linyuqiang on 2018/9/8.
  * 日志统计

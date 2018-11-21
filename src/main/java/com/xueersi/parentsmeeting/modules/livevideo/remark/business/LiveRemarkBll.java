@@ -11,7 +11,6 @@ import android.graphics.Rect;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;

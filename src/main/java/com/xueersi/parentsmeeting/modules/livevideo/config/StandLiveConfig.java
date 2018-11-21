@@ -25,7 +25,7 @@ public class StandLiveConfig {
      * 前景音效的比列
      */
     public static final float MUSIC_VOLUME_RATIO_FRONT = 1f;
-    public static String version = "2018041510";
+    public static String version = "2018102301";
     public static VoicePath voicePath;
     private static String voiceDir;
 
