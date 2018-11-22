@@ -9,7 +9,6 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -63,7 +62,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
 
     @Override
     public void addAnimationInit(RecyclerView.ViewHolder holder) {
-        Log.e("MsgItemAnim", "=====>addAnimationInit called");
+       // Log.e("MsgItemAnim", "=====>addAnimationInit called");
         ViewCompat.setScaleX(holder.itemView, 0);
         ViewCompat.setScaleY(holder.itemView, 0);
         ViewCompat.setAlpha(holder.itemView, 1f);
@@ -81,7 +80,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
         ViewCompat.setPivotX(holder.itemView, holder.itemView.getWidth());
         ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight());
         animator.scaleX(1).scaleY(1);
-        Log.e("MsgItemAnim", "=====>setAddAnimation called");
+       // Log.e("MsgItemAnim", "=====>setAddAnimation called");
         //2秒内无新消息自动消失
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -95,7 +94,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
      * 所有item 条目 淡出动效
      */
     private void startItemsFadeOut() {
-        Log.e("MsgItemAnim", "=====>startItemsFadeOut");
+       // Log.e("MsgItemAnim", "=====>startItemsFadeOut");
         fadeOutCancle = false;
         mCurrentItemIndex = 0;
         fadeOut();
@@ -106,7 +105,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
         ViewCompat.setScaleX(holder.itemView, 1);
         ViewCompat.setScaleY(holder.itemView, 1);
         ViewCompat.setAlpha(holder.itemView, 1);
-        Log.e("MsgItemAnim", "=====>addAnimationCancel called");
+        //Log.e("MsgItemAnim", "=====>addAnimationCancel called");
     }
 
     @Override
@@ -191,7 +190,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
      * item 价格逐渐消失
      */
     private void fadeOut() {
-        Log.e("MsgItemAnim", "=====>fadeOut called:visibleItemSize=" + mVisibleItemList.size()+":"+mCurrentItemIndex);
+        //Log.e("MsgItemAnim", "=====>fadeOut called:visibleItemSize=" + mVisibleItemList.size()+":"+mCurrentItemIndex);
         if (mCurrentItemIndex < mVisibleItemList.size()) {
             RecyclerView.ViewHolder holder = mVisibleItemList.get(mCurrentItemIndex);
             itemFadeOut(holder, mCurrentItemIndex);
@@ -215,7 +214,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
 
     private void itemFadeOut(RecyclerView.ViewHolder holder, int itemIndex) {
         FadeOutAnimator animator = null;
-        Log.e("MsgItemAnim", "=====>itemFadeOut ListSize:" + animatorList.size());
+        //Log.e("MsgItemAnim", "=====>itemFadeOut ListSize:" + animatorList.size());
         //从复用池中寻找
         if (animatorList != null && animatorList.size() > 0) {
             for (int i = 0; i < animatorList.size(); i++) {

@@ -137,7 +137,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         tvLoadingHint.setTextColor(Color.WHITE);
         rlFirstBackgroundView.setBackgroundColor(0xff000000);
         mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
-        logger.e("=======>showSupportTeacherUI:");
+       //logger.e("=======>showSupportTeacherUI:");
 
     }
 
@@ -169,14 +169,12 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
 
-        logger.e("=====>showMainTeacherUI called:" + mInited);
+        //logger.e("=====>showMainTeacherUI called:" + mInited);
         if (!mInited) {
             //主讲模式去掉外层的RelativeLayout换回FrameLayout
             ViewGroup group = (ViewGroup) rlFirstBackgroundView.getParent();
             if (group != flFirstBackgroundContent) {
-                logger.e("=====>showMainTeacherUI called: 222222");
                 while (group.getChildCount() > 0) {
-                    logger.e("=====>showMainTeacherUI called: 333333");
                     View childView = group.getChildAt(0);
                     group.removeViewAt(0);
                     flFirstBackgroundContent.addView(childView);
@@ -216,12 +214,12 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         ll_course_video_loading.setVisibility(View.VISIBLE);
         iv_course_video_loading_bg.setVisibility(View.INVISIBLE);
         mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);
-        logger.e( "=======>showMainTeacherUI:");
+       // logger.e( "=======>showMainTeacherUI:");
     }
 
     @Override
     public void setFirstBackgroundVisible(int visible) {
-        logger.e( "====>setFirstBackgroundVisible ");
+        //logger.e( "====>setFirstBackgroundVisible ");
         if (rlFirstBackgroundView == null) {
             return;
         }
@@ -234,7 +232,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
             showVedioLoading(visible);
         } else {
             if (ivTeacherNotpresent.getVisibility() == View.VISIBLE) {
-                logger.e( "====>setFirstBackgroundVisible 66666 ");
                 setTeacherNotpresent(ivTeacherNotpresent);
                 showVedioLoading(visible);
             }
@@ -325,11 +322,9 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
                         if (now < mGetInfo.getsTime()) {
                             // 设置马上开始上课背景图
                             view.setBackground(activity.getResources().getDrawable(getClassBeforeBg()));
-                            logger.e( "====>setTeacherNotpresent 222 ");
                         } else {
                             // 设置老师不在直播间背景图
                             view.setBackground(activity.getResources().getDrawable(getNoTeacherBg()));
-                            logger.e( "====>setTeacherNotpresent 11111 ");
                         }
                     }
                 }
@@ -405,7 +400,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
-        logger.e("====>onLiveStart");
         showVedioLoading(View.VISIBLE);
     }
 
@@ -425,11 +419,9 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
                         return;
                     }
                     if (visible != ivVodeoLoading.getVisibility()) {
-                        logger.e( "======>showVedioLoading:222 " + visible);
                         ivVodeoLoading.setVisibility(visible);
                         if (View.VISIBLE == visible) {
                             ivTeacherNotpresent.setBackground(activity.getResources().getDrawable(getLoadingBg()));
-                            logger.e("======>showVedioLoading:3333 " + visible);
                         } else {
                             setTeacherNotpresent(ivTeacherNotpresent);
                         }
@@ -442,28 +434,24 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     @Override
     public void onLiveDontAllow(String msg) {
         super.onLiveDontAllow(msg);
-        logger.e( "====>onLiveDontAllow");
         showVedioLoading(View.INVISIBLE);
     }
 
     @Override
     public void onPlayError() {
         super.onPlayError();
-        logger.e("====>onPlayError");
         showVedioLoading(View.INVISIBLE);
     }
 
     @Override
     public void onPlayError(int errorCode, PlayErrorCode playErrorCode) {
         super.onPlayError(errorCode, playErrorCode);
-        logger.e( "====>onPlayError 22");
         showVedioLoading(View.INVISIBLE);
     }
 
     @Override
     public void playComplete() {
         super.playComplete();
-        logger.e( "====>playComplete ");
         showVedioLoading(View.INVISIBLE);
     }
 
@@ -471,29 +459,23 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     public void onFail(int arg1, int arg2) {
         super.onFail(arg1, arg2);
         showVedioLoading(View.INVISIBLE);
-        logger.e( "====>onFail ");
-
     }
 
     @Override
     public void onLiveError(ResponseEntity responseEntity) {
         super.onLiveError(responseEntity);
         showVedioLoading(View.INVISIBLE);
-        logger.e("====>onLiveError ");
     }
 
 
     @Override
     public void rePlay(boolean modechange) {
         super.rePlay(modechange);
-        logger.e( "====>rePlay ");
-
     }
 
     @Override
     public void onClassTimoOut() {
         showVedioLoading(View.INVISIBLE);
         super.onClassTimoOut();
-        logger.e( "====>onClassTimoOut ");
     }
 }
