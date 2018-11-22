@@ -1256,8 +1256,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         }
 
         //如果长时间没有弹幕，可能会休眠
-        if (mDanmakuView != null) {
-            mDanmakuView.pause();
+        if (mDanmakuView != null && mDanmakuView.isPaused()) {
             mDanmakuView.resume();
         }
         final BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
@@ -1532,7 +1531,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     @Override
     public void onPause() {
         super.onPause();
-        if (mDanmakuView != null && mDanmakuView.isPrepared()) {
+        if (mDanmakuView != null) {
             mDanmakuView.pause();
         }
     }
@@ -1540,7 +1539,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     @Override
     public void onResume() {
         super.onResume();
-        if (mDanmakuView != null && mDanmakuView.isPrepared() && mDanmakuView.isPaused()) {
+        if (mDanmakuView != null) {
             mDanmakuView.resume();
         }
     }
