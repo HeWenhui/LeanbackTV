@@ -13,11 +13,11 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

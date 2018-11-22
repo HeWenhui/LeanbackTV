@@ -26,6 +26,7 @@ import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -34,13 +35,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.speech.SpeechConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -48,15 +53,17 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenHttp;
-import com.xueersi.parentsmeeting.modules.livevideo.business.RoomAction;
+import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.Contract.ScienceSpeechBullletContract;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.CloseConfirmDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.ShortToastDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
 import org.json.JSONArray;
@@ -87,59 +94,79 @@ import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
  * Created by Zhang Yuansun on 2018/7/11.
  */
 
-public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction {
-
+public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpeechBullletContract.ScienceSpeechBulletView {
     /**
-     * 语音录入标题
+     * MVP:Presenter层接口
      */
-    TextView tvSpeechbulTitle;
-    ImageView ivSpeechbulVoice;
+    private ScienceSpeechBullletContract.ScienceSpeechBulletPresenter presenter;
     /**
-     * 关闭按钮
+     * 直播布局
      */
-    ImageView ivSpeechbulClose;
+    private RelativeLayout rootView;
     /**
-     * 音量波形
+     * 语音弹幕布局
      */
-    VolumeWaveView vwvSpeechbulWave;
-    /**
-     * 话语编辑框
-     */
-    EditText etSpeechbulWords;
-    /**
-     * 计数
-     */
-    TextView tvSpeechbulCount;
-    /**
-     * 重说按钮
-     */
-    ImageView tvSpeechbulRepeat;
-    /**
-     * 发送按钮
-     */
-    ImageView tvSpeechbulSend;
-    /**
-     * 倒计时提示
-     */
-    TextView tvSpeechbulCloseTip;
-    /**
-     * 输入框根布局
-     */
-    RelativeLayout rlSpeechbulInputContent;
-    /**
-     * 底部根布局
-     */
-    RelativeLayout rlSpeechbulBottomContent;
+    private RelativeLayout rlSpeechBulContent;
     /**
      * 根布局
      */
-    RelativeLayout root;
-
+    private RelativeLayout root;
+    /**
+     * 底部布局
+     */
+    private RelativeLayout rlSpeechbulBottomContent;
+    /**
+     * 输入框布局
+     */
+    private RelativeLayout rlSpeechbulInputContent;
+    /**
+     * 语音录入标题
+     */
+    private TextView tvSpeechbulTitle;
+    /**
+     * 小喇叭动效
+     */
+    private ImageView ivSpeechbulVoice;
+    /**
+     * 关闭按钮
+     */
+    private ImageView ivSpeechbulClose;
+    /**
+     * 音量波形
+     */
+    private VolumeWaveView vwvSpeechbulWave;
+    /**
+     * 输入框
+     */
+    private EditText etSpeechbulWords;
+    /**
+     * 输入框计数
+     */
+    private TextView tvSpeechbulCount;
+    /**
+     * 重说按钮
+     */
+    private ImageView tvSpeechbulRepeat;
+    /**
+     * 发送按钮
+     */
+    private ImageView tvSpeechbulSend;
+    /**
+     * 关闭倒计时提示
+     */
+    private TextView tvSpeechbulCloseTip;
+    /**
+     * 软键盘等高布局
+     */
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
-    private DanmakuView dvSpeechbulDanmaku;
+    /**
+     * 弹幕
+     */
+    private DanmakuView mDanmakuView;
+    /**
+     * 弹幕上下文
+     */
     protected DanmakuContext mDanmakuContext;
-    private BaseDanmakuParser mParser;
-
     /**
      * 音量管理
      */
@@ -153,19 +180,27 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
      */
     private int mVolume = 0;
     /**
-     * 是不是恢复了音量
-     */
-    private boolean isVolumeResume = false;
-
-    /**
      * 语音评测工具类
      */
+    //    private SpeechUtils mSpeechUtils;
     private SpeechEvaluatorUtils mSpeechEvaluatorUtils;
-    private SpeechBulletScreenHttp speechBulletScreenHttp;
+    private SpeechParamEntity mParam;
     /**
-     * 是不是移除了语音识别
+     * 语音保存位置-目录
      */
-    boolean isBottomContentRemove = false;
+    private File dir;
+    /**
+     * 是否正在开启语音弹幕
+     */
+    private boolean isShowingSpeechBullet = false;
+    /**
+     * 是否有有效的语音识别结果
+     */
+    private boolean hasValidSpeechInput = false;
+    /**
+     * 是否恢复了音量
+     */
+    private boolean isVolumeResume = false;
     private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(), new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
@@ -173,34 +208,31 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         }
     });
 
-    public SpeechBulletScreenPager(Context context, SpeechBulletScreenHttp speechBulletScreenHttp) {
-        super(context);
-        this.speechBulletScreenHttp = speechBulletScreenHttp;
-        initDanmaku();
+    public SpeechBulletScreenPager(Context context, boolean isNewView) {
+        super(context, isNewView);
     }
 
     /**
      * 日志数据
      */
-    String devicestatus = "0";
-    String issend = "0";
-    String ismodify = "0";
-    String isretalk = "0";
-    String isdirty = "0";
-    String text = "";
-    String aiText = "";
-    String sid = "";
-    String closetype = "";
-    String finalui = "";
-    String errtype;
-    String errcode;
-    String errmsg;
+    private String devicestatus = "0";
+    private String issend = "0";
+    private String ismodify = "0";
+    private String isretalk = "0";
+    private String isdirty = "0";
+    private String text = "";
+    private String aiText = "";
+    private String sid = "";
+    private String closetype = "";
+    private String finalui = "";
+    private String errtype = "";
+    private String errcode = "";
+    private String errmsg = "";
 
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_speech_bullet_screen, null);
         root = mView.findViewById(R.id.rl_livevideo_speechbul_root);
-        dvSpeechbulDanmaku = mView.findViewById(R.id.dv_livevideo_speechbul_danmaku);
         tvSpeechbulCloseTip = mView.findViewById(R.id.tv_livevideo_speechbul_closetip);
         switchFSPanelLinearLayout = mView.findViewById(R.id.rl_livevideo_speechbul_panelroot);
         rlSpeechbulBottomContent = mView.findViewById(R.id.rl_livevideo_speechbul_bottom_content);
@@ -225,66 +257,9 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         tvSpeechbulTitle.setTypeface(fontFace);
         tvSpeechbulCount.setTypeface(fontFace);
         tvSpeechbulCloseTip.setTypeface(fontFace);
-
+        root.setClickable(true);
         return mView;
     }
-
-    public void ShowSpeechBulletScreen() {
-        rlSpeechbulBottomContent.setVisibility(View.VISIBLE);
-        root.setClickable(true);
-        initData();
-        initListener();
-    }
-
-    public void removeBottomContent() {
-        if (isBottomContentRemove) {
-            return;
-        }
-        if (tvSpeechbulTitle.getVisibility() == View.VISIBLE) {
-            finalui = "recogWidget";
-        } else {
-            finalui = "inputWidget";
-        }
-        root.removeView(rlSpeechbulBottomContent);
-        root.setClickable(false);
-        stopEvaluator();
-        isBottomContentRemove = true;
-
-        //交互日志
-        Map<String, String> mDataInter = new HashMap<>();
-        mDataInter.put("logtype", "voiceBarrageOperation");
-        mDataInter.put("pageid", "voice_barrage");
-        mDataInter.put("voiceid", speechBulletScreenHttp.getVoiceId());
-        mDataInter.put("issend", issend);
-        mDataInter.put("ismodify", ismodify);
-        mDataInter.put("isretalk", isretalk);
-        mDataInter.put("isdirty", isdirty);
-        mDataInter.put("text", text);
-        mDataInter.put("aitext", aiText);
-        mDataInter.put("sid", sid);
-        mDataInter.put("closetype", closetype);
-        mDataInter.put("finalui", finalui);
-        umsAgentDebugInter(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mDataInter);
-    }
-
-    private CountDownTimer countDownTimer = new CountDownTimer(2050, 1000) {
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            tvSpeechbulCloseTip.setText((millisUntilFinished / 1000) + "秒后将禁止发弹幕");
-        }
-
-        @Override
-        public void onFinish() {
-            root.removeView(tvSpeechbulCloseTip);
-            removeBottomContent();
-        }
-    };
-
-    /**
-     * 语音保存位置-目录
-     */
-    File dir;
 
     @Override
     public void initData() {
@@ -297,13 +272,17 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         if (mSpeechEvaluatorUtils == null) {
             mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
         }
+//        if (mSpeechUtils == null) {
+//            mSpeechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
+//        }
+        mParam = new SpeechParamEntity();
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
             dir.mkdirs();
         }
-
-        boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO); // 检查用户麦克风权限
+        boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO); //
+        // 检查用户麦克风权限
         if (hasAudidoPermission) {
             devicestatus = "1";
             startEvaluator();
@@ -326,7 +305,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                 public void onDeny(String permission, int position) {
                     logger.i("onDeny()");
                     closetype = "activeClose";
-                    removeBottomContent();
+                    closeSpeechBullet(false);
                 }
 
                 /**
@@ -344,7 +323,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "voiceBarrageSwitch");
         mData.put("pageid", "voice_barrage");
-        mData.put("voiceid", speechBulletScreenHttp.getVoiceId());
+        mData.put("voiceid", presenter.getVoiceId());
         mData.put("cmdtype", "1");
         mData.put("devicestatus", devicestatus);
         umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
@@ -372,7 +351,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                     public void onClick(View view) {
                         closeConfirmDialog.cancelDialog();
                         closetype = "activeClose";
-                        removeBottomContent();
+                        closeSpeechBullet(false);
                     }
                 });
                 closeConfirmDialog.showDialog();
@@ -394,7 +373,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (StringUtils.isEmpty(charSequence)) {
+                if (StringUtils.isSpace(charSequence.toString())) {
                     tvSpeechbulSend.setEnabled(false);
                     tvSpeechbulSend.setAlpha(0.6f);
                 } else {
@@ -413,10 +392,13 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
 
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                //判断是否是“完成”键
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    KeyboardUtil.hideKeyboard(root);
-                    return true;
+                //判断是否是“发送”键
+                if (actionId == EditorInfo.IME_ACTION_SEND || (event != null && event.getKeyCode() == KeyEvent
+                        .KEYCODE_ENTER)) {
+                    if (!StringUtils.isSpace(etSpeechbulWords.getText().toString())) {
+                        tvSpeechbulSend.performClick();
+                        return true;
+                    }
                 }
                 return false;
             }
@@ -448,27 +430,43 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                     ismodify = "1";
                 }
                 closetype = "sendSuccessClose";
-                KeyboardUtil.hideKeyboard(root);
-                removeBottomContent();
-                addDanmaKuFlowers("我", etSpeechbulWords.getText().toString(), speechBulletScreenHttp.getHeadImgUrl(), false);
-                speechBulletScreenHttp.sendDanmakuMessage(etSpeechbulWords.getText().toString());
-                speechBulletScreenHttp.uploadSpeechBulletScreen(etSpeechbulWords.getText().toString(), new HttpCallBack(false) {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
+                closeSpeechBullet(false);
+                addDanmaKu("我", etSpeechbulWords.getText().toString(), presenter.getHeadImgUrl(),
+                        false);
+                presenter.sendDanmakuMessage(etSpeechbulWords.getText().toString());
+                presenter.uploadSpeechBulletScreen(etSpeechbulWords.getText().toString(), new
+                        HttpCallBack(false) {
+                            @Override
+                            public void onPmSuccess(ResponseEntity responseEntity) {
+                                Map<String, String> mData = new HashMap<>();
+                                mData.put("logtype", "voiceBarrageSuccess");
+                                mData.put("pageid", "voice_barrage");
+                                mData.put("voiceid", presenter.getVoiceId());
+                                umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
+                            }
 
-                    }
+                            @Override
+                            public void onPmError(ResponseEntity responseEntity) {
+                                Map<String, String> mData = new HashMap<>();
+                                mData.put("logtype", "voiceBarrageError");
+                                mData.put("pageid", "voice_barrage");
+                                mData.put("voiceid", presenter.getVoiceId());
+                                mData.put("errtype", "uploaderror");
+                                mData.put("errmsg", responseEntity.getErrorMsg());
+                                umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
+                            }
 
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        Map<String, String> mData = new HashMap<>();
-                        mData.put("logtype", "voiceBarrageSwitch");
-                        mData.put("pageid", "voice_barrage");
-                        mData.put("voiceid", speechBulletScreenHttp.getVoiceId());
-                        mData.put("errtype", "uploaderror");
-                        mData.put("errmsg", responseEntity.getErrorMsg());
-                        umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
-                    }
-                });
+                            @Override
+                            public void onPmFailure(Throwable error, String msg) {
+                                Map<String, String> mData = new HashMap<>();
+                                mData.put("logtype", "voiceBarrageError");
+                                mData.put("pageid", "voice_barrage");
+                                mData.put("voiceid", presenter.getVoiceId());
+                                mData.put("errtype", "uploaderror");
+                                mData.put("errmsg", msg);
+                                umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
+                            }
+                        });
             }
         });
 
@@ -480,7 +478,8 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         }, 10);
 
         //重要！键盘高度发生变化时，刷新键盘高度
-        switchFSPanelLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        switchFSPanelLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                .OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 if (switchFSPanelLinearLayout.getHeight() != KeyboardUtil.getValidPanelHeight(mContext)) {
@@ -490,24 +489,174 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         });
     }
 
-    public void CloseSpeechBulletScreen(boolean hasTips) {
-        closetype = "passiveClose";
-        if (hasTips) {
-            if (issend.equals("0")) {
-                tvSpeechbulCloseTip.setVisibility(View.VISIBLE);
-                countDownTimer.start();
+    /**
+     * ************************************************** View层接口实现 **************************************************
+     */
+    @Override
+    public void showSpeechBullet(RelativeLayout rootView) {
+        logger.i("showSpeechBullet");
+        this.rootView = rootView;
+        isShowingSpeechBullet = true;
+        showShortToast("老师开启了语音弹幕");
+        mWeakHandler.postDelayed(showSpeechBulletRunnable, 2000);
+        initUmsAgentData();
+    }
+
+    private Runnable showSpeechBulletRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (rlSpeechBulContent == null) {
+                rlSpeechBulContent = new RelativeLayout(mContext);
+                rlSpeechBulContent.setId(R.id.rl_livevideo_content_speechbul);
+                rootView.addView(rlSpeechBulContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
             }
-        } else {
-            removeBottomContent();
+            if (mDanmakuView == null) {
+                rlSpeechBulContent.addView(initDanmaku(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                        .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                RelativeLayout.LayoutParams rp = (RelativeLayout.LayoutParams) mDanmakuView.getLayoutParams();
+                rp.setMargins(0, SizeUtils.Dp2Px(mContext, 17), 0, 0);
+                mDanmakuView.setLayoutParams(rp);
+            }
+            rlSpeechBulContent.addView(initView().getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                    .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            rlSpeechBulContent.setVisibility(View.VISIBLE);
+            initData();
+            initListener();
         }
-        //系统日志
-        Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "voiceBarrageSwitch");
-        mData.put("pageid", "voice_barrage");
-        mData.put("voiceid", speechBulletScreenHttp.getVoiceId());
-        mData.put("cmdtype", "0");
-        mData.put("devicestatus", devicestatus);
-        umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
+    };
+
+    @Override
+    public void closeSpeechBullet(boolean hasTip) {
+        logger.i("closeSpeechBullet");
+        if (hasTip) {
+            //系统日志
+            Map<String, String> mData = new HashMap<>();
+            mData.put("logtype", "voiceBarrageSwitch");
+            mData.put("pageid", "voice_barrage");
+            mData.put("voiceid", presenter.getVoiceId());
+            mData.put("cmdtype", "0");
+            mData.put("devicestatus", devicestatus);
+            umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
+        }
+        if (!isShowingSpeechBullet) {
+            return;
+        }
+        isShowingSpeechBullet = false;
+
+        //交互日志
+        if (tvSpeechbulTitle.getVisibility() == View.VISIBLE) {
+            finalui = "recogWidget";
+        } else {
+            finalui = "inputWidget";
+        }
+        Map<String, String> mDataInter = new HashMap<>();
+        mDataInter.put("logtype", "voiceBarrageOperation");
+        mDataInter.put("pageid", "voice_barrage");
+        mDataInter.put("voiceid", presenter.getVoiceId());
+        mDataInter.put("issend", issend);
+        mDataInter.put("ismodify", ismodify);
+        mDataInter.put("isretalk", isretalk);
+        mDataInter.put("isdirty", isdirty);
+        mDataInter.put("text", text);
+        mDataInter.put("aitext", aiText);
+        mDataInter.put("sid", sid);
+        mDataInter.put("closetype", closetype);
+        mDataInter.put("finalui", finalui);
+        umsAgentDebugInter(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mDataInter);
+
+        if (hasTip) {
+            tvSpeechbulCloseTip.setVisibility(View.VISIBLE);
+            countDownTimer.start();
+        }
+        else {
+            removeSpeechBullet();
+        }
+    }
+
+    private CountDownTimer countDownTimer = new CountDownTimer(2050, 1000) {
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            int i = (int) (millisUntilFinished / 1000);
+            if (i > 0) {
+                tvSpeechbulCloseTip.setText(i + "秒后将禁止发弹幕");
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            closetype = "passiveClose";
+            removeSpeechBullet();
+        }
+    };
+
+    public void removeSpeechBullet() {
+        if (root != null && rlSpeechBulContent != null) {
+            KeyboardUtil.hideKeyboard(root);
+            rlSpeechBulContent.removeView(root);
+            root.setClickable(false);
+        }
+        stopEvaluator();
+    }
+
+    @Override
+    public void receiveDanmakuMsg(String name, String msg, String headImgUrl, boolean isGuset, RelativeLayout rootView) {
+        if (rlSpeechBulContent == null) {
+            rlSpeechBulContent = new RelativeLayout(mContext);
+            rlSpeechBulContent.setId(R.id.rl_livevideo_content_speechbul);
+            rootView.addView(rlSpeechBulContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+        if (mDanmakuView == null) {
+            rlSpeechBulContent.addView(initDanmaku(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+
+        if (!StringUtils.isEmpty(name) && !StringUtils.isEmpty(msg) & !StringUtils.isEmpty(headImgUrl)) {
+            addDanmaKu(name, msg, headImgUrl, isGuset);
+        }
+    }
+
+    @Override
+    public void receivePraiseMsg(String msg) {
+
+    }
+
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+
+    }
+
+    @Override
+    public void setPresenter(ScienceSpeechBullletContract.ScienceSpeechBulletPresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    /**
+     * 初始化日志数据
+     */
+    private void initUmsAgentData() {
+        devicestatus = "0";
+        issend = "0";
+        ismodify = "0";
+        isretalk = "0";
+        isdirty = "0";
+        text = "";
+        aiText = "";
+        sid = "";
+        closetype = "";
+        finalui = "";
+        errtype = "";
+        errcode = "";
+        errmsg = "";
+    }
+
+    public void showShortToast(final String tips) {
+        ShortToastDialog shortToastDialog = new ShortToastDialog(mContext);
+        shortToastDialog.setMsg(tips);
+        shortToastDialog.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf"));
+        shortToastDialog.showDialog();
     }
 
     /**
@@ -524,6 +673,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                     @Override
                     public void onBeginOfSpeech() {
                         logger.i("onBeginOfSpeech");
+                        hasValidSpeechInput = false;
                         mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
                         mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
                         mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -556,6 +706,52 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                         vwvSpeechbulWave.setVolume(volume * 3);
                     }
                 });
+
+//        mParam.setRecogType(SpeechConfig.SPEECH_BULLET_RECOGNIZE_ONLINE);
+//        mParam.setLocalSavePath(saveFile.getPath());
+//        mParam.setLang(SpeechEvaluatorUtils.RECOGNIZE_CHINESE);
+//        mSpeechUtils.startRecog(mParam, new EvaluatorListenerWithPCM() {
+//            @Override
+//            public void onBeginOfSpeech() {
+//                logger.i("onBeginOfSpeech");
+//                mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
+//                mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
+//                mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
+//                int v = (int) (0.1f * mMaxVolume);
+//                mAM.setStreamVolume(AudioManager.STREAM_MUSIC, v, 0);
+//                isVolumeResume = false;
+//            }
+//
+//            @Override
+//            public void onResult(ResultEntity resultEntity) {
+//                logger.i("onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity.getErrorNo() + "," +
+//                        "sid=" + resultEntity.getSid());
+//                if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+//                    if (resultEntity.getSid() != null) {
+//                        sid = resultEntity.getSid().toString();
+//                    }
+//                    onEvaluatorSuccess(resultEntity.getCurString(), true);
+//                } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+//                    if (resultEntity.getSid() != null) {
+//                        sid = resultEntity.getSid().toString();
+//                    }
+//                    onEvaluatorError(resultEntity);
+//                } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+//                    onEvaluatorSuccess(resultEntity.getCurString(), false);
+//                }
+//            }
+//
+//            @Override
+//            public void onVolumeUpdate(int volume) {
+//                logger.d("onVolumeUpdate:volume=" + volume);
+//                vwvSpeechbulWave.setVolume(volume * 3);
+//            }
+//
+//            @Override
+//            public void onRecordPCMData(short[] pcmBuffer, int length) {
+//
+//            }
+//        });
     }
 
     public void stopEvaluator() {
@@ -567,6 +763,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
             mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
             isVolumeResume = true;
         }
+        hasValidSpeechInput = false;
     }
 
     private void onEvaluatorSuccess(String str, boolean isSpeechFinished) {
@@ -603,6 +800,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                 if (!TextUtils.isEmpty(content)) {
                     ivSpeechbulVoice.setVisibility(View.GONE);
                     tvSpeechbulTitle.setText(content);
+                    hasValidSpeechInput = true;
                 }
             }
 
@@ -614,7 +812,8 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
     private void onEvaluatorError(ResultEntity resultEntity) {
         logger.i("onEvaluatorError()");
         String content = tvSpeechbulTitle.getText().toString();
-        if (!StringUtils.isSpace(content) && !content.equals(VOICE_RECOG_HINT) && !content.equals(VOICE_RECOG_NOVOICE_HINT)) {
+        if (!StringUtils.isSpace(content) && !content.equals(VOICE_RECOG_HINT) && !content.equals
+                (VOICE_RECOG_NOVOICE_HINT)) {
             startTextInput(content);
             return;
         }
@@ -631,7 +830,8 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
             logger.i("麦克风不可用，快去检查一下！");
 //            Toast.makeText(mContext,"麦克风不可用，快去检查一下！",Toast.LENGTH_SHORT).show();
             startTextInput("");
-        } else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() == ResultCode.NETWORK_FAIL
+        } else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() ==
+                ResultCode.NETWORK_FAIL
                 || resultEntity.getErrorNo() == ResultCode.WEBSOCKET_CONN_REFUSE) {
             int netWorkType = NetWorkHelper.getNetWorkState(mContext);
             if (netWorkType == NetWorkHelper.NO_NETWORK) {
@@ -642,14 +842,18 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
 //            Toast.makeText(mContext,"网络环境较差，请直接输入",Toast.LENGTH_SHORT).show();
             startTextInput("");
         } else {
-            pleaseSayAgain();
+            if (hasValidSpeechInput) {
+                startTextInput(tvSpeechbulTitle.getText().toString());
+            } else {
+                pleaseSayAgain();
+            }
         }
 
         //系统日志
         Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "voiceBarrageSwitch");
+        mData.put("logtype", "voiceBarrageError");
         mData.put("pageid", "voice_barrage");
-        mData.put("voiceid", speechBulletScreenHttp.getVoiceId());
+        mData.put("voiceid", presenter.getVoiceId());
         mData.put("errtype", "recogerror");
         mData.put("errcode", resultEntity.getErrorNo() + "");
         umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
@@ -680,6 +884,13 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         tvSpeechbulCount.setText(evaluateResult.length() + "/15");
         etSpeechbulWords.requestFocus();
         etSpeechbulWords.setSelection(etSpeechbulWords.getText().toString().length());
+        if (StringUtils.isSpace(etSpeechbulWords.getText().toString())) {
+            tvSpeechbulSend.setEnabled(false);
+            tvSpeechbulSend.setAlpha(0.6f);
+        } else {
+            tvSpeechbulSend.setEnabled(true);
+            tvSpeechbulSend.setAlpha(1.0f);
+        }
     }
 
     /**
@@ -695,12 +906,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                 startEvaluator();
             }
         }, 300);
-//        vwvSpeechbulWave.setVisibility(View.GONE);
-//        ivSpeechbulVoice.setVisibility(View.VISIBLE);
-//        tvSpeechbulRepeat.setVisibility(View.VISIBLE);
-//        if (mAM != null) {
-//            mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
-//        }
     }
 
     /**
@@ -717,22 +922,9 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
     private int DANMU_RADIUS = 16;//圆角半径
     private int DANMU_BACKGROUND_HEIGHT = 33;
 
-    /**
-     * 对数值进行转换，适配手机，必须在初始化之前，否则有些数据不会起作用
-     */
-    private void setSize(Context context) {
-        BITMAP_WIDTH_GUEST = SizeUtils.Dp2Px(context, BITMAP_WIDTH_GUEST);
-        BITMAP_HEIGHT_GUEST = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_GUEST);
-        BITMAP_WIDTH_ME = SizeUtils.Dp2Px(context, BITMAP_WIDTH_ME);
-        BITMAP_HEIGHT_ME = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_ME);
-        DANMU_PADDING = SizeUtils.Dp2Px(context, DANMU_PADDING);
-        DANMU_RADIUS = SizeUtils.Dp2Px(context, DANMU_RADIUS);
-        DANMU_TEXT_SIZE = SizeUtils.Dp2Px(context, DANMU_TEXT_SIZE);
-        DANMU_BACKGROUND_HEIGHT = SizeUtils.Dp2Px(context, DANMU_BACKGROUND_HEIGHT);
-    }
-
-    protected void initDanmaku() {
-        setSize(mContext);
+    private View initDanmaku() {
+        logger.i("initDanmaku()");
+        transformSize(mContext);
         // 设置最大显示行数
         HashMap<Integer, Integer> maxLinesPair = new HashMap<>();
         maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 3); // 滚动弹幕最大显示3行
@@ -740,15 +932,17 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         HashMap<Integer, Boolean> overlappingEnablePair = new HashMap<>();
         overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
         overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, true);
+        mDanmakuView = new DanmakuView(mContext);
         mDanmakuContext = DanmakuContext.create();
         mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3)
                 .setDuplicateMergingEnabled(false)
                 .setScrollSpeedFactor(1.2f) // 越大速度越慢
                 .setScaleTextSize(1.2f)
-                .setCacheStuffer(new BackgroundCacheStuffer(), mCacheStufferAdapter) // 图文混排使用BaseCacheStuffer,绘制背景使用BackgroundCacheStuffer
+                .setCacheStuffer(new BackgroundCacheStuffer(), mCacheStufferAdapter) // 图文混排使用BaseCacheStuffer,
+                // 绘制背景使用BackgroundCacheStuffer
                 .setMaximumLines(maxLinesPair)
                 .preventOverlapping(overlappingEnablePair);
-        dvSpeechbulDanmaku.setCallback(new DrawHandler.Callback() {
+        mDanmakuView.setCallback(new DrawHandler.Callback() {
             @Override
             public void updateTimer(DanmakuTimer timer) {
             }
@@ -765,19 +959,20 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
 
             @Override
             public void prepared() {
-                dvSpeechbulDanmaku.start();
+                mDanmakuView.start();
 //                generateSomeDanmaku();
             }
         });
 
-        dvSpeechbulDanmaku.prepare(new BaseDanmakuParser() {
+        mDanmakuView.prepare(new BaseDanmakuParser() {
             @Override
             protected Danmakus parse() {
                 return new Danmakus();
             }
         }, mDanmakuContext);
-        dvSpeechbulDanmaku.showFPS(false);
-        dvSpeechbulDanmaku.enableDanmakuDrawingCache(false);
+        mDanmakuView.showFPS(false);
+        mDanmakuView.enableDanmakuDrawingCache(false);
+        return mDanmakuView;
     }
 
     /**
@@ -793,11 +988,11 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                     mWeakHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            addDanmaKuFlowers(time + "", time + "", "http://xesfile.xesimg.com/user/h/ic_livevideo_default_head_boyideo_default_head_boy.png", true);
+                            addDanmaKu(time + "", time + "", "", true);
                         }
                     });
                     try {
-                        Thread.sleep(800);
+                        Thread.sleep(300);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -806,104 +1001,18 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         }).start();
     }
 
-    @Override
-    public void onStartConnect() {
-
-    }
-
-    @Override
-    public void onConnect() {
-
-    }
-
-    @Override
-    public void onRegister() {
-
-    }
-
-    @Override
-    public void onDisconnect() {
-
-    }
-
-    @Override
-    public void onUserList(String channel, User[] users) {
-
-    }
-
-    @Override
-    public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-
-    }
-
-    @Override
-    public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target, final String message) {
-        mWeakHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                JSONObject jsonObject = null;
-                try {
-                    jsonObject = new JSONObject(message);
-                    String name = jsonObject.optString("name");
-                    String headImgUrl = jsonObject.optString("headImg");
-                    String msg = jsonObject.optString("msg");
-                    addDanmaKuFlowers(name, msg, headImgUrl, true);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onJoin(String target, String sender, String login, String hostname) {
-
-    }
-
-    @Override
-    public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-
-    }
-
-    @Override
-    public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
-
-    }
-
-    @Override
-    public void onDisable(boolean disable, boolean fromNotice) {
-
-    }
-
-    @Override
-    public void onOtherDisable(String id, String name, boolean disable) {
-
-    }
-
-    @Override
-    public void onopenchat(boolean openchat, String mode, boolean fromNotice) {
-
-    }
-
-    @Override
-    public void onOpenbarrage(boolean openbarrage, boolean fromNotice) {
-
-    }
-
-    @Override
-    public void onFDOpenbarrage(boolean open, boolean b) {
-
-    }
-
-    @Override
-    public void videoStatus(String status) {
-
-    }
-
-    @Override
-    public void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage,
-                                    boolean isFDLKOpenbarrage) {
-
+    /**
+     * 对数值进行转换，适配手机，必须在初始化之前，否则有些数据不会起作用
+     */
+    private void transformSize(Context context) {
+        BITMAP_WIDTH_GUEST = SizeUtils.Dp2Px(context, BITMAP_WIDTH_GUEST);
+        BITMAP_HEIGHT_GUEST = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_GUEST);
+        BITMAP_WIDTH_ME = SizeUtils.Dp2Px(context, BITMAP_WIDTH_ME);
+        BITMAP_HEIGHT_ME = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_ME);
+        DANMU_PADDING = SizeUtils.Dp2Px(context, DANMU_PADDING);
+        DANMU_RADIUS = SizeUtils.Dp2Px(context, DANMU_RADIUS);
+        DANMU_TEXT_SIZE = SizeUtils.Dp2Px(context, DANMU_TEXT_SIZE);
+        DANMU_BACKGROUND_HEIGHT = SizeUtils.Dp2Px(context, DANMU_BACKGROUND_HEIGHT);
     }
 
     /**
@@ -923,14 +1032,13 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
             paint.setAntiAlias(true);
             paint.setColor(Color.BLACK);
             paint.setAlpha((int) (255 * 0.6)); //  透明度0.6
-
             if (danmaku.isGuest) {
-                canvas.drawRoundRect(new RectF(left + danmaku.padding, top + danmaku.padding + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1
                                 , left + danmaku.paintWidth - danmaku.padding,
                                 top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1 + danmaku.padding),
                         DANMU_RADIUS, DANMU_RADIUS, paint);
             } else {
-                canvas.drawRoundRect(new RectF(left + danmaku.padding, top + danmaku.padding + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
                                 , left + danmaku.paintWidth - danmaku.padding,
                                 top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1 + danmaku.padding),
                         DANMU_RADIUS, DANMU_RADIUS, paint);
@@ -938,7 +1046,8 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         }
 
         @Override
-        public void drawStroke(BaseDanmaku danmaku, String lineText, Canvas canvas, float left, float top, Paint paint) {
+        public void drawStroke(BaseDanmaku danmaku, String lineText, Canvas canvas, float left, float top, Paint
+                paint) {
             // 禁用描边绘制
         }
     }
@@ -960,19 +1069,19 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         }
     };
 
-    public void addDanmaKuFlowers(final String name, final String msg, final String headImgUrl, final boolean isGuest) {
-        if (mDanmakuContext == null || dvSpeechbulDanmaku == null || !dvSpeechbulDanmaku.isPrepared()) {
+    public void addDanmaKu(final String name, final String msg, final String headImgUrl, final boolean isGuest) {
+        if (mDanmakuContext == null || mDanmakuView == null || !mDanmakuView.isPrepared()) {
             mWeakHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    addDanmaKuFlowers(name, msg, headImgUrl, isGuest);
+                    addDanmaKu(name, msg, headImgUrl, isGuest);
                 }
             }, 100);
             return;
         }
         //如果长时间没有弹幕，可能会休眠
-        if (dvSpeechbulDanmaku != null && dvSpeechbulDanmaku.isPrepared() && dvSpeechbulDanmaku.isPaused()) {
-            dvSpeechbulDanmaku.resume();
+        if (mDanmakuView != null && mDanmakuView.isPrepared() && mDanmakuView.isPaused()) {
+            mDanmakuView.resume();
         }
         final BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
         if (danmaku == null) {
@@ -989,7 +1098,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
         }
         danmaku.isGuest = isGuest;
         danmaku.isLive = false;
-        danmaku.time = dvSpeechbulDanmaku.getCurrentTime() + ADD_DANMU_TIME;
+        danmaku.time = mDanmakuView.getCurrentTime() + ADD_DANMU_TIME;
         danmaku.textSize = SizeUtils.Dp2Px(mContext, 14f);
         danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
         ImageLoader.with(mContext).load(headImgUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
@@ -1002,24 +1111,20 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                     circleDrawable.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
                 }
                 danmaku.text = createSpannable(name, msg, circleDrawable, isGuest);
-                dvSpeechbulDanmaku.addDanmaku(danmaku);
+                mDanmakuView.addDanmaku(danmaku);
             }
 
             @Override
             public void onFail() {
                 Drawable circleDrawable;
-                if ("0".equals(speechBulletScreenHttp.getStuSex())) {
-                    circleDrawable = mContext.getResources().getDrawable(R.drawable.ic_livevideo_default_head_girl);
-                } else {
-                    circleDrawable = mContext.getResources().getDrawable(R.drawable.ic_livevideo_default_head_boy);
-                }
+                circleDrawable = mContext.getResources().getDrawable(R.drawable.ic_livevideo_default_head_boy);
                 if (isGuest) {
                     circleDrawable.setBounds(0, 0, BITMAP_WIDTH_GUEST, BITMAP_WIDTH_GUEST);
                 } else {
                     circleDrawable.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
                 }
                 danmaku.text = createSpannable(name, msg, circleDrawable, isGuest);
-                dvSpeechbulDanmaku.addDanmaku(danmaku);
+                mDanmakuView.addDanmaku(danmaku);
             }
         });
     }
@@ -1104,7 +1209,8 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
                 circlePaint.setStyle(Paint.Style.STROKE);
                 circlePaint.setColor(Color.YELLOW);
                 circlePaint.setStrokeWidth(SizeUtils.Dp2Px(mContext, 1));
-                canvas.drawCircle(x + BITMAP_WIDTH_ME / 2, transY + BITMAP_WIDTH_ME / 2, BITMAP_WIDTH_ME / 2, circlePaint);
+                canvas.drawCircle(x + BITMAP_WIDTH_ME / 2, transY + BITMAP_WIDTH_ME / 2, BITMAP_WIDTH_ME / 2,
+                        circlePaint);
             }
         }
 
@@ -1112,12 +1218,11 @@ public class SpeechBulletScreenPager extends LiveBasePager implements RoomAction
 
     public void onDestroy() {
         logger.i("onDestroy()");
-        releaseDanmaku();
+        super.onDestroy();
+        if (mDanmakuView != null) {
+            mDanmakuView.release();
+            mDanmakuView = null;
+        }
         stopEvaluator();
-    }
-
-    public void releaseDanmaku() {
-        if (dvSpeechbulDanmaku != null)
-            dvSpeechbulDanmaku.release();
     }
 }

@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videochat.business;
 
 import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 
 /**
  * Created by lyqai on 2018/7/11.

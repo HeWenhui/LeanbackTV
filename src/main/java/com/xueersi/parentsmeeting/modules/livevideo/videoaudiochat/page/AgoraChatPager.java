@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.SurfaceView;
@@ -23,7 +22,6 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
@@ -170,8 +168,8 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
 
         @Override
         public void onUserJoined(int uid, int elapsed) {
+            mLogtf.d("onUserJoined:uid=" + uid + ",elapsed=" + elapsed);
             if (uid == stuid) {
-                mLogtf.d("onUserJoined:uid=" + uid + ",elapsed=" + elapsed);
                 vw_livevideo_chat_voice.start();
             }
         }
@@ -231,12 +229,16 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         if (testWorkerThread != null) {
             testWorkerThread.disableLastmileTest();
         }
-        mWorkerThread = new WorkerThread(activity.getApplicationContext(), stuid, true);
+        mWorkerThread = new WorkerThread(activity.getApplicationContext(), stuid, false);
         if (video) {
             mWorkerThread.setEnableLocalVideo(true);
-            mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
-                @Override
-                public void onEngineCreate(final RtcEngine mRtcEngine) {
+        }
+        mWorkerThread.eventHandler().setFeadback(true);
+        mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
+            @Override
+            public void onEngineCreate(final RtcEngine mRtcEngine) {
+                mRtcEngine.enableAudioVolumeIndication(500, 3);
+                if (video) {
                     VideoEncoderConfiguration.VideoDimensions dimensions = VideoEncoderConfiguration.VD_320x240;
                     VideoEncoderConfiguration configuration = new VideoEncoderConfiguration(dimensions,
                             VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_10,
@@ -244,24 +246,9 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                             VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_LANDSCAPE);
                     int setVideoEncoder = mRtcEngine.setVideoEncoderConfiguration(configuration);
                     logger.d("onEngineCreate:setVideoEncoder=" + setVideoEncoder);
-//                    if (AppConfig.DEBUG) {
-//                        Handler handler = new Handler(Looper.getMainLooper());
-//                        handler.post(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                ViewGroup container = activity.findViewById(R.id.rl_course_video_live_agora_content);
-//                                logger.d("onEngineCreate:containerb=" + container.getChildCount());
-//                                SurfaceView surfaceView = RtcEngine.CreateRendererView(activity);
-//                                surfaceView.setZOrderMediaOverlay(true);
-//                                container.addView(surfaceView, 400, 400);
-//                                mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_ADAPTIVE, 0));
-//                                logger.d("onEngineCreate:containera=" + container.getChildCount());
-//                            }
-//                        });
-//                    }
                 }
-            });
-        }
+            }
+        });
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
         mWorkerThread.start();
         mWorkerThread.waitForReady();

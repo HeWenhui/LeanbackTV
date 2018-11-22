@@ -9,14 +9,20 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.permission.PermissionItem;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
 import com.xueersi.component.cloud.entity.CloudUploadEntity;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
-import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
@@ -29,12 +35,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.permission.PermissionItem;
-import com.xueersi.common.permission.XesPermission;
-import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -157,7 +157,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                         logger.i( "开启了" + permission + "权限");
                         unList.remove(0);
                         if (unList.isEmpty()) {
-                            if (SpeechEvaluatorUtils.isOfflineSuccess()) {
+                            if (SpeechUtils.getInstance(mContext.getApplicationContext()).isOfflineSuccess()) {
                                 logger.i( "开启了录音拍照权限，且离线加载成功开始去请求分组");
                                 beginConWebSocket(nonce);
                             } else {
@@ -173,11 +173,11 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 }, PermissionConfig.PERMISSION_CODE_AUDIO, PermissionConfig.PERMISSION_CODE_CAMERA);
 
         logger.i( "unpermissionItems " + unPermissionItems.size() + "  SpeechEvaluatorUtils" +
-                ".isOfflineSuccess() = " + SpeechEvaluatorUtils.isOfflineSuccess());
+                ".isOfflineSuccess() = " + SpeechUtils.getInstance(mContext.getApplicationContext()).isOfflineSuccess());
 
         unList.addAll(unPermissionItems);
         if (unList.isEmpty()) {
-            if (SpeechEvaluatorUtils.isOfflineSuccess()) {
+            if (SpeechUtils.getInstance(mContext.getApplicationContext()).isOfflineSuccess()) {
                 logger.i( "开启了录音拍照权限，且离线加载成功开始去请求分组");
                 beginConWebSocket(nonce);
             } else {

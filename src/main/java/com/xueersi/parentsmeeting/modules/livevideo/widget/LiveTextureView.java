@@ -9,7 +9,6 @@ import android.view.Surface;
 import android.view.TextureView;
 
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
-import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 
 /**
  * 使用，可以视频截图
