@@ -418,45 +418,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                 }
             }
         });
-        registLayoutListener();
-    }
-
-    private int currnetVideoViewWidth;
-
-    private void registLayoutListener() {
-        mView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                ViewGroup viewGroup = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
-                View videoView = viewGroup.findViewById(R.id.vv_course_video_video);
-                ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                if (currnetVideoViewWidth != lp.width && lp.width > 0) {
-                    currnetVideoViewWidth = lp.width;
-                    View contentView = liveVideoActivity.findViewById(android.R.id.content);
-                    View actionBarOverlayLayout = (View) contentView.getParent();
-                    Rect r = new Rect();
-                    actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-                    int screenWidth = (r.right - r.left);
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mView.getLayoutParams();
-                    int rightMargin = (screenWidth - currnetVideoViewWidth) / 2;
-                    if (params.rightMargin != rightMargin) {
-                        params.rightMargin = rightMargin;
-                        LayoutParamsUtil.setViewLayoutParams(mView, params);
-                    }
-
-                    // 底部 热词，发言按钮
-                    View bottomControllContainer = viewGroup.findViewById(R.id.ll_livevideo_bottom_controller);
-                    if (bottomControllContainer != null) {
-                        ConstraintLayout.LayoutParams controllerParams = (ConstraintLayout.LayoutParams)
-                                bottomControllContainer.getLayoutParams();
-                        if (controllerParams.rightMargin != rightMargin) {
-                            controllerParams.rightMargin = rightMargin;
-                            LayoutParamsUtil.setViewLayoutParams(bottomControllContainer, controllerParams);
-                        }
-                    }
-                }
-            }
-        });
     }
 
 
@@ -862,16 +823,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint){
-        int videoWidth = liveVideoPoint.videoWidth;
-        if(videoWidth > 0){
-            int screenWidth = liveVideoPoint.screenWidth;
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mView.getLayoutParams();
-            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * videoWidth / LiveVideoConfig.VIDEO_WIDTH);
-            int videoGap = (screenWidth - videoWidth) / 2;
-            if (videoGap != params.rightMargin) {
-                LayoutParamsUtil.setViewLayoutParams(mView, params);
-            }
-        }
     }
 
     /**
