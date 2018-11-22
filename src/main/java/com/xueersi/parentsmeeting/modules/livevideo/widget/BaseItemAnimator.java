@@ -8,7 +8,6 @@ import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.util.Log;
 import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
@@ -255,7 +254,6 @@ public abstract class BaseItemAnimator extends SimpleItemAnimator {
     }
 
     void animateMoveImpl(final ViewHolder holder, final int fromX, final int fromY, final int toX, final int toY) {
-        Log.e("BaseItemAnimator","=====>animateMoveImpl called:"+toY+":"+holder);
         final View view = holder.itemView;
         final int deltaX = toX - fromX;
         final int deltaY = toY - fromY;
