@@ -162,7 +162,7 @@ public class StandExperienceRedPackageBll extends StandExperienceEventBaseBll {
             getLivePlayRedPackets(loadEntity, mVideoEntity.getLiveId(), "" + operateId, callBack);
         }
         XesMobAgent.playVideoStatisticsMessage(MobEnumUtil.REDPACKET_LIVEPLAYBACK, MobEnumUtil
-                        .REDPACKET_GRAB, XesMobAgent.XES_VIDEO_INTERACTIVE);
+                .REDPACKET_GRAB, XesMobAgent.XES_VIDEO_INTERACTIVE);
     }
 
     public void getRedPacket(final DataLoadEntity dataLoadEntity, final String liveId, final String operateId, final AbstractBusinessDataCallBack callBack) {

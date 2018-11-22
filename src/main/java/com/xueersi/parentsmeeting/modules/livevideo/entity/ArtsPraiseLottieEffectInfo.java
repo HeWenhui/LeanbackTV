@@ -10,9 +10,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.text.TextUtils;
 
-import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieImageAsset;
 
 /**
  * ${tags}

@@ -192,6 +192,7 @@
     <item name="rl_livevideo_info" type="id" />
     <item name="v_livevideo_mediacontrol_bottom" type="id" />
     <item name="bt_livevideo_message_open" type="id" />
+    <item name="bt_livevideo_message_voice_open" type="id" />
     <item name="bt_livevideo_message_common" type="id" />
     <item name="v_livevideo_message_common_left" type="id" />
     <item name="v_livevideo_message_common_right" type="id" />
@@ -235,6 +236,18 @@
     <item name="tv_livevideo_message_gold_word" type="id" />
     <item name="bt_livevideo_message_flowersend" type="id" />
     <item name="rl_livevideo_message_root" type="id" />
+    <item name="rl_livevideo_text_message_content" type="id" />
+    <!--语音聊天-->
+    <item name="vwv_livevideo_voicechat_wave" type="id" />
+    <item name="tv_livevideo_voicechat_content" type="id" />
+    <item name="rl_livevideo_small_english_text_message_content" type="id" />
+    <item name="rl_livevideo_small_english_voice_message_content" type="id" />
+    <item name="rl_livevideo_small_english_voice_message_input" type="id" />
+    <item name="tv_livevideo_voicechat_word_count" type="id" />
+    <item name="btn_livevideo_small_english_message_switch" type="id" />
+    <item name="btn_livevideo_small_english_start_voice" type="id" />
+    <item name="tv_livevideo_voicechat_countdown" type="id" />
+    <item name="rl_livevideo_voice_message_content" type="id" />
 
     <!--直播-公开表扬-->
     <item name="iv_livevideo_public_praise_bg" type="id" />
@@ -384,8 +397,10 @@
     <item name="rl_livevideo_content_speechbul" type="id" />
     <item name="rl_livevideo_speechbul_root" type="id" />
     <item name="tv_livevideo_speechbul_title" type="id" />
+    <item name="tv_livevideo_speechbul_title_count" type="id" />
     <item name="tv_livevideo_speechbul_close" type="id" />
     <item name="vwv_livevideo_speechbul_wave" type="id" />
+    <item name="tv_livevideo_speechbul_countdown" type="id" />
     <item name="rl_livevideo_speechbul_bottom_content" type="id" />
     <item name="rl_livevideo_speechbul_input" type="id" />
     <item name="et_livevideo_speechbul_words" type="id" />
@@ -704,6 +719,7 @@
     <item name="bt_livevideo_small_english_message_send" type="id" />
     <item name="et_livevideo_small_english_message_content" type="id" />
     <item name="bt_livevideo_small_english_message_express" type="id" />
+    <item name="tv_livevideo_small_english_message_count" type="id" />
     <item name="dv_livevideo_small_english_message_danmaku" type="id" />
     <item name="rl_livevideo_small_english_redpackage_open_animotion" type="id" />
     <item name="iv_livevideo_small_english_english_speek" type="id" />
@@ -805,6 +821,7 @@
     <item name="tv_livevideo_chat_people_grey_hind" type="id" />
     <item name="tv_livevideo_chat_in_queue" type="id" />
     <item name="rl_livevideo_chat_raisehand" type="id" />
+    <item name="rl_livevideo_chat_raisehand2" type="id" />
     <item name="bt_livevideo_chat_raisehand" type="id" />
     <item name="tv_livevideo_chat_raisehand" type="id" />
     <item name="ll_livevideo_chat_people" type="id" />

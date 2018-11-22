@@ -108,8 +108,8 @@ public class LiveGetPlayServer {
 
     public void liveGetPlayServer(final String mode, final boolean modechange) {
         mHandler.removeCallbacks(timeLiveGetPlay);
-        timeLiveGetPlay.modechange = modechange;
-        if (modechange) {
+        if (timeLiveGetPlay.modechange != modechange) {
+            timeLiveGetPlay.modechange = modechange;
             liveGetPlayTime = 0;
         }
         if (netWorkType == NetWorkHelper.NO_NETWORK) {

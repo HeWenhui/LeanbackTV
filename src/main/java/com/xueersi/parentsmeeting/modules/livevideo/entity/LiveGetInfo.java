@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -258,11 +259,56 @@ public class LiveGetInfo {
     private int isSeniorOfHighSchool;
     /** 是否显示文科表扬榜信息 */
     private int showArtsPraise;
-
+    /** 是否是小学理科 */
+    private int isPrimarySchool;
     /**
      * 是否开启集语音互动功能 1,开启，0 不开启
      */
     private int isVoiceInteraction;
+
+    /**
+     * 点赞送礼物，礼物特效对应的扣除金币个数
+     */
+    private ArrayList<Integer> praiseGift = new ArrayList();
+
+    /**
+     * 点赞送礼物，礼物特效对应的弹出概率
+     */
+    private ArrayList<Double> praiseGiftRate = new ArrayList();
+
+    //连续点赞多长时间弹出礼物
+    private int praiseAutoCutTime=5;
+
+    //暂停点赞多长时间弹出礼物
+    private int praiseAutoBarrageTime=1;
+
+    public int getPraiseAutoCutTime() {
+        return praiseAutoCutTime;
+    }
+
+    public void setPraiseAutoCutTime(int praiseAutoCutTime) {
+        this.praiseAutoCutTime = praiseAutoCutTime;
+    }
+
+    public int getPraiseAutoBarrageTime() {
+        return praiseAutoBarrageTime;
+    }
+
+    public void setPraiseAutoBarrageTime(int praiseAutoBarrageTime) {
+        this.praiseAutoBarrageTime = praiseAutoBarrageTime;
+    }
+
+    public ArrayList<Double> getPraiseGiftRate() {
+        return praiseGiftRate;
+    }
+
+    public void setPraiseGiftRate(ArrayList<Double> praiseGiftRate) {
+        this.praiseGiftRate = praiseGiftRate;
+    }
+
+    public ArrayList<Integer> getPraiseGift() {
+        return praiseGift;
+    }
 
     public int getIsVoiceInteraction() {
         return isVoiceInteraction;
@@ -350,6 +396,14 @@ public class LiveGetInfo {
 
     public int getIsSeniorOfHighSchool() {
         return isSeniorOfHighSchool;
+    }
+
+    public int getIsPrimarySchool() {
+        return isPrimarySchool;
+    }
+
+    public void setIsPrimarySchool(int isPrimarySchool) {
+        this.isPrimarySchool = isPrimarySchool;
     }
 
     public LiveGetInfo(LiveTopic liveTopic) {

@@ -1,10 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.stablelog;
 
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 
 /**
  * Created by linyuqiang on 2018/1/22.

@@ -541,6 +541,13 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
     }
 
+    @Override
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.onOpenVoicebarrage(openbarrage, fromNotice);
+        }
+    }
+
     /**
      * 理科辅导老师开启关闭鲜花
      *
@@ -563,11 +570,17 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     }
 
     @Override
-    public void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage,
-                                    boolean isFDLKOpenbarrage) {
+    public void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage, boolean isFDLKOpenbarrage) {
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onTeacherModeChange(oldMode, mode, isShowNoticeTips, iszjlkOpenbarrage,
                     isFDLKOpenbarrage);
+        }
+    }
+
+    @Override
+    public void onOpenVoiceNotic(boolean openVoice, String type) {
+        if (mLiveMessagePager != null) {
+            mLiveMessagePager.onOpenVoiceNotic(openVoice,type);
         }
     }
 

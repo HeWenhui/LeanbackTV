@@ -99,15 +99,15 @@ public class StandExperienceVideoBll {
 
         List<String> mList = mVideoEntity.getVideoPaths();
 //        String host = "";
-        for (int i = 0; mList != null && i < mList.size(); i++) {
+        for (int item = 0; mList != null && item < mList.size(); item++) {
 //            host = mList.get(i);
-            mWebPaths.add(mList.get(i));
+            mWebPaths.add(mList.get(item));
         }
-//        if (mWebPaths.isEmpty()) {
-//            // 播放视频
-//            String mWebPath = mVideoEntity.getVideoPath();
-//            mWebPaths.add(mWebPath);
-//        }
+        if (mWebPaths.isEmpty()) {
+            // 播放视频
+            String mWebPath = mVideoEntity.getVideoPath();
+            mWebPaths.add(mWebPath);
+        }
     }
 
     public void onResume() {
@@ -138,6 +138,7 @@ public class StandExperienceVideoBll {
     }
 
     public void playNewVideo() {
+        index = index < 0 ? 0 : index;
         String url = mWebPaths.get(index++ % mWebPaths.size());
         logger.d("playNewVideo:url=" + url);
         liveBackPlayVideoFragment.playNewVideo(Uri.parse(url), mSectionName);

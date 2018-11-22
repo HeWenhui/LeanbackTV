@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.se;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -15,7 +16,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.recommodcourse.RecommondCourseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.recommodcourse.StandExperienceRecommondBll;
 
 import java.util.List;
 import java.util.Map;
@@ -150,20 +152,22 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
             if (liveBackBaseBll instanceof StandExperienceEventBaseBll) {
                 ((StandExperienceEventBaseBll) liveBackBaseBll).resultComplete();
             }
+            //如果prek为false，并且examUrl不为null,则加载定级卷
+            if (!mVideoEntity.isPrek() && !TextUtils.isEmpty(mVideoEntity.getExamUrl())) {
+                //展示购课窗口
 //            if (liveBackBaseBll instanceof ExperienceBuyCoursePresenter) {
 //                ((ExperienceBuyCoursePresenter) liveBackBaseBll).showNextWindow();
 //                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
 //            }
-//            展示定级卷
-            if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
-                showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
+                //定级卷展示窗口
+                if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
+                    showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
+                }
+            } else {//反过来，prek为true，或者examUrl为null，不加载定级卷
+                if (liveBackBaseBll instanceof StandExperienceLearnFeedbackBll) {
+                    showNextWindow((StandExperienceLearnFeedbackBll) liveBackBaseBll);
+                }
             }
-
-            //展现学习反馈窗口
-//            if (liveBackBaseBll instanceof ExperienceLearnFeedbackBll) {
-//                showNextWindow((ExperienceLearnFeedbackBll) liveBackBaseBll);
-//            }
-
         }
     }
 
@@ -186,8 +190,8 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
 
     public void onResume() {
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
-            if (liveBackBaseBll instanceof RecommondCourseBll) {
-                ((RecommondCourseBll) liveBackBaseBll).onResume();
+            if (liveBackBaseBll instanceof StandExperienceRecommondBll) {
+                ((StandExperienceRecommondBll) liveBackBaseBll).onResume();
             }
         }
     }
@@ -209,7 +213,6 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
         mData.put("livetype", String.valueOf(4));
         mData.put("logtype", "play error");
         mData.put("os", "Android");
-        mData.put("playurl", mVideoEntity.getVideoPath());
         mData.put("ip", IpAddressUtil.USER_IP);
 
 //        if ("PublicLiveDetailActivity".equals(where)) {
@@ -229,7 +232,6 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
         mData.put("uname", AppBll.getInstance().getAppInfoEntity().getChildName());
         mData.put("courseid", mVideoEntity.getCourseId());
         mData.put("liveid", mVideoEntity.getLiveId());
-        mData.put("livetype", "" + 100);
         mData.put("livetype", "" + 4);
 //        if ("PublicLiveDetailActivity".equals(where)) {
 //            mData.put("livetype", "" + 2);

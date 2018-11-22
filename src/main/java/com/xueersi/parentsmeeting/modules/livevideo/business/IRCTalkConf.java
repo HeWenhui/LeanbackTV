@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -204,16 +205,19 @@ public class IRCTalkConf {
                 stableLogHashMap.put("netWorkType", "" + netWorkType);
                 UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
                 //体验课获取失败
-
+                final String finalmsg = msg;
                 if (chatServiceError != null) {
-                    chatServiceError.getChatUrlFailure(
-                            getHost(url),
-                            msg,
-                            eventId,
-                            "Error",
-                            "Android",
-                            IpAddressUtil.USER_IP
-                    );
+                    LiveThreadPoolExecutor.getInstance().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            chatServiceError.getChatUrlFailure(
+                                    getHost(url),
+                                    finalmsg,
+                                    IpAddressUtil.USER_IP
+                            );
+                        }
+                    });
+
                 }
 //                if (mLiveType == LiveVideoConfig.LIVE_TYPE_STAND_EXPERIENCE) {
 //                    StableLogHashMap experienceMap = new StableLogHashMap();
@@ -326,7 +330,7 @@ public class IRCTalkConf {
      * 调度获取聊天服务器地址失败的
      */
     public static interface ChatServiceError {
-        void getChatUrlFailure(String url, String errMsg, String eventId, String logtype, String os, String ip);
+        void getChatUrlFailure(String urlIP, String errMsg, String ip);
     }
 
     public void setChatServiceError(ChatServiceError chatServiceError) {
@@ -350,7 +354,9 @@ public class IRCTalkConf {
                 }
                 i++;
             }
-            return ip.substring(pos <= 0 ? 0 : pos + 2, i);
+//            return ip.substring(pos <= 0 ? 0 : pos + 2, i);
+            String url = ip.substring(pos <= 0 ? 0 : pos + 2, i);
+            return InetAddress.getByName(url).getHostAddress();//这一步是耗时操作，要在子线程中来做
         } catch (Exception e) {
             return "";
         }

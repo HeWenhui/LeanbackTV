@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
@@ -11,7 +12,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -130,7 +130,7 @@ public class AuditIRCMessage {
 
             @Override
             public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target, String message) {
-                logger.i( "onPrivateMessage:sender=" + sender + ",target=" + target + ",message=" + message);
+                logger.i("onPrivateMessage:sender=" + sender + ",target=" + target + ",message=" + message);
                 if (sender.startsWith("ws") || sender.startsWith("s")) {
                     if (sender.endsWith(mNickname)) {
                         if (childName == null) {
@@ -207,16 +207,16 @@ public class AuditIRCMessage {
 //                                                    mConnection.sendMessage(sender, heartJson.toString());
 //                                                }
                                             } catch (Exception e) {
-                                                logger.e( "STUDENT_STU_HEART", e);
+                                                logger.e("STUDENT_STU_HEART", e);
                                             }
                                         }
                                     }, 1500);
                                 }
                                 return;
                                 default: {
-
+                                    logger.d("onPrivateMessage:type=" + type);
                                 }
-                                return;
+                                break;
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -324,7 +324,7 @@ public class AuditIRCMessage {
             @Override
             public void onJoin(String target, String sender, String login, String hostname) {
                 if (sender.startsWith("s_")) {
-                    logger.i( "onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+                    logger.i("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 } else {
                     mLogtf.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 }
@@ -381,7 +381,7 @@ public class AuditIRCMessage {
     }
 
     public void startVideo() {
-        logger.i( "startVideo:childName=" + childName);
+        logger.i("startVideo:childName=" + childName);
 //        childName = null;
 //        if (oldChildName != null) {
 //            mHandler.removeCallbacks(startVideoRun);
@@ -399,7 +399,7 @@ public class AuditIRCMessage {
             if (mConnection == null || mIsDestory) {
                 return;
             }
-            logger.i( "startVideoRun:childName=" + childName + ",stuPushSuccess=" + stuPushSuccess);
+            logger.i("startVideoRun:childName=" + childName + ",stuPushSuccess=" + stuPushSuccess);
             if (childName != null && stuPushSuccess) {
 //                mHandler.postDelayed(this, 60000);
                 return;
@@ -662,7 +662,7 @@ public class AuditIRCMessage {
             if (mIsDestory) {
                 return;
             }
-            logger.i( "mStudyTimeoutRunnable:childName=" + childName);
+            logger.i("mStudyTimeoutRunnable:childName=" + childName);
             childName = null;
             mIRCCallback.onStudentLeave(true, stuPushStatus);
         }

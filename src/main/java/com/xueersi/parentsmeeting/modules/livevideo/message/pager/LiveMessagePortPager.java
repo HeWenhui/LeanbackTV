@@ -40,15 +40,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.RegexUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerPortItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.MoreChoiceItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -56,19 +59,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
-import com.xueersi.common.event.MiniEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.string.RegexUtils;
-import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.ui.widget.button.CompoundButtonGroup;
 import com.xueersi.ui.dataload.DataErrorManager;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
+import com.xueersi.ui.widget.button.CompoundButtonGroup;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -1055,12 +1055,22 @@ public class LiveMessagePortPager extends BaseLiveMessagePager {
     }
 
     @Override
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+
+    }
+
+    @Override
     public void onFDOpenbarrage(boolean open, boolean b) {
 
     }
 
     @Override
     public void onTeacherModeChange(String oldMode, String mode, boolean b, boolean zjlkOpenbarrage, boolean zjfdOpenbarrage) {
+
+    }
+
+    @Override
+    public void onOpenVoiceNotic(boolean openVoice, String type) {
 
     }
 

@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -51,7 +52,7 @@ public class IRCMessage {
     private boolean onUserList = false;
     /** 和服务器的ping，线程池 */
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
-    public static final String EXPERIENCE_MESSAGE_ERROR = "experience_message_connect_error";
+
 
     public IRCMessage(Context context, int netWorkType, String channel, String login, String nickname) {
         this.netWorkType = netWorkType;
@@ -393,15 +394,21 @@ public class IRCMessage {
                 mNewTalkConf.remove(index);
             }
             //如果不为null,上传日志（体验课时不为空）
+            final NewTalkConfEntity finalNewTalkConfEntity = talkConfEntity;
+            final String finalMethod = method;
             if (connectService != null) {
-                connectService.connectChatServiceError(
-                        EXPERIENCE_MESSAGE_ERROR,
-                        "Error",
-                        "Android",
-                        getHost(talkConfEntity.getHost()),
-                        talkConfEntity.getPort(),
-                        method + "Connect Failure",
-                        IpAddressUtil.USER_IP);
+                liveThreadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        connectService.connectChatServiceError(
+                                getHost(finalNewTalkConfEntity.getHost()),
+                                finalNewTalkConfEntity.getPort(),
+                                finalMethod + "Connect Failure",
+                                IpAddressUtil.USER_IP);
+                    }
+                });
+
             }
             mLogtf.d("connect:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
             mHandler.postDelayed(new Runnable() {
@@ -440,7 +447,9 @@ public class IRCMessage {
                 }
                 i++;
             }
-            return ip.substring(pos <= 0 ? 0 : pos + 2, i);
+//            return ip.substring(pos <= 0 ? 0 : pos + 2, i);
+            String url = ip.substring(pos <= 0 ? 0 : pos + 2, i);
+            return InetAddress.getByName(url).getHostAddress();
         } catch (Exception e) {
             return "";
         }
@@ -630,9 +639,6 @@ public class IRCMessage {
          * @param ip         自己的ip
          */
         void connectChatServiceError(
-                String eventId,
-                String logtype,
-                String os,
                 String serverIp,
                 String serverPort,
                 String errMsg,

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.recommodcourse.MarqueeView-->
+    <!--<com.xueersi.parentsmeeting.modules.livevideo.fragment.se.recommodcourse.MarqueeView-->
     <!--android:id="@+id/mv_livevideo_stand_experience_banner_message"-->
     <!--android:layout_width="wrap_content"-->
     <!--android:layout_height="30dp"-->

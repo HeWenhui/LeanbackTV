@@ -174,6 +174,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                                 ClassmateEntity classmateEntity = new ClassmateEntity();
                                 JSONObject stuObj = students.getJSONObject(i);
                                 classmateEntity.setId(stuObj.optString("id"));
+                                classmateEntity.setPlace(stuObj.optInt("place", i));
                                 classmateEntities.add(classmateEntity);
                             }
                         }
@@ -195,6 +196,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                                 ClassmateEntity classmateEntity = new ClassmateEntity();
                                 JSONObject stuObj = students.getJSONObject(i);
                                 classmateEntity.setId(stuObj.optString("id"));
+                                classmateEntity.setPlace(stuObj.optInt("place", i));
                                 classmateEntities.add(classmateEntity);
                             }
                         }
@@ -266,6 +268,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                             classmateEntity.setId(jsonObject.optString("id"));
                             classmateEntity.setName(jsonObject.optString("name"));
                             classmateEntity.setImg(jsonObject.optString("img"));
+                            classmateEntity.setPlace(jsonObject.optInt("place"));
                             onmicClassmateEntities.add(classmateEntity);
                         }
                     } else {
@@ -316,8 +319,8 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
             jsonObject.put("img", mGetInfo.getStuImg());
 
             jsonObject.put("camera", 0);
-            jsonObject.put("linkNum", mGetInfo.getStuLinkMicNum());
-            jsonObject.put("raiseNum", mGetInfo.getStuPutUpHandsNum());
+            jsonObject.put("linkNum", "" + mGetInfo.getStuLinkMicNum());
+            jsonObject.put("raiseNum", "" + mGetInfo.getStuPutUpHandsNum());
 
             jsonObject.put("nonce", nonce);
             if ("t".equals(from)) {
@@ -419,7 +422,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
     @Override
     public void chatHandAdd(HttpCallBack call) {
         if (mGetInfo.getIsArts() == 0) {
-            getHttpManager().addStuPutUpHandsNum(call);
+            getHttpManager().addStuPutUpHandsNum(mGetInfo.getStuId(), call);
         }
     }
 

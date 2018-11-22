@@ -1,4 +1,4 @@
-//package com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback;
+//package com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback;
 //
 //import android.annotation.TargetApi;
 //import android.content.Context;
@@ -15,7 +15,7 @@
 //import com.xueersi.common.http.ResponseEntity;
 //import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
-//import com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.IPresenter;
+//import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IPresenter;
 //
 //import org.json.JSONArray;
 //import org.json.JSONException;
@@ -43,7 +43,7 @@
 //
 //    private VideoLivePlayBackEntity mVideoEntity;
 //
-//    public LearnFeedBackPager(Context context, ExperienceLearnFeedbackBll presenter, VideoLivePlayBackEntity
+//    public LearnFeedBackPager(Context context, StandExperienceLearnFeedbackBll presenter, VideoLivePlayBackEntity
 //            videoLivePlayBackEntity) {
 //        super(context);
 //        this.mPresenter = presenter;

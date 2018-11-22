@@ -1,16 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 
 /**
  * Created by lyqai on 2017/8/2.

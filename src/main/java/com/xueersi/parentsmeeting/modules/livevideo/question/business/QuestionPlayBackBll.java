@@ -24,7 +24,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
@@ -167,15 +166,15 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                 videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
                 videoQuestionLiveEntity.roles = questionEntity.getRoles();
-                int isArts = liveBackBll.getIsArts();
-                if (isArts == 0 && mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-                    String[] ss = videoQuestionLiveEntity.id.split("-");
-                    if (ss.length > 1) {
-                        if ("0".equals(ss[1])) {
-                            videoQuestionLiveEntity.isTestUseH5 = true;
-                        }
-                    }
-                }
+//                int isArts = liveBackBll.getIsArts();
+//                if (isArts == 0 && mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+//                    String[] ss = videoQuestionLiveEntity.id.split("-");
+//                    if (ss.length > 1) {
+//                        if ("0".equals(ss[1])) {
+//                            videoQuestionLiveEntity.isTestUseH5 = true;
+//                        }
+//                    }
+//                }
 
                 if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !"1".equals(videoQuestionLiveEntity.multiRolePlay) ){
                     logger.i("走人机start,拉取试题");

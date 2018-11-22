@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.se;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -48,12 +49,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.buycourse.ExperienceBuyCoursePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.ExperienceLearnFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.livemessage.StandExperienceMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.mediacontroller.StandLiveVideoExperienceMediaController;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.recommodcourse.RecommondCourseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.standexperienceunderstand.StandExperienceUnderstandBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.recommodcourse.StandExperienceRecommondBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.understand.StandExperienceUnderstandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceEnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.StandExperienceQuestionPlayBackBll;
@@ -72,7 +74,9 @@ import java.util.Map;
 
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
-//测试提交
+/**
+ * 全身直播体验课，仿照直播回放
+ */
 public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase implements MediaControllerAction,
         ActivityChangeLand {
     {
@@ -493,13 +497,13 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         //懂了吗
         liveBackBll.addBusinessBll(new StandExperienceUnderstandBll(activity, liveBackBll));
         //推荐课程信息
-        liveBackBll.addBusinessBll(new RecommondCourseBll(activity, liveBackBll, getVideoView()));
+        liveBackBll.addBusinessBll(new StandExperienceRecommondBll(activity, liveBackBll, getVideoView()));
         //播放完成后的定级卷
         liveBackBll.addBusinessBll(new StandExperienceEvaluationBll(activity, liveBackBll));
         //定级完成后的结果页
 //        liveBackBll.addBusinessBll(new ExperienceBuyCoursePresenter(activity, liveBackBll));
         //播放完成后的反馈弹窗
-        liveBackBll.addBusinessBll(new ExperienceLearnFeedbackBll(activity, liveBackBll));
+        liveBackBll.addBusinessBll(new StandExperienceLearnFeedbackBll(activity, liveBackBll));
     }
 
     @Override
@@ -682,12 +686,44 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      */
     private long errorTime = 0L;
     LiveHttpManager liveHttpManager;
-
+    /**
+     * 是否正处于播放状态
+     */
     private boolean isPlay = false;
+    /**
+     * 重试次数
+     */
+    private int rePlayCount = 0;
+    /**
+     * 重试的上线
+     */
+    private static final int MAX_REPLAY_COUNT = 4;
 
+    /**
+     * 视频非正常播放完毕，有可能是断网了，也有可能一开始打开失败了,在父类方法中会调用{@link #showRefresyLayout(int arg1, int arg2)}这个方法
+     */
     @Override
     protected void resultFailed(int arg1, int arg2) {
-        super.resultFailed(arg1, arg2);
+        //循环更换视频地址
+        PlayErrorCodeLog.standExperienceLivePlayError(liveBackBll, mWebPath, "playError");
+        List<String> mVideoPaths = mVideoEntity.getVideoPaths();
+        if (mVideoPaths != null && !mVideoPaths.isEmpty()) {
+            for (int i = 0; i < mVideoPaths.size(); i++) {
+                if (mWebPath.equals(mVideoPaths.get(i))) {
+                    mWebPath = mVideoPaths.get((i + 1) % mVideoPaths.size());
+                    break;
+                }
+            }
+        } else {
+            mWebPath = mVideoEntity.getVideoPath();
+        }
+        if (rePlayCount < MAX_REPLAY_COUNT) {
+            rePlayCount++;
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
+
+        } else {
+            super.resultFailed(arg1, arg2);
+        }
         isPlay = false;
         resultFailed = true;
         logger.d("resultFailed:arg2=" + arg2);
@@ -1103,6 +1139,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        onUserBackPressed();
     }
 
+    /**
+     * 点击按钮之后，实现刷新
+     */
     @Override
     protected void onRefresh() {
         resultFailed = false;

@@ -16,18 +16,19 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
+import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.xueersi.common.base.XesActivity;
-import com.xueersi.common.http.LoggingInterceptor;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.common.speech.SpeechConfig;
+import com.xueersi.common.speech.SpeechUtils;
+import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayerPager;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.lib.framework.utils.XESToastUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class RolePlayerActivity extends XesActivity {
      * 声网
      */
     private WorkerThread mWorkerThread;
-    protected SpeechEvaluatorUtils mIse;
+    protected SpeechUtils mIse;
     private SpeechEvaluatorInter speechEvaluatorInter;
     private File saveVideoFile, dir;
     private int sizeInBytes = 0;
@@ -128,7 +129,8 @@ public class RolePlayerActivity extends XesActivity {
             }
         });
         if (mIse == null) {
-            mIse = new SpeechEvaluatorUtils(true);
+            mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+            mIse.setLanguage(com.tal.speech.speechrecognizer.Constants.ASSESS_PARAM_LANGUAGE_EN);
             saveVideoFile = new File(dir, "roleplayer" + System.currentTimeMillis() + ".mp3");
         }
         mIse.cancel();
@@ -147,10 +149,9 @@ public class RolePlayerActivity extends XesActivity {
                     @Override
                     public void onJoinChannel(int joinChannel) {
 
-                        logger.i( "声网:" + joinChannel);
+                        logger.i("声网:" + joinChannel);
                     }
                 });
-
 
 
 //                sizeInBytes = AudioRecord.getMinBufferSize(16000,
@@ -184,49 +185,96 @@ public class RolePlayerActivity extends XesActivity {
 //                    }
 //                }).start();
 
-                if (!SpeechEvaluatorUtils.isOfflineSuccess()) {
+//                if (!SpeechEvaluatorUtils.isOfflineSuccess()) {
+//                    XESToastUtils.showToast(mContext, "模型库加载失败");
+//                    return;
+//                }
+                if (!mIse.isOfflineSuccess()) {
                     XESToastUtils.showToast(mContext, "模型库加载失败");
                     return;
                 }
+                SpeechParamEntity param = new SpeechParamEntity();
+                param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
+                param.setStrEvaluator("Welcome come to China");
+                param.setLocalSavePath(saveVideoFile.getAbsolutePath());
+                param.setMultRef(false);
+                param.setPcm(true);
+                mIse.startRecog(param, new EvaluatorListenerWithPCM() {
+                    @Override
+                    public void onBeginOfSpeech() {
 
-                speechEvaluatorInter = mIse.startEnglishEvaluatorOffline("Welcome come to China", saveVideoFile
-                                .getAbsolutePath(), false,
-                        new RoleEvaluatorListener() {
-                            @Override
-                            public void onBeginOfSpeech() {
-                            }
+                    }
 
-                            @Override
-                            public void onResult(ResultEntity resultEntity) {
-                                if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                                    XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
-                                    //提前开始下一条
-                                } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                                    XESToastUtils.showToast(mContext, "失败");
-                                    //提前开始下一条
-                                } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                                }
+                    @Override
+                    public void onResult(ResultEntity resultEntity) {
+                        if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+                            XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
+                            //提前开始下一条
+                        } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+                            XESToastUtils.showToast(mContext, "失败");
+                            //提前开始下一条
+                        } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+                        }
+                    }
 
-                            }
+                    @Override
+                    public void onVolumeUpdate(int volume) {
 
-                            @Override
-                            public void onVolumeUpdate(int volume) {
-                            }
+                    }
 
-                            @Override
-                            public void onRecordPCMData(short[] shorts, int readSize) {
-                                //通过声网走
-                                byte[] dest = new byte[readSize * 2];
-                                int count = readSize;
-                                for (int i = 0; i < count; i++) {
-                                    dest[i * 2] = (byte) (shorts[i]);
-                                    dest[i * 2 + 1] = (byte) (shorts[i] >> 8);
-                                }
-                                if(mWorkerThread!=null && mWorkerThread.getRtcEngine()!=null) {
-                                    mWorkerThread.getRtcEngine().pushExternalAudioFrame(dest, System.currentTimeMillis());
-                                }
-                            }
-                        });
+                    @Override
+                    public void onRecordPCMData(short[] pcmBuffer, int length) {
+                        //通过声网走
+                        byte[] dest = new byte[length * 2];
+                        int count = length;
+                        for (int i = 0; i < count; i++) {
+                            dest[i * 2] = (byte) (pcmBuffer[i]);
+                            dest[i * 2 + 1] = (byte) (pcmBuffer[i] >> 8);
+                        }
+                        if (mWorkerThread != null && mWorkerThread.getRtcEngine() != null) {
+                            mWorkerThread.getRtcEngine().pushExternalAudioFrame(dest, System.currentTimeMillis());
+                        }
+                    }
+                });
+//                speechEvaluatorInter = mIse.startEnglishEvaluatorOffline("Welcome come to China", saveVideoFile
+//                                .getAbsolutePath(), false,
+//                        new RoleEvaluatorListener() {
+//                            @Override
+//                            public void onBeginOfSpeech() {
+//                            }
+//
+//                            @Override
+//                            public void onResult(ResultEntity resultEntity) {
+//                                if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+//                                    XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
+//                                    //提前开始下一条
+//                                } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+//                                    XESToastUtils.showToast(mContext, "失败");
+//                                    //提前开始下一条
+//                                } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+//                                }
+//
+//                            }
+//
+//                            @Override
+//                            public void onVolumeUpdate(int volume) {
+//                            }
+//
+//                            @Override
+//                            public void onRecordPCMData(short[] shorts, int readSize) {
+//                                //通过声网走
+//                                byte[] dest = new byte[readSize * 2];
+//                                int count = readSize;
+//                                for (int i = 0; i < count; i++) {
+//                                    dest[i * 2] = (byte) (shorts[i]);
+//                                    dest[i * 2 + 1] = (byte) (shorts[i] >> 8);
+//                                }
+//                                if(mWorkerThread!=null && mWorkerThread.getRtcEngine()!=null) {
+//                                    mWorkerThread.getRtcEngine().pushExternalAudioFrame(dest, System
+// .currentTimeMillis());
+//                                }
+//                            }
+//                        });
             }
         });
 
@@ -323,10 +371,10 @@ public class RolePlayerActivity extends XesActivity {
         int headCount = rand.nextInt(5) + 2;
         for (int i = 0; i < headCount; i++) {
             RolePlayerEntity.RolePlayerHead head = new RolePlayerEntity.RolePlayerHead();
-            if(i/2 == 0){
+            if (i / 2 == 0) {
                 head.setNickName("我是小可爱sdfdsfdsgdg" + (i + 1));
                 head.setNickName("我是小可爱sdfdsfdsgdg" + (i + 1));
-            }else {
+            } else {
                 head.setNickName("我是小可" + (i + 1));
                 head.setNickName("我是小可" + (i + 1));
             }
@@ -377,8 +425,8 @@ public class RolePlayerActivity extends XesActivity {
             Intent intent = new Intent();
             intent.setClass(context, RolePlayerActivity.class);
             context.startActivity(intent);
-        }catch (Exception e){
-            com.xueersi.lib.log.Loger.d("yzl","exception:  "+e);
+        } catch (Exception e) {
+            com.xueersi.lib.log.Loger.d("yzl", "exception:  " + e);
         }
 
     }
@@ -422,7 +470,7 @@ public class RolePlayerActivity extends XesActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        logger.i( "onStop 离开连麦界面");
+        logger.i("onStop 离开连麦界面");
         bllRole.realease();
     }
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:id="@+id/iv_dialog_small_english_bg"
+            android:layout_width="512dp"
+            android:layout_height="364dp"
+            android:src="@drawable/bg_livevideo_small_english_dialog" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_dialog_small_english_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iv_dialog_small_english_bg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="110dp"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:text=""
+            android:textColor="#FF756565"
+            android:textSize="17sp" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_dialog_small_english_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iv_dialog_small_english_bg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="162dp"
+            android:paddingLeft="10dp"
+            android:text=""
+            android:textColor="#FF756565"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/iv_dialog_small_english_bg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="134dp"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp">
+
+            <ImageView
+                android:id="@+id/iv_dialog_small_english_cancel"
+                android:layout_width="94dp"
+                android:layout_height="31dp"
+                android:src="@drawable/selector_small_english_permissiondialog_cancel" />
+
+            <ImageView
+                android:id="@+id/iv_dialog_small_english_confirm"
+                android:layout_width="94dp"
+                android:layout_height="31dp"
+                android:layout_marginLeft="21dp"
+                android:src="@drawable/selector_small_english_permissiondialog_confirm" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

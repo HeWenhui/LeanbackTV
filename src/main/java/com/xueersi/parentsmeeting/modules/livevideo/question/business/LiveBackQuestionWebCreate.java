@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.content.Context;
 
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;

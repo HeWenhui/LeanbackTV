@@ -7,6 +7,7 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
@@ -75,11 +76,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (1 == data.optInt("isPrimarySchool")) {
+        int isPrimarySchool = data.optInt("isPrimarySchool");
+        if (1 == isPrimarySchool) {
             LiveVideoConfig.isPrimary = true;
         } else {
             LiveVideoConfig.isPrimary = false;
         }
+        getInfo.setIsPrimarySchool(isPrimarySchool);
         LiveVideoConfig.isScience = true;
         getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
@@ -197,6 +200,21 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 followTypeEntity.setInt3(followType.getInt("3"));
                 followTypeEntity.setInt4(followType.getInt("4"));
             }
+
+            if (data.has("highFollowType")) {
+                JSONArray jsonArray = data.optJSONArray("highFollowType");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    getInfo.getPraiseGift().add(jsonArray.optInt(i));
+                }
+            }
+            if (data.has("highLiveFlowerRate")) {
+                JSONArray jsonArray = data.optJSONArray("highLiveFlowerRate");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    getInfo.getPraiseGiftRate().add(jsonArray.optDouble(i));
+                }
+            }
+            getInfo.setPraiseAutoBarrageTime(data.optInt("praiseAutoBarrageTime", 1));
+            getInfo.setPraiseAutoCutTime(data.optInt("praiseAutoCutTime", 5));
 
             getInfo.setTeacherId(data.getString("teacherId"));
             getInfo.setTeacherName(data.getString("teacherName"));
@@ -591,6 +609,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 mainStatusEntity.getClassmateEntities().clear();
             }
             mainStatusEntity.setOpenDbEnergy(status.optBoolean("openDbEnergy", false));
+            mainStatusEntity.setOpenVoiceBarrage(status.optBoolean("openVoiceBarrage", false));
+            mainStatusEntity.setVoiceBarrageCount(status.optInt("voiceBarrageCount", 0));
         }
         liveTopic.setTeamPkEntity(teamPkEntity);
 //        topic":{"gold_count":3,"id":"161870","num":1,"time":3,"type":"2"}}
@@ -1786,7 +1806,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             ClassmateEntity classmateEntity = new ClassmateEntity();
             try {
                 JSONObject stuJSONObject = jsonObject.getJSONObject(id);
-                classmateEntity.setName(stuJSONObject.optString("nickname"));
+                String realname = stuJSONObject.optString("realname");
+                if (!StringUtils.isEmpty(realname)) {
+                    classmateEntity.setName(realname);
+                } else {
+                    String nickname = stuJSONObject.optString("nickname");
+                    if (!StringUtils.isEmpty(nickname)) {
+                        classmateEntity.setName(nickname);
+                    } else {
+                        classmateEntity.setName(stuJSONObject.optString("name"));
+                    }
+                }
                 classmateEntity.setImg(stuJSONObject.optString("avatar_path"));
                 classmateEntities.put(id, classmateEntity);
             } catch (JSONException e) {

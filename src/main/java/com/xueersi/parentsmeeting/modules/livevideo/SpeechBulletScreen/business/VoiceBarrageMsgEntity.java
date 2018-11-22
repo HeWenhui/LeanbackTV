@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Zhang Yuansun on 2018/8/6.

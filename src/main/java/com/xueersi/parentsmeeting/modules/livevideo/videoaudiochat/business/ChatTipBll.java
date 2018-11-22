@@ -66,6 +66,7 @@ public class ChatTipBll {
      */
     private ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
     private ViewGroup vgRaisehand;
+    private boolean destory = false;
     private TextView tv_livevideo_chat_people;
     private TextView tv_livevideo_chat_people_hind;
     private TextView tv_livevideo_chat_people_grey;
@@ -83,6 +84,7 @@ public class ChatTipBll {
      */
     private int raiseHandCount = 0;
     private String msgFrom;
+    private int micType;
     private String room;
     private AgoraVideoChatInter videoChatInter;
     private VideoChatEvent videoChatEvent;
@@ -95,6 +97,10 @@ public class ChatTipBll {
         this.activity = activity;
         liveAndBackDebug = new ContextLiveAndBackDebug(activity);
         logToFile = new LogToFile(activity, TAG);
+    }
+
+    public void setMicType(int micType) {
+        this.micType = micType;
     }
 
     public void setVideoChatHttp(VideoAudioChatHttp videoChatHttp) {
@@ -152,8 +158,9 @@ public class ChatTipBll {
                 if (modeChange && "off".equals(onMic)) {
                     handler.removeCallbacks(waitRun);
                     handler.postDelayed(waitRun, 1000);
-                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
-                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
+//                    initView("onClassmateChange");
+//                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
+//                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -186,7 +193,7 @@ public class ChatTipBll {
         final RelativeLayout.LayoutParams lpRaisehand = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lpRaisehand.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         lpRaisehand.leftMargin = LiveVideoPoint.getInstance().x2;
-        logger.d("initView:x2=" + LiveVideoPoint.getInstance().x2);
+        logToFile.d("initView:x2=" + LiveVideoPoint.getInstance().x2 + ",method=" + method + ",destory=" + destory);
         final int bottom = LiveVideoPoint.getInstance().screenHeight - LiveVideoPoint.getInstance().y4 + 200;
         vgRaisehand.setPadding(vgRaisehand.getLeft(), bottom, vgRaisehand.getRight(), bottom);
         bottomContent.addView(vgRaisehand, lpRaisehand);
@@ -252,6 +259,14 @@ public class ChatTipBll {
 //                });
             }
         });
+        if (micType == 0) {
+            View view = vgRaisehand.findViewById(R.id.v_livevideo_chat_myline);
+            view.setVisibility(View.GONE);
+            RelativeLayout relativeLayout = vgRaisehand.findViewById(R.id.rl_livevideo_chat_raisehand2);
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) relativeLayout.getLayoutParams();
+            lp.leftMargin = (int) (15 * ScreenUtils.getScreenDensity());
+            relativeLayout.setLayoutParams(lp);
+        }
     }
 
     /**
@@ -400,6 +415,7 @@ public class ChatTipBll {
             public void run() {
                 String nonce = StableLogHashMap.creatNonce();
                 VideoChatLog.sno4(liveAndBackDebug, nonce);
+                getInfo.setStuPutUpHandsNum(stuPutUpHandsNum + 1);
                 videoChatHttp.requestMicro(nonce, room, from);
                 videoChatHttp.chatHandAdd(new HttpCallBack(false) {
                     @Override
@@ -434,6 +450,8 @@ public class ChatTipBll {
     public void startMicro(final String onMic, final String nonce, final String room, String from, final boolean contain, final int micType) {
         logger.d("startMicro:nonce=" + nonce + ",onMic=" + onMic + ",contain=" + contain + ",from=" + from);
         this.onMic = onMic;
+        this.msgFrom = from;
+        this.micType = micType;
         if (contain) {
             raisehand = true;
         }
@@ -449,8 +467,8 @@ public class ChatTipBll {
                     rl_livevideo_chat_raisehand_off.setVisibility(View.GONE);
                 } else {
                     handler.postDelayed(waitRun, 1000);
-                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
-                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
+//                    rl_livevideo_chat_raisehand_on.setVisibility(View.GONE);
+//                    rl_livevideo_chat_raisehand_off.setVisibility(View.VISIBLE);
                 }
                 changeRaisehand(contain);
                 raisehand = contain;
@@ -458,6 +476,7 @@ public class ChatTipBll {
                     haveRaisehand = true;
                     haveContainMe = true;
                     rl_livevideo_chat_raisehand.setVisibility(View.GONE);
+                    tv_livevideo_chat_in_queue.setText("恭喜你已连麦");
                 } else {
                     rl_livevideo_chat_raisehand.setVisibility(View.VISIBLE);
                     if (oldcontainMe != containMe) {
@@ -481,7 +500,7 @@ public class ChatTipBll {
             return;
         }
         initView("startRecord");
-        AgoraChatPager agoraChatPager = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp, micType);
+        AgoraChatPager agoraChatPager = new AgoraChatPager(activity, liveAndBackDebug, getInfo, videoChatEvent, videoChatHttp, msgFrom, micType);
         agoraChatPager.setTestWorkerThread(testWorkerThread);
         videoChatInter = agoraChatPager;
         if (contain) {
@@ -514,21 +533,29 @@ public class ChatTipBll {
         }
     }
 
-    public void stopRecord(String method) {
+    public void onNetWorkChange(int netWorkType) {
+        if (videoChatInter != null) {
+            videoChatInter.onNetWorkChange(netWorkType);
+        }
+    }
+
+    public void stopRecord(String method, boolean isDestory) {
         raiseHandCount = 0;
-        if (haveRaisehand) {
-            if (haveContainMe) {
-                MidToast.showToast(activity, "老师已结束本次举麦");
+        if (!isDestory) {
+            if (haveRaisehand) {
+                if (haveContainMe) {
+                    MidToast.showToast(activity, "老师已结束本次举麦");
+                } else {
+                    MidToast.showToast(activity, "很遗憾本次没有轮到你，下次再见哦");
+                }
+                haveRaisehand = false;
             } else {
-                MidToast.showToast(activity, "很遗憾本次没有轮到你，下次再见哦");
+                MidToast.showToast(activity, "老师已结束本次举麦");
             }
-            haveRaisehand = false;
-        } else {
-            MidToast.showToast(activity, "老师已结束本次举麦");
         }
         raisehand = false;
         onMic = "off";
-        logger.d("stopRecord:method=" + method);
+        logToFile.d("stopRecord:method=" + method);
         handler.removeCallbacks(waitRun);
         handler.post(new Runnable() {
             @Override
@@ -536,6 +563,7 @@ public class ChatTipBll {
                 if (vgRaisehand != null) {
                     bottomContent.removeView(vgRaisehand);
                     vgRaisehand = null;
+                    destory = true;
                 }
                 if (videoChatInter != null) {
                     if (videoChatInter instanceof AgoraChatPager) {

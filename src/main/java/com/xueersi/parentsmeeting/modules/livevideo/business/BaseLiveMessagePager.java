@@ -136,7 +136,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     public BaseLiveMessagePager(Context context) {
         super(context);
         logger.setLogMethod(false);
-        pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+        pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
         pool.setRejectedExecutionHandler(new RejectedExecutionHandler() {
 
             @Override
@@ -766,4 +766,5 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         }
         return false;
     }
+
 }

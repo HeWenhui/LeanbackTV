@@ -29,7 +29,7 @@ import okhttp3.Call;
  * 新的反馈弹窗，如果使用RadioGroup显示时，左边的选择按钮样式不好，采用这个Pager来显示反馈弹窗
  * @param <T>
  */
-public class NewStandExperienceLearnFeedBackPager<T extends LearnFeedBackContract.ISendHttp> extends BasePager {
+public class NewStandExperienceLearnFeedBackPager<T extends IStandExperienceLearnFeedbackContract.ISendHttp> extends BasePager {
 
     T presenter;
     /**

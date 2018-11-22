@@ -1325,10 +1325,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
     /**
      * 理科2018接麦举手接口
      *
+     * @param stuId
      * @param requestCallBack
      */
-    public void addStuPutUpHandsNum(HttpCallBack requestCallBack) {
+    public void addStuPutUpHandsNum(String stuId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", stuId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_ADD_STU_HAND_NUM, params, requestCallBack);
     }
@@ -1341,7 +1343,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     public void getStuInfoByIds(String stuIds, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        params.addBodyParam("stuIds",stuIds);
+        params.addBodyParam("stuIds", stuIds);
         sendPost(liveVideoSAConfigInner.URL_LIVE_STUINFO, params, requestCallBack);
     }
 
@@ -1447,5 +1449,34 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("url", url);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_WONDER_MOMENT, params, requestCallBack);
+    }
+
+    /**
+     * 弹幕推送
+     *
+     * @param json            json数据
+     * @param callback
+     */
+    public void pushSpeechBullet(String json, okhttp3.Callback callback) {
+        logger.i("speechbul,pushSpeechBullet: json = " + json);
+        HttpRequestParams params = new HttpRequestParams();
+        params.setJson(json);
+        params.setWriteAndreadTimeOut(10);
+        String url;
+//        if (AppConfig.DEBUG) {
+//            url = "http://10.99.2.31/v1/push";
+//        } else {
+//            url = "https://pushirc.arts.xueersi.com/v1/push";
+//        }
+        url = "https://pushirc.arts.xueersi.com/v1/push";
+        baseSendPostNoBusinessJson(url, params, callback);
+    }
+
+    public void saveStuPlanOnlineTime(String stuId, String gradeId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", "" + stuId);
+        params.addBodyParam("gradeId", gradeId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_STU_ONLINE_TIME, params, requestCallBack);
     }
 }
