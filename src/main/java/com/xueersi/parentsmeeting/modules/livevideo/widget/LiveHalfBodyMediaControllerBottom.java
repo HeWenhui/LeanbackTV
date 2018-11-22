@@ -65,7 +65,8 @@ public class LiveHalfBodyMediaControllerBottom extends LiveStandMediaControllerB
     @Override
     public void onModeChange(String mode,LiveGetInfo getInfo){
         this.mode = mode;
-        removeAllViews();
+       // removeAllViews();
+        removeAllViewsInLayout();
         inflateLayout();
         findViewItems();
         //通知相关 UI 底部 控制栏改变

@@ -173,7 +173,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         super.onModeChange(oldMode, mode, isPresent);
         logger.e("=====>onModeChange called1111:" + mode);
         this.mTeacherMode = mode;
-        // TODO: 2018/10/26
         if (isHalfBodyLiveRoom()) {
             //延时3秒 适配切屏动画
             mHandler.postDelayed(new Runnable() {
@@ -182,7 +181,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     logger.e("=====>onModeChange called2222:");
                     showPkStateLayout();
                 }
-            }, 3100);
+            }, 3200);
         }
     }
 

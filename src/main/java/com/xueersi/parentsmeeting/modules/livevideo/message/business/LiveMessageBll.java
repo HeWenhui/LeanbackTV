@@ -202,7 +202,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
      */
     public void initHalfBodyLive(final RelativeLayout bottomContent) {
 
-        Log.e("HalfBody", "=====>LiveMessageBll initHalfBodyLive called:" + rlLiveMessageContent);
         final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         if (rlLiveMessageContent == null) {
@@ -212,7 +211,8 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             msgContainer.addView(rlLiveMessageContent, params);
         } else {
             //调整 消息面板的层级
-            rlLiveMessageContent.removeAllViews();
+            //rlLiveMessageContent.removeAllViews();
+            rlLiveMessageContent.removeAllViewsInLayout();
             ((ViewGroup) rlLiveMessageContent.getParent()).removeView(rlLiveMessageContent);
             RelativeLayout msgContainer = bottomContent.findViewById(R.id.rl_live_halfbody_livemsg_container);
             msgContainer.addView(rlLiveMessageContent, params);
@@ -275,7 +275,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         view.setVisibility(View.INVISIBLE);
         rlLiveMessageContent.addView(view, params);
 
-        Log.e("HalfBody", "=====>LiveMessageBll initHalfBodyLive called: RootView add");
 
         mainHandler.post(new Runnable() {
             @Override
@@ -294,7 +293,8 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             rlLiveMessageContent = new RelativeLayout(activity);
             bottomContent.addView(rlLiveMessageContent, params);
         } else {
-            rlLiveMessageContent.removeAllViews();
+            //rlLiveMessageContent.removeAllViews();
+            rlLiveMessageContent.removeAllViewsInLayout();
         }
         String text = null;
         boolean isRegister = false;
