@@ -11,6 +11,7 @@ import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
@@ -128,6 +129,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             englishPk.historyScore = englishPkObj.optInt("historyScore");
             englishPk.isTwoLose = englishPkObj.optInt("isTwoLose");
             englishPk.canGroup = englishPkObj.optInt("canGroup");
+        }
+        JSONObject pkEnergyObj = data.optJSONObject("pkEnergy");
+        if (pkEnergyObj != null) {
+            LiveGetInfo.EnPkEnergy enpkEnergy = getInfo.getEnpkEnergy();
+            enpkEnergy.me = pkEnergyObj.optInt("me");
+            enpkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
+            enpkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
         }
     }
 
@@ -1814,4 +1822,35 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
+    public EnTeamPkRankEntity parseUpdataEnglishPkByTestId(ResponseEntity responseEntity) {
+        try {
+            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            enTeamPkRankEntity.setaTotalScore(jsonObject.optInt("aTotalScore"));
+            enTeamPkRankEntity.setaCurrentScore(jsonObject.optInt("aCurrentScore"));
+            enTeamPkRankEntity.setApkTeamId(jsonObject.optInt("apkTeamId"));
+
+            enTeamPkRankEntity.setbTotalScore(jsonObject.optInt("bTotalScore"));
+            enTeamPkRankEntity.setbCurrentScore(jsonObject.optInt("bCurrentScore"));
+            enTeamPkRankEntity.setBpkTeamId(jsonObject.optInt("bpkTeamId"));
+            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
+            JSONArray jsonArray = jsonObject.optJSONArray("top3");
+            if (jsonArray != null) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject top3Obj = jsonArray.getJSONObject(i);
+                    TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                    teamMemberEntity.name = top3Obj.optString("name");
+                    teamMemberEntity.headurl = top3Obj.optString("head");
+                    teamMemberEntity.energy = top3Obj.optInt("energy");
+                    memberEntities.add(teamMemberEntity);
+                }
+            }
+            return enTeamPkRankEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseUpdataEnglishPkByTestId", e.getMessage());
+            CrashReport.postCatchedException(e);
+        }
+        return null;
+    }
 }

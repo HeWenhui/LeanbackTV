@@ -101,7 +101,7 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
 
     @Override
     public void onPredict(String predict) {
-        logger.d("onPredict:predict=" + predict);
+//        logger.d("onPredict:predict=" + predict);
         try {
             JSONObject jsonObject = new JSONObject(predict);
             int en_seg_num = 0;
@@ -304,6 +304,7 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
 
     @Override
     public void stop(AudioRequest.OnAudioRequest onAudioRequest) {
+        logger.d("stop:speakerRecognitioner=null?" + (speakerRecognitioner == null));
         if (speakerRecognitioner != null) {
             speakerRecognitioner.setSpeakerPredict(null);
             speakerRecognitioner.stop();

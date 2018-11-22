@@ -56,9 +56,10 @@ public class EnAchievePager extends LiveBasePager {
         super(context, false);
         this.parent = relativeLayout;
         this.mLiveGetInfo = mLiveGetInfo;
+        LiveGetInfo.EnPkEnergy enpkEnergy = mLiveGetInfo.getEnpkEnergy();
         starCount = mLiveGetInfo.getStarCount();
         goldCount = mLiveGetInfo.getGoldCount();
-        energyCount = mLiveGetInfo.getEnergyCount();
+        energyCount = enpkEnergy.me;
         activity = (Activity) context;
         initView();
         initData();
@@ -82,8 +83,32 @@ public class EnAchievePager extends LiveBasePager {
     @Override
     public void initData() {
         super.initData();
+        LiveGetInfo.EnPkEnergy enpkEnergy = mLiveGetInfo.getEnpkEnergy();
         tv_livevideo_en_achive_num_star.setText("" + starCount);
         tv_livevideo_en_achive_num_gold.setText("" + goldCount);
+        tv_livevideo_en_achive_num_fire.setText("" + enpkEnergy.me);
+        LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
+        View view = activity.findViewById(R.id.iv_livevideo_message_small_bg);
+        if (1 == englishPk.canUsePK) {
+            View v = vs_livevideo_en_achive_bottom.inflate();
+            pg_livevideo_en_achive_pk = v.findViewById(R.id.pg_livevideo_en_achive_pk);
+            int progress = 50;
+            if (enpkEnergy.myTeam + enpkEnergy.opTeam != 0) {
+                progress = enpkEnergy.myTeam / (enpkEnergy.myTeam + enpkEnergy.opTeam);
+            }
+            setEngPro(progress);
+            TextView tv_livevideo_en_achive_pk_energy_my = v.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
+            tv_livevideo_en_achive_pk_energy_my.setText("" + enpkEnergy.myTeam);
+            TextView tv_livevideo_en_achive_pk_energy_other = v.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
+            tv_livevideo_en_achive_pk_energy_other.setText("" + enpkEnergy.opTeam);
+        } else {
+            vs_livevideo_en_achive_bottom2.inflate();
+        }
+        if (view != null) {
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            lp.topMargin = (int) (73 * ScreenUtils.getScreenDensity());
+            view.setLayoutParams(lp);
+        }
     }
 
     @Override
@@ -135,20 +160,6 @@ public class EnAchievePager extends LiveBasePager {
                 }
             }
         });
-        LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
-        View view = activity.findViewById(R.id.iv_livevideo_message_small_bg);
-        if (1 == englishPk.canUsePK) {
-            View v = vs_livevideo_en_achive_bottom.inflate();
-            pg_livevideo_en_achive_pk = v.findViewById(R.id.pg_livevideo_en_achive_pk);
-            setEngPro(20);
-        } else {
-            vs_livevideo_en_achive_bottom2.inflate();
-        }
-        if (view != null) {
-            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-            lp.topMargin = (int) (73 * ScreenUtils.getScreenDensity());
-            view.setLayoutParams(lp);
-        }
     }
 
     public void onGetStar(StarAndGoldEntity starAndGoldEntity) {

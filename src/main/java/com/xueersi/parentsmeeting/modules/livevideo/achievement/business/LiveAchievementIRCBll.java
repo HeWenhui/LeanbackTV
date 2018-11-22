@@ -630,7 +630,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void request(OnAudioRequest onAudioRequest) {
         audioRequest.set(true);
-        logger.d("request:englishSpeekBll=" + (englishSpeekAction == null));
+        logger.d("request:englishSpeekBll=" + englishSpeekAction);
         if (englishSpeekAction != null) {
             handler.removeMessages(1);
             englishSpeekAction.stop(onAudioRequest);
@@ -644,7 +644,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void release() {
         audioRequest.set(false);
-        logger.d("release:englishSpeekBll=" + (englishSpeekAction == null));
+        logger.d("release:englishSpeekBll=" + englishSpeekAction);
         if (englishSpeekAction != null) {
             handler.sendEmptyMessageDelayed(1, 2000);
         }

@@ -30,9 +30,10 @@ public class EnStandAchievePager extends LiveBasePager {
         super(context, false);
         this.parent = relativeLayout;
         this.mLiveGetInfo = mLiveGetInfo;
+        LiveGetInfo.EnPkEnergy enpkEnergy = mLiveGetInfo.getEnpkEnergy();
         starCount = mLiveGetInfo.getStarCount();
         goldCount = mLiveGetInfo.getGoldCount();
-        energyCount = mLiveGetInfo.getEnergyCount();
+        energyCount = enpkEnergy.me;
         activity = (Activity) context;
         initView();
         initData();

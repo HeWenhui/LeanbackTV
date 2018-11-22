@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageLandPager;
@@ -160,7 +161,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
         mLiveMessagePager.closeChat(isCloseChat);
         if (isAnaswer != -1) {//这表示收到过答题变化
-            mLiveMessagePager.onQuestionShow(isAnaswer == 1);
+            mLiveMessagePager.onQuestionShow(null, isAnaswer == 1);
         }
         if (mode != null) {
             mLiveMessagePager.onopenchat(openchat, mode, false);
@@ -593,10 +594,10 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     }
 
     @Override
-    public void onQuestionShow(boolean isShow) {
+    public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
         isAnaswer = isShow ? 1 : 0;
         if (mLiveMessagePager != null) {
-            mLiveMessagePager.onQuestionShow(isShow);
+            mLiveMessagePager.onQuestionShow(null, isShow);
         }
     }
 

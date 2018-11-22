@@ -203,7 +203,6 @@ public class LiveGetInfo {
     private int isAllowStar;
     private int starCount;
     private int goldCount;
-    private int energyCount;
     private String testPaperUrl;
     private boolean blockChinese;
     private String subjectiveTestAnswerResult;
@@ -215,6 +214,7 @@ public class LiveGetInfo {
     private String mode = LiveTopic.MODE_TRANING;
     private TotalOpeningLength totalOpeningLength;
     private EnglishPk englishPk = new EnglishPk();
+    private EnPkEnergy enpkEnergy = new EnPkEnergy();
     /**
      * 是否显示满分榜
      */
@@ -805,14 +805,6 @@ public class LiveGetInfo {
         this.goldCount = goldCount;
     }
 
-    public int getEnergyCount() {
-        return energyCount;
-    }
-
-    public void setEnergyCount(int energyCount) {
-        this.energyCount = energyCount;
-    }
-
     public String getTestPaperUrl() {
         return testPaperUrl;
     }
@@ -851,6 +843,14 @@ public class LiveGetInfo {
 
     public void setEnglishPk(EnglishPk englishPk) {
         this.englishPk = englishPk;
+    }
+
+    public EnPkEnergy getEnpkEnergy() {
+        return enpkEnergy;
+    }
+
+    public void setEnpkEnergy(EnPkEnergy enpkEnergy) {
+        this.enpkEnergy = enpkEnergy;
     }
 
     public String getMode() {
@@ -1220,5 +1220,11 @@ public class LiveGetInfo {
         public int isTwoLose;//1,  // 是否连输两场      0 => 正常  1 => 连输两场
 
         public int canGroup;//0    // 是否已经进行分组，0 => 未分组 1=> 已分组 如果该字段为1 就不用再请求go重新分组
+    }
+
+    public static class EnPkEnergy {
+        public  int me;//: 10,
+        public  int myTeam;//":80,
+        public  int opTeam;//":100
     }
 }

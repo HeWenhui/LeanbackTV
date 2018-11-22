@@ -7,10 +7,12 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkRankPager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkRankResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 
 public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpdata {
@@ -20,6 +22,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     private TeamPkRankResultPager teamPkRankResultPager;
     private TeamPkLeadPager teamPkLeadPager;
     private EnTeamPkHttp enTeamPkHttp;
+    private LiveGetInfo getInfo;
 
     public EnTeamPkBll(Context context) {
         super(context);
@@ -34,20 +37,27 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     }
 
     @Override
-    public void onRankStart() {
+    public void onLiveInited(LiveGetInfo getInfo) {
+        this.getInfo = getInfo;
         enTeamPkHttp.reportStuInfo(new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objects) {
-                if (teamPkRankPager == null) {
-                    teamPkRankPager = new TeamPkRankPager(mContext);
-                }
+
+            }
+        });
+    }
+
+    @Override
+    public void onRankStart() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                teamPkRankPager = new TeamPkRankPager(mContext);
                 teamPkRankPager.setOnTeamSelect(new TeamPkRankPager.OnTeamSelect() {
                     @Override
                     public void onTeamSelect(PkTeamEntity pkTeamEntity) {
                         rootView.removeView(teamPkRankPager.getRootView());
-                        if (teamPkRankResultPager == null) {
-                            teamPkRankResultPager = new TeamPkRankResultPager(mContext, pkTeamEntity);
-                        }
+                        teamPkRankResultPager = new TeamPkRankResultPager(mContext, pkTeamEntity);
                         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                         layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
                         rootView.addView(teamPkRankResultPager.getRootView(), layoutParams);
@@ -73,13 +83,11 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     }
 
     @Override
-    public void onRankLead() {
+    public void onRankLead(final EnTeamPkRankEntity enTeamPkRankEntity) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                if (teamPkLeadPager == null) {
-                    teamPkLeadPager = new TeamPkLeadPager(mContext);
-                }
+                teamPkLeadPager = new TeamPkLeadPager(mContext, enTeamPkRankEntity);
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
                 rootView.addView(teamPkLeadPager.getRootView(), layoutParams);

@@ -7,4 +7,5 @@ public class TeamMemberEntity {
     public String name;
     public String headurl = "";
     public int resId;
+    public int energy;
 }
