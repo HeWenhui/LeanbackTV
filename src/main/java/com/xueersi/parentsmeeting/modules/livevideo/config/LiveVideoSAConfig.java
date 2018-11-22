@@ -41,7 +41,7 @@ public class LiveVideoSAConfig {
         /** 直播课的语音评测小组排名 */
         public String URL_LIVE_SPEECH_TEAM = HTTP_HOST + "/LiveCourse/getSpeechEvalAnswerTeamStatus";
         /** 全身直播语音测评组内战况*/
-        public String URL_LIVE_SPEECH_TEAM_STATUS = "https://app.arts.xuersi.com/v2/standLiveStatus/getSpeechEvalAnswerTeamStatus ";
+        public String URL_LIVE_SPEECH_TEAM_STATUS = "https://app.arts.xueersi.com/v2/standLiveStatus/getSpeechEvalAnswerTeamStatus";
         /** 直播课的语音答题小组排名 */
         public String URL_LIVE_ANSWER_TEAM = HTTP_HOST + "/LiveCourse/getTestAnswerTeamStatus";
         /** 全身直播语音答题的小组排名(新课件平台) */
@@ -69,7 +69,7 @@ public class LiveVideoSAConfig {
         /** 语音评测排行榜 */
         public String URL_LIVE_SPEECH_TEAM_RAND = HTTP_HOST + "/LiveCourse/getSpeechEvalAnswerTeamRank";
         /** 全身直播语音测评Top3排行榜*/
-        public String URL_LIVE_ROLE_SPEECH_TEAM_TOP3 = "https://app.arts.xuersi.com/v2/standLiveStatus/getSpeechEvalAnswerTeamRank";
+        public String URL_LIVE_ROLE_SPEECH_TEAM_TOP3 = "https://app.arts.xueersi.com/v2/standLiveStatus/getSpeechEvalAnswerTeamRank";
         /** 发送语音评测答案-二期，是否作答 */
         public String URL_LIVE_SEND_SPEECHEVAL42_ANSWER = HTTP_HOST + "/LiveCourse/speechEval42IsAnswered";
         /** 发送语音评测答案-文科新课件平台，是否作答 */

@@ -208,6 +208,9 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         if (LiveVideoConfig.isNewArts) {
             VideoQuestionLiveEntity getInfo = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
             mUrl = getInfo.getUrl();
+            if (isStandingLive) {
+                mUrl += "&isStandingLive=1&isAudio=1";
+            }
             mFinalUrl = mUrl;
             logger.e("=======> loadUrl:" + mUrl);
             mLogtf.d("initData:isNewArtsurl=" + mUrl);
