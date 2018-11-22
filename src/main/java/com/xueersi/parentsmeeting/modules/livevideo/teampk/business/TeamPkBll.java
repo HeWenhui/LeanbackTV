@@ -171,17 +171,15 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
-        logger.e("=====>onModeChange called1111:" + mode);
         this.mTeacherMode = mode;
         if (isHalfBodyLiveRoom()) {
             //延时3秒 适配切屏动画
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    logger.e("=====>onModeChange called2222:");
                     showPkStateLayout();
                 }
-            }, 3200);
+            }, 3300);
         }
     }
 
