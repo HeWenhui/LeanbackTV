@@ -676,7 +676,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 break;
             case XESCODE.ARTS_STOP_QUESTION:
                 mArtsAnswerResultEvent = null;
-                closeAnswerResult(true);
+                if(mGetInfo.getPattern() == 2){
+                    EventBus.getDefault().post(new AnswerResultCplShowEvent());
+                }else{
+                    closeAnswerResult(true);
+                }
                 break;
             case XESCODE.ARTS_H5_COURSEWARE:
                 String status = data.optString("status", "off");

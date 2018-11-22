@@ -191,7 +191,6 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         }
         initListener();
         initData();
-        EventBus.getDefault().register(this);
     }
 
     @Override
