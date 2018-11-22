@@ -317,7 +317,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     @Override
     public void initData() {
         ShareDataManager sdm = ShareDataManager.getInstance();
-        showSpeechRecog = sdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager.SHAREDATA_USER);
+        showSpeechRecog = sdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager.SHAREDATA_NOT_CLEAR);
         if (!showSpeechRecog) {
             XESToastUtils.showToast(mContext, "设备状态暂不支持语音录入，请打字发言");
             setRepeatBtnDisenable();

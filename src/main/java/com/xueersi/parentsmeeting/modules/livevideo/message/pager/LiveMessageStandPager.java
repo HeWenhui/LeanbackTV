@@ -690,8 +690,8 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         logger.i("initData:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         mSdm = ShareDataManager.getInstance();
-        isShowSpeechRecog = mSdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager.SHAREDATA_USER);
-        cpuRecogTime = mSdm.getLong(SpeechEvaluatorUtils.RECOG_TIME, 2500l, ShareDataManager.SHAREDATA_USER);
+        isShowSpeechRecog = mSdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager.SHAREDATA_NOT_CLEAR);
+        cpuRecogTime = mSdm.getLong(SpeechEvaluatorUtils.RECOG_TIME, 2500l, ShareDataManager.SHAREDATA_NOT_CLEAR);
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -757,7 +757,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                                         isShowSpeechRecog = (mRecogtestEndTime - mRecogtestBeginTime) < 3000l ? true
                                                 : false;
                                         if (isShowSpeechRecog) {
-                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog, ShareDataManager.SHAREDATA_USER);
+                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog, ShareDataManager.SHAREDATA_NOT_CLEAR);
                                             initOpenBt(false, true);
                                         }
                                     }
