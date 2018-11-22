@@ -94,7 +94,7 @@ public class EnAchievePager extends LiveBasePager {
             pg_livevideo_en_achive_pk = v.findViewById(R.id.pg_livevideo_en_achive_pk);
             int progress = 50;
             if (enpkEnergy.myTeam + enpkEnergy.opTeam != 0) {
-                progress = enpkEnergy.myTeam / (enpkEnergy.myTeam + enpkEnergy.opTeam);
+                progress = (int) ((float) enpkEnergy.myTeam * 100 / (float) (enpkEnergy.myTeam + enpkEnergy.opTeam));
             }
             setEngPro(progress);
             TextView tv_livevideo_en_achive_pk_energy_my = v.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
