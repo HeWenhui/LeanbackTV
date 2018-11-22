@@ -615,32 +615,21 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     @Override
     public void closeSpeechBullet(boolean hasTip) {
         logger.i("closeSpeechBullet");
+        if (hasTip) {
+            mWeakHandler.removeCallbacks(showSpeechBulletRunnable);
+            if (mDanmakuView != null) {
+                mDanmakuView.removeAllDanmakus(false);
+                latestDanmakuAddtime = -300;
+                danmakuAddCount = 0;
+            }
+            showStartSpeechBulletToast("老师关闭了语音弹幕");
+            umsAgentDebugInterSno9();
+        }
         if (!isShowingSpeechBullet) {
             return;
         }
         isShowingSpeechBullet = false;
-        if (hasTip) {
-//            tvSpeechbulCloseTip.setVisibility(View.VISIBLE);
-//            new CountDownTimer(5050, 1000) {
-//                @Override
-//                public void onTick(long millisUntilFinished) {
-//                    int i = (int) (millisUntilFinished / 1000);
-//                    tvSpeechbulCloseTip.setText(i + "秒后结束语音弹幕");
-//                }
-//
-//                @Override
-//                public void onFinish() {
-//                    KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
-//                    rlSpeechBulContent.removeView(rlSpeechBulRoot);
-//                    rlSpeechBulRoot.setClickable(false);
-//                    stopEvaluator();
-//                    isShowingSpeechBullet = false;
-//                }
-//            }.start();
-            mWeakHandler.removeCallbacks(showSpeechBulletRunnable);
-            showStartSpeechBulletToast("老师关闭了语音弹幕");
-            umsAgentDebugInterSno9();
-        }
+
         if (rlSpeechBulRoot != null && rlSpeechBulContent != null) {
             KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
             rlSpeechBulContent.removeView(rlSpeechBulRoot);
@@ -853,6 +842,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                                     .getErrorNo());
                             if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
                                 onEvaluatorSuccess(resultEntity.getCurString(), true);
+                            } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                             } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                                 onEvaluatorError(resultEntity);
                             } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {

@@ -529,15 +529,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
     @Override
     public void closeSpeechBullet(boolean hasTip) {
         logger.i("closeSpeechBullet");
-        if (!isShowingSpeechBullet) {
-            return;
-        }
-        isShowingSpeechBullet = false;
         if (hasTip) {
-            if (issend.equals("0")) {
-                tvSpeechbulCloseTip.setVisibility(View.VISIBLE);
-                countDownTimer.start();
-            }
             //系统日志
             Map<String, String> mData = new HashMap<>();
             mData.put("logtype", "voiceBarrageSwitch");
@@ -546,7 +538,38 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
             mData.put("cmdtype", "0");
             mData.put("devicestatus", devicestatus);
             umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
+        }
+        if (!isShowingSpeechBullet) {
+            return;
+        }
+        isShowingSpeechBullet = false;
+
+        //交互日志
+        if (tvSpeechbulTitle.getVisibility() == View.VISIBLE) {
+            finalui = "recogWidget";
         } else {
+            finalui = "inputWidget";
+        }
+        Map<String, String> mDataInter = new HashMap<>();
+        mDataInter.put("logtype", "voiceBarrageOperation");
+        mDataInter.put("pageid", "voice_barrage");
+        mDataInter.put("voiceid", presenter.getVoiceId());
+        mDataInter.put("issend", issend);
+        mDataInter.put("ismodify", ismodify);
+        mDataInter.put("isretalk", isretalk);
+        mDataInter.put("isdirty", isdirty);
+        mDataInter.put("text", text);
+        mDataInter.put("aitext", aiText);
+        mDataInter.put("sid", sid);
+        mDataInter.put("closetype", closetype);
+        mDataInter.put("finalui", finalui);
+        umsAgentDebugInter(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mDataInter);
+
+        if (hasTip) {
+            tvSpeechbulCloseTip.setVisibility(View.VISIBLE);
+            countDownTimer.start();
+        }
+        else {
             removeSpeechBullet();
         }
     }
@@ -569,31 +592,12 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
     };
 
     public void removeSpeechBullet() {
-        if (tvSpeechbulTitle.getVisibility() == View.VISIBLE) {
-            finalui = "recogWidget";
-        } else {
-            finalui = "inputWidget";
+        if (root != null && rlSpeechBulContent != null) {
+            KeyboardUtil.hideKeyboard(root);
+            rlSpeechBulContent.removeView(root);
+            root.setClickable(false);
         }
-        KeyboardUtil.hideKeyboard(root);
-        rlSpeechBulContent.removeView(root);
-        root.setClickable(false);
         stopEvaluator();
-
-        //交互日志
-        Map<String, String> mDataInter = new HashMap<>();
-        mDataInter.put("logtype", "voiceBarrageOperation");
-        mDataInter.put("pageid", "voice_barrage");
-        mDataInter.put("voiceid", presenter.getVoiceId());
-        mDataInter.put("issend", issend);
-        mDataInter.put("ismodify", ismodify);
-        mDataInter.put("isretalk", isretalk);
-        mDataInter.put("isdirty", isdirty);
-        mDataInter.put("text", text);
-        mDataInter.put("aitext", aiText);
-        mDataInter.put("sid", sid);
-        mDataInter.put("closetype", closetype);
-        mDataInter.put("finalui", finalui);
-        umsAgentDebugInter(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mDataInter);
     }
 
     @Override
