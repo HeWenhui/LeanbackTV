@@ -21,12 +21,13 @@
         android:background="#99000000"
         android:visibility="gone">
 
-        <ImageView
+        <TextView
             android:id="@+id/iv_livevideo_open_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:scaleType="centerCrop" />
+            android:background="@drawable/bg_livevideo_jsttl_toast_bg_normal"
+            android:gravity="center" />
 
     </RelativeLayout>
 

@@ -37,7 +37,7 @@ public class SpeechCollectivePager extends BasePager {
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "feedback/";
     InterationVolumeWaveView vwvSpeectevalWave;
     LottieAnimationView waveView;
-    ImageView promtView;
+    TextView promtView;
     View promtGroup;
     View waveGroup;
     TextView countDownView;
@@ -62,6 +62,8 @@ public class SpeechCollectivePager extends BasePager {
         waveGroup = view.findViewById(R.id.fl_livevideo_wave_layout);
         Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
         countDownView.setTypeface(fontFace);
+        promtView.setTypeface(fontFace);
+
         start();
         return view;
     }
@@ -145,7 +147,7 @@ public class SpeechCollectivePager extends BasePager {
 
     public void start() {
         promtGroup.setVisibility(View.VISIBLE);
-        promtView.setImageResource(R.drawable.ic_livevideo_speech_collective_open);
+        promtView.setText("老师开启了集体发言踊跃参与吧！");
         promtView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -158,6 +160,6 @@ public class SpeechCollectivePager extends BasePager {
         waveGroup.setVisibility(View.GONE);
         vwvSpeectevalWave.stop();
         promtGroup.setVisibility(View.VISIBLE);
-        promtView.setImageResource(R.drawable.ic_livevideo_speech_collective_close);
+        promtView.setText("老师结束了集体发言");
     }
 }
