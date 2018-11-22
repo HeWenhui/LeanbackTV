@@ -208,8 +208,8 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
         }
     });
 
-    public SpeechBulletScreenPager(Context context) {
-        super(context);
+    public SpeechBulletScreenPager(Context context, boolean isNewView) {
+        super(context, isNewView);
     }
 
     /**
