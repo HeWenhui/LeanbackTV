@@ -663,132 +663,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     }
 
     @Override
-    protected SpannableStringBuilder createSpannable(int ftype, String name, Drawable drawable) {
-        return super.createSpannable(ftype, name, drawable);
-    }
-
-
-    /**
-     * 文科，当老师开启了送花或者送礼物开关后，点击赠送按钮之后的逻辑处理
-     *
-     * @param entity
-     */
-    private void logicForOpenbarrage(final FlowerEntity entity) {
-        if (ircState.isOpenbarrage()) {
-            String educationStage = getInfo.getEducationStage();
-            ircState.praiseTeacher(ircState.getMode(), entity.getFtype() + "", educationStage, new HttpCallBack(false) {
-                @Override
-                public void onPmSuccess(ResponseEntity responseEntity) {
-                    if (goldNum == null) {
-                        OtherModulesEnter.requestGoldTotal(mContext);
-                    } else {
-                        if (responseEntity.getJsonObject() instanceof JSONObject) {
-                            try {
-                                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                                int gold = Integer.parseInt(goldNum);
-                                goldNum = ("" + (gold - jsonObject.getInt("gold")));
-                                if (Integer.parseInt(goldNum) <= 0) {
-                                    XESToastUtils.showToast(mContext, "您的金币不足啦");
-                                    return;
-                                }
-                                onGetMyGoldDataEvent(goldNum);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
-                    mView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mFlowerWindow.dismiss();
-                        }
-                    }, 1000);
-                }
-
-                @Override
-                public void onPmFailure(Throwable error, String msg) {
-                    mFlowerWindow.dismiss();
-                }
-
-                @Override
-                public void onPmError(ResponseEntity responseEntity) {
-                    mFlowerWindow.dismiss();
-                }
-            });
-        } else {
-
-        }
-    }
-
-    /**
-     * 理科，当老师开启了送花或者送礼物开关后，点击赠送按钮之后的逻辑处理
-     *
-     * @param entity
-     * @param formWhichTeacher
-     */
-    private void logicForOpenbarrageLike(final FlowerEntity entity, String formWhichTeacher) {
-        //主讲或者辅导有任一个开启了献花
-        if (ircState.isOpenZJLKbarrage() || ircState.isOpenFDLKbarrage()) {
-            String educationStage = getInfo.getEducationStage();
-            ircState.praiseTeacher(formWhichTeacher, entity.getFtype() + "", educationStage, new HttpCallBack(false) {
-                @Override
-                public void onPmSuccess(ResponseEntity responseEntity) {
-                    if (goldNum == null) {
-                        OtherModulesEnter.requestGoldTotal(mContext);
-                    } else {
-                        if (responseEntity.getJsonObject() instanceof JSONObject) {
-                            try {
-                                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                                int gold = Integer.parseInt(goldNum);
-                                goldNum = ("" + (gold - jsonObject.getInt("gold")));
-                                if (Integer.parseInt(goldNum) <= 0) {
-                                    XESToastUtils.showToast(mContext, "您的金币不足啦");
-                                    return;
-                                }
-                                onGetMyGoldDataEvent(goldNum);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    addDanmaKuFlowers(entity.getFtype(), getInfo.getStuName());
-                    mView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mFlowerWindow.dismiss();
-                        }
-                    }, 1000);
-                }
-
-                @Override
-                public void onPmFailure(Throwable error, String msg) {
-                    mFlowerWindow.dismiss();
-                }
-
-                @Override
-                public void onPmError(ResponseEntity responseEntity) {
-                    mFlowerWindow.dismiss();
-                }
-            });
-        } else {
-
-        }
-    }
-
-    /**
-     * 文科点击赠送按钮的逻辑
-     *
-     * @param entity
-     */
-    private void logicForChOnClickSendFlowerBt(final FlowerEntity entity) {
-        if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
-            logicForOpenbarrage(entity);
-        } else {
-        }
-    }
-
-    @Override
     public void onTitleShow(boolean show) {
         btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
         if (!keyboardShowing && switchFSPanelLinearLayout.getVisibility() != View.GONE) {
@@ -816,7 +690,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public boolean isCloseChat() {
-
         return false;
     }
 
@@ -1037,9 +910,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         });
 
     }
-
-
-
     /**
      * 关闭开启聊天
      */
@@ -1080,21 +950,14 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
      */
     @Override
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
-        Loger.i("yzl_fd", ircState.getMode() + "老师" + openbarrage + "了献花 fromNotice = " + fromNotice + " liveBll" +
-                ".getLKNoticeMode()" + ircState.getLKNoticeMode());
-
-
     }
 
     @Override
     public void onFDOpenbarrage(boolean open, boolean b) {
 
     }
-
-
     /**
      * 理科，主讲和辅导切换的时候，给出提示（切流）
-     *
      * @param oldMode
      * @param newMode
      * @param isShowNoticeTips  为false的时候，默认显示"已切换到 主讲/辅导模式"
@@ -1104,38 +967,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void onTeacherModeChange(String oldMode, final String newMode, boolean isShowNoticeTips, final boolean
             iszjlkOpenbarrage, final boolean isFDLKOpenbarrage) {
-        //理科辅导送礼物功能
-        Loger.i("yzl_fd", "onTeacherModeChange 切流，使送礼物面板消失");
-        if (LiveTopic.MODE_CLASS.equals(oldMode) && iszjlkOpenbarrage) {
-            //主讲老师是开启状态，切辅导，提醒“已切换到主讲/辅导”
-            Loger.i("yzl_fd", "主讲老师是开启状态，切辅导，提醒“已切换到" + newMode);
-            return;
-        }
-        if (LiveTopic.MODE_TRANING.equals(oldMode) && isFDLKOpenbarrage) {
-            //辅导老师是开启状态，切主讲，提醒“已切换到主讲/辅导”
-            Loger.i("yzl_fd", "主讲老师是开启状态，切辅导，提醒“已切换到" + newMode);
-            return;
-        }
-
-        if (LiveTopic.MODE_CLASS.equals(oldMode) && !iszjlkOpenbarrage) {
-            //主讲老师是关闭状态，切辅导
-            if (isFDLKOpenbarrage) {
-                //如果辅导是开启，提醒：“辅导老师开启了礼物功能”；如果辅导是关闭，不做提醒
-                Loger.i("yzl_fd", "如果辅导是开启，提醒：“辅导老师开启了礼物功能”；如果辅导是关闭，不做提醒newMode =" + newMode + " isFDLKOpenbarrage = " +
-                        "" + isFDLKOpenbarrage);
-
-            }
-            return;
-        }
-        if (LiveTopic.MODE_TRANING.equals(oldMode) && !isFDLKOpenbarrage) {
-            //辅导老师是关闭状态，切主讲
-            if (iszjlkOpenbarrage) {
-                //如果主讲是开启，提醒：“主讲老师开启了礼物功能”；如果主讲是关闭，不做提醒
-                Loger.i("yzl_fd", "如果主讲是开启，提醒：“主讲老师开启了礼物功能”；如果主讲是关闭，不做提醒newMode =" + newMode + " iszjlkOpenbarrage = " +
-                        "" + iszjlkOpenbarrage);
-            }
-            return;
-        }
     }
 
     /*添加聊天信息，超过120，移除60个*/
@@ -1203,14 +1034,12 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
        // tvOnliveNum.setText(num + "人正在上课");
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         if (mCommonWordWindow != null) {
             mCommonWordWindow.dismiss();
         }
-
         if (mLiveMsgList != null) {
             mLiveMsgList.clear();
         }
