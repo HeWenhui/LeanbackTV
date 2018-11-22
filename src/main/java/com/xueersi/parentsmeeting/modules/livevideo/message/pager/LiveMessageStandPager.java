@@ -363,12 +363,16 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     /** 聊天打开的动画 */
     private void initBtMesOpenAnimation(boolean isvoice) {
-        if (lvMessage.getVisibility() == View.GONE) {
+        if (rlMessageContent.getVisibility() == View.GONE) {
             startOpenAnimation(isvoice);
             rlMessageContent.setVisibility(View.VISIBLE);
             lvMessage.setVisibility(View.VISIBLE);
             if (isvoice) {
+                mMsgContent = "";
+                mVoiceContent = "";
                 startVoiceInput();
+            } else {
+                KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageContent);
             }
         } else {
 //            if (rlMessageContent.getVisibility() == View.GONE) {
@@ -1292,7 +1296,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                             btMesOpen.performClick();
                             isMessageLayoutShow = false;
                         }
-
+                        lvMessage.setVisibility(View.VISIBLE);
                         logger.i("显示聊天框");
                     } else {
                         if (rlMessageContent.getVisibility() == View.VISIBLE || rlMessageVoice.getVisibility() ==
@@ -1628,7 +1632,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mVoiceFile = new File(dir, "voicechat" + System.currentTimeMillis() + ".mp3");
         mParam.setRecogType(SpeechConfig.SPEECH_RECOGNITIYON_OFFINE);
         mParam.setLocalSavePath(mVoiceFile.getPath());
-        mParam.setVad_pause_sec("2");
+        mParam.setVad_pause_sec("1.2");
         mParam.setVad_max_sec("30");
         mSpeechUtils.startRecog(mParam, new EvaluatorListener() {
             @Override

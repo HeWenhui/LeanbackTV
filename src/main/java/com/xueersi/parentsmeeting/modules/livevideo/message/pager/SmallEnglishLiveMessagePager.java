@@ -1917,7 +1917,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         SpeechParamEntity param = new SpeechParamEntity();
         param.setRecogType(SpeechConfig.SPEECH_RECOGNITIYON_OFFINE);
         param.setLocalSavePath(mVoiceFile.getPath());
-        param.setVad_pause_sec("2");
+        param.setVad_pause_sec("1.2");
         param.setVad_max_sec("30");
         speechUtils.startRecog(param, new EvaluatorListenerWithPCM() {
             @Override
