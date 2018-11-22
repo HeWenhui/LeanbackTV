@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
         android:layout_marginTop="49dp"
-        android:background="@drawable/bg_livevideo_small_chinese_rank_btn_nor"
+        android:background="@drawable/bg_livevideo_small_chinese_rank_btn_click"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_rank_rank_background"
         app:layout_constraintRight_toLeftOf="@+id/iv_livevideo_small_chinese_rank_middle_btn"

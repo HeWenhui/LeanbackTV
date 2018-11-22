@@ -32,6 +32,16 @@
         app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_background" />
 
     <ImageView
+        android:layout_width="77dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="4dp"
+        android:src="@drawable/bg_livevideo_small_chinese_send_gift_gift_title"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_send_gift_background"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_background"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_background" />
+
+    <ImageView
         android:id="@+id/iv_livevideo_small_chinese_send_gift_small_gift_background"
         android:layout_width="wrap_content"
         android:layout_height="110dp"

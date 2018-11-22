@@ -105,20 +105,12 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     private boolean isTouch = false;
     /** 聊天字体大小，最多13个汉字 */
     private int messageSize = 0;
-    /** 献花 */
-//    private PopupWindow mFlowerWindow;
-    //献花的弹窗
-//    private View flowerContentView;
-//    private TextView tvMessageGoldLable;
-//    private TextView tvMessageGold;
     private String goldNum;
     /** 上次发送消息时间 */
     private long lastSendMsg;
     private BaseLiveMediaControllerBottom liveMediaControllerBottom;
 
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
-    //        private ImageView ivExpressionCancle;
-//    private Activity liveVideoActivity;
     private KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener;
     /** 竖屏的时候，也添加横屏的消息 */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
@@ -130,7 +122,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     //是否是小英
     private SmallChineseSendGiftPager smallChineseSendGiftPager;
     //测试使用的布尔值，用来控制无限发送弹幕
-    private boolean blTestSEBullet = false;
+//    private boolean blTestSEBullet = true;
     //打开献花弹窗时，北京变为60%黑色不透明，且不可点击.
 //    private FrameLayout frameLayout;
     //整个布局的根View,用来献花弹窗增加背景时使用
@@ -249,7 +241,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
                 return new AdapterItemInterface<LiveMessageEntity>() {
-                    TextView tvMessageItem;
+                    FangZhengCuYuanTextView tvMessageItem;
 
                     @Override
                     public int getLayoutResId() {
@@ -258,7 +250,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
 
                     @Override
                     public void initViews(View root) {
-                        tvMessageItem = (TextView) root.findViewById(R.id.tv_livevideo_small_chinese_message_item);
+                        tvMessageItem = root.findViewById(R.id.tv_livevideo_small_chinese_message_item);
                         tvMessageItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, messageSize);
                     }
 
@@ -560,21 +552,21 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                         });
             }
         }, 10);
-        if (isSendFlower) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (true) {
-                        addDanmaKuFlowers(FLOWERS_SMALL, "me", false);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }).start();
-        }
+//        if (isSendFlower) {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    while (isSendFlower) {
+//                        addDanmaKuFlowers(FLOWERS_SMALL, "me", false);
+//                        try {
+//                            Thread.sleep(1000);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            }).start();
+//        }
     }
 
     @Override
@@ -857,21 +849,21 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             }
         });
         //测试时候使用
-        if (blTestSEBullet) {
-            liveThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    while (blTestSEBullet) {
-                        addDanmaKuFlowers(FLOWERS_SMALL, "zyy", false);
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-        }
+//        if (blTestSEBullet) {
+//            liveThreadPoolExecutor.execute(new Runnable() {
+//                @Override
+//                public void run() {
+//                    while (blTestSEBullet) {
+//                        addDanmaKuFlowers(FLOWERS_SMALL, "zyy", false);
+//                        try {
+//                            Thread.sleep(500);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            });
+//        }
 
         logger.i("initFlower:time1=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();

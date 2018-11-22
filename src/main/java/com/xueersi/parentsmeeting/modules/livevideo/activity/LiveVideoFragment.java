@@ -170,6 +170,41 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             videoChatIRCBll.setLiveFragmentBase(this);
             mLiveBll.addBusinessBll(videoChatIRCBll);
+        } else if (isArts == 2) {
+            liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
+            liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+            mLiveBll.addBusinessBll(liveIRCMessageBll);
+//            mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new LiveVoteBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new LiveAutoNoticeIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new AnswerRankIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new SpeechCollectiveIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new LiveRemarkIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new SpeechBulletScreenIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
+            int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
+            if (allowLinkMicNew == 1) {
+                VideoAudioChatIRCBll videoAudioChatIRCBll = new VideoAudioChatIRCBll(activity, mLiveBll);
+                videoAudioChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+                videoAudioChatIRCBll.setLiveFragmentBase(this);
+                mLiveBll.addBusinessBll(videoAudioChatIRCBll);
+            } else {
+                VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
+                videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+                videoChatIRCBll.setLiveFragmentBase(this);
+                mLiveBll.addBusinessBll(videoChatIRCBll);
+            }
         } else {
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
