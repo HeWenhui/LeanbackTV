@@ -880,6 +880,13 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
         tvSpeechbulCount.setText(evaluateResult.length() + "/15");
         etSpeechbulWords.requestFocus();
         etSpeechbulWords.setSelection(etSpeechbulWords.getText().toString().length());
+        if (StringUtils.isSpace(etSpeechbulWords.getText().toString())) {
+            tvSpeechbulSend.setEnabled(false);
+            tvSpeechbulSend.setAlpha(0.6f);
+        } else {
+            tvSpeechbulSend.setEnabled(true);
+            tvSpeechbulSend.setAlpha(1.0f);
+        }
     }
 
     /**
@@ -1069,7 +1076,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
             return;
         }
         //如果长时间没有弹幕，可能会休眠
-        if (mDanmakuView != null && mDanmakuView.isPaused()) {
+        if (mDanmakuView != null && mDanmakuView.isPrepared() && mDanmakuView.isPaused()) {
             mDanmakuView.resume();
         }
         final BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);

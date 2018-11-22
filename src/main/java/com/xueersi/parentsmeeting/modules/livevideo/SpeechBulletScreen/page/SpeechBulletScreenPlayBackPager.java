@@ -234,7 +234,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
             return;
         }
         //如果长时间没有弹幕，可能会休眠
-        if (mDanmakuView != null && mDanmakuView.isPaused()) {
+        if (mDanmakuView != null && mDanmakuView.isPrepared() && mDanmakuView.isPaused()) {
             mDanmakuView.resume();
         }
         final BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);

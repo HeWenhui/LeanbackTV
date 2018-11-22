@@ -1054,6 +1054,13 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         tvSpeechbulCount.setText(evaluateResult.length() + "/60");
         etSpeechbulWords.requestFocus();
         etSpeechbulWords.setSelection(etSpeechbulWords.getText().toString().length());
+        if (StringUtils.isSpace(etSpeechbulWords.getText().toString())) {
+            tvSpeechbulSend.setEnabled(false);
+            tvSpeechbulSend.setAlpha(0.6f);
+        } else {
+            tvSpeechbulSend.setEnabled(true);
+            tvSpeechbulSend.setAlpha(1.0f);
+        }
     }
 
     /**
@@ -1256,7 +1263,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         }
 
         //如果长时间没有弹幕，可能会休眠
-        if (mDanmakuView != null && mDanmakuView.isPaused()) {
+        if (mDanmakuView != null && mDanmakuView.isPrepared() && mDanmakuView.isPaused()) {
             mDanmakuView.resume();
         }
         final BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
@@ -1531,7 +1538,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     @Override
     public void onPause() {
         super.onPause();
-        if (mDanmakuView != null) {
+        if (mDanmakuView != null && mDanmakuView.isPrepared()) {
             mDanmakuView.pause();
         }
     }
@@ -1539,7 +1546,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     @Override
     public void onResume() {
         super.onResume();
-        if (mDanmakuView != null) {
+        if (mDanmakuView != null && mDanmakuView.isPrepared() && mDanmakuView.isPaused()) {
             mDanmakuView.resume();
         }
     }
