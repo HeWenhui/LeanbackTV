@@ -209,9 +209,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
                 if (lottieComposition == null) {
-                    disMissAnswerResult();
+//                    disMissAnswerResult();
                     return;
                 }
+                disMissAnswerResult();
                 mRlResult = (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_voice_result, null);
                 LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
                 lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_right");
@@ -708,6 +709,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 mArtsAnswerResultEvent = null;
                 forceSumbmit = false;
                 break;
+            case XESCODE.ARTS_STOP_RANKING:
             case XESCODE.ARTS_STOP_QUESTION:
                 mArtsAnswerResultEvent = null;
                 if(mGetInfo.getPattern() == 2){
@@ -729,7 +731,20 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 String status = data.optString("status", "off");
                 mArtsAnswerResultEvent = null;
                 if ("off".equals(status)) {
-                    closeAnswerResult(true);
+                    if(mGetInfo.getPattern() == 2){
+                        rlAnswerResultLayout.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(!close){
+                                    rlAnswerResultLayout.removeView(mRlResult);
+                                }
+
+                            }
+                        });
+                        EventBus.getDefault().post(new AnswerResultCplShowEvent());
+                    }else{
+                        closeAnswerResult(true);
+                    }
                 } else if ("on".equals(status)) {
                     forceSumbmit = false;
                 }
@@ -908,6 +923,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             XESCODE.ARTS_REMID_SUBMIT,
             XESCODE.ARTS_PARISE_ANSWER_RIGHT,
             XESCODE.ARTS_STOP_QUESTION,
+            XESCODE.ARTS_STOP_RANKING,
             XESCODE.ARTS_H5_COURSEWARE,
             XESCODE.ARTS_PRAISE_ANSWER_RIGHT_SINGLE,
             XESCODE.ARTS_SEND_QUESTION
@@ -963,11 +979,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * 回答问题结果提示框延迟三秒消失
      */
     public void disMissAnswerResult() {
-        rlAnswerResultLayout.postDelayed(new Runnable() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
                 rlAnswerResultLayout.removeView(mRlResult);
             }
-        }, 3000);
+        }, 5000);
     }
 }
