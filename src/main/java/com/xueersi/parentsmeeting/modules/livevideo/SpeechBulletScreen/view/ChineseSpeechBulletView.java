@@ -598,8 +598,7 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
         if (hasTip) {
             tvSpeechbulCloseTip.setVisibility(View.VISIBLE);
             countDownTimer.start();
-        }
-        else {
+        } else {
             removeSpeechBullet();
         }
     }
@@ -1079,6 +1078,10 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
         }
         //如果长时间没有弹幕，可能会休眠
         if (mDanmakuView != null && mDanmakuView.isPrepared() && mDanmakuView.isPaused()) {
+            mDanmakuView.resume();
+        }
+        if (!isGuest) {
+            mDanmakuView.pause();
             mDanmakuView.resume();
         }
         final BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);

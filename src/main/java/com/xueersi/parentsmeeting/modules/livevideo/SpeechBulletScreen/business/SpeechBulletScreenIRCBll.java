@@ -40,7 +40,11 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 
     public SpeechBulletScreenIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
-        this.speechBulletView = new ChineseSpeechBulletView(context, false);
+        if (LiveVideoConfig.isSmallChinese) {
+            this.speechBulletView = new ChineseSpeechBulletView(context, false);
+        } else {
+            this.speechBulletView = new SpeechBulletScreenPager(context, false);
+        }
         speechBulletView.setPresenter(this);
     }
 
@@ -99,12 +103,14 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                             });
                         }
                     } else if ("false".equals(open)) {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                speechBulletView.closeSpeechBullet(true);
-                            }
-                        });
+                        if (speechBulletView != null) {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    speechBulletView.closeSpeechBullet(true);
+                                }
+                            });
+                        }
                     }
                 } else if ("".equals(voiceId)) {
                     // 教师端退出情况：如果收到的260消息中的voiceId字段为空，学生退出弹幕但不要弹出提示窗口。
@@ -230,7 +236,6 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
     public void onUnknown(String line) {
 
     }
-
 
     @Override
     public void uploadSpeechBulletScreen(String msg, HttpCallBack requestCallBack) {
