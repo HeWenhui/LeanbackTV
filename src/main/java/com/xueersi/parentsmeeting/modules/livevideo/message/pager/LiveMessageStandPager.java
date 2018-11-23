@@ -297,8 +297,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
      *
      * @param isVisible
      */
+    private boolean isNotExpericence = true;
     public void setStarGoldImageViewVisible(boolean isVisible) {
-
+        isNotExpericence = isVisible;
+        btnVoiceMesOpen.setVisibility(View.GONE);
         if (mView != null) {
             mView.findViewById(R.id.cl_stand_experience_temp_gold_star).setVisibility(isVisible ? View.VISIBLE : View
                     .GONE);
@@ -414,7 +416,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         btnVoiceMesOpen.setEnabled(false);
         ivMessageClose.setEnabled(false);
         logger.d("initBtMesOpenAnimation:false");
-        if (isvoice && isShowSpeechRecog) {
+        if (isvoice && isShowSpeechRecog && isNotExpericence) {
             btMesOpenAnimation = FrameAnimation.createFromAees(mContext, btnVoiceMesOpen,
                     "live_stand/frame_anim/openvoicemsg",
                     50, false);
@@ -1286,7 +1288,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         }
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
-                        btnVoiceMesOpen.setVisibility(View.VISIBLE);
+                        if (isNotExpericence){
+                            btnVoiceMesOpen.setVisibility(View.VISIBLE);
+                        }
                         Animation animation;
                         animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_live_stand_speech_voice);
                         if (isShowSpeechRecog) {
@@ -1545,7 +1549,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         logger.i("显示聊天框");
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
-                        btnVoiceMesOpen.setVisibility(View.VISIBLE);
+                        if (isNotExpericence){
+                            btnVoiceMesOpen.setVisibility(View.VISIBLE);
+                        }
                         if (isMessageLayoutShow) {
                             btMesOpen.performClick();
                             isMessageLayoutShow = false;
@@ -1931,6 +1937,5 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                 callBack.onDataFail(0, result.getErrorMsg());
             }
         });
-
     }
 }
