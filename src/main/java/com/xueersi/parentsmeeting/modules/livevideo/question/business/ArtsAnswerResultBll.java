@@ -709,7 +709,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 mArtsAnswerResultEvent = null;
                 forceSumbmit = false;
                 break;
-            case XESCODE.ARTS_STOP_RANKING:
             case XESCODE.ARTS_STOP_QUESTION:
                 mArtsAnswerResultEvent = null;
                 if(mGetInfo.getPattern() == 2){
@@ -923,7 +922,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             XESCODE.ARTS_REMID_SUBMIT,
             XESCODE.ARTS_PARISE_ANSWER_RIGHT,
             XESCODE.ARTS_STOP_QUESTION,
-            XESCODE.ARTS_STOP_RANKING,
             XESCODE.ARTS_H5_COURSEWARE,
             XESCODE.ARTS_PRAISE_ANSWER_RIGHT_SINGLE,
             XESCODE.ARTS_SEND_QUESTION

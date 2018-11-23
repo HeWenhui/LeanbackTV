@@ -150,7 +150,11 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         final String today = dateFormat.format(date);
         final File todayCacheDir = new File(cacheFile, today);
         final File todayLiveCacheDir = new File(todayCacheDir, liveId);
-        mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
+        if(isNewArtsCourseware){
+            mMorecacheout = new File(todayLiveCacheDir, liveId + "artschild");
+        }else{
+            mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
+        }
         mPublicCacheout = new File(cacheFile, EnglishH5Cache.mPublicCacheoutName);
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
@@ -333,7 +337,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         webSetting.setJavaScriptEnabled(true);
         wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
 
-        if (englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack) {
+        if (englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack || isNewArtsCourseware) {
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
                 public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
@@ -378,6 +382,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                             String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                             WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
                             webResourceResponse.setResponseHeaders(header);
+                            Log.e("Duncan","artsload");
                             return webResourceResponse;
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
