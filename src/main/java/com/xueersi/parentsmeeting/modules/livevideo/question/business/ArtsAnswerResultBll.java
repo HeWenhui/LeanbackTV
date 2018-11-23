@@ -124,6 +124,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private HashMap<Integer, ScoreRange> mScoreRangeMap;
     /**是否需要更新右侧金币数*/
     private boolean shoulUpdateGold;
+    private boolean close = false;
 
     /**
      * 当前语音题的答题结果
@@ -134,6 +135,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      */
     private boolean praiseViewShowing;
     private ArtsAnswerResultEvent mArtsAnswerResultEvent;
+    private LiveSoundPool mLiveSoundPool;
+    private RelativeLayout mRlResult;
 
     /**
      * @param context
@@ -191,6 +194,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             public void run() {
                 if(mGetInfo.getPattern() == 2){
                     showH5Result();
+                    close = false;
                 }else{
                     closeRemindUI();
                     addPager();
@@ -205,27 +209,57 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
                 if (lottieComposition == null) {
+                    disMissAnswerResult();
                     return;
                 }
-                final RelativeLayout rlResult = (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_voice_result, null);
+                mRlResult = (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_voice_result, null);
                 LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
                 lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_right");
                 lottieAnimationView.setComposition(lottieComposition);
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-                rlResult.addView(lottieAnimationView, lp);
+                mRlResult.addView(lottieAnimationView, lp);
 //                    final ViewGroup group = (ViewGroup) baseVoiceAnswerPager.getRootView();
 //                    group.addView(rlResult);
-                rlAnswerResultLayout.addView(rlResult);
+                rlAnswerResultLayout.addView(mRlResult);
                 lottieAnimationView.playAnimation();
                 setRightGold(mContext, lottieAnimationView, mAnswerReulst.getGold());
-                final LiveSoundPool liveSoundPool = LiveSoundPool.createSoundPool();
-                final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(liveSoundPool);
-                rlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
+                mLiveSoundPool = LiveSoundPool.createSoundPool();
+                final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(mLiveSoundPool);
+                mRlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        StandLiveMethod.onClickVoice(liveSoundPool);
-                        rlAnswerResultLayout.removeView(rlResult);
+                        close = true;
+                        StandLiveMethod.onClickVoice(mLiveSoundPool);
+                        rlAnswerResultLayout.removeView(mRlResult);
+                    }
+                });
+                mRlResult.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                    @Override
+                    public void onViewAttachedToWindow(View v) {
+
+                    }
+
+                    @Override
+                    public void onViewDetachedFromWindow(View v) {
+                        logger.d( "onViewDetachedFromWindow right");
+                        mLiveSoundPool.stop(task);
+                        rlAnswerResultLayout.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(!close){
+                                    StandLiveMethod.onClickVoice(mLiveSoundPool);
+                                    rlAnswerResultLayout.removeView(mRlResult);
+                                }
+                            }
+                        });
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mLiveSoundPool.release();
+                            }
+                        }, 500);
                     }
                 });
             }
@@ -677,6 +711,15 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             case XESCODE.ARTS_STOP_QUESTION:
                 mArtsAnswerResultEvent = null;
                 if(mGetInfo.getPattern() == 2){
+                    rlAnswerResultLayout.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(!close){
+                                rlAnswerResultLayout.removeView(mRlResult);
+                            }
+
+                        }
+                    });
                     EventBus.getDefault().post(new AnswerResultCplShowEvent());
                 }else{
                     closeAnswerResult(true);
@@ -914,5 +957,17 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             return;
         }
         lottieAnimationView.updateBitmap("image_22", img_7Bitmap);
+    }
+
+    /**
+     * 回答问题结果提示框延迟三秒消失
+     */
+    public void disMissAnswerResult() {
+        rlAnswerResultLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rlAnswerResultLayout.removeView(mRlResult);
+            }
+        }, 3000);
     }
 }

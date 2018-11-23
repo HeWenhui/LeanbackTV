@@ -41,6 +41,7 @@ import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.event.MiniEvent;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 
@@ -1012,11 +1013,20 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
     private void onCommit(VideoResultEntity entity, double speechDuration) {
         boolean isRight;
-        if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
-            isRight = true;
-        } else {
-            isRight = false;
+        if(LiveVideoConfig.isNewArts){
+            if (entity.getResultType() == 2) {
+                isRight = true;
+            } else {
+                isRight = false;
+            }
+        }else{
+            if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
+                isRight = true;
+            } else {
+                isRight = false;
+            }
         }
+
         if (lavLivevideoVoiceansTeamMine.getVisibility() == View.VISIBLE) {
             TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lavLivevideoVoiceansTeamMine.getTag();
             return;
