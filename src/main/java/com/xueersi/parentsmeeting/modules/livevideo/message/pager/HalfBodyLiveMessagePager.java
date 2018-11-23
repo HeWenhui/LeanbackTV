@@ -63,6 +63,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecyce
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMsgLayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.MsgItemAnimator;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
@@ -452,13 +453,13 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                 tvSysMsg.setTextColor(Color.parseColor("#ffffff"));
             }
             if (LiveMessageEntity.MESSAGE_TIP == data.getType()) {
-                drawable = tvMsg.getResources().getDrawable(R.drawable.icon_live_sys_msg);
+                drawable = dwSysIcon;//tvMsg.getResources().getDrawable(R.drawable.icon_live_sys_msg);
             } else if (LiveMessageEntity.MESSAGE_TEACHER == data.getType()) {
-                drawable = tvMsg.getResources().getDrawable(R.drawable.icon_live_teacher_msg);
+                drawable = dwTeacherIcon;//tvMsg.getResources().getDrawable(R.drawable.icon_live_teacher_msg);
             }
             if (drawable != null) {
                 tvMsg.setVisibility(View.INVISIBLE);
-                SpannableStringBuilder ssb = new SpannableStringBuilder("  ");
+                SpannableStringBuilder ssb = new SpannableStringBuilder("# ");
                 drawable.setBounds(0, 0, SizeUtils.Dp2Px(tvMsg.getContext(), 40), SizeUtils.Dp2Px(tvMsg.getContext(),
                         18));
                 CenterAlignImageSpan imageSpan = new CenterAlignImageSpan(drawable);
@@ -509,7 +510,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         }
     }
 
-
+    private Drawable dwSysIcon;
+    private Drawable dwTeacherIcon;
     /**
      * 初始化 联通信息
      */
@@ -561,6 +563,9 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                 mMsgAdapter.notifyDataSetChanged();
             }
         });
+
+        dwSysIcon = mView.getResources().getDrawable(R.drawable.icon_live_sys_msg);
+        dwTeacherIcon = mView.getResources().getDrawable(R.drawable.icon_live_teacher_msg);
         initReclItemState();
     }
 
@@ -797,7 +802,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        Loger.e("LiveMessagerPager", "=====>onMessage called");
         if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
             sender = "主讲老师";
         } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
