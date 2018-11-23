@@ -396,8 +396,10 @@
     <!--直播-语音弹幕-->
     <item name="rl_livevideo_content_speechbul" type="id" />
     <item name="rl_livevideo_speechbul_root" type="id" />
+    <item name="rl_livevideo_speechbul_title" type="id" />
     <item name="tv_livevideo_speechbul_title" type="id" />
     <item name="tv_livevideo_speechbul_title_count" type="id" />
+    <item name="tv_livevideo_speechbul_title_switch" type="id" />
     <item name="tv_livevideo_speechbul_close" type="id" />
     <item name="vwv_livevideo_speechbul_wave" type="id" />
     <item name="tv_livevideo_speechbul_countdown" type="id" />
@@ -847,4 +849,7 @@
     <item name="v_livevideo_chat_myline" type="id" />
     <item name="rl_livevideo_chat_voice" type="id" />
     <item name="vw_livevideo_chat_voice" type="id" />
+
+    <!--小语皮肤-->
+    <item name="tv_livevideo_primary_chinese_toast_content" type="id" />
 </resources>

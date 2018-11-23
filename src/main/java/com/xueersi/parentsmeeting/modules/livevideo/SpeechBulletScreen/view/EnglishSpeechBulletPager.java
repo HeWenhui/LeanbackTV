@@ -490,9 +490,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     aliyunUrl = "";
                     umsAgentDebugInterSno7();
                 }
-
-                addDanmaku("我", etSpeechbulWords.getText().toString(), presenter.getHeadImgUrl(), false);
                 closeSpeechBullet(false);
+                addDanmaku("我", etSpeechbulWords.getText().toString(), presenter.getHeadImgUrl(), false);
 
                 if (ShareDataManager.getInstance().getString(ShareBusinessConfig
                                 .SP_VOICE_BULLET_ID, "",
