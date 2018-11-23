@@ -35,6 +35,7 @@ public class SmallChineseClassSignPager extends BasePager {
     public SmallChineseClassSignPager(Context context, ClassSignEntity classSignEntity) {
         super(context);
         this.classSignEntity = classSignEntity;
+        initListener();
         initData();
     }
 

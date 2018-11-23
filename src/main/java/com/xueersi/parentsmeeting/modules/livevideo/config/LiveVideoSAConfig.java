@@ -146,7 +146,10 @@ public class LiveVideoSAConfig {
         /** h5课件地址 */
         public String coursewareH5 = "https://live.xueersi.com/" +
                 (IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS) + "/Live/coursewareH5/";
-
+        /** 文科新域名 */
+        public String chsCoursewareH5 = HTTP_HOST + "/Live/coursewareH5/";
+        /** 文科新域名 */
+        public String chsSubjectiveTestAnswerResult = HTTP_HOST + "/Live/subjectiveTestAnswerResult/";
         /** 语文主观题结果页地址 */
         public String subjectiveTestAnswerResult = "https://live.xueersi.com/" + ShareBusinessConfig.LIVE_LIBARTS
                 + "/Live/subjectiveTestAnswerResult/";
@@ -209,7 +212,7 @@ public class LiveVideoSAConfig {
         public String URL_ARTS_TEAM_CLASS_RANK = "https://app.arts.xueersi.com/v2/LiveRank/getStuGroupTeamClassRanking";
         /** 直播上传精彩瞬间截图接口 */
         public String URL_LIVE_WONDER_MOMENT = HTTP_HOST + "/LiveCourse/uploadWonderfulMomentImg";
-        /**  储存学生直播在线时长(App端) https://wiki.xesv5.com/pages/viewpage.action?pageId=13838543 */
+        /** 储存学生直播在线时长(App端) https://wiki.xesv5.com/pages/viewpage.action?pageId=13838543 */
         public String URL_LIVE_STU_ONLINE_TIME = HTTP_HOST + "/LiveCourse/saveStuPlanOnlineTime";
     }
 
