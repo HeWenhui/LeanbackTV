@@ -1203,6 +1203,11 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     }
 
     @Override
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+
+    }
+
+    @Override
     public void onFDOpenbarrage(boolean open, boolean b) {
 
     }
@@ -1210,6 +1215,11 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     @Override
     public void onTeacherModeChange(String oldMode, String mode, boolean isShowNoticeTips, boolean iszjlkOpenbarrage,
                                     boolean isFDLKOpenbarrage) {
+
+    }
+
+    @Override
+    public void onOpenVoiceNotic(boolean openVoice, String type) {
 
     }
 
