@@ -1299,8 +1299,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         lvMessage.setVisibility(View.VISIBLE);
                         logger.i("显示聊天框");
                     } else {
-                        if (rlMessageContent.getVisibility() == View.VISIBLE || rlMessageVoice.getVisibility() ==
-                                View.VISIBLE) {
+                        if (rlMessageVoice.getVisibility() == View.VISIBLE) {
                             isMessageLayoutShow = true;
                         }
                         liveStandMessageContent.setVisibility(View.GONE);
@@ -1528,9 +1527,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         //判断聊天输入框状态，若为语音输入保存结果
                         if (rlMessageVoice.getVisibility() == View.VISIBLE) {
                             setSpeechFinishView(mVoiceContent);
-                            isMessageLayoutShow = true;
-                        }
-                        if (rlMessageContent.getVisibility() == View.VISIBLE) {
                             isMessageLayoutShow = true;
                         }
                         clearMsgView();
