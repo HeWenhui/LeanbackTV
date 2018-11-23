@@ -226,7 +226,7 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
 
     @Override
     public View initView() {
-        mView = View.inflate(mContext, R.layout.page_livevideo_message_stand, null);
+        mView = View.inflate(mContext, R.layout.page_livevideo_experience_stand_live_message, null);
         tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         ivMessageOnline = (ImageView) mView.findViewById(R.id.iv_livevideo_message_online);
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
