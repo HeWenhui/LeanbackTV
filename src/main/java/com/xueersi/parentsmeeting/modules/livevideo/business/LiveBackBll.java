@@ -276,7 +276,10 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         liveGetInfo.setStuId(userInfoEntity.getStuId());
         liveGetInfo.setStuCouId(stuCourId);
         if (liveVideoSAConfig != null) {
-            liveGetInfo.setSubjectiveTestAnswerResult(liveVideoSAConfig.inner.subjectiveTestAnswerResult);
+            liveGetInfo.setSubjectiveTestAnswerResult(
+                    LiveVideoConfig.isSmallChinese ?
+                            liveVideoSAConfig.inner.chsSubjectiveTestAnswerResult :
+                            liveVideoSAConfig.inner.subjectiveTestAnswerResult);
         }
         liveGetInfo.setTestPaperUrl("https://live.xueersi.com/Live/getMultiTestPaper");
         liveGetInfo.setIs_show_ranks("0");
