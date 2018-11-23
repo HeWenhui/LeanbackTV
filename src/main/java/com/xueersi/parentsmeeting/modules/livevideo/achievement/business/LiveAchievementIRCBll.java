@@ -52,6 +52,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     AtomicBoolean audioRequest = new AtomicBoolean(false);
     EnglishSpeekMode englishSpeekMode;
     SpeakerRecognitioner speakerRecognitioner;
+    private boolean destory = false;
     private VerifyCancelAlertDialog recognizeDialog;
     private int smallEnglish;
 
@@ -151,6 +152,10 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                             initAchievement(mGetInfo.getMode());
                                         }
                                     } else {
+                                        if (destory) {
+                                            mLogtf.d("checkResoureDownload:destory=true");
+                                            return;
+                                        }
                                         speakerRecognitioner = new SpeakerRecognitioner(activity);
                                         if (englishSpeekAction != null) {
                                             englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
@@ -355,6 +360,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void onDestory() {
         super.onDestory();
+        destory = true;
+        logger.d("onDestory:speakerRecognitioner=" + speakerRecognitioner);
         if (englishSpeekAction != null) {
             englishSpeekAction.destory();
         }

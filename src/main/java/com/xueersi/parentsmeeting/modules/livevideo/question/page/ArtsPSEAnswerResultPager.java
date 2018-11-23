@@ -35,6 +35,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerResultLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerStateLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerStateNoEnergyLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ArtsAnswerTextView;
@@ -93,9 +95,9 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     /** 当前答案状态 */
     private int resultType;
 
-    private static final int RESULT_TYPE_CORRECT = 2;
-    private static final int RESULT_TYPE_PART_CORRECT = 1;
-    private static final int RESULT_TYPE_ERRRO = 0;
+    public static final int RESULT_TYPE_CORRECT = 2;
+    public static final int RESULT_TYPE_PART_CORRECT = 1;
+    public static final int RESULT_TYPE_ERRRO = 0;
     private AnswerResultStateListener mStateListener;
 
     public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity, AnswerResultStateListener stateListener) {
@@ -145,35 +147,48 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         String lottieJsonPath = null;
         String titleFilePath = null;
         String titleBgPath = null;
-
+        final LottieEffectInfo lottieEffectInfo;
         if (resultType == RESULT_TYPE_CORRECT) {
-            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/data.json";
-            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_15.png";
-            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_16.png";
+            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/huo.json";
+            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_17.png";
+            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_18.png";
+
+            ArtsAnswerStateLottieEffectInfo effectInfo = new ArtsAnswerStateLottieEffectInfo(lottieResPath,
+                    lottieJsonPath, "img_15.png", "img_16.png", "img_17.png", "img_18.png");
+            effectInfo.setTilteFilePath(titleFilePath);
+            effectInfo.setTitleBgFilePath(titleBgPath);
+            effectInfo.setCoinStr("+" + mData.getGold());
+            effectInfo.setEnergyStr("+" + mData.getEnergy());
+            lottieEffectInfo = effectInfo;
 
         } else if (resultType == RESULT_TYPE_PART_CORRECT) {
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/data.json";
-            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_15.png";
-            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_16.png";
-        } else {
+            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_17.png";
+            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_18.png";
 
+            ArtsAnswerStateLottieEffectInfo effectInfo = new ArtsAnswerStateLottieEffectInfo(lottieResPath,
+                    lottieJsonPath, "img_15.png", "img_16.png", "img_17.png", "img_18.png");
+            effectInfo.setTilteFilePath(titleFilePath);
+            effectInfo.setTitleBgFilePath(titleBgPath);
+            effectInfo.setCoinStr("+" + mData.getGold());
+            effectInfo.setEnergyStr("+" + mData.getEnergy());
+            lottieEffectInfo = effectInfo;
+
+        } else {
+            String imgDir = "arts_answer_result/result_state_error/images";
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/data.json";
-            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/images/img_15.png";
-            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/images/img_16.png";
+            ArtsAnswerStateNoEnergyLottieEffectInfo effectInfo = new ArtsAnswerStateNoEnergyLottieEffectInfo(imgDir,
+                    lottieJsonPath, "img_14.png");
+            effectInfo.setEnergyStr("+" + mData.getGold());
+            lottieEffectInfo = effectInfo;
         }
 
-        final ArtsAnswerStateLottieEffectInfo effectInfo = new ArtsAnswerStateLottieEffectInfo(lottieResPath,
-                lottieJsonPath, "img_14.png", "img_15.png", "img_16.png");
-
-        effectInfo.setTilteFilePath(titleFilePath);
-        effectInfo.setTitleBgFilePath(titleBgPath);
-        effectInfo.setCoinStr("+" + mData.getGold());
-        effectInfo.setEnergyStr("" + mData.getEnergy());
-        animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
+        animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
         animationView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                return effectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
+                logger.d("showAnswerReuslt:FileName=" + lottieImageAsset.getFileName());
+                return lottieEffectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
                         mContext);
             }

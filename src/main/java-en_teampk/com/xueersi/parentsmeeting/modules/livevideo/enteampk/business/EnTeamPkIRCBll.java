@@ -21,6 +21,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSh
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.xutils.x;
+
+import java.net.SocketTimeoutException;
 
 /**
  * @author linyuqiang
@@ -121,26 +124,18 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
-                    logger.e("getSelfTeamInfo:onPmError" + responseEntity.getErrorMsg());
+                    logger.e("getSelfTeamInfo:onPmError=" + responseEntity.getErrorMsg());
                     abstractBusinessDataCallBack.onDataFail(1, responseEntity.getErrorMsg());
-                    postDelayedIfNotFinish(new Runnable() {
-                        @Override
-                        public void run() {
-                            getSelfTeamInfo(abstractBusinessDataCallBack);
-                        }
-                    }, (getSelfTeamInfoTimes++) * 1000);
                 }
 
                 @Override
                 public void onPmFailure(Throwable error, String msg) {
-                    logger.e("getSelfTeamInfo:onPmFailure" + msg, error);
+                    if (error instanceof SocketTimeoutException) {
+                        logger.e("getSelfTeamInfo:onPmFailure(Timeout)msg=" + msg);
+                    } else {
+                        logger.e("getSelfTeamInfo:onPmFailure" + msg, error);
+                    }
                     abstractBusinessDataCallBack.onDataFail(0, msg);
-                    postDelayedIfNotFinish(new Runnable() {
-                        @Override
-                        public void run() {
-                            getSelfTeamInfo(abstractBusinessDataCallBack);
-                        }
-                    }, (getSelfTeamInfoTimes++) * 1000);
                 }
             });
         }
@@ -160,6 +155,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
                     logger.e("reportStuInfo:onPmError" + responseEntity.getErrorMsg());
+                    if (getSelfTeamInfoTimes > 10) {
+                        return;
+                    }
                     postDelayedIfNotFinish(new Runnable() {
                         @Override
                         public void run() {
@@ -170,7 +168,14 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
                 @Override
                 public void onPmFailure(Throwable error, String msg) {
-                    logger.e("reportStuInfo:onPmFailure" + msg, error);
+                    if (error instanceof SocketTimeoutException) {
+                        logger.e("reportStuInfo:onPmFailure(Timeout)msg=" + msg + ",times=" + getSelfTeamInfoTimes);
+                    } else {
+                        logger.e("reportStuInfo:onPmFailure:msg=" + msg + ",times=" + getSelfTeamInfoTimes, error);
+                    }
+                    if (getSelfTeamInfoTimes > 10) {
+                        return;
+                    }
                     postDelayedIfNotFinish(new Runnable() {
                         @Override
                         public void run() {
@@ -245,7 +250,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             JSONObject room_2 = jsonObject.getJSONObject("room_2");
             JSONObject teamPKObj = room_2.optJSONObject("teamPK");
             if (teamPKObj != null) {
-                boolean status = teamPKObj.optBoolean("stastus", false);
+                boolean status = teamPKObj.optBoolean("status", false);
                 if (status) {
                     logger.d("onTopic:psOpen=" + psOpen);
                     if (!psOpen) {

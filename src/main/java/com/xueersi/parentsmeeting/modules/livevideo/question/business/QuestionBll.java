@@ -1572,6 +1572,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         this.isHaveWebQuestion = isHaveWebQuestion;
         if (!isHaveWebQuestion) {
             questionWebPager = null;
+            onQuestionShow(null, false, "setHaveWebQuestion");
         }
 //        activity.getWindow().setFlags(haveExam ? 0 : WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
 // .LayoutParams.FLAG_FULLSCREEN);

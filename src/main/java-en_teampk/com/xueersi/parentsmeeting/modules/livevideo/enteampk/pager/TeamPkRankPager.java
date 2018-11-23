@@ -44,6 +44,10 @@ public class TeamPkRankPager extends LiveBasePager {
         this.pkTeamEntity = pkTeamEntity;
     }
 
+    public PkTeamEntity getPkTeamEntity() {
+        return pkTeamEntity;
+    }
+
     public void setOnTeamSelect(OnTeamSelect onTeamSelect) {
         this.onTeamSelect = onTeamSelect;
     }

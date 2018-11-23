@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
@@ -48,7 +49,7 @@ import okhttp3.Response;
  */
 public class LiveHttpManager extends BaseHttpBusiness {
     String TAG = "LiveHttpManager";
-    private final Logger logger = LoggerFactory.getLogger(TAG);
+    private final Logger logger = LiveLoggerFactory.getLogger(TAG);
     HashMap<String, String> defaultKey = new HashMap<>();
     LiveVideoSAConfig.Inner liveVideoSAConfigInner;
     private LiveVideoSAConfig liveVideoSAConfig;
@@ -1459,6 +1460,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     public void getSelfTeamInfo(String stu_id, String unique_id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("stu_id", "" + stu_id);
+        params.addHeaderParam("Connection", "Close");
         setDefaultParameter(params);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_SELF_TEAM + "?unique_id=" + unique_id, params, requestCallBack);
     }

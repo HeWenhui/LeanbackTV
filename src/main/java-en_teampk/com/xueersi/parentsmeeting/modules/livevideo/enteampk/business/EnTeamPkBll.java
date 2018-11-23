@@ -17,8 +17,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 
 public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpdata {
     private Handler handler = new Handler(Looper.getMainLooper());
+    int getSelfTeamInfoTimes = 1;
     private RelativeLayout rootView;
     private TeamPkRankPager teamPkRankPager;
+    private boolean teamEnd = false;
     private TeamPkRankResultPager teamPkRankResultPager;
     private TeamPkLeadPager teamPkLeadPager;
     private EnTeamPkHttp enTeamPkHttp;
@@ -67,14 +69,44 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                 layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
                 rootView.addView(teamPkRankPager.getRootView(), layoutParams);
                 enTeamPkHttp.getSelfTeamInfo(new AbstractBusinessDataCallBack() {
+                    AbstractBusinessDataCallBack callBack = this;
+
                     @Override
                     public void onDataSucess(Object... objects) {
-                        PkTeamEntity pkTeamEntity = (PkTeamEntity) objects[0];
-                        teamPkRankPager.setPkTeamEntity(pkTeamEntity);
+                        if (!teamEnd) {
+                            PkTeamEntity pkTeamEntity = (PkTeamEntity) objects[0];
+                            teamPkRankPager.setPkTeamEntity(pkTeamEntity);
+                        }
+                    }
+
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        super.onDataFail(errStatus, failMsg);
+                        logger.d("onDataFail:errStatus=" + errStatus + ",teamEnd=" + teamEnd);
+                        if (!teamEnd) {
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    enTeamPkHttp.getSelfTeamInfo(callBack);
+                                }
+                            }, (getSelfTeamInfoTimes++) * 1000);
+                        }
                     }
                 });
             }
         });
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (teamPkRankPager != null && teamPkRankPager.getPkTeamEntity() != null) {
+                    return;
+                }
+                teamEnd = true;
+                if (teamPkRankPager != null) {
+                    rootView.removeView(teamPkRankPager.getRootView());
+                }
+            }
+        }, 30000);
     }
 
     @Override

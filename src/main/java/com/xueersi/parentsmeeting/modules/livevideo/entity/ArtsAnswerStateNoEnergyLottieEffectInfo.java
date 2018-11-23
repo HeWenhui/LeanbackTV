@@ -16,8 +16,6 @@ import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -28,25 +26,17 @@ import java.io.InputStream;
  * @version 1.0, 2018/8/7 上午10:36
  */
 
-public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
+public class ArtsAnswerStateNoEnergyLottieEffectInfo extends LottieEffectInfo {
 
-    private String mCoinStr;
-    /** 获得的能量数 */
     private String energyStr;
-    protected Logger logger = LoggerFactory.getLogger("ArtsAnswerStateLottieEffectInfo");
+    protected Logger logger = LoggerFactory.getLogger("ArtsAnswerStateNoEnergyLottieEffectInfo");
 
     private static final String TEXTCOLOR = "#FFDB2A";
     private static final int TEXTSIZE = 30;
 
-    private static final String COIN_FILE_NAME = "img_16.png";
-    private static final String ENERGY_FILE_NAME = "img_15.png";
-    private static final String TITLE_FILE_NAME = "img_17.png";
-    private static final String TITLE_BG_FILE_NAME = "img_18.png";
-    private String mTitlePath;
-    private String mTitleBgPath;
+    private static final String COIN_FILE_NAME = "img_14.png";
 
-
-    public ArtsAnswerStateLottieEffectInfo(String imgDir, String jsonFilePath, String... targetFileNames) {
+    public ArtsAnswerStateNoEnergyLottieEffectInfo(String imgDir, String jsonFilePath, String... targetFileNames) {
         super(imgDir, jsonFilePath, targetFileNames);
     }
 
@@ -55,61 +45,9 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
             height) {
         Bitmap resultBitmap = null;
         if (COIN_FILE_NAME.equals(fileName)) {
-            resultBitmap = generateCoinNum(mCoinStr, width, height);
-        } else if (ENERGY_FILE_NAME.equals(fileName)) {
             resultBitmap = generateCoinNum(energyStr, width, height);
-        } else if (TITLE_FILE_NAME.equals(fileName)) {
-            resultBitmap = getBitMap(animationView.getContext(), mTitlePath);
-        } else if (TITLE_BG_FILE_NAME.equals(fileName)) {
-            resultBitmap = getBitMap(animationView.getContext(), mTitleBgPath);
-
         }
         return resultBitmap;
-    }
-
-
-    private Bitmap getBitMap(Context context, String path) {
-        Bitmap resultBitMap = null;
-        InputStream in = null;
-        try {
-            in = context.getAssets().open(path);
-            resultBitMap = BitmapFactory.decodeStream(in);
-            in.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return resultBitMap;
-    }
-
-    /**
-     * 设置title 图片路径
-     *
-     * @param filePath
-     */
-    public void setTilteFilePath(String filePath) {
-        mTitlePath = filePath;
-    }
-
-    /**
-     * 设置title 背景 图片路径
-     *
-     * @param filePath
-     */
-    public void setTitleBgFilePath(String filePath) {
-        mTitleBgPath = filePath;
-    }
-
-
-    public void setCoinStr(String coinStr) {
-        this.mCoinStr = coinStr;
     }
 
     public void setEnergyStr(String energyStr) {
