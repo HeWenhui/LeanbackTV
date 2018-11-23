@@ -162,7 +162,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
      */
     private HalfBodyLiveMsgRecycelView liveMsgReclView;
     private LiveMsgAdapter mMsgAdapter;
-    private LiveMsgLayoutManager mLiveMsgLayoutManager;
     /**
      * 辅导模式下最后一条消息
      */
@@ -258,9 +257,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
         liveMsgReclView = mView.findViewById(R.id.rcl_live_halfbody_msg);
         // 从底部添加
-        mLiveMsgLayoutManager = new LiveMsgLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
-        mLiveMsgLayoutManager.setVScrollAble(false);
-        liveMsgReclView.setLayoutManager(mLiveMsgLayoutManager);
+        liveMsgReclView.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,true));
         return mView;
     }
 
@@ -421,7 +418,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         });
     }
 
-
     @Override
     public void initData() {
         super.initData();
@@ -580,8 +576,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                 public void run() {
                     mLiveMsgList.add(mLastMsg);
                     mMsgAdapter.notifyItemInserted(0);
-                    //滚动到底部
-                    liveMsgReclView.scrollToPosition(0);
                 }
             },100);
         }
@@ -1004,13 +998,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                         mLiveMsgList.add(entity);
                         if (mMsgAdapter != null) {
                             mMsgAdapter.notifyItemInserted(0);
-                        } else {
-                            Loger.e(BaseApplication.getContext(), TAG, "" + mContext + "," + sender + "," + type, e,
-                                    true);
+                            //liveMsgReclView.scrollToPosition(0);
                         }
-
-                        //滚动到底部
-                        liveMsgReclView.scrollToPosition(0);
                     }
                 });
             }

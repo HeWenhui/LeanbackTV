@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -36,6 +37,15 @@ public class HalfBodyLiveMsgRecycelView extends RecyclerView implements MsgItemA
         super.setAdapter(adapter);
         initItemAnimator();
     }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        if(this.getChildCount() > 0){
+            this.scrollToPosition(0);
+        }
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
