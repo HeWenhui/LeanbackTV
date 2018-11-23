@@ -1803,7 +1803,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     private void setSpeechFinishView(String content) {
         etMessageContent.setText(content);
-        etMessageContent.requestFocus();
+//        etMessageContent.requestFocus();
         etMessageContent.setSelection(etMessageContent.getText().toString().length());
     }
 
