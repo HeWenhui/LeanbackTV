@@ -93,6 +93,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
      * 文科新课件平台 试题
      **/
     private boolean isNewArtsTest;
+    private HashMap header;
 
     public QuestionWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, StopWebQuestion questionBll, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
@@ -121,6 +122,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         this.stuCouId = stuCouId;
         this.allowTeamPk = allowTeamPk;
         mLogtf.i("QuestionWebX5Pager:liveid=" + liveid + ",testId=" + testId);
+        header = new HashMap();
+        header.put("Access-Control-Allow-Origin", "*");
         initData();
     }
 
@@ -299,7 +302,12 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
         if (wvSubjectWeb instanceof CacheWebView) {
             CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
-            cacheWebView.getWebViewCache().setNeedHttpDns(true);
+            if (IS_SCIENCE){
+                cacheWebView.getWebViewCache().setNeedHttpDns(true);
+            }else {
+                cacheWebView.getWebViewCache().setNeedHttpDns(false);
+            }
+            cacheWebView.getWebViewCache().setIsScience(IS_SCIENCE);
         }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);
@@ -406,6 +414,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
                         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                         WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                        webResourceResponse.setResponseHeaders(header);
                         logger.e("读取本地资源了old");
                         return webResourceResponse;
                     } catch (FileNotFoundException e) {

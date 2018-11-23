@@ -793,7 +793,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
                     saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
                     mParam.setRecogType(SpeechConfig.SPEECH_RECOGNITIYON_OFFINE);
                     mParam.setLocalSavePath(saveFile.getPath());
-                    mParam.setVad_pause_sec("3");
+                    mParam.setVad_pause_sec("1.2");
                     mParam.setVad_max_sec("30");
                     mSpeechUtils.startRecog(mParam, new EvaluatorListener() {
                         @Override

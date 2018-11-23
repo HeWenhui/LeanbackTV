@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
@@ -553,7 +554,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mParam.setLocalSavePath(saveVideoFile.getPath());
         mParam.setMultRef(false);
         mParam.setLearning_stage(learning_stage);
-        mIse.startRecog(mParam, new EvaluatorListenerWithPCM() {
+        mIse.startRecog(mParam, new EvaluatorListener() {
             int lastVolume = 0;
 
             @Override
@@ -594,10 +595,6 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 lastVolume = volume;
             }
 
-            @Override
-            public void onRecordPCMData(short[] pcmBuffer, int length) {
-
-            }
         });
 //        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false,
 // learning_stage, new EvaluatorListener() {
@@ -681,7 +678,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         rlSpeectevalTip.setVisibility(View.GONE);
     }
 
-    private void onEvaluatorSuccess(final ResultEntity resultEntity, final EvaluatorListenerWithPCM evaluatorListener) {
+    private void onEvaluatorSuccess(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
         final int score = resultEntity.getScore();
         logger.d("onEvaluatorSuccess:score=" + score + ",isEnd=" + isEnd);
         if (!isEnd) {
@@ -1074,7 +1071,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         SpeechStandLog.sno5(this, id, state, gold, progress, score, resultEntity.getSpeechDuration());
     }
 
-    private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListenerWithPCM evaluatorListener) {
+    private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
         mLogtf.d("onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd + ",isOfflineFail=" + mIse
                 .isOfflineFail());
         tvSpeectevalTip.removeCallbacks(autoUploadRunnable);

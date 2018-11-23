@@ -630,7 +630,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                     param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_ONLINE);
                     param.setLiveId(liveId);
                     param.setEnglish(false);
-                    mIse.startRecog(param, new EvaluatorListenerWithPCM() {
+                    mIse.startRecog(param, new EvaluatorListener() {
                         @Override
                         public void onBeginOfSpeech() {
                             jsRecord();
@@ -669,10 +669,6 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                             jsUpdateVolume(volume);
                         }
 
-                        @Override
-                        public void onRecordPCMData(short[] pcmBuffer, int length) {
-
-                        }
                     });
 
                 }
