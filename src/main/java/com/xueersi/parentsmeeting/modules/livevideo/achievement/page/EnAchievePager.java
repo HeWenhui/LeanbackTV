@@ -155,7 +155,7 @@ public class EnAchievePager extends LiveBasePager {
                         energyCount2 += random.nextInt(20);
                     }
                     starAndGoldEntity.setGoldCount(goldCount2);
-                    starAndGoldEntity.setEnergyCount(energyCount2);
+                    starAndGoldEntity.getPkEnergy().me = energyCount2;
                     onGetStar(starAndGoldEntity);
                 }
             }
@@ -165,7 +165,7 @@ public class EnAchievePager extends LiveBasePager {
     public void onGetStar(StarAndGoldEntity starAndGoldEntity) {
         ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
         if (rl_livevideo_info != null) {
-            final int energyCountAdd = starAndGoldEntity.getEnergyCount() - energyCount;
+            final int energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
             final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
             logger.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd);
             String LOTTIE_RES_ASSETS_ROOTDIR;
@@ -259,8 +259,14 @@ public class EnAchievePager extends LiveBasePager {
 
                 }
             });
+            StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+            if (pkEnergy.myTeam + pkEnergy.opTeam != 0) {
+                int progress = (int) ((float) pkEnergy.myTeam * 100 / (float) (pkEnergy.myTeam + pkEnergy.opTeam));
+                setEngPro(progress);
+            }
+
         } else {
-            tv_livevideo_en_achive_num_fire.setText("" + starAndGoldEntity.getEnergyCount());
+            tv_livevideo_en_achive_num_fire.setText("" + starAndGoldEntity.getPkEnergy().me);
             tv_livevideo_en_achive_num_gold.setText("" + starAndGoldEntity.getGoldCount());
         }
     }

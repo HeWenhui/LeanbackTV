@@ -7,7 +7,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 public class StarAndGoldEntity {
     private int starCount;
     private int goldCount;
-    private int energyCount;
+    private PkEnergy pkEnergy = new PkEnergy();
 
     public int getStarCount() {
         return starCount;
@@ -25,11 +25,17 @@ public class StarAndGoldEntity {
         this.goldCount = goldCount;
     }
 
-    public int getEnergyCount() {
-        return energyCount;
+    public PkEnergy getPkEnergy() {
+        return pkEnergy;
     }
 
-    public void setEnergyCount(int energyCount) {
-        this.energyCount = energyCount;
+    public void setPkEnergy(PkEnergy pkEnergy) {
+        this.pkEnergy = pkEnergy;
+    }
+
+    public static class PkEnergy {
+        public int me;
+        public int myTeam;
+        public int opTeam;
     }
 }

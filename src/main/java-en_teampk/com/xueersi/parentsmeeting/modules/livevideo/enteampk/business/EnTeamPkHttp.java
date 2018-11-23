@@ -8,4 +8,6 @@ public interface EnTeamPkHttp {
     void reportStuInfo(AbstractBusinessDataCallBack abstractBusinessDataCallBack);
 
     void updataEnglishPkGroup(AbstractBusinessDataCallBack abstractBusinessDataCallBack);
+
+    void getEnglishPkRank(AbstractBusinessDataCallBack abstractBusinessDataCallBack);
 }

@@ -1219,7 +1219,7 @@ public class LiveGetInfo {
 
         public int isTwoLose;//1,  // 是否连输两场      0 => 正常  1 => 连输两场
 
-        public int canGroup;//0    // 是否已经进行分组，0 => 未分组 1=> 已分组 如果该字段为1 就不用再请求go重新分组
+        public int hasGroup;//0    // 是否已经进行分组，0 => 未分组 1=> 已分组 如果该字段为1 就不用再请求go重新分组
     }
 
     public static class EnPkEnergy {

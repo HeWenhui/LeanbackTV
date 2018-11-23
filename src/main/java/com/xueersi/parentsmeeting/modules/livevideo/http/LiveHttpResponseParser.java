@@ -123,12 +123,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         if (englishPkObj != null) {
             LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
             englishPk.canUsePK = englishPkObj.optInt("canUsePK");
-            if (AppConfig.DEBUG) {
-                englishPk.canUsePK = 1;
-            }
             englishPk.historyScore = englishPkObj.optInt("historyScore");
             englishPk.isTwoLose = englishPkObj.optInt("isTwoLose");
-            englishPk.canGroup = englishPkObj.optInt("canGroup");
+            englishPk.hasGroup = englishPkObj.optInt("hasGroup");
         }
         JSONObject pkEnergyObj = data.optJSONObject("pkEnergy");
         if (pkEnergyObj != null) {
@@ -1160,6 +1157,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             starAndGoldEntity.setStarCount(starObj.optInt("stuStarAmount", 0));
             JSONObject goldObj = jsonObject.getJSONObject("gold");
             starAndGoldEntity.setGoldCount(goldObj.optInt("goldAmount", 0));
+            StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+            JSONObject pkEnergyObj = goldObj.optJSONObject("pkEnergy");
+            pkEnergy.me = pkEnergyObj.optInt("me");
+            pkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
+            pkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
         } catch (JSONException e) {
             MobAgent.httpResponseParserError(TAG, "parseStuGoldCount", e.getMessage());
             e.printStackTrace();

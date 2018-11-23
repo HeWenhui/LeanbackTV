@@ -11,4 +11,8 @@ public interface EnTeamPkAction {
     void onRankResult();
 
     void onRankLead(EnTeamPkRankEntity enTeamPkRankEntity);
+
+    void onModeChange(String mode);
+
+    void destory();
 }

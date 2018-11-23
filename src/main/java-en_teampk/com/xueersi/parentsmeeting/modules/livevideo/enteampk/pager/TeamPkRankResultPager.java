@@ -47,8 +47,8 @@ public class TeamPkRankResultPager extends LiveBasePager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_en_team_rank_result, null);
-        iv_livevideo_en_teampk_mine = mView.findViewById(R.id.iv_livevideo_en_teampk_mine);
-        iv_livevideo_en_teampk_other = mView.findViewById(R.id.iv_livevideo_en_teampk_other);
+        iv_livevideo_en_teampk_mine = view.findViewById(R.id.iv_livevideo_en_teampk_mine);
+        iv_livevideo_en_teampk_other = view.findViewById(R.id.iv_livevideo_en_teampk_other);
         gv_livevideo_en_teampk_rank_mine = view.findViewById(R.id.gv_livevideo_en_teampk_rank_mine);
         gv_livevideo_en_teampk_rank_other = view.findViewById(R.id.gv_livevideo_en_teampk_rank_other);
         bt_livevideo_en_teampk_rank_start = view.findViewById(R.id.bt_livevideo_en_teampk_rank_start);

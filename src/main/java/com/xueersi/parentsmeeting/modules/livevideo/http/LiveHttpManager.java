@@ -1453,7 +1453,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     * 直播上传精彩瞬间截图接口
+     * 学生获取战队信息
      *
      * @param requestCallBack
      */
@@ -1463,6 +1463,18 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addHeaderParam("Connection", "Close");
         setDefaultParameter(params);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_SELF_TEAM + "?unique_id=" + unique_id, params, requestCallBack);
+    }
+
+    /**
+     * 学生获取战队信息 php
+     *
+     * @param requestCallBack
+     */
+    public void getEnglishPkRank(HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addHeaderParam("Connection", "Close");
+        setDefaultParameter(params);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_GETENGLISH_PK, params, requestCallBack);
     }
 
     /**
