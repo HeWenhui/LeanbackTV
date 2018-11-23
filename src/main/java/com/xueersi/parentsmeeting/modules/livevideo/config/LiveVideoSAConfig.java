@@ -147,9 +147,9 @@ public class LiveVideoSAConfig {
         public String coursewareH5 = "https://live.xueersi.com/" +
                 (IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS) + "/Live/coursewareH5/";
         /** 文科新域名 */
-        public String chsCoursewareH5 = HTTP_HOST + "/Live/coursewareH5/";
+        public String chsCoursewareH5 = "https://live.chs.xueersi.com/Live/coursewareH5/";
         /** 文科新域名 */
-        public String chsSubjectiveTestAnswerResult = HTTP_HOST + "/Live/subjectiveTestAnswerResult/";
+        public String chsSubjectiveTestAnswerResult = "https://live.chs.xueersi.com/Live/subjectiveTestAnswerResult/";
         /** 语文主观题结果页地址 */
         public String subjectiveTestAnswerResult = "https://live.xueersi.com/" + ShareBusinessConfig.LIVE_LIBARTS
                 + "/Live/subjectiveTestAnswerResult/";
