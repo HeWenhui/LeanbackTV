@@ -147,7 +147,7 @@ public class SpeechCollectivePager extends BasePager {
 
     public void start() {
         promtGroup.setVisibility(View.VISIBLE);
-        promtView.setText("老师开启了集体发言踊跃参与吧！");
+        promtView.setText("老师开启了集体发言\n踊跃参与吧！");
         promtView.postDelayed(new Runnable() {
             @Override
             public void run() {
