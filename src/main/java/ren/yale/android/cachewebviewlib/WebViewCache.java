@@ -3,11 +3,13 @@ package ren.yale.android.cachewebviewlib;
 import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.LruCache;
 
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.xueersi.common.network.TxHttpDns;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -18,6 +20,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +56,9 @@ public class WebViewCache {
     private BytesEncodingDetect mEncodingDetect;
     private ArrayList<HttpURLConnection> httpURLConnections = new ArrayList<>();
     private boolean needHttpDns = false;
+    private boolean isScience = true;
+    private Map<String, Boolean> dnsFailMap = new HashMap<String, Boolean>();
+    private int dnsFail;
 
     public WebViewCache() {
         mCacheExtensionConfig = new CacheExtensionConfig();
@@ -61,6 +67,10 @@ public class WebViewCache {
 
     public void setNeedHttpDns(boolean needHttpDns) {
         this.needHttpDns = needHttpDns;
+    }
+
+    public void setIsScience(boolean isScience) {
+        this.isScience = isScience;
     }
 
     public void release() {
@@ -81,7 +91,7 @@ public class WebViewCache {
                         connection.disconnect();
                     }
                 } catch (Exception e) {
-                    logger.e( "release:disconnect");
+                    logger.e("release:disconnect");
                 }
             }
         }.start();
@@ -105,7 +115,8 @@ public class WebViewCache {
         return openCache(context, directory, maxSize, maxSize / 10);
     }
 
-    public WebViewCache openCache(Context context, String directory, long maxDiskSize, long maxRamSize) throws IOException {
+    public WebViewCache openCache(Context context, String directory, long maxDiskSize, long maxRamSize) throws
+            IOException {
 
         if (mContext == null) {
             mContext = context.getApplicationContext();
@@ -115,7 +126,8 @@ public class WebViewCache {
         mCacheSize = cacheConfig.getDiskMaxSize() != 0 ? cacheConfig.getDiskMaxSize() : maxDiskSize;
         mCacheRamSize = cacheConfig.getRamMaxSize() != 0 ? cacheConfig.getRamMaxSize() : maxRamSize;
         if (mDiskLruCache == null) {
-            mDiskLruCache = DiskLruCache.open(new File(mCacheFilePath), AppUtils.getVersionCode(mContext), 3, mCacheSize);
+            mDiskLruCache = DiskLruCache.open(new File(mCacheFilePath), AppUtils.getVersionCode(mContext), 3,
+                    mCacheSize);
         }
         ensureLruCache();
         return this;
@@ -213,9 +225,14 @@ public class WebViewCache {
 
     public InputStream httpRequest(CacheWebViewClient client, CacheStrategy cacheStrategy, String url) {
         HttpURLConnection httpURLConnection = null;
+        boolean isFail = false;
+        Exception dnsException = new Exception();
         try {
             URL oldUrl = new URL(url);
-            if (needHttpDns) {
+            if (dnsFailMap.containsKey(oldUrl.getHost())) {
+                isFail = dnsFailMap.get(oldUrl.getHost());
+            }
+            if (needHttpDns || isFail) {
                 String ip3 = TxHttpDns.getInstance().getTxEnterpriseDns(oldUrl.getHost());
                 if (!StringUtils.isEmpty(ip3)) {
                     String[] ips = ip3.split(";");
@@ -234,7 +251,7 @@ public class WebViewCache {
                 httpURLConnection.setConnectTimeout(30000);
                 httpURLConnection.setReadTimeout(30000);
             }
-            if (needHttpDns) {
+            if (needHttpDns || isFail) {
                 httpURLConnection.setRequestProperty("Host", oldUrl.getHost());
             }
             Map<String, String> header = client.getHeader(url);
@@ -282,18 +299,54 @@ public class WebViewCache {
         } catch (MalformedURLException e) {
             CacheWebViewLog.d(e.toString() + " " + url, e);
             e.printStackTrace();
+        } catch (UnknownHostException e) {
+            CacheWebViewLog.d(e.toString() + " " + url, e);
+            dnsException = e;
+            e.printStackTrace();
         } catch (IOException e) {
             CacheWebViewLog.d(e.toString() + " " + url, e);
+            dnsException = e;
             e.printStackTrace();
         } catch (Exception e) {
             CacheWebViewLog.d(e.toString() + " " + url, e);
+            dnsException = e;
             e.printStackTrace();
         } finally {
             if (httpURLConnection != null) {
                 httpURLConnections.remove(httpURLConnection);
             }
         }
-
+        if (!isScience) {
+            dnsFailMap.put(url, true);
+            Map<String, String> mData = new HashMap<>();
+            mData.put("message", Log.getStackTraceString(dnsException));
+            mData.put("url", url);
+            try {
+                mData.put("host", new URL(url).getHost());
+            } catch (MalformedURLException e1) {
+                e1.printStackTrace();
+            }
+            mData.put("ishttpdns", (isFail || needHttpDns) ? "true" : "false");
+            UmsAgentManager.umsAgentDebug(mContext, "1305801", "dns_fail", mData);
+            if (dnsFail < 3) {
+                dnsFail++;
+                InputStream inputStream = httpRequest(client, cacheStrategy, url);
+                if (inputStream != null) {
+                    dnsFail = 0;
+                    mData.clear();
+                    mData.put("message", "success");
+                    mData.put("url", url);
+                    try {
+                        mData.put("host", new URL(url).getHost());
+                    } catch (MalformedURLException e1) {
+                        e1.printStackTrace();
+                    }
+                    mData.put("ishttpdns", "true");
+                    UmsAgentManager.umsAgentDebug(mContext, "1305801", "dns_fail", mData);
+                    return inputStream;
+                }
+            }
+        }
         return null;
     }
 
@@ -525,7 +578,8 @@ public class WebViewCache {
                     }
                     resourseInputStream.setInnerInputStream(copyInputStream);
                     encode = inputStreamUtils.getEncoding();
-                    CacheWebViewLog.d(encode + " " + "get encoding timecost: " + (System.currentTimeMillis() - start) + "ms " + url);
+                    CacheWebViewLog.d(encode + " " + "get encoding timecost: " + (System.currentTimeMillis() - start)
+                            + "ms " + url);
                 }
                 resourseInputStream.setEncode(encode);
                 WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, encode

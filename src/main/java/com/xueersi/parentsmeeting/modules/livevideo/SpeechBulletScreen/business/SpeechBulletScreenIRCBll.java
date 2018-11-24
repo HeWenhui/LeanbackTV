@@ -39,7 +39,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 
     public SpeechBulletScreenIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
-        this.speechBulletView = new SpeechBulletScreenPager(context);
+        this.speechBulletView = new SpeechBulletScreenPager(context, false);
         speechBulletView.setPresenter(this);
     }
 

@@ -33,6 +33,7 @@ import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.speech.SpeechConfig;
 import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
@@ -1151,6 +1152,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
 
         mIse.cancel();
         SpeechParamEntity param = new SpeechParamEntity();
+        param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
         param.setStrEvaluator(spechMsg);
         param.setLocalSavePath(saveVideoFile.getAbsolutePath());
         param.setMultRef(false);

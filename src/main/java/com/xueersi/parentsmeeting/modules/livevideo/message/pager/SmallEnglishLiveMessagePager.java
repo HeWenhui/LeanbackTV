@@ -358,7 +358,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         super.initData();
         mSdm = ShareDataManager.getInstance();
         isShowSpeechRecog = mSdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager
-                .SHAREDATA_NOT_CLEAR);
+                .SHAREDATA_USER);
         logger.i("speech : isshow"+isShowSpeechRecog);
         cpuRecogTime = mSdm.getLong(SpeechEvaluatorUtils.RECOG_TIME, 2500l, ShareDataManager.SHAREDATA_NOT_CLEAR);
         speechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
@@ -401,7 +401,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                     if (result.getStatus() == ResultEntity.SUCCESS) {
                                         isShowSpeechRecog = (mRecogtestEndTime - mRecogtestBeginTime) < 3000l ? true : false;
                                         if (isShowSpeechRecog){
-                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog, ShareDataManager.SHAREDATA_NOT_CLEAR);
+                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog, ShareDataManager.SHAREDATA_USER);
                                         }
                                     }
                                 }
@@ -1917,7 +1917,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         SpeechParamEntity param = new SpeechParamEntity();
         param.setRecogType(SpeechConfig.SPEECH_RECOGNITIYON_OFFINE);
         param.setLocalSavePath(mVoiceFile.getPath());
-        param.setVad_pause_sec("2");
+        param.setVad_pause_sec("1.2");
         param.setVad_max_sec("30");
         speechUtils.startRecog(param, new EvaluatorListenerWithPCM() {
             @Override
