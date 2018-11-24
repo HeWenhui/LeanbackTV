@@ -97,6 +97,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
             for (int i = 0; i < 4; i++) {
                 TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                teamMemberEntity.id = 100 + i;
                 if (i == 0) {
                     teamMemberEntity.isMy = true;
                 }

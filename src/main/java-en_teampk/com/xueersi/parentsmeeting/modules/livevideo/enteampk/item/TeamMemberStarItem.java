@@ -51,6 +51,8 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
 
     @Override
     public void initViews(View root) {
+        TeamMemberStarItem.this.width = 83;
+        TeamMemberStarItem.this.height = 39;
         rl_livevideo_en_teampk_member = root.findViewById(R.id.rl_livevideo_en_teampk_member);
         civ_livevideo_en_teampk_member = root.findViewById(R.id.civ_livevideo_en_teampk_member);
         tv_livevideo_en_teampk_name = root.findViewById(R.id.tv_livevideo_en_teampk_name);
@@ -61,8 +63,6 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
         final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath, "img_0.png") {
             @Override
             public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
-                TeamMemberStarItem.this.width = width;
-                TeamMemberStarItem.this.height = height;
                 if ("img_0.png".equals(fileName)) {
                     if (entity == null) {
                         return createBitmap(0, width, height);
@@ -113,7 +113,7 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
         Runnable praiseRunnable = new Runnable() {
             @Override
             public void run() {
-                logger.d("praiseRunnable");
+//                logger.d("praiseRunnable");
                 before = 0;
 //                videoChatHttp.praise(classmateEntity.getId(), classmateEntity.getLikes());
 //                classmateEntity.setLikes(0);
@@ -122,7 +122,7 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
         Runnable countRunnable = new Runnable() {
             @Override
             public void run() {
-                logger.d("countRunnable");
+//                logger.d("countRunnable");
 //                tv_livevideo_chat_count.setVisibility(View.GONE);
             }
         };
@@ -138,12 +138,13 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
             pressLottileView.playAnimation();
             classmateEntity.praiseCount++;
             pressLottileView.updateBitmap("image_0", createBitmap(classmateEntity.praiseCount, width, height));
+            logger.d("onClick:classmateEntity=" + classmateEntity.id + ",praiseCount=" + classmateEntity.praiseCount);
 //            }
             if (before == 0) {
                 before = System.currentTimeMillis();
             }
             long time = 5000 - (System.currentTimeMillis() - before);
-            logger.d("onClick:time=" + time);
+//            logger.d("onClick:time=" + time);
             handler.removeCallbacks(praiseRunnable);
             if (time <= 0) {
                 praiseRunnable.run();
@@ -172,7 +173,7 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
             canvas.drawText(drawText, (width - w) / 2, height, paint);
             return drawBitmap;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.e("createBitmap", e);
         }
         return null;
     }
