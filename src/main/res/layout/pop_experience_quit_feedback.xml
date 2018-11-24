@@ -8,8 +8,8 @@
         android:layout_width="450dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:background="@drawable/bg_popupwin">
+        android:background="@drawable/bg_popupwin"
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -25,71 +25,84 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="30dp"
                 android:text="方便告诉我你们离开课堂的原因吗？" />
-            <RadioGroup
-                android:id="@+id/rg_experience_feedback_satisficing"
+
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_experience_quit_title"
-                android:layout_marginTop="11dp"
-                android:orientation="horizontal">
+                android:layout_marginTop="23dp">
 
-                <RadioButton
-                    android:id="@+id/rbtn_satisficing_1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:button="@drawable/selector_learn_feedback_item"
-                    android:checked="true"
-                    android:paddingLeft="14dp"
-                    android:text="课程过于简单"
-                    android:textColor="@color/COLOR_666666"
-                    android:textSize="13sp" />
+                <TableRow
+                    android:layout_marginBottom="18dp">
+                    <RadioButton
+                        android:id="@+id/rbtn_satisficing_1"
+                        style="@style/style_experience_quit_radiobutton"
+                        android:layout_marginLeft="30dp"
+                        android:text="课程过于简单" />
 
-                <RadioButton
-                    android:id="@+id/rbtn_satisficing_2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="84dp"
-                    android:button="@drawable/selector_learn_feedback_item"
-                    android:paddingLeft="14dp"
-                    android:text="课程过于困难"
-                    android:textColor="@color/COLOR_666666"
-                    android:textSize="13sp" />
+                    <RadioButton
+                        android:id="@+id/rbtn_satisficing_2"
+                        style="@style/style_experience_quit_radiobutton"
+                        android:text="课程过于困难" />
+                </TableRow>
 
-            </RadioGroup>
+                <TableRow
+                    android:layout_marginBottom="18dp">
+
+                    <RadioButton
+                        style="@style/style_experience_quit_radiobutton"
+                        android:layout_marginLeft="30dp"
+                        android:text="不喜欢授课老师" />
+
+                    <RadioButton
+                        style="@style/style_experience_quit_radiobutton"
+                        tools:text=""
+                        android:text="课堂内容与所学内容不匹配" />
+                </TableRow>
+                <TableRow
+                    android:layout_marginBottom="18dp">
+
+                    <RadioButton
+                        style="@style/style_experience_quit_radiobutton"
+                        android:layout_marginLeft="30dp"
+                        android:text="其他"
+                         />
+                </TableRow>
+            </TableLayout>
+
 
         </RelativeLayout>
 
         <view
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/COLOR_DCDCDC"/>
+            android:background="@color/COLOR_DCDCDC" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            >
+            android:layout_height="48dp">
+
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="返回课堂"
                 android:layout_weight="1"
                 android:background="null"
+                android:text="返回课堂"
                 android:textColor="@color/COLOR_666666"
                 android:textSize="16sp" />
 
             <View
                 android:layout_width="1px"
-                android:background="@color/COLOR_DCDCDC"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="@color/COLOR_DCDCDC" />
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="确定离开"
-                android:layout_weight="1"
                 android:layout_gravity="right"
+                android:layout_weight="1"
                 android:background="null"
+                android:text="确定离开"
                 android:textColor="@color/COLOR_999999"
                 android:textSize="16sp" />
         </LinearLayout>
