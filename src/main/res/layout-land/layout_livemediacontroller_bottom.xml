@@ -90,6 +90,10 @@
             android:background="@drawable/bg_livevideo_voicechat_rank"
             android:visibility="gone" />
 
+        <Button
+            android:id="@+id/btn_livevideo_small_chinese_switch_flow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
@@ -231,9 +235,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/ll_livevideo_bottom_controller_mark_menu"
         android:layout_alignLeft="@id/ll_livevideo_bottom_controller_mark_menu"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
         android:layout_marginLeft="-45dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
         android:visibility="gone">
 
         <TextView
@@ -243,10 +247,11 @@
             android:background="@drawable/shape_corners_20dp_000000"
             android:gravity="center"
             android:text="这里可以标记重点哦~" />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/triangle"/>
+            android:src="@drawable/triangle" />
     </LinearLayout>
 
     <CheckBox

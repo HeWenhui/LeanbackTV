@@ -51,6 +51,8 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     ArrayList<MediaChildViewClick> mediaChildViewClicks = new ArrayList<>();
     private LinearLayout llMarkPopMenu;
     private View vMarkGuide;
+    /** 切流的btn */
+    private Button switchFlow;
 
     public BaseLiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context);
@@ -95,8 +97,9 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         cbMessageClock = (CheckBox) findViewById(R.id.cb_livevideo_message_clock);
         lvCommonWord = (ListView) findViewById(R.id.lv_livevideo_common_word);
         btMark = (Button) findViewById(R.id.bt_livevideo_mark);
-        llMarkPopMenu=findViewById(R.id.ll_livevideo_controller_mark_pop_menu);
-        vMarkGuide=findViewById(R.id.ll_livevideo_bottom_controller_mark_guide);
+        llMarkPopMenu = findViewById(R.id.ll_livevideo_controller_mark_pop_menu);
+        vMarkGuide = findViewById(R.id.ll_livevideo_bottom_controller_mark_guide);
+        switchFlow = findViewById(R.id.btn_livevideo_small_chinese_switch_flow);
         if (btMark != null) {
             btMark.setOnClickListener(new OnClickListener() {
                 @Override
@@ -106,13 +109,14 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
             });
         }
     }
-    public LinearLayout getLlMarkPopMenu(){
+
+    public LinearLayout getLlMarkPopMenu() {
         return llMarkPopMenu;
     }
-    public View getvMarkGuide(){
+
+    public View getvMarkGuide() {
         return vMarkGuide;
     }
-
 
 
     public Button getBtMesOpen() {
@@ -175,7 +179,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     @Override
     public void onHide() {
         startAnimation(mAnimSlideOutTop);
-        if(llMarkPopMenu!=null){
+        if (llMarkPopMenu != null) {
             llMarkPopMenu.setVisibility(GONE);
         }
 
