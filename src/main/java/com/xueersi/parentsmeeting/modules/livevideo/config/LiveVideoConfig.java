@@ -192,10 +192,14 @@ public class LiveVideoConfig {
     public static String LIVE_PLAY_ERROR = "live_play_error";
     /** 直播-学习报告截图 */
     public static String LIVE_STUDY_REPORT_IMG = "live_study_report_img";
-    /** 直播-小英语音聊天*/
+    /** 直播-小英语音聊天 */
     public static String LIVE_VOICE_CHAT = "voicechat";
-    /** 直播-小英语音弹幕*/
+    /** 直播-小英语音弹幕 */
     public static String LIVE_VOICE_BULLET = "voicebullet";
+
+    public static class ShareData {
+
+    }
 
     /**
      * 体验课互动题提交答案

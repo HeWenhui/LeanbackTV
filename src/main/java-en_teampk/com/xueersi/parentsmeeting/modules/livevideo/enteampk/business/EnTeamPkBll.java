@@ -50,6 +50,10 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         this.rootView = rootView;
     }
 
+    public void setPkTeamEntity(PkTeamEntity pkTeamEntity) {
+        this.pkTeamEntity = pkTeamEntity;
+    }
+
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         this.getInfo = getInfo;
@@ -63,12 +67,14 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                 }
             });
         } else {
-            enTeamPkHttp.getEnglishPkRank(new AbstractBusinessDataCallBack() {
-                @Override
-                public void onDataSucess(Object... objects) {
-
-                }
-            });
+            if (pkTeamEntity == null) {
+                enTeamPkHttp.getEnglishPkRank(new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objects) {
+                        pkTeamEntity = (PkTeamEntity) objects[0];
+                    }
+                });
+            }
         }
         addTop();
     }
