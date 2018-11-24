@@ -196,6 +196,14 @@ public class LiveTopic {
          * 是否打开语音反馈
          */
         private String onVideoChat = "off";
+        /**
+         * 是否开启文科语音弹幕，默认为false
+         */
+        private boolean openVoiceBarrage = false;
+        /**
+         * 文科语音弹幕场次
+         */
+        private int voiceBarrageCount;
 
         /**
          * 点赞送礼物开关
@@ -461,6 +469,22 @@ public class LiveTopic {
 
         public String getLKNoticeMode() {
             return mLKNoticeMode;
+        }
+
+        public boolean isOpenVoiceBarrage() {
+            return openVoiceBarrage;
+        }
+
+        public void setOpenVoiceBarrage(boolean openVoiceBarrage) {
+            this.openVoiceBarrage = openVoiceBarrage;
+        }
+
+        public int getVoiceBarrageCount() {
+            return voiceBarrageCount;
+        }
+
+        public void setVoiceBarrageCount(int voiceBarrageCount) {
+            this.voiceBarrageCount = voiceBarrageCount;
         }
 
         public boolean isOpenlike() {

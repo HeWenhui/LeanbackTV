@@ -72,7 +72,11 @@ public class LiveVideoConfig {
      * 直播课的直播
      */
     public final static int LIVE_TYPE_LIVE = 3;
-    /** 语音评测地址 */
+    /** 视频类型为站立直播体验课 */
+    public static final int LIVE_TYPE_STAND_EXPERIENCE = 10000;
+    /**
+     * 语音评测地址
+     */
     public static String SPEECH_URL = "https://live.xueersi.com/LivePlayBack/speechEvalResult/";
     /** 获取学习报告-讲座 */
     public final static String URL_LIVE_GET_FEED_BACK = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getFeedback";
@@ -168,6 +172,8 @@ public class LiveVideoConfig {
     public static String LIVE_GSLB = "live_gslb";
     /** 调度请求错误失败上报日志 */
     public static String LIVE_CHAT_GSLB = "live_chatgslb";
+    /** 聊天服务器连接失败EventId */
+    public static final String EXPERIENCE_MESSAGE_CONNECT_ERROR = "experience_message_connect_error";
     /** 站立直播-帧动画 */
     public static String LIVE_FRAME_ANIM = "live_frame_anim";
     /** 直播时间-当天据算，live_expe_time按单个场次计算 */
@@ -186,8 +192,14 @@ public class LiveVideoConfig {
     public static String LIVE_PLAY_ERROR = "live_play_error";
     /** 直播-学习报告截图 */
     public static String LIVE_STUDY_REPORT_IMG = "live_study_report_img";
+    /** 直播-小英语音聊天*/
+    public static String LIVE_VOICE_CHAT = "voicechat";
+    /** 直播-小英语音弹幕*/
+    public static String LIVE_VOICE_BULLET = "voicebullet";
 
-    /** 体验课互动题提交答案 */
+    /**
+     * 体验课互动题提交答案
+     */
     public static String LIVE_EXPE_SUBMIT = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitTestAnswer";
     /**体验课主观题提交答案*/
 //    public static String LIVE_EXPE_SUBMIT_SUBJECT = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/subjectiveSubmit";
@@ -233,7 +245,7 @@ public class LiveVideoConfig {
     public static String URL_AUTO_LIVE_FEAD_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/learnFeedback";
     /** 提交体验课学习反馈 */
     public static String URL_AUTO_LIVE_LEARN_FEED_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitFeedback";
-
+    /** 视频播放失败的eventId */
     public final static String STAND_EXPERIENCE_LIVE_PLAY_ERROR = "stand_experience_live_play_error";
 
     /** 理科互动题 */
@@ -350,4 +362,7 @@ public class LiveVideoConfig {
         /** 抢红包 */
         int TYPE_RED_PACKAGE = 9;
     }
+
+    public static int IRC_TYPE_NOTICE = 0;
+    public static int IRC_TYPE_TOPIC = 1;
 }

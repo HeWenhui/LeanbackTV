@@ -24,7 +24,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PraiseMessageEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ArtsPraiseHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
@@ -137,7 +136,7 @@ public class PraiseInteractionBll extends LiveBaseBll implements NoticeAction, T
 
             mHandler.removeCallbacks(delayRemoveRunalbe);
             isOpen = true;
-            praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll);
+            praiseInteractionPager = new PraiseInteractionPager(mContext, goldNum, this, mLiveBll,mGetInfo);
             rlPraiseContentView.removeAllViews();
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);

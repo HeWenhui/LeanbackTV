@@ -8,8 +8,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ScaleDrawable;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -25,16 +23,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
+import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.umeng.analytics.MobclickAgent;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.speech.SpeechConfig;
+import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
@@ -42,12 +46,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StartProgress;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.lib.framework.utils.file.FileUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -69,7 +70,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public static boolean DEBUG = false;
     String eventId = LiveVideoConfig.LIVE_SPEECH_TEST2;
-    Handler handler = new Handler(Looper.getMainLooper());
     /** 语音保存位置 */
     private String id;
     /** 时间倒计时，表情 */
@@ -146,8 +146,12 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     boolean haveAnswer;
     String learning_stage;
 
-    public SpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String testId,
-                              String nonce, String content, int time, boolean haveAnswer, String learning_stage, SpeechEvalAction speechEvalAction, LivePagerBack livePagerBack) {
+    private SpeechParamEntity mParam;
+
+    public SpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String
+            testId,
+                              String nonce, String content, int time, boolean haveAnswer, String learning_stage,
+                              SpeechEvalAction speechEvalAction, LivePagerBack livePagerBack) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = true;
@@ -176,8 +180,10 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         umsAgentDebugPv(eventId, mData);
     }
 
-    public SpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String testId,
-                              String nonce, String content, int time, int examSubmit, String learning_stage, SpeechEvalAction speechEvalAction, LivePagerBack livePagerBack) {
+    public SpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String
+            testId,
+                              String nonce, String content, int time, int examSubmit, String learning_stage,
+                              SpeechEvalAction speechEvalAction, LivePagerBack livePagerBack) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = false;
@@ -244,9 +250,12 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
     @Override
     public void initData() {
-        TextView tv_livevideo_speecteval_countdown2 = (TextView) mView.findViewById(R.id.tv_livevideo_speecteval_countdown2);
-        TextView tv_livevideo_speecteval_countdown3 = (TextView) mView.findViewById(R.id.tv_livevideo_speecteval_countdown3);
-        TextView tv_livevideo_speecteval_countdown4 = (TextView) mView.findViewById(R.id.tv_livevideo_speecteval_countdown4);
+        TextView tv_livevideo_speecteval_countdown2 = (TextView) mView.findViewById(R.id
+                .tv_livevideo_speecteval_countdown2);
+        TextView tv_livevideo_speecteval_countdown3 = (TextView) mView.findViewById(R.id
+                .tv_livevideo_speecteval_countdown3);
+        TextView tv_livevideo_speecteval_countdown4 = (TextView) mView.findViewById(R.id
+                .tv_livevideo_speecteval_countdown4);
         tvCountDown.add(tv_livevideo_speecteval_countdown);
         tvCountDown.add(tv_livevideo_speecteval_countdown2);
         tvCountDown.add(tv_livevideo_speecteval_countdown3);
@@ -274,6 +283,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         ScaleDrawable scaleDrawable = (ScaleDrawable) drawable.getDrawable(1);
         GradientDrawable gradientDrawable = (GradientDrawable) scaleDrawable.getDrawable();
         gradientDrawable.setColor(startProgColor);
+        mParam = new SpeechParamEntity();
 //        prepareSpeech();
 //        mView.postDelayed(new Runnable() {
 //            @Override
@@ -282,7 +292,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //            }
 //        }, 100);
 //        for (int i = 0; i < tvCountDown.size(); i++) {
-//            final Animation animTimeCountDown = AnimationUtils.loadAnimation(mContext, R.anim.anim_live_speech_countdown);
+//            final Animation animTimeCountDown = AnimationUtils.loadAnimation(mContext, R.anim
+// .anim_live_speech_countdown);
 //            final TextView textView = tvCountDown.get(i);
 //            mView.postDelayed(new Runnable() {
 //                @Override
@@ -339,7 +350,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 });
             } else {
-                RelativeLayout rl_livevideo_speecteval_countdown = (RelativeLayout) mView.findViewById(R.id.rl_livevideo_speecteval_countdown);
+                RelativeLayout rl_livevideo_speecteval_countdown = (RelativeLayout) mView.findViewById(R.id
+                        .rl_livevideo_speecteval_countdown);
                 rl_livevideo_speecteval_countdown.removeAllViews();
                 ViewGroup group = (ViewGroup) rl_livevideo_speecteval_countdown.getParent();
                 group.removeView(rl_livevideo_speecteval_countdown);
@@ -365,14 +377,20 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         }
         //语音评测开始
         if (mIse == null) {
-            mIse = new SpeechEvaluatorUtils(true);
+//            mIse = new SpeechEvaluatorUtils(true);
+            mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
         }
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "startRecord");
         mData.put("testid", id);
         mData.put("islive", "" + isLive);
         umsAgentDebugInter(eventId, mData);
-        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, new EvaluatorListener() {
+        mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
+        mParam.setStrEvaluator(content2);
+        mParam.setLocalSavePath(saveVideoFile.getPath());
+        mParam.setMultRef(false);
+        mParam.setLearning_stage(learning_stage);
+        mIse.startRecog(mParam, new EvaluatorListener() {
             int lastVolume = 0;
 
             @Override
@@ -408,12 +426,56 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             }
 
             @Override
-            public void onVolumeUpdate(final int volume) {
-//                logger.d( "onVolumeUpdate:volume=" + volume);
+            public void onVolumeUpdate(int volume) {
+                logger.d("onVolumeUpdate:volume=" + volume);
                 vwvSpeectevalWave.setVolume(volume * 3);
                 lastVolume = volume;
             }
+
         });
+//        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false,
+// learning_stage, new EvaluatorListener() {
+//            int lastVolume = 0;
+//
+//            @Override
+//            public void onBeginOfSpeech() {
+//                logger.d( "onBeginOfSpeech");
+//                isSpeechError = false;
+//            }
+//
+//            @Override
+//            public void onResult(ResultEntity resultEntity) {
+//                if (userBack) {
+//                    return;
+//                }
+//                if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+//                    Map<String, String> mData = new HashMap<>();
+//                    mData.put("logtype", "voiceTestClose");
+//                    mData.put("islive", "" + isLive);
+//                    mData.put("testid", "" + id);
+//                    umsAgentDebugInter(eventId, mData);
+//                    onEvaluatorSuccess(resultEntity, this);
+//
+////                    resultEntity.setStatus(ResultEntity.ERROR);
+//////                    resultEntity.setErrorNo(ResultCode.MUTE_AUDIO);
+////                    resultEntity.setErrorNo(ResultCode.WEBSOCKET_TIME_OUT);
+////                    isSpeechError = true;
+////                    onEvaluatorError(resultEntity, this);
+//                } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+//                    isSpeechError = true;
+//                    onEvaluatorError(resultEntity, this);
+//                } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+//                    onEvaluatorIng(resultEntity);
+//                }
+//            }
+//
+//            @Override
+//            public void onVolumeUpdate(final int volume) {
+////                logger.d( "onVolumeUpdate:volume=" + volume);
+//                vwvSpeectevalWave.setVolume(volume * 3);
+//                lastVolume = volume;
+//            }
+//        });
         if (!isLive) {
             mView.postDelayed(new Runnable() {
                 @Override
@@ -492,6 +554,11 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
     private void onEvaluatorSuccess(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
         final int score = resultEntity.getScore();
+        mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
+        mParam.setStrEvaluator(content2);
+        mParam.setLocalSavePath(saveVideoFile.getPath());
+        mParam.setMultRef(false);
+        mParam.setLearning_stage(learning_stage);
         if (!isEnd) {
             if (score == 1) {
                 errorSetVisible();
@@ -500,7 +567,9 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, evaluatorListener);
+                        mIse.startRecog(mParam, evaluatorListener);
+//                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(),
+// false, learning_stage, evaluatorListener);
                     }
                 }, 500);
                 return;
@@ -511,7 +580,9 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, evaluatorListener);
+                        mIse.startRecog(mParam, evaluatorListener);
+//                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(),
+// false, learning_stage, evaluatorListener);
                     }
                 }, 500);
                 return;
@@ -536,15 +607,18 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             int wordChangeColor = wordChangeColor(score, lstPhonemeScore);
             if (wordChangeColor != 0) {
                 if (speechEvaluatorInter == null) {
-                    mLogtf.d("onEvaluatorSuccess:Inter=null,sid=" + resultEntity.getSid() + ",score=" + score + ",error=" + content + "-" + nbest);
+                    mLogtf.d("onEvaluatorSuccess:Inter=null,sid=" + resultEntity.getSid() + ",score=" + score + "," +
+                            "error=" + content + "-" + nbest);
                 } else {
-                    mLogtf.d("onEvaluatorSuccess:Inter=" + speechEvaluatorInter.getClass().getSimpleName() + ",sid=" + resultEntity.getSid() + ",score=" + score + ",error=" + content + "-" + nbest);
+                    mLogtf.d("onEvaluatorSuccess:Inter=" + speechEvaluatorInter.getClass().getSimpleName() + ",sid="
+                            + resultEntity.getSid() + ",score=" + score + ",error=" + content + "-" + nbest);
                 }
             }
         } catch (Exception e) {
             MobclickAgent.reportError(mContext, new Error(content + "-" + nbest, e));
         }
-        mLogtf.d("onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + ",haveAnswer=" + haveAnswer + ",nbest=" + nbest);
+        mLogtf.d("onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + "," +
+                "haveAnswer=" + haveAnswer + ",nbest=" + nbest);
         if (haveAnswer) {
             onSpeechEvalSuccess(resultEntity, 0);
         } else {
@@ -567,7 +641,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 // 发送分数和TestId
                 EventBus.getDefault().post(new VoiceAnswerResultEvent(id, score));
                 // 发送已答过的状态
-                EventBus.getDefault().post(new ArtsAnswerResultEvent(id, ArtsAnswerResultEvent.TYPE_NATIVE_ANSWERRESULT));
+                EventBus.getDefault().post(new ArtsAnswerResultEvent(id, ArtsAnswerResultEvent
+                        .TYPE_NATIVE_ANSWERRESULT));
                 speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), new OnSpeechEval() {
                     OnSpeechEval onSpeechEval = this;
 
@@ -682,10 +757,16 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
-        mLogtf.d("onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd + ",isOfflineFail=" + SpeechEvaluatorUtils.isOfflineFail());
+        mLogtf.d("onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd + ",isOfflineFail=" + mIse
+                .isOfflineFail());
         tvSpeectevalError.removeCallbacks(autoUploadRunnable);
         ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);
         errorSetVisible();
+        mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
+        mParam.setStrEvaluator(content2);
+        mParam.setLocalSavePath(saveVideoFile.getPath());
+        mParam.setMultRef(false);
+        mParam.setLearning_stage(learning_stage);
         if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode
                 .MUTE) {
 //                            XESToastUtils.showToast(mContext, "声音有点小，大点声哦！");
@@ -695,26 +776,31 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     @Override
                     public void run() {
                         errorSetGone();
-                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, evaluatorListener);
+                        mIse.startRecog(mParam, evaluatorListener);
+//                        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(),
+// false, learning_stage, evaluatorListener);
                     }
                 }, 1000);
                 return;
             }
         } else if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
             tvSpeectevalError.setText("麦克风不可用，快去检查一下");
-        } else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() == ResultCode.NETWORK_FAIL
+        } else if (resultEntity.getErrorNo() == ResultCode.WEBSOCKET_TIME_OUT || resultEntity.getErrorNo() ==
+                ResultCode.NETWORK_FAIL
                 || resultEntity.getErrorNo() == ResultCode.WEBSOCKET_CONN_REFUSE) {
             tvSpeectevalError.setText("好像没网了，快检查一下");
-            if (!SpeechEvaluatorUtils.isOfflineFail()) {
+            if (!mIse.isOfflineFail()) {
                 if (speechEvaluatorInter instanceof TalSpeech) {
                     onLineError++;
                     if (onLineError == 1) {
                         if (!isEnd) {
-                            handler.postDelayed(new Runnable() {
+                            spStarResult.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     errorSetGone();
-                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, evaluatorListener);
+                                    mIse.startRecog(mParam, evaluatorListener);
+//                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2,
+// saveVideoFile.getPath(), false, learning_stage, evaluatorListener);
                                 }
                             }, 1000);
                             return;
@@ -724,16 +810,18 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             }
         } else {
             tvSpeectevalError.setText("测评君罢工了，程序员哥哥会尽快修复（" + resultEntity.getErrorNo() + "）");
-            if (!SpeechEvaluatorUtils.isOfflineFail()) {
+            if (!mIse.isOfflineFail()) {
                 if (speechEvaluatorInter instanceof TalSpeech) {
                     onLineError++;
                     if (onLineError == 1) {
                         if (!isEnd) {
-                            handler.postDelayed(new Runnable() {
+                            spStarResult.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     errorSetGone();
-                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2, saveVideoFile.getPath(), false, learning_stage, evaluatorListener);
+                                    mIse.startRecog(mParam, evaluatorListener);
+//                                    speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(content2,
+// saveVideoFile.getPath(), false, learning_stage, evaluatorListener);
                                 }
                             }, 1000);
                             return;
@@ -792,7 +880,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 } else {
                     if (point90_6 != null) {
-                        logger.d("onEvaluatorIng:point90_61=" + point90_6);
+                        logger.d( "onEvaluatorIng:point90_61=" + point90_6);
                         if (point90_6.right - point90_6.left >= 5) {
                             arrayList90_6.add(point90_6);
                         }
@@ -801,7 +889,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
                 if (i == lstPhonemeScore.size() - 1) {
                     if (point90_6 != null) {
-                        logger.d("onEvaluatorIng:point90_62=" + point90_6);
+                        logger.d( "onEvaluatorIng:point90_62=" + point90_6);
                         if (point90_6.right - point90_6.left >= 5) {
                             arrayList90_6.add(point90_6);
                         }
@@ -818,7 +906,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 } else {
                     if (point90_3 != null) {
-                        logger.d("onEvaluatorIng:point90_31=" + point90_3);
+                        logger.d( "onEvaluatorIng:point90_31=" + point90_3);
                         if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
                             arrayList90_3.add(point90_3);
                         }
@@ -827,7 +915,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
                 if (i == lstPhonemeScore.size() - 1) {
                     if (point90_3 != null) {
-                        logger.d("onEvaluatorIng:point90_32=" + point90_3);
+                        logger.d( "onEvaluatorIng:point90_32=" + point90_3);
                         if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
                             arrayList90_3.add(point90_3);
                         }
@@ -887,7 +975,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
                 mLogtf.d("onEvaluatorIng(great):nbest=" + nbest);
             }
-            logger.d("onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
+            logger.d( "onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
         }
     }
 

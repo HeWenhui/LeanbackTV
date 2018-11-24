@@ -8,6 +8,7 @@ import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -166,6 +167,37 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 appID = UmsConstants.LIVE_APP_ID_BACK;
                 IS_SCIENCE = true;
                 liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
+                try {
+                    List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+                    int oldSize = -1;
+                    if (lstVideoQuestion != null) {
+                        oldSize = lstVideoQuestion.size();
+                        for (int i = 0; i < lstVideoQuestion.size(); i++) {
+                            VideoQuestionEntity questionEntity = lstVideoQuestion.get(i);
+                            //战队pk分队
+                            if (questionEntity.getvCategory() == 23 || questionEntity.getvCategory() == 25) {
+                                lstVideoQuestion.remove(i);
+                                i--;
+                            }
+                        }
+                        int size = lstVideoQuestion.size();
+                        if (size != oldSize) {
+                            try {
+                                HashMap<String, String> hashMap = new HashMap();
+                                hashMap.put("logtype", "removepk");
+                                hashMap.put("livetype", "" + mLiveType);
+                                hashMap.put("where", "" + where);
+                                hashMap.put("liveid", "" + mVideoEntity.getLiveId());
+                                hashMap.put("size", oldSize + "-" + size);
+                                UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
+                            } catch (Exception e) {
+                                CrashReport.postCatchedException(e);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(e);
+                }
             }
         }
         logToFile = new LogToFile(this, TAG);
@@ -279,6 +311,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     String[] arrSubjIds = strSubjIds.split(",");
                     liveGetInfo.setSubjectIds(arrSubjIds);
                 }
+                mCourseHttpResponseParser.parseLiveGetInfo(liveInfo, liveGetInfo, mLiveType, isArts);
             }
         } catch (Exception e) {
             logger.e("onCreate", e);
@@ -288,9 +321,11 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         liveGetInfo.setClientLog(clientLog);
         liveUidRx.setLiveGetInfo(liveGetInfo);
         liveUidRx.onCreate();
-        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+        ArrayList<LiveBackBaseBll> templiveBackBaseBlls = new ArrayList<>(liveBackBaseBlls);
+        for (LiveBackBaseBll liveBackBaseBll : templiveBackBaseBlls) {
             liveBackBaseBll.onCreateF(mVideoEntity, liveGetInfo, businessShareParamMap);
         }
+        templiveBackBaseBlls.clear();
     }
 
     public ArrayList<LiveBackBaseBll> getLiveBackBaseBlls() {
@@ -554,6 +589,18 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         LiveBackBaseBll liveBackBaseBll = array.get(mQuestionEntity.getvCategory());
         if (liveBackBaseBll != null) {
             liveBackBaseBll.showQuestion(oldQuestionEntity, mQuestionEntity, showQuestion);
+        } else {
+            try {
+                HashMap<String, String> hashMap = new HashMap();
+                hashMap.put("logtype", "showQuestion");
+                hashMap.put("livetype", "" + mLiveType);
+                hashMap.put("where", "" + where);
+                hashMap.put("liveid", "" + mVideoEntity.getLiveId());
+                hashMap.put("category", "" + mQuestionEntity.getvCategory());
+                UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
+            } catch (Exception e) {
+                CrashReport.postCatchedException(e);
+            }
         }
     }
 

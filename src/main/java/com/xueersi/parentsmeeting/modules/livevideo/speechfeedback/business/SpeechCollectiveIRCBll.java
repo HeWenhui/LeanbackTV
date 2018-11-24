@@ -18,9 +18,11 @@ import org.json.JSONObject;
  */
 public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBackHttp, NoticeAction, TopicAction {
     SpeechCollectiveBll speechCollectiveBll;
+    private boolean isFirstCreate = true;
 
     public SpeechCollectiveIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
+        isFirstCreate = true;
     }
 
     @Override
@@ -46,8 +48,20 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
     }
 
     @Override
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
+        super.onModeChange(oldMode, mode, isPresent);
+        if (speechCollectiveBll != null) {
+            speechCollectiveBll.stop();
+        }
+    }
+
+    @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         logger.d("data=" + jsonObject);
+        if (!isFirstCreate) {
+            return;
+        }
+        isFirstCreate = false;
         LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
         String status = mainRoomstatus.getOnGroupSpeech();
         int isVoiceInteraction = mGetInfo.getIsVoiceInteraction();
@@ -101,7 +115,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
     public void onNotice(String sourceNick, String target, final JSONObject object, int type) {
         logger.d("data=" + object);
         switch (type) {
-            case XESCODE.SPEECH_FEEDBACK: {
+            case XESCODE.SPEECH_COLLECTIVE: {
                 final String from = object.optString("roomId");
                 final String status = object.optString("status");
                 if (!"voice_plan_ios".equals(from)) {
@@ -143,7 +157,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
     @Override
     public int[] getNoticeFilter() {
         return new int[]{
-                XESCODE.SPEECH_FEEDBACK};
+                XESCODE.SPEECH_COLLECTIVE};
     }
 
     @Override

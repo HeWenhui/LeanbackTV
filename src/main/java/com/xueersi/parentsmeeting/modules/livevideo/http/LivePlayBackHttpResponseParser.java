@@ -3,6 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -10,7 +13,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -217,5 +222,36 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
             e.printStackTrace();
         }
         return bannerBuyCourseEntity;
+    }
+
+    public void parseLiveGetInfo(JSONObject data, LiveGetInfo liveGetInfo, int mLiveType, int isArts) {
+        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+            if (isArts == 1) {
+                parseLiveGetInfoLibarts(data, liveGetInfo);
+            } else {
+                parseLiveGetInfoScience(data, liveGetInfo);
+            }
+        }
+    }
+
+    /**
+     * 解析getInfo 理科
+     *
+     * @param data
+     * @param getInfo
+     */
+    public void parseLiveGetInfoScience(JSONObject data, LiveGetInfo getInfo) {
+        int isPrimarySchool = data.optInt("isPrimarySchool", 0);
+        getInfo.setIsPrimarySchool(isPrimarySchool);
+    }
+
+    /**
+     * 解析getInfo 文科
+     *
+     * @param data
+     * @param getInfo
+     */
+    public void parseLiveGetInfoLibarts(JSONObject data, LiveGetInfo getInfo) {
+
     }
 }

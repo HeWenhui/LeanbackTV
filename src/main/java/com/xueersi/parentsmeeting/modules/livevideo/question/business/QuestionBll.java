@@ -13,51 +13,51 @@ import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.speech.SpeechUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
+import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssAutoPager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
-import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.KeyboardPopWindow;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -93,7 +93,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         .OnKeyboardShowingListener, KeyboardPopWindow.KeyboardObserver, LivePagerBack {
     private String TAG = "QuestionBll";
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
-    private SpeechEvaluatorUtils mIse;
+    private SpeechUtils mIse;
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE = false;
     private String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
@@ -302,7 +302,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         isTeamPkAllowed = liveGetInfo != null && "1".equals(liveGetInfo.getIsAllowTeamPk());
     }
 
-    public void setIse(SpeechEvaluatorUtils ise) {
+    public void setIse(SpeechUtils ise) {
         this.mIse = ise;
     }
 
@@ -493,7 +493,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (videoQuestionLiveEntity == null) {
             mLogtf.d("showQuestion:noQuestion");
             if (isAnaswer) {
-                onQuestionShow(null, false, "showQuestion");
+                onQuestionShow(false, "showQuestion");
             }
             isAnaswer = false;
             if (voiceAnswerPager != null && !voiceAnswerPager.isEnd()) {
@@ -532,7 +532,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         logger.e("======> showQuestion 22222:" + isAnaswer);
 
         if (!isAnaswer) {
-            onQuestionShow(videoQuestionLiveEntity, true, "showQuestion");
+            onQuestionShow(true, "showQuestion");
         }
         isAnaswer = true;
         if (this.videoQuestionLiveEntity != null) {
@@ -1115,7 +1115,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             hasQuestion = false;
         }
         if (oldisAnaswer && !havePager) {
-            onQuestionShow(null, false, "onStopQuestion");
+            onQuestionShow(false, "onStopQuestion");
         }
         if (hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
@@ -1416,7 +1416,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             mLogtf.d("onBack:onShowEnd=" + num + ",isAnaswer=" + isAnaswer + ",UserBack=" + (speechAssessmentPagerUserBack == null));
                             speechAssessmentPagerUserBack = null;
                             if (!isAnaswer) {
-                                onQuestionShow(null, false, "stopSpeech:onShowEnd");
+                                onQuestionShow(false, "stopSpeech:onShowEnd");
                             }
                         }
                     });
@@ -1466,7 +1466,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 e.printStackTrace();
             }
             if (!isAnaswer) {
-                onQuestionShow(null, false, "stopWebQuestion");
+                onQuestionShow(false, "stopWebQuestion");
             }
         } else {
             subjectResultPager = null;
@@ -1505,13 +1505,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 (speechAssessmentPagerUserBack == null));
                         speechAssessmentPagerUserBack = null;
                         if (!isAnaswer) {
-                            onQuestionShow(null, false, "stopSpeech:onShowEnd");
+                            onQuestionShow(false, "stopSpeech:onShowEnd");
                         }
                     }
                 });
             } else {
                 if (!isAnaswer) {
-                    onQuestionShow(null, false, "stopSpeech");
+                    onQuestionShow(false, "stopSpeech");
                 }
             }
             if (speechAssessmentPager.getId().equals(num)) {
@@ -1572,7 +1572,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         this.isHaveWebQuestion = isHaveWebQuestion;
         if (!isHaveWebQuestion) {
             questionWebPager = null;
-            onQuestionShow(null, false, "setHaveWebQuestion");
         }
 //        activity.getWindow().setFlags(haveExam ? 0 : WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
 // .LayoutParams.FLAG_FULLSCREEN);

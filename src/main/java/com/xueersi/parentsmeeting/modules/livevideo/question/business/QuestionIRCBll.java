@@ -11,13 +11,13 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
@@ -29,7 +29,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.H5OnlineTechEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -39,12 +38,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardSho
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
-import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +57,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private QuestionBll mQuestionAction;
     private AnswerRankIRCBll mAnswerRankBll;
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
-    private SpeechEvaluatorUtils mIse;
+//    private SpeechEvaluatorUtils mIse;
+    private SpeechUtils mIse;
     /** RolePlayer功能接口 */
     private RolePlayAction rolePlayAction;
 
@@ -136,7 +134,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat(mQuestionAction));
         }
         if (1 == data.getIsEnglish()) {
-            mIse = new SpeechEvaluatorUtils(true);
+            mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+            mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
             //记录当前正在走的模型，留给界面更新使用
             ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
                     RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
@@ -147,7 +146,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     for (int i = 0; i < subjectIds.length; i++) {
                         String subjectId = subjectIds[i];
                         if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subjectId)) {
-                            mIse = new SpeechEvaluatorUtils(true, Constants.ASSESS_PARAM_LANGUAGE_CH);
+                            mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                            mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_CH);
+//                            mIse = new SpeechEvaluatorUtils(true, Constants.ASSESS_PARAM_LANGUAGE_CH);
                             //记录当前正在走的模型，留给界面更新使用
                             ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
                                     RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
@@ -236,6 +237,65 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         }
                     }
                 } else {
+                    LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
+                    if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
+                        String num = mainRoomstatus.getExamNum();
+                        if ("on".equals(mainRoomstatus.getExamStatus())) {
+                            VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                            videoQuestionLiveEntity.id = num;
+                            mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
+                            if (mAnswerRankBll != null) {
+                                mAnswerRankBll.setTestId(num);
+                            }
+                        } else {
+                            mQuestionAction.onExamStop(num);
+                        }
+                    }
+
+
+                    if (liveTopic.getVideoQuestionLiveEntity() != null) {
+                        logger.e("======>QuestionIRCBlle:" + "走了错误的逻辑");
+                        if (mQuestionAction != null) {
+
+                            VideoQuestionLiveEntity videoQuestionLiveEntity =liveTopic.getVideoQuestionLiveEntity();
+
+                            JSONObject topicObj = jsonObject.optJSONObject("topic");
+                            videoQuestionLiveEntity.roles = topicObj.optString("roles");
+                            videoQuestionLiveEntity.id = topicObj.optString("id");
+
+                            //解决，老师发题后，学生后进来，无法进入roleplay的问题
+                            //人机的回调
+
+                            if(!TextUtils.isEmpty( videoQuestionLiveEntity.roles)){
+                                if (rolePlayMachineAction == null) {
+                                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                                    rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
+                                }
+
+                                //多人的回调
+                                if (rolePlayAction == null) {
+                                    RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
+                                    rolePlayAction = rolePlayerBll;
+                                }
+                                mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction);
+                                mQuestionAction.setRolePlayAction(rolePlayAction);
+                            }
+
+                            mQuestionAction.showQuestion(videoQuestionLiveEntity);
+                            if (mAnswerRankBll != null) {
+                                mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                            }
+                            if (mLiveAutoNoticeBll != null) {
+                                mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                                mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
+                            }
+                        }
+                    } else {
+                        logger.e("======>QuestionIRCBlle:" + "正常的逻辑");
+                        if (mQuestionAction != null) {
+                            mQuestionAction.showQuestion(null);
+                        }
+                    }
 //                    JSONObject coursewareH5 = jsonObject.getJSONObject("coursewareH5");
 //                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
 //                    videoQuestionLiveEntity.setNewArtsCourseware(true);
@@ -656,7 +716,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity,
-            String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
+                                     String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                 videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="

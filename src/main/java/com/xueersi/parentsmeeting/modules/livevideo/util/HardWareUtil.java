@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
-import android.text.format.Formatter;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -23,7 +22,7 @@ import java.util.regex.Pattern;
 
 public class HardWareUtil {
     private static String TAG = "HardWareUtil";
-    protected static Logger logger = LoggerFactory.getLogger(TAG);
+    protected static Logger logger = LiveLoggerFactory.getLogger(TAG);
 
     /**
      * 获得cpu型号名字
@@ -196,7 +195,7 @@ public class HardWareUtil {
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                logger.d("getCPURateDesc", e);
             } finally {
                 if (bufferedReader != null) {
                     try {

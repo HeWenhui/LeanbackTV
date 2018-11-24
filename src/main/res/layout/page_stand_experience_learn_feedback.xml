@@ -50,15 +50,21 @@
         app:layout_constraintGuide_percent="0.65"
         app:layout_constraintTop_toTopOf="@+id/iv_stand_experience_learn_feedback_background" />
 
+
     <ScrollView
         android:id="@+id/sv_stand_experience_learn_feedback_select"
         android:layout_width="0dp"
-
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/guideline_learn_feedback_bottom"
-        app:layout_constraintLeft_toLeftOf="@id/guideline_learn_feedback_left"
-        app:layout_constraintRight_toRightOf="@id/guideline_learn_feedback_right"
-        app:layout_constraintTop_toTopOf="@id/guideline_learn_feedback_top">
+        android:layout_marginLeft="140dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginRight="140dp"
+        android:layout_marginBottom="140dp"
+        android:scrollbarThumbVertical="@drawable/shape_stand_experience_learn_feedback_bar"
+        android:scrollbarTrackVertical="@drawable/shape_stand_experience_learn_feedback_bar_background"
+        app:layout_constraintBottom_toBottomOf="@id/iv_stand_experience_learn_feedback_background"
+        app:layout_constraintLeft_toLeftOf="@id/iv_stand_experience_learn_feedback_background"
+        app:layout_constraintRight_toRightOf="@id/iv_stand_experience_learn_feedback_background"
+        app:layout_constraintTop_toTopOf="@id/iv_stand_experience_learn_feedback_background">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -68,7 +74,7 @@
                 android:id="@+id/fzcytv_stand_experience_learn_feedback_title1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="12334"
+                android:text=""
                 android:textColor="@color/COLOR_756565"
                 android:textSize="11sp"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -87,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:button="@drawable/selector_stand_experience_learn_feedback_button"
-                    android:paddingLeft="2dp"
+                    android:paddingLeft="10dp"
                     android:textColor="@color/COLOR_756565"
                     android:textSize="10sp" />
 
@@ -97,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:button="@drawable/selector_stand_experience_learn_feedback_button"
-                    android:paddingLeft="2dp"
+                    android:paddingLeft="10dp"
                     android:textColor="@color/COLOR_756565"
                     android:textSize="10sp" />
 
@@ -107,10 +113,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:button="@drawable/selector_stand_experience_learn_feedback_button"
-                    android:paddingLeft="2dp"
+                    android:paddingLeft="10dp"
                     android:textColor="@color/COLOR_756565"
-                    android:textSize="10sp"
-                    android:visibility="invisible" />
+                    android:textSize="10sp" />
             </RadioGroup>
 
             <android.support.constraint.Group
@@ -126,7 +131,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="123231"
+                android:text=""
                 android:textColor="@color/COLOR_756565"
                 android:textSize="11sp"
                 app:layout_constraintTop_toBottomOf="@+id/rg_stand_experience_learn_feedback_select1" />
@@ -146,7 +151,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:button="@drawable/selector_stand_experience_learn_feedback_button"
-                    android:paddingLeft="2dp"
+                    android:paddingLeft="10dp"
+
                     android:textColor="@color/COLOR_756565"
                     android:textSize="10sp" />
 
@@ -156,7 +162,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:button="@drawable/selector_stand_experience_learn_feedback_button"
-                    android:paddingLeft="2dp"
+                    android:paddingLeft="10dp"
                     android:textColor="@color/COLOR_756565"
                     android:textSize="10sp" />
 
@@ -166,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:button="@drawable/selector_stand_experience_learn_feedback_button"
-                    android:paddingLeft="2dp"
+                    android:paddingLeft="10dp"
                     android:textColor="@color/COLOR_756565"
                     android:textSize="10sp" />
             </RadioGroup>

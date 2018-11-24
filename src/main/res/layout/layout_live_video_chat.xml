@@ -92,26 +92,43 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@id/ll_livevideo_chat_people">
 
-                <Button
-                    android:id="@id/bt_livevideo_chat_raisehand"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/live_task_jushou_icon_normal" />
+                <View
+                    android:id="@id/v_livevideo_chat_myline"
+                    android:layout_width="1dp"
+                    android:layout_height="58dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="14dp"
+                    android:alpha="0.2"
+                    android:background="@drawable/shape_livevideo_chat_myline" />
 
-                <TextView
-                    android:id="@id/tv_livevideo_chat_raisehand"
+                <RelativeLayout
+                    android:id="@id/rl_livevideo_chat_raisehand2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/bt_livevideo_chat_raisehand"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="3dp"
-                    android:text="举手"
-                    android:textColor="@color/white"
-                    android:textSize="11sp" />
+                    android:layout_marginLeft="23dp"
+                    android:layout_toRightOf="@id/v_livevideo_chat_myline">
+
+                    <Button
+                        android:id="@id/bt_livevideo_chat_raisehand"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/live_task_jushou_icon_normal" />
+
+                    <TextView
+                        android:id="@id/tv_livevideo_chat_raisehand"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/bt_livevideo_chat_raisehand"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="3dp"
+                        android:text="举手"
+                        android:textColor="@color/white"
+                        android:textSize="11sp" />
+                </RelativeLayout>
+
             </RelativeLayout>
 
         </RelativeLayout>

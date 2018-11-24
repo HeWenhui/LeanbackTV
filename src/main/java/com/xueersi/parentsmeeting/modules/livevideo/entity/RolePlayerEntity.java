@@ -1,10 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
-import android.view.View;
-
 import com.tal.speech.speechrecognizer.PhoneScore;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

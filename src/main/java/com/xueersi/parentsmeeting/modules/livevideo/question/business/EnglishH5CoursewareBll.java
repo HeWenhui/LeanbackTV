@@ -14,8 +14,16 @@ import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.logerhelper.MobAgent;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.speech.SpeechUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -28,26 +36,28 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.NewArtsAnswer;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
-import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -101,7 +111,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private LiveGetInfo mGetInfo;
     private EnglishH5CoursewareHttp mLiveBll;
     private LiveAndBackDebug liveAndBackDebug;
-    SpeechEvaluatorUtils mIse;
+    SpeechUtils mIse;
     private AnswerRankBll mAnswerRankBll;
     /** 智能私信业务 */
     private LiveAutoNoticeBll mLiveAutoNoticeBll;
@@ -176,7 +186,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         isTeamPkAllowed = mGetInfo != null && "1".equals(mGetInfo.getIsAllowTeamPk());
     }
 
-    public void setIse(SpeechEvaluatorUtils ise) {
+    public void setIse(SpeechUtils ise) {
         this.mIse = ise;
     }
 
@@ -345,13 +355,13 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             bottomContent.removeView(h5CoursewarePager.getRootView());
                         }
                     }
-                    logger.e("======>EnglishH5CoursewareBll:" + "H5语音答题开启1" + "getIsVoice():" + videoQuestionLiveEntity.getIsVoice() + "getUrl():" + videoQuestionLiveEntity.getUrl());
+                    logger.e( "======>EnglishH5CoursewareBll:" + "H5语音答题开启1" + "getIsVoice():" + videoQuestionLiveEntity.getIsVoice() + "getUrl():" + videoQuestionLiveEntity.getUrl());
                     if ("1".equals(videoQuestionLiveEntity.getIsVoice()) && !mErrorVoiceQue.contains(videoQuestionLiveEntity.getUrl())) {
                         try {
                             showVoiceAnswer(videoQuestionLiveEntity);
-                            logger.e("======>EnglishH5CoursewareBll:" + "H5语音答题开启2voiceType:" + videoQuestionLiveEntity.voiceType);
+                            logger.e( "======>EnglishH5CoursewareBll:" + "H5语音答题开启2voiceType:" + videoQuestionLiveEntity.voiceType);
                         } catch (Exception e) {
-                            logger.e("======>EnglishH5CoursewareBll:" + "H5语音答题开启3");
+                            logger.e( "======>EnglishH5CoursewareBll:" + "H5语音答题开启3");
                             logToFile.d("onH5Courseware:showVoiceAnswer.error1=" + e.getMessage());
                             mErrorVoiceQue.add(videoQuestionLiveEntity.getUrl());
                             showH5Paper(videoQuestionLiveEntity);
@@ -360,9 +370,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         showH5Paper(videoQuestionLiveEntity);
                     }
                 } else {
-                    logger.e("======>EnglishH5CoursewareBll:" + "H5语音答题关闭1");
+                    logger.e( "======>EnglishH5CoursewareBll:" + "H5语音答题关闭1");
                     boolean havePager = false;
-                    logger.e("======>EnglishH5CoursewareBll: voiceAnswerPager=" + voiceAnswerPager);
+                    logger.e( "======>EnglishH5CoursewareBll: voiceAnswerPager="+voiceAnswerPager );
                     if (voiceAnswerPager != null && !voiceAnswerPager.isEnd()) {
                         voiceAnswerPager.examSubmitAll("onH5Courseware", videoQuestionLiveEntity.nonce);
                         havePager = true;
@@ -370,13 +380,13 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     }
                     int delayTime = 0;
                     int isForce = 0;
-                    logger.e("======>EnglishH5CoursewareBll: h5CoursewarePager=" + h5CoursewarePager);
+                    logger.e( "======>EnglishH5CoursewareBll: h5CoursewarePager="+h5CoursewarePager );
                     if (h5CoursewarePager != null) {
                         havePager = true;
                         curPager = h5CoursewarePager;
-                        Log.e("mqtt", "submitData" + "one");
+                        Log.e("mqtt","submitData" + "one");
                         h5CoursewarePager.submitData();
-                        Log.e("mqtt", "submitData" + "two");
+                        Log.e("mqtt","submitData" + "two");
                         logToFile.i("onH5Courseware:submitData");
                         WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
                         if (webViewRequest != null) {
@@ -939,7 +949,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
         @Override
         public void onPutQuestionResult(BaseVoiceAnswerPager baseVoiceAnswerPager, final BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, final OnAnswerReslut answerReslut) {
-            if (LiveVideoConfig.isNewArts) {
+            if(LiveVideoConfig.isNewArts){
                 logger.d("onPutQuestionResultNewArts0");
                 final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
                 JSONArray answers = new JSONArray();
@@ -948,10 +958,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 JSONArray choices = new JSONArray();
                 if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
                     try {
-                        if (isRight) {
-                            blanks.put(0, result);
-                        } else {
-                            blanks.put(0, "");
+                        if(isRight){
+                            blanks.put(0,result);
+                        }else{
+                            blanks.put(0,"");
                         }
 
                     } catch (JSONException e) {
@@ -959,27 +969,27 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     }
                 } else {
                     try {
-                        choices.put(0, result);
+                        choices.put(0,result);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
                 try {
-                    answerdetail.put("blank", blanks);
-                    answerdetail.put("choice", choices);
-                    answerdetail.put("useVoice", "1");
-                    answerdetail.put("voiceTime", voiceTime + "");
-                    answerdetail.put("voiceUrl", "");
-                    answerdetail.put("testId", videoQuestionLiveEntity1.id);
+                    answerdetail.put("blank",blanks);
+                    answerdetail.put("choice",choices);
+                    answerdetail.put("useVoice","1");
+                    answerdetail.put("voiceTime",voiceTime + "");
+                    answerdetail.put("voiceUrl","");
+                    answerdetail.put("testId",videoQuestionLiveEntity1.id);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 answers.put(answerdetail);
                 String testAnswer = "";
                 testAnswer = answers.toString();
-                if ("0".equals(isSubmit)) {
+                if("0".equals(isSubmit)){
                     isSubmit = "1";
-                } else if ("1".equals(isSubmit)) {
+                }else if("1".equals(isSubmit)){
                     isSubmit = "2";
                 }
                 // 文科新课件平台的对接
@@ -987,7 +997,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
                     @Override
                     public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
-                        logger.d("onPutQuestionResultNewArts5");
+                        logger.d( "onPutQuestionResultNewArts5");
                         logToFile.d("liveSubmitTestH5Answer:question=" + baseVideoQuestionEntity + ",pager=" + (voiceAnswerPager == null));
                         answerReslut.onAnswerReslut(baseVideoQuestionEntity, entity);
                         if (entity != null) {
@@ -1143,7 +1153,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onArtsResultCmplShow(AnswerResultCplShowEvent event) {
         Loger.e("EnglishH5CoursewareBll:onArtsResultCmplShow ");
-        froceClose();
+            froceClose();
     }
 
     /**
@@ -1156,7 +1166,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow, String method) {
         logToFile.d("onQuestionShow:isShow=" + isShow + ",method=" + method);
         for (QuestionShowAction questionShowAction : questionShowActions) {
-            questionShowAction.onQuestionShow(videoQuestionLiveEntity, isShow);
+            questionShowAction.onQuestionShow(videoQuestionLiveEntity,isShow);
         }
     }
 

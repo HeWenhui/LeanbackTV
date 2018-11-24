@@ -22,6 +22,8 @@
         android:layout_marginLeft="150dp"
         android:layout_marginRight="150dp"
         android:layout_marginTop="105dp"
+        android:scrollbarThumbVertical="@drawable/shape_stand_experience_learn_feedback_bar"
+        android:scrollbarTrackVertical="@drawable/shape_stand_experience_learn_feedback_bar_background"
         app:layout_constraintBottom_toBottomOf="@+id/iv_stand_experience_learn_feedback_background"
         app:layout_constraintLeft_toLeftOf="@+id/iv_stand_experience_learn_feedback_background"
         app:layout_constraintRight_toRightOf="@+id/iv_stand_experience_learn_feedback_background"
@@ -31,12 +33,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ItemLearnFeedbackPageSelectLayout
+            <com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.ItemLearnFeedbackPageSelectLayout
                 android:id="@+id/item_select_layout1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.ItemLearnFeedbackPageSelectLayout
+            <com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.ItemLearnFeedbackPageSelectLayout
                 android:id="@+id/item_select_layout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,7 +55,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_select_layout2" />
 
-            <com.xueersi.parentsmeeting.modules.livevideo.fragment.standlivevideoexperience.learnfeedback.GestureScrollEditText
+            <com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.GestureScrollEditText
                 android:id="@+id/et_stand_experience_learn_feedback_suggest"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
@@ -61,6 +63,7 @@
                 android:background="@drawable/shape_stand_experience_learn_feedback_edit_text"
                 android:gravity="top"
                 android:imeOptions="flagNoExtractUi"
+                android:padding="3dp"
                 android:textSize="10sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

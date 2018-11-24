@@ -116,6 +116,9 @@ public class LiveBackVideoBll {
     }
 
     public void playNewVideo() {
+        if (index < 0) {
+            index = 0;
+        }
         String url = mWebPaths.get(index++ % mWebPaths.size());
         logger.d("playNewVideo:url=" + url);
         liveBackPlayVideoFragment.playNewVideo(Uri.parse(url), mSectionName);

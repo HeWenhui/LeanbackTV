@@ -19,19 +19,19 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.BaseHttp;
 import com.xueersi.common.http.DownloadCallBack;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.file.FileUtils;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import java.io.File;
@@ -46,7 +46,7 @@ public class LiveStandFrameAnim {
     static String TAG = "LiveStandFrameAnim";
     protected static Logger logger = LoggerFactory.getLogger(TAG);
     Activity activity;
-    private final String filePath = "/android_stand_live/" + StandLiveConfig.version + "/frame_anim6.zip";
+    private final String filePath = "/android_stand_live/" + StandLiveConfig.version + "/frame_anim7.zip";
     /** 下载地址，阿里云 */
     private final String aliyun = "http://xesftp.oss-cn-beijing.aliyuncs.com" + filePath;
     /** 下载地址，网校 */

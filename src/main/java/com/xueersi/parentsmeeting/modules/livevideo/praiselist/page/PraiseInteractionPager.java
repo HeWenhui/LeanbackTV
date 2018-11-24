@@ -30,6 +30,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PraiseMessageEntity;
@@ -80,6 +81,8 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
     private final LiveBll2 liveBll;
 
+    private final LiveGetInfo mGetInfo;
+
 
     //点赞按钮
     private ImageView praiseBtn;
@@ -111,6 +114,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
     private View giftSendView;
     private TextView giftSendText;
+    private TextView deductGoldView;
     private TickerView giftSendCoin;
 
     //数学动画
@@ -170,9 +174,10 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
 
     public PraiseInteractionPager(Context context, int goldCount, PraiseInteractionBll praiseInteractionBll, LiveBll2
-            liveBll) {
+            liveBll, LiveGetInfo getInfo) {
         super(context);
         this.goldCount = goldCount;
+        this.mGetInfo = getInfo;
         this.mPraiseInteractionBll = praiseInteractionBll;
         this.liveBll = liveBll;
         btnWidth = (int) context.getResources().getDimension(R.dimen.livevideo_praise_interac_praise_btn_width);
@@ -306,6 +311,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
 
 
         View sendView = view.findViewById(R.id.rl_livevideo_praise_interac_special_gift_send_group);
+        deductGoldView = view.findViewById(R.id.tv_livevideo_praise_interac_special_gift_gold);
         sendView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -361,7 +367,8 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
      */
     private void sendGift() {
         specialGiftView.setVisibility(View.GONE);
-        if (goldCount - 10 >= 0) {
+        int deductNum = (int) deductGoldView.getTag();
+        if (goldCount - deductNum >= 0) {
             HttpCallBack httpCallBack = new HttpCallBack() {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -391,8 +398,7 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                 }
 
                 @Override
-                public void onFailure(Call call, IOException e) {
-                    super.onFailure(call, e);
+                public void onPmFailure(Throwable error, String msg) {
                     giftSendText.setText("发送失败");
                     giftSendView.setVisibility(View.VISIBLE);
                     timeHandler.sendEmptyMessageDelayed(MESSAGE_WHAT_DELAY_SEND_DISMISS, 2000);
@@ -508,7 +514,12 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                 if (praiseTimeList.size() > 1) {
                     long lastTime = praiseTimeList.get(praiseTimeList.size() - 1);
                     long firstTime = praiseTimeList.get(0);
-                    if (lastTime - firstTime > 1000) {
+                    int time = 1000;
+                    int praiseAutoBarrageTime = mGetInfo.getPraiseAutoBarrageTime();
+                    if (praiseAutoBarrageTime > 0) {
+                        time = praiseAutoBarrageTime * 1000;
+                    }
+                    if (lastTime - firstTime > time) {
                         caculatePraiseTotalNumPosition();
                         praiseTotalNumView.setText(getDisplayNum(praiseNumAmount));
                         continuePraiseNum = 0;
@@ -583,7 +594,12 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
                 playPraiseNumAnimation();
             } else {
                 continuePraiseNum++;
-                if (currentPraiseTime - praiseTimeList.get(0) > 5000) {
+                //连续点赞大于5秒直接弹出
+                int time = 5000;
+                if (mGetInfo.getPraiseAutoCutTime() > 0) {
+                    time = mGetInfo.getPraiseAutoCutTime() * 1000;
+                }
+                if (currentPraiseTime - praiseTimeList.get(0) > time) {
                     //push总数
                     praiseTimeList.clear();
                     caculatePraiseTotalNumPosition();
@@ -678,6 +694,15 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
             starDisplayGiftAnimation();
             goldCountView.setText("金币余额:  " + goldCount);
             currentGiftType = getProbabilityNum() - 1;
+            ArrayList praiseGift = mGetInfo.getPraiseGift();
+            if (currentGiftType >= 0 && currentGiftType < praiseGift.size()) {
+                int num = mGetInfo.getPraiseGift().get(currentGiftType);
+                deductGoldView.setTag(num);
+                deductGoldView.setText(String.valueOf(num));
+            } else {
+                deductGoldView.setTag(10);
+                deductGoldView.setText("10");
+            }
             logger.d("special gift type=" + currentGiftType);
             Map<String, String> data = giftHashMap.getData();
             if (currentGiftType == PraiseMessageEntity.SPECIAL_GIFT_TYPE_CHEMISTRY) {
@@ -723,11 +748,18 @@ public class PraiseInteractionPager extends BasePager implements VerticalBarrage
      * @return
      */
     private int getProbabilityNum() {
+        ArrayList<Double> praiseGiftRate = mGetInfo.getPraiseGiftRate();
+        int rate0 = 20;
+        int rate1 = 30;
+        if (praiseGiftRate.size() > 2) {
+            rate0 = (int) (praiseGiftRate.get(0) * 100);
+            rate1 = (int) (praiseGiftRate.get(1) * 100);
+        }
         int randomInt = new Random().nextInt(100) + 1;
         int num;
-        if (randomInt <= 20) {
+        if (randomInt <= rate0) {
             num = 1;
-        } else if (randomInt <= 50) {
+        } else if (randomInt <= (rate0 + rate1)) {
             num = 2;
         } else {
             num = 3;

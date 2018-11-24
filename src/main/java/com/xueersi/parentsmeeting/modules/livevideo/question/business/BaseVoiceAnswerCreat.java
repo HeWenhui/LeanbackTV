@@ -5,9 +5,9 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
 
 import org.json.JSONObject;
 
@@ -29,7 +29,7 @@ public interface BaseVoiceAnswerCreat {
      * @return
      */
     BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
-                                RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse);
+                                RelativeLayout rlQuestionContent, SpeechUtils mIse);
 
     /**
      * 设置语音答题页面宽高

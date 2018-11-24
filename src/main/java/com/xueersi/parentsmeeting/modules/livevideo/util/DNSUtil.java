@@ -8,7 +8,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
 import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.UnknownHostException;
 
 /**
