@@ -134,12 +134,14 @@ public class EnAchievePager extends LiveBasePager {
                     }
                     rl_livevideo_en_achive_back.setBackgroundResource(R.drawable.app_livevideo_enteampk_benchangchengjiu_bg_img_nor);
                 }
-                pg_livevideo_en_achive_pk.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        setEngPro(pg_livevideo_en_achive_pk.getProgress());
-                    }
-                });
+                if (pg_livevideo_en_achive_pk != null) {
+                    pg_livevideo_en_achive_pk.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            setEngPro(pg_livevideo_en_achive_pk.getProgress());
+                        }
+                    });
+                }
                 if (AppConfig.DEBUG) {
                     Random random = new Random();
                     StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
@@ -277,6 +279,9 @@ public class EnAchievePager extends LiveBasePager {
     }
 
     private void setEngPro(int progress) {
+        if (pg_livevideo_en_achive_pk == null) {
+            return;
+        }
         pg_livevideo_en_achive_pk.setProgress(progress);
         final ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
         if (rl_livevideo_info != null) {
