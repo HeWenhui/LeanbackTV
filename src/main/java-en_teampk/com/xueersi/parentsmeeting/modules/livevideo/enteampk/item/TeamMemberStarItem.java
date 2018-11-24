@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.enteampk.item;
 
 import android.content.Context;
+import android.content.Entity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -27,16 +28,21 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
+import java.util.HashMap;
+
 public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity> {
     Logger logger = LiveLoggerFactory.getLogger("TeamMemberStarItem");
     private RelativeLayout rl_livevideo_en_teampk_member;
     private ImageView civ_livevideo_en_teampk_member;
     private TextView tv_livevideo_en_teampk_name;
     private TextView tv_livevideo_en_teampk_fire;
-    private LottieAnimationView lav_livevideo_en_teampk_zan;
+    private RelativeLayout rl_livevideo_en_teampk_zan;
+    //    private LottieAnimationView lav_livevideo_en_teampk_zan;
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/dianzan";
     private Context context;
     private TeamMemberEntity entity;
+    HashMap<TeamMemberEntity, LottieAnimationView> map = new HashMap<>();
+    HashMap<LottieAnimationView, TeamMemberEntity> map2 = new HashMap<>();
     int width;
     int height;
 
@@ -57,32 +63,8 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
         civ_livevideo_en_teampk_member = root.findViewById(R.id.civ_livevideo_en_teampk_member);
         tv_livevideo_en_teampk_name = root.findViewById(R.id.tv_livevideo_en_teampk_name);
         tv_livevideo_en_teampk_fire = root.findViewById(R.id.tv_livevideo_en_teampk_fire);
-        lav_livevideo_en_teampk_zan = root.findViewById(R.id.lav_livevideo_en_teampk_zan);
-        String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
-        String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
-        final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath, "img_0.png") {
-            @Override
-            public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
-                if ("img_0.png".equals(fileName)) {
-                    if (entity == null) {
-                        return createBitmap(0, width, height);
-                    } else {
-                        return createBitmap(entity.praiseCount, width, height);
-                    }
-                }
-                return super.fetchTargetBitMap(animationView, fileName, bitmapId, width, height);
-            }
-        };
-        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
-            @Override
-            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                Bitmap bitmap = bubbleEffectInfo.fetchBitmapFromAssets(lav_livevideo_en_teampk_zan, lottieImageAsset.getFileName(),
-                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), context);
-                return bitmap;
-            }
-        };
-        lav_livevideo_en_teampk_zan.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(context), "lav_livevideo_en_teampk_zan");
-        lav_livevideo_en_teampk_zan.setImageAssetDelegate(imageAssetDelegate);
+        rl_livevideo_en_teampk_zan = root.findViewById(R.id.rl_livevideo_en_teampk_zan);
+//        lav_livevideo_en_teampk_zan = root.findViewById(R.id.lav_livevideo_en_teampk_zan);
     }
 
     @Override
@@ -91,8 +73,49 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
     }
 
     @Override
-    public void updateViews(TeamMemberEntity entity, int position, Object objTag) {
+    public void updateViews(final TeamMemberEntity entity, int position, Object objTag) {
         this.entity = entity;
+        LottieAnimationView lav_livevideo_en_teampk_zan = map.get(entity);
+        if (lav_livevideo_en_teampk_zan == null) {
+            rl_livevideo_en_teampk_zan.removeAllViews();
+            lav_livevideo_en_teampk_zan = new LottieAnimationView(context);
+            map.put(entity, lav_livevideo_en_teampk_zan);
+            rl_livevideo_en_teampk_zan.addView(lav_livevideo_en_teampk_zan);
+            String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
+            String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
+            LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath, "img_0.png") {
+                @Override
+                public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
+                    if ("img_0.png".equals(fileName)) {
+                        return createBitmap(entity.praiseCount, width, height);
+                    }
+                    return super.fetchTargetBitMap(animationView, fileName, bitmapId, width, height);
+                }
+            };
+            final LottieEffectInfo finalBubbleEffectInfo = bubbleEffectInfo;
+            final LottieAnimationView finalLav_livevideo_en_teampk_zan = lav_livevideo_en_teampk_zan;
+            ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+                @Override
+                public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                    Bitmap bitmap = finalBubbleEffectInfo.fetchBitmapFromAssets(finalLav_livevideo_en_teampk_zan, lottieImageAsset.getFileName(),
+                            lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), context);
+                    return bitmap;
+                }
+            };
+            lav_livevideo_en_teampk_zan.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(context), "lav_livevideo_en_teampk_zan+" + entity.id);
+            lav_livevideo_en_teampk_zan.setImageAssetDelegate(imageAssetDelegate);
+        } else {
+            logger.d("updateViews:entity=" + entity.id + ",child=" + rl_livevideo_en_teampk_zan.getChildCount());
+            for (int i = 0; i < rl_livevideo_en_teampk_zan.getChildCount(); i++) {
+                View child = rl_livevideo_en_teampk_zan.getChildAt(i);
+                if (child != lav_livevideo_en_teampk_zan) {
+                    rl_livevideo_en_teampk_zan.removeView(child);
+                    i--;
+                }
+            }
+        }
+        logger.d("updateViews:entity=" + entity.id + ",code=" + lav_livevideo_en_teampk_zan.hashCode());
+
         if (entity.isMy) {
             rl_livevideo_en_teampk_member.setBackgroundResource(R.drawable.app_livevideo_enteampk_morentouxiang_light_bg_img_nor);
         } else {
@@ -100,16 +123,14 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
         }
         tv_livevideo_en_teampk_name.setText(entity.name);
         tv_livevideo_en_teampk_fire.setText("" + entity.energy);
-        lav_livevideo_en_teampk_zan.setOnClickListener(new PraiseClick(lav_livevideo_en_teampk_zan, entity));
+        lav_livevideo_en_teampk_zan.setOnClickListener(new PraiseClick(lav_livevideo_en_teampk_zan));
         ImageLoader.with(context.getApplicationContext()).load(entity.headurl).into(civ_livevideo_en_teampk_member);
     }
 
     private class PraiseClick implements View.OnClickListener {
-        LottieAnimationView pressLottileView;
-        TeamMemberEntity classmateEntity;
         long before = 0;
         Handler handler = new Handler(Looper.getMainLooper());
-
+        LottieAnimationView lav_livevideo_en_teampk_zan;
         Runnable praiseRunnable = new Runnable() {
             @Override
             public void run() {
@@ -127,18 +148,17 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
             }
         };
 
-        public PraiseClick(LottieAnimationView pressLottileView, TeamMemberEntity classmateEntity) {
-            this.pressLottileView = pressLottileView;
-            this.classmateEntity = classmateEntity;
+        public PraiseClick(LottieAnimationView lav_livevideo_en_teampk_zan) {
+            this.lav_livevideo_en_teampk_zan = lav_livevideo_en_teampk_zan;
         }
 
         @Override
         public void onClick(View v) {
 //            if (!pressLottileView.isAnimating()) {
-            pressLottileView.playAnimation();
-            classmateEntity.praiseCount++;
-            pressLottileView.updateBitmap("image_0", createBitmap(classmateEntity.praiseCount, width, height));
-            logger.d("onClick:classmateEntity=" + classmateEntity.id + ",praiseCount=" + classmateEntity.praiseCount);
+            lav_livevideo_en_teampk_zan.playAnimation();
+            entity.praiseCount++;
+            lav_livevideo_en_teampk_zan.updateBitmap("image_0", createBitmap(entity.praiseCount, width, height));
+            logger.d("onClick:classmateEntity=" + entity.id + ",v1=" + lav_livevideo_en_teampk_zan.hashCode() + ",v2=" + v.hashCode());
 //            }
             if (before == 0) {
                 before = System.currentTimeMillis();

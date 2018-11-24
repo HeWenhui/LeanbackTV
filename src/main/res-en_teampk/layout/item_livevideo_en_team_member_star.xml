@@ -47,8 +47,8 @@
             android:textSize="11sp" />
     </RelativeLayout>
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@id/lav_livevideo_en_teampk_zan"
+    <RelativeLayout
+        android:id="@id/rl_livevideo_en_teampk_zan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_livevideo_en_teampk_name_fire"
