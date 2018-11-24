@@ -33,6 +33,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     private TeamPkLeadPager teamPkLeadPager;
     private EnTeamPkHttp enTeamPkHttp;
     private LiveGetInfo getInfo;
+    int pattern;
     private boolean destory = false;
     private String mode;
     private LiveGetInfo.EnglishPk englishPk;
@@ -57,6 +58,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         this.getInfo = getInfo;
+        pattern = getInfo.getPattern();
         mode = getInfo.getMode();
         englishPk = getInfo.getEnglishPk();
         if (englishPk.hasGroup == 0) {
@@ -184,9 +186,11 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         handler.post(new Runnable() {
             @Override
             public void run() {
-                teamPkLeadPager = new TeamPkLeadPager(mContext, enTeamPkRankEntity);
+                teamPkLeadPager = new TeamPkLeadPager(mContext, enTeamPkRankEntity, pattern);
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
+                if (pattern != 2) {
+                    layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
+                }
                 rootView.addView(teamPkLeadPager.getRootView(), layoutParams);
             }
         });

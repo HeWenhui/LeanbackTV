@@ -22,10 +22,16 @@
     <item name="tv_livevideo_en_teampk_top_name" type="id" />
     <!--分队成员-->
     <item name="fl_livevideo_en_teampk_member" type="id" />
+    <item name="rl_livevideo_en_teampk_member" type="id" />
     <item name="iv_livevideo_en_teampk_member" type="id" />
+    <item name="civ_livevideo_en_teampk_member" type="id" />
     <item name="rl_livevideo_en_teampk_head" type="id" />
     <item name="civ_livevideo_en_teampk_head" type="id" />
+    <item name="rl_livevideo_en_teampk_name_fire" type="id" />
     <item name="tv_livevideo_en_teampk_name" type="id" />
+    <item name="iv_livevideo_en_teampk_fire" type="id" />
+    <item name="tv_livevideo_en_teampk_fire" type="id" />
+    <item name="lav_livevideo_en_teampk_zan" type="id" />
     <!--答题领先-->
     <item name="iv_livevideo_en_teampk_lead_left" type="id" />
     <item name="iv_livevideo_en_teampk_lead_mid" type="id" />

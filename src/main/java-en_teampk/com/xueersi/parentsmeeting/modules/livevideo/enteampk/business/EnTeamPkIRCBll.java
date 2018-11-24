@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 import org.xutils.xutils.x;
 
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 
 import ren.yale.android.cachewebviewlib.utils.JsonWrapper;
 
@@ -78,7 +80,6 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
         enTeamPkAction = teamPkBll;
         enTeamPkAction.onLiveInited(getInfo);
-//        enTeamPkAction.onRankLead();
         EnTeamPkQuestionShowAction enTeamPkQuestionShowAction = new EnTeamPkQuestionShowAction();
         QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
         if (questionShowReg != null) {
@@ -87,6 +88,26 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         EnglishShowReg englishShowReg = getInstance(EnglishShowReg.class);
         if (englishShowReg != null) {
             englishShowReg.registQuestionShow(enTeamPkQuestionShowAction);
+        }
+        if (AppConfig.DEBUG) {
+            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
+            enTeamPkRankEntity.setApkTeamId(2);
+            enTeamPkRankEntity.setaCurrentScore(13);
+            enTeamPkRankEntity.setaTotalScore(31);
+            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
+            for (int i = 0; i < 4; i++) {
+                TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                if (i == 0) {
+                    teamMemberEntity.isMy = true;
+                }
+                teamMemberEntity.name = "测试" + i;
+                teamMemberEntity.energy = 10 + i;
+                memberEntities.add(teamMemberEntity);
+            }
+            enTeamPkRankEntity.setBpkTeamId(3);
+            enTeamPkRankEntity.setbCurrentScore(14);
+            enTeamPkRankEntity.setbTotalScore(34);
+            enTeamPkAction.onRankLead(enTeamPkRankEntity);
         }
     }
 

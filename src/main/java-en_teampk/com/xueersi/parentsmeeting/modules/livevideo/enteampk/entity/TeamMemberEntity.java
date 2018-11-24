@@ -8,4 +8,5 @@ public class TeamMemberEntity {
     public String headurl = "";
     public int resId;
     public int energy;
+    public int praiseCount;
 }

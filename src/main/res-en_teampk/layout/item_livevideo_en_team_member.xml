@@ -3,19 +3,11 @@
     android:layout_width="78dp"
     android:layout_height="78dp">
 
-    <ImageView
-        android:id="@id/iv_livevideo_en_teampk_member"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
-
     <RelativeLayout
+        android:id="@id/rl_livevideo_en_teampk_member"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/iv_livevideo_en_teampk_member"
-        android:layout_alignLeft="@id/iv_livevideo_en_teampk_member"
-        android:layout_alignRight="@id/iv_livevideo_en_teampk_member"
-        android:layout_alignTop="@id/iv_livevideo_en_teampk_member">
+        android:layout_centerHorizontal="true">
 
         <com.xueersi.ui.widget.CircleImageView
             android:id="@id/civ_livevideo_en_teampk_head"
