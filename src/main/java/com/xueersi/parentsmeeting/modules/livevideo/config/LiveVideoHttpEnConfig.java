@@ -6,7 +6,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
  */
 public class LiveVideoHttpEnConfig {
     /** 战队pk接口域名 */
-    public static String TEAKMPK_HTTP_HOST = "https://wxen.arts.xueersi.com";
+    public static String TEAKMPK_HTTP_HOST = "http://10.99.2.107:4001";
     //    public static String URL_LIVE_SELF_TEAM = "http://teampk.arts.xesv5.com/getSelfTeamInfo";
     /** 学生获取战队信息 go */
     public static String URL_LIVE_SELF_TEAM = TEAKMPK_HTTP_HOST + "/team-pk/getSelfTeamInfo";

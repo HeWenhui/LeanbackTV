@@ -5,6 +5,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,6 +24,8 @@ public class EnStandAchievePager extends LiveBasePager {
     private TextView tv_livevideo_en_achive_num_fire;
     private TextView tv_livevideo_en_achive_num_star;
     private TextView tv_livevideo_en_achive_num_gold;
+    RelativeLayout rl_livevideo_en_achive_stand_bg;
+    CheckBox cb_livevideo_en_stand_achive_title;
     private int starCount;
     private int goldCount;
     private int energyCount;
@@ -48,6 +52,8 @@ public class EnStandAchievePager extends LiveBasePager {
         tv_livevideo_en_achive_num_gold = mView.findViewById(R.id.tv_livevideo_en_achive_num_gold);
         vs_livevideo_en_achive_bottom = mView.findViewById(R.id.vs_livevideo_en_achive_bottom);
         vs_livevideo_en_achive_bottom2 = mView.findViewById(R.id.vs_livevideo_en_achive_bottom2);
+        rl_livevideo_en_achive_stand_bg = mView.findViewById(R.id.rl_livevideo_en_achive_stand_bg);
+        cb_livevideo_en_stand_achive_title = mView.findViewById(R.id.cb_livevideo_en_stand_achive_title);
         return mView;
     }
 
@@ -60,6 +66,12 @@ public class EnStandAchievePager extends LiveBasePager {
         } else {
             vs_livevideo_en_achive_bottom2.inflate();
         }
+        cb_livevideo_en_stand_achive_title.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                rl_livevideo_en_achive_stand_bg.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     @Override

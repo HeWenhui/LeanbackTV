@@ -24,7 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageLandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePortPager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPkPager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
@@ -138,7 +138,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         long before = System.currentTimeMillis();
         liveMessageLandEntities.clear();
 
-        LiveMessageStandPkPager liveMessagePager = new LiveMessageStandPkPager(activity, this,
+        LiveMessageStandPager liveMessagePager = new LiveMessageStandPager(activity, this,
                 baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         mLiveMessagePager = liveMessagePager;
         logger.d("initViewLiveStand:time1=" + (System.currentTimeMillis() - before));
@@ -197,7 +197,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             isHaveFlowers = mLiveMessagePager.isHaveFlowers();
             isCloseChat = mLiveMessagePager.isCloseChat();
             mLiveMessagePager.onDestroy();
-            if (mLiveMessagePager instanceof LiveMessageStandPkPager) {
+            if (mLiveMessagePager instanceof LiveMessageStandPager) {
                 liveMessageLandEntities.clear();
             }
         }
