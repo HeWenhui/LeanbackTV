@@ -1017,6 +1017,11 @@ public class LiveMessageStandPkPager extends BaseLiveMessagePager {
     }
 
     @Override
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+
+    }
+
+    @Override
     public void onFDOpenbarrage(boolean open, boolean b) {
 
     }
@@ -1024,6 +1029,11 @@ public class LiveMessageStandPkPager extends BaseLiveMessagePager {
     @Override
     public void onTeacherModeChange(String oldMode, String mode, boolean b, boolean zjlkOpenbarrage, boolean
             zjfdOpenbarrage) {
+
+    }
+
+    @Override
+    public void onOpenVoiceNotic(boolean openVoice, String type) {
 
     }
 

@@ -8,6 +8,8 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ScaleDrawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -70,6 +72,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public static boolean DEBUG = false;
     String eventId = LiveVideoConfig.LIVE_SPEECH_TEST2;
+    Handler handler = new Handler(Looper.getMainLooper());
     /** 语音保存位置 */
     private String id;
     /** 时间倒计时，表情 */
@@ -794,7 +797,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     onLineError++;
                     if (onLineError == 1) {
                         if (!isEnd) {
-                            spStarResult.postDelayed(new Runnable() {
+                            handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     errorSetGone();
@@ -815,7 +818,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     onLineError++;
                     if (onLineError == 1) {
                         if (!isEnd) {
-                            spStarResult.postDelayed(new Runnable() {
+                            handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     errorSetGone();
