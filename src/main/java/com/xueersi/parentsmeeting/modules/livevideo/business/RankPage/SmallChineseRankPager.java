@@ -32,6 +32,7 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
         super(context);
 //        this.allRankEntity = allRankEntity;
         //因为allRankEntity是异步获取的，所以
+        initListener();
 //        initData();
     }
 
@@ -60,17 +61,18 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
     }
 
     @Override
-    public void initData() {
-        final int colorMe = mContext.getResources().getColor(R.color.COLOR_005952);
-        final int colorOther = mContext.getResources().getColor(R.color.COLOR_000000);
-        mArtsRankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
+    public void initListener() {
+        super.initListener();
+
         ivLeftSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 select(true, false, false);
                 tvMiddle.setText("学员");
-                mArtsRankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
-                mArtsGroupCommonAdapter.updateData(mArtsRankEntities);
+                if (allRankEntity != null) {
+                    mArtsRankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
+                    mArtsGroupCommonAdapter.updateData(mArtsRankEntities);
+                }
             }
         });
 
@@ -80,8 +82,10 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
                 select(false, true, false);
                 tvMiddle.setText("组名");
 //                ivMiddleSelect.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_rank_btn_click));
-                mArtsRankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
-                mArtsGroupCommonAdapter.updateData(mArtsRankEntities);
+                if (allRankEntity != null) {
+                    mArtsRankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
+                    mArtsGroupCommonAdapter.updateData(mArtsRankEntities);
+                }
             }
         });
         ivRightSelect.setOnClickListener(new View.OnClickListener() {
@@ -90,16 +94,27 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
 //                ivRightSelect.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_rank_btn_click));
                 select(false, false, true);
                 tvMiddle.setText("班名");
-                mArtsRankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
-                mArtsGroupCommonAdapter.updateData(mArtsRankEntities);
+                if (allRankEntity != null) {
+                    mArtsRankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
+                    mArtsGroupCommonAdapter.updateData(mArtsRankEntities);
+                }
             }
         });
+        final int colorMe = mContext.getResources().getColor(R.color.COLOR_005952);
+        final int colorOther = mContext.getResources().getColor(R.color.COLOR_000000);
         mArtsGroupCommonAdapter = new CommonAdapter<RankEntity>(mArtsRankEntities) {
             @Override
             public AdapterItemInterface<RankEntity> getItemView(Object type) {
                 return new SmallChineseRankItem(colorMe, colorOther);
             }
         };
+
+    }
+
+    @Override
+    public void initData() {
+        logger.i("获取到数据，成功复制");
+        mArtsRankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
         lvRank.setAdapter(mArtsGroupCommonAdapter);
     }
 

@@ -103,7 +103,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     }
 
     private void onGetPackage(VideoResultEntity entity) {
-        if (!isSmallEnglish || !LiveVideoConfig.isSmallChinese) {
+        if (!isSmallEnglish && !LiveVideoConfig.isSmallChinese) {
             rlRedpacketContent.removeAllViews();
         }
         if (!isLive && entity.getResultType() == 0) {
@@ -295,12 +295,9 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
 //                }
 //            }, 3000);
         } else if (LiveVideoConfig.isSmallChinese) {
-            /** 移除这个view */
-//            if (chineseRedPackagePager != null && chineseRedPackagePager.getRootView().getParent() == rlRedpacketContent) {
-//                rlRedpacketContent.removeView(chineseRedPackagePager.getRootView());
-//            }
-            if (chineseRedPackagePager == null) {
-                return;
+
+            if (chineseRedPackagePager != null && chineseRedPackagePager.getRootView().getParent() != rlRedpacketContent) {
+                rlRedpacketContent.addView(chineseRedPackagePager.getRootView());
             }
             chineseRedPackagePager.updateView(true, goldNum);
             postDelayedIfNotFinish(new Runnable() {
