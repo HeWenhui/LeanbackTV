@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -410,6 +411,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         }
     }
 
+
+    @Override
+    public void onAutoClose(BasePager basePager) {
+        if (mDsipalyer != null) {
+            rlAnswerResultLayout.removeView(mDsipalyer.getRootLayout());
+            mDsipalyer = null;
+        }
+    }
 
     /**
      * 表扬答题全对

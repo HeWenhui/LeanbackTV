@@ -803,6 +803,7 @@
 
     <item name="lv_arts_answer_state_pse" type="id" />
     <item name="lv_arts_answer_result_pse" type="id" />
+    <item name="tv_arts_answer_result_pse_close" type="id" />
     <item name="rcl_arts_answer_result_result" type="id" />
     <item name="v_arts_pse_answer_result_closebtn" type="id" />
     <item name="rl_arts_pse_answer_result_root" type="id" />

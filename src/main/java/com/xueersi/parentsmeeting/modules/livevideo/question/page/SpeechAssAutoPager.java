@@ -33,6 +33,7 @@ import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.umeng.analytics.MobclickAgent;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.speech.SpeechConfig;
@@ -702,6 +703,11 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     group.removeView(view);
                 }
             }, 2000);
+        }
+
+        @Override
+        public void onAutoClose(BasePager basePager) {
+            group.removeView(view);
         }
     }
 
