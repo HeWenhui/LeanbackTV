@@ -214,14 +214,12 @@ public class LiveVideoAction implements VideoAction {
                         } else if (mGetInfo != null && mGetInfo.getSmallEnglish()) {//如果是小学英语
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable
                                     .livevideo_small_english_zw_dengdaida_bg_psnormal);
-                        }
-//                        else if (LiveVideoConfig.isSmallChinese) {
-//                            dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.
-//                                    livevideo_small_chinese_zw_dengdaida_bg_psnormal);
-//                            tvLoadingHint.setVisibility(View.VISIBLE);
-//                            tvLoadingHint.setBackground(activity.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_teacher_no_present));
-//                        }
-                        else {
+                        } else if (LiveVideoConfig.isSmallChinese) {
+                            dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.
+                                    livevideo_small_chinese_zw_dengdaida_bg_psnormal);
+                            tvLoadingHint.setVisibility(View.VISIBLE);
+                            tvLoadingHint.setBackground(activity.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_teacher_no_present));
+                        } else {
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable
                                     .livevideo_zw_dengdaida_bg_normal);
                         }
