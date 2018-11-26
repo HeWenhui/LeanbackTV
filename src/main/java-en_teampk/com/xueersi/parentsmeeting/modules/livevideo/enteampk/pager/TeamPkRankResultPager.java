@@ -44,6 +44,10 @@ public class TeamPkRankResultPager extends LiveBasePager {
         initListener();
     }
 
+    public void setOnStartClick(OnStartClick onStartClick) {
+        this.onStartClick = onStartClick;
+    }
+
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_en_team_rank_result, null);
