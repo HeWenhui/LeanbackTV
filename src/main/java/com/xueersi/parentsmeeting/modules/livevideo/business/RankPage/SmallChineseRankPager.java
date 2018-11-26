@@ -106,8 +106,8 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
     /** 根据三个按钮(组内，小组，班级) */
     private void select(boolean left, boolean mid, boolean right) {
         logger.i("left = " + left + " right" + right + " mid = " + mid);
-        ivLeftSelect.setBackground(mContext.getResources().getDrawable(left ? R.drawable.bg_livevideo_small_chinese_rank_btn_click : R.drawable.bg_livevideo_small_chinese_rank_btn_nor));
-        ivMiddleSelect.setBackground(mContext.getResources().getDrawable(mid ? R.drawable.bg_livevideo_small_chinese_rank_btn_click : R.drawable.bg_livevideo_small_chinese_rank_btn_nor));
-        ivRightSelect.setBackground(mContext.getResources().getDrawable(right ? R.drawable.bg_livevideo_small_chinese_rank_btn_click : R.drawable.bg_livevideo_small_chinese_rank_btn_nor));
+        ivLeftSelect.setBackground(mContext.getResources().getDrawable(left ? R.drawable.bg_livevideo_small_chinese_rank_btn_nor : R.drawable.bg_livevideo_small_chinese_rank_btn_click));
+        ivMiddleSelect.setBackground(mContext.getResources().getDrawable(mid ? R.drawable.bg_livevideo_small_chinese_rank_btn_nor : R.drawable.bg_livevideo_small_chinese_rank_btn_click));
+        ivRightSelect.setBackground(mContext.getResources().getDrawable(right ? R.drawable.bg_livevideo_small_chinese_rank_btn_nor : R.drawable.bg_livevideo_small_chinese_rank_btn_click));
     }
 }
