@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -74,6 +75,8 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        //如果是退出直播间再进来，不弹出倒计时和灰色收音球
+                        ShareDataManager.getInstance().put("isOnTopic", true, ShareDataManager.SHAREDATA_USER);
                         createBll();
                         speechCollectiveBll.start(roomId);
                     }
@@ -116,6 +119,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements SpeechFeedBac
         logger.d("data=" + object);
         switch (type) {
             case XESCODE.SPEECH_COLLECTIVE: {
+                ShareDataManager.getInstance().put("isOnTopic", false, ShareDataManager.SHAREDATA_USER);
                 final String from = object.optString("roomId");
                 final String status = object.optString("status");
                 if (!"voice_plan_ios".equals(from)) {

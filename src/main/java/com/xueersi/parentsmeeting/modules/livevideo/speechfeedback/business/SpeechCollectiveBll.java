@@ -38,6 +38,7 @@ import java.io.IOException;
  * 语音反馈
  */
 public class SpeechCollectiveBll implements SpeechFeedBackAction {
+
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     String TAG = "SpeechFeedBackBll";
     boolean isStart = false;
@@ -178,36 +179,19 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
         }
     }
 
-    private CountDownTimer countDownTimer = new CountDownTimer(5000, 1000) {
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            if (speechFeedBackPager != null) {
-                speechFeedBackPager.setCountDownText(millisUntilFinished);
-            }
-
-        }
-
-        @Override
-        public void onFinish() {
-            liveThreadPoolExecutor.execute(new AudioRecordRunnable());
-            if (speechFeedBackPager != null) {
-                speechFeedBackPager.setCountDownFinish();
-            }
-
-        }
-    };
-
 
     private void initData() {
         initAudio();
-        speechFeedBackPager = new SpeechCollectivePager(activity);
+        speechFeedBackPager = new SpeechCollectivePager(activity, new SpeechCollectivePager.CountDownListener() {
+            @Override
+            public void onCountDownFinish() {
+                liveThreadPoolExecutor.execute(new SpeechCollectiveBll.AudioRecordRunnable());
+            }
+        });
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup
                 .LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         bottomContent.addView(speechFeedBackPager.getRootView(), params);
-        countDownTimer.start();
-
     }
 
 
@@ -232,7 +216,7 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
             mAudioTrack.release();
             mAudioTrack = null;
         }
-        countDownTimer.cancel();
+
         if (speechFeedBackPager != null) {
             mHandler.post(new Runnable() {
                 @Override
@@ -244,7 +228,7 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
                             bottomContent.removeView(speechFeedBackPager.getRootView());
                             speechFeedBackPager = null;
                         }
-                    }, 1000);
+                    }, 3000);
                 }
             });
         }
