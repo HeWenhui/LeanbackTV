@@ -106,7 +106,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 teamMemberEntity.name = "测试" + i;
                 teamMemberEntity.energy = 10 + i;
                 memberEntities.add(teamMemberEntity);
-        }
+            }
             enTeamPkRankEntity.setBpkTeamId(3);
             enTeamPkRankEntity.setbCurrentScore(100 - enTeamPkRankEntity.getaCurrentScore());
             enTeamPkRankEntity.setbTotalScore(100 - enTeamPkRankEntity.getaTotalScore());

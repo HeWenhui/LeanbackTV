@@ -201,6 +201,13 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                     layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
                 }
                 rootView.addView(teamPkLeadPager.getRootView(), layoutParams);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        rootView.removeView(teamPkLeadPager.getRootView());
+                        teamPkLeadPager = null;
+                    }
+                }, 5000);
             }
         });
     }
