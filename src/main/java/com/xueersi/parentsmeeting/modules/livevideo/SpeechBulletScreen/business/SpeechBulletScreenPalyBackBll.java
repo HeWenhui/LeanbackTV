@@ -29,12 +29,12 @@ import java.util.List;
  */
 
 public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
-    ArrayList<VoiceBarrageMsgEntity> barrageList;
-    ArrayList<VoiceBarrageMsgEntity.VoiceBarrageItemEntity> allBarrages = new ArrayList<>();
+    private ArrayList<VoiceBarrageMsgEntity> barrageList;
+    private ArrayList<VoiceBarrageMsgEntity.VoiceBarrageItemEntity> allBarrages = new ArrayList<>();
     /**
-     * 语音弹幕的布局
+     * 当前视频播放进度
      */
-    private RelativeLayout rlSpeechBulContent;
+    private long currentPositon = -1;
     /**
      * 回放弹幕的界面
      */
@@ -100,8 +100,6 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
             }
         });
     }
-
-    private long currentPositon = -1;
 
     /**
      * 视频进度条变化时，判断是否要显示弹幕

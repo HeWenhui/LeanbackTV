@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@drawable/livevideo_alertview_fasongp_icon_normal" />//压下效果图片
-    <item android:state_pressed="false" android:drawable="@drawable/livevideo_alertview_fasong_icon_normal" />    //未按压作图片
+    <item android:state_pressed="true" android:drawable="@drawable/livevideo_alertview_fasongp_icon_normal" />
+    <item android:state_pressed="false" android:drawable="@drawable/livevideo_alertview_fasong_icon_normal" />
 
 </selector>

@@ -20,6 +20,7 @@ import android.view.View;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
@@ -233,8 +234,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
             return;
         }
         //如果长时间没有弹幕，可能会休眠
-        if (mDanmakuView != null) {
-            mDanmakuView.pause();
+        if (mDanmakuView != null && mDanmakuView.isPrepared() && mDanmakuView.isPaused()) {
             mDanmakuView.resume();
         }
         final BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
@@ -270,7 +270,15 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
 
             @Override
             public void onFail() {
-
+                Drawable circleDrawable;
+                circleDrawable = mContext.getResources().getDrawable(R.drawable.ic_livevideo_default_head_boy);
+                if (isGuest) {
+                    circleDrawable.setBounds(0, 0, BITMAP_WIDTH_GUEST, BITMAP_WIDTH_GUEST);
+                } else {
+                    circleDrawable.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
+                }
+                danmaku.text = createSpannable(name, msg, circleDrawable, isGuest);
+                mDanmakuView.addDanmaku(danmaku);
             }
         });
     }
