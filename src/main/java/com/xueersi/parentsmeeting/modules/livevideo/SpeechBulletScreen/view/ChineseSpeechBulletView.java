@@ -915,7 +915,7 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
     protected int BITMAP_WIDTH_ME = 42;//头像的宽度
     protected int BITMAP_HEIGHT_ME = 42;//头像的高度
     protected float DANMU_TEXT_SIZE = 14;//弹幕字体的大小
-    protected int DANMU_PADDING = 11;//控制两行弹幕之间的间距
+    protected int DANMU_PADDING = 5;//控制两行弹幕之间的间距
     protected int DANMU_RADIUS = 16;//圆角半径
     protected int DANMU_BACKGROUND_HEIGHT = 33;
 

@@ -10,10 +10,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:textColor="#FF755942"
-        android:textSize="19sp"
         android:background="@drawable/shellwindow_forbbiden_voicebullet_board"
         android:gravity="center"
+        android:textColor="#FF755942"
+        android:textSize="19sp"
         android:visibility="gone" />
 
     <RelativeLayout
@@ -75,9 +75,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/tv_livevideo_speechbul_title"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="48dp"
-            android:layout_marginRight="48dp" />
+            android:layout_marginLeft="110dp"
+            android:layout_marginRight="110dp" />
 
         <RelativeLayout
             android:id="@id/rl_livevideo_speechbul_input"
