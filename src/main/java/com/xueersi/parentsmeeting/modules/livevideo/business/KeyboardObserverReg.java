@@ -1,11 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Configuration;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;

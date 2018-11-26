@@ -6,7 +6,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -38,7 +38,7 @@ public class LiveBackVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 
     @Override
     public BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
-                                       RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse) {
+                                       RelativeLayout rlQuestionContent, SpeechUtils mIse) {
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         questionSwitch.setVideoQuestionLiveEntity(videoQuestionLiveEntity);
         VoiceAnswerPager voiceAnswerPager2 = new VoiceAnswerPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch);

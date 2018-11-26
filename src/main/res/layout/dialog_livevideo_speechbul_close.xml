@@ -26,6 +26,7 @@
             android:textSize="22sp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="68dp"
+            android:gravity="center"
             android:text="确认关闭语音弹幕？"/>
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:layout_width="wrap_content"
@@ -34,6 +35,7 @@
             android:textSize="16sp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="102dp"
+            android:gravity="center"
             android:text="关闭后将不能发语音弹幕"/>
 
         <TextView

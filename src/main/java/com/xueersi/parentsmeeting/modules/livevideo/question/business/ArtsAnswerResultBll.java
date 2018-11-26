@@ -14,8 +14,6 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.log.LoggerFactory;
-import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -44,7 +42,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.ToDoubleBiFunction;
 
 /**
  * 文科答题结果

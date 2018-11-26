@@ -12,6 +12,8 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
@@ -32,26 +34,23 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulClose
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAwardPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkTeamSelectPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkTeamSelectingPager;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.lib.framework.utils.ScreenUtils;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 

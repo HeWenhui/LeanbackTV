@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
@@ -39,20 +38,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.RegexUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -60,17 +59,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.string.RegexUtils;
-import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.ui.widget.button.CompoundButtonGroup;
 
 import org.json.JSONException;
@@ -81,7 +79,6 @@ import java.util.ArrayList;
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
-import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
 
 /**
  * @author linyuqiang
@@ -1320,6 +1317,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         });
     }
 
+    @Override
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+
+    }
+
     /**
      * 使送礼物面板消失
      *
@@ -1431,6 +1433,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             }
             return;
         }
+    }
+
+    @Override
+    public void onOpenVoiceNotic(boolean openVoice, String type) {
+
     }
 
     private void showLKTipsWhenOldModeCloseLW(final String newMode, final boolean isOpenbarrage) {

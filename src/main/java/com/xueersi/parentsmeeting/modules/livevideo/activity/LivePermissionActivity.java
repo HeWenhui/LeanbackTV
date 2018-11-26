@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 

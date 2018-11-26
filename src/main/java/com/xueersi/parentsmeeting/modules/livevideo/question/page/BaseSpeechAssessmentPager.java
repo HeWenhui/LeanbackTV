@@ -3,8 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
 
-import com.xueersi.common.base.BasePager;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
+import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 /**
@@ -13,7 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
     /** 语音评测 */
-    protected SpeechEvaluatorUtils mIse;
+    protected SpeechUtils mIse;
 
     public BaseSpeechAssessmentPager(Context context) {
         super(context);
@@ -27,7 +26,7 @@ public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
 
     public abstract void stopPlayer();
 
-    public void setIse(SpeechEvaluatorUtils mIse) {
+    public void setIse(SpeechUtils mIse) {
         this.mIse = mIse;
     }
 }

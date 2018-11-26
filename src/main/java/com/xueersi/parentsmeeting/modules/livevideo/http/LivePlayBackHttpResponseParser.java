@@ -13,7 +13,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;

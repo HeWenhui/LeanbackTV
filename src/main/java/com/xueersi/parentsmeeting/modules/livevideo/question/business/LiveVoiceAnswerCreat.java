@@ -4,7 +4,10 @@ import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.speech.SpeechUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -16,9 +19,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import org.json.JSONObject;
 
@@ -42,7 +42,7 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 
     @Override
     public BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
-                                       RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse) {
+                                       RelativeLayout rlQuestionContent, SpeechUtils mIse) {
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         if (questionSwitch instanceof WrapQuestionSwitch) {
             WrapQuestionSwitch wrapQuestionSwitch = (WrapQuestionSwitch) questionSwitch;

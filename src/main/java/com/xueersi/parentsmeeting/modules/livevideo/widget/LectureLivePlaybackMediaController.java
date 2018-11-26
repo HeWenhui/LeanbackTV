@@ -9,10 +9,10 @@ import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.widget.LivePlaybackMediaController;
-import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**
  * 直播讲座回放

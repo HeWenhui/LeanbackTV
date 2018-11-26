@@ -18,7 +18,10 @@ import android.widget.RelativeLayout;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.speech.SpeechUtils;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
@@ -31,12 +34,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
-import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
-import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
 
 import org.json.JSONObject;
 
@@ -88,7 +88,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 
     @Override
     public BaseVoiceAnswerPager create(Context activity, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type,
-                                       RelativeLayout rlQuestionContent, SpeechEvaluatorUtils mIse) {
+                                       RelativeLayout rlQuestionContent, SpeechUtils mIse) {
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         VoiceAnswerStandLog.sno2(this.liveAndBackDebug, videoQuestionLiveEntity);
         VoiceAnswerStandPager voiceAnswerPager2 = new VoiceAnswerStandPager(activity, baseVideoQuestionEntity, assess_ref, videoQuestionLiveEntity.type, questionSwitch, headUrl, userName);

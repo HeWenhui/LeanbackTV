@@ -16,19 +16,15 @@ import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.TimeUtils;
-import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.player.R;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 三分屏回放

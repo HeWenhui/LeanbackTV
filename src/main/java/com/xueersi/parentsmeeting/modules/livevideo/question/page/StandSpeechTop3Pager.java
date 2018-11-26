@@ -2,22 +2,17 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Environment;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.Top3FrameAnim;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 

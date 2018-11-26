@@ -1,13 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;

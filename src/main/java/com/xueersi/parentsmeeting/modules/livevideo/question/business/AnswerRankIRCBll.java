@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
-import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSON;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -15,7 +14,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by linyuqiang on 2018/7/5.

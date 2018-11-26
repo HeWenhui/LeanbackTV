@@ -17,13 +17,13 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
-import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
 /**
  * 战队pk  右侧状态栏

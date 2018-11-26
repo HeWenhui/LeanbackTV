@@ -1,7 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.videochat.page;
 
-import com.xueersi.lib.framework.utils.NetWorkHelper;
-
 import android.app.Activity;
 import android.graphics.Rect;
 import android.view.SurfaceView;
@@ -9,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoChatInter;
@@ -23,7 +23,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 

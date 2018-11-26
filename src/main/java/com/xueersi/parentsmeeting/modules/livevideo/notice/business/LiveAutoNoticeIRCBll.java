@@ -3,12 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.notice.business;
 import android.app.Activity;
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
  * Created by lyqai on 2018/7/5.

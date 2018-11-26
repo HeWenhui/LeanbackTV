@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 
@@ -10,7 +9,6 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.string.Base64;
@@ -32,7 +30,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;

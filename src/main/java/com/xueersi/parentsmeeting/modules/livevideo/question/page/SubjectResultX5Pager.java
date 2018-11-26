@@ -22,11 +22,11 @@ import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -27,13 +27,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
-
 /** Junk drawer of utility methods. */
 public final class Util {
     static final Charset US_ASCII = Charset.forName("US-ASCII");

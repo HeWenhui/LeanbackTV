@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -15,10 +16,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
-import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.RedPackagePage;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.RedPackagePage;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RedPackageStandLog;
-import com.xueersi.common.business.UserBll;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;

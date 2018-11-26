@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tal.speech.asr.talAsrJni;
 import com.tal.speech.language.LanguageEncodeThread;
 import com.tal.speech.language.LanguageListener;
 import com.tal.speech.language.TalLanguage;
@@ -192,7 +191,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                 if (!initLanuage()) {
                     return false;
                 }
-                talAsrJni.LangIDReset(0);
+//                talAsrJni.LangIDReset(0);
             }
             if (talLanguage == null) {
                 this.talLanguage = new TalLanguage(activity);
@@ -249,7 +248,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                             if (!initLanuage()) {
                                 return;
                             }
-                            talAsrJni.LangIDReset(0);
+//                            talAsrJni.LangIDReset(0);
                         }
                         if (isStarLottieVisible) {
                         rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
@@ -267,7 +266,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                         if (!initLanuage()) {
                             return;
                         }
-                        talAsrJni.LangIDReset(0);
+//                        talAsrJni.LangIDReset(0);
                     }
                     if (isStarLottieVisible) {
                     rl_livevideo_english_speak_content.setVisibility(View.VISIBLE);
@@ -483,7 +482,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                 onAudioRequest.requestSuccess();
                 onAudioRequest = null;
             }
-            talAsrJni.LangIDFree();
+//            talAsrJni.LangIDFree();
         }
 
         @Override
@@ -603,9 +602,9 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
                 onAudioRequest.requestSuccess();
                 onAudioRequest = null;
             }
-            if (isDestory && isDestory2) {
-                talAsrJni.LangIDFree();
-            }
+//            if (isDestory && isDestory2) {
+//                talAsrJni.LangIDFree();
+//            }
         }
     }
 
@@ -781,10 +780,12 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         if (s_language == null) {
             return false;
         }
-        talAsrJni.LangIDSetParam(1);
-        int AssessInitial = talAsrJni.LangIDInitial(s_language.getPath());
-        mLogtf.d("initLanuage:AssessInitial=" + AssessInitial);
-        return AssessInitial == 0;
+//        talAsrJni.LangIDSetParam(1);
+        s_language = new File("/storage/emulated/0/record/s_shurufa_1011");
+//        int AssessInitial = talAsrJni.LangIDInitial(s_language.getPath());
+//        mLogtf.d("initLanuage:AssessInitial=" + AssessInitial);
+//        return AssessInitial == 0;
+        return true;
     }
 
     @Override

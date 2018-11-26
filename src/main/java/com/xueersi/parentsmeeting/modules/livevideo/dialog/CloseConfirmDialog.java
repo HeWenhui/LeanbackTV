@@ -2,11 +2,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.dialog;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
