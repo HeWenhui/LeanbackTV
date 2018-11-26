@@ -121,7 +121,7 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
         tvTeampkName.setText(entity.name);
         tvTeampkFire.setText("" + entity.energy);
         lav_livevideo_en_teampk_zan.setOnClickListener(new PraiseClick(lav_livevideo_en_teampk_zan));
-        ImageLoader.with(context.getApplicationContext()).load(entity.headurl).into(civTeampkMember);
+        ImageLoader.with(context.getApplicationContext()).load(entity.headurl).error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civTeampkMember);
     }
 
     private class PraiseClick implements View.OnClickListener {

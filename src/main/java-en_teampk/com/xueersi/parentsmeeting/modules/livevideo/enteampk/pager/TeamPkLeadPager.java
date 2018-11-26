@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -27,6 +28,7 @@ public class TeamPkLeadPager extends LiveBasePager {
     private EnTeamPkRankEntity enTeamPkRankEntity;
     private RelativeLayout rlTeampkLeadBottom;
     private ProgressBar pgTeampkLead;
+    private ImageView iv_livevideo_en_teampk_lead_prog;
     private ImageView ivTeampkMine;
     private ImageView ivTeampkOther;
     private TextView ivTeampkLeadFireAddLeft;
@@ -54,6 +56,7 @@ public class TeamPkLeadPager extends LiveBasePager {
         }
         rlTeampkLeadBottom = view.findViewById(R.id.rl_livevideo_en_teampk_lead_bottom);
         pgTeampkLead = view.findViewById(R.id.pg_livevideo_en_teampk_lead);
+        iv_livevideo_en_teampk_lead_prog = view.findViewById(R.id.iv_livevideo_en_teampk_lead_prog);
         ivTeampkMine = view.findViewById(R.id.iv_livevideo_en_teampk_mine);
         ivTeampkOther = view.findViewById(R.id.iv_livevideo_en_teampk_other);
         ivTeampkLeadFireAddLeft = view.findViewById(R.id.iv_livevideo_en_teampk_lead_fire_add_left);
@@ -69,6 +72,9 @@ public class TeamPkLeadPager extends LiveBasePager {
         int[] res = EnTeamPkConfig.TEAM_RES;
         ivTeampkMine.setImageResource(res[enTeamPkRankEntity.getMyTeam()]);
         int win = 0;
+        int progress = 0;
+        float fprog = 0.0f;
+        int total = enTeamPkRankEntity.getaTotalScore() + enTeamPkRankEntity.getbTotalScore();
         if (enTeamPkRankEntity.getMyTeam() == enTeamPkRankEntity.getApkTeamId()) {
             win = enTeamPkRankEntity.getaCurrentScore() - enTeamPkRankEntity.getbCurrentScore();
             ivTeampkOther.setImageResource(res[enTeamPkRankEntity.getMyTeam()]);
@@ -76,6 +82,10 @@ public class TeamPkLeadPager extends LiveBasePager {
             tvTeampkLeadScoreLeft.setText("" + enTeamPkRankEntity.getaTotalScore());
             ivTeampkLeadFireAddRight.setText("" + enTeamPkRankEntity.getbCurrentScore());
             tvTeampkLeadScoreRight.setText("" + enTeamPkRankEntity.getbTotalScore());
+            if (total != 0) {
+                fprog = (float) (enTeamPkRankEntity.getaTotalScore()) / (float) (total);
+                progress = (int) ((float) (enTeamPkRankEntity.getaTotalScore() * 100) / (float) (total));
+            }
         } else {
             win = enTeamPkRankEntity.getbCurrentScore() - enTeamPkRankEntity.getaCurrentScore();
             ivTeampkOther.setImageResource(res[enTeamPkRankEntity.getBpkTeamId()]);
@@ -84,6 +94,10 @@ public class TeamPkLeadPager extends LiveBasePager {
             tvTeampkLeadScoreLeft.setText("" + enTeamPkRankEntity.getbTotalScore());
             ivTeampkLeadFireAddRight.setText("" + enTeamPkRankEntity.getaCurrentScore());
             tvTeampkLeadScoreRight.setText("" + enTeamPkRankEntity.getaTotalScore());
+            if (total != 0) {
+                fprog = (float) (enTeamPkRankEntity.getbTotalScore()) / (float) (total);
+                progress = (int) ((float) (enTeamPkRankEntity.getbTotalScore() * 100) / (float) (total));
+            }
         }
         if (win >= 0) {
             final ViewGroup group = (ViewGroup) mView;
@@ -99,7 +113,19 @@ public class TeamPkLeadPager extends LiveBasePager {
         } else {
             showRank();
         }
-
+        pgTeampkLead.setProgress(progress);
+        final float finalFprog = fprog;
+        pgTeampkLead.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                pgTeampkLead.getViewTreeObserver().removeOnPreDrawListener(this);
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_en_teampk_lead_prog.getLayoutParams();
+                lp.leftMargin = (int) (pgTeampkLead.getLeft() + pgTeampkLead.getWidth() * finalFprog) - iv_livevideo_en_teampk_lead_prog.getWidth() / 2;
+                iv_livevideo_en_teampk_lead_prog.setLayoutParams(lp);
+                iv_livevideo_en_teampk_lead_prog.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
     }
 
     private void showRank() {

@@ -31,6 +31,7 @@ import org.xutils.xutils.x;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import ren.yale.android.cachewebviewlib.utils.JsonWrapper;
 
@@ -56,10 +57,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         unique_id = mGetInfo.getId() + "_" + mGetInfo.getStudentLiveInfo().getClassId();
         LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
         logger.d("onLiveInited:unique_id=" + unique_id + ",use==" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
-        if (AppConfig.DEBUG) {
-            englishPk.canUsePK = 1;
-            englishPk.hasGroup = 0;
-        }
+//        if (AppConfig.DEBUG) {
+//            englishPk.canUsePK = 1;
+//            englishPk.hasGroup = 0;
+//        }
         EnTeamPkBll teamPkBll = new EnTeamPkBll(activity);
         teamPkBll.setRootView(mRootView);
         teamPkBll.setEnTeamPkHttp(new EnTeamPkHttpImp());
@@ -89,27 +90,28 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (englishShowReg != null) {
             englishShowReg.registQuestionShow(enTeamPkQuestionShowAction);
         }
-//        if (AppConfig.DEBUG) {
-//            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
-//            enTeamPkRankEntity.setApkTeamId(2);
-//            enTeamPkRankEntity.setaCurrentScore(13);
-//            enTeamPkRankEntity.setaTotalScore(31);
-//            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
-//            for (int i = 0; i < 4; i++) {
-//                TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
-//                teamMemberEntity.id = 100 + i;
-//                if (i == 0) {
-//                    teamMemberEntity.isMy = true;
-//                }
-//                teamMemberEntity.name = "测试" + i;
-//                teamMemberEntity.energy = 10 + i;
-//                memberEntities.add(teamMemberEntity);
-//            }
-//            enTeamPkRankEntity.setBpkTeamId(3);
-//            enTeamPkRankEntity.setbCurrentScore(14);
-//            enTeamPkRankEntity.setbTotalScore(34);
-//            enTeamPkAction.onRankLead(enTeamPkRankEntity);
-//        }
+        if (AppConfig.DEBUG) {
+            Random random = new Random();
+            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
+            enTeamPkRankEntity.setApkTeamId(2);
+            enTeamPkRankEntity.setaCurrentScore(random.nextInt(30));
+            enTeamPkRankEntity.setaTotalScore(30 + random.nextInt(20));
+            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
+            for (int i = 0; i < 4; i++) {
+                TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                teamMemberEntity.id = 100 + i;
+                if (i == 0) {
+                    teamMemberEntity.isMy = true;
+                }
+                teamMemberEntity.name = "测试" + i;
+                teamMemberEntity.energy = 10 + i;
+                memberEntities.add(teamMemberEntity);
+        }
+            enTeamPkRankEntity.setBpkTeamId(3);
+            enTeamPkRankEntity.setbCurrentScore(100 - enTeamPkRankEntity.getaCurrentScore());
+            enTeamPkRankEntity.setbTotalScore(100 - enTeamPkRankEntity.getaTotalScore());
+            enTeamPkAction.onRankLead(enTeamPkRankEntity);
+        }
     }
 
     class EnTeamPkQuestionShowAction implements QuestionShowAction {
