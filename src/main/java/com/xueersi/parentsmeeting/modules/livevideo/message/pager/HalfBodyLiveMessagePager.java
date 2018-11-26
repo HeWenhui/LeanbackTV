@@ -951,6 +951,11 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     }
 
     @Override
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+
+    }
+
+    @Override
     public void onFDOpenbarrage(boolean open, boolean b) {
 
     }
@@ -967,6 +972,10 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             iszjlkOpenbarrage, final boolean isFDLKOpenbarrage) {
     }
 
+    @Override
+    public void onOpenVoiceNotic(boolean openVoice, String type) {
+
+    }
     /*添加聊天信息，超过120，移除60个*/
     @Override
     public void addMessage(final String sender, final int type, final String text, final String headUrl) {
