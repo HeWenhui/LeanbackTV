@@ -391,72 +391,79 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     return super.shouldInterceptRequest(view, s);
                 }
             });
-            if (isPlayBack) {
-                String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-                // 一题多发的课件预加载(直播回放)
-                String packageId = "";
-                String packageSource = "";
-                String packageAttr = "";
-                releasedPageInfos = LiveVideoConfig.LIVEPLAYBACKINFOS;
-                String teamId = LiveVideoConfig.LIVEPLAYBACKTEAMID;
-                String stuCouId = LiveVideoConfig.LIVEPLAYBACKSTUID;
-                String classId = LiveVideoConfig.LIVEPLAYBACKCLASSID;
-                String classTestId = "";
-                try {
-                    JSONObject jsonObject = new JSONObject(LiveVideoConfig.LIVEPLAYBACKTYPE);
-                    classTestId = jsonObject.optString("ctId");
-                    packageAttr = jsonObject.optString("pAttr");
-                    packageId = jsonObject.optString("pId");
-                    packageSource = jsonObject.optString("pSrc");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            if(isNewArtsCourseware){
+                String loadUrl = url;
+                loadUrl(loadUrl);
+                reloadurl = loadUrl;
+                Loger.e(TAG, "======> newArtsH5CourseWare url:" + url);
+            }else{
+                if (isPlayBack) {
+                    String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    // 一题多发的课件预加载(直播回放)
+                    String packageId = "";
+                    String packageSource = "";
+                    String packageAttr = "";
+                    releasedPageInfos = LiveVideoConfig.LIVEPLAYBACKINFOS;
+                    String teamId = LiveVideoConfig.LIVEPLAYBACKTEAMID;
+                    String stuCouId = LiveVideoConfig.LIVEPLAYBACKSTUID;
+                    String classId = LiveVideoConfig.LIVEPLAYBACKCLASSID;
+                    String classTestId = "";
+                    try {
+                        JSONObject jsonObject = new JSONObject(LiveVideoConfig.LIVEPLAYBACKTYPE);
+                        classTestId = jsonObject.optString("ctId");
+                        packageAttr = jsonObject.optString("pAttr");
+                        packageId = jsonObject.optString("pId");
+                        packageSource = jsonObject.optString("pSrc");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    String livebackurl = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
+                    String realurl = TextUtils.isEmpty(AppConfig.LIVEPLAYBACKINFOS) ? livebackurl : AppConfig.LIVEPLAYBACKINFOS;
+                    mLoadUrls = realurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.LIVEPLAYBACKSTAGE + "&isPlayBack=1" + "&nonce=" + "" + UUID.randomUUID();
+                } else {
+                    // 一题多发的课件预加载(直播)
+                    String packageId = "";
+                    String packageSource = "";
+                    String packageAttr = "";
+                    String teamId = "";
+                    String stuCouId = "";
+                    String stuId = "";
+                    String classId = "";
+                    String classTestId = "";
+                    try {
+                        JSONObject jsonObject = new JSONObject(mShareDataManager.getString(LiveVideoConfig.newEnglishH5, "{}", ShareDataManager.SHAREDATA_USER));
+                        packageId = jsonObject.optString("packageId");
+                        packageSource = jsonObject.optString("packageSource");
+                        packageAttr = jsonObject.optString("packageAttr");
+                        releasedPageInfos = jsonObject.optString("releasedPageInfos");
+                        stuId = jsonObject.optString("stuId");
+                        stuCouId = jsonObject.optString("stuCouId");
+                        classId = jsonObject.optString("classId");
+                        teamId = jsonObject.optString("teamId");
+                        classTestId = jsonObject.optString("classTestId");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    String defaulturl = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
+                    String dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
+                    mLoadUrls = dynamicurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.educationstage + "&isPlayBack=0" + "&nonce=" + "" + UUID.randomUUID();
+                    // 上传接收到教师端指令的日志
+                    StableLogHashMap logHashMap = new StableLogHashMap("receivePlatformtest");
+                    logHashMap.put("os", "Android");
+                    logHashMap.put("sno", "2");
+                    logHashMap.put("testids", releasedPageInfos);
+                    logHashMap.put("stable", "1");
+                    logHashMap.put("nonce", LiveVideoConfig.nonce);
+                    umsAgentDebugSys("live_platformtest", logHashMap.getData());
                 }
-                String livebackurl = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
-                String realurl = TextUtils.isEmpty(AppConfig.LIVEPLAYBACKINFOS) ? livebackurl : AppConfig.LIVEPLAYBACKINFOS;
-                mLoadUrls = realurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.LIVEPLAYBACKSTAGE + "&isPlayBack=1" + "&nonce=" + "" + UUID.randomUUID();
-            } else {
-                // 一题多发的课件预加载(直播)
-                String packageId = "";
-                String packageSource = "";
-                String packageAttr = "";
-                String teamId = "";
-                String stuCouId = "";
-                String stuId = "";
-                String classId = "";
-                String classTestId = "";
-                try {
-                    JSONObject jsonObject = new JSONObject(mShareDataManager.getString(LiveVideoConfig.newEnglishH5, "{}", ShareDataManager.SHAREDATA_USER));
-                    packageId = jsonObject.optString("packageId");
-                    packageSource = jsonObject.optString("packageSource");
-                    packageAttr = jsonObject.optString("packageAttr");
-                    releasedPageInfos = jsonObject.optString("releasedPageInfos");
-                    stuId = jsonObject.optString("stuId");
-                    stuCouId = jsonObject.optString("stuCouId");
-                    classId = jsonObject.optString("classId");
-                    teamId = jsonObject.optString("teamId");
-                    classTestId = jsonObject.optString("classTestId");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (allowTeamPk) {
+                    mLoadUrls += "&isShowTeamPk=1";
                 }
-                String defaulturl = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
-                String dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
-                mLoadUrls = dynamicurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.educationstage + "&isPlayBack=0" + "&nonce=" + "" + UUID.randomUUID();
-                // 上传接收到教师端指令的日志
-                StableLogHashMap logHashMap = new StableLogHashMap("receivePlatformtest");
-                logHashMap.put("os", "Android");
-                logHashMap.put("sno", "2");
-                logHashMap.put("testids", releasedPageInfos);
-                logHashMap.put("stable", "1");
-                logHashMap.put("nonce", LiveVideoConfig.nonce);
-                umsAgentDebugSys("live_platformtest", logHashMap.getData());
+                loadUrl(mLoadUrls);
+                logger.e("======> mulloadUrlLives:" + mLoadUrls);
+                reloadurl = mLoadUrls;
+                logger.e("======> mulloadUrlLive:" + reloadurl);
             }
-            if (allowTeamPk) {
-                mLoadUrls += "&isShowTeamPk=1";
-            }
-            loadUrl(mLoadUrls);
-            logger.e("======> mulloadUrlLives:" + mLoadUrls);
-            reloadurl = mLoadUrls;
-            logger.e("======> mulloadUrlLive:" + reloadurl);
         } else {
             if (isNewArtsCourseware) {
                 String loadUrl = url;
