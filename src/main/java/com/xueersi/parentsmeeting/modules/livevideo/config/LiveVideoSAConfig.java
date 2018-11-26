@@ -200,6 +200,8 @@ public class LiveVideoSAConfig {
 
         /** 文科新课件平台 RolePlay 页面加载地址 */
         public String URL_NEWARTS_ROALPLAY_URL = "https://static.arts.xueersi.com/art_live/roleplay/";
+        /** 全身直播新课件平台 RolePlay 页面加载地址 */
+        public String URL_NEWARTS_STANDROALPLAY_URL = "https://static.arts.xueersi.com/art_live/roleplayStand/";
         /** 文科新课件平台 语文跟读 页面加载地址 */
         public String URL_NEWARTS_CHINESEREADING_URL = "https://static.arts.xueersi.com/art_live/Chinese-speech-touch/";
         /**

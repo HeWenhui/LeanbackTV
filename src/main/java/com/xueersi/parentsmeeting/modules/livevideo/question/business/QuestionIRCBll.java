@@ -570,7 +570,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         StringBuilder sb = new StringBuilder();
         String url;
         if("5".equals(type)){
-            url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_ROALPLAY_URL;
+            if(mGetInfo.getPattern() == 2){
+                url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_STANDROALPLAY_URL;
+            }else{
+                url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_ROALPLAY_URL;
+            }
         }else {
             url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_CHINESEREADING_URL;
         }
