@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -137,7 +138,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         tvLoadingHint.setTextColor(Color.WHITE);
         rlFirstBackgroundView.setBackgroundColor(0xff000000);
         mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
-       //logger.e("=======>showSupportTeacherUI:");
+        //logger.e("=======>showSupportTeacherUI:");
 
     }
 
@@ -203,7 +204,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
             LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
         }
 
-        Drawable dwTeacherNotPresent = activity.getResources().getDrawable(getLoadingBg());
+        Drawable dwTeacherNotPresent = ResourcesCompat.getDrawable(activity.getResources(), getLoadingBg(), null);
         rlFirstBackgroundView.setBackground(dwTeacherNotPresent);
         if (mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
             tvLoadingHint.setTextColor(Color.WHITE);
@@ -213,8 +214,8 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
 
         ll_course_video_loading.setVisibility(View.VISIBLE);
         iv_course_video_loading_bg.setVisibility(View.INVISIBLE);
-        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.GONE);
-       // logger.e( "=======>showMainTeacherUI:");
+        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+        // logger.e( "=======>showMainTeacherUI:");
     }
 
     @Override
@@ -249,7 +250,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
                 if (rlFirstBackgroundView.getVisibility() == View.GONE) {
                     ivTeacherNotpresent.setVisibility(View.GONE);
                 } else {
-
+                    ivVodeoLoading.setVisibility(View.INVISIBLE);
                     ivTeacherNotpresent.setVisibility(View.VISIBLE);
                     setTeacherNotpresent(ivTeacherNotpresent);
                     mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View
@@ -263,7 +264,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     public void onModeChange(final String mode, final boolean isPresent) {
         this.mode = mode;
         super.onModeChange(mode, isPresent);
-        logger.e( "====>onModeChange:" + this.mode);
+        logger.e("====>onModeChange:" + this.mode);
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -292,7 +293,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
                     iv_course_video_loading_bg.setVisibility(View.VISIBLE);
                     ll_course_video_loading.setVisibility(View.VISIBLE);
                     rlFirstBackgroundView.setBackgroundColor(0xff000000);
-                    logger.e( "=======>onModeChange:");
+                    logger.e("=======>onModeChange:");
                 }
                 setFirstParam(LiveVideoPoint.getInstance());
             }
@@ -311,12 +312,13 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
             long now = System.currentTimeMillis() / 1000;
             // loading 视图
             if (view == rlFirstBackgroundView) {
-                Drawable dwTeacherNotPresent = activity.getResources().getDrawable(getLoadingBg());
+                Drawable dwTeacherNotPresent = ResourcesCompat.getDrawable(activity.getResources(), getLoadingBg(),
+                        null);
                 view.setBackground(dwTeacherNotPresent);
             } else {
                 if (mGetInfo == null) {
                     // 设置 老师不在直播间 背景图
-                    view.setBackground(activity.getResources().getDrawable(getNoTeacherBg()));
+                    view.setBackground(ResourcesCompat.getDrawable(activity.getResources(), getNoTeacherBg(), null));
                 } else {
                     if (!videoLoadingShowing()) {
                         if (now < mGetInfo.getsTime()) {
@@ -337,11 +339,13 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
             }
             Drawable dwTeacherNotpresen = null;
             if (LiveVideoConfig.isPrimary) {
-                dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_psnormal);
+                dwTeacherNotpresen = ResourcesCompat.getDrawable(activity.getResources(), R.drawable
+                        .livevideo_zw_dengdaida_bg_psnormal, null);
             } else {
-                dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.livevideo_zw_dengdaida_bg_normal);
+                dwTeacherNotpresen = ResourcesCompat.getDrawable(activity.getResources(), R.drawable
+                        .livevideo_zw_dengdaida_bg_normal, null);
             }
-            view.setBackgroundDrawable(dwTeacherNotpresen);
+            view.setBackground(dwTeacherNotpresen);
         }
     }
 
@@ -406,11 +410,11 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     private View bufferView;
 
     private void showVedioLoading(final int visible) {
-        if (LiveTopic.MODE_CLASS.equals(mode)) {
+        if (LiveTopic.MODE_CLASS.equals(mode) && visible != ivVodeoLoading.getVisibility()) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    logger.e( "======>showVedioLoading:" + visible);
+                    logger.e("======>showVedioLoading:" + visible);
                     if (bufferView == null) {
                         bufferView = mContentView.findViewById(R.id.probar_course_video_loading_tip_progress);
                     }
@@ -418,13 +422,12 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
                     if (bufferView != null && bufferView.getVisibility() == View.VISIBLE) {
                         return;
                     }
-                    if (visible != ivVodeoLoading.getVisibility()) {
-                        ivVodeoLoading.setVisibility(visible);
-                        if (View.VISIBLE == visible) {
-                            ivTeacherNotpresent.setBackground(activity.getResources().getDrawable(getLoadingBg()));
-                        } else {
-                            setTeacherNotpresent(ivTeacherNotpresent);
-                        }
+                    ivVodeoLoading.setVisibility(visible);
+                    if (View.VISIBLE == visible) {
+                        ivTeacherNotpresent.setBackground(ResourcesCompat.getDrawable(activity.getResources(),
+                                getLoadingBg(), null));
+                    } else {
+                        setTeacherNotpresent(ivTeacherNotpresent);
                     }
                 }
             });
