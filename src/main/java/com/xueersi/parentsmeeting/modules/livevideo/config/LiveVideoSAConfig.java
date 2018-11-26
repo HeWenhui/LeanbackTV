@@ -49,7 +49,7 @@ public class LiveVideoSAConfig {
         /** roleplay组内排行榜 */
         public String URL_LIVE_ROLE_TEAM = HTTP_HOST + "/LiveCourse/getRolePlayAnswerTeamRank";
         /** 全身直播roleplayTop3排行榜*/
-        public String URL_LIVE_ROLE_TOP3 = "https://app.arts.xuersi.com/v2/standLiveStatus/getRolePlayAnswerTeamRank";
+        public String URL_LIVE_ROLE_TOP3 = "https://app.arts.xueersi.com/v2/standLiveStatus/getRolePlayAnswerTeamRank";
         /** 直播课的直播提交测试题-h5课件 */
         public String URL_LIVE_SUBMIT_TEST_H5_ANSWER = HTTP_HOST + "/LiveCourse/sumitCourseWareH5AnswerUseVoice";
         /** 直播课的文科新版课件对接新提交接口- */
