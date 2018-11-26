@@ -250,7 +250,9 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
                 if (rlFirstBackgroundView.getVisibility() == View.GONE) {
                     ivTeacherNotpresent.setVisibility(View.GONE);
                 } else {
-                    ivVodeoLoading.setVisibility(View.INVISIBLE);
+                    if(ivVodeoLoading != null){
+                        ivVodeoLoading.setVisibility(View.INVISIBLE);
+                    }
                     ivTeacherNotpresent.setVisibility(View.VISIBLE);
                     setTeacherNotpresent(ivTeacherNotpresent);
                     mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View
