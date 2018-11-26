@@ -24,15 +24,15 @@ import com.xueersi.ui.adapter.CommonAdapter;
 import java.util.ArrayList;
 
 public class TeamPkRankPager extends LiveBasePager {
-    private GridView gv_livevideo_en_teampk_rank;
-    private ImageView iv_livevideo_en_teampk_rank_select;
-    CommonAdapter<EnTeamEntity> teamAdapter;
-    ArrayList<EnTeamEntity> teamEntitys = new ArrayList<>();
-    Handler handler = new Handler(Looper.getMainLooper());
-    int index = 0;
-    boolean isFinish = false;
-    PkTeamEntity pkTeamEntity;
-    OnTeamSelect onTeamSelect;
+    private GridView gvTeampkRank;
+    private ImageView ivTeampkRankSelect;
+    private CommonAdapter<EnTeamEntity> teamAdapter;
+    private ArrayList<EnTeamEntity> teamEntitys = new ArrayList<>();
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private int index = 0;
+    private boolean isFinish = false;
+    private PkTeamEntity pkTeamEntity;
+    private OnTeamSelect onTeamSelect;
 
     public TeamPkRankPager(Context context) {
         super(context);
@@ -55,8 +55,8 @@ public class TeamPkRankPager extends LiveBasePager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_en_team_rank, null);
-        gv_livevideo_en_teampk_rank = view.findViewById(R.id.gv_livevideo_en_teampk_rank);
-        iv_livevideo_en_teampk_rank_select = view.findViewById(R.id.iv_livevideo_en_teampk_rank_select);
+        gvTeampkRank = view.findViewById(R.id.gv_livevideo_en_teampk_rank);
+        ivTeampkRankSelect = view.findViewById(R.id.iv_livevideo_en_teampk_rank_select);
         return view;
     }
 
@@ -75,14 +75,14 @@ public class TeamPkRankPager extends LiveBasePager {
                 return new EnTeamItem();
             }
         };
-        gv_livevideo_en_teampk_rank.setSelector(new ColorDrawable(Color.TRANSPARENT));
-        gv_livevideo_en_teampk_rank.setAdapter(teamAdapter);
-        gv_livevideo_en_teampk_rank.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        gvTeampkRank.setSelector(new ColorDrawable(Color.TRANSPARENT));
+        gvTeampkRank.setAdapter(teamAdapter);
+        gvTeampkRank.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                if (gv_livevideo_en_teampk_rank.getChildCount() == res.length) {
-                    gv_livevideo_en_teampk_rank.getViewTreeObserver().removeOnPreDrawListener(this);
-                    iv_livevideo_en_teampk_rank_select.setVisibility(View.VISIBLE);
+                if (gvTeampkRank.getChildCount() == res.length) {
+                    gvTeampkRank.getViewTreeObserver().removeOnPreDrawListener(this);
+                    ivTeampkRankSelect.setVisibility(View.VISIBLE);
                     select();
                 }
                 return false;
@@ -98,13 +98,13 @@ public class TeamPkRankPager extends LiveBasePager {
                     isFinish = true;
                     return;
                 }
-                View childView = gv_livevideo_en_teampk_rank.getChildAt(index % gv_livevideo_en_teampk_rank.getChildCount());
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_en_teampk_rank_select.getLayoutParams();
-                int x = (iv_livevideo_en_teampk_rank_select.getWidth() - childView.getWidth()) / 2;
-                int y = (iv_livevideo_en_teampk_rank_select.getHeight() - childView.getHeight()) / 2;
-                lp.topMargin = gv_livevideo_en_teampk_rank.getTop() + childView.getTop() - x;
-                lp.leftMargin = gv_livevideo_en_teampk_rank.getLeft() + childView.getLeft() - y;
-                iv_livevideo_en_teampk_rank_select.setLayoutParams(lp);
+                View childView = gvTeampkRank.getChildAt(index % gvTeampkRank.getChildCount());
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivTeampkRankSelect.getLayoutParams();
+                int x = (ivTeampkRankSelect.getWidth() - childView.getWidth()) / 2;
+                int y = (ivTeampkRankSelect.getHeight() - childView.getHeight()) / 2;
+                lp.topMargin = gvTeampkRank.getTop() + childView.getTop() - x;
+                lp.leftMargin = gvTeampkRank.getLeft() + childView.getLeft() - y;
+                ivTeampkRankSelect.setLayoutParams(lp);
                 logger.d("select:top=" + childView.getTop() + ",left=" + childView.getLeft()
                         + ",width=" + childView.getWidth() + ",height=" + childView.getHeight() + ",x=" + x + ",y=" + y);
                 if (pkTeamEntity != null) {

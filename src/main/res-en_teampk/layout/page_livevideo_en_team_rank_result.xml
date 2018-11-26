@@ -1,31 +1,32 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_livevideo_en_team_bg_4_3">
 
     <ImageView
         android:id="@id/iv_livevideo_en_teampk_mine"
-        android:layout_width="62dp"
-        android:layout_height="67dp"
-        android:layout_marginRight="17dp"
-        android:layout_marginTop="7dp"
-        android:layout_toLeftOf="@id/iv_livevideo_en_teampk_vs"  />
+        android:layout_width="123dp"
+        android:layout_height="135dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginRight="35dp"
+        android:layout_toLeftOf="@id/iv_livevideo_en_teampk_vs" />
 
     <ImageView
         android:id="@id/iv_livevideo_en_teampk_vs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="65dp"
         android:src="@drawable/bg_livevideo_en_tempk_vs" />
 
     <ImageView
         android:id="@id/iv_livevideo_en_teampk_other"
-        android:layout_width="62dp"
-        android:layout_height="67dp"
-        android:layout_marginLeft="17dp"
-        android:layout_marginTop="7dp"
-        android:layout_toRightOf="@id/iv_livevideo_en_teampk_vs"  />
+        android:layout_width="123dp"
+        android:layout_height="135dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="13dp"
+        android:layout_toRightOf="@id/iv_livevideo_en_teampk_vs" />
 
     <View
         android:id="@id/v_livevideo_en_teampk_center"
@@ -34,23 +35,21 @@
         android:layout_centerInParent="true" />
 
     <RelativeLayout
-        android:id="@id/gv_livevideo_en_teampk_rank_mine"
+        android:id="@id/rl_livevideo_en_teampk_rank_mine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/iv_livevideo_en_teampk_mine"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="140dp"
         android:layout_toLeftOf="@id/v_livevideo_en_teampk_center"
         android:listSelector="@null"
         android:numColumns="3" />
 
     <RelativeLayout
-        android:id="@id/gv_livevideo_en_teampk_rank_other"
+        android:id="@id/rl_livevideo_en_teampk_rank_other"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/iv_livevideo_en_teampk_other"
         android:layout_marginLeft="25dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="140dp"
         android:layout_toRightOf="@id/v_livevideo_en_teampk_center"
         android:listSelector="@null"
         android:numColumns="3" />
@@ -59,7 +58,7 @@
         android:id="@id/bt_livevideo_en_teampk_rank_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/gv_livevideo_en_teampk_rank_mine"
+        android:layout_below="@id/rl_livevideo_en_teampk_rank_mine"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="17dp"
         android:background="@drawable/selector_live_enteampk_startpk" />
@@ -86,14 +85,4 @@
         android:orientation="vertical"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@id/tv_livevideo_en_teampk_rank_start_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/bt_livevideo_en_teampk_rank_start"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="3dp"
-        android:text="10s后自动关闭"
-        android:textColor="#ffbebebe"
-        android:textSize="10sp" />
 </RelativeLayout>

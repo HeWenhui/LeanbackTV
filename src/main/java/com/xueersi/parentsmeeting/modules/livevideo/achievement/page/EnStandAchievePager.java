@@ -16,16 +16,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 public class EnStandAchievePager extends LiveBasePager {
-    RelativeLayout parent;
-    LiveGetInfo mLiveGetInfo;
-    Activity activity;
-    ViewStub vs_livevideo_en_achive_bottom;
-    ViewStub vs_livevideo_en_achive_bottom2;
-    private TextView tv_livevideo_en_achive_num_fire;
-    private TextView tv_livevideo_en_achive_num_star;
-    private TextView tv_livevideo_en_achive_num_gold;
-    RelativeLayout rl_livevideo_en_achive_stand_bg;
-    CheckBox cb_livevideo_en_stand_achive_title;
+    private RelativeLayout parent;
+    private LiveGetInfo mLiveGetInfo;
+    private Activity activity;
+    private ViewStub vsAchiveBottom;
+    private ViewStub vsAchiveBottom2;
+    private TextView tvAchiveNumFire;
+    private TextView tvAchiveNumStar;
+    private TextView tvAchiveNumGold;
+    private RelativeLayout rlAchiveStandBg;
+    private CheckBox cbAchiveTitle;
     private int starCount;
     private int goldCount;
     private int energyCount;
@@ -47,13 +47,13 @@ public class EnStandAchievePager extends LiveBasePager {
     @Override
     public View initView() {
         mView = LayoutInflater.from(mContext).inflate(R.layout.layout_livevodeo_en_stand_achive, parent, false);
-        tv_livevideo_en_achive_num_fire = mView.findViewById(R.id.tv_livevideo_en_achive_num_fire);
-        tv_livevideo_en_achive_num_star = mView.findViewById(R.id.tv_livevideo_en_achive_num_star);
-        tv_livevideo_en_achive_num_gold = mView.findViewById(R.id.tv_livevideo_en_achive_num_gold);
-        vs_livevideo_en_achive_bottom = mView.findViewById(R.id.vs_livevideo_en_achive_bottom);
-        vs_livevideo_en_achive_bottom2 = mView.findViewById(R.id.vs_livevideo_en_achive_bottom2);
-        rl_livevideo_en_achive_stand_bg = mView.findViewById(R.id.rl_livevideo_en_achive_stand_bg);
-        cb_livevideo_en_stand_achive_title = mView.findViewById(R.id.cb_livevideo_en_stand_achive_title);
+        tvAchiveNumFire = mView.findViewById(R.id.tv_livevideo_en_achive_num_fire);
+        tvAchiveNumStar = mView.findViewById(R.id.tv_livevideo_en_achive_num_star);
+        tvAchiveNumGold = mView.findViewById(R.id.tv_livevideo_en_achive_num_gold);
+        vsAchiveBottom = mView.findViewById(R.id.vs_livevideo_en_achive_bottom);
+        vsAchiveBottom2 = mView.findViewById(R.id.vs_livevideo_en_achive_bottom2);
+        rlAchiveStandBg = mView.findViewById(R.id.rl_livevideo_en_achive_stand_bg);
+        cbAchiveTitle = mView.findViewById(R.id.cb_livevideo_en_stand_achive_title);
         return mView;
     }
 
@@ -62,14 +62,14 @@ public class EnStandAchievePager extends LiveBasePager {
         super.initData();
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
         if (1 == englishPk.canUsePK) {
-            View v = vs_livevideo_en_achive_bottom.inflate();
+            View v = vsAchiveBottom.inflate();
         } else {
-            vs_livevideo_en_achive_bottom2.inflate();
+            vsAchiveBottom2.inflate();
         }
-        cb_livevideo_en_stand_achive_title.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        cbAchiveTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                rl_livevideo_en_achive_stand_bg.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                rlAchiveStandBg.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             }
         });
     }
@@ -80,14 +80,14 @@ public class EnStandAchievePager extends LiveBasePager {
     }
 
     public void onGetStar(StarAndGoldEntity starAndGoldEntity) {
-        tv_livevideo_en_achive_num_fire.setText(starAndGoldEntity.getPkEnergy().me);
-        tv_livevideo_en_achive_num_star.setText(starAndGoldEntity.getStarCount());
-        tv_livevideo_en_achive_num_gold.setText(starAndGoldEntity.getGoldCount());
+        tvAchiveNumFire.setText(starAndGoldEntity.getPkEnergy().me);
+        tvAchiveNumStar.setText(starAndGoldEntity.getStarCount());
+        tvAchiveNumGold.setText(starAndGoldEntity.getGoldCount());
     }
 
     public void onStarAdd(int star, float x, float y) {
         starCount += star;
-        tv_livevideo_en_achive_num_star.setText("" + starCount);
+        tvAchiveNumStar.setText("" + starCount);
     }
 
 }

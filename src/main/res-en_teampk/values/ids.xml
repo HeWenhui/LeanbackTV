@@ -9,8 +9,8 @@
     <item name="iv_livevideo_en_teampk_vs" type="id" />
     <item name="v_livevideo_en_teampk_center" type="id" />
     <item name="iv_livevideo_en_teampk_other" type="id" />
-    <item name="gv_livevideo_en_teampk_rank_mine" type="id" />
-    <item name="gv_livevideo_en_teampk_rank_other" type="id" />
+    <item name="rl_livevideo_en_teampk_rank_mine" type="id" />
+    <item name="rl_livevideo_en_teampk_rank_other" type="id" />
     <item name="bt_livevideo_en_teampk_rank_start" type="id" />
     <item name="tv_livevideo_en_teampk_rank_start_close" type="id" />
     <item name="iv_livevideo_en_teampk_rank_score" type="id" />

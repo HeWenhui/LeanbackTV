@@ -78,7 +78,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                 });
             }
         }
-        addTop();
+//        addTop();
     }
 
     private void addTop() {

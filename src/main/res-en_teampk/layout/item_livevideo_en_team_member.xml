@@ -22,10 +22,13 @@
         android:id="@id/tv_livevideo_en_teampk_name"
         android:layout_width="wrap_content"
         android:layout_height="18dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="66dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
         android:gravity="center"
         android:includeFontPadding="false"
+        android:singleLine="true"
         android:textColor="@color/white"
         android:textSize="11sp" />
 </RelativeLayout>

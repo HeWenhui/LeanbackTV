@@ -2,15 +2,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.item;
 
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 public class EnTeamItem implements AdapterItemInterface<EnTeamEntity> {
-    private ImageView iv_livevideo_en_teampk_member;
+    private ImageView ivTeampkMember;
 
     @Override
     public int getLayoutResId() {
@@ -19,7 +17,7 @@ public class EnTeamItem implements AdapterItemInterface<EnTeamEntity> {
 
     @Override
     public void initViews(View root) {
-        iv_livevideo_en_teampk_member = root.findViewById(R.id.iv_livevideo_en_teampk_member);
+        ivTeampkMember = root.findViewById(R.id.iv_livevideo_en_teampk_member);
     }
 
     @Override
@@ -29,6 +27,6 @@ public class EnTeamItem implements AdapterItemInterface<EnTeamEntity> {
 
     @Override
     public void updateViews(EnTeamEntity entity, int position, Object objTag) {
-        iv_livevideo_en_teampk_member.setImageResource(entity.resId);
+        ivTeampkMember.setImageResource(entity.resId);
     }
 }

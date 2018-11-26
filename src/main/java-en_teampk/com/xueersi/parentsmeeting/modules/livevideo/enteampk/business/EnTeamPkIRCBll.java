@@ -56,10 +56,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         unique_id = mGetInfo.getId() + "_" + mGetInfo.getStudentLiveInfo().getClassId();
         LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
         logger.d("onLiveInited:unique_id=" + unique_id + ",use==" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
-//        if (AppConfig.DEBUG) {
-//            englishPk.canUsePK = 1;
-//            englishPk.hasGroup = 1;
-//        }
+        if (AppConfig.DEBUG) {
+            englishPk.canUsePK = 1;
+            englishPk.hasGroup = 0;
+        }
         EnTeamPkBll teamPkBll = new EnTeamPkBll(activity);
         teamPkBll.setRootView(mRootView);
         teamPkBll.setEnTeamPkHttp(new EnTeamPkHttpImp());
@@ -89,27 +89,27 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (englishShowReg != null) {
             englishShowReg.registQuestionShow(enTeamPkQuestionShowAction);
         }
-        if (AppConfig.DEBUG) {
-            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
-            enTeamPkRankEntity.setApkTeamId(2);
-            enTeamPkRankEntity.setaCurrentScore(13);
-            enTeamPkRankEntity.setaTotalScore(31);
-            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
-            for (int i = 0; i < 4; i++) {
-                TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
-                teamMemberEntity.id = 100 + i;
-                if (i == 0) {
-                    teamMemberEntity.isMy = true;
-                }
-                teamMemberEntity.name = "测试" + i;
-                teamMemberEntity.energy = 10 + i;
-                memberEntities.add(teamMemberEntity);
-            }
-            enTeamPkRankEntity.setBpkTeamId(3);
-            enTeamPkRankEntity.setbCurrentScore(14);
-            enTeamPkRankEntity.setbTotalScore(34);
-            enTeamPkAction.onRankLead(enTeamPkRankEntity);
-        }
+//        if (AppConfig.DEBUG) {
+//            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
+//            enTeamPkRankEntity.setApkTeamId(2);
+//            enTeamPkRankEntity.setaCurrentScore(13);
+//            enTeamPkRankEntity.setaTotalScore(31);
+//            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
+//            for (int i = 0; i < 4; i++) {
+//                TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+//                teamMemberEntity.id = 100 + i;
+//                if (i == 0) {
+//                    teamMemberEntity.isMy = true;
+//                }
+//                teamMemberEntity.name = "测试" + i;
+//                teamMemberEntity.energy = 10 + i;
+//                memberEntities.add(teamMemberEntity);
+//            }
+//            enTeamPkRankEntity.setBpkTeamId(3);
+//            enTeamPkRankEntity.setbCurrentScore(14);
+//            enTeamPkRankEntity.setbTotalScore(34);
+//            enTeamPkAction.onRankLead(enTeamPkRankEntity);
+//        }
     }
 
     class EnTeamPkQuestionShowAction implements QuestionShowAction {
@@ -173,12 +173,18 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         public void reportStuInfo(final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
             //s_lliveID_liveType_stuID_sex
             String nick_name = "s_" + mGetInfo.getId() + "_3_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
+            logger.d("reportStuInfo:nick_name=" + nick_name);
             LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
             getHttpManager().reportStuInfo(mGetInfo.getStuId(), mGetInfo.getStuName(), mGetInfo.getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name, unique_id, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) {
                     logger.d("reportStuInfo:onPmSuccess" + responseEntity.getJsonObject());
                     abstractBusinessDataCallBack.onDataSucess(responseEntity);
+                    if (AppConfig.DEBUG) {
+                        if (enTeamPkAction != null) {
+                            enTeamPkAction.onRankStart();
+                        }
+                    }
                 }
 
                 @Override
