@@ -80,7 +80,7 @@ public class SpeechCollectivePager extends BasePager {
 
 
     public void setCountDownText(long millisUntilFinished) {
-        countDownView.setText(((millisUntilFinished / 1000) + 1) + "秒后开启集体发言");
+        countDownView.setText(((millisUntilFinished / 1000) + 1) + "秒后请回答");
     }
 
     public void setCountDownFinish() {
