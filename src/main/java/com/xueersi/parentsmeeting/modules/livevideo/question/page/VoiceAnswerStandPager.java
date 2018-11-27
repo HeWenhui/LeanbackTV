@@ -11,6 +11,8 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -35,6 +37,14 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+
+import com.xueersi.common.event.MiniEvent;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechConfig;
@@ -61,6 +71,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveTextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -152,6 +165,8 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
     String file3 = "live_stand/frame_anim/voice_answer/3_switch_loop";
     String file4 = "live_stand/frame_anim/voice_answer/4_switch";
     LiveSoundPool liveSoundPool;
+    /**当前答题结果*/
+    private AnswerResultEntity mAnswerReulst;
 
     public VoiceAnswerStandPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref, String type, QuestionSwitch questionSwitch, String headUrl, String userName) {
         super(context);
@@ -666,7 +681,11 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         }
         if (isEnd) {
             VideoResultEntity entity = new VideoResultEntity();
-            entity.setResultType(VideoResultEntity.QUE_RES_TYPE2);
+            if(LiveVideoConfig.isNewArts){
+                entity.setResultType(0);
+            }else{
+                entity.setResultType(VideoResultEntity.QUE_RES_TYPE2);
+            }
             entity.setStandardAnswer(answer);
             questionSwitch.onAnswerTimeOutError(baseVideoQuestionEntity, entity);
             mView.postDelayed(new Runnable() {
@@ -998,11 +1017,20 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
     private void onCommit(VideoResultEntity entity, double speechDuration) {
         boolean isRight;
-        if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
-            isRight = true;
-        } else {
-            isRight = false;
+        if(LiveVideoConfig.isNewArts){
+            if (entity.getResultType() == 2) {
+                isRight = true;
+            } else {
+                isRight = false;
+            }
+        }else{
+            if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
+                isRight = true;
+            } else {
+                isRight = false;
+            }
         }
+
         if (lavLivevideoVoiceansTeamMine.getVisibility() == View.VISIBLE) {
             TeamOnCompositionLoadedListener teamOnCompositionLoadedListener = (TeamOnCompositionLoadedListener) lavLivevideoVoiceansTeamMine.getTag();
             return;
