@@ -135,12 +135,12 @@ public class LiveStandAchievementBll implements StarInteractAction {
         LineMath line1 = getAandB(starScaleStep1, 1.0f, starScaleStep2, starScaleMax);
         starInLine1a = line1.a;
         starInLine1b = line1.b;
-        logger.d( "StarInteractBll:starInLine1a=(" + starInLine1a + "," + starInLine1b + ")");
+        logger.d("StarInteractBll:starInLine1a=(" + starInLine1a + "," + starInLine1b + ")");
         //第二条线
         LineMath line2 = getAandB(starScaleStep2, starScaleMax, 1.0f, 1.0f);
         starInLine2a = line2.a;
         starInLine2b = line2.b;
-        logger.d( "StarInteractBll:starInLine2a=(" + starInLine2a + "," + starInLine2b + ")");
+        logger.d("StarInteractBll:starInLine2a=(" + starInLine2a + "," + starInLine2b + ")");
         LineMath line3 = getAandB(0.25f, 1f, 0.75f, -1f);
         starRotateLine1a = line3.a;
         starRotateLine1b = line3.b;
@@ -226,7 +226,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
         LottieComposition.Factory.fromAssetFileName(activity, fileName, new OnCompositionLoadedListener() {
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                logger.d( "onCompositionLoaded:composition=" + composition);
+                logger.d("onCompositionLoaded:composition=" + composition);
                 if (composition == null) {
 //                    Toast.makeText(activity, "加载失败", Toast.LENGTH_SHORT).show();
                     return;
@@ -246,7 +246,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
             goldCount2 = 999;
         }
         if (isStarLottieVisible) {
-        lottieAnimationView.setGoldCount(goldCount2);
+            lottieAnimationView.setGoldCount(goldCount2);
         } else {
             tvGoldCount.setText(String.valueOf(goldCount2));
         }
@@ -255,7 +255,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
             starCount2 = 999;
         }
         if (isStarLottieVisible) {
-        lottieAnimationView.setStarCount(starCount2);
+            lottieAnimationView.setStarCount(starCount2);
         } else {
             tvStarCount.setText(String.valueOf(starCount2));
         }
