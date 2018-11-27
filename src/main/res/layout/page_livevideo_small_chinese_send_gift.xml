@@ -84,6 +84,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="10金币"
+        android:textColor="@color/COLOR_7B583E"
         app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift_value_icon"
         app:layout_constraintLeft_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift_value_icon"
         app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_small_gift_value_icon" />
@@ -130,6 +131,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="50金币"
+        android:textColor="@color/COLOR_7B583E"
         app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift_value_icon"
         app:layout_constraintLeft_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift_value_icon"
         app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_middle_gift_value_icon" />
@@ -175,8 +177,8 @@
         android:id="@+id/tv_livevideo_small_chinese_send_gift_money"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:text="100金币"
+        android:textColor="@color/COLOR_7B583E"
         app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift_value_icon"
         app:layout_constraintLeft_toRightOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift_value_icon"
         app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_send_gift_big_gift_value_icon" />
