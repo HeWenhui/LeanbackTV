@@ -13,6 +13,7 @@ import com.xueersi.common.http.HttpCall;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 /**
  * 直播
@@ -60,8 +61,10 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     protected LiveVideoFragmentBase getFragment() {
         int pattern = getIntent().getIntExtra("pattern", 0);
         if (pattern == 2) {
+            LiveVideoConfig.isStandLive = true;
             return new StandLiveVideoFragment();
         }
+        LiveVideoConfig.isStandLive = false;
         return new LiveVideoFragment();
     }
 

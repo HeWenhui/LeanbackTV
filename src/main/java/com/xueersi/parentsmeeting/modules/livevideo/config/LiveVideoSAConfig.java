@@ -40,10 +40,16 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_SUBMIT_TEST_ANSWER_VOICE = HTTP_HOST + "/LiveCourse/submitTestAnswerUseVoice";
         /** 直播课的语音评测小组排名 */
         public String URL_LIVE_SPEECH_TEAM = HTTP_HOST + "/LiveCourse/getSpeechEvalAnswerTeamStatus";
+        /** 全身直播语音测评组内战况*/
+        public String URL_LIVE_SPEECH_TEAM_STATUS = "https://app.arts.xueersi.com/v2/standLiveStatus/getSpeechEvalAnswerTeamStatus";
         /** 直播课的语音答题小组排名 */
         public String URL_LIVE_ANSWER_TEAM = HTTP_HOST + "/LiveCourse/getTestAnswerTeamStatus";
+        /** 全身直播语音答题的小组排名(新课件平台) */
+        public String URL_LIVE_NEWSTAND_ANSWER = "https://app.arts.xueersi.com/v2/standLiveStatus/getTestAnswerTeamStatus";
         /** roleplay组内排行榜 */
         public String URL_LIVE_ROLE_TEAM = HTTP_HOST + "/LiveCourse/getRolePlayAnswerTeamRank";
+        /** 全身直播roleplayTop3排行榜*/
+        public String URL_LIVE_ROLE_TOP3 = "https://app.arts.xueersi.com/v2/standLiveStatus/getRolePlayAnswerTeamRank";
         /** 直播课的直播提交测试题-h5课件 */
         public String URL_LIVE_SUBMIT_TEST_H5_ANSWER = HTTP_HOST + "/LiveCourse/sumitCourseWareH5AnswerUseVoice";
         /** 直播课的文科新版课件对接新提交接口- */
@@ -62,6 +68,8 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_SEND_SPEECHEVALUATEARTS = "https://app.arts.xueersi.com/v2/speechEval42/submitSpeechEval42";
         /** 语音评测排行榜 */
         public String URL_LIVE_SPEECH_TEAM_RAND = HTTP_HOST + "/LiveCourse/getSpeechEvalAnswerTeamRank";
+        /** 全身直播语音测评Top3排行榜*/
+        public String URL_LIVE_ROLE_SPEECH_TEAM_TOP3 = "https://app.arts.xueersi.com/v2/standLiveStatus/getSpeechEvalAnswerTeamRank";
         /** 发送语音评测答案-二期，是否作答 */
         public String URL_LIVE_SEND_SPEECHEVAL42_ANSWER = HTTP_HOST + "/LiveCourse/speechEval42IsAnswered";
         /** 发送语音评测答案-文科新课件平台，是否作答 */
@@ -192,6 +200,8 @@ public class LiveVideoSAConfig {
 
         /** 文科新课件平台 RolePlay 页面加载地址 */
         public String URL_NEWARTS_ROALPLAY_URL = "https://static.arts.xueersi.com/art_live/roleplay/";
+        /** 全身直播新课件平台 RolePlay 页面加载地址 */
+        public String URL_NEWARTS_STANDROALPLAY_URL = "https://static.arts.xueersi.com/art_live/roleplayStand/";
         /** 文科新课件平台 语文跟读 页面加载地址 */
         public String URL_NEWARTS_CHINESEREADING_URL = "https://static.arts.xueersi.com/art_live/Chinese-speech-touch/";
         /**
