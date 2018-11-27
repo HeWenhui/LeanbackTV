@@ -19,9 +19,11 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
@@ -46,7 +48,7 @@ import okhttp3.Response;
  */
 public class LiveHttpManager extends BaseHttpBusiness {
     String TAG = "LiveHttpManager";
-    private final Logger logger = LoggerFactory.getLogger(TAG);
+    private final Logger logger = LiveLoggerFactory.getLogger(TAG);
     HashMap<String, String> defaultKey = new HashMap<>();
     LiveVideoSAConfig.Inner liveVideoSAConfigInner;
     private LiveVideoSAConfig liveVideoSAConfig;
@@ -470,21 +472,38 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
 
     public void getTestAnswerTeamStatus(String testId, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        String url = liveVideoSAConfigInner.URL_LIVE_ANSWER_TEAM;
-//        params.addBodyParam("enstuId", enstuId);
-        setDefaultParameter(params);
-        params.addBodyParam("testId", testId);
-        sendPost(url, params, requestCallBack);
+        if(LiveVideoConfig.isNewArts){
+            HttpRequestParams params = new HttpRequestParams();
+            String url = liveVideoSAConfigInner.URL_LIVE_NEWSTAND_ANSWER;
+            setDefaultParameter(params);
+            params.addBodyParam("testId", testId);
+            sendPost(url, params, requestCallBack);
+        }else{
+            HttpRequestParams params = new HttpRequestParams();
+            String url = liveVideoSAConfigInner.URL_LIVE_ANSWER_TEAM;
+            setDefaultParameter(params);
+            params.addBodyParam("testId", testId);
+            sendPost(url, params, requestCallBack);
+        }
+
     }
 
     public void getSpeechEvalAnswerTeamStatus(String testId, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        String url = liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM;
+        if(LiveVideoConfig.isNewArts){
+            HttpRequestParams params = new HttpRequestParams();
+            String url = liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM_STATUS;
+            setDefaultParameter(params);
+            params.addBodyParam("testId", testId);
+            sendPost(url, params, requestCallBack);
+        }else{
+            HttpRequestParams params = new HttpRequestParams();
+            String url = liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM;
 //        params.addBodyParam("enstuId", enstuId);
-        setDefaultParameter(params);
-        params.addBodyParam("testId", testId);
-        sendPost(url, params, requestCallBack);
+            setDefaultParameter(params);
+            params.addBodyParam("testId", testId);
+            sendPost(url, params, requestCallBack);
+        }
+
     }
 
     public void liveSubmitTestH5Answer(String enstuId, String srcType, String testId, String liveId, String
@@ -695,13 +714,22 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVALUATEARTS, params, requestCallBack);
     }
 
-    /** 语音评测排行榜 */
+    /** 语音评测排行榜  兼容全身直播新课件平台改版的Top3*/
     public void getSpeechEvalAnswerTeamRank(String id, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("testId", id);
-        setDefaultParameter(params);
-        logger.i("getSpeechEvalAnswerTeamRank:id=" + id);
-        sendPost(liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM_RAND, params, requestCallBack);
+        if(LiveVideoConfig.isNewArts){
+            HttpRequestParams params = new HttpRequestParams();
+            params.addBodyParam("testId", id);
+            setDefaultParameter(params);
+            logger.i("getSpeechEvalAnswerTeamRank:id=" + id);
+            sendPost(liveVideoSAConfigInner.URL_LIVE_ROLE_SPEECH_TEAM_TOP3, params, requestCallBack);
+        }else{
+            HttpRequestParams params = new HttpRequestParams();
+            params.addBodyParam("testId", id);
+            setDefaultParameter(params);
+            logger.i("getSpeechEvalAnswerTeamRank:id=" + id);
+            sendPost(liveVideoSAConfigInner.URL_LIVE_SPEECH_TEAM_RAND, params, requestCallBack);
+        }
+
     }
 
     public void speechEval42IsAnswered(String enstuId, String liveId, String id, HttpCallBack requestCallBack) {
@@ -1114,12 +1142,20 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_TEMPK_PKTEAMINFO, params, requestCallBack);
     }
 
-    /** roleplay组内排行榜 */
+    /** roleplay组内排行榜 兼容全身直播新课件的改版Top3*/
     public void getRolePlayAnswerTeamRank(String testId, HttpCallBack callBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("testId", testId);
-        setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_LIVE_ROLE_TEAM, params, callBack);
+        if(LiveVideoConfig.isNewArts){
+            HttpRequestParams params = new HttpRequestParams();
+            params.addBodyParam("testId", testId);
+            setDefaultParameter(params);
+            sendPost(liveVideoSAConfigInner.URL_LIVE_ROLE_TOP3, params, callBack);
+        }else{
+            HttpRequestParams params = new HttpRequestParams();
+            params.addBodyParam("testId", testId);
+            setDefaultParameter(params);
+            sendPost(liveVideoSAConfigInner.URL_LIVE_ROLE_TEAM, params, callBack);
+        }
+
     }
 
     /** 直播讲座获取更多课程的信息 */
@@ -1478,5 +1514,74 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("gradeId", gradeId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_STU_ONLINE_TIME, params, requestCallBack);
+    }
+
+    /**
+     * 学生获取战队信息
+     *
+     * @param requestCallBack
+     */
+    public void getSelfTeamInfo(String stu_id, String unique_id, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stu_id", "" + stu_id);
+        params.addHeaderParam("Connection", "Close");
+        setDefaultParameter(params);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_SELF_TEAM + "?unique_id=" + unique_id, params, requestCallBack);
+    }
+
+    /**
+     * 学生获取战队信息 php
+     *
+     * @param requestCallBack
+     */
+    public void getEnglishPkRank(HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addHeaderParam("Connection", "Close");
+        setDefaultParameter(params);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_GETENGLISH_PK, params, requestCallBack);
+    }
+
+    /**
+     * 学生上报个人信息
+     *
+     * @param requestCallBack
+     */
+    public void reportStuInfo(String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stu_id", "" + stu_id);
+        params.addBodyParam("stu_name", stu_name);
+        params.addBodyParam("stu_head", stu_head);
+        params.addBodyParam("stu_energy", stu_energy);
+        params.addBodyParam("stu_lose_flag", stu_lose_flag);
+        params.addBodyParam("nick_name", nick_name);
+        params.addBodyParam("unique_id", unique_id);
+        params.addHeaderParam("Connection", "Close");
+        setDefaultParameter(params);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_STUINFO + "?unique_id=" + unique_id, params, requestCallBack);
+    }
+
+    /**
+     * go-战队pk-更新用户分组
+     *
+     * @param requestCallBack
+     */
+    public void updataEnglishPkGroup(String isNewGroup, String isA, String robotId, String stuId, String info, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("isNewGroup", "" + isNewGroup);
+        setDefaultParameter(params);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_UPDATA_GROUP, params, requestCallBack);
+    }
+
+    /**
+     * go-战队pk-更新用户分组
+     *
+     * @param requestCallBack
+     */
+    public void updataEnglishPkByTestId(String teamId, String testId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("pkTeamId", "" + teamId);
+        params.addBodyParam("testId", "" + testId);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_UPDATA_PK_RANK, params, requestCallBack);
     }
 }

@@ -212,6 +212,7 @@ public interface XESCODE {
     int ARTS_SEND_QUESTION = 1104;
     /** 文科在线教研收题 */
     int ARTS_STOP_QUESTION = 1105;
+    int ARTS_STOP_RANKING = 180;
     /** 文科设计组课件收发题 */
     int ARTS_H5_COURSEWARE = 1145;
     /** 文科教师端提醒交卷 **/
@@ -224,4 +225,7 @@ public interface XESCODE {
     int ARTS_PRAISE_ANSWER_RIGHT_SINGLE = 1162;
     /** 文科单词听写 */
     int ARTS_WORD_DICTATION = 1003;
+
+    int XCR_ROOM_TEAMPK_OPEN = 1004;//  ("1004")  //通知战队pk分组
+    int XCR_ROOM_TEAMPK_RESULT = 1005;//     ("1005")  //发布战队PK结果
 }

@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 
@@ -53,12 +54,12 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/17.
+ * Created by linyuqiang on 2018/7/17.
  */
 public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick,
         LiveOnLineLogs {
     protected String TAG = "LiveBackBll";
-    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+    protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
     protected Activity activity;
     private LiveGetInfo mGetInfo;
     LiveHttpManager mHttpManager;

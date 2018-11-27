@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveExPressionEditDat
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
@@ -728,7 +729,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     }
 
     @Override
-    public void onQuestionShow(boolean isShow) {
+    public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
 
     }
 

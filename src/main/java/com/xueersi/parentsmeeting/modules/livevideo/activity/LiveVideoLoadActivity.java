@@ -118,6 +118,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putBoolean("isPrimary", LiveVideoConfig.isPrimary);
                     if (mGetInfo.getIsArts() == 0) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
+                    }else {
+                        bundle.putInt("smallEnglish", mGetInfo.getSmallEnglish() ? 1 : 0);
                     }
 //                if (mGetInfo.getPattern() == 2) {
 //                    StandLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle, -1);

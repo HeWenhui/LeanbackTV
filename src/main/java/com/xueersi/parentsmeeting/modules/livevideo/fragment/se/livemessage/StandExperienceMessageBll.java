@@ -34,7 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceE
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.ExperLiveMessageStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -63,7 +63,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
     /**
      * 在线直播的聊天区
      */
-    private LiveMessageStandPager mLiveMessagePager;
+    private ExperLiveMessageStandPager mLiveMessagePager;
 
     private LiveHttpManager mHttpManager;
 
@@ -130,7 +130,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         mMediaController = new LiveMediaController(activity, videoFragment);
         baseLiveMediaControllerBottom = new LiveStandMediaControllerBottom(activity, mMediaController, videoFragment);
 
-        mLiveMessagePager = new LiveMessageStandPager(
+        mLiveMessagePager = new ExperLiveMessageStandPager(
                 mContext,
                 this,
                 baseLiveMediaControllerBottom,

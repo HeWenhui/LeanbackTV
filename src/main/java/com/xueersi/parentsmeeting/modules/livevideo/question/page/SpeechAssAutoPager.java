@@ -8,6 +8,8 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ScaleDrawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -31,6 +33,7 @@ import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.umeng.analytics.MobclickAgent;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.speech.SpeechConfig;
@@ -40,8 +43,10 @@ import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -68,6 +73,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public static boolean DEBUG = false;
     String eventId = LiveVideoConfig.LIVE_SPEECH_TEST2;
+    Handler handler = new Handler(Looper.getMainLooper());
     /** 语音保存位置 */
     private String id;
     /** 时间倒计时，表情 */
@@ -84,8 +90,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     RelativeLayout rlSpeectevalEncourage;
     /** great文字 */
     TextView tvSpeectevalEncourage;
-    /** 结果页星星进度条和一些动画 */
-    StartProgress spStarResult;
     /** 提示和波浪线的外层 */
     RelativeLayout rlSpeectevalBg;
     /** 波浪线 */
@@ -241,19 +245,10 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         rlSpeectevalBg = (RelativeLayout) view.findViewById(R.id.rl_livevideo_speecteval_bg);
         vwvSpeectevalWave = (VolumeWaveView) view.findViewById(R.id.vwv_livevideo_speecteval_wave);
         vwvSpeectevalWave.setBackColor(0xffeaebf9);
-        spStarResult = (StartProgress) view.findViewById(R.id.sp_live_star_result);
         rlSpeectevalError = (RelativeLayout) view.findViewById(R.id.rl_livevideo_speecteval_error);
         ivSpeectevalError = (ImageView) view.findViewById(R.id.iv_livevideo_speecteval_error);
         tvSpeectevalError = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_error);
         tv_livevideo_speecteval_countdown = (TextView) view.findViewById(R.id.tv_livevideo_speecteval_countdown);
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.bg_live_star_result_bg);
-        if (bitmap != null) {
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) spStarResult.getLayoutParams();
-            lp.width = bitmap.getWidth();
-            lp.height = bitmap.getHeight();
-            spStarResult.setLayoutParams(lp);
-            bitmap.recycle();
-        }
         return view;
     }
 
@@ -276,10 +271,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //        tvSpeectevalContent.setText(Html.fromHtml(content));
         tvSpeectevalContent.setText(content);
         content2 = content.replace("\n", " ");
-        String[] split = content.split(" ");
-        if (split.length == 1) {
-            spStarResult.setIsWord();
-        }
         Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
         tvSpeectevalEncourage.setTypeface(fontFace);
         File dir = LiveCacheFile.geCacheFile(mContext, "liveSpeech");
@@ -548,68 +539,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         }, 500);
     }
 
-    ProgressBarRun progressBarRun = new ProgressBarRun();
-
-    private class ProgressBarRun implements Runnable {
-        LayerDrawable drawable;
-        private int second;
-
-        @Override
-        public void run() {
-            ScaleDrawable scaleDrawable = (ScaleDrawable) drawable.getDrawable(1);
-            GradientDrawable gradientDrawable = (GradientDrawable) scaleDrawable.getDrawable();
-            progressBar.setProgress(progressBar.getProgress() - 1);
-            if (progressBar.getProgress() > 0) {
-                if (second > 5) {
-                    if (progressBar.getProgress() >= second / 2) {
-                        if (progColor != startProgColor) {
-                            progColor = startProgColor;
-                            gradientDrawable.setColor(progColor);
-                        }
-                        tvSpeectevalTime.setText("预计时间" + progressBar.getProgress() + "秒哦~");
-                    } else if (progressBar.getProgress() >= second * 0.2) {
-                        if (progColor != Color.GREEN) {
-                            progColor = Color.GREEN;
-                            gradientDrawable.setColor(progColor);
-                            tvSpeectevalTime.setText("加油~加油~");
-                            ivSpeectevalTimeEmoji.setImageResource(R.drawable.bg_livevideo_speecteval_time_emoji3);
-                        }
-                    } else {
-                        if (progColor != Color.RED) {
-                            progColor = Color.RED;
-                            gradientDrawable.setColor(progColor);
-                            ivSpeectevalTimeEmoji.setImageResource(R.drawable.bg_livevideo_speecteval_time_emoji2);
-                            tvSpeectevalTime.setTextColor(mContext.getResources().getColor(R.color.COLOR_E74C3C));
-                            tvSpeectevalTime.setText("要快点读啦~");
-                        }
-                    }
-                } else {
-                    if (progColor != startProgColor) {
-                        progColor = startProgColor;
-                        gradientDrawable.setColor(progColor);
-                    }
-                    tvSpeectevalTime.setText("预计时间" + progressBar.getProgress() + "秒哦~");
-                }
-                if (getRootView().getParent() != null) {
-                    progressBar.postDelayed(this, 1000);
-                }
-            } else {
-                if (speechSuccess) {
-                    ivSpeectevalTimeEmoji.setImageResource(R.drawable.bg_livevideo_speecteval_time_emoji4);
-                    tvSpeectevalTime.setTextColor(mContext.getResources().getColor(R.color.COLOR_6462A2));
-                    tvSpeectevalTime.setText("完成啦！");
-                } else {
-                    ivSpeectevalTimeEmoji.setImageResource(R.drawable.bg_livevideo_speecteval_time_emoji2);
-                    tvSpeectevalTime.setTextColor(mContext.getResources().getColor(R.color.COLOR_E74C3C));
-                    tvSpeectevalTime.setText("要快点读啦~");
-                }
-                progressBar.setVisibility(View.GONE);
-//                mIse.stop();
-            }
-        }
-    }
-
-
     private void startSpeech(final int second) {
         if (getRootView().getParent() != null) {
 //            LayerDrawable drawable = (LayerDrawable) progressBar.getProgressDrawable();
@@ -638,7 +567,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             if (score == 1) {
                 errorSetVisible();
                 tvSpeectevalError.setText("要认真些，再来一次哦！");
-                spStarResult.postDelayed(new Runnable() {
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         errorSetGone();
@@ -651,7 +580,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             } else if (score < 60) {
                 errorSetVisible();
                 tvSpeectevalError.setText("你可以说的更好，再来一次哦！");
-                spStarResult.postDelayed(new Runnable() {
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         errorSetGone();
@@ -723,6 +652,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
                     @Override
                     public void onSpeechEval(Object object) {
+                        logger.d("sendSpeechEvalResult2:onSpeechEval:object=" + object);
                         JSONObject jsonObject = (JSONObject) object;
                         if (LiveVideoConfig.isNewArts) {
                             int gold = jsonObject.optInt("gold");
@@ -739,7 +669,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
-                        spStarResult.postDelayed(new Runnable() {
+                        logger.d("sendSpeechEvalResult2:onPmFailure:msg=" + msg);
+                        handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), onSpeechEval);
@@ -749,7 +680,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-
+                        logger.d("sendSpeechEvalResult2:onPmError:error=" + responseEntity.getErrorMsg());
                     }
                 });
             } catch (JSONException e) {
@@ -758,6 +689,26 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         }
         rlSpeectevalEncourage.setVisibility(View.INVISIBLE);
         vwvSpeectevalWave.stop();
+    }
+
+    class SpeechAnswerResultStateListener implements AnswerResultStateListener {
+        ViewGroup group;
+        View view;
+
+        @Override
+        public void onCompeletShow() {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    group.removeView(view);
+                }
+            }, 2000);
+        }
+
+        @Override
+        public void onAutoClose(BasePager basePager) {
+            group.removeView(view);
+        }
     }
 
     private void onSpeechEvalSuccess(ResultEntity resultEntity, int gold) {
@@ -769,36 +720,21 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         tvSpeectevalTime.setText("完成啦!");
 //        progressBar.removeCallbacks(progressBarRun);
         progressBar.setVisibility(View.GONE);
-        final View v_live_star_result_out = mView.findViewById(R.id.v_live_star_result_out);
-        v_live_star_result_out.setVisibility(View.VISIBLE);
-        v_live_star_result_out.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ViewGroup group = (ViewGroup) spStarResult.getParent();
-                if (group != null) {
-                    group.removeView(spStarResult);
-                    if (isEnd) {
-                        speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
-                    }
-                }
-                group = (ViewGroup) v_live_star_result_out.getParent();
-                if (group != null) {
-                    group.removeView(v_live_star_result_out);
-                }
-            }
-        });
+
+        final ViewGroup group = (ViewGroup) mView;
+        AnswerResultEntity answerResultEntity = new AnswerResultEntity();
+        answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_CORRECT);
+        answerResultEntity.setGold(gold);
+        ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
+        answerResultEntity.setAnswerList(answerList);
+        SpeechAnswerResultStateListener answerResultStateListener = new SpeechAnswerResultStateListener();
+        ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(mContext, answerResultEntity, answerResultStateListener);
+        View view = artsPSEAnswerResultPager.getRootView();
+        answerResultStateListener.group = group;
+        answerResultStateListener.view = view;
+        group.addView(view);
+
         int score = resultEntity.getScore();
-        spStarResult.setVisibility(View.VISIBLE);
-        spStarResult.setBackgroundResource(R.drawable.bg_live_star_result_bg);
-        if (haveAnswer) {
-            spStarResult.setAnswered();
-        }
-//        spStarResult.setAnswered();
-        spStarResult.setSorce(score);
-        spStarResult.setStarCount(gold);
-        spStarResult.setFluent(resultEntity.getContScore());
-        spStarResult.setAccuracy(resultEntity.getPronScore());
-        spStarResult.setClickable(true);
         int progress;
         if (score < 40) {
             progress = 1;
@@ -811,23 +747,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         } else {
             progress = 5;
         }
-        spStarResult.setProgress(progress);
-        spStarResult.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ViewGroup group = (ViewGroup) spStarResult.getParent();
-                if (group != null) {
-                    group.removeView(spStarResult);
-                    if (isEnd) {
-                        speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
-                    }
-                }
-                group = (ViewGroup) v_live_star_result_out.getParent();
-                if (group != null) {
-                    group.removeView(v_live_star_result_out);
-                }
-            }
-        }, 3000);
+
         speechEvalAction.onSpeechSuccess(id);
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "voiceTestResult");
@@ -861,7 +781,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //                            XESToastUtils.showToast(mContext, "声音有点小，大点声哦！");
             tvSpeectevalError.setText("声音有点小，再来一次哦！");
             if (!isEnd) {
-                spStarResult.postDelayed(new Runnable() {
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         errorSetGone();
@@ -883,7 +803,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     onLineError++;
                     if (onLineError == 1) {
                         if (!isEnd) {
-                            spStarResult.postDelayed(new Runnable() {
+                            handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     errorSetGone();
@@ -904,7 +824,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     onLineError++;
                     if (onLineError == 1) {
                         if (!isEnd) {
-                            spStarResult.postDelayed(new Runnable() {
+                            handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     errorSetGone();
@@ -924,7 +844,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //        vwvSpeectevalWave.setVisibility(View.INVISIBLE);
         vwvSpeectevalWave.stop();
         if (isEnd) {
-            spStarResult.postDelayed(new Runnable() {
+            handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
@@ -969,7 +889,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 } else {
                     if (point90_6 != null) {
-                        logger.d("onEvaluatorIng:point90_61=" + point90_6);
+                        logger.d( "onEvaluatorIng:point90_61=" + point90_6);
                         if (point90_6.right - point90_6.left >= 5) {
                             arrayList90_6.add(point90_6);
                         }
@@ -978,7 +898,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
                 if (i == lstPhonemeScore.size() - 1) {
                     if (point90_6 != null) {
-                        logger.d("onEvaluatorIng:point90_62=" + point90_6);
+                        logger.d( "onEvaluatorIng:point90_62=" + point90_6);
                         if (point90_6.right - point90_6.left >= 5) {
                             arrayList90_6.add(point90_6);
                         }
@@ -995,7 +915,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 } else {
                     if (point90_3 != null) {
-                        logger.d("onEvaluatorIng:point90_31=" + point90_3);
+                        logger.d( "onEvaluatorIng:point90_31=" + point90_3);
                         if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
                             arrayList90_3.add(point90_3);
                         }
@@ -1004,15 +924,14 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
                 if (i == lstPhonemeScore.size() - 1) {
                     if (point90_3 != null) {
-                        logger.d("onEvaluatorIng:point90_32=" + point90_3);
+                        logger.d( "onEvaluatorIng:point90_32=" + point90_3);
                         if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
                             arrayList90_3.add(point90_3);
                         }
                     }
                 }
             }
-            logger.d("onResult:onEvaluatorIng:arrayList90_6=" + arrayList90_6.size() + ",arrayList90_3=" +
-                    arrayList90_3.size());
+            logger.d("onResult:onEvaluatorIng:arrayList90_6=" + arrayList90_6.size() + ",arrayList90_3=" + arrayList90_3.size());
 //            ArrayList<Point90> point90_6s = new ArrayList<Point90>();
 //            ArrayList<Point90> point90_3s = new ArrayList<Point90>();
             ArrayList<Point90> point90_6s = arrayList90_6;
@@ -1065,8 +984,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
                 mLogtf.d("onEvaluatorIng(great):nbest=" + nbest);
             }
-            logger.d("onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() +
-                    ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
+            logger.d( "onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
         }
     }
 
@@ -1131,16 +1049,13 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 lastSub += index;
                 if (lstPhonemeScore.get(i).getScore() > encourageScore) {
                     //显示绿色
-                    spannable.setSpan(new ForegroundColorSpan(COLOR_32B16C), left, right, Spannable
-                            .SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.setSpan(new ForegroundColorSpan(COLOR_32B16C), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else if (lstPhonemeScore.get(i).getScore() < 60) {
                     // 显示红色
-                    spannable.setSpan(new ForegroundColorSpan(COLOR_FF0000), left, right, Spannable
-                            .SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.setSpan(new ForegroundColorSpan(COLOR_FF0000), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else {
                     // 显示黑色
-                    spannable.setSpan(new ForegroundColorSpan(COLOR_333333), left, right, Spannable
-                            .SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.setSpan(new ForegroundColorSpan(COLOR_333333), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }
             tvSpeectevalContent.setText(spannable);

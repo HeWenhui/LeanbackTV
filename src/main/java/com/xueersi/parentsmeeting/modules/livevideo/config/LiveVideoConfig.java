@@ -12,6 +12,8 @@ import com.xueersi.common.entity.EnglishH5Entity;
  */
 public class LiveVideoConfig {
     public static String HTTP_HOST = "https://laoshi.xueersi.com";
+    /** 文科的接口域名 */
+    public static String APP_ARTS_HTTP_HOST = "https://app.arts.xueersi.com";
     /** 直播辅导用户在线心跳 */
     public final static String URL_LIVE_TUTORIAL_USER_ONLINE = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/userOnline";
     /** 公开直播用户在线心跳 */
@@ -190,10 +192,14 @@ public class LiveVideoConfig {
     public static String LIVE_PLAY_ERROR = "live_play_error";
     /** 直播-学习报告截图 */
     public static String LIVE_STUDY_REPORT_IMG = "live_study_report_img";
-    /** 直播-小英语音聊天*/
+    /** 直播-小英语音聊天 */
     public static String LIVE_VOICE_CHAT = "voicechat";
-    /** 直播-小英语音弹幕*/
+    /** 直播-小英语音弹幕 */
     public static String LIVE_VOICE_BULLET = "voicebullet";
+
+    public static class ShareData {
+
+    }
 
     /**
      * 体验课互动题提交答案
@@ -338,7 +344,8 @@ public class LiveVideoConfig {
 
     /** 文科新课件平台的标识 */
     public static Boolean isNewArts = false;
-
+    /** 全身直播的标识*/
+    public static Boolean isStandLive = false;
     /** 学习报告精彩瞬间 */
     public interface STUDY_REPORT {
         /** 贡献之星 */

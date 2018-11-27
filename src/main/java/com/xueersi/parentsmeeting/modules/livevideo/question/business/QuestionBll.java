@@ -493,7 +493,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (videoQuestionLiveEntity == null) {
             mLogtf.d("showQuestion:noQuestion");
             if (isAnaswer) {
-                onQuestionShow(false, "showQuestion");
+                onQuestionShow(null, false, "showQuestion");
             }
             isAnaswer = false;
             if (voiceAnswerPager != null && !voiceAnswerPager.isEnd()) {
@@ -532,7 +532,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         logger.e("======> showQuestion 22222:" + isAnaswer);
 
         if (!isAnaswer) {
-            onQuestionShow(true, "showQuestion");
+            onQuestionShow(videoQuestionLiveEntity,true, "showQuestion");
         }
         isAnaswer = true;
         if (this.videoQuestionLiveEntity != null) {
@@ -1115,7 +1115,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             hasQuestion = false;
         }
         if (oldisAnaswer && !havePager) {
-            onQuestionShow(false, "onStopQuestion");
+            onQuestionShow(null, false, "onStopQuestion");
         }
         if (hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
@@ -1416,7 +1416,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             mLogtf.d("onBack:onShowEnd=" + num + ",isAnaswer=" + isAnaswer + ",UserBack=" + (speechAssessmentPagerUserBack == null));
                             speechAssessmentPagerUserBack = null;
                             if (!isAnaswer) {
-                                onQuestionShow(false, "stopSpeech:onShowEnd");
+                                onQuestionShow(null, false, "stopSpeech:onShowEnd");
                             }
                         }
                     });
@@ -1466,7 +1466,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 e.printStackTrace();
             }
             if (!isAnaswer) {
-                onQuestionShow(false, "stopWebQuestion");
+                onQuestionShow(null, false, "stopWebQuestion");
             }
         } else {
             subjectResultPager = null;
@@ -1505,13 +1505,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 (speechAssessmentPagerUserBack == null));
                         speechAssessmentPagerUserBack = null;
                         if (!isAnaswer) {
-                            onQuestionShow(false, "stopSpeech:onShowEnd");
+                            onQuestionShow(null, false, "stopSpeech:onShowEnd");
                         }
                     }
                 });
             } else {
                 if (!isAnaswer) {
-                    onQuestionShow(false, "stopSpeech");
+                    onQuestionShow(null, false, "stopSpeech");
                 }
             }
             if (speechAssessmentPager.getId().equals(num)) {
@@ -1613,7 +1613,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         removeQuestionViews();
         BaseVoiceAnswerPager voiceAnswerPager2 =
                 baseVoiceAnswerCreat.create(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity
-                        .type, rlQuestionContent,mIse);
+                        .type, rlQuestionContent, mIse);
 
 //        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -2299,13 +2299,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /**
      * 试题隐藏显示
      *
-     * @param isShow true显示
+     * @param videoQuestionLiveEntity
+     * @param isShow                  true显示
      * @param method
      */
-    private void onQuestionShow(boolean isShow, String method) {
+    private void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow, String method) {
         mLogtf.d("onQuestionShow:isShow=" + isShow + ",method=" + method);
         for (QuestionShowAction questionShowAction : questionShowActions) {
-            questionShowAction.onQuestionShow(isShow);
+            questionShowAction.onQuestionShow(videoQuestionLiveEntity, isShow);
         }
     }
 

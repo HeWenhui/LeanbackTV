@@ -37,11 +37,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -96,6 +100,21 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
         mQuestionAction.initView(bottomContent, isLand.get());
+//        if (AppConfig.DEBUG) {
+//            SpeechResultEntity speechResultEntity = new SpeechResultEntity();
+//            speechResultEntity.score = 12;
+//            speechResultEntity.accuracy = 22;
+//            speechResultEntity.fluency = 33;
+//            ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
+//            for (int i = 0; i < 2; i++) {
+//                SpeechResultMember speechResultMember = new SpeechResultMember();
+//                speechResultMember.name = "测试" + i;
+//                speechResultMember.score = "" + i;
+//                speechResultMembers.add(speechResultMember);
+//            }
+//            SpeechResultPager speechResultPager = new SpeechResultPager(activity, bottomContent, speechResultEntity);
+//            bottomContent.addView(speechResultPager.getRootView());
+//        }
     }
 
     public void onPause() {
@@ -629,7 +648,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         StringBuilder sb = new StringBuilder();
         String url;
         if("5".equals(type)){
-            url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_ROALPLAY_URL;
+            if(mGetInfo.getPattern() == 2){
+                url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_STANDROALPLAY_URL;
+            }else{
+                url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_ROALPLAY_URL;
+            }
         }else {
             url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_CHINESEREADING_URL;
         }
@@ -1137,11 +1160,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
 
-
     @Override
     public void onDestory() {
         super.onDestory();
-        if(mQuestionAction != null){
+        if (mQuestionAction != null) {
             mQuestionAction.onDestroy();
         }
     }

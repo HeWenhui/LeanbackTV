@@ -46,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -69,7 +70,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
 
     private WebView wvSubjectWeb;
     private View errorView;
-
+    private SpeechResultEntity speechResultEntity;
     /** 学生ID */
     private String stuId;
     /** 直播ID */
@@ -208,6 +209,9 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
         if (LiveVideoConfig.isNewArts) {
             VideoQuestionLiveEntity getInfo = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
             mUrl = getInfo.getUrl();
+            if (isStandingLive) {
+                mUrl += "&isStandingLive=1&isAudio=1";
+            }
             mFinalUrl = mUrl;
             logger.e("=======> loadUrl:" + mUrl);
             mLogtf.d("initData:isNewArtsurl=" + mUrl);
@@ -281,7 +285,12 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
     @JavascriptInterface
     public void showAnswerResult_LiveVideo(String data) {
         logger.e("=========>showAnswerResult_LiveVideo:" + data);
-        EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT));
+        ArtsAnswerResultEvent event = new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT);
+        if (speechResultEntity == null) {
+            speechResultEntity = new SpeechResultEntity();
+        }
+        event.setSpeechResultEntity(speechResultEntity);
+        EventBus.getDefault().post(event);
     }
 
 
@@ -589,12 +598,16 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                     mIse.startRecog(param, new EvaluatorListener() {
                         @Override
                         public void onBeginOfSpeech() {
+                            speechResultEntity = null;
                             jsRecord();
                         }
 
                         @Override
                         public void onResult(ResultEntity resultEntity) {
                             if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+                                speechResultEntity = new SpeechResultEntity();
+                                speechResultEntity.fluency = resultEntity.getContScore();
+                                speechResultEntity.accuracy = resultEntity.getPronScore();
                                 if (resultEntity.getErrorNo() > 0) {
                                     jsRecordError(resultEntity.getErrorNo());
                                 }

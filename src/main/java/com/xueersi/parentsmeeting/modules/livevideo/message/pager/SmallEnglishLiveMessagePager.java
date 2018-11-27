@@ -87,6 +87,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
@@ -256,6 +258,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         btMessageFlowers = liveMediaControllerBottom.getBtMessageFlowers();
         cbMessageClock = liveMediaControllerBottom.getCbMessageClock();
         lvCommonWord = liveMediaControllerBottom.getLvCommonWord();
+
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -1482,7 +1485,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     @Override
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
-        logger.e("=====>onMessage called");
+        logger.e( "=====>onMessage called");
         if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
             sender = "主讲老师";
         } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
@@ -1811,7 +1814,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
 
     @Override
-    public void onQuestionShow(final boolean isShow) {
+    public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, final boolean isShow) {
         mView.post(new Runnable() {
             @Override
             public void run() {

@@ -13,6 +13,9 @@ import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -34,12 +37,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerResultLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerStateLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerStateNoEnergyLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ArtsAnswerTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 文科小学英语答题结果页面
@@ -51,12 +57,12 @@ import java.util.List;
 public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRsultDisplayer, View.OnClickListener {
 
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result/";
-    /**游戏试题类型*/
+    /** 游戏试题类型 */
     private static final int TYPE_GAME = 12;
     private final String TAG = "ArtsPSEAnswerResultPager";
     protected Logger logger = LoggerFactory.getLogger("ArtsPSEAnswerResultPager");
 
-    /**强制提交 展示答题结果 延时自动关闭**/
+    /** 强制提交 展示答题结果 延时自动关闭 **/
     private final long AUTO_CLOSE_DELAY = 2000;
     /**
      * 关闭按钮 尺寸
@@ -73,7 +79,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
      * 答案列表 开始展示的时间点
      */
     private static final float FRACTION_RECYCLERVIEW_IN = 0.27f;
-    /**关闭按钮出现时间*/
+    /** 关闭按钮出现时间 */
     private static final float FRACTION_SHOW_CLOSEBTN = 0.18f;
     private static final int SPAN_COUNT = 1;
 
@@ -85,25 +91,20 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     private AnswerResultAdapter mAdapter;
     private int mRecyclHeight;
     private AnswerResultEntity mData;
-
     private final String BG_COLOR = "#CC000000";
-
-
-
-    /**当前答案状态*/
+    /** 当前答案状态 */
     private int resultType;
 
-    private static final int RESULT_TYPE_CORRECT = 2;
-    private static final int RESULT_TYPE_PART_CORRECT = 1;
-    private static final int RESULT_TYPE_ERRRO = 0;
+    public static final int RESULT_TYPE_CORRECT = 2;
+    public static final int RESULT_TYPE_PART_CORRECT = 1;
+    public static final int RESULT_TYPE_ERRRO = 0;
     private AnswerResultStateListener mStateListener;
 
-    public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity,AnswerResultStateListener stateListener) {
+    public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity, AnswerResultStateListener stateListener) {
         super(context);
         mData = entity;
         this.mStateListener = stateListener;
     }
-
 
     @Override
     public View initView() {
@@ -145,34 +146,49 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         String lottieJsonPath = null;
         String titleFilePath = null;
         String titleBgPath = null;
+        final LottieEffectInfo lottieEffectInfo;
+        logger.d("showAnswerReuslt:resultType=" + resultType);
+        if (resultType == RESULT_TYPE_CORRECT) {
+            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/huo.json";
+            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_17.png";
+            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_18.png";
 
-        if(resultType == RESULT_TYPE_CORRECT){
-            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/data.json";
-            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_15.png";
-            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_16.png";
+            ArtsAnswerStateLottieEffectInfo effectInfo = new ArtsAnswerStateLottieEffectInfo(lottieResPath,
+                    lottieJsonPath, "img_15.png", "img_16.png", "img_17.png", "img_18.png");
+            effectInfo.setTilteFilePath(titleFilePath);
+            effectInfo.setTitleBgFilePath(titleBgPath);
+            effectInfo.setCoinStr("+" + mData.getGold());
+            effectInfo.setEnergyStr("+" + mData.getEnergy());
+            lottieEffectInfo = effectInfo;
 
-        }else if(resultType == RESULT_TYPE_PART_CORRECT){
+        } else if (resultType == RESULT_TYPE_PART_CORRECT) {
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/data.json";
-            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_15.png";
-            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_16.png";
-        }else {
+            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_17.png";
+            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_18.png";
 
+            ArtsAnswerStateLottieEffectInfo effectInfo = new ArtsAnswerStateLottieEffectInfo(lottieResPath,
+                    lottieJsonPath, "img_15.png", "img_16.png", "img_17.png", "img_18.png");
+            effectInfo.setTilteFilePath(titleFilePath);
+            effectInfo.setTitleBgFilePath(titleBgPath);
+            effectInfo.setCoinStr("+" + mData.getGold());
+            effectInfo.setEnergyStr("+" + mData.getEnergy());
+            lottieEffectInfo = effectInfo;
+
+        } else {
+            String imgDir = "arts_answer_result/result_state_error/images";
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/data.json";
-            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/images/img_15.png";
-            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/images/img_16.png";
+            ArtsAnswerStateNoEnergyLottieEffectInfo effectInfo = new ArtsAnswerStateNoEnergyLottieEffectInfo(imgDir,
+                    lottieJsonPath, "img_14.png");
+            effectInfo.setEnergyStr("+" + mData.getEnergy());
+            lottieEffectInfo = effectInfo;
         }
 
-        final ArtsAnswerStateLottieEffectInfo effectInfo = new ArtsAnswerStateLottieEffectInfo(lottieResPath,
-                lottieJsonPath, "img_14.png", "img_15.png", "img_16.png");
-
-        effectInfo.setTilteFilePath(titleFilePath);
-        effectInfo.setTitleBgFilePath(titleBgPath);
-        effectInfo.setCoinStr("+"+mData.getGold());
-        animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
+        animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
         animationView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                return effectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
+                logger.d("showAnswerReuslt:FileName=" + lottieImageAsset.getFileName());
+                return lottieEffectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
                         mContext);
             }
@@ -186,13 +202,13 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 animationView.setImageAssetDelegate(null);
                 animationView.removeAllAnimatorListeners();
                 animationView.removeAllUpdateListeners();
-                if(isGameResult()){
+                if (isGameResult()) {
                     //游戏答题结果 只展示金币UI
-                    if(getRootView() != null && getRootView().getParent() != null){
-                        ((ViewGroup)getRootView().getParent()).removeView(getRootView());
-                   }
-                   mStateListener.onCompeletShow();
-                }else{
+                    if (getRootView() != null && getRootView().getParent() != null) {
+                        ((ViewGroup) getRootView().getParent()).removeView(getRootView());
+                    }
+                    mStateListener.onCompeletShow();
+                } else {
                     displayDetailUi();
                 }
             }
@@ -200,9 +216,9 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
     }
 
-    /**是否是新课件平台的 游戏答题结果*/
+    /** 是否是新课件平台的 游戏答题结果 */
     private boolean isGameResult() {
-        return mData!= null && mData.getType() == TYPE_GAME;
+        return mData != null && mData.getType() == TYPE_GAME;
     }
 
 
@@ -231,16 +247,43 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logger.e( "========> close Btn called:");
+                logger.e("========> close Btn called:");
                 hideAnswerReuslt();
             }
         });
 
-        ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext,R.anim.anim_livevideo_close_btn_in);
+        ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_close_btn_in);
         scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
         closeBtn.startAnimation(scaleAnimation);
+        final TextView textView = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
+        textView.setVisibility(View.VISIBLE);
+        final AtomicInteger integer = new AtomicInteger(5);
+        setCloseText(textView, integer);
+        textView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int count = integer.decrementAndGet();
+                if (count == 0) {
+                    answerListShowing = false;
+                    if (mStateListener != null) {
+                        mStateListener.onAutoClose(ArtsPSEAnswerResultPager.this);
+                    } else {
+                        ViewGroup group = (ViewGroup) mView.getParent();
+                        group.removeView(mView);
+                    }
+                } else {
+                    setCloseText(textView, integer);
+                    textView.postDelayed(this, 1000);
+                }
+            }
+        }, 1000);
     }
 
+    private void setCloseText(TextView textView, AtomicInteger integer) {
+        SpannableStringBuilder spannable = new SpannableStringBuilder(integer + "s后关闭");
+        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#FFFF7A1D")), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(spannable);
+    }
 
     /**
      * 隐藏 答题结果
@@ -263,29 +306,29 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
 
     private boolean answerListShowing = false;
-    private boolean closeBtnAdded =false;
+    private boolean closeBtnAdded = false;
 
     /**
      * 展示答题详情
      */
     private void displayDetailUi() {
 
-       // addCloseBtn();
+        // addCloseBtn();
         String lottieResPath = null;
         String lottieJsonPath = null;
 
-        if(resultType == RESULT_TYPE_PART_CORRECT){
+        if (resultType == RESULT_TYPE_PART_CORRECT) {
 
-            lottieResPath  = LOTTIE_RES_ASSETS_ROOTDIR + "result_part_correct/images";
-            lottieJsonPath =LOTTIE_RES_ASSETS_ROOTDIR + "result_part_correct/data.json";
+            lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_part_correct/images";
+            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_part_correct/data.json";
 
-        }else if(resultType == RESULT_TYPE_CORRECT){
-            lottieResPath  = LOTTIE_RES_ASSETS_ROOTDIR + "result_correct/images";
-            lottieJsonPath =LOTTIE_RES_ASSETS_ROOTDIR + "result_correct/data.json";
+        } else if (resultType == RESULT_TYPE_CORRECT) {
+            lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_correct/images";
+            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_correct/data.json";
 
-        }else if(resultType == RESULT_TYPE_ERRRO){
-            lottieResPath  = LOTTIE_RES_ASSETS_ROOTDIR + "result_error/images";
-            lottieJsonPath =LOTTIE_RES_ASSETS_ROOTDIR + "result_error/data.json";
+        } else if (resultType == RESULT_TYPE_ERRRO) {
+            lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_error/images";
+            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_error/data.json";
         }
 
 
@@ -310,7 +353,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 }
 
 
-                if(animation.getAnimatedFraction() >= FRACTION_SHOW_CLOSEBTN && !closeBtnAdded){
+                if (animation.getAnimatedFraction() >= FRACTION_SHOW_CLOSEBTN && !closeBtnAdded) {
 
                     addCloseBtn();
                 }
@@ -338,7 +381,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                logger.e( "=======> getItemOffsets:" + recyclerView.computeVerticalScrollRange());
+                logger.e("=======> getItemOffsets:" + recyclerView.computeVerticalScrollRange());
                 if (mAdapter.getItemCount() > 1) {
                     int itemPosition = parent.getChildAdapterPosition(view);
                     int left = 0;
@@ -352,10 +395,10 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 } else {
 
                     int widthSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.getMeasuredWidth(), View.MeasureSpec.EXACTLY);
-                    int heightSpec = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
-                    view.measure(widthSpec,heightSpec);
-                    int topMargin = (recyclerView.getLayoutParams().height - view.getMeasuredHeight())/2;
-                    outRect.set(0, topMargin<0?0:topMargin, 0, 0);
+                    int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                    view.measure(widthSpec, heightSpec);
+                    int topMargin = (recyclerView.getLayoutParams().height - view.getMeasuredHeight()) / 2;
+                    outRect.set(0, topMargin < 0 ? 0 : topMargin, 0, 0);
                 }
             }
         });
@@ -399,64 +442,63 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             tvIndex = itemView.findViewById(R.id.tv_arts_answer_result_answer_index);
         }
 
-        public void bindData(AnswerResultEntity.Answer answer,int position) {
+        public void bindData(AnswerResultEntity.Answer answer, int position) {
 
             if (tvIndex != null) {
                 tvIndex.setText((position + 1) + "");
             }
 
-            if(isSelect(answer)){
-                tvStanderAnswer.setVisibility(answer.getIsRight() == STATE_CODE_RIGHT?View.GONE:View.VISIBLE);
-                tvStanderAnswer.setText(listToStr(answer.getRightAnswers(),null));
+            if (isSelect(answer)) {
+                tvStanderAnswer.setVisibility(answer.getIsRight() == STATE_CODE_RIGHT ? View.GONE : View.VISIBLE);
+                tvStanderAnswer.setText(listToStr(answer.getRightAnswers(), null));
                 tvStanderAnswerBelow.setVisibility(View.GONE);
-                tvAnswer.setTextWithIcon("你的答案:"+listToStr(answer.getChoiceList(),null));
-            }else{
+                tvAnswer.setTextWithIcon("你的答案:" + listToStr(answer.getChoiceList(), null));
+            } else {
                 tvStanderAnswer.setVisibility(View.GONE);
-                tvAnswer.setTextWithIcon(listToStr(answer.getBlankList(),"、"));
-                tvStanderAnswerBelow.setVisibility(answer.getIsRight() == STATE_CODE_RIGHT?View.GONE:View.VISIBLE);
-                tvStanderAnswerBelow.setText(listToStr(answer.getRightAnswers(),"、"));
+                tvAnswer.setTextWithIcon(listToStr(answer.getBlankList(), "、"));
+                tvStanderAnswerBelow.setVisibility(answer.getIsRight() == STATE_CODE_RIGHT ? View.GONE : View.VISIBLE);
+                tvStanderAnswerBelow.setText(listToStr(answer.getRightAnswers(), "、"));
             }
 
             int iconResId = 0;
-            if(answer.getIsRight() == STATE_CODE_RIGHT){
+            if (answer.getIsRight() == STATE_CODE_RIGHT) {
                 iconResId = R.drawable.livevideo_pse_answer_correct;
-            }else if(answer.getIsRight() == STATE_CODE_PARTRIGHT){
+            } else if (answer.getIsRight() == STATE_CODE_PARTRIGHT) {
                 iconResId = R.drawable.livevideo_pse_answer_partcorrect;
-            }else if(answer.getIsRight() == STATE_CODE_WRONG){
+            } else if (answer.getIsRight() == STATE_CODE_WRONG) {
                 iconResId = R.drawable.livevideo_pse_answer_error;
             }
 
-            if(iconResId != 0){
+            if (iconResId != 0) {
                 tvAnswer.setIconResId(iconResId);
             }
         }
 
 
-        private boolean isSelect(AnswerResultEntity.Answer data){
+        private boolean isSelect(AnswerResultEntity.Answer data) {
 
-            return  data.getTestType() == 2;
+            return data.getTestType() == 2;
         }
 
 
         /**
-         *
          * @param data
          * @param splitStr 分割字符串
          * @return
          */
-        private String listToStr (List<String> data,String splitStr){
+        private String listToStr(List<String> data, String splitStr) {
             StringBuilder stringBuilder = new StringBuilder();
-            if(data != null){
+            if (data != null) {
                 for (int i = 0; i < data.size(); i++) {
-                    if(i < (data.size()-1) && splitStr != null){
+                    if (i < (data.size() - 1) && splitStr != null) {
                         stringBuilder.append(data.get(i)).append(splitStr);
-                    }else{
+                    } else {
                         stringBuilder.append(data.get(i));
                     }
                 }
             }
 
-            return  stringBuilder.toString();
+            return stringBuilder.toString();
         }
     }
 
@@ -491,7 +533,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            ((ItemHolder) holder).bindData(answerList.get(position),position);
+            ((ItemHolder) holder).bindData(answerList.get(position), position);
         }
 
         @Override
@@ -517,12 +559,12 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
     /**
      * 自动关闭统计面板
+     *
      * @param timeDelay 延时时间
      */
-    private void autoClose(long timeDelay){
+    private void autoClose(long timeDelay) {
 
     }
-
 
 
     @Override

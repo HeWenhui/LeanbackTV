@@ -141,6 +141,7 @@ public class SpeakerRecognitioner {
                         synchronized (lock) {
                             if (destory) {
                                 logger.d("start:predict=destory");
+                                stop();
                                 return;
                             }
                             String predict = speakerRecognitionerInterface.predict(mPCMBuffer, readSize, index++, stuId, false);
@@ -158,7 +159,7 @@ public class SpeakerRecognitioner {
     }
 
     public void stop() {
-        logger.d("stop:isStart=" + isStart);
+        logger.d("stop:isStart=" + isStart + ",mAudioRecord=" + mAudioRecord);
         isStart = false;
         if (mAudioRecord != null) {
             mAudioRecord.stop();

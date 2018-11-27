@@ -1,0 +1,22 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@id/iv_livevideo_en_teampk_lead_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="13dp"
+        android:src="@drawable/zhanduipk_gongxianzhixing_pic" />
+
+    <GridView
+        android:id="@id/gv_livevideo_en_teampk_lead_star"
+        android:layout_width="372dp"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:clickable="false"
+        android:horizontalSpacing="20dp"
+        android:listSelector="@color/transparent"
+        android:numColumns="4" />
+</RelativeLayout>
