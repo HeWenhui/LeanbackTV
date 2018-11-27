@@ -1,0 +1,59 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_livevideo_betterme_introduction_bg"
+        android:layout_width="500dp"
+        android:layout_height="375dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/shellwindow_sendflower_board" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/iv_livevideo_betterme_introduction_bg"
+        android:layout_alignTop="@id/iv_livevideo_betterme_introduction_bg"
+        android:layout_alignRight="@id/iv_livevideo_betterme_introduction_bg"
+        android:layout_alignBottom="@id/iv_livevideo_betterme_introduction_bg"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="AI老师会为你量身定制每节课的小目标, 完成小目标你就可以："
+            android:textColor="#ff756565"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="在课后辅导的颁奖典礼中一飞冲天"
+            android:textColor="#ff756565"
+            android:textSize="11sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="提升你在直播间的段位"
+                android:textColor="#ff756565"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="查看具体段位"
+                android:textColor="#fffe6600"
+                android:textSize="8sp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>
