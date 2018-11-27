@@ -723,17 +723,35 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         if (rolePlayAction != null && id.equals(rolePlayAction.getQuestionId())) {
                             return;
                         }
+                        if (rolePlayMachineAction != null && id.equals(rolePlayMachineAction.getQuestionId())) {
+                            return;
+                        }
                         if (rolePlayAction != null) {
                             //走人机也通知多人的关掉WebSocket
                             rolePlayAction.onGoToRobot();
                         }
                         logger.e("走人机111");
                         speechAssessmentPager = baseSpeechCreat.createNewRolePlay(activity, liveGetInfo, videoQuestionLiveEntity,
-                                id, QuestionBll.this, stuCouId);
+                                id, QuestionBll.this, stuCouId, rolePlayMachineBll);
                         speechAssessmentPager.setIse(mIse);
+                        if (speechAssessmentPager instanceof RolePlayMachinePager) {
+                            logger.i("--------------新课件平台走rolaplay人机");
+                            //人机，roles不为空的题型
+                            if (rolePlayMachineBll != null) {
+                                rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
+                                rolePlayMachineBll.setBottomView(rlQuestionContent);
+                                rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+                                speechAssessmentPager.initData();
+                            }
 
-                        speechAssessmentPager.initData();
-                        logger.i("走人机");
+                        } else {
+                            logger.i("--------------新课件平台跟读走h5");
+                            //跟读之类的题型
+                            speechAssessmentPager.initData();
+                        }
+
+                        logger.i("走人机 END");
+                        //rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                     }
                     setHaveSpeech(true);
                     rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
