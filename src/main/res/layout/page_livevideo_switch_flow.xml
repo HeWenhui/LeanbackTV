@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="MissingDefaultResource">
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_switch_flow_route1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="线路一" />
+        android:text="线路一"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_switch_flow_route2"
@@ -16,6 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="线路二"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_livevideo_switch_flow_route1" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
@@ -24,6 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="线路三"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_livevideo_switch_flow_route2" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
@@ -32,6 +40,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="线路四"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_livevideo_switch_flow_route3" />
 
 </android.support.constraint.ConstraintLayout>
