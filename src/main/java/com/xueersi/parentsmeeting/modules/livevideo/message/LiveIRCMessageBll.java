@@ -23,28 +23,27 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
-import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
-
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
@@ -175,7 +174,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 //理科，主讲和辅导切换的时候，给出提示（切流）
                 if (mRoomAction != null) {
                     logger.i("主讲和辅导切换的时候，给出提示（切流）");
-                    mRoomAction.onTeacherModeChange(oldMode, mode, false, mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage(), mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage());
+                    mRoomAction.onTeacherModeChange(oldMode, mode, false, mLiveTopic.getCoachRoomstatus()
+                            .isZJLKOpenbarrage(), mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage());
                     //mRoomAction.onTeacherModeChange(mode,false);
                 }
                 if (mGetInfo.getPattern() == 2) {
@@ -451,8 +451,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             mRoomAction.onOpenbarrage(open, true);
                         }
                     } else {
-                        mLiveTopic.getCoachRoomstatus().setLKNoticeMode(fromWhichTeacher.equals("t") ? LiveTopic.MODE_CLASS : LiveTopic.MODE_TRANING);
-                        mLiveTopic.setLKNoticeMode(fromWhichTeacher.equals("t") ? LiveTopic.MODE_CLASS : LiveTopic.MODE_TRANING);
+                        mLiveTopic.getCoachRoomstatus().setLKNoticeMode(fromWhichTeacher.equals("t") ? LiveTopic
+                                .MODE_CLASS : LiveTopic.MODE_TRANING);
+                        mLiveTopic.setLKNoticeMode(fromWhichTeacher.equals("t") ? LiveTopic.MODE_CLASS : LiveTopic
+                                .MODE_TRANING);
                         logger.i("onNotice: XESCODE.OPENBARRAGE 理科有form字段 open = " + open);
 
                         if ("t".equals(fromWhichTeacher)) {
@@ -553,6 +555,105 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     loger.e("TEACHER_MESSAGE", e);
                 }
                 break;
+            case XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE: {
+                //开启/关闭弹幕
+                String open = object.optString("open", "false");
+                if (mRoomAction != null) {
+                    if ("true".equals(open)) {
+                        mRoomAction.onOpenVoicebarrage(true, true);
+                    } else {
+                        mRoomAction.onOpenVoicebarrage(false, true);
+                    }
+                }
+                break;
+            }
+            case XESCODE.START_MICRO: {
+                String status = object.optString("status", "off");
+                if (mRoomAction != null) {
+                    if ("on".equals(status)) {
+                        mRoomAction.onOpenVoiceNotic(true, "START_MICRO");
+                    } else {
+                        mRoomAction.onOpenVoiceNotic(false, "START_MICRO");
+                    }
+                }
+                break;
+            }
+            case XESCODE.ARTS_WORD_DICTATION: {
+                int state = object.optInt("state", 0);
+                if (mRoomAction != null) {
+                    if (1 == state) {
+                        mRoomAction.onOpenVoiceNotic(true, "ARTS_WORD_DICTATION");
+                    } else {
+                        mRoomAction.onOpenVoiceNotic(false, "ARTS_WORD_DICTATION");
+                    }
+                }
+                break;
+            }
+            case XESCODE.RAISE_HAND: {
+                String status = object.optString("status", "off");
+                if (mRoomAction != null) {
+                    if ("on".equals(status)) {
+                        mRoomAction.onOpenVoiceNotic(true, "RAISE_HAND");
+                    } else {
+                        mRoomAction.onOpenVoiceNotic(false, "RAISE_HAND");
+                    }
+                }
+                break;
+            }
+            case XESCODE.RAISE_HAND_SELF: {
+                String status = object.optString("status", "off");
+                if (mRoomAction != null) {
+                    if ("on".equals(status)) {
+                        mRoomAction.onOpenVoiceNotic(true, "RAISE_HAND_SELF");
+                    } else {
+                        mRoomAction.onOpenVoiceNotic(false, "RAISE_HAND_SELF");
+                    }
+                }
+                break;
+            }
+            case XESCODE.ARTS_H5_COURSEWARE: {
+                String status = object.optString("status", "off");
+                if (mRoomAction != null) {
+                    if ("on".equals(status)) {
+                        mRoomAction.onOpenVoiceNotic(true, "ARTS_H5_COURSEWARE");
+                    } else {
+                        mRoomAction.onOpenVoiceNotic(false, "ARTS_H5_COURSEWARE");
+                    }
+                }
+                break;
+            }
+            case XESCODE.ENGLISH_H5_COURSEWARE: {
+                String status = object.optString("status", "off");
+                if (mRoomAction != null) {
+                    if ("on".equals(status)) {
+                        mRoomAction.onOpenVoiceNotic(true, "ENGLISH_H5_COURSEWARE");
+                    } else {
+                        mRoomAction.onOpenVoiceNotic(false, "ENGLISH_H5_COURSEWARE");
+                    }
+                }
+                break;
+            }
+            case XESCODE.SENDQUESTION: {
+                mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
+                break;
+            }case XESCODE.STOPQUESTION: {
+                mRoomAction.onOpenVoiceNotic(false, "STOPQUESTION");
+                break;
+            }
+            case XESCODE.ARTS_SEND_QUESTION: {
+                mRoomAction.onOpenVoiceNotic(true, "ARTS_SEND_QUESTION");
+                break;
+            } case XESCODE.ARTS_STOP_QUESTION: {
+                mRoomAction.onOpenVoiceNotic(false, "ARTS_STOP_QUESTION");
+                break;
+            }
+            case XESCODE.EXAM_START: {
+                mRoomAction.onOpenVoiceNotic(true, "EXAM_START");
+                break;
+            } case XESCODE.EXAM_STOP: {
+                mRoomAction.onOpenVoiceNotic(false, "EXAM_STOP");
+                break;
+            }
             default:
                 break;
         }
@@ -562,7 +663,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public int[] getNoticeFilter() {
         return new int[]{
-                XESCODE.OPENBARRAGE, XESCODE.GAG, XESCODE.OPENCHAT, XESCODE.TEACHER_MESSAGE
+                XESCODE.OPENBARRAGE, XESCODE.GAG, XESCODE.OPENCHAT, XESCODE.TEACHER_MESSAGE, XESCODE.START_MICRO,
+                XESCODE.ARTS_WORD_DICTATION, XESCODE.RAISE_HAND, XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE, XESCODE
+                .RAISE_HAND_SELF, XESCODE.ENGLISH_H5_COURSEWARE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.SENDQUESTION,
+                XESCODE.ARTS_SEND_QUESTION, XESCODE.EXAM_START,XESCODE.STOPQUESTION,XESCODE.EXAM_STOP, XESCODE.ARTS_STOP_QUESTION
         };
     }
 
@@ -586,12 +690,14 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 
                         if (mRoomAction != null) {
                             if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode())) {
-                                logger.i("mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage() =  " + mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage());
+                                logger.i("mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage() =  " + mLiveTopic
+                                        .getCoachRoomstatus().isZJLKOpenbarrage());
                                 //理科的主讲！！！！！！！mLiveTopic.getCoachRoomstatus()
                                 mRoomAction.onOpenbarrage(mLiveTopic.getCoachRoomstatus().isZJLKOpenbarrage(), false);
                                 mRoomAction.onDisable(forbidSendMsg, false);
                             } else {
-                                logger.i("mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage() =  " + mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage());
+                                logger.i("mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage() =  " + mLiveTopic
+                                        .getCoachRoomstatus().isFDLKOpenbarrage());
                                 //辅导
                                 mRoomAction.onFDOpenbarrage(mLiveTopic.getCoachRoomstatus().isFDLKOpenbarrage(), false);
                                 mRoomAction.onDisable(forbidSendMsg, false);
@@ -602,7 +708,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         //文科的room2里面没有openbarrage字段
                         logger.i("文科的room2里面没有openbarrage字段");
                         if (mRoomAction != null) {
-                            logger.i("mLiveTopic.getMainRoomstatus().isOpenbarrage() =  " + mLiveTopic.getMainRoomstatus().isOpenbarrage());
+                            logger.i("mLiveTopic.getMainRoomstatus().isOpenbarrage() =  " + mLiveTopic
+                                    .getMainRoomstatus().isOpenbarrage());
                             mRoomAction.onOpenbarrage(mLiveTopic.getMainRoomstatus().isOpenbarrage(), false);
                             mRoomAction.onDisable(forbidSendMsg, false);
                         }
@@ -752,7 +859,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
 
         @Override
-        public void praiseTeacher(final String formWhichTeacher, String ftype, String educationStage, final HttpCallBack callBack) {
+        public void praiseTeacher(final String formWhichTeacher, String ftype, String educationStage, final
+        HttpCallBack callBack) {
             String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
             String teacherId = mGetInfo.getMainTeacherInfo().getTeacherId();
             mHttpManager.praiseTeacher(mLiveType, enstuId, mLiveId, teacherId, ftype, educationStage, new

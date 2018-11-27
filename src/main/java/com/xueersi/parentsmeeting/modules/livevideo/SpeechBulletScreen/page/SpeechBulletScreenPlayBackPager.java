@@ -15,19 +15,12 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenBll;
-import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
@@ -51,19 +44,8 @@ import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
  */
 
 public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
-
-    /** 底部语音识别模块的布局 */
-    RelativeLayout rlSpeechbulBottomContent;
-    private DanmakuView dvSpeechbulDanmaku;
+    private DanmakuView mDanmakuView;
     protected DanmakuContext mDanmakuContext;
-    private BaseDanmakuParser mParser;
-    SpeechBulletScreenBll speechBulletScreenBll;
-
-    private SpeechBulletScreenHttp speechBulletScreenHttp;
-    public void setSpeechBulletScreenHttp(SpeechBulletScreenHttp speechBulletScreenHttp) {
-        this.speechBulletScreenHttp = speechBulletScreenHttp;
-    }
-
     private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(), new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
@@ -72,47 +54,35 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
     });
 
 
-    public SpeechBulletScreenPlayBackPager(Context context, SpeechBulletScreenBll speechBulletScreenBll) {
+    public SpeechBulletScreenPlayBackPager(Context context) {
         super(context);
-        this.speechBulletScreenBll = speechBulletScreenBll;
-        initData();
+        transformSize(mContext);
     }
 
     @Override
     public View initView() {
-        Log.d(TAG,"initView()");
-
-        View view = View.inflate(mContext, R.layout.page_livevideo_speech_bullet_screen,null);
-        dvSpeechbulDanmaku = view.findViewById(R.id.dv_livevideo_speechbul_danmaku);
-        rlSpeechbulBottomContent = view.findViewById(R.id.rl_livevideo_speechbul_bottom_content);
-        rlSpeechbulBottomContent.setVisibility(View.GONE);
-        return view;
-    }
-
-    @Override
-    public void initData() {
-        Log.d(TAG,"initData()");
-        initDanmaku();
+        View mDanmukuView = initDanmaku();
+        return mDanmukuView;
     }
 
     /**
      * ************************************************** 弹 幕 **************************************************
      */
 
-    private static final long ADD_DANMU_TIME = 2000;
-    private int   BITMAP_WIDTH_GUEST    = 34;//头像的宽度
-    private int   BITMAP_HEIGHT_GUEST   = 34;//头像的高度
-    private int   BITMAP_WIDTH_ME       = 42;//头像的宽度
-    private int   BITMAP_HEIGHT_ME      = 42;//头像的高度
-    private float DANMU_TEXT_SIZE       = 14;//弹幕字体的大小
-    private int DANMU_PADDING           = 11;//控制两行弹幕之间的间距
-    private int DANMU_RADIUS            = 16;//圆角半径
+    private static final long ADD_DANMU_TIME = 1200;
+    private int BITMAP_WIDTH_GUEST = 34;//头像的宽度
+    private int BITMAP_HEIGHT_GUEST = 34;//头像的高度
+    private int BITMAP_WIDTH_ME = 42;//头像的宽度
+    private int BITMAP_HEIGHT_ME = 42;//头像的高度
+    private float DANMU_TEXT_SIZE = 14;//弹幕字体的大小
+    private int DANMU_PADDING = 11;//控制两行弹幕之间的间距
+    private int DANMU_RADIUS = 16;//圆角半径
     private int DANMU_BACKGROUND_HEIGHT = 33;
 
     /**
      * 对数值进行转换，适配手机，必须在初始化之前，否则有些数据不会起作用
      */
-    private void setSize(Context context) {
+    private void transformSize(Context context) {
         BITMAP_WIDTH_GUEST = SizeUtils.Dp2Px(context, BITMAP_WIDTH_GUEST);
         BITMAP_HEIGHT_GUEST = SizeUtils.Dp2Px(context, BITMAP_HEIGHT_GUEST);
         BITMAP_WIDTH_ME = SizeUtils.Dp2Px(context, BITMAP_WIDTH_ME);
@@ -123,9 +93,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
         DANMU_BACKGROUND_HEIGHT = SizeUtils.Dp2Px(context, DANMU_BACKGROUND_HEIGHT);
     }
 
-    protected void initDanmaku() {
-        Log.d(TAG,"initDanmaku()");
-        setSize(mContext);
+    protected View initDanmaku() {
         // 设置最大显示行数
         HashMap<Integer, Integer> maxLinesPair = new HashMap<>();
         maxLinesPair.put(BaseDanmaku.TYPE_SCROLL_RL, 3); // 滚动弹幕最大显示3行
@@ -133,6 +101,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
         HashMap<Integer, Boolean> overlappingEnablePair = new HashMap<>();
         overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
         overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, true);
+        mDanmakuView = new DanmakuView(mContext);
         mDanmakuContext = DanmakuContext.create();
         mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3)
                 .setDuplicateMergingEnabled(false)
@@ -141,7 +110,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
                 .setCacheStuffer(new BackgroundCacheStuffer(), mCacheStufferAdapter) // 图文混排使用BaseCacheStuffer,绘制背景使用BackgroundCacheStuffer
                 .setMaximumLines(maxLinesPair)
                 .preventOverlapping(overlappingEnablePair);
-        dvSpeechbulDanmaku.setCallback(new DrawHandler.Callback() {
+        mDanmakuView.setCallback(new DrawHandler.Callback() {
             @Override
             public void updateTimer(DanmakuTimer timer) {
             }
@@ -158,19 +127,20 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
 
             @Override
             public void prepared() {
-                dvSpeechbulDanmaku.start();
- //               generateSomeDanmaku();
+                mDanmakuView.start();
+                //               generateSomeDanmaku();
             }
         });
 
-        dvSpeechbulDanmaku.prepare(new BaseDanmakuParser() {
+        mDanmakuView.prepare(new BaseDanmakuParser() {
             @Override
             protected Danmakus parse() {
                 return new Danmakus();
             }
         }, mDanmakuContext);
-        dvSpeechbulDanmaku.showFPS(false);
-        dvSpeechbulDanmaku.enableDanmakuDrawingCache(false);
+        mDanmakuView.showFPS(false);
+        mDanmakuView.enableDanmakuDrawingCache(false);
+        return mDanmakuView;
     }
 
     /**
@@ -180,13 +150,13 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true) {
+                while (true) {
                     final int time = new Random().nextInt(300);
                     String content = "" + time + time;
                     mWeakHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            addDanmaKuFlowers(time + "",time + "","http://xesfile.xesimg.com/user/h/ic_livevideo_default_head_boy.png_default_head_boy.png" ,true);
+                            addDanmaKuFlowers(time + "", time + "", "http://xesfile.xesimg.com/user/h/def10002.png", true);
                         }
                     });
                     try {
@@ -216,17 +186,16 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
         public void drawBackground(BaseDanmaku danmaku, Canvas canvas, float left, float top) {
             paint.setAntiAlias(true);
             paint.setColor(Color.BLACK);
-            paint.setAlpha((int)(255*0.6)); //  透明度0.6
+            paint.setAlpha((int) (255 * 0.6)); //  透明度0.6
             if (danmaku.isGuest) {
-                canvas.drawRoundRect(new RectF(left + danmaku.padding, top + danmaku.padding + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT)/2 + 1
-                                , left + danmaku.paintWidth - danmaku.padding ,
-                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT)/2 + 1 + danmaku.padding),
+                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                                , left + danmaku.paintWidth - danmaku.padding,
+                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_GUEST - DANMU_BACKGROUND_HEIGHT) / 2 + 1 + danmaku.padding),
                         DANMU_RADIUS, DANMU_RADIUS, paint);
-            }
-            else {
-                canvas.drawRoundRect(new RectF(left + danmaku.padding, top + danmaku.padding + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT)/2 + 1
-                                , left + danmaku.paintWidth - danmaku.padding ,
-                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT)/2 + 1 + danmaku.padding),
+            } else {
+                canvas.drawRoundRect(new RectF(left + danmaku.padding + 1, top + danmaku.padding + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1
+                                , left + danmaku.paintWidth - danmaku.padding,
+                                top + DANMU_BACKGROUND_HEIGHT + (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2 + 1 + danmaku.padding),
                         DANMU_RADIUS, DANMU_RADIUS, paint);
             }
         }
@@ -254,8 +223,8 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
         }
     };
 
-    public void addDanmaKuFlowers(final String name, final String msg, final String headImgUrl , final boolean isGuest) {
-        if (mDanmakuContext == null || !dvSpeechbulDanmaku.isPrepared()) {
+    public void addDanmaKuFlowers(final String name, final String msg, final String headImgUrl, final boolean isGuest) {
+        if (mDanmakuContext == null || mDanmakuView == null || !mDanmakuView.isPrepared()) {
             mWeakHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -264,38 +233,52 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
             }, 100);
             return;
         }
+        //如果长时间没有弹幕，可能会休眠
+        if (mDanmakuView != null && mDanmakuView.isPrepared() && mDanmakuView.isPaused()) {
+            mDanmakuView.resume();
+        }
         final BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
-        if (danmaku == null || dvSpeechbulDanmaku == null) {
+        if (danmaku == null) {
             return;
         }
+        if (isGuest) {
+            danmaku.priority = 0;
+            danmaku.padding = DANMU_PADDING;
+            danmaku.textColor = Color.WHITE;
+        } else {
+            danmaku.priority = 0;  // 1:一定会显示, 一般用于本机发送的弹幕。但是会导致限制行数和禁止堆叠失效
+            danmaku.padding = DANMU_PADDING - (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2;
+            danmaku.textColor = Color.YELLOW;
+        }
         danmaku.isGuest = isGuest;
+        danmaku.isLive = false;
+        danmaku.time = mDanmakuView.getCurrentTime() + ADD_DANMU_TIME;
+        danmaku.textSize = SizeUtils.Dp2Px(mContext, 14f);
+        danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
         ImageLoader.with(mContext).load(headImgUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
                 Drawable circleDrawable = drawable;
                 if (isGuest) {
                     circleDrawable.setBounds(0, 0, BITMAP_WIDTH_GUEST, BITMAP_WIDTH_GUEST);
-                    danmaku.textColor = Color.WHITE;
-                    danmaku.priority = 0;
-                    danmaku.padding = DANMU_PADDING;
                 } else {
                     circleDrawable.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
-                    danmaku.textColor = Color.YELLOW;
-                    danmaku.priority = 0;  // 1:一定会显示, 一般用于本机发送的弹幕,但会导致限制行数和禁止堆叠失效
-                    danmaku.padding = DANMU_PADDING - (BITMAP_HEIGHT_ME - DANMU_BACKGROUND_HEIGHT) / 2;
                 }
-                SpannableStringBuilder spannable = createSpannable(name, msg, circleDrawable, isGuest);
-                danmaku.text = spannable;
-                danmaku.isLive = false;
-                danmaku.time = dvSpeechbulDanmaku.getCurrentTime() + 1200;
-                danmaku.textSize = SizeUtils.Dp2Px(mContext, 14f);
-                danmaku.textShadowColor = 0; // 重要：如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
-                dvSpeechbulDanmaku.addDanmaku(danmaku);
+                danmaku.text = createSpannable(name, msg, circleDrawable, isGuest);
+                mDanmakuView.addDanmaku(danmaku);
             }
 
             @Override
             public void onFail() {
-
+                Drawable circleDrawable;
+                circleDrawable = mContext.getResources().getDrawable(R.drawable.ic_livevideo_default_head_boy);
+                if (isGuest) {
+                    circleDrawable.setBounds(0, 0, BITMAP_WIDTH_GUEST, BITMAP_WIDTH_GUEST);
+                } else {
+                    circleDrawable.setBounds(0, 0, BITMAP_WIDTH_ME, BITMAP_WIDTH_ME);
+                }
+                danmaku.text = createSpannable(name, msg, circleDrawable, isGuest);
+                mDanmakuView.addDanmaku(danmaku);
             }
         });
     }
@@ -307,7 +290,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
         SpannableStringBuilder spannable = new SpannableStringBuilder(text);
         spannable.append(text);
         ImageSpan span = new VerticalImageSpan(drawable, isGuest);
-        spannable.setSpan(span, 0, text.length() , Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(span, 0, text.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 //        spannableStringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor("#8A2233B1")), 0, spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return spannable;
     }
@@ -328,6 +311,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
      */
     public class VerticalImageSpan extends ImageSpan {
         boolean isGuset;
+
         public VerticalImageSpan(Drawable drawable) {
             super(drawable);
         }
@@ -363,14 +347,14 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
          * see detail message in android.text.TextLine
          *
          * @param canvas the canvas, can be null if not rendering
-         * @param text the text to be draw
-         * @param start the text start position
-         * @param end the text end position
-         * @param x the edge of the replacement closest to the leading margin
-         * @param top the top of the line
-         * @param y the baseline
+         * @param text   the text to be draw
+         * @param start  the text start position
+         * @param end    the text end position
+         * @param x      the edge of the replacement closest to the leading margin
+         * @param top    the top of the line
+         * @param y      the baseline
          * @param bottom the bottom of the line
-         * @param paint the work paint
+         * @param paint  the work paint
          */
         @Override
         public void draw(Canvas canvas, CharSequence text, int start, int end,
@@ -391,32 +375,37 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
                 circlePaint.setAntiAlias(true);
                 circlePaint.setStyle(Paint.Style.STROKE);
                 circlePaint.setColor(Color.YELLOW);
-                circlePaint.setStrokeWidth(SizeUtils.Dp2Px(mContext,1));
-                canvas.drawCircle(x+BITMAP_WIDTH_ME/2,transY+BITMAP_WIDTH_ME/2,BITMAP_WIDTH_ME/2,circlePaint);
+                circlePaint.setStrokeWidth(SizeUtils.Dp2Px(mContext, 1));
+                canvas.drawCircle(x + BITMAP_WIDTH_ME / 2, transY + BITMAP_WIDTH_ME / 2, BITMAP_WIDTH_ME / 2, circlePaint);
             }
         }
 
     }
 
-    public void  pauseDanmaku(){
-        if (dvSpeechbulDanmaku!=null) {
-            dvSpeechbulDanmaku.pause();
+    public void pauseDanmaku() {
+        if (mDanmakuView != null) {
+            mDanmakuView.pause();
         }
     }
 
-    public void  resumeDanmaku(){
-        if (dvSpeechbulDanmaku!=null) {
-            dvSpeechbulDanmaku.resume();
+    public void resumeDanmaku() {
+        if (mDanmakuView != null) {
+            mDanmakuView.resume();
         }
     }
 
-    public void  setDanmakuSpeed(float speed){
-        if (mDanmakuContext!=null) {
-            mDanmakuContext.setScrollSpeedFactor(1.2f/speed);
+    public void setDanmakuSpeed(float speed) {
+        if (mDanmakuContext != null) {
+            mDanmakuContext.setScrollSpeedFactor(1.2f / speed);
         }
     }
 
-    public void onDestroy(){
-        Log.i(TAG,"onDestroy()");
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mDanmakuView != null) {
+            mDanmakuView.release();
+            mDanmakuView = null;
+        }
     }
 }

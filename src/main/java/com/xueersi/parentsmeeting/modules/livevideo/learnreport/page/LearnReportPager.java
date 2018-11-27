@@ -11,16 +11,16 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportBll;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle;
-import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.ui.widget.RatingBar;
 
 import java.util.ArrayList;

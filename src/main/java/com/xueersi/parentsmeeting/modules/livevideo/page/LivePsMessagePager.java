@@ -63,7 +63,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -253,6 +252,11 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             }
             return;
         }
+    }
+
+    @Override
+    public void onOpenVoiceNotic(boolean openVoice, String type) {
+
     }
 
     private void showLKTipsWhenOldModeCloseLW(final String newMode, final boolean isOpenbarrage) {
@@ -1529,6 +1533,11 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 
             }
         });
+    }
+
+    @Override
+    public void onOpenVoicebarrage(boolean openbarrage, boolean fromNotice) {
+
     }
 
     FlowerAction commonAction = new CommonDisable();

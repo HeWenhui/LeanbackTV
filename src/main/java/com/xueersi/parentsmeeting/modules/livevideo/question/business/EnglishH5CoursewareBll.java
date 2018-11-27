@@ -14,42 +14,40 @@ import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.logerhelper.MobAgent;
+import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.speech.SpeechUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.NewArtsAnswer;
-import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
+import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
-import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -103,7 +101,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private LiveGetInfo mGetInfo;
     private EnglishH5CoursewareHttp mLiveBll;
     private LiveAndBackDebug liveAndBackDebug;
-    SpeechEvaluatorUtils mIse;
+    SpeechUtils mIse;
     private AnswerRankBll mAnswerRankBll;
     /** 智能私信业务 */
     private LiveAutoNoticeBll mLiveAutoNoticeBll;
@@ -178,7 +176,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         isTeamPkAllowed = mGetInfo != null && "1".equals(mGetInfo.getIsAllowTeamPk());
     }
 
-    public void setIse(SpeechEvaluatorUtils ise) {
+    public void setIse(SpeechUtils ise) {
         this.mIse = ise;
     }
 
@@ -525,8 +523,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
         BaseVoiceAnswerPager voiceAnswerPager2 =
                 baseVoiceAnswerCreat.create(context, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity
-                        .type, bottomContent, mIse);
-//        voiceAnswerPager2.setIse(mIse);
+                        .type, bottomContent,mIse);
+        voiceAnswerPager2.setIse(mIse);
 //        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                ViewGroup.LayoutParams.WRAP_CONTENT);
 //        int screenWidth = ScreenUtils.getScreenWidth();

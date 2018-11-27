@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.common.route.ReflexCenter;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 
 /**
  * Created by lyqai on 2017/10/9.

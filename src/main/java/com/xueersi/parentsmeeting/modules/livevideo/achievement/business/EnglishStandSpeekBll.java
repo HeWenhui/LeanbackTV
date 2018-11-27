@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
-import com.tal.speech.asr.talAsrJni;
 import com.tal.speech.language.LanguageEncodeThread;
 import com.tal.speech.language.LanguageListener;
 import com.tal.speech.language.TalLanguage;
@@ -172,7 +171,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
                 if (!initLanuage()) {
                     return false;
                 }
-                talAsrJni.LangIDReset(0);
+//                talAsrJni.LangIDReset(0);
             }
             logger.d("initView:time1=" + (System.currentTimeMillis() - before));
             if (talLanguage == null) {
@@ -378,7 +377,7 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
                 onAudioRequest.requestSuccess();
                 onAudioRequest = null;
             }
-            talAsrJni.LangIDFree();
+//            talAsrJni.LangIDFree();
         }
 
         @Override
@@ -487,9 +486,9 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
                 onAudioRequest.requestSuccess();
                 onAudioRequest = null;
             }
-            if (isDestory && isDestory2) {
-                talAsrJni.LangIDFree();
-            }
+//            if (isDestory && isDestory2) {
+//                talAsrJni.LangIDFree();
+//            }
         }
     }
 
@@ -602,10 +601,12 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
         if (s_language == null) {
             return false;
         }
-        talAsrJni.LangIDSetParam(1);
-        int AssessInitial = talAsrJni.LangIDInitial(s_language.getPath());
-        logger.d("initLanuage:AssessInitial=" + AssessInitial);
-        return AssessInitial == 0;
+//        talAsrJni.LangIDSetParam(1);
+////        s_language = new File("/storage/emulated/0/record/s_shurufa_1011");
+////        int AssessInitial = talAsrJni.LangIDInitial(s_language.getPath());
+////        logger.d( "initLanuage:AssessInitial=" + AssessInitial);
+////        return AssessInitial == 0;
+        return true;
     }
 
     @Override

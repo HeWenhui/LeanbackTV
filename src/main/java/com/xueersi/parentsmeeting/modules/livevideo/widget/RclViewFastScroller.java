@@ -9,7 +9,6 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
@@ -18,11 +17,7 @@ import android.support.v7.widget.RecyclerView.OnItemTouchListener;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.MotionEvent;
 
-
 import com.xueersi.lib.log.Loger;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 /**
  * @author chenkun

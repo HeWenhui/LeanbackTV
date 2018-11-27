@@ -1,6 +1,5 @@
 package ren.yale.android.cachewebviewlib;
 
-import android.os.Environment;
 import android.util.Log;
 
 import com.xueersi.common.base.BaseApplication;
@@ -18,7 +17,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import ren.yale.android.cachewebviewlib.config.CacheConfig;
-import ren.yale.android.cachewebviewlib.utils.FileUtil;
 
 /**
  * Created by yale on 2017/9/15.

@@ -1,8 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /**
  * Created by Administrator on 2016/4/14.
  */

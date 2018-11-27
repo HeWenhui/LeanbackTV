@@ -4,9 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 

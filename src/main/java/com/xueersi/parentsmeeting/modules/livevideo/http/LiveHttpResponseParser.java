@@ -165,6 +165,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     getInfo.getPraiseGift().add(jsonArray.optInt(i));
                 }
             }
+            if (data.has("highLiveFlowerRate")) {
+                JSONArray jsonArray = data.optJSONArray("highLiveFlowerRate");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    getInfo.getPraiseGiftRate().add(jsonArray.optDouble(i));
+                }
+            }
+            getInfo.setPraiseAutoBarrageTime(data.optInt("praiseAutoBarrageTime", 1));
+            getInfo.setPraiseAutoCutTime(data.optInt("praiseAutoCutTime", 5));
 
             getInfo.setTeacherId(data.getString("teacherId"));
             getInfo.setTeacherName(data.getString("teacherName"));
@@ -557,6 +565,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 mainStatusEntity.getClassmateEntities().clear();
             }
             mainStatusEntity.setOpenDbEnergy(status.optBoolean("openDbEnergy", false));
+            mainStatusEntity.setOpenVoiceBarrage(status.optBoolean("openVoiceBarrage", false));
+            mainStatusEntity.setVoiceBarrageCount(status.optInt("voiceBarrageCount", 0));
         }
         liveTopic.setTeamPkEntity(teamPkEntity);
 //        topic":{"gold_count":3,"id":"161870","num":1,"time":3,"type":"2"}}

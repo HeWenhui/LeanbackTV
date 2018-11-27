@@ -1,17 +1,15 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.ui.dialog.BaseAlertDialog;
 
 /**

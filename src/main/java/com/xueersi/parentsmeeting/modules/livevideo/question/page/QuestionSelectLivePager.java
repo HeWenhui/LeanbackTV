@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.ui.widget.button.progressbutton.CircularProgressButton;

@@ -14,9 +14,9 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.Config;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoFloatTitle;
 
 /**

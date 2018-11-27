@@ -1,7 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.video;
 
-import com.xueersi.lib.framework.utils.string.StringUtils;
-
 /**
  * Created by linyuqiang on 2018/9/14.
  * 缓冲的实体

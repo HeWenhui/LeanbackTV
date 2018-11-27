@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 import java.util.ArrayList;

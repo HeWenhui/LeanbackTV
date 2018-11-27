@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
-import android.text.format.Formatter;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;

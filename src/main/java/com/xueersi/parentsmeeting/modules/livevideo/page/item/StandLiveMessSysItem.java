@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.page.item;
 import android.animation.Animator;
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
