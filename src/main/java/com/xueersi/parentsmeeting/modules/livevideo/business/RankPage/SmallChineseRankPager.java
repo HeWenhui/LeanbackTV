@@ -70,7 +70,7 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
                 select(true, false, false);
                 tvMiddle.setText("学员");
                 if (allRankEntity != null) {
-                    mArtsRankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
+                    mArtsRankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
                     mArtsGroupCommonAdapter.updateData(mArtsRankEntities);
                 }
             }
@@ -93,13 +93,20 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
             public void onClick(View v) {
 //                ivRightSelect.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_rank_btn_click));
                 select(false, false, true);
-                tvMiddle.setText("班名");
+                tvMiddle.setText("班级");
                 if (allRankEntity != null) {
-                    mArtsRankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
+                    mArtsRankEntities = allRankEntity.getMyRankEntityClass().getRankEntities();
                     mArtsGroupCommonAdapter.updateData(mArtsRankEntities);
                 }
             }
         });
+
+    }
+
+    @Override
+    public void initData() {
+        logger.i("获取到数据，成功复制");
+        mArtsRankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
         final int colorMe = mContext.getResources().getColor(R.color.COLOR_005952);
         final int colorOther = mContext.getResources().getColor(R.color.COLOR_000000);
         mArtsGroupCommonAdapter = new CommonAdapter<RankEntity>(mArtsRankEntities) {
@@ -108,14 +115,9 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
                 return new SmallChineseRankItem(colorMe, colorOther);
             }
         };
-
-    }
-
-    @Override
-    public void initData() {
-        logger.i("获取到数据，成功复制");
-        mArtsRankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
         lvRank.setAdapter(mArtsGroupCommonAdapter);
+
+
     }
 
     /** 根据三个按钮(组内，小组，班级) */
