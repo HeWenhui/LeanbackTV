@@ -98,7 +98,7 @@ public class SpeechResultPager extends LiveBasePager {
         }
         final TextView textView = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
         textView.setVisibility(View.VISIBLE);
-        final AtomicInteger integer = new AtomicInteger(5);
+        final AtomicInteger integer = new AtomicInteger(65);
         setCloseText(textView, integer);
         textView.postDelayed(new Runnable() {
             @Override
