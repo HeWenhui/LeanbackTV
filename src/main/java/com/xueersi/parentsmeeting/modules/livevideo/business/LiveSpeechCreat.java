@@ -64,8 +64,15 @@ public class LiveSpeechCreat implements BaseSpeechCreat {
 
     @Override
     public BaseSpeechAssessmentPager createNewRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
-                                                    SpeechEvalAction speechEvalAction, String stuCouId) {
-                SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
+                                                    SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll) {
+        //新课件平台，h5 roleplay也走原生
+        if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles)){
+            RolePlayMachinePager rolePlayerPager  = new RolePlayMachinePager(context,
+                    videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                    true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
+            return rolePlayerPager;
+        }
+        SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
                 true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
 
