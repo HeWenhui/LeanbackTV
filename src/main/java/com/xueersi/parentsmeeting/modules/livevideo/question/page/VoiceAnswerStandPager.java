@@ -681,7 +681,11 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         }
         if (isEnd) {
             VideoResultEntity entity = new VideoResultEntity();
-            entity.setResultType(VideoResultEntity.QUE_RES_TYPE2);
+            if(LiveVideoConfig.isNewArts){
+                entity.setResultType(0);
+            }else{
+                entity.setResultType(VideoResultEntity.QUE_RES_TYPE2);
+            }
             entity.setStandardAnswer(answer);
             questionSwitch.onAnswerTimeOutError(baseVideoQuestionEntity, entity);
             mView.postDelayed(new Runnable() {
