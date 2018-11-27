@@ -1,0 +1,180 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:hedgehog="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent_80">
+
+    <RelativeLayout
+        android:layout_width="546dp"
+        android:layout_height="369dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/zhanduipk_shell_window_fantastic_bg">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="21dp"
+            android:src="@drawable/zhanduipk_shell_window_fantastic5_bg" />
+
+        <ImageView
+            android:id="@id/iv_live_speech_result_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="452dp"
+            android:layout_marginTop="49dp"
+            android:src="@drawable/zhanduipk_shell_window_guanbi_btn_nor" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_live_speech_result_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="95dp"
+            android:text="96分"
+            android:textColor="#fffa6000"
+            android:textSize="19sp" />
+
+        <RelativeLayout
+            android:id="@id/rl_live_speech_result_head"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="123dp"
+            android:background="@drawable/zhanduipk_shell_window_wodetouxiang_bg">
+
+            <com.xueersi.ui.widget.CircleImageView
+                android:id="@id/civ_live_speech_result_head"
+                android:layout_width="47dp"
+                android:layout_height="47dp"
+                android:layout_centerInParent="true"
+                app:border_width="0dp" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@id/tv_live_speech_result_fluency_lable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/rl_live_speech_result_head"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@id/rl_live_speech_result_head"
+            android:text="流畅性"
+            android:textColor="#ff8f7f80"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@id/tv_live_speech_result_fluency_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_live_speech_result_fluency_lable"
+            android:layout_alignLeft="@id/tv_live_speech_result_fluency_lable"
+            android:layout_alignRight="@id/tv_live_speech_result_fluency_lable"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@id/rl_live_speech_result_head"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="4"
+            android:textColor="#ff8f7f80"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@id/tv_live_speech_result_accuracy_lable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/rl_live_speech_result_head"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/rl_live_speech_result_head"
+            android:text="准确性"
+            android:textColor="#ff8f7f80"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@id/tv_live_speech_result_accuracy_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_live_speech_result_accuracy_lable"
+            android:layout_alignLeft="@id/tv_live_speech_result_accuracy_lable"
+            android:layout_alignRight="@id/tv_live_speech_result_accuracy_lable"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/rl_live_speech_result_head"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="4"
+            android:textColor="#ff8f7f80"
+            android:textSize="12sp" />
+
+        <RelativeLayout
+            android:id="@id/rl_live_speech_result_myenergy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="179dp"
+            android:background="@drawable/zhanduipk_fantastic_huomiao_bg">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/tv_live_speech_result_myenergy"
+                android:src="@drawable/zhanduipk_fantastic_huomiao_pic" />
+
+            <TextView
+                android:id="@id/tv_live_speech_result_myenergy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="12dp"
+                android:layout_toLeftOf="@id/v_live_speech_result_center"
+                android:text="+3"
+                android:textColor="#ffff5800" />
+
+            <View
+                android:id="@id/v_live_speech_result_center"
+                android:layout_width="1px"
+                android:layout_height="1px"
+                android:layout_centerHorizontal="true" />
+
+            <ImageView
+                android:id="@id/iv_live_speech_result_mygold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="12dp"
+                android:layout_toRightOf="@id/v_live_speech_result_center"
+                android:src="@drawable/zhanduipk_fantastic_jinbi_pic" />
+
+            <TextView
+                android:id="@id/tv_live_speech_result_mygold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/iv_live_speech_result_mygold"
+                android:text="+4"
+                android:textColor="#ffff5800" />
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/rv_live_speech_result_other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_live_speech_result_myenergy"
+            android:layout_centerHorizontal="true"
+            android:fadeScrollbars="false"
+            android:scrollbars="none" />
+
+        <TextView
+            android:id="@id/tv_arts_answer_result_pse_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rv_live_speech_result_other"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:textColor="#ff8C8080"
+            android:textSize="10sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

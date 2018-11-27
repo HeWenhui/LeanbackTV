@@ -28,8 +28,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEve
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 
@@ -717,7 +719,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll", stringBuilder.toString());
 
             } else if (ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT == event.getType()) {
-                onRolePlayAnswerResult(event.getDataStr());
+                onRolePlayAnswerResult(event.getDataStr(), event.getSpeechResultEntity());
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_rolePlay:").append(event.getDataStr());
                 UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" + "_ArtsAnswerResult_rolePlay", stringBuilder.toString());
@@ -749,13 +751,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         }
     }
 
-
     /**
      * rolePlay 答题结果
      *
      * @param dataStr
      */
-    private void onRolePlayAnswerResult(String dataStr) {
+    private void onRolePlayAnswerResult(String dataStr, SpeechResultEntity speechResultEntity) {
         if (!TextUtils.isEmpty(dataStr)) {
             try {
                 JSONObject jsonObject = new JSONObject(dataStr);
@@ -771,11 +772,24 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         }
                         int type = totalObject.optInt("type");
                         int score = totalObject.optInt("score");
+                        int gold = totalObject.optInt("gold");
+                        int enery = totalObject.optInt("enery");
                         VoiceAnswerResultEvent voiceAnswerResultEvent = new VoiceAnswerResultEvent(testId, score);
                         voiceAnswerResultEvent.setType(type);
                         logger.e("========>onRolePlayAnswerResult:" + voiceAnswerResultEvent
                                 .getScore() + ":" + voiceAnswerResultEvent.getTestId());
                         saveVoiceAnswerResult(voiceAnswerResultEvent);
+                        speechResultEntity.score = score;
+                        speechResultEntity.gold = gold;
+                        speechResultEntity.enery = enery;
+                        SpeechResultPager speechResultPager = new SpeechResultPager(mContext, mRootView, speechResultEntity);
+                        mRootView.addView(speechResultPager.getRootView());
+                        speechResultPager.setOnAutoClose(new SpeechResultPager.OnClose() {
+                            @Override
+                            public void onClose(BasePager basePager) {
+                                mRootView.removeView(basePager.getRootView());
+                            }
+                        });
                     }
                 } else {
                     String errorMsg = jsonObject.optString("msg");

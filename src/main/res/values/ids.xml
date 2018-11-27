@@ -510,7 +510,25 @@
     <item name="vwv_livevideo_roleplayer_speech_volumewave" type="id" />
     <item name="ll_roleplayer_message_self_head_main" type="id" />
     <item name="btn_live_roleplayer_dz" type="id" />
-
+    <!--结果页-->
+    <item name="iv_live_speech_result_close" type="id" />
+    <item name="tv_live_speech_result_score" type="id" />
+    <item name="rl_live_speech_result_head" type="id" />
+    <item name="tv_live_speech_result_accuracy_lable" type="id" />
+    <item name="tv_live_speech_result_accuracy_text" type="id" />
+    <item name="tv_live_speech_result_fluency_lable" type="id" />
+    <item name="tv_live_speech_result_fluency_text" type="id" />
+    <item name="civ_live_speech_result_head" type="id" />
+    <item name="v_live_speech_result_center" type="id" />
+    <item name="rl_live_speech_result_myenergy" type="id" />
+    <item name="tv_live_speech_result_myenergy" type="id" />
+    <item name="iv_live_speech_result_mygold" type="id" />
+    <item name="tv_live_speech_result_mygold" type="id" />
+    <item name="rv_live_speech_result_other" type="id" />
+    <item name="rl_live_speech_result_member_head" type="id" />
+    <item name="civ_live_speech_result_member_head" type="id" />
+    <item name="tv_live_speech_result_member_score" type="id" />
+    <item name="tv_live_speech_result_member_name" type="id" />
     <!--战队pk-->
     <item name="iv_teampk_team_select_bg" type="id" />
     <item name="rl_teampk_team_selecteing" type="id" />

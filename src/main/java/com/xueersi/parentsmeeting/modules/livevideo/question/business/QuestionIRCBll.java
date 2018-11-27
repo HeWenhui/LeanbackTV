@@ -8,6 +8,7 @@ import com.tal.speech.speechrecognizer.Constants;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -37,11 +38,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +62,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private QuestionBll mQuestionAction;
     private AnswerRankIRCBll mAnswerRankBll;
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
-//    private SpeechEvaluatorUtils mIse;
+    //    private SpeechEvaluatorUtils mIse;
     private SpeechUtils mIse;
     /** RolePlayer功能接口 */
     private RolePlayAction rolePlayAction;
@@ -89,13 +94,28 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             keyboardShowingReg.addKeyboardShowing(mQuestionAction);
         }
         mQuestionAction.setLiveType(mLiveType);
-        String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6","18","19"};
+        String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6", "18", "19"};
         questiongtype = Arrays.asList(ptTypeFilters);
     }
 
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
         mQuestionAction.initView(bottomContent, isLand.get());
+//        if (AppConfig.DEBUG) {
+//            SpeechResultEntity speechResultEntity = new SpeechResultEntity();
+//            speechResultEntity.score = 12;
+//            speechResultEntity.accuracy = 22;
+//            speechResultEntity.fluency = 33;
+//            ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
+//            for (int i = 0; i < 2; i++) {
+//                SpeechResultMember speechResultMember = new SpeechResultMember();
+//                speechResultMember.name = "测试" + i;
+//                speechResultMember.score = "" + i;
+//                speechResultMembers.add(speechResultMember);
+//            }
+//            SpeechResultPager speechResultPager = new SpeechResultPager(activity, bottomContent, speechResultEntity);
+//            bottomContent.addView(speechResultPager.getRootView());
+//        }
     }
 
     public void onPause() {
@@ -209,10 +229,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             videoQuestionLiveEntity.speechContent = onlineTechObj.optString("answer");
                             videoQuestionLiveEntity.type = onlineTechObj.optString("ptype");
                             videoQuestionLiveEntity.num = 1;
-                            if("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)){
-                                videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(onlineTechObj.optJSONArray("id")),videoQuestionLiveEntity.type));
+                            if ("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)) {
+                                videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(onlineTechObj.optJSONArray("id")), videoQuestionLiveEntity.type));
                                 videoQuestionLiveEntity.isAllow42 = "0";
-                            }else{
+                            } else {
                                 videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.optJSONArray("id"))));
                                 videoQuestionLiveEntity.isAllow42 = "1";
                             }
@@ -224,7 +244,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                            videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.getJSONArray("id"))));
                             logger.e("======> onTopic 1111:" + mQuestionAction);
                             if (mQuestionAction != null && (questiongtype.contains(videoQuestionLiveEntity.type))) {
-                                logger.e( "======> showQuestionType:"+ videoQuestionLiveEntity.questiontype);
+                                logger.e("======> showQuestionType:" + videoQuestionLiveEntity.questiontype);
                                 mQuestionAction.showQuestion(videoQuestionLiveEntity);
                                 if (mAnswerRankBll != null) {
                                     mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
@@ -257,7 +277,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         logger.e("======>QuestionIRCBlle:" + "走了错误的逻辑");
                         if (mQuestionAction != null) {
 
-                            VideoQuestionLiveEntity videoQuestionLiveEntity =liveTopic.getVideoQuestionLiveEntity();
+                            VideoQuestionLiveEntity videoQuestionLiveEntity = liveTopic.getVideoQuestionLiveEntity();
 
                             JSONObject topicObj = jsonObject.optJSONObject("topic");
                             videoQuestionLiveEntity.roles = topicObj.optString("roles");
@@ -266,7 +286,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             //解决，老师发题后，学生后进来，无法进入roleplay的问题
                             //人机的回调
 
-                            if(!TextUtils.isEmpty( videoQuestionLiveEntity.roles)){
+                            if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles)) {
                                 if (rolePlayMachineAction == null) {
                                     RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
                                     rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
@@ -353,7 +373,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logger.e("======>QuestionIRCBlle:" + "走了错误的逻辑");
                 if (mQuestionAction != null) {
 
-                    VideoQuestionLiveEntity videoQuestionLiveEntity =liveTopic.getVideoQuestionLiveEntity();
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = liveTopic.getVideoQuestionLiveEntity();
 
                     JSONObject topicObj = jsonObject.optJSONObject("topic");
                     videoQuestionLiveEntity.roles = topicObj.optString("roles");
@@ -362,7 +382,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     //解决，老师发题后，学生后进来，无法进入roleplay的问题
                     //人机的回调
 
-                    if(!TextUtils.isEmpty( videoQuestionLiveEntity.roles)){
+                    if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles)) {
                         if (rolePlayMachineAction == null) {
                             RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
                             rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
@@ -410,7 +430,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject object, int type) {
-        logger.e( "======>onNotice:" + type + ":" + object);
+        logger.e("======>onNotice:" + type + ":" + object);
         switch (type) {
             case XESCODE.SENDQUESTION: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
@@ -457,7 +477,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                 "SENDQUESTION");
                     }
                 }
-                if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay .equals( "1")){
+                if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
                     logger.i("走人机start,拉取试题");
                     if (rolePlayMachineAction == null) {
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
@@ -485,10 +505,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);
                 //构建 H5 url
-                if("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)){
-                    videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(object.optJSONArray("id")),videoQuestionLiveEntity.type));
+                if ("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)) {
+                    videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(object.optJSONArray("id")), videoQuestionLiveEntity.type));
                     videoQuestionLiveEntity.isAllow42 = "0";
-                }else{
+                } else {
                     videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(object.optJSONArray("id"))));
                     videoQuestionLiveEntity.isAllow42 = "1";
                 }
@@ -624,13 +644,13 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         return sb.toString();
     }
 
-    private String buildRolePlayUrl(String id,String type){
+    private String buildRolePlayUrl(String id, String type) {
         String isPlayback = "0";
         StringBuilder sb = new StringBuilder();
         String url;
-        if("5".equals(type)){
+        if ("5".equals(type)) {
             url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_ROALPLAY_URL;
-        }else {
+        } else {
             url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_CHINESEREADING_URL;
         }
         sb.append(url).append("?liveId=").append(mLiveId)
@@ -640,7 +660,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 .append("&cookie=").append(AppBll.getInstance().getUserToken());
         return sb.toString();
     }
-
 
 
     @Override
@@ -727,8 +746,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 userMode = "0";
             }
         }
-        if(LiveVideoConfig.isNewArts){
-            logger.e( "======> liveSubmitTestAnswer:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
+        if (LiveVideoConfig.isNewArts) {
+            logger.e("======> liveSubmitTestAnswer:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
             getHttpManager().liveNewArtsSubmitTestAnswer(mLiveType, enstuId, videoQuestionLiveEntity.srcType,
                     videoQuestionLiveEntity.id, mLiveId, testAnswer, userMode, isVoice, isRight, new HttpCallBack() {
 
@@ -888,7 +907,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void sendSpeechEvalResult2(String id, String stuAnswer, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        if(LiveVideoConfig.isNewArts){
+        if (LiveVideoConfig.isNewArts) {
             getHttpManager().sendSpeechEvalResultNewArts(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
 
                 @Override
@@ -984,7 +1003,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        if(LiveVideoConfig.isNewArts){
+        if (LiveVideoConfig.isNewArts) {
             getHttpManager().speechNewArtEvaluateIsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(final ResponseEntity responseEntity) {
@@ -1137,11 +1156,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
 
-
     @Override
     public void onDestory() {
         super.onDestory();
-        if(mQuestionAction != null){
+        if (mQuestionAction != null) {
             mQuestionAction.onDestroy();
         }
     }

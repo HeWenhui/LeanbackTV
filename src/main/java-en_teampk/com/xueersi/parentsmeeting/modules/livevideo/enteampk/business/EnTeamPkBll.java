@@ -170,7 +170,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                         rootView.removeView(teamPkRankPager.getRootView());
                     }
                 }
-            }, 30000);
+            }, 10000);
         }
     }
 
