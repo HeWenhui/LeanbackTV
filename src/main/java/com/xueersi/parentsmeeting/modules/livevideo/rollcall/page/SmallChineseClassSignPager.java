@@ -64,10 +64,21 @@ public class SmallChineseClassSignPager extends BasePager {
             ivSignStatus.setVisibility(View.VISIBLE);
             ivSignStatus.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_sign_success));
             groupName.setVisibility(View.GONE);
+            //3秒自动消失
+            if (mView != null) {
+//                mView.getHandler().removeCallbacks(closeRun);
+                mView.removeCallbacks(closeRun);
+                mView.postDelayed(closeRun, 3000);
+            }
         } else {//签到失败
             ivSignStatus.setVisibility(View.VISIBLE);
             ivSignStatus.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_sign_fail));
             groupName.setVisibility(View.GONE);
+            if (mView != null) {
+//                mView.getHandler().removeCallbacks(closeRun);
+                mView.removeCallbacks(closeRun);
+                mView.postDelayed(closeRun, 3000);
+            }
         }
     }
 
@@ -111,6 +122,15 @@ public class SmallChineseClassSignPager extends BasePager {
 //            String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "网络异常" : responseEntity
 //                    .getErrorMsg();
 //            XESToastUtils.showToast(mContext, errorMsg);
+        }
+    };
+
+    Runnable closeRun = new Runnable() {
+        @Override
+        public void run() {
+            if (sign != null && sign.containsView()) {
+                sign.close();
+            }
         }
     };
 
