@@ -344,7 +344,8 @@ public class LiveVideoConfig {
 
     /** 文科新课件平台的标识 */
     public static Boolean isNewArts = false;
-
+    /** 全身直播的标识*/
+    public static Boolean isStandLive = false;
     /** 学习报告精彩瞬间 */
     public interface STUDY_REPORT {
         /** 贡献之星 */
