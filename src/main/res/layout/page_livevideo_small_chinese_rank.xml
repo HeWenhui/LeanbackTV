@@ -104,7 +104,7 @@
         android:id="@+id/fzcytv_livevideo_small_chinese_middle_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="小组"
+        android:text="学员"
         android:textColor="@color/COLOR_005952"
         android:textSize="13sp"
         app:layout_constraintLeft_toLeftOf="@+id/fzcytv_livevideo_small_chinese_left_text"
