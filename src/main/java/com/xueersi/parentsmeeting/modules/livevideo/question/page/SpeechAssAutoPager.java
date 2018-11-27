@@ -1,9 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
@@ -25,7 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
-import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
@@ -43,14 +39,12 @@ import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.StartProgress;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -624,7 +618,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mLogtf.d("onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + "," +
                 "haveAnswer=" + haveAnswer + ",nbest=" + nbest);
         if (haveAnswer) {
-            onSpeechEvalSuccess(resultEntity, 0);
+            onSpeechEvalSuccess(resultEntity, 0, 0);
         } else {
             try {
                 final JSONObject answers = new JSONObject();
@@ -656,12 +650,14 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                         JSONObject jsonObject = (JSONObject) object;
                         if (LiveVideoConfig.isNewArts) {
                             int gold = jsonObject.optInt("gold");
-                            onSpeechEvalSuccess(resultEntity, gold);
+                            int energy = jsonObject.optInt("energy");
+                            onSpeechEvalSuccess(resultEntity, gold, energy);
                             speechEvalAction.onSpeechSuccess(id);
                         } else {
                             int gold = jsonObject.optInt("gold");
+                            int energy = jsonObject.optInt("energy");
                             haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
-                            onSpeechEvalSuccess(resultEntity, gold);
+                            onSpeechEvalSuccess(resultEntity, gold, energy);
                             speechEvalAction.onSpeechSuccess(id);
                         }
 
@@ -691,27 +687,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         vwvSpeectevalWave.stop();
     }
 
-    class SpeechAnswerResultStateListener implements AnswerResultStateListener {
-        ViewGroup group;
-        View view;
-
-        @Override
-        public void onCompeletShow() {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    group.removeView(view);
-                }
-            }, 2000);
-        }
-
-        @Override
-        public void onAutoClose(BasePager basePager) {
-            group.removeView(view);
-        }
-    }
-
-    private void onSpeechEvalSuccess(ResultEntity resultEntity, int gold) {
+    private void onSpeechEvalSuccess(ResultEntity resultEntity, int gold, int energy) {
         isSpeechSuccess = true;
         rlSpeectevalBg.setVisibility(View.GONE);
         rlSpeectevalBg.removeAllViews();
@@ -720,19 +696,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         tvSpeectevalTime.setText("完成啦!");
 //        progressBar.removeCallbacks(progressBarRun);
         progressBar.setVisibility(View.GONE);
-
-        final ViewGroup group = (ViewGroup) mView;
-        AnswerResultEntity answerResultEntity = new AnswerResultEntity();
-        answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_CORRECT);
-        answerResultEntity.setGold(gold);
-        ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
-        answerResultEntity.setAnswerList(answerList);
-        SpeechAnswerResultStateListener answerResultStateListener = new SpeechAnswerResultStateListener();
-        ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(mContext, answerResultEntity, answerResultStateListener);
-        View view = artsPSEAnswerResultPager.getRootView();
-        answerResultStateListener.group = group;
-        answerResultStateListener.view = view;
-        group.addView(view);
 
         int score = resultEntity.getScore();
         int progress;
@@ -747,6 +710,21 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         } else {
             progress = 5;
         }
+        SpeechResultEntity speechResultEntity = new SpeechResultEntity();
+        speechResultEntity.gold = gold;
+        speechResultEntity.score = score;
+        speechResultEntity.enery = energy;
+        speechResultEntity.fluency = resultEntity.getContScore();
+        speechResultEntity.accuracy = resultEntity.getPronScore();
+        final ViewGroup group = (ViewGroup) mView;
+        final SpeechResultPager speechResultPager = new SpeechResultPager(mContext, group, speechResultEntity);
+        group.addView(speechResultPager.getRootView());
+        speechResultPager.setOnAutoClose(new SpeechResultPager.OnClose() {
+            @Override
+            public void onClose(BasePager basePager) {
+                group.removeView(speechResultPager.getRootView());
+            }
+        });
 
         speechEvalAction.onSpeechSuccess(id);
         Map<String, String> mData = new HashMap<>();
@@ -889,7 +867,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 } else {
                     if (point90_6 != null) {
-                        logger.d( "onEvaluatorIng:point90_61=" + point90_6);
+                        logger.d("onEvaluatorIng:point90_61=" + point90_6);
                         if (point90_6.right - point90_6.left >= 5) {
                             arrayList90_6.add(point90_6);
                         }
@@ -898,7 +876,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
                 if (i == lstPhonemeScore.size() - 1) {
                     if (point90_6 != null) {
-                        logger.d( "onEvaluatorIng:point90_62=" + point90_6);
+                        logger.d("onEvaluatorIng:point90_62=" + point90_6);
                         if (point90_6.right - point90_6.left >= 5) {
                             arrayList90_6.add(point90_6);
                         }
@@ -915,7 +893,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 } else {
                     if (point90_3 != null) {
-                        logger.d( "onEvaluatorIng:point90_31=" + point90_3);
+                        logger.d("onEvaluatorIng:point90_31=" + point90_3);
                         if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
                             arrayList90_3.add(point90_3);
                         }
@@ -924,7 +902,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
                 if (i == lstPhonemeScore.size() - 1) {
                     if (point90_3 != null) {
-                        logger.d( "onEvaluatorIng:point90_32=" + point90_3);
+                        logger.d("onEvaluatorIng:point90_32=" + point90_3);
                         if (point90_3.right - point90_3.left >= 2 && point90_3.right - point90_3.left < 5) {
                             arrayList90_3.add(point90_3);
                         }
@@ -984,7 +962,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 rlSpeectevalEncourage.postDelayed(encourageRun, 3000);
                 mLogtf.d("onEvaluatorIng(great):nbest=" + nbest);
             }
-            logger.d( "onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
+            logger.d("onEvaluatorIng:count90=" + count90 + ",point90WordArrayList=" + point90WordArrayList.size() + ",point90_6s=" + point90_6s.size() + ",point90_3s=" + point90_3s.size() + ",nbest=" + nbest);
         }
     }
 

@@ -22,7 +22,7 @@
             android:id="@id/iv_live_speech_result_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="452dp"
+            android:layout_marginLeft="444dp"
             android:layout_marginTop="49dp"
             android:src="@drawable/zhanduipk_shell_window_guanbi_btn_nor" />
 
@@ -155,12 +155,23 @@
                 android:textColor="#ffff5800" />
         </RelativeLayout>
 
+        <View
+            android:id="@id/v_live_speech_result_line"
+            android:layout_width="wrap_content"
+            android:layout_height="2dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="141dp"
+            android:layout_marginTop="222dp"
+            android:layout_marginRight="139dp"
+            android:background="@drawable/zhanduipk_fantastic_huomiao_line" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@id/rv_live_speech_result_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rl_live_speech_result_myenergy"
+            android:layout_below="@id/v_live_speech_result_line"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
             android:fadeScrollbars="false"
             android:scrollbars="none" />
 
@@ -168,10 +179,9 @@
             android:id="@id/tv_arts_answer_result_pse_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rv_live_speech_result_other"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="8dp"
-            android:textColor="#ff8C8080"
+            android:layout_marginTop="264dp"
+            android:textColor="#ff8c8080"
             android:textSize="10sp"
             android:visibility="gone" />
 

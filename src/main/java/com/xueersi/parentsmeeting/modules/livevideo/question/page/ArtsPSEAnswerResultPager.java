@@ -280,9 +280,9 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     }
 
     private void setCloseText(TextView textView, AtomicInteger integer) {
-        SpannableStringBuilder spannable = new SpannableStringBuilder(integer + "s后关闭");
-        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#FFFF7A1D")), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setText(spannable);
+//        SpannableStringBuilder spannable = new SpannableStringBuilder(integer + "s后关闭");
+//        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#FFFF7A1D")), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(integer + "s后关闭");
     }
 
     /**
