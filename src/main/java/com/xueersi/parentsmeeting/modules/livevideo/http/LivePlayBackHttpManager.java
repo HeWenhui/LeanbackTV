@@ -613,4 +613,12 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_STU_ONLINE_TIME, params, requestCallBack);
     }
 
+    public void sendExperienceQuitFeedback(String stuId, String termId, String content, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("termId", termId);
+        params.addBodyParam("content", content);
+        sendPost(LiveVideoConfig.URL_AUTO_LIVE_QUIT_FEED_BACK, params, requestCallBack);
+    }
+
 }

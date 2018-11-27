@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -31,7 +32,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tencent.cos.xml.utils.StringUtils;
-import com.tencent.tinker.loader.shareutil.ShareOatUtil;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;
@@ -72,6 +72,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.ExperienceQuitFeedbackDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -207,6 +208,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private int rePlayCount = 0;
 
     private static final int MAX_REPLAY_COUNT = 4;
+    /** 判断是否显示退出反馈弹窗 */
+    private boolean isShowQuitDialog = false;
+    /** 显示弹窗阈值 课程开始25min内进入课程的退出时显示弹窗 */
+    private static final long SHOW_QUIT_DIALOG_THRESHOLD = 1500000;
 
     // 定时获取聊天记录的任务
     class ScanRunnable implements Runnable {
@@ -263,7 +268,15 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         @Override
         public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-            UmsAgentManager.umsAgentOtherBusiness(ExperienceLiveVideoActivity.this, appID, UmsConstants.uploadSystem,
+            mData.put("timestamp", System.currentTimeMillis() + "");
+            mData.put("liveid", mVideoEntity.getLiveId());
+            mData.put("termid", mVideoEntity.getChapterId());
+            if (mGetInfo != null && mGetInfo.getStuName() != null){
+                mData.put("uname", mGetInfo.getStuName());
+            } else {
+                mData.put("uname","");
+            }
+            UmsAgentManager.umsAgentOtherBusiness(ExperienceLiveVideoActivity.this, appID, UmsConstants.uploadBehavior,
                     mData);
 
         }
@@ -990,11 +1003,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         Log.e("mqtt", "mTotaltime:" + mTotaltime);
         Log.e("mqtt", "seekto:" + mVideoEntity.getVisitTimeKey());
         // 03.22 统计用户进入体验播放器的时间
-        StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayEnter");
-        logHashMap.put("liveid", mVideoEntity.getLiveId());
-        logHashMap.put("termid", mVideoEntity.getChapterId());
-        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_ENTER);
-        ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_ENTER, logHashMap.getData());
+        StableLogHashMap logHashMap = new StableLogHashMap("enterRoom");
+        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
+        ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
             if (baseLiveMediaControllerTop == null) {
@@ -1017,7 +1028,13 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         getDataCallBack);
                 return;
             }
-            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
+            Long keyTime = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
+                    startTime);
+            if (keyTime < SHOW_QUIT_DIALOG_THRESHOLD) {
+                isShowQuitDialog = true;
+            }
+            seekTo(keyTime);
+
 //            seekTo(590000);
 //            if (vPlayer != null) {
 //                long pos = (long)SharedPrefUtil.getSharedPrefUtil(mContext).getValue(mVideoEntity.getLiveId(),
@@ -1126,6 +1143,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         //mFeedbackWindow.setSoftInputMode(PopupWindow.INPUT_METHOD_NEEDED);
         mFeedbackWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         mFeedbackWindow.showAtLocation(expFeedbackPager.getRootView(), Gravity.CENTER, 0, 0);
+        StableLogHashMap logHashMap = new StableLogHashMap("afterClassFeedbackOpen");
+        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
+        ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
         mFeedbackWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -1135,7 +1155,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         });
         expFeedbackPager.setCloseAction(new ExperienceLearnFeedbackPager.CloseAction() {
             @Override
-            public void onClose() {
+            public void onClose(String type) {
+                StableLogHashMap logHashMap = new StableLogHashMap("afterClassFeedbackClose");
+                logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
+                logHashMap.put("closetype",type);
+                ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
                 bottomContent.removeView(expFeedbackPager.getRootView());
                 mFeedbackWindow.dismiss();
                 mFeedbackWindow = null;
@@ -1329,6 +1353,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //        onUserBackPressed();
         // 直播结束后，显示结束的提示图片
         isPlay = false;
+        isShowQuitDialog = false;
         ivTeacherNotpresent.setVisibility(View.VISIBLE);
 //        ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
         ivTeacherNotpresent.setBackgroundResource(R.drawable.live_free_play_end);
@@ -1464,12 +1489,26 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
     }
 
+    ExperienceQuitFeedbackDialog expDialog;
+
     @Override
     public void onBackPressed() {
         boolean userBackPressed = liveBackBll.onUserBackPressed();
-        if (mWindow == null && mFeedbackWindow == null && !userBackPressed) {
-            super.onBackPressed();
+        if (!userBackPressed) {
+            if (isShowQuitDialog && expDialog == null) {
+                showQuitFeedbackDialog();
+            } else if (expDialog != null && expDialog.isDialogShow()) {
+                expDialog.cancelDialog();
+                expDialog = null;
+            } else if (mWindow == null && mFeedbackWindow == null) {
+                StableLogHashMap logHashMap = new StableLogHashMap("exitRoom");
+                logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
+                ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
+                super.onBackPressed();
+            }
         }
+
+
     }
 
     @Override
@@ -1483,4 +1522,45 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         super.onStop();
         liveBackBll.onStop();
     }
+
+    private void showQuitFeedbackDialog() {
+        expDialog = new ExperienceQuitFeedbackDialog(this);
+        expDialog.setParam(mVideoEntity);
+        expDialog.setOnClickConfirmlListener(new ExperienceQuitFeedbackDialog.ILeaveClassCallback() {
+            @Override
+            public void leaveClass() {
+                StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackClose");
+                logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
+                logHashMap.put("closetype","1");
+                ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
+                expDialog.cancelDialog();
+                expDialog = null;
+                if (mIsLand) {
+                    // 如果是横屏则切换为竖屏
+                    if (mIsAutoOrientation) {
+                        changeLOrP();
+                    } else {
+                        onUserBackPressed();
+                    }
+                } else {
+                    onUserBackPressed();
+                }
+            }
+        });
+        expDialog.setDialogCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackClose");
+                logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
+                logHashMap.put("closetype","2");
+                ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
+                expDialog = null;
+            }
+        });
+        expDialog.showDialog();
+        StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackOpen");
+        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
+        ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
+    }
 }
+

@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/COLOR_CC000000">
+    >
 
     <LinearLayout
-        android:layout_width="450dp"
+        android:layout_width="520dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@drawable/bg_popupwin"
@@ -24,7 +24,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="30dp"
-                android:text="方便告诉我你们离开课堂的原因吗？" />
+                android:text="方便告诉我们你离开课堂的原因吗？" />
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -34,14 +34,14 @@
 
                 <TableRow
                     android:layout_marginBottom="18dp">
-                    <RadioButton
-                        android:id="@+id/rbtn_satisficing_1"
+                    <CheckBox
+                        android:id="@+id/cb_item_1"
                         style="@style/style_experience_quit_radiobutton"
                         android:layout_marginLeft="30dp"
                         android:text="课程过于简单" />
 
-                    <RadioButton
-                        android:id="@+id/rbtn_satisficing_2"
+                    <CheckBox
+                        android:id="@+id/cb_item_2"
                         style="@style/style_experience_quit_radiobutton"
                         android:text="课程过于困难" />
                 </TableRow>
@@ -49,20 +49,22 @@
                 <TableRow
                     android:layout_marginBottom="18dp">
 
-                    <RadioButton
+                    <CheckBox
+                        android:id="@+id/cb_item_3"
                         style="@style/style_experience_quit_radiobutton"
                         android:layout_marginLeft="30dp"
                         android:text="不喜欢授课老师" />
 
-                    <RadioButton
+                    <CheckBox
+                        android:id="@+id/cb_item_4"
                         style="@style/style_experience_quit_radiobutton"
-                        tools:text=""
+                        android:layout_width="217dp"
                         android:text="课堂内容与所学内容不匹配" />
                 </TableRow>
                 <TableRow
                     android:layout_marginBottom="18dp">
-
-                    <RadioButton
+                    <CheckBox
+                        android:id="@+id/cb_item_5"
                         style="@style/style_experience_quit_radiobutton"
                         android:layout_marginLeft="30dp"
                         android:text="其他"
@@ -73,7 +75,7 @@
 
         </RelativeLayout>
 
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="@color/COLOR_DCDCDC" />
@@ -83,10 +85,11 @@
             android:layout_height="48dp">
 
             <Button
-                android:layout_width="match_parent"
+                android:id="@+id/btn_back_class"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="null"
+                android:background="@null"
                 android:text="返回课堂"
                 android:textColor="@color/COLOR_666666"
                 android:textSize="16sp" />
@@ -97,11 +100,11 @@
                 android:background="@color/COLOR_DCDCDC" />
 
             <Button
-                android:layout_width="match_parent"
+                android:id="@+id/btn_leave_class"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="right"
                 android:layout_weight="1"
-                android:background="null"
+                android:background="@null"
                 android:text="确定离开"
                 android:textColor="@color/COLOR_999999"
                 android:textSize="16sp" />
