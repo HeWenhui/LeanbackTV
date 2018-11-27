@@ -225,6 +225,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     private String mSpeechFail = "模型正在启动，请稍后";
     /** 是否结束说话 */
     boolean isSpeekDone = false;
+    boolean isRecogSpeeking = false;
     private SpeechUtils speechUtils;
     private ISpeechRecogInterface mISpeechRecogInterface;
 
@@ -823,6 +824,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                             mView.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    isRecogSpeeking = false;
                                     startVoiceInput();
                                 }
                             }, 300);
@@ -920,7 +922,10 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             mAudioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
                 public void requestSuccess() {
-                    startEvaluator();
+                    if (!isRecogSpeeking){
+                        startEvaluator();
+                        isRecogSpeeking = true;
+                    }
                 }
             });
         }
@@ -1966,6 +1971,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     public void stopEvaluator() {
         logger.i("stopEvaluator()");
         isSpeekDone = true;
+        isRecogSpeeking = false;
         mView.removeCallbacks(mHintRunnable);
         mView.removeCallbacks(mNorecogRunnable);
         mView.removeCallbacks(mNovoiceRunnable);
@@ -2034,6 +2040,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             logger.i("识别失败，请检查存储权限！");
             XESToastUtils.showToast(mContext, "识别失败，请检查存储权限！");
         } else if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
+            isRecogSpeeking = false;
             startVoiceInput();
             return;
         } else if (resultEntity.getErrorNo() == ResultCode.SPEECH_CANCLE) {
@@ -2090,6 +2097,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 mView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        isRecogSpeeking = false;
                         startVoiceInput();
                     }
                 }, 300);
