@@ -13,6 +13,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.Config;
+import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
 public class SmallChineseClassSignPager extends BasePager {
     /**
@@ -30,6 +31,7 @@ public class SmallChineseClassSignPager extends BasePager {
      */
     private ImageView ivSign;
 
+    private FangZhengCuYuanTextView tvUserName;
     private Group groupName;
 
     public SmallChineseClassSignPager(Context context, ClassSignEntity classSignEntity) {
@@ -46,13 +48,14 @@ public class SmallChineseClassSignPager extends BasePager {
         ivClose = view.findViewById(R.id.iv_livevideo_small_chinese_sign_close);
         ivSign = view.findViewById(R.id.iv_livevideo_small_chinese_sign_sign);
         groupName = view.findViewById(R.id.group_livevideo_small_chinese_sign_name);
-
+        tvUserName = view.findViewById(R.id.tv_livevideo_small_chinese_sign_student_name);
         return view;
     }
 
     @Override
     public void initData() {
         updateStatus(classSignEntity.getStatus());
+        tvUserName.setText(classSignEntity.getStuName() + "同学");
     }
 
     public void updateStatus(int status) {

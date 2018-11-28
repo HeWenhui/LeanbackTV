@@ -7,6 +7,12 @@
     tools:ignore="MissingDefaultResource">
 
     <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.6"
+        android:background="@color/COLOR_000000" />
+
+    <ImageView
         android:id="@+id/tv_livevideo_small_chinese_sign_student_background"
         android:layout_width="498dp"
         android:layout_height="285dp"
@@ -16,25 +22,25 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_small_chinese_sign_student_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
-        android:text="风一同学"
         android:textColor="@color/COLOR_7B583E"
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="@+id/tv_livevideo_small_chinese_sign_student_background"
         app:layout_constraintRight_toRightOf="@+id/tv_livevideo_small_chinese_sign_student_background"
-        app:layout_constraintTop_toTopOf="@+id/tv_livevideo_small_chinese_sign_student_background" />
+        app:layout_constraintTop_toTopOf="@+id/tv_livevideo_small_chinese_sign_student_background"
+        tools:text="风一同学" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_small_chinese_sign_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="现在开始课前点名"
         android:textColor="@color/COLOR_7B583E"
-        android:textSize="18sp"
+        android:textSize="15sp"
         app:layout_constraintLeft_toLeftOf="@+id/tv_livevideo_small_chinese_sign_student_background"
         app:layout_constraintRight_toRightOf="@+id/tv_livevideo_small_chinese_sign_student_background"
         app:layout_constraintTop_toBottomOf="@+id/tv_livevideo_small_chinese_sign_student_name" />
