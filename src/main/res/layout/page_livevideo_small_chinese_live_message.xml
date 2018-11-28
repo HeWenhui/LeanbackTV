@@ -119,7 +119,7 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginRight="12dp"
                 android:divider="@null"
-                android:dividerHeight="15dp"
+                android:dividerHeight="10dp"
                 android:listSelector="@color/transparent" />
         </RelativeLayout>
 

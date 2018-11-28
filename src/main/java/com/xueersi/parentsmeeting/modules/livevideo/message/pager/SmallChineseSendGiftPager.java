@@ -121,7 +121,7 @@ public class SmallChineseSendGiftPager extends BasePager {
      */
     public void onGetMyGoldDataEvent(String gold) {
         this.goldNum = gold;
-        tvMoneyValue.setText(gold + "金币");
+        tvMoneyValue.setText(gold);
     }
 
     public interface GiftListaner {

@@ -57,14 +57,14 @@ public class SmallChineseRedPackagePager extends BasePager {
      */
     public void updateView(boolean isOpen, int goldNum) {
         if (isOpen) {
-            ivRedPackageBackground.setBackground(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_redpackage_open_background));
+            ivRedPackageBackground.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_redpackage_open_background));
             ivRedPackageTip.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_redpackage_open_tip));
             ivReceive.setVisibility(View.GONE);
             fzcytvMoney.setVisibility(View.VISIBLE);
             fzcytvMoney.setText(String.valueOf(goldNum));
             groupMoney.setVisibility(View.VISIBLE);
         } else {
-            ivRedPackageBackground.setBackground(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_redpackage_not_open_background));
+            ivRedPackageBackground.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_redpackage_not_open_background));
             ivRedPackageTip.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_redpackage_not_open_tip));
             fzcytvMoney.setVisibility(View.GONE);
             ivReceive.setVisibility(View.VISIBLE);
