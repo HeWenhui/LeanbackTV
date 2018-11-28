@@ -301,10 +301,11 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             videoQuestionLiveEntity.setIsVoice(isVoices);
             videoQuestionLiveEntity.assess_ref = assess;
             videoQuestionLiveEntity.type = type;
+            videoQuestionLiveEntity.courseware_type = type;
         } else {
             videoQuestionLiveEntity.setUrl(questionEntity.getEnglishH5Play_url());
+            videoQuestionLiveEntity.courseware_type = questionEntity.getvQuestionType();
         }
-        videoQuestionLiveEntity.courseware_type = questionEntity.getvQuestionType();
         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
         videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
         videoQuestionLiveEntity.setAnswerDay(questionEntity.getAnswerDay());
