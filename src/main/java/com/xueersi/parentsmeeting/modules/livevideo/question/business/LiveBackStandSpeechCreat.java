@@ -92,14 +92,13 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
     }
 
     @Override
-    public BaseSpeechAssessmentPager createNewRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId, SpeechEvalAction speechEvalAction, String stuCouId) {
+    public BaseSpeechAssessmentPager createNewRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId, SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll) {
         SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
                 true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
         speechAssessmentPager.setStandingLive(true);
         RolePlayStandLog.sno3(liveAndBackDebug, testId);
         return speechAssessmentPager;
-//        return null;
     }
 
     class LiveStandSpeechEvalActionImpl implements LiveStandSpeechEvalAction {
