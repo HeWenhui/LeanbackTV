@@ -138,7 +138,6 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      * 结果页
      */
 //    private RelativeLayout rlResult;
-    SpeechResultPager resultPager;
 
     /**
      * 角色展示区适配器
@@ -1047,7 +1046,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 speechResultMembers.add(speechResultMember);
             }
             ViewGroup group = (ViewGroup) mView;
-            resultPager = new SpeechResultPager(mContext, group, speechResultEntity);
+            SpeechResultPager resultPager = new SpeechResultPager(mContext, group, speechResultEntity);
             group.addView(resultPager.getRootView());
         }
 

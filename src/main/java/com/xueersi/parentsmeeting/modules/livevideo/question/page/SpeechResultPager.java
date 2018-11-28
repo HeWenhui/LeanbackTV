@@ -10,6 +10,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ public class SpeechResultPager extends LiveBasePager {
     private TextView tv_live_speech_result_fluency_text;
     private TextView tv_live_speech_result_mygold;
     private TextView tv_live_speech_result_myenergy;
+    private TextView tv_live_speech_result_mypraise;
     private OnClose onAutoClose;
     private SpeechResultEntity speechResultEntity;
 
@@ -61,6 +63,14 @@ public class SpeechResultPager extends LiveBasePager {
     @Override
     public View initView() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_speech_result, group, false);
+        if (speechResultEntity.praise == -1) {
+            ViewStub vs_live_speech_result_myenergy = view.findViewById(R.id.vs_live_speech_result_myenergy);
+            vs_live_speech_result_myenergy.inflate();
+        } else {
+            ViewStub vs_live_speech_result_roleplay_myenergy = view.findViewById(R.id.vs_live_speech_result_roleplay_myenergy);
+            vs_live_speech_result_roleplay_myenergy.inflate();
+            tv_live_speech_result_mypraise = view.findViewById(R.id.tv_live_speech_result_mypraise);
+        }
         iv_live_speech_result_close = view.findViewById(R.id.iv_live_speech_result_close);
         tv_live_speech_result_score = view.findViewById(R.id.tv_live_speech_result_score);
         civ_live_speech_result_head = view.findViewById(R.id.civ_live_speech_result_head);
@@ -81,6 +91,9 @@ public class SpeechResultPager extends LiveBasePager {
         tv_live_speech_result_fluency_text.setText("" + speechResultEntity.fluency);
         tv_live_speech_result_mygold.setText("+" + speechResultEntity.gold);
         tv_live_speech_result_myenergy.setText("+" + speechResultEntity.enery);
+        if (tv_live_speech_result_mypraise != null) {
+            tv_live_speech_result_mypraise.setText("" + speechResultEntity.praise);
+        }
         ImageLoader.with(mContext).load(speechResultEntity.headUrl).error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civ_live_speech_result_head);
         ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
         if (speechResultMembers.isEmpty()) {
@@ -98,7 +111,7 @@ public class SpeechResultPager extends LiveBasePager {
         }
         final TextView textView = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
         textView.setVisibility(View.VISIBLE);
-        final AtomicInteger integer = new AtomicInteger(65);
+        final AtomicInteger integer = new AtomicInteger(5);
         setCloseText(textView, integer);
         textView.postDelayed(new Runnable() {
             @Override
