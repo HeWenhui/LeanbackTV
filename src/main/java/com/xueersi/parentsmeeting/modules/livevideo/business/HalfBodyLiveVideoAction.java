@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
@@ -65,13 +66,11 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     public HalfBodyLiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView, String mode) {
         super(activity, mLiveBll, mContentView);
         this.mode = mode;
-
         flFirstBackgroundContent = mContentView.findViewById(R.id.fl_course_video_first_content);
         rlFirstBackgroundContent = mContentView.findViewById(R.id.rl_course_video_first_content);
         ll_course_video_loading = mContentView.findViewById(R.id.ll_course_video_loading);
         iv_course_video_loading_bg = mContentView.findViewById(R.id.iv_course_video_loading_bg);
-        initLoadingView();
-
+        ivVodeoLoading = mContentView.findViewById(R.id.rl_live_halfbody_video_loading);
     }
 
 
@@ -142,14 +141,12 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         rlFirstBackgroundView.setBackgroundColor(0xff000000);
         mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
         //logger.e("=======>showSupportTeacherUI:");
-
     }
 
     /**
      * 初始化 loading 资源
      */
     private void initLoadingView() {
-        ivVodeoLoading = mContentView.findViewById(R.id.rl_live_halfbody_video_loading);
         if (ivVodeoLoading != null) {
             if (mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
                 ivVodeoLoading.setImageResource(R.drawable.anim_live_video_loading_arts);
@@ -159,6 +156,11 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         }
     }
 
+    @Override
+    public void onLiveInit(LiveGetInfo getInfo) {
+        super.onLiveInit(getInfo);
+        initLoadingView();
+    }
 
     /**
      * 展示 主讲老师UI页面
@@ -235,7 +237,9 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
             ivTeacherNotpresent.setVisibility(View.GONE);
             rlFirstBackgroundView.setVisibility(View.GONE);
             //showVedioLoading(visible);
-            ivVodeoLoading.setVisibility(View.INVISIBLE);
+            if(ivVodeoLoading != null){
+                ivVodeoLoading.setVisibility(View.INVISIBLE);
+            }
         } else {
             if (ivTeacherNotpresent.getVisibility() == View.VISIBLE) {
                 setTeacherNotpresent(ivTeacherNotpresent);
