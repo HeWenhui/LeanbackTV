@@ -70,6 +70,8 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         rlFirstBackgroundContent = mContentView.findViewById(R.id.rl_course_video_first_content);
         ll_course_video_loading = mContentView.findViewById(R.id.ll_course_video_loading);
         iv_course_video_loading_bg = mContentView.findViewById(R.id.iv_course_video_loading_bg);
+        initLoadingView();
+
     }
 
 
@@ -135,6 +137,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         // 视频加载中UI
         ll_course_video_loading.setVisibility(View.VISIBLE);
         iv_course_video_loading_bg.setVisibility(View.VISIBLE);
+        tvLoadingHint.setVisibility(View.VISIBLE);
         tvLoadingHint.setTextColor(Color.WHITE);
         rlFirstBackgroundView.setBackgroundColor(0xff000000);
         mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.VISIBLE);
@@ -163,7 +166,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
      * @param screenWidth
      */
     private void showMainTeacherUI() {
-        initLoadingView();
         View contentView = activity.findViewById(android.R.id.content);
         View actionBarOverlayLayout = (View) contentView.getParent();
         Rect r = new Rect();
@@ -181,6 +183,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
                     flFirstBackgroundContent.addView(childView);
                 }
             }
+            showVedioLoading(View.VISIBLE);
         }
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView.getLayoutParams();
         //主讲模式铺满屏幕，等比例缩放
@@ -212,6 +215,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
             tvLoadingHint.setTextColor(Color.parseColor("#3B9699"));
         }
 
+        tvLoadingHint.setVisibility(View.INVISIBLE);
         ll_course_video_loading.setVisibility(View.VISIBLE);
         iv_course_video_loading_bg.setVisibility(View.INVISIBLE);
         mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
@@ -220,7 +224,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
 
     @Override
     public void setFirstBackgroundVisible(int visible) {
-        //logger.e( "====>setFirstBackgroundVisible ");
+        logger.e( "====>setFirstBackgroundVisible: "+visible);
         if (rlFirstBackgroundView == null) {
             return;
         }
@@ -230,11 +234,12 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         if (visible == View.GONE) {
             ivTeacherNotpresent.setVisibility(View.GONE);
             rlFirstBackgroundView.setVisibility(View.GONE);
-            showVedioLoading(visible);
+            //showVedioLoading(visible);
+            ivVodeoLoading.setVisibility(View.INVISIBLE);
         } else {
             if (ivTeacherNotpresent.getVisibility() == View.VISIBLE) {
                 setTeacherNotpresent(ivTeacherNotpresent);
-                showVedioLoading(visible);
+                //showVedioLoading(visible);
             }
         }
     }
@@ -412,7 +417,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     private View bufferView;
 
     private void showVedioLoading(final int visible) {
-        if (LiveTopic.MODE_CLASS.equals(mode) && visible != ivVodeoLoading.getVisibility()) {
+        if (LiveTopic.MODE_CLASS.equals(mode) && ivVodeoLoading !=null && visible != ivVodeoLoading.getVisibility()) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
