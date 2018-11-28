@@ -8,21 +8,26 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.Typeface;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechCollectiveBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.InterationVolumeWaveView;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
@@ -34,12 +39,22 @@ public class SpeechCollectivePager extends BasePager {
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "feedback/";
     InterationVolumeWaveView vwvSpeectevalWave;
     LottieAnimationView waveView;
-    ImageView promtView;
+    TextView promtView;
     View promtGroup;
     View waveGroup;
+    TextView countDownView;
+    private View waveDisableView;
 
-    public SpeechCollectivePager(Context context) {
+    private CountDownListener countDownListener;
+
+    public interface CountDownListener {
+        void onCountDownFinish();
+    }
+
+
+    public SpeechCollectivePager(Context context, CountDownListener countDownListener) {
         super(context);
+        this.countDownListener = countDownListener;
         initData();
     }
 
@@ -47,14 +62,38 @@ public class SpeechCollectivePager extends BasePager {
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_speech_collective, null);
         vwvSpeectevalWave = (InterationVolumeWaveView) view.findViewById(R.id.vwv_livevideo_speecteval_wave);
-
+        waveDisableView = view.findViewById(R.id.iv_livevideo_wave_disable);
+        countDownView = view.findViewById(R.id.tv_livevideo_speechcollective_countdown);
         waveView = view.findViewById(R.id.iv_livevideo_feedback_wave);
         promtGroup = view.findViewById(R.id.rl_livevideo_open_close_layout);
         promtView = view.findViewById(R.id.iv_livevideo_open_close);
         waveGroup = view.findViewById(R.id.fl_livevideo_wave_layout);
-        start();
+        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+        countDownView.setTypeface(fontFace);
+        promtView.setTypeface(fontFace);
+
+        promtGroup.setVisibility(View.VISIBLE);
+        promtView.setText("老师开启了集体发言\n踊跃参与吧！");
+
         return view;
     }
+
+
+    public void setCountDownText(long millisUntilFinished) {
+        countDownView.setText(((millisUntilFinished / 1000) + 1) + "秒后请回答");
+    }
+
+    public void setCountDownFinish() {
+        if (countDownListener != null) {
+            countDownListener.onCountDownFinish();
+        }
+        countDownView.setVisibility(View.GONE);
+        waveDisableView.setVisibility(View.GONE);
+        waveView.setVisibility(View.VISIBLE);
+        vwvSpeectevalWave.setVisibility(View.VISIBLE);
+
+    }
+
 
     @Override
     public void initData() {
@@ -71,6 +110,25 @@ public class SpeechCollectivePager extends BasePager {
         layoutParams.rightMargin = LiveVideoPoint.getInstance().getRightMargin() + SizeUtils.Dp2Px(mContext, 14);
         waveGroup.setLayoutParams(layoutParams);
 
+        //如果是退出直播间再进来，不弹出倒计时和灰色收音球
+        final boolean isOnTopic = ShareDataManager.getInstance().getBoolean("isOnTopic", false, ShareDataManager
+                .SHAREDATA_USER);
+
+        if (isOnTopic) {
+            if (countDownListener != null) {
+                countDownListener.onCountDownFinish();
+            }
+            waveDisableView.setVisibility(View.GONE);
+            countDownView.setVisibility(View.GONE);
+            vwvSpeectevalWave.setVisibility(View.VISIBLE);
+            waveView.setVisibility(View.VISIBLE);
+
+        } else {
+            waveDisableView.setVisibility(View.VISIBLE);
+            vwvSpeectevalWave.setVisibility(View.INVISIBLE);
+            waveView.setVisibility(View.INVISIBLE);
+        }
+
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -79,6 +137,17 @@ public class SpeechCollectivePager extends BasePager {
         }, 10);
 
         startWaveAnimation();
+
+        promtView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                promtGroup.setVisibility(View.GONE);
+                if (!isOnTopic) {
+                    countDownView.setVisibility(View.VISIBLE);
+                    countDownTimer.start();
+                }
+            }
+        }, 3000);
 
     }
 
@@ -121,23 +190,29 @@ public class SpeechCollectivePager extends BasePager {
         vwvSpeectevalWave.setVolume(volume);
     }
 
-    public void start() {
-        promtGroup.setVisibility(View.VISIBLE);
-        promtView.setImageResource(R.drawable.ic_livevideo_speech_collective_open);
-        promtView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                promtGroup.setVisibility(View.GONE);
-                waveGroup.setVisibility(View.VISIBLE);
-            }
-        }, 1000);
 
-    }
+    private CountDownTimer countDownTimer = new CountDownTimer(3000, 1000) {
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            setCountDownText(millisUntilFinished);
+
+        }
+
+        @Override
+        public void onFinish() {
+
+            setCountDownFinish();
+
+        }
+    };
 
     public void stop() {
         waveGroup.setVisibility(View.GONE);
         vwvSpeectevalWave.stop();
         promtGroup.setVisibility(View.VISIBLE);
-        promtView.setImageResource(R.drawable.ic_livevideo_speech_collective_close);
+        promtView.setText("老师结束了集体发言");
+        countDownView.setVisibility(View.GONE);
+        countDownTimer.cancel();
     }
 }
