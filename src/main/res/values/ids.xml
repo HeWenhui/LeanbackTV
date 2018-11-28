@@ -809,6 +809,9 @@
     <item name="v_arts_answer_result_detail_bg" type="id" />
     <item name="tv_arts_answer_result_detail_title" type="id" />
     <item name="rcl_arts_answer_result_detail" type="id" />
+    <item name="vs_arts_answer_result_voice" type="id" />
+    <item name="tv_arts_answer_result_voice_right" type="id" />
+    <item name="tv_arts_answer_result_voice_my" type="id" />
     <item name="iv_arts_answer_result_detail_close_btn" type="id" />
     <item name="iv_arts_answer_result_state_head" type="id" />
     <item name="iv_arts_answer_result_detail_head" type="id" />

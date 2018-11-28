@@ -13,12 +13,18 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lyqai on 2017/12/19.
  * 语音答题结果显示
  */
 public class QuestionResultView {
+
     public static View initSelectAnswerRightResultVoice(Context context, VideoResultEntity entity) {
         int goldNum = entity.getGoldNum();
         final View popupWindow_view = LayoutInflater.from(context).inflate(R.layout.pop_question_select_answer_voice_right, null, false);
@@ -109,5 +115,41 @@ public class QuestionResultView {
             }
         });
         return popupWindow_view;
+    }
+
+    public static View initSelectAnswerRightResultVoice(Context context, AnswerResultEntity answerResultEntity, AnswerResultStateListener stateListener) {
+        answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_CORRECT);
+        ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
+        AnswerResultEntity.Answer answer = new AnswerResultEntity.Answer();
+        answerList.add(answer);
+        answerResultEntity.setAnswerList(answerList);
+        ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(context, answerResultEntity, stateListener);
+        return artsPSEAnswerResultPager.getRootView();
+    }
+
+    public static View initFillinAnswerRightResultVoice(Context context, AnswerResultEntity answerResultEntity, AnswerResultStateListener stateListener) {
+        answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_CORRECT);
+        ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
+        answerResultEntity.setAnswerList(answerList);
+        ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(context, answerResultEntity, stateListener);
+        return artsPSEAnswerResultPager.getRootView();
+    }
+
+    /** 语音答题回答错误 */
+    public static View initSelectAnswerWrongResultVoice(Context context, AnswerResultEntity answerResultEntity, AnswerResultStateListener stateListener) {
+        answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_ERRRO);
+        ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
+        answerResultEntity.setAnswerList(answerList);
+        ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(context, answerResultEntity, stateListener);
+        return artsPSEAnswerResultPager.getRootView();
+    }
+
+    /** 语音答题回答错误 */
+    public static View initFillAnswerWrongResultVoice(Context context, AnswerResultEntity answerResultEntity, AnswerResultStateListener stateListener) {
+        answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_ERRRO);
+        ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
+        answerResultEntity.setAnswerList(answerList);
+        ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(context, answerResultEntity, stateListener);
+        return artsPSEAnswerResultPager.getRootView();
     }
 }

@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.Constants;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.config.AppConfig;
@@ -29,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -40,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoti
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 
 import org.json.JSONArray;
@@ -119,6 +122,40 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //            SpeechResultPager speechResultPager = new SpeechResultPager(activity, bottomContent, speechResultEntity);
 //            bottomContent.addView(speechResultPager.getRootView());
 //        }
+        if (AppConfig.DEBUG) {
+            AnswerResultEntity answerResultEntity = new AnswerResultEntity();
+            answerResultEntity.isVoice = 1;
+            answerResultEntity.setEnergy(11);
+            answerResultEntity.setGold(2);
+            answerResultEntity.setIsRight(0);
+            answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_CORRECT);
+            ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
+            AnswerResultEntity.Answer answer = new AnswerResultEntity.Answer();
+            answer.setTestType(AnswerResultEntity.TEST_TYPE_2);
+            List<String> rightAnswers = new ArrayList<>();
+            rightAnswers.add("A");
+            answer.setRightAnswers(rightAnswers);
+            List<String> blankList = new ArrayList<>();
+            blankList.add("C");
+            answer.setBlankList(blankList);
+            List<String> choiceList = new ArrayList<>();
+            choiceList.add("C");
+            answer.setChoiceList(choiceList);
+            answerList.add(answer);
+            answerResultEntity.setAnswerList(answerList);
+            ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(activity, answerResultEntity, new AnswerResultStateListener() {
+                @Override
+                public void onCompeletShow() {
+
+                }
+
+                @Override
+                public void onAutoClose(BasePager basePager) {
+
+                }
+            });
+            bottomContent.addView(artsPSEAnswerResultPager.getRootView());
+        }
     }
 
     public void onPause() {
