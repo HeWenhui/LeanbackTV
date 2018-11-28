@@ -735,7 +735,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     student.setNickname(stu.getString("nickname"));
                     student.setEn_name(stu.getString("en_name"));
                     student.createShowName();
-                    student.setRight(stu.optInt("isRight") == 1);
+                    student.setRight(stu.optInt("isRight") == 1 || stu.optInt("isRight") == 2);
                     String avatar_path = stu.getString("avatar_path");
                     student.setAvatar_path(avatar_path);
                     entity.getStudents().add(student);
