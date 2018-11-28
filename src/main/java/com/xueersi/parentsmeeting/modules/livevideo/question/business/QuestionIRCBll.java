@@ -237,65 +237,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         }
                     }
                 } else {
-                    LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
-                    if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
-                        String num = mainRoomstatus.getExamNum();
-                        if ("on".equals(mainRoomstatus.getExamStatus())) {
-                            VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                            videoQuestionLiveEntity.id = num;
-                            mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
-                            if (mAnswerRankBll != null) {
-                                mAnswerRankBll.setTestId(num);
-                            }
-                        } else {
-                            mQuestionAction.onExamStop(num);
-                        }
-                    }
-
-
-                    if (liveTopic.getVideoQuestionLiveEntity() != null) {
-                        logger.e("======>QuestionIRCBlle:" + "走了错误的逻辑");
-                        if (mQuestionAction != null) {
-
-                            VideoQuestionLiveEntity videoQuestionLiveEntity =liveTopic.getVideoQuestionLiveEntity();
-
-                            JSONObject topicObj = jsonObject.optJSONObject("topic");
-                            videoQuestionLiveEntity.roles = topicObj.optString("roles");
-                            videoQuestionLiveEntity.id = topicObj.optString("id");
-
-                            //解决，老师发题后，学生后进来，无法进入roleplay的问题
-                            //人机的回调
-
-                            if(!TextUtils.isEmpty( videoQuestionLiveEntity.roles)){
-                                if (rolePlayMachineAction == null) {
-                                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                                    rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
-                                }
-
-                                //多人的回调
-                                if (rolePlayAction == null) {
-                                    RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
-                                    rolePlayAction = rolePlayerBll;
-                                }
-                                mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction);
-                                mQuestionAction.setRolePlayAction(rolePlayAction);
-                            }
-
-                            mQuestionAction.showQuestion(videoQuestionLiveEntity);
-                            if (mAnswerRankBll != null) {
-                                mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
-                            }
-                            if (mLiveAutoNoticeBll != null) {
-                                mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
-                                mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
-                            }
-                        }
-                    } else {
-                        logger.e("======>QuestionIRCBlle:" + "正常的逻辑");
-                        if (mQuestionAction != null) {
-                            mQuestionAction.showQuestion(null);
-                        }
-                    }
 //                    JSONObject coursewareH5 = jsonObject.getJSONObject("coursewareH5");
 //                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
 //                    videoQuestionLiveEntity.setNewArtsCourseware(true);
@@ -629,7 +570,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         StringBuilder sb = new StringBuilder();
         String url;
         if("5".equals(type)){
-            url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_ROALPLAY_URL;
+            if(mGetInfo.getPattern() == 2){
+                url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_STANDROALPLAY_URL;
+            }else{
+                url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_ROALPLAY_URL;
+            }
         }else {
             url = mLiveBll.getLiveVideoSAConfig().inner.URL_NEWARTS_CHINESEREADING_URL;
         }

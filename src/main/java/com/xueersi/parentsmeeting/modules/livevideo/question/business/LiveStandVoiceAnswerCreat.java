@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
@@ -124,7 +125,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                 type = questionEntity.getvQuestionType();
             }
         }
-        if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
+        if ( (LiveVideoConfig.isNewArts && entity.getResultType() == 2) || (!LiveVideoConfig.isNewArts && (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4))) {
             String path;
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
 //                questionBll.initSelectAnswerRightResultVoice(entity);
@@ -200,7 +201,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                 updateAchievement.getStuGoldCount();
             }
             // 回答错误提示
-        } else if (entity.getResultType() == QUE_RES_TYPE2) {
+        } else if ((LiveVideoConfig.isNewArts && entity.getResultType() == 0) || (!LiveVideoConfig.isNewArts && entity.getResultType() == QUE_RES_TYPE2)) {
             String path;
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
 //                questionBll.initSelectAnswerWrongResultVoice(entity);

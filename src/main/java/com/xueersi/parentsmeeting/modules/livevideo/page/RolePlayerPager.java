@@ -1157,6 +1157,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         param.setLocalSavePath(saveVideoFile.getAbsolutePath());
         param.setMultRef(false);
         param.setPcm(true);
+        param.setLang(curSubModEva);
         mIse.startRecog(param, new EvaluatorListenerWithPCM() {
             @Override
             public void onBeginOfSpeech() {

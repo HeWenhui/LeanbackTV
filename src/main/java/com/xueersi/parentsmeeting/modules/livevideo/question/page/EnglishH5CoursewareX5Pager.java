@@ -1,6 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -10,9 +16,9 @@ import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
-
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BasePager;
@@ -20,8 +26,8 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
-
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -35,7 +41,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
-
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +48,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -88,6 +94,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 
     private boolean isNewArtsCourseware;
     private HashMap header;
+    private String mGold;
 
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
@@ -129,7 +136,11 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         final String today = dateFormat.format(date);
         final File todayCacheDir = new File(cacheFile, today);
         final File todayLiveCacheDir = new File(todayCacheDir, liveId);
-        mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
+        if (isNewArtsCourseware) {
+            mMorecacheout = new File(todayLiveCacheDir, liveId + "artschild");
+        } else {
+            mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
+        }
         mPublicCacheout = new File(cacheFile, EnglishH5Cache.mPublicCacheoutName);
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
@@ -312,7 +323,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         webSetting.setJavaScriptEnabled(true);
         wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
 
-        if (englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack) {
+        if (englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack || isNewArtsCourseware) {
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
                 public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
@@ -357,6 +368,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                             String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                             WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
                             webResourceResponse.setResponseHeaders(header);
+                            Log.e("Duncan", "artsload");
                             return webResourceResponse;
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -365,72 +377,80 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     return super.shouldInterceptRequest(view, s);
                 }
             });
-            if (isPlayBack) {
-                String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-                // 一题多发的课件预加载(直播回放)
-                String packageId = "";
-                String packageSource = "";
-                String packageAttr = "";
-                releasedPageInfos = LiveVideoConfig.LIVEPLAYBACKINFOS;
-                String teamId = LiveVideoConfig.LIVEPLAYBACKTEAMID;
-                String stuCouId = LiveVideoConfig.LIVEPLAYBACKSTUID;
-                String classId = LiveVideoConfig.LIVEPLAYBACKCLASSID;
-                String classTestId = "";
-                try {
-                    JSONObject jsonObject = new JSONObject(LiveVideoConfig.LIVEPLAYBACKTYPE);
-                    classTestId = jsonObject.optString("ctId");
-                    packageAttr = jsonObject.optString("pAttr");
-                    packageId = jsonObject.optString("pId");
-                    packageSource = jsonObject.optString("pSrc");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                String livebackurl = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
-                String realurl = TextUtils.isEmpty(AppConfig.LIVEPLAYBACKINFOS) ? livebackurl : AppConfig.LIVEPLAYBACKINFOS;
-                mLoadUrls = realurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.LIVEPLAYBACKSTAGE + "&isPlayBack=1" + "&nonce=" + "" + UUID.randomUUID();
+            if (isNewArtsCourseware) {
+                String loadUrl = url;
+                loadUrl(loadUrl);
+                reloadurl = loadUrl;
+                Loger.e(TAG, "======> newArtsH5CourseWare url:" + url);
             } else {
-                // 一题多发的课件预加载(直播)
-                String packageId = "";
-                String packageSource = "";
-                String packageAttr = "";
-                String teamId = "";
-                String stuCouId = "";
-                String stuId = "";
-                String classId = "";
-                String classTestId = "";
-                try {
-                    JSONObject jsonObject = new JSONObject(mShareDataManager.getString(LiveVideoConfig.newEnglishH5, "{}", ShareDataManager.SHAREDATA_USER));
-                    packageId = jsonObject.optString("packageId");
-                    packageSource = jsonObject.optString("packageSource");
-                    packageAttr = jsonObject.optString("packageAttr");
-                    releasedPageInfos = jsonObject.optString("releasedPageInfos");
-                    stuId = jsonObject.optString("stuId");
-                    stuCouId = jsonObject.optString("stuCouId");
-                    classId = jsonObject.optString("classId");
-                    teamId = jsonObject.optString("teamId");
-                    classTestId = jsonObject.optString("classTestId");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (isPlayBack) {
+                    String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                    // 一题多发的课件预加载(直播回放)
+                    String packageId = "";
+                    String packageSource = "";
+                    String packageAttr = "";
+                    releasedPageInfos = LiveVideoConfig.LIVEPLAYBACKINFOS;
+                    String teamId = LiveVideoConfig.LIVEPLAYBACKTEAMID;
+                    String stuCouId = LiveVideoConfig.LIVEPLAYBACKSTUID;
+                    String classId = LiveVideoConfig.LIVEPLAYBACKCLASSID;
+                    String classTestId = "";
+                    try {
+                        JSONObject jsonObject = new JSONObject(LiveVideoConfig.LIVEPLAYBACKTYPE);
+                        classTestId = jsonObject.optString("ctId");
+                        packageAttr = jsonObject.optString("pAttr");
+                        packageId = jsonObject.optString("pId");
+                        packageSource = jsonObject.optString("pSrc");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    String livebackurl = LiveVideoConfig.isSmallChinese ? "https://app.chs.xueersi.com/LiveExam/getCourseWareTestHtml" : "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
+                    String realurl = TextUtils.isEmpty(AppConfig.LIVEPLAYBACKINFOS) ? livebackurl : AppConfig.LIVEPLAYBACKINFOS;
+                    mLoadUrls = realurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.LIVEPLAYBACKSTAGE + "&isPlayBack=1" + "&nonce=" + "" + UUID.randomUUID();
+                } else {
+                    // 一题多发的课件预加载(直播)
+                    String packageId = "";
+                    String packageSource = "";
+                    String packageAttr = "";
+                    String teamId = "";
+                    String stuCouId = "";
+                    String stuId = "";
+                    String classId = "";
+                    String classTestId = "";
+                    try {
+                        JSONObject jsonObject = new JSONObject(mShareDataManager.getString(LiveVideoConfig.newEnglishH5, "{}", ShareDataManager.SHAREDATA_USER));
+                        packageId = jsonObject.optString("packageId");
+                        packageSource = jsonObject.optString("packageSource");
+                        packageAttr = jsonObject.optString("packageAttr");
+                        releasedPageInfos = jsonObject.optString("releasedPageInfos");
+                        stuId = jsonObject.optString("stuId");
+                        stuCouId = jsonObject.optString("stuCouId");
+                        classId = jsonObject.optString("classId");
+                        teamId = jsonObject.optString("teamId");
+                        classTestId = jsonObject.optString("classTestId");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    String defaulturl = LiveVideoConfig.isSmallChinese ? "https://app.chs.xueersi.com/LiveExam/getCourseWareTestHtml" : "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
+                    String dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
+                    mLoadUrls = dynamicurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.educationstage + "&isPlayBack=0" + "&nonce=" + "" + UUID.randomUUID();
+                    // 上传接收到教师端指令的日志
+                    StableLogHashMap logHashMap = new StableLogHashMap("receivePlatformtest");
+                    logHashMap.put("os", "Android");
+                    logHashMap.put("sno", "2");
+                    logHashMap.put("testids", releasedPageInfos);
+                    logHashMap.put("stable", "1");
+                    logHashMap.put("nonce", LiveVideoConfig.nonce);
+                    umsAgentDebugSys("live_platformtest", logHashMap.getData());
                 }
-                String defaulturl = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
-                String dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
-                mLoadUrls = dynamicurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.educationstage + "&isPlayBack=0" + "&nonce=" + "" + UUID.randomUUID();
-                // 上传接收到教师端指令的日志
-                StableLogHashMap logHashMap = new StableLogHashMap("receivePlatformtest");
-                logHashMap.put("os", "Android");
-                logHashMap.put("sno", "2");
-                logHashMap.put("testids", releasedPageInfos);
-                logHashMap.put("stable", "1");
-                logHashMap.put("nonce", LiveVideoConfig.nonce);
-                umsAgentDebugSys("live_platformtest", logHashMap.getData());
+                if (allowTeamPk) {
+                    mLoadUrls += "&isShowTeamPk=1";
+                }
+                loadUrl(mLoadUrls);
+                logger.e("======> mulloadUrlLives:" + mLoadUrls);
+                reloadurl = mLoadUrls;
+                logger.e("======> mulloadUrlLive:" + reloadurl);
             }
-            if (allowTeamPk) {
-                mLoadUrls += "&isShowTeamPk=1";
-            }
-            loadUrl(mLoadUrls);
-            logger.e("======> mulloadUrlLives:" + mLoadUrls);
-            reloadurl = mLoadUrls;
-            logger.e("======> mulloadUrlLive:" + reloadurl);
         } else {
             if (isNewArtsCourseware) {
                 String loadUrl = url;
@@ -546,6 +566,25 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         Loger.e("EnglishH5CourseWareX5Pager",
                 "=========>showAnswerResult_LiveVideo:" + data);
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
+//        if(LiveVideoConfig.isStandLive){
+//            parseData(data);
+////            showH5Result();
+//        }else{
+//            EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
+//        }
+    }
+
+    private void parseData(String data) {
+        try {
+            JSONObject jsonObject = new JSONObject(data);
+            JSONObject dataObject = jsonObject.optJSONObject("data");
+            if (dataObject.has("total")) {
+                JSONObject totalObject = dataObject.getJSONObject("total");
+                mGold = totalObject.optString("gold");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -588,6 +627,32 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 
     public EnglishH5Entity getEnglishH5Entity() {
         return englishH5Entity;
+    }
+
+    private void setRightGold(Context context, LottieAnimationView lottieAnimationView, int goldCount) {
+        String num = "获得 " + goldCount + " 枚金币";
+        AssetManager manager = context.getAssets();
+        Bitmap img_7Bitmap;
+        try {
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/my_right/img_22.png"));
+//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
+            Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(creatBitmap);
+            canvas.drawBitmap(img_7Bitmap, 0, 0, null);
+            Paint paint = new Paint();
+            paint.setTextSize(48);
+            paint.setColor(0xffCC6E12);
+            Typeface fontFace = FontCache.getTypeface(context, "fangzhengcuyuan.ttf");
+            paint.setTypeface(fontFace);
+            float width = paint.measureText(num);
+            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
+            img_7Bitmap.recycle();
+            img_7Bitmap = creatBitmap;
+        } catch (IOException e) {
+            logger.e("setRightGold", e);
+            return;
+        }
+        lottieAnimationView.updateBitmap("image_22", img_7Bitmap);
     }
 
 }
