@@ -563,7 +563,11 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         StringBuilder sb = new StringBuilder();
         String url;
         if("5".equals(type)){
-            url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_ROALPLAY_URL;
+            if(mVideoEntity.getPattern() == 2){
+                url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_STANDROALPLAY_URL;
+            }else{
+                url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_ROALPLAY_URL;
+            }
         }else {
             url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_CHINESEREADING_URL;
         }
