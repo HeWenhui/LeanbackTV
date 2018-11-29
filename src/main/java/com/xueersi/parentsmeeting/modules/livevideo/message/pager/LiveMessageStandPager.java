@@ -299,6 +299,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
      * @param isVisible
      */
     private boolean isNotExpericence = true;
+
     public void setStarGoldImageViewVisible(boolean isVisible) {
         isNotExpericence = isVisible;
         btnVoiceMesOpen.setVisibility(View.GONE);
@@ -764,18 +765,20 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                                         isShowSpeechRecog = (mRecogtestEndTime - mRecogtestBeginTime) < 3000l ? true
                                                 : false;
                                         if (isShowSpeechRecog) {
-                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog, ShareDataManager.SHAREDATA_USER);
+                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog,
+                                                    ShareDataManager.SHAREDATA_USER);
                                             initOpenBt(false, true);
                                         }
                                     }
                                 }
+
                                 @Override
                                 public void onVolumeUpdate(int volume) {
 
                                 }
                             });
                         }
-                    },4000);
+                    }, 4000);
                 }
             }
 
@@ -1289,7 +1292,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         }
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
-                        if (isNotExpericence){
+                        if (isNotExpericence) {
                             btnVoiceMesOpen.setVisibility(View.VISIBLE);
                         }
                         Animation animation;
@@ -1550,7 +1553,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         logger.i("显示聊天框");
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
-                        if (isNotExpericence){
+                        if (isNotExpericence) {
                             btnVoiceMesOpen.setVisibility(View.VISIBLE);
                         }
                         if (isMessageLayoutShow) {
@@ -1719,14 +1722,14 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     public void stopEvaluator() {
         logger.d("stopEvaluator()");
+        if (isVoice && mAudioRequest != null) {
+            mAudioRequest.release();
+        }
         isSpeekDone = true;
         isVoice = false;
         mainHandler.removeCallbacks(mNorecogRunnable);
         mainHandler.removeCallbacks(mNovoiceRunnable);
         mainHandler.removeCallbacks(mHintRunnable);
-        if (mAudioRequest != null) {
-            mAudioRequest.release();
-        }
         if (mSpeechUtils != null) {
             vwvVoiceChatWave.setVisibility(View.GONE);
             mSpeechUtils.cancel();
