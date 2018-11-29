@@ -146,8 +146,8 @@ public class SpeakerRecognitioner {
 //                                byte[] pcm_data = toByteArray(mPCMBuffer, readSize);
 //                            logger.d("start:predict=" + readSize + ",pcm_data=" + pcm_data.length);
                         synchronized (lock) {
-                            if (destory) {
-                                logToFile.d("start:predict=destory");
+                            if (destory || audioRequest.get()) {
+                                logToFile.d("start:predict=" + destory + ",Request=" + audioRequest.get());
                                 stop();
                                 return;
                             }
