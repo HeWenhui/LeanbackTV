@@ -174,7 +174,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     /** 当前音量 */
     private int mVolume = 0;
 
-    boolean isVoice = true;
+    boolean isVoice = false;
     //当前语音输入转换的文本
     String mVoiceContent = "";
     String mMsgContent = "";

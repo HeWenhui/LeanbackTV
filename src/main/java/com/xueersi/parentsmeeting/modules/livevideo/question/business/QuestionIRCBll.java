@@ -481,6 +481,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         logger.e("======>onNotice:" + type + ":" + object);
         switch (type) {
             case XESCODE.SENDQUESTION: {
+                logger.i("onNotice SENDQUESTION ");
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.type = object.optString("ptype");
                 videoQuestionLiveEntity.id = object.optString("id");
@@ -538,6 +539,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
             break;
             case XESCODE.ARTS_SEND_QUESTION: {
+                logger.i("onNotice ARTS_SEND_QUESTION");
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.gold = object.optDouble("gold");
                 videoQuestionLiveEntity.id = getIdStr(object.optJSONArray("id"));
@@ -578,7 +580,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
 
                 if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay .equals( "1")){
-                    logger.i("新课件平台，走人机start,拉取试题");
+                    logger.i("onNotice 新课件平台，走人机start,拉取试题");
                     if (rolePlayMachineAction == null) {
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
                         mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
@@ -590,6 +592,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
             }
             case XESCODE.STOPQUESTION:
+                logger.i("onNotice STOPQUESTION");
                 mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                 if (mQuestionAction != null) {
                     try {
@@ -606,6 +609,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
 
             case XESCODE.ARTS_STOP_QUESTION: {
+                logger.i("onNotice ARTS_STOP_QUESTION");
                 mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                 String ptype = object.optString("ptype");
                 String package_socurce = object.optString("package_socurce");
@@ -619,6 +623,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
             }
             case XESCODE.EXAM_START:
+                logger.i("onNotice EXAM_START ");
                 if (mQuestionAction != null) {
                     String num = object.optString("num", "0");
                     String nonce = object.optString("nonce");
@@ -633,6 +638,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
                 break;
             case XESCODE.EXAM_STOP: {
+                logger.i("onNotice EXAM_STOP ");
                 if (mQuestionAction != null) {
                     String num = object.optString("num", "-1");
                     mQuestionAction.onExamStop(num);
@@ -644,6 +650,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
             }
             case XESCODE.XCR_ROOM_ROLE_READ: {
+                logger.i("onNotice XCR_ROOM_ROLE_READ ");
                 if (rolePlayAction == null) {
                     RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
                     mQuestionAction.setRolePlayAction(rolePlayerBll);
