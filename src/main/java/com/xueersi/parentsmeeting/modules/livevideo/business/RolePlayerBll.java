@@ -225,24 +225,30 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            mRolePlayerEntity = mRolePlayerHttpResponseParser.parserNewArtsRolePlayTestInfos(responseEntity, mRolePlayerEntity);
-                            logger.i( "服务器试题信息返回 " + responseEntity.getJsonObject().toString());
-                            logger.i( "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
-                                    ".getLstRolePlayerMessage()" +
-                                    ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
-                                    mRolePlayerEntity.toString());
+                            mRolePlayerEntity = mRolePlayerHttpResponseParser.parserNewArtsMutRolePlayTestInfos(responseEntity, mRolePlayerEntity);
+                            if(responseEntity != null && responseEntity.getJsonObject() != null){
+                                logger.i( "多人新课件服务器试题信息返回 " + responseEntity.getJsonObject().toString());
+                                logger.i( "多人新课件服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
+                                        ".getLstRolePlayerMessage()" +
+                                        ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
+                                        mRolePlayerEntity.toString());
+                            }
+
                         }
 
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
-                            logger.i( "onPmError:" + responseEntity.getErrorMsg());
+                            if(responseEntity != null){
+                                logger.i( "onPmError:多人新课件" + responseEntity.getErrorMsg());
+                            }
+
                         }
 
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
-                            logger.i( "onPmFailure:" + msg);
+                            logger.i( "onPmFailure:多人新课件" + msg);
                         }
                     });
         }
@@ -651,24 +657,30 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            mRolePlayerHttpResponseParser.parserRolePlayTestInfos(responseEntity, mRolePlayerEntity);
-                            logger.i( "服务器试题信息返回 " + responseEntity.getJsonObject().toString());
-                            logger.i( "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
-                                    ".getLstRolePlayerMessage()" +
-                                    ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
-                                    mRolePlayerEntity.toString());
+                            mRolePlayerHttpResponseParser.parserMutRolePlayTestInfos(responseEntity, mRolePlayerEntity);
+                            if(responseEntity != null && responseEntity.getJsonObject() != null){
+                                logger.i( "多人服务器试题信息返回 " + responseEntity.getJsonObject().toString());
+                                logger.i( "多人服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
+                                        ".getLstRolePlayerMessage()" +
+                                        ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
+                                        mRolePlayerEntity.toString());
+                            }
+
                         }
 
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
-                            logger.i( "onPmError:" + responseEntity.getErrorMsg());
+                            if(responseEntity != null){
+                                logger.i( "onPmError:多人" + responseEntity.getErrorMsg());
+                            }
+
                         }
 
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
-                            logger.i( "onPmFailure:" + msg);
+                            logger.i( "onPmFailure:多人" + msg);
                         }
                     });
         }

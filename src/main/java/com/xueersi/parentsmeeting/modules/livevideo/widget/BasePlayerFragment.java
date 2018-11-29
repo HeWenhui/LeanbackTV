@@ -806,9 +806,10 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                 vPlayer.setState(PlayerService.STATE_NEED_RESUME);
             }
             vPlayer.releaseSurface();
-            if (mIsPlayerEnable && vPlayer.needResume()) {
-                vPlayer.start();
-            }
+            //老逻辑，单没有用
+//            if (mIsPlayerEnable && vPlayer.needResume()) {
+//                vPlayer.start();
+//            }
         }
     }
 

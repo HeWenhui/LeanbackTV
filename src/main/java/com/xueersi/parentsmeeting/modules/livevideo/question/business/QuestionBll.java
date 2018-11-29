@@ -739,6 +739,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             logger.i("--------------新课件平台走rolaplay人机");
                             //人机，roles不为空的题型
                             if (rolePlayMachineBll != null) {
+                                logger.i("--------------新课件平台走rolaplay人机，初始化数据");
                                 rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
                                 rolePlayMachineBll.setBottomView(rlQuestionContent);
                                 rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
