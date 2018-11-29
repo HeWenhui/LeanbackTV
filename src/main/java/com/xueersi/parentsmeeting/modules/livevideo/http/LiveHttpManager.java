@@ -1328,6 +1328,184 @@ public class LiveHttpManager extends BaseHttpBusiness {
                 requestCallBack);
     }
 
+    /**
+     * 获取分队信息
+     *
+     * @param classId
+     * @param teamId
+     * @param requestCallBack
+     */
+    public void getCHTeamInfo(String id, String classId, String teamId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_CHPK_PKTEAMINFO, params, requestCallBack);
+    }
+
+    /**
+     * 获取pk 对手信息
+     *
+     * @param classId
+     * @param teamId
+     */
+    public void getCHPkAdversary(String classId, String teamId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_CHPK_MATCHTEAM, params, requestCallBack);
+    }
+
+    /**
+     * 学生获取自己宝箱
+     *
+     * @param isWin
+     * @param classId
+     * @param teamId
+     * @param stuId
+     * @param isAIPartner 是否是 Ai伴侣直播间
+     */
+    public void getCHStuChest(int isWin, String classId, String teamId, String stuId, String liveId, boolean
+            isAIPartner, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("isWin", isWin + "");
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_CHPK_GETSTUCHESTURL + "/" + liveId, params, requestCallBack);
+
+    }
+
+    /**
+     * 获取战队开宝箱结果
+     *
+     * @param liveId
+     * @param stuId
+     * @param teamId
+     * @param classId
+     * @param isAIPartner
+     */
+    public void getCHClassChestResult(String liveId, String stuId, String teamId, String classId, boolean isAIPartner,
+                                      HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_CHPK_GETCLASSCHESTRESULT + "/" + liveId, params, requestCallBack);
+    }
+
+    /**
+     * 投票 能量
+     *
+     * @param liveId
+     * @param teamId
+     * @param classId
+     * @param stuId
+     * @param requestCallBack
+     */
+    public void addCHPersonAndTeamEnergy(String liveId, int addEnergy, String teamId, String classId, String stuId,
+                                         HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("addEnergy", addEnergy + "");
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_CHPK_ADDPERSONANDTEAMENERGY + "/" + liveId, params, requestCallBack);
+    }
+
+    /**
+     * 请求 学生当前场次 的总能量值 和自己金币 及对手总能量值
+     *
+     * @param liveId
+     * @param teamId
+     * @param classId
+     * @param stuId
+     * @param requestCallBack
+     */
+    public void liveCHStuGoldAndTotalEnergy(String liveId, String teamId, String classId, String stuId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("stuId", stuId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_CHPK_LIVESTUGOLDANDTOTALENERGY + "/" + liveId, params, requestCallBack);
+    }
+
+    /**
+     * 每题战队能量 和贡献之星
+     *
+     * @param liveId
+     * @param teamId
+     * @param classId
+     * @param stuId
+     * @param testId
+     * @param testPlan        互动课件或者互动题时 testPlan= ''; 测试卷请求时testId= ' '
+     * @param requestCallBack
+     */
+    public void teamCHEnergyNumAndContributionStar(String liveId, String teamId, String classId, String stuId, String testId, String testPlan, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("testPlan", testPlan);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR + "/" + liveId, params, requestCallBack);
+    }
+
+    /**
+     * 每题pk 结果
+     *
+     * @param liveId
+     * @param teamId
+     * @param classId
+     * @param requestCallBack
+     */
+    public void stuCHPKResult(String liveId, String teamId, String classId, String testId,String testPlan, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("testPlan", testPlan);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_CHPK_STUPKRESULT + "/" + liveId, params, requestCallBack);
+    }
+
+    /**
+     * 每题战队能量 和贡献之星
+     *
+     * @param liveId
+     * @param teamId
+     * @param classId
+     * @param stuId
+     * @param tests
+     * @param ctId            互动课件或者互动题时 testPlan= ''; 测试卷请求时testId= ' '
+     * @param requestCallBack
+     */
+    public void teamCHEnergyNumAndContributionmulStar(String liveId, String teamId, String classId, String stuId,
+                                                      String tests,
+                                                      String ctId, String pSrc, HttpCallBack requestCallBack) {
+
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("tests", tests);
+        params.addBodyParam("ctId", ctId);
+        params.addBodyParam("pSrc", pSrc);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params, requestCallBack);
+    }
+
+
 
     /**
      * 每题pk 结果
