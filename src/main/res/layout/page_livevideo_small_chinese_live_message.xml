@@ -100,7 +100,7 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignTop="@+id/rl_livevideo_message_top"
             android:layout_alignParentRight="true"
             android:layout_alignBottom="@+id/view_help_line"
@@ -114,7 +114,7 @@
             <ListView
                 android:id="@+id/lv_livevideo_small_chinese_live_message"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="13dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginRight="12dp"
