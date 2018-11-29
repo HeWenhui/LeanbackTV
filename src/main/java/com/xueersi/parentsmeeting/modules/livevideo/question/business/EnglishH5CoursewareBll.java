@@ -729,56 +729,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
     @Override
-    public void initArtsSelectAnswerRightResultVoice(AnswerResultEntity entity) {
+    public void initArtsAnswerRightResultVoice(AnswerResultEntity entity) {
         final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(context, entity, new AnswerResultStateListener() {
-            @Override
-            public void onCompeletShow() {
-                disMissAnswerResult();
-            }
-
-            @Override
-            public void onAutoClose(BasePager basePager) {
-
-            }
-        });
-        initQuestionAnswerReslut(popupWindow_view, false);
-    }
-
-    @Override
-    public void initArtsFillinAnswerRightResultVoice(AnswerResultEntity entity) {
-        View popupWindow_view = QuestionResultView.initFillinAnswerRightResultVoice(context, entity, new AnswerResultStateListener() {
-            @Override
-            public void onCompeletShow() {
-                disMissAnswerResult();
-            }
-
-            @Override
-            public void onAutoClose(BasePager basePager) {
-
-            }
-        });
-        initQuestionAnswerReslut(popupWindow_view, false);
-    }
-
-    @Override
-    public void initArtsSelectAnswerWrongResultVoice(AnswerResultEntity entity) {
-        View popupWindow_view = QuestionResultView.initSelectAnswerWrongResultVoice(context, entity, new AnswerResultStateListener() {
-            @Override
-            public void onCompeletShow() {
-                disMissAnswerResult();
-            }
-
-            @Override
-            public void onAutoClose(BasePager basePager) {
-
-            }
-        });
-        initQuestionAnswerReslut(popupWindow_view, false);
-    }
-
-    @Override
-    public void initArtsFillAnswerWrongResultVoice(AnswerResultEntity entity) {
-        View popupWindow_view = QuestionResultView.initFillAnswerWrongResultVoice(context, entity, new AnswerResultStateListener() {
             @Override
             public void onCompeletShow() {
                 disMissAnswerResult();

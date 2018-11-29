@@ -389,7 +389,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             }
             SpannableString spannableStringBuilder = new SpannableString("你的答案：" + myAnswer);
             if (answer.getIsRight() == 0) {
-                spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFF756565), 5, spannableStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFFE65453), 5, spannableStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             } else {
                 spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFF77AF1F), 5, spannableStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }

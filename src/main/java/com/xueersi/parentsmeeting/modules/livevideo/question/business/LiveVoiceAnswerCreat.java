@@ -91,22 +91,8 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             if (answerRightResultVoice instanceof NewArtsAnswerRightResultVoice) {
                 NewArtsAnswerRightResultVoice artsAnswerRightResultVoice = (NewArtsAnswerRightResultVoice) answerRightResultVoice;
                 AnswerResultEntity answerResultEntity = AnswerResultEntity.getAnswerResultEntity(videoQuestionLiveEntity, entity);
-                if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE2) {
-                    if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
-                        artsAnswerRightResultVoice.initArtsSelectAnswerRightResultVoice(answerResultEntity);
-                    } else {
-                        artsAnswerRightResultVoice.initArtsFillinAnswerRightResultVoice(answerResultEntity);
-                    }
-                    isSuccess = true;
-                    // 回答错误提示
-                } else if (entity.getResultType() == 0) {
-                    if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
-                        artsAnswerRightResultVoice.initArtsSelectAnswerWrongResultVoice(answerResultEntity);
-                    } else {
-                        artsAnswerRightResultVoice.initArtsFillAnswerWrongResultVoice(answerResultEntity);
-                    }
-                    // 填空题部分正确提示
-                }
+                artsAnswerRightResultVoice.initArtsAnswerRightResultVoice(answerResultEntity);
+                isSuccess = answerResultEntity.getIsRight() == 2;
             } else {
                 if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE2) {
                     if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {

@@ -268,6 +268,7 @@ public class AnswerResultEntity {
 
     public static AnswerResultEntity getAnswerResultEntity(VideoQuestionLiveEntity videoQuestionLiveEntity, VideoResultEntity entity) {
         AnswerResultEntity answerResultEntity = new AnswerResultEntity();
+        answerResultEntity.isVoice = 1;
         ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
         answerResultEntity.setAnswerList(answerList);
         if (entity.getResultType() == VideoResultEntity.QUE_RES_TYPE1) {

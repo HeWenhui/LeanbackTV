@@ -53,32 +53,12 @@ public interface BaseVoiceAnswerCreat {
 
     interface NewArtsAnswerRightResultVoice extends AnswerRightResultVoice {
         /**
-         * 选择题正确
+         * 语音答题结果
          *
          * @param entity
          */
-        void initArtsSelectAnswerRightResultVoice(AnswerResultEntity entity);
+        void initArtsAnswerRightResultVoice(AnswerResultEntity entity);
 
-        /**
-         * 填空题正确
-         *
-         * @param entity
-         */
-        void initArtsFillinAnswerRightResultVoice(AnswerResultEntity entity);
-
-        /**
-         * 选择题错误
-         *
-         * @param entity
-         */
-        void initArtsSelectAnswerWrongResultVoice(AnswerResultEntity entity);
-
-        /**
-         * 填空题错误
-         *
-         * @param entity
-         */
-        void initArtsFillAnswerWrongResultVoice(AnswerResultEntity entity);
     }
 
     /**
