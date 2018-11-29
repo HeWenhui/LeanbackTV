@@ -161,8 +161,12 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         //拉取试题
-        requestTestInfos();
-
+        boolean isNew = videoQuestionLiveEntity.isNewArtsH5Courseware();
+        if(isNew){
+            requestNewArtsTestInfos();
+        }else{
+            requestTestInfos();
+        }
         //addPagerToWindow();
     }
 
@@ -176,7 +180,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                 HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        mRolePlayerEntity = mRolePlayerHttpResponseParser.parserRolePlayInfos(responseEntity);
+                        mRolePlayerEntity = mRolePlayerHttpResponseParser.parserRolePlayGroupAndTestInfos(responseEntity);
                         logger.i("服务器试题信息返回 " + responseEntity.getJsonObject().toString());
                         logger.i( "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
                                 ".getLstRolePlayerMessage()" +
@@ -201,7 +205,35 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                     }
                 });
     }
+    // 文科新课件平台获取试题信息
+    private void requestNewArtsTestInfos() {
+        if (mRolePlayerEntity != null) {
+            mRolePlayerHttpManager.requestNewArtsRolePlayTestInfos(mLiveId, mStuCouId, videoQuestionLiveEntity.id, mLiveGetInfo.getStuId(),new
+                    HttpCallBack(false) {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            mRolePlayerEntity =  mRolePlayerHttpResponseParser.parserNewRolePlayGroupAndTestInfos(responseEntity);
+                            logger.i( "服务器试题信息返回 " + responseEntity.getJsonObject().toString());
+                            logger.i( "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
+                                    ".getLstRolePlayerMessage()" +
+                                    ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
+                                    mRolePlayerEntity.toString());
+                        }
 
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            super.onPmError(responseEntity);
+                            logger.i( "onPmError:" + responseEntity.getErrorMsg());
+                        }
+
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            super.onPmFailure(error, msg);
+                            logger.i( "onPmFailure:" + msg);
+                        }
+                    });
+        }
+    }
     /**
      * 将roleplay pager挂载到直播窗口
      */

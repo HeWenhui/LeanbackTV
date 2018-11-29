@@ -221,6 +221,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                 videoQuestionLiveEntity.questiontype = onlineTechObj.optString("questiontype");
                                 videoQuestionLiveEntity.setIsVoice(onlineTechObj.optString("isVoice"));
                             }
+                            //解决，老师发题后，学生后进来，无法进入roleplay的问题
+                            //人机的回调
+
+                            enterLiveRplayAfterTeacherRead(videoQuestionLiveEntity);
 //                            videoQuestionLiveEntity.setUrl(buildCourseUrl(getIdStr(onlineTechObj.getJSONArray("id"))));
                             logger.e("======> onTopic 1111:" + mQuestionAction);
                             if (mQuestionAction != null && (questiongtype.contains(videoQuestionLiveEntity.type))) {
@@ -303,20 +307,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     //解决，老师发题后，学生后进来，无法进入roleplay的问题
                     //人机的回调
 
-                    if(!TextUtils.isEmpty( videoQuestionLiveEntity.roles)){
-                        if (rolePlayMachineAction == null) {
-                            RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                            rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
-                        }
-
-                        //多人的回调
-                        if (rolePlayAction == null) {
-                            RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
-                            rolePlayAction = rolePlayerBll;
-                        }
-                        mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction);
-                        mQuestionAction.setRolePlayAction(rolePlayAction);
-                    }
+                    enterLiveRplayAfterTeacherRead(videoQuestionLiveEntity);
 
                     mQuestionAction.showQuestion(videoQuestionLiveEntity);
                     if (mAnswerRankBll != null) {
@@ -335,6 +326,23 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
         }
 
+    }
+
+    private void enterLiveRplayAfterTeacherRead(VideoQuestionLiveEntity videoQuestionLiveEntity) {
+        if(!TextUtils.isEmpty( videoQuestionLiveEntity.roles) || "5".equals(videoQuestionLiveEntity.type)){
+            if (rolePlayMachineAction == null) {
+                RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
+            }
+
+            //多人的回调
+            if (rolePlayAction == null) {
+                RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
+                rolePlayAction = rolePlayerBll;
+            }
+            mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction);
+            mQuestionAction.setRolePlayAction(rolePlayAction);
+        }
     }
 
 

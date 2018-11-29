@@ -3,6 +3,18 @@
     android:layout_height="match_parent">
 
 
+    <TextView
+        android:id="@+id/tv_livevideo_speechcollective_countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_livevideo_jitiyafan_tips_bg_img_normal"
+        android:gravity="center"
+        android:textColor="#ffc33c00"
+        android:visibility="gone"
+        android:textSize="19sp" />
+
+
     <RelativeLayout
         android:id="@+id/rl_livevideo_open_close_layout"
         android:layout_width="match_parent"
@@ -10,12 +22,15 @@
         android:background="#99000000"
         android:visibility="gone">
 
-        <ImageView
+        <TextView
             android:id="@+id/iv_livevideo_open_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:scaleType="centerCrop" />
+            android:textColor="#ff7d553f"
+            android:textSize="20sp"
+            android:background="@drawable/bg_livevideo_jsttl_toast_bg_normal"
+            android:gravity="center" />
 
     </RelativeLayout>
 
@@ -24,17 +39,17 @@
         android:id="@+id/fl_livevideo_wave_layout"
         android:layout_width="73dp"
         android:layout_height="78dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="14dp"
-        android:visibility="invisible">
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="14dp">
 
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.InterationVolumeWaveView
             android:id="@id/vwv_livevideo_speecteval_wave"
             android:layout_width="38dp"
             android:layout_height="34dp"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:visibility="invisible" />
 
 
         <com.airbnb.lottie.LottieAnimationView
@@ -42,8 +57,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:visibility="invisible" />
 
+        <ImageView
+            android:id="@+id/iv_livevideo_wave_disable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_livevideo_jitifayan_icon_disable" />
 
     </FrameLayout>
 
