@@ -27,6 +27,12 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
     AllRankEntity allRankEntity;
     private List<RankEntity> mArtsRankEntities = null;
     private CommonAdapter<RankEntity> mArtsGroupCommonAdapter;
+    /** 选中了哪一个 0,1,2从左到右 */
+    private int which = LEFT_SELECT;
+
+    private static final int LEFT_SELECT = 0;
+    private static final int RIGHT_SELECT = 2;
+    private static final int MID_SELECT = 1;
 
     public SmallChineseRankPager(Context context) {
         super(context);
@@ -68,11 +74,13 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
             @Override
             public void onClick(View v) {
                 select(true, false, false);
+
                 tvMiddle.setText("学员");
                 if (allRankEntity != null) {
                     mArtsRankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
                     mArtsGroupCommonAdapter.updateData(mArtsRankEntities);
                 }
+
             }
         });
 
@@ -106,7 +114,15 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
     @Override
     public void initData() {
         logger.i("获取到数据，成功复制");
-        mArtsRankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
+        if (which == LEFT_SELECT) {
+            mArtsRankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
+        } else if (which == MID_SELECT) {
+            mArtsRankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
+        } else if (which == RIGHT_SELECT) {
+            mArtsRankEntities = allRankEntity.getMyRankEntityClass().getRankEntities();
+        } else {
+            mArtsRankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
+        }
         final int colorMe = mContext.getResources().getColor(R.color.COLOR_005952);
         final int colorOther = mContext.getResources().getColor(R.color.COLOR_000000);
         mArtsGroupCommonAdapter = new CommonAdapter<RankEntity>(mArtsRankEntities) {
