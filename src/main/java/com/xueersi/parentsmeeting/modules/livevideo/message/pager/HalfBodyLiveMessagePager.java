@@ -617,7 +617,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         lvCommonWord.setAdapter(new CommonAdapter<String>(words) {
             @Override
             public AdapterItemInterface<String> getItemView(Object type) {
-                return new HalfBodyLiveCommonWordItem(mContext, this);
+                return generateHotWordItem(this);
             }
         });
 
@@ -651,6 +651,15 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         });
         //提前测量 一次尺寸信息，用于 popWindow 显示定位
         contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+    }
+
+    /**
+     * 获取 热词item
+     * @param adapter
+     * @return
+     */
+    protected AdapterItemInterface<String> generateHotWordItem(CommonAdapter adapter) {
+        return new HalfBodyLiveCommonWordItem(mContext, adapter);
     }
 
     /**

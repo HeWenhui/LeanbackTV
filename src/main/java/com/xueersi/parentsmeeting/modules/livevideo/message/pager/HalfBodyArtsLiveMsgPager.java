@@ -3,9 +3,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 import android.content.Context;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.HalfBodyLiveArtsCommonWordItem;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.HalfBodyLiveCommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.ui.adapter.AdapterItemInterface;
+import com.xueersi.ui.adapter.CommonAdapter;
 
 import java.util.ArrayList;
 
@@ -47,6 +51,11 @@ public class HalfBodyArtsLiveMsgPager extends HalfBodyLiveMessagePager {
     @Override
     protected int getHotWordPopwindLayout(){
         return R.layout.layout_live_commonwrod_popwindow_arts;
+    }
+
+    @Override
+    protected AdapterItemInterface<String>  generateHotWordItem(CommonAdapter adapter){
+        return new HalfBodyLiveArtsCommonWordItem(mContext,adapter);
     }
 
 }
