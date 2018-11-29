@@ -3,9 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.view;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -14,7 +11,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
@@ -31,7 +27,6 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,44 +41,27 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
-import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.component.cloud.XesCloudUploadBusiness;
-import com.xueersi.component.cloud.config.CloudDir;
-import com.xueersi.component.cloud.config.XesCloudConfig;
-import com.xueersi.component.cloud.entity.CloudUploadEntity;
-import com.xueersi.component.cloud.entity.XesCloudResult;
-import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.SizeUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.Contract.ScienceSpeechBullletContract;
-import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.page.SpeechBulletScreenPager;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnglishSpeekPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.CloseConfirmDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.PrimaryChineseToastDialog;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.ShortToastDialog;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.CircleDrawable;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
@@ -337,6 +315,19 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
         if (!dir.exists()) {
             dir.mkdirs();
         }
+        checkAudioPermission();
+
+        //系统日志
+        Map<String, String> mData = new HashMap<>();
+        mData.put("logtype", "voiceBarrageSwitch");
+        mData.put("pageid", "voice_barrage");
+        mData.put("voiceid", presenter.getVoiceId());
+        mData.put("cmdtype", "1");
+        mData.put("devicestatus", devicestatus);
+        umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
+    }
+
+    private void checkAudioPermission(){
         boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO); //
         // 检查用户麦克风权限
         if (hasAudidoPermission) {
@@ -361,7 +352,7 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
                 public void onDeny(String permission, int position) {
                     logger.i("onDeny()");
                     closetype = "activeClose";
-                    closeSpeechBullet(false);
+                    startTextInput("");
                 }
 
                 /**
@@ -374,15 +365,6 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
                 }
             }, PermissionConfig.PERMISSION_CODE_AUDIO);
         }
-
-        //系统日志
-        Map<String, String> mData = new HashMap<>();
-        mData.put("logtype", "voiceBarrageSwitch");
-        mData.put("pageid", "voice_barrage");
-        mData.put("voiceid", presenter.getVoiceId());
-        mData.put("cmdtype", "1");
-        mData.put("devicestatus", devicestatus);
-        umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
     }
 
     @Override
@@ -442,13 +424,8 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
             @Override
             public void onClick(View view) {
                 logger.i("onClick: tvSpeechbulRepeat");
-                KeyboardUtil.hideKeyboard(root);
-                tvSpeechbulTitle.setText(VOICE_RECOG_HINT);
-                rlSpeechbulInputContent.setVisibility(View.GONE);
-                tvSpeechbulTitle.setVisibility(View.VISIBLE);
-                vwvSpeechbulWave.setVisibility(View.VISIBLE);
-                startEvaluator();
                 isretalk = "1";
+                checkAudioPermission();
             }
         });
         //发送语音弹幕
@@ -728,7 +705,7 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
                         mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
                         mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
                         mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
-                        mAM.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (0.0f * mMaxVolume), 0);
+                        mAM.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (0.1f * mMaxVolume), 0);
                         isVolumeResume = false;
                     }
 
