@@ -457,6 +457,17 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
                     }
                 }
+
+                if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay .equals( "1")){
+                    logger.i("新课件平台，走人机start,拉取试题");
+                    if (rolePlayMachineAction == null) {
+                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                        rolePlayMachineAction = rolePlayerBll;
+                    }
+
+                }
+
                 break;
             }
             case XESCODE.STOPQUESTION:
