@@ -1,12 +1,468 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/COLOR_F9F9F9">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/rl_livevideo_evaluate_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="评价老师页面"
-        />
-</LinearLayout>
+       >
+        <TextView
+            style="@style/text_font17_333333_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="给老师评价"
+            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/iv_livevideo_evaluate_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="11dp"
+            android:layout_marginRight="11dp"
+            android:src="@drawable/cy_main_guanbi_icon_normal" />
+
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/ll_livevideo_evaluate"
+        android:layout_below="@+id/rl_livevideo_evaluate_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:visibility="visible"
+        >
+        <LinearLayout
+            android:id="@+id/ll_livevideo_evaluate_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="30"
+            android:background="@drawable/shape_livevideo_evaluate_teacher_bg">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/iv_livevideo_evaluate_main"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/bg_main_default_head_image" />
+
+                <ImageView
+                    android:id="@+id/iv_livevideo_evaluate_main_icon"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignRight="@+id/iv_livevideo_evaluate_main"
+                    android:layout_alignBottom="@+id/iv_livevideo_evaluate_main"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/im_zhuye_dav_icon_normal" />
+
+                <TextView
+                    android:id="@+id/iv_livevideo_evaluate_main_status"
+                    style="@style/text_font13_ffffff_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@+id/iv_livevideo_evaluate_main"
+                    android:background="@color/COLOR_F13232"
+                    android:text="主讲" />
+
+                <TextView
+                    android:id="@+id/tv_livevideo_evaluate_main_name"
+                    style="@style/text_font17_333333_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/iv_livevideo_evaluate_main_status"
+                    android:text="李丽丽"
+                    tools:text="李丽丽" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginLeft="26dp"
+                android:orientation="vertical">
+
+                <RadioGroup
+                    android:id="@+id/rg_livevideo_evaluate_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_livevideo_evaluate_main_unsatisfactory"
+                        style="@style/text_font13_666666_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/selector_livevideo_evaluate_teacher_unsatisfactory"
+                        android:paddingLeft="8dp"
+                        android:layout_weight="1"
+                        android:text="不满意" />
+
+                    <RadioButton
+                        android:id="@+id/rb_livevideo_evaluate_main_satisfactory"
+                        style="@style/text_font13_666666_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/selector_livevideo_evaluate_teacher_satisfactory"
+                        android:paddingLeft="8dp"
+                        android:layout_weight="1"
+                        android:text="基本满意" />
+
+                    <RadioButton
+                        android:id="@+id/rb_livevideo_evaluate_main_very_satisfactory"
+                        style="@style/text_font13_666666_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/selector_livevideo_evaluate_teacher_very_satisfactory"
+                        android:paddingLeft="8dp"
+                        android:layout_weight="1"
+                        android:text="满意" />
+                </RadioGroup>
+                <LinearLayout
+                    android:id="@+id/ll_livevideo_evaluate_main_option"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center">
+                    <CheckBox
+                        android:id="@+id/cb_livevideo_evaluate_main_option_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_livevideo_evaluate_option_item"
+                        android:button="@null"
+                        tools:text="没听明白"
+                        android:gravity="center"
+                        android:text="没听明白"
+                        android:layout_weight="1"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        style="@style/text_font11_666666_style"
+                        />
+                    <CheckBox
+                        android:id="@+id/cb_livevideo_evaluate_main_option_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_livevideo_evaluate_option_item"
+                        android:button="@null"
+                        tools:text="没听明白"
+                        android:gravity="center"
+                        android:text="没听明白"
+                        android:layout_weight="1"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:layout_marginLeft="8dp"
+                        style="@style/text_font11_666666_style"
+                        />
+                    <CheckBox
+                        android:id="@+id/cb_livevideo_evaluate_main_option_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_livevideo_evaluate_option_item"
+                        android:button="@null"
+                        tools:text="没精神"
+                        android:gravity="center"
+                        android:text="没听明白"
+                        android:layout_weight="1"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:layout_marginLeft="8dp"
+                        style="@style/text_font11_666666_style"
+                        />
+                    <CheckBox
+                        android:id="@+id/cb_livevideo_evaluate_main_option_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_livevideo_evaluate_option_item"
+                        android:button="@null"
+                        tools:text="没听明白"
+                        android:gravity="center"
+                        android:text="没听明白"
+                        android:layout_weight="1"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="20dp"
+                        style="@style/text_font11_666666_style"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_livevideo_evaluate_tutor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="30"
+            android:background="@drawable/shape_livevideo_evaluate_teacher_bg">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/iv_livevideo_evaluate_tutor"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="30dp"
+                    android:src="@drawable/bg_tutor_default_head_imge" />
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignRight="@+id/iv_livevideo_evaluate_tutor"
+                    android:layout_alignBottom="@+id/iv_livevideo_evaluate_tutor"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/im_zhuye_dav_icon_normal" />
+
+                <TextView
+                    android:id="@+id/iv_livevideo_evaluate_tutor_status"
+                    style="@style/text_font13_ffffff_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@+id/iv_livevideo_evaluate_tutor"
+                    android:background="@color/COLOR_FFF07737"
+                    android:text="辅导" />
+
+                <TextView
+                    android:id="@+id/tv_livevideo_evaluate_tutor_name"
+                    style="@style/text_font17_333333_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/iv_livevideo_evaluate_tutor_status"
+                    android:text="王丽丽"
+                    tools:text="李丽丽" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginLeft="26dp"
+                android:orientation="vertical">
+
+                <RadioGroup
+                    android:id="@+id/rg_livevideo_evaluate_tutor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_livevideo_evaluate_tutor_unsatisfactory"
+                        style="@style/text_font13_666666_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/selector_livevideo_evaluate_teacher_unsatisfactory"
+                        android:paddingLeft="8dp"
+                        android:layout_weight="1"
+                        android:text="不满意" />
+
+                    <RadioButton
+                        android:id="@+id/rb_livevideo_evaluate_tutor_satisfactory"
+                        style="@style/text_font13_666666_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/selector_livevideo_evaluate_teacher_satisfactory"
+                        android:paddingLeft="8dp"
+                        android:layout_weight="1"
+                        android:text="基本满意" />
+
+                    <RadioButton
+                        android:id="@+id/rb_livevideo_evaluate_tutor_very_satisfactory"
+                        style="@style/text_font13_666666_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/selector_livevideo_evaluate_teacher_very_satisfactory"
+                        android:paddingLeft="8dp"
+                        android:layout_weight="1"
+                        android:text="满意" />
+                </RadioGroup>
+                <LinearLayout
+                    android:id="@+id/ll_livevideo_evaluate_tutor_option"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center">
+                    <CheckBox
+                        android:id="@+id/cb_livevideo_evaluate_tutor_option_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_livevideo_evaluate_option_item"
+                        android:button="@null"
+                        tools:text="没听明白"
+                        android:gravity="center"
+                        android:text="没听明白"
+                        style="@style/text_font11_666666_style"
+                        android:layout_weight="1"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        />
+                    <CheckBox
+                        android:id="@+id/cb_livevideo_evaluate_tutor_option_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_livevideo_evaluate_option_item"
+                        android:button="@null"
+                        android:layout_marginLeft="8dp"
+                        tools:text="没听明白"
+                        android:gravity="center"
+                        android:text="没听明白"
+                        style="@style/text_font11_666666_style"
+                        android:layout_weight="1"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        />
+                    <CheckBox
+                        android:id="@+id/cb_livevideo_evaluate_tutor_option_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_livevideo_evaluate_option_item"
+                        android:button="@null"
+                        android:layout_marginLeft="8dp"
+                        tools:text="没听明白"
+                        android:gravity="center"
+                        android:text="没听明白"
+                        style="@style/text_font11_666666_style"
+                        android:layout_weight="1"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        />
+                    <CheckBox
+                        android:id="@+id/cb_livevideo_evaluate_tutor_option_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_livevideo_evaluate_option_item"
+                        android:button="@null"
+                        android:layout_marginLeft="8dp"
+                        tools:text="没听明白"
+                        android:gravity="center"
+                        android:text="没听明白"
+                        style="@style/text_font11_666666_style"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="1"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/ll_livevideo_evaluate_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/im_ty_auto_btn_normal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="30dp"
+            >
+            <TextView
+                android:id="@+id/tv_livevideo_evaluate_submit_text"
+                style="@style/text_font16_ffffff_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="匿名提交，并退出" />
+
+            <ProgressBar
+                android:id="@+id/pb_livevideo_evaluate_submit_loading"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginLeft="90dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_livevideo_evaluate_submit_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_livevideo_evaluate_submit_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_monkey_img_normal" />
+
+        <TextView
+            android:id="@+id/tv_livevideo_evaluate_submit_status"
+            style="@style/text_font22_333333_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:textStyle="bold"
+            tools:text="感谢评价"
+            android:text="感谢评价"/>
+
+        <TextView
+            android:id="@+id/tv_livevideo_evaluate_count_down"
+            style="@style/text_font14_666666_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            tools:text="3s后退出直播间"
+            android:text="3s后退出直播间"
+            android:visibility="gone"/>
+        <Button
+            android:id="@+id/btn_livevideo_evaluate_tryagain"
+            style="@style/text_font16_ffffff_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/im_ty_auto_btn_tryagain"
+            android:text="重试"
+            />
+    </LinearLayout>
+
+</RelativeLayout>
