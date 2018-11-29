@@ -120,6 +120,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         return view;
     }
 
+    /** 测试卷 */
     @Override
     public void initData() {
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +142,11 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
         String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
-        EXAM_URL = "https://live.xueersi.com/" + host + "/LiveExam/examPaper";
+        if (LiveVideoConfig.isSmallChinese) {
+            EXAM_URL = "https://live.chs.xueersi.com/LiveExam/examPaper";
+        } else {
+            EXAM_URL = "https://live.xueersi.com/" + host + "/LiveExam/examPaper";
+        }
         examUrl = EXAM_URL + "?liveId=" + liveid
                 + "&testPlan=" + num + "&isPlayBack=0&stuId=" + stuId + "&stuName=" + stuName;
         if (!StringUtils.isEmpty(nonce)) {
@@ -151,7 +156,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         examUrl += "&isTowall=" + isShowRankList;
         examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
         examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
-        logger.e( "======> loadUrl:" + examUrl);
+        logger.e("======> loadUrl:" + examUrl);
         wvSubjectWeb.loadUrl(examUrl);
         mLogtf.d("initData:examUrl=" + examUrl);
         mGoldNum = -1;
@@ -332,7 +337,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            logger.e( "======> shouldOverrideUrlLoading:" + url);
+            logger.e("======> shouldOverrideUrlLoading:" + url);
 
             if (url.contains("/LiveExam/examResult")) {
                 if (questionBll instanceof QuestionBll) {

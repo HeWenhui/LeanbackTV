@@ -887,7 +887,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     public void getArtsMoreCoureWareUrl(String liveId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
-        requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_ARTSMORE_COURSEWARE_URL;
+        requestCallBack.url = LiveVideoConfig.isSmallChinese?liveVideoSAConfigInner.URL_LIVE_CHS_GET_ARTSMORE_COURSEWARE_URL:liveVideoSAConfigInner.URL_LIVE_GET_ARTSMORE_COURSEWARE_URL;
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 
