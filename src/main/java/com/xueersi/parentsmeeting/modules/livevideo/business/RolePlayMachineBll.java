@@ -180,7 +180,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                 HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        mRolePlayerEntity = mRolePlayerHttpResponseParser.parserRolePlayInfos(responseEntity);
+                        mRolePlayerEntity = mRolePlayerHttpResponseParser.parserRolePlayGroupAndTestInfos(responseEntity);
                         logger.i("服务器试题信息返回 " + responseEntity.getJsonObject().toString());
                         logger.i( "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
                                 ".getLstRolePlayerMessage()" +
@@ -212,7 +212,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                     HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            mRolePlayerEntity =  mRolePlayerHttpResponseParser.parserNewArtsRolePlayTestInfos(responseEntity, mRolePlayerEntity);
+                            mRolePlayerEntity =  mRolePlayerHttpResponseParser.parserNewRolePlayGroupAndTestInfos(responseEntity);
                             logger.i( "服务器试题信息返回 " + responseEntity.getJsonObject().toString());
                             logger.i( "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
                                     ".getLstRolePlayerMessage()" +
