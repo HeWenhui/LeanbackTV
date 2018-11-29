@@ -148,7 +148,6 @@ public class SpeakerRecognitioner {
                         synchronized (lock) {
                             if (destory || audioRequest.get()) {
                                 logToFile.d("start:predict=" + destory + ",Request=" + audioRequest.get());
-                                stop();
                                 return;
                             }
                             String predict = speakerRecognitionerInterface.predict(mPCMBuffer, readSize, index++, stuId, false);
