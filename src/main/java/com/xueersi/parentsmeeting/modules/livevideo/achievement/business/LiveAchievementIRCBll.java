@@ -47,12 +47,13 @@ import okhttp3.Call;
  */
 public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, LiveAchievementHttp,
         EnglishSpeekHttp, AudioRequest {
-    StarInteractAction starAction;
-    EnglishSpeekAction englishSpeekAction;
-    AtomicBoolean audioRequest = new AtomicBoolean(false);
-    EnglishSpeekMode englishSpeekMode;
-    SpeakerRecognitioner speakerRecognitioner;
+    private StarInteractAction starAction;
+    private EnglishSpeekAction englishSpeekAction;
+    private AtomicBoolean audioRequest = new AtomicBoolean(false);
+    private EnglishSpeekMode englishSpeekMode;
+    private SpeakerRecognitioner speakerRecognitioner;
     private VerifyCancelAlertDialog recognizeDialog;
+    private boolean isDestory = false;
 
     public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -149,11 +150,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                             initAchievement(mGetInfo.getMode());
                                         }
                                     } else {
-                                        speakerRecognitioner = new SpeakerRecognitioner(activity);
-                                        if (englishSpeekAction != null) {
-                                            englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
+                                        mLogtf.d("onLiveInited:isDestory=" + isDestory);
+                                        if (!isDestory) {
+                                            speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
+                                            if (englishSpeekAction != null) {
+                                                englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
+                                            }
+                                            startAchievement();
                                         }
-                                        startAchievement();
                                     }
                                 } else {
                                     startAchievement();
@@ -199,7 +203,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         if (enrollIvector != 0) {
                             startAchievement();
                         } else {
-                            speakerRecognitioner = new SpeakerRecognitioner(activity);
+                            speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
                             if (englishSpeekAction != null) {
                                 englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
                             }
@@ -363,6 +367,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void onDestory() {
         super.onDestory();
+        isDestory = true;
         if (englishSpeekAction != null) {
             englishSpeekAction.destory();
         }
@@ -421,7 +426,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        logger.d( "setTotalOpeningLength:onPmSuccess" + responseEntity.getJsonObject());
+                        logger.d("setTotalOpeningLength:onPmSuccess" + responseEntity.getJsonObject());
                         if (starAction != null) {
                             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                             int star = jsonObject.getInt("star");
@@ -433,7 +438,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        logger.d( "setTotalOpeningLength:onFailure");
+                        logger.d("setTotalOpeningLength:onFailure");
                         super.onFailure(call, e);
                         postDelayedIfNotFinish(new Runnable() {
                             @Override
@@ -445,7 +450,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
-                        logger.d( "setTotalOpeningLength:onPmError" + responseEntity.getErrorMsg());
+                        logger.d("setTotalOpeningLength:onPmError" + responseEntity.getErrorMsg());
                         super.onPmError(responseEntity);
                     }
                 });
@@ -457,18 +462,18 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         getHttpManager().setNotOpeningNum(enstuId, mGetInfo.getId(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                logger.d( "setNotOpeningNum:onPmSuccess" + responseEntity.getJsonObject());
+                logger.d("setNotOpeningNum:onPmSuccess" + responseEntity.getJsonObject());
             }
 
             @Override
             public void onFailure(Call call, IOException e) {
-                logger.e( "setNotOpeningNum:onFailure", e);
+                logger.e("setNotOpeningNum:onFailure", e);
                 super.onFailure(call, e);
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                logger.d( "setNotOpeningNum:onPmError" + responseEntity.getErrorMsg());
+                logger.d("setNotOpeningNum:onPmError" + responseEntity.getErrorMsg());
                 super.onPmError(responseEntity);
             }
         });
@@ -630,7 +635,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
                 englishSpeekAction.start();
-                logger.d( "start:englishSpeekBll.start");
+                logger.d("start:englishSpeekBll.start");
             }
         }
     };
@@ -638,7 +643,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void request(OnAudioRequest onAudioRequest) {
         audioRequest.set(true);
-        logger.d( "request:englishSpeekBll=" + (englishSpeekAction == null));
+        logger.d("request:englishSpeekBll=" + (englishSpeekAction == null));
         if (englishSpeekAction != null) {
             handler.removeMessages(1);
             englishSpeekAction.stop(onAudioRequest);
@@ -652,7 +657,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void release() {
         audioRequest.set(false);
-        logger.d( "release:englishSpeekBll=" + (englishSpeekAction == null));
+        logger.d("release:englishSpeekBll=" + (englishSpeekAction == null));
         if (englishSpeekAction != null) {
             handler.sendEmptyMessageDelayed(1, 2000);
         }
