@@ -359,7 +359,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void onDestory() {
         super.onDestory();
-        destory = true;
+        isDestory = true;
         logger.d("onDestory:speakerRecognitioner=" + speakerRecognitioner);
         if (englishSpeekAction != null) {
             englishSpeekAction.destory();

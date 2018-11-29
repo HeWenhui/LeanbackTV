@@ -225,7 +225,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            mRolePlayerHttpResponseParser.parserNewArtsRolePlayTestInfos(responseEntity, mRolePlayerEntity);
+                            mRolePlayerHttpResponseParser.parserNewArtsMutRolePlayTestInfos(responseEntity, mRolePlayerEntity);
                             logger.i( "服务器试题信息返回 " + responseEntity.getJsonObject().toString());
                             logger.i( "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
                                     ".getLstRolePlayerMessage()" +
@@ -383,8 +383,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             }
 
             @Override
-            public void onError() {
-                logger.i( "onError");
+            public void onError(Throwable throwable) {
+                logger.e( "onError",throwable);
                 isBeginConnWebSocket = false;
             }
         });
