@@ -568,12 +568,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         Loger.e("EnglishH5CourseWareX5Pager",
                 "=========>showAnswerResult_LiveVideo:" + data);
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
-//        if(LiveVideoConfig.isStandLive){
-//            parseData(data);
-////            showH5Result();
-//        }else{
-//            EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
-//        }
     }
 
     private void parseData(String data) {
