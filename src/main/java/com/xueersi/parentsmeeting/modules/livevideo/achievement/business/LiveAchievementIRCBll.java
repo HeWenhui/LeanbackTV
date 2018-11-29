@@ -205,11 +205,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         if (enrollIvector != 0) {
                             startAchievement();
                         } else {
-                            speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
-                            if (englishSpeekAction != null) {
-                                englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
+                            mLogtf.d("onLiveInited:isDestory=" + isDestory);
+                            if (!isDestory) {
+                                speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
+                                if (englishSpeekAction != null) {
+                                    englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
+                                }
+                                startAchievement();
                             }
-                            startAchievement();
                         }
                     } else {
                         startAchievement();
@@ -337,6 +340,10 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     }
 
     private void startAchievement() {
+        if (isDestory) {
+            mLogtf.d("startAchievement:isDestory=true");
+            return;
+        }
         if (mGetInfo.getPattern() == 2) {
             englishSpeekMode = new EnglishSpeekModeStand();
         } else {
