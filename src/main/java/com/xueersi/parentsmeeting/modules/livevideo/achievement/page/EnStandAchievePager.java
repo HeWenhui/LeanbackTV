@@ -60,6 +60,10 @@ public class EnStandAchievePager extends LiveBasePager {
     @Override
     public void initData() {
         super.initData();
+        LiveGetInfo.EnPkEnergy enpkEnergy = mLiveGetInfo.getEnpkEnergy();
+        tvAchiveNumStar.setText("" + starCount);
+        tvAchiveNumGold.setText("" + goldCount);
+        tvAchiveNumFire.setText("" + enpkEnergy.me);
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
         if (1 == englishPk.canUsePK) {
             View v = vsAchiveBottom.inflate();

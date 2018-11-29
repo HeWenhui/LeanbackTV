@@ -143,8 +143,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     /**
      * @param context
      * @param liveBll
-     * @param rootView
-     * @param isPse    是否是小学英语
      */
     public ArtsAnswerResultBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -228,7 +226,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 //                    group.addView(rlResult);
                 rlAnswerResultLayout.addView(mRlResult);
                 lottieAnimationView.playAnimation();
-                setRightGold(mContext, lottieAnimationView, mAnswerReulst.getGold());
+                LiveStandVoiceAnswerCreat.setRightGold(mContext, lottieAnimationView, mAnswerReulst.getGold(), mAnswerReulst.getEnergy());
                 mLiveSoundPool = LiveSoundPool.createSoundPool();
                 final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(mLiveSoundPool);
                 mRlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
@@ -312,6 +310,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     mAnswerReulst.setTestCount(totalObject.optInt("testCount"));
                     mAnswerReulst.setIsRight(totalObject.optInt("isRight"));
                     mAnswerReulst.setGold(totalObject.optInt("gold"));
+                    mAnswerReulst.setEnergy(totalObject.optInt("energy"));
                     mAnswerReulst.setRightRate(totalObject.optDouble("rightRate"));
                     mAnswerReulst.setCreateTime(totalObject.optLong("createTime"));
                     JSONArray testIds = totalObject.optJSONArray("testIds");
@@ -971,32 +970,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         praiseViewShowing = false;
         mArtsAnswerResultEvent = null;
         EventBus.getDefault().unregister(this);
-    }
-
-    private void setRightGold(Context context, LottieAnimationView lottieAnimationView, int goldCount) {
-        String num = "获得 " + goldCount + " 枚金币";
-        AssetManager manager = context.getAssets();
-        Bitmap img_7Bitmap;
-        try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/my_right/img_22.png"));
-//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
-            Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(creatBitmap);
-            canvas.drawBitmap(img_7Bitmap, 0, 0, null);
-            Paint paint = new Paint();
-            paint.setTextSize(48);
-            paint.setColor(0xffCC6E12);
-            Typeface fontFace = FontCache.getTypeface(context, "fangzhengcuyuan.ttf");
-            paint.setTypeface(fontFace);
-            float width = paint.measureText(num);
-            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
-            img_7Bitmap.recycle();
-            img_7Bitmap = creatBitmap;
-        } catch (IOException e) {
-            logger.e("setRightGold", e);
-            return;
-        }
-        lottieAnimationView.updateBitmap("image_22", img_7Bitmap);
     }
 
     /**

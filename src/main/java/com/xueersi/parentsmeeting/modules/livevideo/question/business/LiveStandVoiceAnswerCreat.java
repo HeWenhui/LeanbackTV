@@ -53,8 +53,8 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  * 直播创建语音答题
  */
 public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
-    private String TAG = "LiveStandVoiceAnswerCreat";
-    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+    private static String TAG = "LiveStandVoiceAnswerCreat";
+    protected static Logger logger = LoggerFactory.getLogger(TAG);
     private QuestionSwitch questionSwitch;
     private String headUrl;
     private String userName;
@@ -277,7 +277,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         return isSuccess;
     }
 
-    private void setRightGold(Context context, LottieAnimationView lottieAnimationView, int goldCount, int energy) {
+    public static void setRightGold(Context context, LottieAnimationView lottieAnimationView, int goldCount, int energy) {
         View resultMine = LayoutInflater.from(context).inflate(R.layout.layout_live_stand_voice_right, null);
         TextView tv_livevideo_speecteval_result_gold = resultMine.findViewById(R.id.tv_livevideo_speecteval_result_gold);
         tv_livevideo_speecteval_result_gold.setText("+" + goldCount);

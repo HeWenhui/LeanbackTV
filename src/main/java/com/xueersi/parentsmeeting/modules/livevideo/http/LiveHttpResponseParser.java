@@ -1177,10 +1177,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             JSONObject goldObj = jsonObject.getJSONObject("gold");
             starAndGoldEntity.setGoldCount(goldObj.optInt("goldAmount", 0));
             StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
-            JSONObject pkEnergyObj = goldObj.optJSONObject("pkEnergy");
-            pkEnergy.me = pkEnergyObj.optInt("me");
-            pkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
-            pkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
+            JSONObject pkEnergyObj = jsonObject.optJSONObject("pkEnergy");
+            if (pkEnergyObj != null) {
+                pkEnergy.me = pkEnergyObj.optInt("me");
+                pkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
+                pkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
+            }
         } catch (JSONException e) {
             MobAgent.httpResponseParserError(TAG, "parseStuGoldCount", e.getMessage());
             e.printStackTrace();
