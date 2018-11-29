@@ -560,6 +560,8 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("voiceTime", "" + voiceTime);
         params.addBodyParam("url", "");
         params.addBodyParam("imageUrl", "");
+        params.addBodyParam("userAnswer", LiveVideoConfig.userAnswer);
+        params.addBodyParam("answer", LiveVideoConfig.answer);
         sendPost(url, params, requestCallBack);
     }
 

@@ -340,6 +340,9 @@ public class LiveVideoConfig {
     public static Boolean isNewArts = false;
     /** 全身直播的标识*/
     public static Boolean isStandLive = false;
+    /** H5语音答题新增字段*/
+    public static String userAnswer;
+    public static String answer;
     /** 学习报告精彩瞬间 */
     public interface STUDY_REPORT {
         /** 贡献之星 */
