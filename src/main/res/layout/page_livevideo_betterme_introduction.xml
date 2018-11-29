@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,40 +20,32 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="AI老师会为你量身定制每节课的小目标, 完成小目标你就可以："
+            android:text="AI老师会为你量身定制每节课的小目标,完成小目标你就可以："
             android:textColor="#ff756565"
             android:textSize="14sp" />
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:layout_marginTop="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="在课后辅导的颁奖典礼中一飞冲天"
+            android:text="提升你在直播间的段位"
             android:textColor="#ff756565"
-            android:textSize="11sp" />
+            android:textSize="19sp" />
 
-        <LinearLayout
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="提升你在直播间的段位"
-                android:textColor="#ff756565"
-                android:textSize="11sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="查看具体段位"
-                android:textColor="#fffe6600"
-                android:textSize="8sp" />
-        </LinearLayout>
-
+            android:text="查看具体段位"
+            android:textColor="#fffe6600"
+            android:textSize="11sp" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="知道啦"/>
 
     </LinearLayout>
 

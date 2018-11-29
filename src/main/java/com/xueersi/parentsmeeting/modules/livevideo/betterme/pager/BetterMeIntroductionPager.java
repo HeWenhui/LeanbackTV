@@ -24,6 +24,7 @@ public class BetterMeIntroductionPager extends BasePager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_betterme_introduction, null);
+
         return view;
     }
 

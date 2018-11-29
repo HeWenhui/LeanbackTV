@@ -1,0 +1,83 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_level_name_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="倔强青铜"
+            android:textColor="#ff5bb383"
+            android:textSize="13sp" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_betterme_level_img_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_upstar_describtion_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="每完成3次目标升1星"
+            android:textColor="#ffe65c00"
+            android:textSize="10sp" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_uplevel_describtion_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="满3星升级"
+            android:textColor="#ffffedb1"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginLeft="28dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_level_name_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="勤奋白银"
+            android:textColor="#ff8691a3"
+            android:textSize="13sp" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_betterme_level_img_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_upstar_describtion_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="每完成4次目标升1星"
+            android:textColor="#ffe65c00"
+            android:textSize="10sp" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_uplevel_describtion_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="满3星升级"
+            android:textColor="#ffffedb1"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+
+</LinearLayout>
