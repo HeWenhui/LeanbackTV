@@ -1694,14 +1694,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         baseSendPostNoBusinessJson(url, params, callback);
     }
 
-    public void saveStuPlanOnlineTime(String stuId, String gradeId, HttpCallBack requestCallBack) {
-        HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("stuId", "" + stuId);
-        params.addBodyParam("gradeId", gradeId);
-        setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_LIVE_STU_ONLINE_TIME, params, requestCallBack);
-    }
-
     /**
      * 学生获取战队信息
      *
