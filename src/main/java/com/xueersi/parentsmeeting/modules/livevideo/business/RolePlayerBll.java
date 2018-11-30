@@ -686,6 +686,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         }
     }
 
+
     /**
      * 提交结果
      */
