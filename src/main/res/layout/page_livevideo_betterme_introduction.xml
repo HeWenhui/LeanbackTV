@@ -36,6 +36,7 @@
             android:textSize="19sp" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_betterme_introduction_viewlevel"
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,6 +44,7 @@
             android:textColor="#fffe6600"
             android:textSize="11sp" />
         <Button
+            android:id="@+id/btn_livevideo_better_introduction_gotit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="知道啦"/>

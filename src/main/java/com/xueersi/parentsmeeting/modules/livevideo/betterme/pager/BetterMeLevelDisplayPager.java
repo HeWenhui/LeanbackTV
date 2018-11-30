@@ -30,6 +30,9 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
     private LinearLayout llPagerIndicator;
     private BetterMeLevelDisplayPagerAdapter mPagerAdapter;
     private List<BetterMeLevelEntity> mLevelEntityList = new ArrayList<>();
+    /**
+     * 段位名称
+     */
     public static String[] LEVEL_NAMES = new String[]{
             "倔强青铜",
             "勤奋白银",
@@ -38,7 +41,10 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
             "笃学钻石",
             "最强学霸"
     };
-    public static int[] LEVEL_IMAGE_RESS = new int[]{
+    /**
+     * 段位图片资源
+     */
+    public static int[] LEVEL_IMAGE_RES = new int[]{
             R.drawable.app_livevideo_enteampk_boy_bg_img_nor,
             R.drawable.app_livevideo_enteampk_boy_bg_img_nor,
             R.drawable.app_livevideo_enteampk_boy_bg_img_nor,
@@ -46,6 +52,9 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
             R.drawable.app_livevideo_enteampk_boy_bg_img_nor,
             R.drawable.app_livevideo_enteampk_boy_bg_img_nor
     };
+    /**
+     * 如何升星
+     */
     public static String[] LEVEL_UPSTAR_DESCRIPTIONS = new String[]{
             "每完成3次目标升1星",
             "每完成3次目标升1星",
@@ -54,6 +63,9 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
             "每完成6次目标升1星",
             "每完成6次目标升1星"
     };
+    /**
+     * 如何升级
+     */
     public static String[] LEVEL_UPLEVEL_DESCRIPTIONS = new String[]{
             "满3星升级",
             "满4星升级",
@@ -86,7 +98,7 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
         for (int i = 0; i < LEVEL_NUMBER; i++) {
             BetterMeLevelEntity levelEntity = new BetterMeLevelEntity();
             levelEntity.setLevelName(LEVEL_NAMES[i]);
-            levelEntity.setLevelDrawableRes(LEVEL_IMAGE_RESS[i]);
+            levelEntity.setLevelDrawableRes(LEVEL_IMAGE_RES[i]);
             levelEntity.setUpStardescription(LEVEL_UPSTAR_DESCRIPTIONS[i]);
             levelEntity.setUpLeveldescription(LEVEL_UPLEVEL_DESCRIPTIONS[i]);
             mLevelEntityList.add(levelEntity);
