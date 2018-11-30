@@ -94,6 +94,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
 
     @Override
     public void onReadPackage(final int operateId, final OnReceivePackage onReceivePackage) {
+        logger.i(String.valueOf(operateId));
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
