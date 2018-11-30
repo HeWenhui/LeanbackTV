@@ -1970,14 +1970,14 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     public void stopEvaluator() {
         logger.i("stopEvaluator()");
+        if (isRecogSpeeking && mAudioRequest != null) {
+            mAudioRequest.release();
+        }
         isSpeekDone = true;
         isRecogSpeeking = false;
         mView.removeCallbacks(mHintRunnable);
         mView.removeCallbacks(mNorecogRunnable);
         mView.removeCallbacks(mNovoiceRunnable);
-        if (mAudioRequest != null) {
-            mAudioRequest.release();
-        }
         vwvVoiceChatWave.setVisibility(View.GONE);
         if (speechUtils != null) {
             speechUtils.cancel();

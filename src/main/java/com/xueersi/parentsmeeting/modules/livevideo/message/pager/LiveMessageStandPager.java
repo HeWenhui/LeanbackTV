@@ -173,7 +173,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     /** 当前音量 */
     private int mVolume = 0;
 
-    boolean isVoice = true;
+    boolean isVoice = false;
     //当前语音输入转换的文本
     String mVoiceContent = "";
     String mMsgContent = "";
@@ -1718,14 +1718,14 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     public void stopEvaluator() {
         logger.d("stopEvaluator()");
+        if (isVoice && mAudioRequest != null) {
+            mAudioRequest.release();
+        }
         isSpeekDone = true;
         isVoice = false;
         mainHandler.removeCallbacks(mNorecogRunnable);
         mainHandler.removeCallbacks(mNovoiceRunnable);
         mainHandler.removeCallbacks(mHintRunnable);
-        if (mAudioRequest != null) {
-            mAudioRequest.release();
-        }
         if (mSpeechUtils != null) {
             vwvVoiceChatWave.setVisibility(View.GONE);
             mSpeechUtils.cancel();
