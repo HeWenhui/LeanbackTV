@@ -55,8 +55,8 @@ import okhttp3.Call;
 
 /**
  * @author chekun
- *         created  at 2018/4/12
- *         战队PK 相关业务处理
+ * created  at 2018/4/12
+ * 战队PK 相关业务处理
  */
 public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicAction {
 
@@ -601,8 +601,20 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             roomInitInfo = data;
             isAIPartner = roomInitInfo.getIsAIPartner() == 1;
             isAvailable = true;
+        } else {
+            //不显示战队pk时，原来的战队Pk的位置由图片占据。
+            showImgReplacePk();
         }
 
+    }
+
+    /** 不显示战队pk时，原来的战队Pk的位置由图片占据。 */
+    private void showImgReplacePk() {
+        ViewGroup viewGroup = (ViewGroup) mActivity.getWindow().getDecorView();
+        View view = viewGroup.findViewById(R.id.iv_livevideo_small_chinese_pk_background);
+        if (view != null) {
+            view.setVisibility(View.VISIBLE);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
