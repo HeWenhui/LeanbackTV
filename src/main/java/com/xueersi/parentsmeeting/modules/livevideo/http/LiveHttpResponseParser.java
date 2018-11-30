@@ -1081,8 +1081,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             JSONObject data = (JSONObject) responseEntity.getJsonObject();
             result.setSignTime(data.optString("signTime", ""));
             result.setOnlineTime(data.optString("onlineTime"));
+            result.setMode(data.optString("mode",oldMode));
             JSONObject teamInfo = data.optJSONObject("teamInfo");
-            result.setMode(oldMode);
             if (teamInfo != null) {
                 result.setMyRank(teamInfo.optString("myRank"));
                 result.setOurTeamEnergy(teamInfo.optLong("ourTeamEnergy"));

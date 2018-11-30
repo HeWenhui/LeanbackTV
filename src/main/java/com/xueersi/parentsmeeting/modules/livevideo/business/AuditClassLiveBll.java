@@ -18,6 +18,7 @@ import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
@@ -698,13 +699,25 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
      */
     public synchronized void getHalfBodyLiveStudentLiveInfo() {
 
-        mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == 1,new HttpCallBack(false){
+        mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE,
+                new HttpCallBack(false){
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 String oldMode = mLiveTopic.getMode();
                 HalfBodyLiveStudyInfo stuLiveInfo = mHttpResponseParser.parseStuHalfbodyLiveInfo(responseEntity, oldMode);
                if (auditClassAction != null) {
                     auditClassAction.onGetStudyInfo(stuLiveInfo);
+                }
+
+                String mode = stuLiveInfo.getMode();
+                Log.e("parseLiveInfo","getHalfBodyStuLiveInfo=====>oldMode:"+oldMode+":"+mode);
+                if (!oldMode.equals(mode)) {
+                    if (mVideoAction != null) {
+                        mVideoAction.onModeChange(mode, true);
+                        Log.e("parseLiveInfo"," getHalfBodyStuLiveInfo====>mVideoAction.onModeChange"+oldMode+":"+mode);
+                    }
+                    mLiveTopic.setMode(mode);
+                    liveGetPlayServer(true);
                 }
             }
             @Override
