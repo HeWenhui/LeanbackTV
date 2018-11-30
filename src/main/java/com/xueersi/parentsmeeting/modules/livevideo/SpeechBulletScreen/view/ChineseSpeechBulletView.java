@@ -674,7 +674,7 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
     protected void startEvaluator() {
         logger.i("startEvaluator()");
         File saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startSpeechBulletScreenRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
+        mSpeechEvaluatorUtils.startChineseSpeechBulletRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                 new EvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
