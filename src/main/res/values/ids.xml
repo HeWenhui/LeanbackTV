@@ -872,7 +872,7 @@
     <item name="gl_live_auditclass_item_anchor" type="id"/>
     <item name="cl_live_auditclass_title" type="id" />
     <item name="iv_live_auditclass_nodata" type="id" />
-
+    <item name="cl_live_auditclass_pkinfo" type="id" />
 
     <!--2018接麦-->
     <item name="rl_livevideo_chat_content" type="id" />

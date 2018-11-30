@@ -29,6 +29,10 @@ public class HalfBodyAuditClassBll implements AuditClassAction {
     private StuLiveInfoAdapter mAdapter;
     private ImageView ivNodata;
 
+    private TextView tvMyRank;
+    private TextView tvOurEnergy;
+    private TextView tvAgainstEnergy;
+
 
     public HalfBodyAuditClassBll(Activity activity) {
         initView(activity);
@@ -40,19 +44,27 @@ public class HalfBodyAuditClassBll implements AuditClassAction {
         rclAnwerState = activity.findViewById(R.id.rcl_livevideo_auditclass_anwser_state);
         rclAnwerState.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false));
         ivNodata = activity.findViewById(R.id.iv_live_auditclass_nodata);
+
+        tvAgainstEnergy = activity.findViewById(R.id.tv_livevideo_auditclass_against_energy);
+        tvOurEnergy = activity.findViewById(R.id.tv_livevideo_auditclass_energy);
+        tvMyRank = activity.findViewById(R.id.tv_livevideo_auditclass_myrank);
     }
 
     @Override
     public void onGetStudyInfo(StudyInfo studyInfo) {
         if (studyInfo != null && studyInfo instanceof HalfBodyLiveStudyInfo) {
             mLiveStudyInfo = (HalfBodyLiveStudyInfo) studyInfo;
-            if(mLiveStudyInfo.getTestList() == null || mLiveStudyInfo.getTestList().size() == 0){
+            if (mLiveStudyInfo.getTestList() == null || mLiveStudyInfo.getTestList().size() == 0) {
                 ivNodata.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 ivNodata.setVisibility(View.GONE);
             }
             tvCheckTime.setText(studyInfo.getSignTime());
             tvOnlineTime.setText(studyInfo.getOnlineTime());
+            tvMyRank.setText(mLiveStudyInfo.getMyRank());
+            tvOurEnergy.setText(mLiveStudyInfo.getOurTeamEnergy() + "");
+            tvAgainstEnergy.setText(mLiveStudyInfo.getHostileTeamEnergy() + "");
+
             if (mAdapter == null) {
                 mAdapter = new StuLiveInfoAdapter(mLiveStudyInfo);
                 rclAnwerState.setAdapter(mAdapter);
@@ -66,7 +78,7 @@ public class HalfBodyAuditClassBll implements AuditClassAction {
     private static class StuLiveInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private HalfBodyLiveStudyInfo mData;
 
-        public StuLiveInfoAdapter(HalfBodyLiveStudyInfo data){
+        public StuLiveInfoAdapter(HalfBodyLiveStudyInfo data) {
             this.mData = data;
         }
 
@@ -121,9 +133,9 @@ public class HalfBodyAuditClassBll implements AuditClassAction {
 
         @Override
         public int getItemCount() {
-            int itemCount = 1;
-            if (mData != null) {
-                itemCount += mData.getTestList() != null ? mData.getTestList().size() : 0;
+            int itemCount = 0;
+            if (mData != null && mData.getTestList() != null) {
+                itemCount = mData.getTestList().size() > 0? mData.getTestList().size() + 1:0;
             }
             return itemCount;
         }
@@ -131,9 +143,6 @@ public class HalfBodyAuditClassBll implements AuditClassAction {
 
     private static class PkItemHolder extends RecyclerView.ViewHolder {
 
-        private TextView tvMyRank;
-        private TextView tvOurEnergy;
-        private TextView tvAgainstEnergy;
         private TextView tvRate;
         private View vTitleContainer;
 
@@ -141,21 +150,15 @@ public class HalfBodyAuditClassBll implements AuditClassAction {
             super(itemView);
             vTitleContainer = itemView.findViewById(R.id.consl_livevideo_auditclass_test_tilte_container);
             tvRate = itemView.findViewById(R.id.tv_livevideo_auditclass_rate);
-            tvAgainstEnergy = itemView.findViewById(R.id.tv_livevideo_auditclass_against_energy);
-            tvOurEnergy = itemView.findViewById(R.id.tv_livevideo_auditclass_energy);
-            tvMyRank = itemView.findViewById(R.id.tv_livevideo_auditclass_myrank);
         }
 
         public void bindData(HalfBodyLiveStudyInfo data) {
-            tvMyRank.setText(data.getMyRank());
-            tvOurEnergy.setText(data.getOurTeamEnergy() + "");
-            tvAgainstEnergy.setText(data.getHostileTeamEnergy() + "");
             tvRate.setText(data.getStuAvgRate());
-            if (data.getTestList() == null || data.getTestList().size() == 0) {
+           /* if (data.getTestList() == null || data.getTestList().size() == 0) {
                 vTitleContainer.setVisibility(View.GONE);
             } else {
                 vTitleContainer.setVisibility(View.VISIBLE);
-            }
+            }*/
         }
     }
 
