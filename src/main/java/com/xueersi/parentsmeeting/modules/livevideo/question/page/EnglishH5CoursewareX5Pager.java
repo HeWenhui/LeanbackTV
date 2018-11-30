@@ -616,8 +616,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         wvSubjectWeb = (WebView) View.inflate(mContext, R.layout.page_livevideo_h5_courseware_cacheweb, null);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         rlLivevideoSubjectWeb.addView(wvSubjectWeb, 0, lp);
-
+        Loger.e(TAG, "======> newArtsH5CourseWare refresh:");
         addJavascriptInterface();
+        wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
