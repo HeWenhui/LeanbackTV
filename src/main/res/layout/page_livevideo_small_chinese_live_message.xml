@@ -48,11 +48,11 @@
         <!--战队pk后面的背景石头-->
         <ImageView
             android:id="@+id/iv_livevideo_small_chinese_pk_background"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/bg_livevideo_small_chinese_rank_top_icon"
-            android:visibility="gone" />
+            android:background="@drawable/bg_livevideo_small_chinese_rank_top_icon" />
 
         <ImageView
             android:id="@+id/iv_livevideo_small_chinese_live_message_top_icon"
@@ -108,7 +108,7 @@
             android:layout_alignTop="@+id/iv_livevideo_small_chinese_play_achievement_board"
             android:layout_alignBottom="@+id/view_help_line"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="15dp">
+            android:layout_marginBottom="18dp">
 
             <!--<RelativeLayout-->
             <!--android:layout_width="wrap_content"-->

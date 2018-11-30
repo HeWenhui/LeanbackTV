@@ -166,22 +166,22 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             logger.i("在家小英的红包");
             if (chineseRedPackagePager == null) {
                 chineseRedPackagePager = new SmallChineseRedPackagePager(activity);
-                chineseRedPackagePager.setListener(new SmallChineseRedPackagePager.SmallChineseRedPackageListener() {
-                    @Override
-                    public void close() {
-                        if (chineseRedPackagePager != null && chineseRedPackagePager.getRootView().getParent() == rlRedpacketContent) {
-                            rlRedpacketContent.removeView(chineseRedPackagePager.getRootView());
-                        }
-                    }
-
-                    @Override
-                    public void submit() {
-                        sendReceiveGold(operateId, mVSectionID);
-                    }
-                });
             } else {//再次发红包
                 chineseRedPackagePager.updateView(false, 0);
             }
+            chineseRedPackagePager.setListener(new SmallChineseRedPackagePager.SmallChineseRedPackageListener() {
+                @Override
+                public void close() {
+                    if (chineseRedPackagePager != null && chineseRedPackagePager.getRootView().getParent() == rlRedpacketContent) {
+                        rlRedpacketContent.removeView(chineseRedPackagePager.getRootView());
+                    }
+                }
+
+                @Override
+                public void submit() {
+                    sendReceiveGold(operateId, mVSectionID);
+                }
+            });
             view = chineseRedPackagePager.getRootView();
             params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             params.addRule(RelativeLayout.CENTER_IN_PARENT);
