@@ -200,7 +200,9 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                         if(responseEntity != null){
                             logger.i( "onPmError:人机" + responseEntity.getErrorMsg());
                         }
-                        onStopQuestion(null,null);
+                        //有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
+                        pmErrorAfterpmSuccess();
+
                     }
 
                     @Override
@@ -210,6 +212,25 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                     }
                 });
     }
+
+    /**
+     * 有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
+     */
+    private void pmErrorAfterpmSuccess() {
+
+        //有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
+        if(mRolePlayerEntity == null){
+            onStopQuestion(null,null);
+        }else{
+            List<RolePlayerEntity.RolePlayerHead> rolePlayerHeads = mRolePlayerEntity.getLstRoleInfo();
+            List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages = mRolePlayerEntity.getLstRolePlayerMessage();
+            if(rolePlayerHeads == null || rolePlayerMessages == null || rolePlayerHeads.size() <=0 || rolePlayerMessages.size() <= 0){
+                //角色信息，或者试题信息没有的时候，结束当前界面
+                onStopQuestion(null,null);
+            }
+        }
+    }
+
     // 文科新课件平台获取分组和试题信息
     private void requestNewArtsTestInfos() {
         if (mRolePlayerEntity != null) {
@@ -233,6 +254,8 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                             if(responseEntity != null){
                                 logger.i( "onPmError: 新课件平台人机分组和试题" + responseEntity.getErrorMsg());
                             }
+                            //有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
+                            pmErrorAfterpmSuccess();
 
                         }
 
