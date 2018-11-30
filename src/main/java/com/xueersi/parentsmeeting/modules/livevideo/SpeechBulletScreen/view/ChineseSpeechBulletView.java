@@ -283,7 +283,9 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
         tvSpeechbulSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                logger.i("onClick: tvSpeechbulSwitch");
                 startTextInput("");
+                mWeakHandler.removeCallbacks(startEvaluatorRunnable);
             }
         });
         vwvSpeechbulWave.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -327,7 +329,7 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
         umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
     }
 
-    private void checkAudioPermission(){
+    private void checkAudioPermission() {
         boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO); //
         // 检查用户麦克风权限
         if (hasAudidoPermission) {
@@ -669,7 +671,8 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
      * ************************************************** 语音识别 **************************************************
      */
     protected final static String VOICE_RECOG_HINT = "语音录入中（15字以内）";
-    protected final static String VOICE_RECOG_NOVOICE_HINT = "没听清，请重说";
+    protected final static String VOICE_RECOG_NOVOICE_HINT = "没听清请重说或切换";
+    private boolean isPleaseSayAgain = false;
 
     protected void startEvaluator() {
         logger.i("startEvaluator()");
@@ -679,8 +682,14 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
                     @Override
                     public void onBeginOfSpeech() {
                         logger.i("onBeginOfSpeech()");
+                        if (isPleaseSayAgain) {
+                            tvSpeechbulTitle.setText(VOICE_RECOG_NOVOICE_HINT);
+                            tvSpeechbulSwitch.setVisibility(View.VISIBLE);
+                        } else {
+                            tvSpeechbulTitle.setText(VOICE_RECOG_HINT);
+                        }
+                        isPleaseSayAgain = false;
                         KeyboardUtil.hideKeyboard(mView);
-                        tvSpeechbulTitle.setText(VOICE_RECOG_HINT);
                         tvSpeechbulTitleCount.setText("");
                         rlSpeechbulInputContent.setVisibility(View.GONE);
                         tvSpeechbulTitle.setVisibility(View.VISIBLE);
@@ -871,16 +880,20 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
      * 没听清，请重说
      */
     protected void pleaseSayAgain() {
+        if (rlSpeechbulInputContent != null && rlSpeechbulInputContent.getVisibility() == View.VISIBLE) {
+            return;
+        }
         stopEvaluator();
-        tvSpeechbulTitle.setText(VOICE_RECOG_NOVOICE_HINT);
-        tvSpeechbulSwitch.setVisibility(View.VISIBLE);
-        mWeakHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startEvaluator();
-            }
-        }, 300);
+        isPleaseSayAgain = true;
+        mWeakHandler.postDelayed(startEvaluatorRunnable, 300);
     }
+
+    private Runnable startEvaluatorRunnable = new Runnable() {
+        @Override
+        public void run() {
+            startEvaluator();
+        }
+    };
 
     /**
      * ************************************************** 弹 幕 **************************************************
@@ -1201,6 +1214,8 @@ public class ChineseSpeechBulletView extends LiveBasePager implements ScienceSpe
             mDanmakuView.release();
             mDanmakuView = null;
         }
+        if (soundPool != null)
+            soundPool.release();
         stopEvaluator();
     }
 }
