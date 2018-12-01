@@ -30,7 +30,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/iv_livevideo_en_achive_num_star"
                 android:layout_alignBottom="@id/iv_livevideo_en_achive_num_star"
-                android:layout_marginLeft="4dp"
                 android:layout_toRightOf="@id/iv_livevideo_en_achive_num_fire"
                 android:gravity="center_vertical"
                 android:includeFontPadding="false"

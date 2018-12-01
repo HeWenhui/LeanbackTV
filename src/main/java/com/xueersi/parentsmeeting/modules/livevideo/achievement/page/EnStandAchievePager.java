@@ -82,7 +82,11 @@ public class EnStandAchievePager extends LiveBasePager {
             tv_livevideo_en_achive_pk_energy_other = pkview.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
             tv_livevideo_en_achive_pk_energy_my.setText("" + enpkEnergy.myTeam);
             tv_livevideo_en_achive_pk_energy_other.setText("" + enpkEnergy.opTeam);
-            setEngPro(12);
+            int progress = 0;
+            if (enpkEnergy.myTeam + enpkEnergy.opTeam != 0) {
+                progress = enpkEnergy.myTeam * 100 / (enpkEnergy.myTeam + enpkEnergy.opTeam);
+            }
+            setEngPro(progress);
         } else {
             vsAchiveBottom2.inflate();
         }
