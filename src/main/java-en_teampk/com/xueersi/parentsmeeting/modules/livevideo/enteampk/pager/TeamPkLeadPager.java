@@ -42,6 +42,7 @@ public class TeamPkLeadPager extends LiveBasePager {
     private EnTeamPkRankEntity enTeamPkRankEntity;
     private RelativeLayout rlTeampkLeadBottom;
     private ProgressBar pgTeampkLead;
+    private ImageView iv_livevideo_en_teampk_lead_mid;
     private ImageView iv_livevideo_en_teampk_lead_prog;
     private ImageView ivTeampkMine;
     private ImageView ivTeampkOther;
@@ -69,6 +70,7 @@ public class TeamPkLeadPager extends LiveBasePager {
         } else {
             view.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_4_3);
         }
+        iv_livevideo_en_teampk_lead_mid = view.findViewById(R.id.iv_livevideo_en_teampk_lead_mid);
         rlTeampkLeadBottom = view.findViewById(R.id.rl_livevideo_en_teampk_lead_bottom);
         pgTeampkLead = view.findViewById(R.id.pg_livevideo_en_teampk_lead);
         iv_livevideo_en_teampk_lead_prog = view.findViewById(R.id.iv_livevideo_en_teampk_lead_prog);
@@ -86,6 +88,14 @@ public class TeamPkLeadPager extends LiveBasePager {
         super.initData();
         int win = enTeamPkRankEntity.getMyTeamTotal() - enTeamPkRankEntity.getOpTeamTotal();
         if (type == TEAM_TYPE_2) {
+            {
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_en_teampk_lead_mid.getLayoutParams();
+                iv_livevideo_en_teampk_lead_mid.setImageResource(R.drawable.zhanduipk_gongxihuosheng_pic);
+                lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                lp.width = SizeUtils.Dp2Px(mContext, 137);
+                lp.height = SizeUtils.Dp2Px(mContext, 47);
+                iv_livevideo_en_teampk_lead_mid.setLayoutParams(lp);
+            }
             tvTeampkLeadFireAddLeft.setVisibility(View.GONE);
             ivTeampkLeadFireAddRight.setVisibility(View.GONE);
             mView.findViewById(R.id.iv_livevideo_en_teampk_lead_fire_left).setVisibility(View.GONE);
@@ -121,6 +131,22 @@ public class TeamPkLeadPager extends LiveBasePager {
                 group.addView(imageView, 0, lp);
                 setBg(ivTeampkOther, imageView);
             }
+        } else {
+            iv_livevideo_en_teampk_lead_mid.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_en_teampk_lead_mid.getLayoutParams();
+            if (win == 0) {
+                lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                iv_livevideo_en_teampk_lead_mid.setImageResource(R.drawable.bg_livevideo_en_teampk_lead_mid);
+            } else if (win < 0) {
+                lp.addRule(RelativeLayout.ALIGN_LEFT, R.id.iv_livevideo_en_teampk_mine);
+                lp.addRule(RelativeLayout.ALIGN_RIGHT, R.id.iv_livevideo_en_teampk_mine);
+                iv_livevideo_en_teampk_lead_mid.setImageResource(R.drawable.bg_livevideo_en_teampk_lead_lost);
+            } else {
+                lp.addRule(RelativeLayout.ALIGN_LEFT, R.id.iv_livevideo_en_teampk_other);
+                lp.addRule(RelativeLayout.ALIGN_RIGHT, R.id.iv_livevideo_en_teampk_other);
+                iv_livevideo_en_teampk_lead_mid.setImageResource(R.drawable.bg_livevideo_en_teampk_lead_win);
+            }
+            iv_livevideo_en_teampk_lead_mid.setLayoutParams(lp);
         }
         int[] res = EnTeamPkConfig.TEAM_RES;
         ivTeampkMine.setImageResource(res[enTeamPkRankEntity.getMyTeam()]);

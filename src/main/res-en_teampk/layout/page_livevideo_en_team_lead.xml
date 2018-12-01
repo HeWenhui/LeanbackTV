@@ -4,11 +4,9 @@
 
     <ImageView
         android:id="@id/iv_livevideo_en_teampk_lead_mid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
-        android:src="@drawable/bg_livevideo_en_teampk_lead_mid" />
+        android:layout_width="80dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="18dp" />
 
     <ImageView
         android:id="@id/iv_livevideo_en_teampk_mine"
