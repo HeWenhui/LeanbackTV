@@ -572,7 +572,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
         logToFile.d("stopVoiceAnswerPager:isAnaswer=" + isAnaswer);
         if (isEnd) {
-            onQuestionShow(null, false, "stopVoiceAnswerPager");
+            onQuestionShow(false, "stopVoiceAnswerPager");
         }
     }
 
@@ -969,7 +969,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
         @Override
         public void onPutQuestionResult(BaseVoiceAnswerPager baseVoiceAnswerPager, final BaseVideoQuestionEntity videoQuestionLiveEntity, String answer, String result, int sorce, boolean isRight, double voiceTime, String isSubmit, final OnAnswerReslut answerReslut) {
-            if(LiveVideoConfig.isNewArts){
+            if (LiveVideoConfig.isNewArts) {
                 logger.d("onPutQuestionResultNewArts0");
                 final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
                 JSONArray answers = new JSONArray();
@@ -1177,17 +1177,17 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onArtsResultCmplShow(AnswerResultCplShowEvent event) {
         Loger.e("EnglishH5CoursewareBll:onArtsResultCmplShow ");
-            froceClose();
+        froceClose();
     }
 
     /**
      * 试题隐藏显示
      *
      * @param videoQuestionLiveEntity
-     * @param isShow                  true显示
+     * @param isShow true显示
      * @param method
      */
-    private void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity,boolean isShow, String method) {
+    private void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow, String method) {
         logToFile.d("onQuestionShow:isShow=" + isShow + ",method=" + method);
         for (QuestionShowAction questionShowAction : questionShowActions) {
             questionShowAction.onQuestionShow(videoQuestionLiveEntity, isShow);
