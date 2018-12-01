@@ -735,16 +735,19 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager = baseSpeechCreat.createNewRolePlay(activity, liveGetInfo, videoQuestionLiveEntity,
                                 id, QuestionBll.this, stuCouId, rolePlayMachineBll);
                         speechAssessmentPager.setIse(mIse);
-                        if (speechAssessmentPager instanceof RolePlayMachinePager) {
+                        if (speechAssessmentPager != null && speechAssessmentPager instanceof RolePlayMachinePager) {
                             logger.i("--------------新课件平台走rolaplay人机");
                             //人机，roles不为空的题型
                             if (rolePlayMachineBll != null) {
+                                logger.i("--------------新课件平台走rolaplay人机，初始化数据");
                                 rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
                                 rolePlayMachineBll.setBottomView(rlQuestionContent);
                                 rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                                 speechAssessmentPager.initData();
+                            }else {
+                                logger.i("--------------新课件平台走rolaplay人机，初始化数据失败，退出");
+                                speechAssessmentPager.onDestroy();
                             }
-
                         } else {
                             logger.i("--------------新课件平台跟读走h5");
                             //跟读之类的题型
@@ -893,6 +896,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 rolePlayMachineBll.setBottomView(rlQuestionContent);
                                 rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                                 speechAssessmentPager.initData();
+                            }else {
+                                logger.i("--------------走rolaplay人机，初始化数据失败，退出");
+                                speechAssessmentPager.onDestroy();
                             }
 
                         } else {

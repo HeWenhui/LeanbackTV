@@ -946,8 +946,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     try {
                         if(isRight){
                             blanks.put(0,result);
+                            LiveVideoConfig.userAnswer = result;
                         }else{
                             blanks.put(0,"");
+                            LiveVideoConfig.userAnswer = "";
                         }
 
                     } catch (JSONException e) {
@@ -956,6 +958,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 } else {
                     try {
                         choices.put(0,result);
+                        LiveVideoConfig.userAnswer = result;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -978,6 +981,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 }else if("1".equals(isSubmit)){
                     isSubmit = "2";
                 }
+                LiveVideoConfig.answer = answer;
                 // 文科新课件平台的对接
                 mLiveBll.liveSubmitTestH5Answer(videoQuestionLiveEntity1, mVSectionID, testAnswer, videoQuestionLiveEntity1.courseware_type, isSubmit, voiceTime, isRight, new OnAnswerReslut() {
 
