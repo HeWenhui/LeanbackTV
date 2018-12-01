@@ -532,7 +532,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         logger.e("======> showQuestion 22222:" + isAnaswer);
 
         if (!isAnaswer) {
-            onQuestionShow(videoQuestionLiveEntity,true, "showQuestion");
+            onQuestionShow(videoQuestionLiveEntity, true, "showQuestion");
         }
         isAnaswer = true;
         if (this.videoQuestionLiveEntity != null) {
@@ -744,7 +744,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 rolePlayMachineBll.setBottomView(rlQuestionContent);
                                 rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                                 speechAssessmentPager.initData();
-                            }else {
+                            } else {
                                 logger.i("--------------新课件平台走rolaplay人机，初始化数据失败，退出");
                                 speechAssessmentPager.onDestroy();
                             }
@@ -896,7 +896,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 rolePlayMachineBll.setBottomView(rlQuestionContent);
                                 rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                                 speechAssessmentPager.initData();
-                            }else {
+                            } else {
                                 logger.i("--------------走rolaplay人机，初始化数据失败，退出");
                                 speechAssessmentPager.onDestroy();
                             }
@@ -1638,7 +1638,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         removeQuestionViews();
         BaseVoiceAnswerPager voiceAnswerPager2 =
                 baseVoiceAnswerCreat.create(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity
-                        .type, rlQuestionContent,mIse);
+                        .type, rlQuestionContent, mIse);
 
 //        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                ViewGroup.LayoutParams.WRAP_CONTENT);
