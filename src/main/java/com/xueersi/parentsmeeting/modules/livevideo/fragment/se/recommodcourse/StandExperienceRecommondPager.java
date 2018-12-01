@@ -16,6 +16,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.CustomVerticalBannerView;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 
@@ -295,10 +296,11 @@ public class StandExperienceRecommondPager extends BasePager implements Question
     /**
      * 在其他问题显示时隐藏该View
      *
+     * @param videoQuestionLiveEntity
      * @param isShow
      */
     @Override
-    public void onQuestionShow(boolean isShow) {
+    public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
         if (mView != null) {
             if (!isBuyCourseSuccess) {
                 if (isShow) {
