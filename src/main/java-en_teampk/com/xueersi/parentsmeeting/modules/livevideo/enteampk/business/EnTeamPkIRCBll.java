@@ -296,7 +296,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logger.d("onNotice:XCR_ROOM_TEAMPK_RESULT:pkTeamEntity=" + pkTeamEntity);
                 if (pkTeamEntity != null) {
                     final String teamId = "" + pkTeamEntity.getMyTeam();
-                    getHttpManager().getEnglishPkTotalRank(teamId, "", new HttpCallBack() {
+                    getHttpManager().getEnglishPkTotalRank(teamId, "", new HttpCallBack(false) {
                         AtomicInteger tryCount = new AtomicInteger(5);
                         HttpCallBack callBack = this;
 
@@ -354,7 +354,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 final String teamId = "" + pkTeamEntity.getMyTeam();
                 final String testId = ("" + old.id).replace(",", "-");
                 mLogtf.d("onCourseEnd:isShow:old=" + old.id + ",testId=" + testId + ",pkTeamEntity=" + teamId);
-                getHttpManager().updataEnglishPkByTestId(teamId, testId, new HttpCallBack() {
+                getHttpManager().updataEnglishPkByTestId(teamId, testId, new HttpCallBack(false) {
                     AtomicInteger tryCount = new AtomicInteger(5);
                     HttpCallBack callBack = this;
 
@@ -379,7 +379,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
-                        logger.e("onCourseEnd:onPmFailure=" + msg + ",try=" + tryCount.get(), error);
+                        if (error instanceof SocketTimeoutException) {
+                            logger.e("onCourseEnd:onPmFailure(Timeout)msg=" + msg + ",try=" + tryCount.get());
+                        } else {
+                            logger.e("onCourseEnd:onPmFailure=" + msg + ",try=" + tryCount.get(), error);
+                        }
                         if (tryCount.decrementAndGet() > 0) {
                             mHandler.postDelayed(new Runnable() {
                                 @Override
@@ -405,7 +409,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             videoQuestionLiveEntity = null;
             if (pkTeamEntity != null) {
                 String teamId = "" + pkTeamEntity.getMyTeam();
-                getHttpManager().updataEnglishPkByTestId(teamId, old.id, new HttpCallBack() {
+                getHttpManager().updataEnglishPkByTestId(teamId, old.id, new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         logger.d("onQuestionEnd:onPmSuccess" + responseEntity.getJsonObject());
