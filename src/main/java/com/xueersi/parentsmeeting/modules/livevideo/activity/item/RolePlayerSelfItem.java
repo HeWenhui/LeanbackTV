@@ -194,80 +194,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
             }
 
         });
-//        if (mEntity.isVoiceIsplay()) {
-//            AudioPlayerManager.get(ContextManager.getApplication()).stop();
-//            AudioPlayerManager.get(ContextManager.getApplication()).setDataSource("");
-//            mEntity.setVoiceIsplay(false);
-//            return;
-//        }
-//        if (TextUtils.isEmpty(mEntity.getLocalResourceUrl())
-//                || !new File(mEntity.getLocalResourceUrl()).exists()) {
-//            ivVoiceAnimtor.setBackgroundResource(R.drawable.bg_chat_voice_to_playing_img);
-//            XESToastUtils.showToast(mContext, "语音正在下载中" + (TextUtils.isEmpty(mEntity.getLocalResourceUrl
-//                    ()) ? "" : mEntity.getLocalResourceUrl()));
-//        } else {
-//
-//            ivVoiceAnimtor.setImageResource(R.drawable.bg_chat_voice_to_download_img);
-//            ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_homework_voice_right_anim);
-//            final AnimationDrawable selfVoiceAnimationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
-//            selfVoiceAnimationDrawable.start();
-//            mEntity.setVoiceIsplay(true);
-//            AudioPlayerManager.get(ContextManager.getApplication()).start(mEntity.getLocalResourceUrl(),
-//                    new PlayerCallback() {
-//                        @Override
-//                        public void onCompletion(Object dataSource, AudioPlayerManager manager) {
-//                            mEntity.setVoiceIsplay(false);
-//                            selfVoiceAnimationDrawable.stop();
-//                            selfVoiceAnimationDrawable.selectDrawable(0);
-//                            updateViews(mEntity, mPosition, null);
-//                            if (manager.getState() != AudioPlayerManager.State.error) {
-//                                handler.post(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        if (mLstMessageData.size() > mPosition + 1) {
-//                                            MessageEntity messageEntity = mLstMessageData.get(mPosition + 1);
-//                                            int type = (int) messageEntity.getDataType(AppBll.getInstance()
-// .getAppInfoEntity
-//                                                    ().getChildName());
-//                                            if (type == MessageEntity.MessageViewType.SELF_VOICE) {
-//                                                if (messageEntity.voiceSelfItem != null) {
-//                                                    messageEntity.voiceSelfItem.voiceClick();
-//                                                    logger.i( "playComplete:(equals)nextItem=" + (messageEntity
-//                                                            .voiceSelfItem.mEntity == messageEntity));
-//                                                } else {
-//                                                    logger.i( "playComplete:(equals)nextItem.voiceSelfItem=null");
-//                                                }
-//                                            } else if (type == MessageEntity.MessageViewType.COME_VOICE) {
-//
-//                                            } else {
-//                                                logger.i( "playComplete:(equals)nextItem.type=" + type);
-//                                            }
-//                                        } else {
-//                                            logger.i( "playComplete:(equals)last");
-//                                        }
-//                                    }
-//                                });
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onStop(Object dataSource, AudioPlayerManager manager) {
-//                            super.onStop(dataSource, manager);
-//                            mEntity.setVoiceIsplay(false);
-//                            selfVoiceAnimationDrawable.stop();
-//                            selfVoiceAnimationDrawable.selectDrawable(0);
-//                            updateViews(mEntity, mPosition, null);
-//                        }
-//
-//                        @Override
-//                        public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
-//                            super.onError(msg, dataSource, manager);
-//                            if (msg != null) {
-//                                IMlogger.info(mContext, "语音播放错误：" + msg + "  语音地址：" + mEntity.getSmallResourceUrl());
-//                            }
-//                        }
-//                    }
-//            );
+
     }
 
     @Override
@@ -291,6 +218,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                 tvCountTime.setVisibility(View.INVISIBLE);
                 civUserHead.invalidate();
+                tvMessageContent.setTextColor(mContext.getResources().getColor(R.color.COLOR_333333));
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
                 mIsPlaying = true;
@@ -345,21 +273,6 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 tvCountTime.setText("");
                 tvCountTime.setVisibility(View.INVISIBLE);
                 showSpeechStar();
-//                if (entity.getSpeechScore() >= 75 && entity.getSpeechScore() < 90) {
-//                    tvSpeechTip.setVisibility(View.VISIBLE);
-//                    tvSpeechTip.setText("Well done!");
-//                } else if (entity.getSpeechScore() >= 90) {
-//                    tvSpeechTip.setVisibility(View.VISIBLE);
-//                    tvSpeechTip.setText("Fantastic!");
-//                }
-//                if (tvSpeechTip.getVisibility() == View.VISIBLE) {
-//                    tvSpeechTip.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            tvSpeechTip.setVisibility(View.INVISIBLE);
-//                        }
-//                    }, 5000);
-//                }
                 //测试完毕后状态改成END_ROLEPLAY
                 entity.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
                 speechPhoneScore();
@@ -390,44 +303,6 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 break;
         }
 
-//        // 初始化状态
-//        probarSending.setVisibility(View.GONE);
-//        ivSendMessageError.setVisibility(View.GONE);
-//
-//        if (entity.getLocalResourceUrl() == null) {
-//            // 如果本地的资源路径为空时，表示未从网络下载过，开始下载
-//            EventBus.getDefault().post(new ChatEvent.ChatMessageVoiceDownload(entity, probarSending));
-//        } else {
-//            probarSending.setVisibility(View.GONE);
-//        }
-//
-//        switch (entity.getSendType()) {
-//            case SendType.SUCCESS:
-//                break;
-//            case SendType.LOADING:
-//                // 正在发送消息中的状态
-//                probarSending.setVisibility(View.VISIBLE);
-//                break;
-//            case SendType.FAILED:
-//                // 消息发送失败
-//                ivSendMessageError.setVisibility(View.VISIBLE);
-//                break;
-//        }
-//
-//        tvVoiceDuration.setText(entity.getMessageContent() + "\"");
-//        setVoiceWidthStyle();
-//        ivVoiceAnimtor.setBackgroundResource(R.drawable.bg_chat_voice_to_playing_img);
-//        AnimationDrawable selfVoiceAnimationDrawable = null;
-//        if (entity.isVoiceIsplay() && AudioPlayer.mVoiceUrl != null && AudioPlayer.mVoiceUrl.equals(entity
-//                .getLocalResourceUrl())) {
-//            ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_homework_voice_right_anim);
-//            selfVoiceAnimationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
-//            if (selfVoiceAnimationDrawable != null && !selfVoiceAnimationDrawable.isRunning())
-//                selfVoiceAnimationDrawable.start();
-//        } else {
-//            ivVoiceAnimtor.setImageResource(R.drawable.bg_chat_voice_to_playing_img);
-//
-//        }
 
     }
 

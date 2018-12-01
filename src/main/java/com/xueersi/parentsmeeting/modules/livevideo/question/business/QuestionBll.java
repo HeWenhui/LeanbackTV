@@ -97,7 +97,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE = false;
     private String examQuestionEventId = LiveVideoConfig.LIVE_H5_EXAM;
-    private String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
+    private String questionEventId = LiveVideoConfig.LIVE_H5_TEST;
     private String voicequestionEventId = LiveVideoConfig.LIVE_TEST_VOICE;
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private VideoQuestionLiveEntity videoQuestionLiveEntity;
@@ -572,7 +572,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             mData.put("testid", "" + videoQuestionLiveEntity.id);
             mData.put("logtype", "receiveInteractTest");
             mData.put("ish5test", "" + videoQuestionLiveEntity.isTestUseH5);
-            umsAgentDebugSys(questionEventId, mData);
+            umsAgentDebugInter(questionEventId, mData);
         }
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         //不是语音评测
@@ -735,7 +735,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager = baseSpeechCreat.createNewRolePlay(activity, liveGetInfo, videoQuestionLiveEntity,
                                 id, QuestionBll.this, stuCouId, rolePlayMachineBll);
                         speechAssessmentPager.setIse(mIse);
-                        if (speechAssessmentPager instanceof RolePlayMachinePager) {
+                        if (speechAssessmentPager != null && speechAssessmentPager instanceof RolePlayMachinePager) {
                             logger.i("--------------新课件平台走rolaplay人机");
                             //人机，roles不为空的题型
                             if (rolePlayMachineBll != null) {
@@ -744,8 +744,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 rolePlayMachineBll.setBottomView(rlQuestionContent);
                                 rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                                 speechAssessmentPager.initData();
+                            }else {
+                                logger.i("--------------新课件平台走rolaplay人机，初始化数据失败，退出");
+                                speechAssessmentPager.onDestroy();
                             }
-
                         } else {
                             logger.i("--------------新课件平台跟读走h5");
                             //跟读之类的题型
@@ -894,6 +896,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 rolePlayMachineBll.setBottomView(rlQuestionContent);
                                 rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                                 speechAssessmentPager.initData();
+                            }else {
+                                logger.i("--------------走rolaplay人机，初始化数据失败，退出");
+                                speechAssessmentPager.onDestroy();
                             }
 
                         } else {
@@ -1242,8 +1247,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
                 Map<String, String> mData = new HashMap<>();
                 mData.put("logtype", "receiveExam");
-                mData.put("examid", videoQuestionLiveEntity.id);
-                umsAgentDebugSys(examQuestionEventId, mData);
+                mData.put("testid", videoQuestionLiveEntity.id);
+                umsAgentDebugInter(examQuestionEventId, mData);
                 examQuestionPager = baseExamQuestionCreat.creatBaseExamQuestion(activity, liveid,
                         videoQuestionLiveEntity);
                 rlQuestionContent.addView(examQuestionPager.getRootView());

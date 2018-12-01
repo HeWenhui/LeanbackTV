@@ -223,7 +223,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "examEnd");
         mData.put("examid", num);
-        umsAgentDebugSys(examQuestionEventId, mData);
+        umsAgentDebugInter(examQuestionEventId, mData);
     }
 
     @Override
