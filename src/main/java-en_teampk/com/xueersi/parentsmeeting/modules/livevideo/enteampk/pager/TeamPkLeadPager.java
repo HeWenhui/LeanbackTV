@@ -31,11 +31,11 @@ import java.util.HashMap;
  */
 public class TeamPkLeadPager extends LiveBasePager {
     /**
-     * 贡献之星，克中
+     * 贡献之星，课中
      */
     public static int TEAM_TYPE_1 = 1;
     /**
-     * 贡献之星，克后
+     * 贡献之星，课后
      */
     public static int TEAM_TYPE_2 = 2;
     private int type;

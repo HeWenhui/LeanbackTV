@@ -70,7 +70,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
             });
         } else {
             if (pkTeamEntity == null) {
-                enTeamPkHttp.getEnglishPkRank(new AbstractBusinessDataCallBack() {
+                enTeamPkHttp.getEnglishPkGroup(new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objects) {
                         pkTeamEntity = (PkTeamEntity) objects[0];

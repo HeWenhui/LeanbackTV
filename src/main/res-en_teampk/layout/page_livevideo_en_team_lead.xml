@@ -16,7 +16,7 @@
         android:layout_height="135dp"
         android:layout_marginTop="49dp"
         android:layout_marginRight="17dp"
-        android:layout_toStartOf="@+id/iv_livevideo_en_teampk_vs"
+        android:layout_toStartOf="@id/iv_livevideo_en_teampk_vs"
         android:layout_toLeftOf="@id/iv_livevideo_en_teampk_vs"
         android:src="@drawable/livevideo_enteampk_benchangzhanduifenzu_01sweetheartkate_pic_normal" />
 

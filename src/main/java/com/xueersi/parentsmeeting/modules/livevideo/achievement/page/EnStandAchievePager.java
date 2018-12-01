@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
 public class EnStandAchievePager extends LiveBasePager {
     private RelativeLayout parent;
@@ -25,6 +30,11 @@ public class EnStandAchievePager extends LiveBasePager {
     private TextView tvAchiveNumStar;
     private TextView tvAchiveNumGold;
     private RelativeLayout rlAchiveStandBg;
+    private ViewGroup pkview = null;
+    private ProgressBar pgAchivePk;
+    private ImageView progressImageView;
+    private TextView tv_livevideo_en_achive_pk_energy_my;
+    private TextView tv_livevideo_en_achive_pk_energy_other;
     private CheckBox cbAchiveTitle;
     private int starCount;
     private int goldCount;
@@ -66,7 +76,13 @@ public class EnStandAchievePager extends LiveBasePager {
         tvAchiveNumFire.setText("" + enpkEnergy.me);
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
         if (1 == englishPk.canUsePK) {
-            View v = vsAchiveBottom.inflate();
+            pkview = (ViewGroup) vsAchiveBottom.inflate();
+            pgAchivePk = pkview.findViewById(R.id.pg_livevideo_en_achive_pk);
+            tv_livevideo_en_achive_pk_energy_my = pkview.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
+            tv_livevideo_en_achive_pk_energy_other = pkview.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
+            tv_livevideo_en_achive_pk_energy_my.setText("" + enpkEnergy.myTeam);
+            tv_livevideo_en_achive_pk_energy_other.setText("" + enpkEnergy.opTeam);
+            setEngPro(12);
         } else {
             vsAchiveBottom2.inflate();
         }
@@ -76,6 +92,39 @@ public class EnStandAchievePager extends LiveBasePager {
                 rlAchiveStandBg.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             }
         });
+    }
+
+    private void setEngPro(int progress) {
+        if (pgAchivePk == null) {
+            return;
+        }
+        pgAchivePk.setProgress(progress);
+        if (progressImageView == null) {
+            progressImageView = new ImageView(activity);
+            progressImageView.setImageResource(R.drawable.livevideo_enteampk_benchangchengjiu_pkfair1_img_nor);
+            progressImageView.setVisibility(View.INVISIBLE);
+            pkview.addView(progressImageView);
+            pgAchivePk.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    pgAchivePk.getViewTreeObserver().removeOnPreDrawListener(this);
+                    setLayout();
+                    return false;
+                }
+            });
+        } else {
+            setLayout();
+        }
+    }
+
+    private void setLayout() {
+        int[] loc = ViewUtil.getLoc(pgAchivePk, pkview);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
+        lp.leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
+        lp.topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2 - 10;
+        logger.d("initListener:left=" + loc[0] + ",top=" + loc[1]);
+        progressImageView.setLayoutParams(lp);
+        progressImageView.setVisibility(View.VISIBLE);
     }
 
     @Override

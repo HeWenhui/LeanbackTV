@@ -1712,7 +1712,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      *
      * @param requestCallBack
      */
-    public void getEnglishPkRank(HttpCallBack requestCallBack) {
+    public void getEnglishPkGroup(HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addHeaderParam("Connection", "Close");
         setDefaultParameter(params);
@@ -1761,5 +1761,18 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("pkTeamId", "" + teamId);
         params.addBodyParam("testId", "" + testId);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_UPDATA_PK_RANK, params, requestCallBack);
+    }
+
+    /**
+     * go-战队pk-更新用户分组
+     *
+     * @param requestCallBack
+     */
+    public void getEnglishPkTotalRank(String teamId, String testId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("pkTeamId", "" + teamId);
+        params.addBodyParam("testId", "" + testId);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_PK_TOTAL_RANK, params, requestCallBack);
     }
 }
