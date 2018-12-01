@@ -214,7 +214,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             if (h5CoursewarePager != null) {
                 if (h5CoursewarePager.isFinish()) {
                     h5CoursewarePager.close();
-                    onQuestionShow(null, false, "onBack");
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = null;
+                    if (liveBasePager.getBaseVideoQuestionEntity() instanceof VideoQuestionLiveEntity) {
+                        videoQuestionLiveEntity = (VideoQuestionLiveEntity) liveBasePager.getBaseVideoQuestionEntity();
+                    }
+                    onQuestionShow(videoQuestionLiveEntity, false, "onBack");
                 } else {
                     VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(context, (BaseApplication)
                             BaseApplication.getContext(), false,
@@ -314,7 +318,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         return;
                     }
                     if (!isAnaswer) {
-                        onQuestionShow(null, true, "onH5Courseware:start");
+                        onQuestionShow(videoQuestionLiveEntity, true, "onH5Courseware:start");
                     }
                     isAnaswer = true;
                     if (!"1".equals(videoQuestionLiveEntity.getIsVoice()) || mErrorVoiceQue.contains(videoQuestionLiveEntity.getUrl())) {

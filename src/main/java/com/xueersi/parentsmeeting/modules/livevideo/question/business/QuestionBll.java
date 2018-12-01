@@ -532,7 +532,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         logger.e("======> showQuestion 22222:" + isAnaswer);
 
         if (!isAnaswer) {
-            onQuestionShow(null, true, "showQuestion");
+            onQuestionShow(videoQuestionLiveEntity, true, "showQuestion");
         }
         isAnaswer = true;
         if (this.videoQuestionLiveEntity != null) {
