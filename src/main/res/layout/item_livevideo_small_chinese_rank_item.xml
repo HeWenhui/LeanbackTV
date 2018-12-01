@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_rank_item_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="@drawable/bg_livevideo_small_chinese_rank_no1"/>
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_rank_item_mid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +20,7 @@
         app:layout_constraintRight_toLeftOf="@+id/tv_livevideo_rank_item_right"
         tools:text="王佳佳" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_rank_item_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

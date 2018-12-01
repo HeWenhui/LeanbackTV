@@ -162,11 +162,22 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     }
 
     /**
+     * 解析getInfo之前，先把之前用来判断状态的静态变量置空，以免上一次的状态影响这一次
+     */
+    private void setStaticStatusNull() {
+        //小学语文MMD皮肤
+        LiveVideoConfig.isSmallChinese = false;
+
+    }
+
+    /**
      * 解析getInfo
      */
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
+            //解析getInfo之前，先把之前用来判断状态的静态变量置空
+            setStaticStatusNull();
             getInfo.setId(data.getString("id"));
             getInfo.setIs_show_ranks(data.optString("is_show_ranks"));
             //getInfo.setIs_show_ranks("1");

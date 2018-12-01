@@ -108,7 +108,7 @@
             android:layout_alignTop="@+id/iv_livevideo_small_chinese_play_achievement_board"
             android:layout_alignBottom="@+id/view_help_line"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="18dp">
+            android:layout_marginBottom="20dp">
 
             <!--<RelativeLayout-->
             <!--android:layout_width="wrap_content"-->
@@ -120,7 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="13dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="26dp"
                 android:layout_marginRight="12dp"
                 android:divider="@null"
                 android:dividerHeight="10dp"

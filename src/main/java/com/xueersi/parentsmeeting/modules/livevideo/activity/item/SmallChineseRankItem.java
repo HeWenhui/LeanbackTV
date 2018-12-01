@@ -1,19 +1,19 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity.item;
 
 import android.view.View;
-import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
+import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 /**
  * 小学语文排行榜
  */
 public class SmallChineseRankItem implements AdapterItemInterface<RankEntity> {
-    TextView tv_livevideo_rank_item_left;
-    TextView tv_livevideo_rank_item_mid;
-    TextView tv_livevideo_rank_item_right;
+    FangZhengCuYuanTextView tv_livevideo_rank_item_left;
+    FangZhengCuYuanTextView tv_livevideo_rank_item_mid;
+    FangZhengCuYuanTextView tv_livevideo_rank_item_right;
     int colorYellow, colorWhite;
 
 

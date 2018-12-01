@@ -42,7 +42,6 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordPsItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -451,7 +450,10 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
                             .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                    decorView.addView(smallChineseSendGiftPager.getRootView(), layoutParams);
+                    //如果giftPager的父布局为null才加入到decorView里面来
+                    if (smallChineseSendGiftPager.getRootView().getParent() == null) {
+                        decorView.addView(smallChineseSendGiftPager.getRootView(), layoutParams);
+                    }
 //                    mFlowerWindow.setBackgroundDrawable(dw);
 //                    mFlowerWindow.setContentView(smallChineseSendGiftPager.getRootView());
 //                    mFlowerWindow.showAtLocation(mView, Gravity.LEFT, 0, 0);
