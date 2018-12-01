@@ -586,6 +586,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     private void showQuestion(VideoQuestionEntity oldQuestionEntity, ShowQuestion showQuestion) {
         LiveBackBaseBll liveBackBaseBll = array.get(mQuestionEntity.getvCategory());
+        logger.i("showQuestion :"+liveBackBaseBll);
         if (liveBackBaseBll != null) {
             liveBackBaseBll.showQuestion(oldQuestionEntity, mQuestionEntity, showQuestion);
         } else {

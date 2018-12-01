@@ -200,8 +200,10 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                         if(responseEntity != null){
                             logger.i( "onPmError:人机" + responseEntity.getErrorMsg());
                         }
-                        //有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
-                        pmErrorAfterpmSuccess();
+                        if(mRolePlayerEntity == null){
+                            //有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
+                            pmErrorAfterpmSuccess();
+                        }
 
                     }
 
@@ -256,8 +258,10 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                             if(responseEntity != null){
                                 logger.i( "onPmError: 新课件平台人机分组和试题" + responseEntity.getErrorMsg());
                             }
-                            //有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
-                            pmErrorAfterpmSuccess();
+                            if(mRolePlayerEntity == null){
+                                //有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
+                                pmErrorAfterpmSuccess();
+                            }
 
                         }
 
