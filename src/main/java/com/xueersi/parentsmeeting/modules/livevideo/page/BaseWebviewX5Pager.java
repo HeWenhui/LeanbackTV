@@ -34,6 +34,8 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
     protected View errorView;
     private String errorTip;
     private String loadTip;
+    /** 失败地址 */
+    protected String failingUrl = null;
 
     public BaseWebviewX5Pager(Context context) {
         super(context);
@@ -103,7 +105,7 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
         wvSubjectWeb.loadUrl(url);
     }
 
-    public void reloadUrl(){
+    public void reloadUrl() {
         wvSubjectWeb.reload();
     }
 
@@ -123,7 +125,7 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
             if (newProgress == 100) {
-                logger.i( "onProgressChanged");
+                logger.i("onProgressChanged");
                 View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
                 if (loadView != null) {
                     ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
@@ -196,7 +198,6 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
     }
 
     public class MyWebViewClient extends ErrorWebViewClient {
-        String failingUrl;
 
         public MyWebViewClient() {
             super(TAG);
@@ -208,14 +209,14 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
                 wvSubjectWeb.setVisibility(View.VISIBLE);
                 errorView.setVisibility(View.GONE);
             }
-            logger.i( "onPageFinished");
+            logger.i("onPageFinished");
             BaseWebviewX5Pager.this.onPageFinished(view, url);
         }
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            logger.i( "onPageStarted");
-            this.failingUrl = null;
+            logger.i("onPageStarted");
+            BaseWebviewX5Pager.this.failingUrl = null;
             super.onPageStarted(view, url, favicon);
             BaseWebviewX5Pager.this.onPageStarted(view, url, favicon);
         }
@@ -224,7 +225,7 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_WEBVIEW_ERROR, TAG + ",failingUrl=" + failingUrl + "&&," + errorCode +
                     "&&," + description);
-            this.failingUrl = failingUrl;
+            BaseWebviewX5Pager.this.failingUrl = failingUrl;
             wvSubjectWeb.setVisibility(View.INVISIBLE);
             errorView.setVisibility(View.VISIBLE);
             BaseWebviewX5Pager.this.onReceivedError(view, errorCode, description, failingUrl);
