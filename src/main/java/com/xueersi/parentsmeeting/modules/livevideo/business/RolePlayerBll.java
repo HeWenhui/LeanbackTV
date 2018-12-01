@@ -389,7 +389,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             }
 
             @Override
-            public void onError() {
+            public void onError(Throwable throwable) {
                 logger.i( "onError");
                 isBeginConnWebSocket = false;
             }
