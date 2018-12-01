@@ -74,7 +74,7 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
             @Override
             public void onClick(View v) {
                 select(true, false, false);
-
+                which = LEFT_SELECT;
                 tvMiddle.setText("学员");
                 if (allRankEntity != null) {
                     mArtsRankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
@@ -87,6 +87,7 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
         ivMiddleSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                which = MID_SELECT;
                 select(false, true, false);
                 tvMiddle.setText("组名");
 //                ivMiddleSelect.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_rank_btn_click));
@@ -99,6 +100,7 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
         ivRightSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                which = RIGHT_SELECT;
 //                ivRightSelect.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_rank_btn_click));
                 select(false, false, true);
                 tvMiddle.setText("班级");
