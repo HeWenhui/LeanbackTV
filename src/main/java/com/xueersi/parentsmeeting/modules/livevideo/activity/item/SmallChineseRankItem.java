@@ -67,5 +67,7 @@ public class SmallChineseRankItem implements AdapterItemInterface<RankEntity> {
             tv_livevideo_rank_item_mid.setTextColor(colorWhite);
             tv_livevideo_rank_item_right.setTextColor(colorWhite);
         }
+
+
     }
 }

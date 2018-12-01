@@ -124,7 +124,7 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
             mArtsRankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
         }
         final int colorMe = mContext.getResources().getColor(R.color.COLOR_005952);
-        final int colorOther = mContext.getResources().getColor(R.color.COLOR_000000);
+        final int colorOther = mContext.getResources().getColor(R.color.COLOR_47827E);
         mArtsGroupCommonAdapter = new CommonAdapter<RankEntity>(mArtsRankEntities) {
             @Override
             public AdapterItemInterface<RankEntity> getItemView(Object type) {

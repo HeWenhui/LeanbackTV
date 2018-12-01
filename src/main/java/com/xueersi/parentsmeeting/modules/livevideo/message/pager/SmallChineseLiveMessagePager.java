@@ -43,6 +43,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordPsItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
@@ -343,10 +344,9 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         lvCommonWord.setAdapter(new CommonAdapter<String>(words) {
             @Override
             public AdapterItemInterface<String> getItemView(Object type) {
-                return new CommonWordItem(mContext, this);
+                return new CommonWordPsItem(mContext, this);
             }
         });
-        /** 表情 */
         lvCommonWord.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

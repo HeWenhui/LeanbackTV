@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="gone">
+    >
 
     <ImageView
         android:id="@+id/iv_livevideo_small_chinese_rank_top_icon"
@@ -107,8 +107,8 @@
         android:text="学员"
         android:textColor="@color/COLOR_005952"
         android:textSize="13sp"
-        app:layout_constraintLeft_toLeftOf="@+id/fzcytv_livevideo_small_chinese_left_text"
-        app:layout_constraintRight_toRightOf="@+id/fzcytv_livevideo_small_chinese_right_text"
+        app:layout_constraintLeft_toRightOf="@+id/fzcytv_livevideo_small_chinese_left_text"
+        app:layout_constraintRight_toLeftOf="@+id/fzcytv_livevideo_small_chinese_right_text"
         app:layout_constraintTop_toTopOf="@+id/fzcytv_livevideo_small_chinese_left_text" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
