@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="444dp"
             android:layout_marginTop="49dp"
-            android:src="@drawable/zhanduipk_shell_window_guanbi_btn_nor" />
+            android:src="@drawable/selector_live_enpk_shell_window_guanbi_btn" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_live_speech_result_score"

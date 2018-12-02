@@ -230,7 +230,11 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     private void addCloseBtn() {
         closeBtnAdded = true;
         ImageView closeBtn = new ImageView(mContext);
-        closeBtn.setImageResource(R.drawable.selector_live_answer_result_close);
+        if (mData.isVoice == 1) {
+            closeBtn.setImageResource(R.drawable.selector_live_enpk_shell_window_guanbi_btn);
+        } else {
+            closeBtn.setImageResource(R.drawable.selector_live_answer_result_close);
+        }
         closeBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
         int hieght = SizeUtils.Dp2Px(mContext, CLOSEBTN_HEIGHT);
         int width = SizeUtils.Dp2Px(mContext, CLOSEBTN_WIDTH);
@@ -245,15 +249,19 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         layoutParams.rightMargin = (int) (screenHeight * 0.180f);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         rlAnswerRootLayout.addView(closeBtn, layoutParams);
-
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 logger.e("========> close Btn called:");
-                hideAnswerReuslt();
+                if (mData.isVoice == 1) {
+                    if (mStateListener != null) {
+                        mStateListener.onAutoClose(ArtsPSEAnswerResultPager.this);
+                    }
+                }else {
+                    hideAnswerReuslt();
+                }
             }
         });
-
         ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_close_btn_in);
         scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
         closeBtn.startAnimation(scaleAnimation);
