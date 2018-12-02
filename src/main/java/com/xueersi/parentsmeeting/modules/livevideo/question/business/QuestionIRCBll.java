@@ -123,41 +123,41 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //            SpeechResultPager speechResultPager = new SpeechResultPager(activity, bottomContent, speechResultEntity);
 //            bottomContent.addView(speechResultPager.getRootView());
 //        }
-        if (AppConfig.DEBUG) {
-            AnswerResultEntity answerResultEntity = new AnswerResultEntity();
-            answerResultEntity.isVoice = 1;
-            answerResultEntity.setEnergy(11);
-            answerResultEntity.setGold(2);
-            answerResultEntity.setIsRight(0);
-            answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_CORRECT);
-            ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
-            AnswerResultEntity.Answer answer = new AnswerResultEntity.Answer();
-            answer.setTestType(AnswerResultEntity.TEST_TYPE_2);
-            List<String> rightAnswers = new ArrayList<>();
-            rightAnswers.add("A");
-            answer.setRightAnswers(rightAnswers);
-            List<String> blankList = new ArrayList<>();
-            blankList.add("C");
-            answer.setBlankList(blankList);
-            List<String> choiceList = new ArrayList<>();
-            choiceList.add("C");
-            answer.setChoiceList(choiceList);
-            answerList.add(answer);
-            answerResultEntity.setAnswerList(answerList);
-            final ViewGroup group = bottomContent;
-            ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(activity, answerResultEntity, new AnswerResultStateListener() {
-                @Override
-                public void onCompeletShow() {
-
-                }
-
-                @Override
-                public void onAutoClose(BasePager basePager) {
-                    group.removeView(basePager.getRootView());
-                }
-            });
-            bottomContent.addView(artsPSEAnswerResultPager.getRootView());
-        }
+//        if (AppConfig.DEBUG) {
+//            AnswerResultEntity answerResultEntity = new AnswerResultEntity();
+//            answerResultEntity.isVoice = 1;
+//            answerResultEntity.setEnergy(11);
+//            answerResultEntity.setGold(2);
+//            answerResultEntity.setIsRight(0);
+//            answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_CORRECT);
+//            ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
+//            AnswerResultEntity.Answer answer = new AnswerResultEntity.Answer();
+//            answer.setTestType(AnswerResultEntity.TEST_TYPE_2);
+//            List<String> rightAnswers = new ArrayList<>();
+//            rightAnswers.add("A");
+//            answer.setRightAnswers(rightAnswers);
+//            List<String> blankList = new ArrayList<>();
+//            blankList.add("C");
+//            answer.setBlankList(blankList);
+//            List<String> choiceList = new ArrayList<>();
+//            choiceList.add("C");
+//            answer.setChoiceList(choiceList);
+//            answerList.add(answer);
+//            answerResultEntity.setAnswerList(answerList);
+//            final ViewGroup group = bottomContent;
+//            ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(activity, answerResultEntity, new AnswerResultStateListener() {
+//                @Override
+//                public void onCompeletShow() {
+//
+//                }
+//
+//                @Override
+//                public void onAutoClose(BasePager basePager) {
+//                    group.removeView(basePager.getRootView());
+//                }
+//            });
+//            bottomContent.addView(artsPSEAnswerResultPager.getRootView());
+//        }
     }
 
     public void onPause() {

@@ -6,13 +6,18 @@ import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.tal.speech.language.TalLanguage;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnglishSpeekPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
@@ -21,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.EnglishSpeekLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -73,6 +79,7 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
 
     public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest, RelativeLayout mContentView) {
         this.mode = mode;
+        this.bottomContent = bottomContent;
         logger.d("initView:mode=" + mode + ",Request=" + audioRequest.get());
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             if (!audioRequest.get()) {
@@ -270,14 +277,70 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
         return null;
     }
 
+    private EnglishSpeekPager englishSpeekPager;
+
     @Override
     public void praise(int answer) {
-
+        logger.d("praise:dbDuration=" + sendDbDuration + ",answer=" + answer);
+        if (sendDbDuration >= answer) {
+            EnglishSpeekLog.sendPraise(liveAndBackDebug, "" + answer, "" + sendDbDuration);
+            bottomContent.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (englishSpeekPager == null) {
+                        englishSpeekPager = new EnglishSpeekPager(activity);
+                    } else {
+                        //移出之前的弹窗
+                        if (englishSpeekPager.getRootView().getParent() == bottomContent) {
+                            bottomContent.removeView(englishSpeekPager.getRootView());
+                        }
+                    }
+                    bottomContent.removeCallbacks(removeViewRunnable);
+                    View view = englishSpeekPager.getRootView();
+                    englishSpeekPager.updateStatus(EnglishSpeekPager.PRAISE);
+                    RelativeLayout.LayoutParams lp = englishSpeekPager.getLayoutParams();
+                    bottomContent.addView(view, lp);
+                    bottomContent.postDelayed(removeViewRunnable, 1000);
+                }
+            });
+        }
     }
+
+    private Runnable removeViewRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (englishSpeekPager != null && englishSpeekPager.getRootView().getParent() == bottomContent) {
+                bottomContent.removeView(englishSpeekPager.getRootView());
+            }
+        }
+    };
 
     @Override
     public void remind(int answer) {
+        logger.d("remind:sendDbDuration=" + sendDbDuration + ",answer=" + answer);
+        if (sendDbDuration <= answer) {
+            EnglishSpeekLog.sendRemind(liveAndBackDebug, "" + answer, "" + sendDbDuration);
+            bottomContent.post(new Runnable() {
 
+                @Override
+                public void run() {
+                    if (englishSpeekPager == null) {
+                        englishSpeekPager = new EnglishSpeekPager(activity);
+                    } else {
+                        //移出之前的弹窗
+                        if (englishSpeekPager.getRootView().getParent() == bottomContent) {
+                            bottomContent.removeView(englishSpeekPager.getRootView());
+                        }
+                    }
+                    bottomContent.removeCallbacks(removeViewRunnable);
+                    View view = englishSpeekPager.getRootView();
+                    englishSpeekPager.updateStatus(EnglishSpeekPager.REMIND);
+                    RelativeLayout.LayoutParams lp = englishSpeekPager.getLayoutParams();
+                    bottomContent.addView(view, lp);
+                    bottomContent.postDelayed(removeViewRunnable, 1000);
+                }
+            });
+        }
     }
 
     @Override
