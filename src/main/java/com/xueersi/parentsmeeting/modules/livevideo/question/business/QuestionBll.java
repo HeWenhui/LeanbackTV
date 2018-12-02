@@ -747,6 +747,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             } else {
                                 logger.i("--------------新课件平台走rolaplay人机，初始化数据失败，退出");
                                 speechAssessmentPager.onDestroy();
+                                return;
                             }
                         } else {
                             logger.i("--------------新课件平台跟读走h5");
@@ -899,6 +900,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             } else {
                                 logger.i("--------------走rolaplay人机，初始化数据失败，退出");
                                 speechAssessmentPager.onDestroy();
+                                return;
                             }
 
                         } else {

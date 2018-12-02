@@ -756,63 +756,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             }
 
         });
-//        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(spechMsg, saveVideoFile.getAbsolutePath(), false,
-//                new RolePlayerPager.RoleEvaluatorListener() {
-//                    @Override
-//                    public void onBeginOfSpeech() {
-//                        logger.i("开始测评 mCurrentReadIndex = "+mCurrentReadIndex);
-//                        vwvSpeechVolume.start();
-//                    }
-//
-//                    @Override
-//                    public void onResult(ResultEntity resultEntity) {
-//                        if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-//                            logger.i("测评成功，开始上传自己的mp3,开口时长：" + resultEntity.getSpeechDuration()
-//                                    + "得分：" + resultEntity.getScore());
-//                            entity.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
-//                            //mIsEvaluatoring = false;
-//                            message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
-//                            message.setSpeechScore(resultEntity.getScore());
-//                            message.setLstPhoneScore(resultEntity.getLstPhonemeScore());
-//                            message.setFluency(resultEntity.getContScore());
-//                            message.setAccuracy(resultEntity.getPronScore());
-//                            message.setWebVoiceUrl(saveVideoFile.getAbsolutePath());
-//                            message.setLevel(resultEntity.getLevel());
-//                            //上传自己读完的语句，只通知除了自己以外的其他组内成员
-//                            mRolePlayBll.uploadFileToAliCloud(saveVideoFile.getAbsolutePath(), message, entity,
-//                                    message.getRolePlayer().getRoleId());
-//                            //XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
-//                            //提前开始下一条
-//                            nextReadMessage();
-//                        } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-//                            logger.i( "测评失败，" + resultEntity.getErrorNo() + " 不上传自己的mp3");
-//                            //XESToastUtils.showToast(mContext, "测评失败");
-//                            //mIsEvaluatoring = false;
-//                            message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
-//                            //提前开始下一条
-//                            nextReadMessage();
-//                        } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-//                            // logger.i("RolePlayerDemoTest", "测评中");
-//
-//                        }
-//
-//                    }
-//
-//                    @Override
-//                    public void onVolumeUpdate(int volume) {
-//                        vwvSpeechVolume.setVolume(volume * 3);
-//                        logger.i("volume = " + volume);
-//                    }
-//
-//                    @Override
-//                    public void onRecordPCMData(short[] shorts, int readSize) {
-//                        // logger.i("RolePlayerDemoTest", "通过声网走");
-//                        //通过声网走
-//
-//
-//                    }
-//
-//                });
+
     }
 
 
@@ -823,27 +767,6 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         mReadHandler.removeMessages(GO_SPEECH);
         mReadHandler.removeMessages(READ_MESSAGE);
         mReadHandler.sendEmptyMessage(READ_MESSAGE);
-    }
-
-    /**
-     * 对方提前读完
-     *
-     * @param position
-     */
-    public void nextRextMessage(int position) {
-        if (position == (mCurrentReadIndex - 1)) {
-            nextReadMessage();
-        } else if (position < (mCurrentReadIndex - 1)) {
-            return;
-        } else {
-            //提前超过一行结束
-            mReadHandler.removeMessages(GO_SPEECH);
-            mReadHandler.removeMessages(READ_MESSAGE);
-            Message msg = Message.obtain();
-            msg.what = READ_MESSAGE;
-            msg.obj = position;
-            mReadHandler.sendMessage(msg);
-        }
     }
 
     /**
@@ -873,13 +796,11 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      */
     public void showResult() {
 
-
         if (isShowResult) {
             logger.i("结果页已经在显示");
             mRolePlayBll.cancelDZ();//取消点赞
             return;
         }
-
 
         isShowResult = true;
         logger.i("显示结果,记录日志");
