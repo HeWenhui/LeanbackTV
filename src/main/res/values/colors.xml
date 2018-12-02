@@ -59,4 +59,8 @@
     <color name="COLOR_F0A61B">#F0A61B</color>
     <color name="COLOR_008B97">#008B97</color>
     <color name="COLOR_FFD93D">#FFD93D</color>
+    <color name="COLOR_3C000000">#3C000000</color>
+    <color name="COLOR_66000000">#66000000</color>
+    <color name="COLOR_47827E">#47827E</color>
+    <color name="COLOR_179EAA">#179EAA</color>
 </resources>

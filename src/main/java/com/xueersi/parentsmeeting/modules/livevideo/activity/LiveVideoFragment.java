@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xueersi.common.business.UserBll;
@@ -32,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
@@ -49,6 +53,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIR
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechCollectiveIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportBll;
+import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowBll;
+import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowRoutePager;
+import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
@@ -60,6 +67,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChat
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TripleScreenBasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.worddictation.business.WordDictationIRCBll;
 
 import java.util.List;
@@ -81,7 +90,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     RelativeLayout rlMessageBottom;
     protected String vStuCourseID;
     protected String courseId;
-
+    /** 小学英语 */
+    private boolean isSmallEnglish;
     private LiveVideoSAConfig liveVideoSAConfig;
     /** 是不是文理 */
     public boolean IS_SCIENCE = true;
@@ -95,12 +105,22 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     PauseNotStopVideoIml pauseNotStopVideoIml;
     private LiveIRCMessageBll liveIRCMessageBll;
     protected String mode = LiveTopic.MODE_TRANING;
+    /** 播放器的Fragment */
+    protected LivePlayerFragment liveVideoPlayFragment;
+    /** 是否是三分屏或者全身直播 */
+    protected int pattern;
+    /** 切流加载中的布局 */
+    private ConstraintLayout layoutVideoFailRetry;
+    /** 切流加载中的按钮o */
+//    private Button btnVideoFailRetry;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         boolean onVideoCreate = super.onVideoCreate(savedInstanceState);
         if (onVideoCreate) {
             isArts = activity.getIntent().getIntExtra("isArts", -1);
+            isSmallEnglish = activity.getIntent().getBooleanExtra("isSmallEnglish", false);
+
             String mode2 = activity.getIntent().getStringExtra("mode");
             if (mode2 != null) {
                 mode = mode2;
@@ -114,8 +134,29 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             before = System.currentTimeMillis();
             addBusiness(activity);
             logger.d("onVideoCreate:time3=" + (System.currentTimeMillis() - before));
+
+            if (pattern == 1) {
+                //根据不同直播显示不同加载中动画
+                setLoadingView();
+            }
+
         }
         return onVideoCreate;
+    }
+
+    /** 设置显示的加载动画 */
+    protected void setLoadingView() {
+        liveVideoPlayFragment = (LivePlayerFragment) getChildFragmentManager().findFragmentByTag("LivePlayerFragment");
+        if (LiveVideoConfig.isSmallChinese) {
+            liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING);
+        } else if (LiveVideoConfig.isPrimary) {
+            liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_SCIENCE_LOADING);
+        } else if (isSmallEnglish) {
+            liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_ENGLISH_LOADING);
+        } else {
+            liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_MIDDLE_LOADING);
+        }
+        liveVideoPlayFragment.overrideCallBack();
     }
 
     @Override
@@ -143,6 +184,15 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         setMediaControllerBottomParam();
     }
 
+
+    /** 三分屏使用新的的Loading,在{@link #loadView(int)} 中调用 */
+    @Override
+    protected LivePlayerFragment getFragment() {
+        LiveLivePlayerPlayFragment liveVideoPlayFragment = new LiveLivePlayerPlayFragment();
+        liveVideoPlayFragment.setLiveFragmentBase(this);
+        return liveVideoPlayFragment;
+    }
+
     /**
      * 添加 直播间内 所需的功能模块
      *
@@ -164,7 +214,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new ArtsPraiseListBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new EnglishSpeechBulletIRCBll(activity,mLiveBll));
+            mLiveBll.addBusinessBll(new EnglishSpeechBulletIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new WordDictationIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new ArtsAnswerResultBll(activity, mLiveBll));
@@ -182,31 +232,24 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new EnglishH5CoursewareIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new LiveVoteBll(activity, mLiveBll));
+//            mLiveBll.addBusinessBll(new LiveVoteBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new LiveAutoNoticeIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new AnswerRankIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new LearnReportIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RedPackageIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new SpeechCollectiveIRCBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new LiveRemarkIRCBll(activity, mLiveBll));
+//            mLiveBll.addBusinessBll(new LiveRemarkIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new SpeechBulletScreenIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
+//            mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
             int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
-            if (allowLinkMicNew == 1) {
-                VideoAudioChatIRCBll videoAudioChatIRCBll = new VideoAudioChatIRCBll(activity, mLiveBll);
-                videoAudioChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-                videoAudioChatIRCBll.setLiveFragmentBase(this);
-                mLiveBll.addBusinessBll(videoAudioChatIRCBll);
-            } else {
-                VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
-                videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
-                videoChatIRCBll.setLiveFragmentBase(this);
-                mLiveBll.addBusinessBll(videoChatIRCBll);
-            }
+            VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
+            videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+            videoChatIRCBll.setLiveFragmentBase(this);
+            mLiveBll.addBusinessBll(videoChatIRCBll);
         } else {
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -243,6 +286,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 mLiveBll.addBusinessBll(videoChatIRCBll);
             }
         }
+        if (pattern == 1) {
+            initSwitchFlowBll();
+        }
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
     }
 
@@ -256,11 +302,17 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         super.showLongMediaController();
     }
 
+    /** 加载提示 */
+//    private TextView tvLoadingTint;
+
     @Override
     protected void initView() {
         bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
         rlMessageBottom = mContentView.findViewById(R.id.rl_course_message_bottom);
+
+//        tvLoadingTint = mContentView.findViewById(R.id.tv_course_video_loading_content);
+
         logger.e("========>:initView:" + bottomContent);
         // 预加载布局中退出事件
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
@@ -269,8 +321,102 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         bottomContent.addView(liveMediaControllerBottom);
+
+        layoutVideoFailRetry = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
+//        btnVideoFailRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
+        pattern = activity.getIntent().getIntExtra("pattern", 2);
+        //如果是三分屏，则需要添加加载中的监听器
+
     }
 
+    //    private boolean isSwitchRouteShow = false;
+//    private SwitchFlowView switchFlowView;
+    /** 切换线路Pager */
+
+    private SwitchFlowBll switchFlowBll;
+    /** 点击重新加载按钮 */
+    private volatile boolean isSwitchReloadShow;
+
+    /** 加载切流的Bll */
+    private void initSwitchFlowBll() {
+        switchFlowBll = new SwitchFlowBll(activity, bottomContent);
+
+        switchFlowBll.setmView(getSwitchFlowView(), new SwitchFlowView.IReLoad() {
+                    @Override
+                    public void reLoad() {
+                        isSwitchReloadShow = true;
+                        //1.重新加载,显示加载中
+                        rePlay(false);
+                        //2. 自动切流
+                        mLiveVideoBll.liveGetPlayServer();
+                    }
+                },
+                new SwitchFlowRoutePager.ItemClickListener() {
+                    @Override
+                    public void itemClick(int pos) {
+                        //todo 显示线路四切换中的字样
+//                        liveVideoAction.setVideoSwitchFlowStatus(LiveAc);
+//                        tvLoadingTint.setText("线路" + String.valueOf(pos) + "切换中...");
+                    }
+                });
+    }
+
+    /** 获取切流的btn，在{@link #initSwitchFlowBll()}里面赋值给{@link SwitchFlowBll#mView}} */
+    private SwitchFlowView getSwitchFlowView() {
+//        switchFlowView =
+        return liveMediaControllerBottom.getSwitchFlowView();
+    }
+
+    @Override
+    protected void resultFailed(int arg1, int arg2) {
+        super.resultFailed(arg1, arg2);
+
+    }
+
+    /** 更新调度的list，{@link com.xueersi.parentsmeeting.modules.livevideo.video.LiveGetPlayServer#liveGetPlayServer(String, boolean),}无论成功时报都会走 */
+    @Override
+    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
+        super.onLiveStart(server, cacheData, modechange);
+        switchFlowBll.setListRoute(server.getPlayserver());
+        //
+        if (server == null && isSwitchReloadShow) {
+
+        } else {
+            //调度成功
+
+        }
+    }
+
+    /** 获取 */
+//    private void initListener() {
+//        btnVideoFailRetry.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                loadView(mLayoutVideo);
+//            }
+//        });
+
+//        mPager = new SwitchFlowRoutePager(activity, false);
+//        final ObjectAnimator animationIn = ObjectAnimator.ofFloat(mPager.getRootView(), "translationX", liveVideoPoint.x4, liveVideoPoint.x4 - liveVideoPoint.x3);
+//        final ObjectAnimator animationOut = ObjectAnimator.ofFloat(mPager.getRootView(), "translationX", liveVideoPoint.x4 - liveVideoPoint.x3, 0);
+//        switchFlowView.setiSwitchFlow(new SwitchFlowView.ISwitchFlow() {
+//            @Override
+//            public void reLoad() {
+//                loadView(mLayoutVideo);
+//            }
+//
+//            @Override
+//            public void switchRoute() {
+//                if (isSwitchRouteShow) {
+//                    animationIn.start();
+//                    isSwitchRouteShow = false;
+//                } else {
+//                    animationOut.start();
+//                    isSwitchRouteShow = true;
+//                }
+//            }
+//        });
+//    }
     protected void createMediaControllerBottom() {
         Intent intent = activity.getIntent();
         LiveVideoConfig.isPrimary = intent.getBooleanExtra("isPrimary", false);

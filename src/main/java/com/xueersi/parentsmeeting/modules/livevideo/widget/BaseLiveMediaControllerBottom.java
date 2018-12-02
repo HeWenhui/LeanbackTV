@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerBottomInter
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
@@ -51,8 +52,9 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     ArrayList<MediaChildViewClick> mediaChildViewClicks = new ArrayList<>();
     private LinearLayout llMarkPopMenu;
     private View vMarkGuide;
-    /** 切流的btn */
-    private Button switchFlow;
+    protected int pattern = 0;
+    /** 切流使用的布局 */
+    protected SwitchFlowView switchFlowView;
 
     public BaseLiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context);
@@ -99,7 +101,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         btMark = (Button) findViewById(R.id.bt_livevideo_mark);
         llMarkPopMenu = findViewById(R.id.ll_livevideo_controller_mark_pop_menu);
         vMarkGuide = findViewById(R.id.ll_livevideo_bottom_controller_mark_guide);
-        switchFlow = findViewById(R.id.btn_livevideo_small_chinese_switch_flow);
+//        switchFlow = findViewById(R.id.bt_switch_flow);
         if (btMark != null) {
             btMark.setOnClickListener(new OnClickListener() {
                 @Override
@@ -107,6 +109,9 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
                     XESToastUtils.showToast(mContext, "正在加载视频");
                 }
             });
+        }
+        if (pattern == 1) {
+            switchFlowView = findViewById(R.id.layout_livevideo_triple_screen_switch_flow);
         }
     }
 
@@ -207,5 +212,9 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
 
     public LiveMediaController getController() {
         return controller;
+    }
+
+    public SwitchFlowView getSwitchFlowView() {
+        return switchFlowView;
     }
 }

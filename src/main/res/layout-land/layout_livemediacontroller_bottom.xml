@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
                 android:layout_weight="1"
-                android:visibility="gone">
+                android:visibility="invisible">
 
                 <com.xueersi.ui.widget.AutohListview
                     android:id="@id/lv_livevideo_common_word"
@@ -63,8 +63,8 @@
                 android:id="@id/bt_livevideo_message_common"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-
                 android:background="@drawable/bg_livevideo_message_common" />
+
         </LinearLayout>
 
         <Button
@@ -80,7 +80,7 @@
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
             android:background="@drawable/bg_livevideo_voicechat_raise_hands"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <Button
             android:id="@id/rl_livevideo_common_rank"
@@ -88,172 +88,10 @@
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
             android:background="@drawable/bg_livevideo_voicechat_rank"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/btn_livevideo_small_chinese_switch_flow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="切流" />
+            android:visibility="visible" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@id/ll_livevideo_bottom_controller_mark_menu"
-        android:layout_width="110dp"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/v_livevideo_mediacontrol_bottom"
-        android:layout_marginLeft="-15dp"
-        android:layout_toRightOf="@id/ll_livevideo_bottom_controller"
-        android:gravity="bottom|center_horizontal"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@id/ll_livevideo_controller_mark_pop_menu"
-            android:layout_width="110dp"
-            android:layout_height="wrap_content"
-            android:background="#cc000000"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:tag="1">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/livevideo_biaoji_yiwen_icon_normal" />
-
-                <TextView
-                    style="@style/text_font17_ffffff_style"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:text="疑    问" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/COLOR_FFFFFF" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:tag="2">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/livevideo_biaoji_zongjie_icon_normal" />
-
-                <TextView
-                    style="@style/text_font17_ffffff_style"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:text="总    结" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/COLOR_FFFFFF" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:tag="4">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/livevideo_biaoji_lianxi_icon_normal" />
-
-                <TextView
-                    style="@style/text_font17_ffffff_style"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:text="要多练" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/COLOR_FFFFFF" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:tag="3">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/livevideo_biaoji_gaofen_icon_normal" />
-
-                <TextView
-                    style="@style/text_font17_ffffff_style"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:text="高分点" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <Button
-            android:id="@id/bt_livevideo_mark"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="10dp"
-            android:alpha="0.5"
-            android:background="@drawable/bg_bt_live_mark"
-            android:enabled="false"
-            android:textColor="@color/white"
-            android:visibility="gone" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@id/ll_livevideo_bottom_controller_mark_guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/ll_livevideo_bottom_controller_mark_menu"
-        android:layout_alignLeft="@id/ll_livevideo_bottom_controller_mark_menu"
-        android:layout_marginLeft="-45dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            style="@style/text_font17_ffffff_style"
-            android:layout_width="200dp"
-            android:layout_height="40dp"
-            android:background="@drawable/shape_corners_20dp_000000"
-            android:gravity="center"
-            android:text="这里可以标记重点哦~" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/triangle" />
-    </LinearLayout>
 
     <CheckBox
         android:id="@id/cb_livevideo_message_clock"

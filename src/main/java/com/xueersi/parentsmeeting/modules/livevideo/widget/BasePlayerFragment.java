@@ -629,7 +629,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     };
 
     /** 加载播放器的默认设置参数 */
-    private void loadVPlayerPrefs() {
+    protected void loadVPlayerPrefs() {
         if (!isInitialized()) {
             return;
         }

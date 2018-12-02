@@ -61,10 +61,10 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_bt_live_mark"
-            android:textColor="@color/white"
             android:alpha="0.5"
+            android:background="@drawable/bg_bt_live_mark"
             android:enabled="false"
+            android:textColor="@color/white"
             android:visibility="gone" />
     </LinearLayout>
 
@@ -79,14 +79,14 @@
         android:paddingRight="10dp" />
 
     <RelativeLayout
-        android:layout_above="@id/v_livevideo_mediacontrol_bottom"
         android:id="@+id/rl_livevideo_common_word"
         android:layout_width="98dp"
         android:layout_height="wrap_content"
+        android:layout_above="@id/v_livevideo_mediacontrol_bottom"
         android:layout_marginLeft="65dp"
         android:layout_marginBottom="46dp"
-        android:visibility="invisible"
-        >
+        android:visibility="invisible">
+
         <ImageView
             android:id="@id/iv_livevideo_common_word_arrow"
             android:layout_width="wrap_content"
@@ -94,15 +94,16 @@
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="22dp"
             android:src="@drawable/bg_livevideo_common_word_arrow" />
+
         <com.xueersi.ui.widget.AutohListview
-            android:layout_above="@id/iv_livevideo_common_word_arrow"
             android:id="@id/lv_livevideo_common_word"
             style="@style/listview_common_style"
-            android:background="@drawable/shape_livevideo_commonwordps_bg"
             android:layout_width="98dp"
             android:layout_height="wrap_content"
-            android:divider="@null"
+            android:layout_above="@id/iv_livevideo_common_word_arrow"
             android:layout_centerHorizontal="true"
+            android:background="@drawable/shape_livevideo_commonwordps_bg"
+            android:divider="@null"
             android:scrollbars="none" />
     </RelativeLayout>
 

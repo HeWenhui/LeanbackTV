@@ -14,6 +14,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
@@ -106,6 +107,14 @@ public class LiveGetPlayServer {
 
     private long lastGetPlayServer;
 
+    /**
+     * 1. {@link LiveBll2#onGetInfoSuccess(LiveGetInfo)}
+     * 2. 回调失败走onError之后，{@link #liveGetPlayServer(boolean)}
+     * 3. {@link LiveVideoBll#onModeChange(String, boolean)}
+     *
+     * @param mode
+     * @param modechange
+     */
     public void liveGetPlayServer(final String mode, final boolean modechange) {
         mHandler.removeCallbacks(timeLiveGetPlay);
         if (timeLiveGetPlay.modechange != modechange) {

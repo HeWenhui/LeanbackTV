@@ -133,6 +133,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         this.mVideoAction = mVideoAction;
     }
 
+    /** 在{@link LiveBll2}获取getInfo成功而之后,{@link LiveBll2#onGetInfoSuccess(LiveGetInfo)} */
     public void onLiveInit(LiveGetInfo getInfo, LiveTopic liveTopic) {
         this.mGetInfo = getInfo;
         liveGetPlayServer = new LiveGetPlayServer(activity, new TeacherIsPresent() {

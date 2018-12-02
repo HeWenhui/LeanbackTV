@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Looper;
+import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -30,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
+import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -64,6 +66,18 @@ public class LiveVideoAction implements VideoAction {
     protected LiveGetInfo mGetInfo;
     protected LiveBll2 mLiveBll;
     protected LogToFile mLogtf;
+    /** 切换线路layout */
+    private ConstraintLayout layoutSwitchFlow;
+    /** 切流失败的文字提示 */
+    private FangZhengCuYuanTextView tvSwitchFlowRetry;
+
+    /** 切流失败的重试按钮 */
+//    private Button btnSwitchFlowRetry;
+    //线程切换中
+    public final static int SWITCH_FLOW_ROUTE_SWITCH = 0;
+    public final static int SWITCH_FLOW_RELOAD = 1 << 0;
+    /** 切换视频流的状态 */
+    private int videoSwitchFlowStatus;
 
     public LiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView) {
         this.activity = activity;
@@ -75,8 +89,21 @@ public class LiveVideoAction implements VideoAction {
         tvLoadingHint = mContentView.findViewById(R.id.tv_course_video_loading_content);
         ivLoading = mContentView.findViewById(R.id.iv_course_video_loading_bg);
         tvLoadingHint.setText("正在获取视频资源，请稍后");
+
+        layoutSwitchFlow = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
+        tvSwitchFlowRetry = mContentView.findViewById(R.id.fzcy_livevideo_switch_flow_retry_text);
+//        btnSwitchFlowRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
+
         mLogtf = new LogToFile(mLiveBll, TAG);
         updateLoadingImage();
+    }
+
+    /** 0代表不是切换线路，正数代表切换的线路 */
+    private int route;
+
+    public void setVideoSwitchFlowStatus(int status, int route) {
+        this.videoSwitchFlowStatus = status;
+        this.route = route;
     }
 
     /**
@@ -121,7 +148,11 @@ public class LiveVideoAction implements VideoAction {
                                         + ",lastPlayErrorCode=" + lastPlayErrorCode);
                                 lastPlayErrorCode = null;
                                 if (!modechange) {
-                                    tvLoadingHint.setText(playLoad);
+                                    if ((videoSwitchFlowStatus & SWITCH_FLOW_RELOAD) != 0) {
+                                        tvLoadingHint.setText("线路" + route + "正在切换");
+                                    } else {
+                                        tvLoadingHint.setText(playLoad);
+                                    }
                                 }
                             }
                         }
@@ -164,6 +195,13 @@ public class LiveVideoAction implements VideoAction {
 
             @Override
             public void run() {
+                //如果是三分屏
+                if (mGetInfo != null && mGetInfo.getPattern() == 1) {
+                    layoutSwitchFlow.setVisibility(View.VISIBLE);
+
+                }
+
+
                 if (tvLoadingHint != null) {
                     PlayErrorCode playErrorCode = PlayErrorCode.getError(arg2);
                     lastPlayErrorCode = playErrorCode;

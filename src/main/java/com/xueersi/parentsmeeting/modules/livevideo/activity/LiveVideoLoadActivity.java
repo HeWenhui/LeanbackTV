@@ -116,6 +116,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putInt("isArts", mGetInfo.getIsArts());
                     bundle.putInt("pattern", mGetInfo.getPattern());
                     bundle.putBoolean("isPrimary", LiveVideoConfig.isPrimary);
+
                     if (mGetInfo.getIsArts() == 0) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
                     }
@@ -125,6 +126,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
 //                }
                     if (1 == mGetInfo.getIsEnglish()) {
+                        bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
                         gotoEnglish(bundle);
                     } else {
                         com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);

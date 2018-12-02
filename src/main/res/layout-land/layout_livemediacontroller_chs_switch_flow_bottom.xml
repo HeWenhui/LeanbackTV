@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingDefaultResource">
+
+    <View
+        android:id="@id/v_livevideo_mediacontrol_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true" />
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@id/bt_livevideo_message_open"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/bg_livevideo_message_psopen"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <Button
+            android:id="@id/bt_livevideo_message_common"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/bg_livevideo_message_pscommon"
+            app:layout_constraintBottom_toBottomOf="@id/bt_livevideo_message_open"
+            app:layout_constraintLeft_toRightOf="@id/bt_livevideo_message_open" />
+
+        <Button
+            android:id="@id/bt_livevideo_message_flowers"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/bg_livevideo_message_psflowers"
+            app:layout_constraintBottom_toBottomOf="@id/bt_livevideo_message_open"
+            app:layout_constraintLeft_toRightOf="@id/bt_livevideo_message_common" />
+
+        <Button
+            android:id="@id/bt_livevideo_voicechat_raise_hands"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/bg_livevideo_voicechat_raise_pshands"
+            app:layout_constraintBottom_toBottomOf="@id/bt_livevideo_message_open"
+            app:layout_constraintLeft_toRightOf="@id/bt_livevideo_message_flowers" />
+
+        <Button
+            android:id="@id/rl_livevideo_common_rank"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/bg_livevideo_voicechat_psrank"
+            app:layout_constraintBottom_toBottomOf="@id/bt_livevideo_message_open"
+            app:layout_constraintLeft_toRightOf="@id/bt_livevideo_voicechat_raise_hands" />
+
+        <com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView
+            android:id="@id/layout_livevideo_triple_screen_switch_flow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/bt_livevideo_message_open"
+            app:layout_constraintLeft_toLeftOf="@id/rl_livevideo_common_rank" />
+    </android.support.constraint.ConstraintLayout>
+
+
+    <CheckBox
+        android:id="@id/cb_livevideo_message_clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/v_livevideo_mediacontrol_bottom"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/selector_livevideo_psmessagelock"
+        android:button="@null"
+        android:paddingRight="10dp" />
+
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_common_word"
+        android:layout_width="98dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/v_livevideo_mediacontrol_bottom"
+        android:layout_marginLeft="65dp"
+        android:layout_marginBottom="46dp"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@id/iv_livevideo_common_word_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="22dp"
+            android:src="@drawable/bg_livevideo_common_word_arrow" />
+
+        <com.xueersi.ui.widget.AutohListview
+            android:id="@id/lv_livevideo_common_word"
+            style="@style/listview_common_style"
+            android:layout_width="98dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/iv_livevideo_common_word_arrow"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/shape_livevideo_commonwordps_bg"
+            android:divider="@null"
+            android:scrollbars="none" />
+    </RelativeLayout>
+</RelativeLayout>

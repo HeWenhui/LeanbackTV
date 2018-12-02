@@ -228,6 +228,10 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         return liveVideoBll;
     }
 
+    /**
+     * 三分屏重写这个方法，使用新的的Loading
+     * 普通的还是走这里默认的
+     */
     @Override
     protected LivePlayerFragment getFragment() {
         LiveLivePlayerPlayFragment liveVideoPlayFragment = new LiveLivePlayerPlayFragment();
@@ -247,6 +251,10 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
         public LiveLivePlayerPlayFragment() {
             logger.d("LiveLivePlayerPlayFragment");
+        }
+
+        public void setLiveFragmentBase(LiveFragmentBase liveFragmentBase) {
+            this.liveFragmentBase = liveFragmentBase;
         }
 
         @Override

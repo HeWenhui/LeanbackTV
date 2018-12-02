@@ -378,6 +378,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
     }
 
+    /** 获取getInfo成功 */
     private void onGetInfoSuccess(LiveGetInfo getInfo) {
         logger.e("=======>onGetInfoSuccess");
         this.mGetInfo = getInfo;

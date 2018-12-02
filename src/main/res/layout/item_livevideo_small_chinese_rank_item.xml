@@ -6,13 +6,13 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/tv_livevideo_rank_item_left"
+        android:id="@id/tv_livevideo_rank_item_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
-        android:id="@+id/tv_livevideo_rank_item_mid"
+        android:id="@id/tv_livevideo_rank_item_mid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -20,7 +20,7 @@
         tools:text="王佳佳" />
 
     <TextView
-        android:id="@+id/tv_livevideo_rank_item_right"
+        android:id="@id/tv_livevideo_rank_item_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintRight_toRightOf="parent"

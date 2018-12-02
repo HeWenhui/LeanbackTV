@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -16,6 +18,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
     String TAG = "LiveMediaControllerBottom";
 
+    private int mArts = 0;
+
     public LiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context, controller, player);
     }
@@ -23,13 +27,25 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
     /** 播放器的布局界面 */
     @Override
     public View inflateLayout() {
+        Intent paramIntent = ((Activity) mContext).getIntent();
+        mArts = paramIntent.getIntExtra("isArts", -1);
+        pattern = paramIntent.getIntExtra("pattern", 0);
+        boolean isSmallEnglish = paramIntent.getBooleanExtra("isSmallEnglish", false);
+
         if (LiveVideoConfig.isPrimary) {
-            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom, this);
+            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_ps_switch_flow_bottom, this);
         } else if (LiveVideoConfig.isSmallChinese) {
-            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom, this);
-        } else {
+            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_switch_flow_bottom, this);
+        } else if (isSmallEnglish) {
             return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
+        } else {
+            if (pattern == 2) {
+                return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
+            } else {
+                return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
+            }
         }
+
     }
 
     @Override
