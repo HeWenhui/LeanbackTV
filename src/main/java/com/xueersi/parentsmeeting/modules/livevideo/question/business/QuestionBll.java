@@ -594,7 +594,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, videoQuestionLiveEntity, QuestionBll.this, liveGetInfo
                                 .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
                                 liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
-                                videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), IS_SCIENCE, stuCouId,
+                                videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), liveGetInfo.getIsArts(), stuCouId,
                                 "1".equals(liveGetInfo.getIsAllowTeamPk()));
                         questionWebPager.setLivePagerBack(QuestionBll.this);
                         rlQuestionContent.addView(questionWebPager.getRootView());
@@ -744,7 +744,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 rolePlayMachineBll.setBottomView(rlQuestionContent);
                                 rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                                 speechAssessmentPager.initData();
-                            }else {
+                            } else {
                                 logger.i("--------------新课件平台走rolaplay人机，初始化数据失败，退出");
                                 speechAssessmentPager.onDestroy();
                             }
@@ -896,7 +896,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 rolePlayMachineBll.setBottomView(rlQuestionContent);
                                 rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                                 speechAssessmentPager.initData();
-                            }else {
+                            } else {
                                 logger.i("--------------走rolaplay人机，初始化数据失败，退出");
                                 speechAssessmentPager.onDestroy();
                             }
@@ -1638,7 +1638,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         removeQuestionViews();
         BaseVoiceAnswerPager voiceAnswerPager2 =
                 baseVoiceAnswerCreat.create(activity, videoQuestionLiveEntity, assess_ref, videoQuestionLiveEntity
-                        .type, rlQuestionContent,mIse);
+                        .type, rlQuestionContent, mIse);
 
 //        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                ViewGroup.LayoutParams.WRAP_CONTENT);
