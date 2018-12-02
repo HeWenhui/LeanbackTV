@@ -359,7 +359,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         mSdm = ShareDataManager.getInstance();
         isShowSpeechRecog = mSdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager
                 .SHAREDATA_USER);
-        logger.i("speech : isshow"+isShowSpeechRecog);
+        logger.i("speech : isshow" + isShowSpeechRecog);
         cpuRecogTime = mSdm.getLong(SpeechEvaluatorUtils.RECOG_TIME, 2500l, ShareDataManager.SHAREDATA_NOT_CLEAR);
         speechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
         logger.i("initData:time1=" + (System.currentTimeMillis() - before));
@@ -400,7 +400,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                     }
                                     if (result.getStatus() == ResultEntity.SUCCESS) {
                                         isShowSpeechRecog = (mRecogtestEndTime - mRecogtestBeginTime) < 3000l ? true : false;
-                                        if (isShowSpeechRecog){
+                                        if (isShowSpeechRecog) {
                                             mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog, ShareDataManager.SHAREDATA_USER);
                                         }
                                     }
@@ -412,7 +412,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                 }
                             });
                         }
-                    },4000);
+                    }, 4000);
                 }
             }
 
@@ -696,7 +696,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
                     FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
                             .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    decorView.addView(frameLayout, layoutParams);
+                    if (frameLayout.getParent() == null) {
+                        decorView.addView(frameLayout, layoutParams);
+                    }
 //                    mFlowerWindow.setBackgroundDrawable(dw);
 //                    mFlowerWindow.setContentView(smallEnglishSendFlowerPager.getRootView());
 //                    mFlowerWindow.showAtLocation(mView, Gravity.LEFT, 0, 0);
