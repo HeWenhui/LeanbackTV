@@ -259,6 +259,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         getInfo.setGoldCount(goldCountObj.optInt("goldAmount", 0));
                     }
                 }
+                LiveGetInfo.EvaluateTeacherEntity evaluateTeacherEntity = new LiveGetInfo.EvaluateTeacherEntity();
+                evaluateTeacherEntity.setEvaluateIsOpen(data.optInt("evaluateIsOpen", 0) == 1 ? true : false);
+                evaluateTeacherEntity.setEvaluateTime(data.optLong("evaluateTime", 0));
+                getInfo.setEvaluateTeacherEntity(evaluateTeacherEntity);
             }
             getInfo.setStat(data.getInt("stat"));
             getInfo.setRtmpUrl(data.getString("rtmpUrl"));
@@ -1750,6 +1754,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         ArtsExtLiveInfo info = new ArtsExtLiveInfo();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
+        info.setPop(data.optInt("isPop", 0) == 1 ? true : false);
+        info.setPoptime(data.optLong("poptime"));
         return info;
     }
 

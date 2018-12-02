@@ -8,8 +8,8 @@ import android.os.Looper;
 import com.alibaba.android.arouter.utils.TextUtils;
 import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.BaseHttpBusiness;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -453,8 +453,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param isRight
      * @param requestCallBack
      */
-    public void liveNewArtsSubmitTestAnswer(int type, String enstuId, String srcType, String testId, String liveId, String
-            testAnswer, String userMode, boolean isVoice,
+    public void liveNewArtsSubmitTestAnswer(int type, String enstuId, String srcType, String testId, String liveId,
+                                            String
+                                                    testAnswer, String userMode, boolean isVoice,
                                             boolean isRight, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSTEST_ANSWER;
@@ -683,7 +684,8 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_SEND_SPEECHEVAL42, params, requestCallBack);
     }
 
-    public void sendSpeechEvalResultNewArts(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack requestCallBack) {
+    public void sendSpeechEvalResultNewArts(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack
+            requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", id);
@@ -1454,7 +1456,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     /**
      * 弹幕推送
      *
-     * @param json            json数据
+     * @param json     json数据
      * @param callback
      */
     public void pushSpeechBullet(String json, okhttp3.Callback callback) {
@@ -1478,5 +1480,69 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("gradeId", gradeId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_STU_ONLINE_TIME, params, requestCallBack);
+    }
+
+    /**
+     * 文科提交对老师评价
+     * @param liveId
+     * @param stuCouId
+     * @param teacherEvaluLevel
+     * @param teacherEvaluOption
+     * @param tutorEvaluLevel
+     * @param tutorEvaluOption
+     * @param requestCallBack
+     */
+    public void saveArtsEvaluationTeacher(String liveId, String stuCouId, String teacherEvaluLevel, String
+            teacherEvaluOption, String tutorEvaluLevel, String
+            tutorEvaluOption, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("teacherEvaluLevel", teacherEvaluLevel);
+        params.addBodyParam("teacherEvaluOption", teacherEvaluOption);
+        params.addBodyParam("tutorEvaluLevel", tutorEvaluLevel);
+        params.addBodyParam("tutorEvaluOption", tutorEvaluOption);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_ARTS_EVALUATE_TEACHER, params, requestCallBack);
+    }
+
+    /**
+     * 理科提交对老师评价
+     * @param liveId
+     * @param courseId
+     * @param teacherId
+     * @param teacherScore
+     * @param teacherOption
+     * @param counserorId
+     * @param counselorScore
+     * @param counselorOption
+     * @param classId
+     * @param requestCallBack
+     */
+    public void saveScienceEvaluationTeacher(String liveId, String courseId,String teacherId, String teacherScore, String
+            teacherOption,String counserorId, String counselorScore, String
+            counselorOption,String classId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        params.addBodyParam("teacherId",teacherId);
+        params.addBodyParam("teacherScore", teacherScore);
+        params.addBodyParam("teacherOption", teacherOption);
+        params.addBodyParam("counserorId",counserorId);
+        params.addBodyParam("counselorScore", counselorScore);
+        params.addBodyParam("counselorOption", counselorOption);
+        params.addBodyParam("classId",classId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_SCIENCE_EVALUATE_TEACHER, params, requestCallBack);
+    }
+
+    public void getArtsEvaluationOption(String isLittleEnglish,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("isLittleEnglish",isLittleEnglish);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_ARTS_GET_EVALUATE_OPTION, params, requestCallBack);
+    }
+    public void getSciecneEvaluationOption(HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        sendPost(liveVideoSAConfigInner.URL_LIVE_SCIENCE_GET_EVALUATE_OPTION, params, requestCallBack);
     }
 }
