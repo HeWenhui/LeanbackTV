@@ -53,14 +53,14 @@
 //    /** 是不是考试结束 */
 //    private boolean isEnd = false;
 //    String jsExamSubmitAll = "javascript:examSubmitAll()";
-//    boolean IS_SCIENCE;
+//    boolean isArts;
 //    String stuCouId;
 //
-//    public ExamQuestionPlaybackPager(Context context, String liveid, String num, boolean IS_SCIENCE, String stuCouId, ExamStop examStop) {
+//    public ExamQuestionPlaybackPager(Context context, String liveid, String num, boolean isArts, String stuCouId, ExamStop examStop) {
 //        super(context);
 //        this.examStop = examStop;
 //        this.liveid = liveid;
-//        this.IS_SCIENCE = IS_SCIENCE;
+//        this.isArts = isArts;
 //        this.num = num;
 //        this.stuCouId = stuCouId;
 //        initData();
@@ -118,7 +118,7 @@
 //        MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
 //        AppInfoEntity mAppInfoEntity = AppBll.getInstance().getAppInfoEntity();
 //        String EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL, ShareBusinessConfig.EXAM_URL, ShareDataManager.SHAREDATA_USER);
-//        if (IS_SCIENCE) {
+//        if (isArts) {
 //            EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_SCIENCE, EXAM_URL, ShareDataManager.SHAREDATA_USER);
 //            EXAM_URL = EXAM_URL.replace(ShareBusinessConfig.LIVE_LIBARTS, ShareBusinessConfig.LIVE_SCIENCE);
 //        } else {
@@ -126,12 +126,12 @@
 //            EXAM_URL = EXAM_URL.replace(ShareBusinessConfig.LIVE_SCIENCE, ShareBusinessConfig.LIVE_LIBARTS);
 //        }
 //        if (EXAM_URL.contains("xueersi.com/LiveExam")) {
-//            String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
+//            String host = isArts ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
 //            EXAM_URL = EXAM_URL.replace("xueersi.com/LiveExam", "xueersi.com/" + host + "/LiveExam");
 //        }
 //        examUrl = EXAM_URL + "?liveId=" + liveid
 //                + "&testPlan=" + num + "&isPlayBack=1&stuId=" + userInfoEntity.getStuId() + "&stuName=" + mAppInfoEntity.getLoginUserName();
-//        examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1") + "&stuCouId=" + stuCouId;
+//        examUrl += "&isArts=" + (isArts ? "0" : "1") + "&stuCouId=" + stuCouId;
 //        wvSubjectWeb.loadUrl(examUrl);
 //    }
 //

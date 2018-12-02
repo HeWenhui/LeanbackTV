@@ -80,7 +80,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private EnglishH5CoursewareBll mEnglishH5CoursewareBll;
     private String isShowRanks;
     private RelativeLayout rlLivevideoSubjectWeb;
-    private boolean IS_SCIENCE;
+    private int isArts;
     private int mGoldNum;
     private int mEnergyNum;
     private final File mMorecacheout;
@@ -103,7 +103,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 
     public EnglishH5CoursewareX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
                                       final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose,
-                                      String isShowRanks, boolean IS_SCIENCE, boolean allowTeamPk) {
+                                      String isShowRanks, int isArts, boolean allowTeamPk) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.liveId = liveId;
@@ -115,7 +115,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         this.courseware_type = courseware_type;
         this.nonce = nonce;
         this.isShowRanks = isShowRanks;
-        this.IS_SCIENCE = IS_SCIENCE;
+        this.isArts = isArts;
         this.allowTeamPk = allowTeamPk;
         this.isNewArtsCourseware = englishH5Entity.isArtsNewH5Courseware();
         LiveVideoConfig.englishH5Entity = englishH5Entity;
@@ -404,7 +404,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         e.printStackTrace();
                     }
 
-                    String livebackurl = LiveVideoConfig.isSmallChinese ? "https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml" : "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
+                    String livebackurl = isArts == 2 ? "https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml" : "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
                     String realurl = TextUtils.isEmpty(AppConfig.LIVEPLAYBACKINFOS) ? livebackurl : AppConfig.LIVEPLAYBACKINFOS;
                     mLoadUrls = realurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.LIVEPLAYBACKSTAGE + "&isPlayBack=1" + "&nonce=" + "" + UUID.randomUUID();
                 } else {
@@ -431,7 +431,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    String defaulturl = LiveVideoConfig.isSmallChinese ? "https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml" : "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
+                    String defaulturl = isArts == 2 ? "https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml" : "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
                     String dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
                     mLoadUrls = dynamicurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.educationstage + "&isPlayBack=0" + "&nonce=" + "" + UUID.randomUUID();
                     // 上传接收到教师端指令的日志
@@ -465,7 +465,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 if (isPlayBack) {
                     loadUrl += "&isPlayBack=1";
                 }
-                loadUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+                loadUrl += "&isArts=" + isArts;
                 if (!StringUtils.isEmpty(nonce)) {
                     loadUrl += "&nonce=" + nonce;
                 }

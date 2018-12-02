@@ -13,7 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5Cours
  */
 public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5CoursewareCreat {
     private AnswerRankIRCBll mAnswerRankIRCBll;
-    private boolean IS_SCIENCE;
+    private int isArts;
     private boolean allowTeamPk;
 
     LivePagerBack livePagerBack;
@@ -22,8 +22,8 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
         this.mAnswerRankIRCBll = mAnswerRankBll;
     }
 
-    public void setIS_SCIENCE(boolean IS_SCIENCE) {
-        this.IS_SCIENCE = IS_SCIENCE;
+    public void setArts(int isArts) {
+        this.isArts = isArts;
     }
 
     public void setAllowTeamPk(boolean allowTeamPk){
@@ -43,7 +43,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
         EnglishH5CoursewareX5Pager h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"
-                : mAnswerRankBll.getIsShow(), IS_SCIENCE,allowTeamPk);
+                : mAnswerRankBll.getIsShow(), isArts,allowTeamPk);
         h5CoursewarePager.setLivePagerBack(livePagerBack);
         return h5CoursewarePager;
     }

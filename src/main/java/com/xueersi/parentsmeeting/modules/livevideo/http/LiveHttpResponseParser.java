@@ -156,9 +156,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } else {
             getInfo.setSmallEnglish(false);
         }
-        // FIXME: 2018/11/15 测试使用
-//        getInfo.setSmallEnglish(false);
-//        LiveVideoConfig.isSmallChinese = true;
     }
 
     /**

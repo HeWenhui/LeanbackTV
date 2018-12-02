@@ -96,7 +96,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         }
         LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat();
         int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
-        liveBaseEnglishH5CoursewareCreat.setIS_SCIENCE(isArts != 1);
+        liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         if (isArts != 1) {
             if (mAnswerRankBll != null) {
                 liveBaseEnglishH5CoursewareCreat.setmAnswerRankBll(mAnswerRankBll);
@@ -107,7 +107,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         englishH5CoursewareBll.setGetInfo(getInfo);
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            englishH5Cache = new EnglishH5Cache(activity, mLiveId);
+            englishH5Cache = new EnglishH5Cache(activity, mGetInfo);
             englishH5Cache.setHttpManager(mLiveBll.getHttpManager());
             englishH5Cache.getCourseWareUrl();
         }
@@ -250,7 +250,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         LiveVideoConfig.isSend = false;
                         id = h5_Experiment.getString("id");
                         courseware_type = h5_Experiment.getString("courseware_type");
-                        String pre = LiveVideoConfig.isSmallChinese ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
+                        String pre = mGetInfo.getIsArts() == 2 ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
                         play_url = pre + mLiveId + "/" + mLiveBll
                                 .getStuCouId() + "/" + id +
                                 "/" + courseware_type
@@ -374,7 +374,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         if ("on".equals(status)) {
                             id = object.getString("id");
                             courseware_type = object.getString("courseware_type");
-                            String pre = LiveVideoConfig.isSmallChinese ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
+                            String pre = mGetInfo.getIsArts() == 2 ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
                             play_url = pre + mLiveId + "/" + mLiveBll
                                     .getStuCouId() + "/"
                                     + id + "/" + courseware_type

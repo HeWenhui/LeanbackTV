@@ -191,9 +191,9 @@ public class LiveVideoConfig {
     public static String LIVE_PLAY_ERROR = "live_play_error";
     /** 直播-学习报告截图 */
     public static String LIVE_STUDY_REPORT_IMG = "live_study_report_img";
-    /** 直播-小英语音聊天*/
+    /** 直播-小英语音聊天 */
     public static String LIVE_VOICE_CHAT = "voicechat";
-    /** 直播-小英语音弹幕*/
+    /** 直播-小英语音弹幕 */
     public static String LIVE_VOICE_BULLET = "voicebullet";
 
     /**
@@ -341,11 +341,12 @@ public class LiveVideoConfig {
 
     /** 文科新课件平台的标识 */
     public static Boolean isNewArts = false;
-    /** 全身直播的标识*/
+    /** 全身直播的标识 */
     public static Boolean isStandLive = false;
-    /** H5语音答题新增字段*/
+    /** H5语音答题新增字段 */
     public static String userAnswer;
     public static String answer;
+
     /** 学习报告精彩瞬间 */
     public interface STUDY_REPORT {
         /** 贡献之星 */

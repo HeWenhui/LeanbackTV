@@ -277,7 +277,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         liveGetInfo.setStuCouId(stuCourId);
         if (liveVideoSAConfig != null) {
             liveGetInfo.setSubjectiveTestAnswerResult(
-                    LiveVideoConfig.isSmallChinese ?
+                    (isArts == 2) ?
                             liveVideoSAConfig.inner.chsSubjectiveTestAnswerResult :
                             liveVideoSAConfig.inner.subjectiveTestAnswerResult);
         }

@@ -65,7 +65,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     private boolean isEnd = false;
     String jsExamSubmitAll = "javascript:examSubmitAll()";
     private String isShowRankList;
-    boolean IS_SCIENCE;
+    int isArts;
     String stuCouId;
     private int isTeamPkRoom;
     private int mGoldNum;
@@ -74,7 +74,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
 
     public ExamQuestionX5Pager(Context context, QuestionBll questionBll, String stuId
             , String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String isShowRankList,
-                               boolean IS_SCIENCE, String stuCouId, boolean allowTeamPk) {
+                               int isArts, String stuCouId, boolean allowTeamPk) {
         super(context);
         this.questionBll = questionBll;
         this.livePagerBack = questionBll;
@@ -84,7 +84,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         setBaseVideoQuestionEntity(videoQuestionLiveEntity);
         this.num = videoQuestionLiveEntity.id;
         this.nonce = videoQuestionLiveEntity.nonce;
-        this.IS_SCIENCE = IS_SCIENCE;
+        this.isArts = isArts;
         this.stuCouId = stuCouId;
         this.allowTeamPk = allowTeamPk;
         mLogtf.i("ExamQuestionX5Pager:liveid=" + liveid + ",num=" + num);
@@ -141,8 +141,8 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
 //        wvSubjectWeb.loadUrl("file:///android_asset/testjs.html");
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
         ((AnimationDrawable) ivLoading.getBackground()).start();
-        String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
-        if (LiveVideoConfig.isSmallChinese) {
+        String host = isArts != 1 ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
+        if (isArts == 2) {
             EXAM_URL = "https://live.chs.xueersi.com/LiveExam/examPaper";
         } else {
             EXAM_URL = "https://live.xueersi.com/" + host + "/LiveExam/examPaper";
@@ -154,7 +154,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         }
         examUrl += "&stuCouId=" + stuCouId;
         examUrl += "&isTowall=" + isShowRankList;
-        examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+        examUrl += "&isArts=" + isArts;
         examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
         logger.e("======> loadUrl:" + examUrl);
         wvSubjectWeb.loadUrl(examUrl);

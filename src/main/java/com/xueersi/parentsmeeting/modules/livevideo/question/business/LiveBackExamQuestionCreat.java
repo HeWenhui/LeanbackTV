@@ -13,7 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5
  * 回放测试卷
  */
 public class LiveBackExamQuestionCreat implements BaseExamQuestionCreat {
-    private boolean IS_SCIENCE;
+    private int isArts;
     private LiveGetInfo liveGetInfo;
     private BaseExamQuestionInter.ExamStop examStop;
     LivePagerBack livePagerBack;
@@ -22,8 +22,8 @@ public class LiveBackExamQuestionCreat implements BaseExamQuestionCreat {
         this.livePagerBack = livePagerBack;
     }
 
-    public void setIS_SCIENCE(boolean IS_SCIENCE) {
-        this.IS_SCIENCE = IS_SCIENCE;
+    public void setArts(int arts) {
+        this.isArts = arts;
     }
 
     public void setLiveGetInfo(LiveGetInfo liveGetInfo) {
@@ -37,7 +37,7 @@ public class LiveBackExamQuestionCreat implements BaseExamQuestionCreat {
     @Override
     public BaseExamQuestionInter creatBaseExamQuestion(Activity activity, final String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity) {
         ExamQuestionX5PlaybackPager examQuestionPlaybackPager = new ExamQuestionX5PlaybackPager(activity,
-                liveid, videoQuestionLiveEntity, IS_SCIENCE, liveGetInfo.getStuCouId(), examStop, livePagerBack);
+                liveid, videoQuestionLiveEntity, isArts, liveGetInfo.getStuCouId(), examStop, livePagerBack);
         return examQuestionPlaybackPager;
     }
 }

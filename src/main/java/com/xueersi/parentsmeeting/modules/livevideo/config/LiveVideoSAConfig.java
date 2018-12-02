@@ -98,7 +98,7 @@ public class LiveVideoSAConfig {
                 + "/LiveCourse/receiveGoldForPlayBack";
         /*获取体验直播课的红包*/
         public String URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLDS = HTTP_HOST
-                + "/science/AutoLive/receiveGold";
+                + "/science/AutoLive/receiveGold" ;
         /** 用户试听 */
         public String URL_LIVE_USER_MODETIME = HTTP_HOST + "/LiveCourse/userModeTime";
         /** 学生上课情况 */
@@ -115,6 +115,8 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_GET_QUESTION = HTTP_HOST + "/LiveCourse/getQuestion";
         /** 得到h5课件-不区分文理 */
         public String URL_LIVE_GET_WARE_URL = LiveVideoConfig.HTTP_HOST + "/LiveCourse/getCourseWareUrl";
+        /** 语文一题多发 */
+        public String URL_LIVE_CHS_GET_MORE_WARE_URL = HTTP_HOST + "/LiveCourse/courseWarePreLoad";
         /** 理科一次多发课件 */
         public String URL_LIVE_GET_MORE_WARE_URL = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/courseWarePreLoad";
         /** 文科一发多题课件 */
