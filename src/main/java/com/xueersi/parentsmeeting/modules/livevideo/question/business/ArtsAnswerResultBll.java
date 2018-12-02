@@ -898,17 +898,20 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         logger.e("========>onRolePlayAnswerResult:" + voiceAnswerResultEvent
                                 .getScore() + ":" + voiceAnswerResultEvent.getTestId());
                         saveVoiceAnswerResult(voiceAnswerResultEvent);
-                        speechResultEntity.score = score;
-                        speechResultEntity.gold = gold;
-                        speechResultEntity.enery = enery;
-                        SpeechResultPager speechResultPager = new SpeechResultPager(mContext, mRootView, speechResultEntity);
-                        mRootView.addView(speechResultPager.getRootView());
-                        speechResultPager.setOnAutoClose(new SpeechResultPager.OnClose() {
-                            @Override
-                            public void onClose(BasePager basePager) {
-                                mRootView.removeView(basePager.getRootView());
-                            }
-                        });
+                        //全身直播不弹结果页
+                        if (mGetInfo.getPattern() != 2) {
+                            speechResultEntity.score = score;
+                            speechResultEntity.gold = gold;
+                            speechResultEntity.enery = enery;
+                            SpeechResultPager speechResultPager = new SpeechResultPager(mContext, mRootView, speechResultEntity);
+                            mRootView.addView(speechResultPager.getRootView());
+                            speechResultPager.setOnAutoClose(new SpeechResultPager.OnClose() {
+                                @Override
+                                public void onClose(BasePager basePager) {
+                                    mRootView.removeView(basePager.getRootView());
+                                }
+                            });
+                        }
                     }
                 } else {
                     String errorMsg = jsonObject.optString("msg");

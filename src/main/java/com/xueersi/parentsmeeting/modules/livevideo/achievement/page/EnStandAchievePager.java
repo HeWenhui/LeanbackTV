@@ -137,9 +137,9 @@ public class EnStandAchievePager extends LiveBasePager {
     }
 
     public void onGetStar(StarAndGoldEntity starAndGoldEntity) {
-        tvAchiveNumFire.setText(starAndGoldEntity.getPkEnergy().me);
-        tvAchiveNumStar.setText(starAndGoldEntity.getStarCount());
-        tvAchiveNumGold.setText(starAndGoldEntity.getGoldCount());
+        tvAchiveNumFire.setText("" + starAndGoldEntity.getPkEnergy().me);
+        tvAchiveNumStar.setText("" + starAndGoldEntity.getStarCount());
+        tvAchiveNumGold.setText("" + starAndGoldEntity.getGoldCount());
     }
 
     public void onStarAdd(int star, float x, float y) {
