@@ -29,6 +29,7 @@ import java.util.HashMap;
 
 public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction, NoticeAction, MessageAction, ScienceSpeechBullletContract.ScienceSpeechBulletPresenter {
     private ScienceSpeechBullletContract.ScienceSpeechBulletView speechBulletView;
+    private LiveTopic mLiveTopic;
     private String open;
     private String voiceId;
     private String from;
@@ -36,6 +37,10 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
      * 是不是有分组
      */
     private boolean haveTeam = false;
+    /** 主讲老师前缀 */
+    public static final String TEACHER_PREFIX = "t_";
+    /** 辅导老师前缀 */
+    public static String COUNTTEACHER_PREFIX = "f_";
 
     public SpeechBulletScreenIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -46,6 +51,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
     @Override
     public void onCreate(HashMap<String, Object> data) {
         super.onCreate(data);
+        mLiveTopic = mLiveBll.getLiveTopic();
     }
 
     @Override
@@ -62,6 +68,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
+
     }
 
     @Override
@@ -105,7 +112,8 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                             }
                         });
                     }
-                } else if ("".equals(voiceId)) {
+                }
+               /* else if ("".equals(voiceId)) {
                     // 教师端退出情况：如果收到的260消息中的voiceId字段为空，学生退出弹幕但不要弹出提示窗口。
                     if (speechBulletView != null) {
                         mHandler.post(new Runnable() {
@@ -115,7 +123,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
                             }
                         });
                     }
-                }
+                }*/
                 break;
             }
             default:
@@ -217,7 +225,27 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-
+        if (sourceNick.startsWith(TEACHER_PREFIX)) {
+            logger.i("onQuit:mainTeacher quit");
+            if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && speechBulletView != null) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        speechBulletView.closeSpeechBullet(false);
+                    }
+                });
+            }
+        } else if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
+            logger.i("onQuit:Counteacher quit");
+            if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode()) && speechBulletView != null) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        speechBulletView.closeSpeechBullet(false);
+                    }
+                });
+            }
+        }
     }
 
     @Override
