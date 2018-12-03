@@ -127,6 +127,12 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
         }
         final int colorMe = mContext.getResources().getColor(R.color.COLOR_005952);
         final int colorOther = mContext.getResources().getColor(R.color.COLOR_47827E);
+//        RankEntity rankEntity = new RankEntity();
+//        rankEntity.setRate("43%");
+//        rankEntity.setMe(true);
+//        rankEntity.setRank("1");
+//        rankEntity.setName("张悦祎呃呃小");
+//        mArtsRankEntities.add(rankEntity);
         mArtsGroupCommonAdapter = new CommonAdapter<RankEntity>(mArtsRankEntities) {
             @Override
             public AdapterItemInterface<RankEntity> getItemView(Object type) {
