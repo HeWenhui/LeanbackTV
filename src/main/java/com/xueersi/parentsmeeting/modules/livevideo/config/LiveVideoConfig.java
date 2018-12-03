@@ -259,6 +259,17 @@ public class LiveVideoConfig {
     public static String URL_CDN_LOG = "http://log.xescdn.com/log";
     public static String URL_CDN_LOG1 = "http://log1.xescdn.com/log";
     public static String URL_CDN_LOG2 = "http://log2.xescdn.com/log";
+
+    public static String URL_CND_LOG_IP = "http://42.62.96.154:80/log";
+
+    /** 920日志IP 地址*/
+    public static String SP_URL_LIVE_CND_LOG_920_TYPE = "sp_url_live_cnd_log_920_type";
+    /** 920类型 IP*/
+    public static String LIVE_LOG_920_IP = "ip";
+    /** 920类型 HOST*/
+    public static String LIVE_LOG_920_HOST = "host";
+
+
     /** 更多课程数量的记录 */
     public static int MORE_COURSE;
     public static Boolean isloading = false;
