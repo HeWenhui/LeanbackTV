@@ -13,6 +13,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
@@ -25,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 
 public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpdata {
     private Handler handler = new Handler(Looper.getMainLooper());
+    /** 得到本组信息重试 */
     int getSelfTeamInfoTimes = 1;
     private RelativeLayout rootView;
     private TeamPkRankPager teamPkRankPager;
@@ -33,14 +35,17 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     private TeamPkLeadPager teamPkLeadPager;
     private EnTeamPkHttp enTeamPkHttp;
     private LiveGetInfo getInfo;
-    int pattern;
+    private int pattern;
     private boolean destory = false;
     private String mode;
     private LiveGetInfo.EnglishPk englishPk;
     private PkTeamEntity pkTeamEntity;
+    private int reportTimes = 1;
+    private LogToFile mLogtf;
 
     public EnTeamPkBll(Context context) {
         super(context);
+        mLogtf = new LogToFile(context, TAG);
     }
 
     public void setEnTeamPkHttp(EnTeamPkHttp enTeamPkHttp) {
@@ -62,23 +67,51 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         mode = getInfo.getMode();
         englishPk = getInfo.getEnglishPk();
         if (englishPk.hasGroup == 0) {
-            enTeamPkHttp.reportStuInfo(new AbstractBusinessDataCallBack() {
-                @Override
-                public void onDataSucess(Object... objects) {
-
-                }
-            });
+            reportStuInfo();
         } else {
             if (pkTeamEntity == null) {
-                enTeamPkHttp.getEnglishPkGroup(new AbstractBusinessDataCallBack() {
-                    @Override
-                    public void onDataSucess(Object... objects) {
-                        pkTeamEntity = (PkTeamEntity) objects[0];
-                    }
-                });
+                getEnglishPkGroup();
             }
         }
 //        addTop();
+    }
+
+    private void reportStuInfo() {
+        enTeamPkHttp.reportStuInfo(new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objects) {
+                if (pkTeamEntity == null) {
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!destory && pkTeamEntity == null) {
+                                getEnglishPkGroup();
+                            }
+                        }
+                    }, 2000);
+                }
+            }
+        });
+    }
+
+    private void getEnglishPkGroup() {
+        enTeamPkHttp.getEnglishPkGroup(new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objects) {
+                pkTeamEntity = (PkTeamEntity) objects[0];
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                mLogtf.d("onDataFail:destory=" + destory + ",errStatus=" + errStatus + ",times=" + reportTimes);
+                if (!destory && errStatus == 1) {
+                    if (reportTimes++ > 3) {
+                        return;
+                    }
+                    reportStuInfo();
+                }
+            }
+        });
     }
 
     private void addTop() {
@@ -132,7 +165,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
                     rootView.addView(teamPkRankPager.getRootView(), layoutParams);
-                    enTeamPkHttp.getSelfTeamInfo(new AbstractBusinessDataCallBack() {
+                    enTeamPkHttp.getEnglishPkGroup(new AbstractBusinessDataCallBack() {
                         AbstractBusinessDataCallBack callBack = this;
 
                         @Override
@@ -153,11 +186,11 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                         public void onDataFail(int errStatus, String failMsg) {
                             super.onDataFail(errStatus, failMsg);
                             logger.d("onDataFail:errStatus=" + errStatus + ",destory=" + destory);
-                            if (!destory) {
+                            if (!destory || getSelfTeamInfoTimes > 9) {
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        enTeamPkHttp.getSelfTeamInfo(callBack);
+                                        enTeamPkHttp.getEnglishPkGroup(callBack);
                                     }
                                 }, (getSelfTeamInfoTimes++) * 1000);
                             }

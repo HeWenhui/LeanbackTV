@@ -968,6 +968,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
      * @return
      */
     public String getConnectNickname() {
+        if (mIRCMessage == null) {
+            return "";
+        }
         return mIRCMessage.getConnectNickname();
     }
 
