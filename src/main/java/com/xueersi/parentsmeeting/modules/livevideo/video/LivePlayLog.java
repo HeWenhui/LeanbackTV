@@ -1539,7 +1539,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
      * @param dataJson
      */
     public void postLiveLog920 (String dataJson) {
-        if(TextUtils.isEmpty(LIVE_920_TYPE) || TextUtils.equals(LIVE_920_TYPE,LiveVideoConfig.HTTP_HOST)) {
+        if(TextUtils.isEmpty(LIVE_920_TYPE) || TextUtils.equals(LIVE_920_TYPE,LiveVideoConfig.LIVE_LOG_920_HOST)) {
             postLiveLogHost920(dataJson,true);
         } else {
             postLiveLogIp920(dataJson,0,"",1l,true);
