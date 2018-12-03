@@ -155,8 +155,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
 
     private void attachToRootView() {
-        android.util.Log.e("TeamPkBll", "========> attachToRootView: " + Thread.currentThread().getId() + ":" +
-                mRootView);
         initData();
         rlTeamPkContent = new RelativeLayout(mActivity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
@@ -172,13 +170,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         super.onModeChange(oldMode, mode, isPresent);
         this.mTeacherMode = mode;
         if (isHalfBodyLiveRoom()) {
-            //延时3秒 适配切屏动画
+            //延时5秒 适配切屏动画
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     showPkStateLayout();
                 }
-            }, 3300);
+            }, 5000);
         }
     }
 
