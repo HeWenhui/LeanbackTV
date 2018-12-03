@@ -37,6 +37,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -324,7 +325,11 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         params.topMargin = liveVideoPoint.y3;
         logger.setLogMethod(false);
         logger.i("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
-
+        ImageView iv_livevideo_message_small_bg = mView.findViewById(R.id.iv_livevideo_message_small_bg);
+        RelativeLayout.LayoutParams bgParams = (RelativeLayout.LayoutParams) iv_livevideo_message_small_bg.getLayoutParams();
+        bgParams.width = liveVideoPoint.x4 - liveVideoPoint.x3;
+        bgParams.height = bgParams.width / 251 * 258;
+        iv_livevideo_message_small_bg.setLayoutParams(bgParams);
         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
 
         int colors[] = {0x19FFA63C, 0x32FFA63C, 0x64FFC12C, 0x96FFC12C, 0xFFFFA200};
