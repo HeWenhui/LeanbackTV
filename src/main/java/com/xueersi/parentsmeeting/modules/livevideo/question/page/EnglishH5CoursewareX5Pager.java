@@ -139,9 +139,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         final String today = dateFormat.format(date);
         final File todayCacheDir = new File(cacheFile, today);
         final File todayLiveCacheDir = new File(todayCacheDir, liveId);
-        if(isNewArtsCourseware){
+        if (isNewArtsCourseware) {
             mMorecacheout = new File(todayLiveCacheDir, liveId + "artschild");
-        }else{
+        } else {
             mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
         }
         mPublicCacheout = new File(cacheFile, EnglishH5Cache.mPublicCacheoutName);
@@ -204,12 +204,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             String command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
             wvSubjectWeb.loadUrl(command);
         }
-        StableLogHashMap logHashMap = new StableLogHashMap("coursewareDidLoad");
-        logHashMap.put("coursewareid", id);
-        logHashMap.put("coursewaretype", courseware_type);
-        logHashMap.put("status", "success");
-        logHashMap.put("loadurl", url);
-        umsAgentDebugSys(eventId, logHashMap.getData());
         if (englishH5Entity.getNewEnglishH5()) {
             StableLogHashMap newlogHashMap = new StableLogHashMap("loadPlatformtest");
             newlogHashMap.put("os", "Android");
@@ -219,6 +213,16 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             newlogHashMap.put("loadurl", mLoadUrls);
             newlogHashMap.put("nonce", newlogHashMap.creatNonce());
             umsAgentDebugPv("live_platformtest", newlogHashMap.getData());
+        } else {
+            if (failingUrl == null) {
+                StableLogHashMap logHashMap = new StableLogHashMap("coursewareDidLoad");
+                logHashMap.put("testid", id);
+                logHashMap.put("coursewaretype", courseware_type);
+                logHashMap.put("status", "success");
+                logHashMap.put("loadurl", url);
+                logHashMap.put("isplayback", isPlayBack ? "1" : "0");
+                umsAgentDebugInter(eventId, logHashMap.getData());
+            }
         }
     }
 
@@ -226,12 +230,13 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     protected void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareDidLoad");
-        logHashMap.put("coursewareid", id);
+        logHashMap.put("testid", id);
         logHashMap.put("coursewaretype", courseware_type);
         logHashMap.put("status", "fail");
         logHashMap.put("loadurl", url);
+        logHashMap.put("isplayback", isPlayBack ? "1" : "0");
         logHashMap.put("msg", description);
-        umsAgentDebugSys(eventId, logHashMap.getData());
+        umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     @Override
@@ -371,7 +376,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                             String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                             WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
                             webResourceResponse.setResponseHeaders(header);
-                            Log.e("Duncan","artsload");
+                            Log.e("Duncan", "artsload");
                             return webResourceResponse;
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -380,12 +385,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     return super.shouldInterceptRequest(view, s);
                 }
             });
-            if(isNewArtsCourseware){
+            if (isNewArtsCourseware) {
                 String loadUrl = url;
                 loadUrl(loadUrl);
                 reloadurl = loadUrl;
                 Loger.e(TAG, "======> newArtsH5CourseWare url:" + url);
-            }else{
+            } else {
                 if (isPlayBack) {
                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                     // 一题多发的课件预加载(直播回放)
@@ -567,13 +572,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     public void showAnswerResult_LiveVideo(String data) {
         Loger.e("EnglishH5CourseWareX5Pager",
                 "=========>showAnswerResult_LiveVideo:" + data);
+        Loger.e(TAG, "======> newArtsH5CourseWare data:" + data);
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
-//        if(LiveVideoConfig.isStandLive){
-//            parseData(data);
-////            showH5Result();
-//        }else{
-//            EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
-//        }
     }
 
     private void parseData(String data) {
@@ -610,8 +610,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         wvSubjectWeb = (WebView) View.inflate(mContext, R.layout.page_livevideo_h5_courseware_cacheweb, null);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         rlLivevideoSubjectWeb.addView(wvSubjectWeb, 0, lp);
-
+        Loger.e(TAG, "======> newArtsH5CourseWare refresh:");
         addJavascriptInterface();
+        wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
@@ -629,32 +630,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 
     public EnglishH5Entity getEnglishH5Entity() {
         return englishH5Entity;
-    }
-
-    private void setRightGold(Context context, LottieAnimationView lottieAnimationView, int goldCount) {
-        String num = "获得 " + goldCount + " 枚金币";
-        AssetManager manager = context.getAssets();
-        Bitmap img_7Bitmap;
-        try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/my_right/img_22.png"));
-//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
-            Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(creatBitmap);
-            canvas.drawBitmap(img_7Bitmap, 0, 0, null);
-            Paint paint = new Paint();
-            paint.setTextSize(48);
-            paint.setColor(0xffCC6E12);
-            Typeface fontFace = FontCache.getTypeface(context, "fangzhengcuyuan.ttf");
-            paint.setTypeface(fontFace);
-            float width = paint.measureText(num);
-            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
-            img_7Bitmap.recycle();
-            img_7Bitmap = creatBitmap;
-        } catch (IOException e) {
-            logger.e( "setRightGold", e);
-            return;
-        }
-        lottieAnimationView.updateBitmap("image_22", img_7Bitmap);
     }
 
 }

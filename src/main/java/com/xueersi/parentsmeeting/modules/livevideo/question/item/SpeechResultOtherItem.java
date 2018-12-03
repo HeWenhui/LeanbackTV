@@ -37,7 +37,7 @@ public class SpeechResultOtherItem implements RItemViewInterface<SpeechResultMem
     public void convert(ViewHolder holder, SpeechResultMember speechResultMember, int position) {
         ImageLoader.with(ContextManager.getContext()).load(speechResultMember.headUrl)
                 .error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civ_live_speech_result_member_head);
-        tv_live_speech_result_member_score.setText(speechResultMember.score);
+        tv_live_speech_result_member_score.setText("" + speechResultMember.score);
         tv_live_speech_result_member_name.setText(speechResultMember.name);
     }
 }

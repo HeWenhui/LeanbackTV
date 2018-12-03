@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 
 import org.json.JSONObject;
@@ -43,12 +44,22 @@ public interface BaseVoiceAnswerCreat {
      * 回答结果显示
      *
      * @param context
-     * @param questionBll
+     * @param answerRightResultVoice
      * @param baseVoiceAnswerPager
      * @param baseVideoQuestionEntity
      * @param entity                  @return
      */
-    boolean onAnswerReslut(Context context, AnswerRightResultVoice questionBll, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity);
+    boolean onAnswerReslut(Context context, AnswerRightResultVoice answerRightResultVoice, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity);
+
+    interface NewArtsAnswerRightResultVoice extends AnswerRightResultVoice {
+        /**
+         * 语音答题结果
+         *
+         * @param entity
+         */
+        void initArtsAnswerRightResultVoice(AnswerResultEntity entity);
+
+    }
 
     /**
      * 语音带结果回调

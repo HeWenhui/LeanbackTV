@@ -9,5 +9,5 @@ public interface EnTeamPkHttp {
 
     void updataEnglishPkGroup(AbstractBusinessDataCallBack abstractBusinessDataCallBack);
 
-    void getEnglishPkRank(AbstractBusinessDataCallBack abstractBusinessDataCallBack);
+    void getEnglishPkGroup(AbstractBusinessDataCallBack abstractBusinessDataCallBack);
 }

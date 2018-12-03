@@ -43,6 +43,14 @@
             app:VerticalThumbDrawable="@drawable/arts_pse_fastscorller_header_selector"
             app:VerticalTrackDrawable="@drawable/arts_rcl_fastscroller_tracker" />
 
+        <ViewStub
+            android:id="@id/vs_arts_answer_result_voice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="187dp"
+            android:layout_marginTop="156dp"
+            android:layout="@layout/page_livevideo_arts_anwserresult_voice_blank" />
+
         <TextView
             android:id="@id/tv_arts_answer_result_pse_close"
             android:layout_width="wrap_content"

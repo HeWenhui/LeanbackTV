@@ -10,7 +10,7 @@ public interface EnTeamPkAction {
 
     void onRankResult();
 
-    void onRankLead(EnTeamPkRankEntity enTeamPkRankEntity);
+    void onRankLead(EnTeamPkRankEntity enTeamPkRankEntity, int type);
 
     void onModeChange(String mode);
 

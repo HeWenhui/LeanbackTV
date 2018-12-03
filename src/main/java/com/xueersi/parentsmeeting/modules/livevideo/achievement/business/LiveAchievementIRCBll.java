@@ -47,13 +47,13 @@ import okhttp3.Call;
  */
 public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, LiveAchievementHttp,
         EnglishSpeekHttp, AudioRequest {
-    StarInteractAction starAction;
-    EnglishSpeekAction englishSpeekAction;
-    AtomicBoolean audioRequest = new AtomicBoolean(false);
-    EnglishSpeekMode englishSpeekMode;
-    SpeakerRecognitioner speakerRecognitioner;
-    private boolean destory = false;
+    private StarInteractAction starAction;
+    private EnglishSpeekAction englishSpeekAction;
+    private AtomicBoolean audioRequest = new AtomicBoolean(false);
+    private EnglishSpeekMode englishSpeekMode;
+    private SpeakerRecognitioner speakerRecognitioner;
     private VerifyCancelAlertDialog recognizeDialog;
+    private boolean isDestory = false;
     private int smallEnglish;
 
     public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll) {
@@ -69,30 +69,33 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         if (1 == getInfo.getIsAllowStar()) {
             initRecognizeDialog();
             putInstance(AudioRequest.class, this);
-            putInstance(UpdateAchievement.class, new UpdateAchievement() {
-                @Override
-                public void getStuGoldCount() {
-                    postDelayedIfNotFinish(new Runnable() {
-                        @Override
-                        public void run() {
-                            String liveid = mGetInfo.getId();
-                            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-                            getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
-                                @Override
-                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                    StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
-                                            (responseEntity);
-                                    mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
-                                    mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
-                                    if (starAction != null) {
-                                        starAction.onGetStar(starAndGoldEntity);
+            LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
+            if (0 == englishPk.canUsePK) {
+                putInstance(UpdateAchievement.class, new UpdateAchievement() {
+                    @Override
+                    public void getStuGoldCount() {
+                        postDelayedIfNotFinish(new Runnable() {
+                            @Override
+                            public void run() {
+                                String liveid = mGetInfo.getId();
+                                String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+                                getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
+                                    @Override
+                                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                        StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
+                                                (responseEntity);
+                                        mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
+                                        mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
+                                        if (starAction != null) {
+                                            starAction.onGetStar(starAndGoldEntity);
+                                        }
                                     }
-                                }
-                            });
-                        }
-                    }, 500);
-                }
-            });
+                                });
+                            }
+                        }, 500);
+                    }
+                });
+            }
             AppInfoEntity appInfoEntity = AppBll.getInstance().getAppInfoEntity();
             boolean voiceRecognSwitchOn = mShareDataManager.getBoolean(ShareBusinessConfig.SP_VOICE_RECOGNI_SWITCH,
                     true,
@@ -152,15 +155,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                             initAchievement(mGetInfo.getMode());
                                         }
                                     } else {
-                                        if (destory) {
-                                            mLogtf.d("checkResoureDownload:destory=true");
-                                            return;
+                                        mLogtf.d("onLiveInited:isDestory=" + isDestory);
+                                        if (!isDestory) {
+                                            speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
+                                            if (englishSpeekAction != null) {
+                                                englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
+                                            }
+                                            startAchievement();
                                         }
-                                        speakerRecognitioner = new SpeakerRecognitioner(activity);
-                                        if (englishSpeekAction != null) {
-                                            englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
-                                        }
-                                        startAchievement();
                                     }
                                 } else {
                                     startAchievement();
@@ -206,11 +208,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         if (enrollIvector != 0) {
                             startAchievement();
                         } else {
-                            speakerRecognitioner = new SpeakerRecognitioner(activity);
-                            if (englishSpeekAction != null) {
-                                englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
+                            mLogtf.d("onLiveInited:isDestory=" + isDestory);
+                            if (!isDestory) {
+                                speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
+                                if (englishSpeekAction != null) {
+                                    englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
+                                }
+                                startAchievement();
                             }
-                            startAchievement();
                         }
                     } else {
                         startAchievement();
@@ -338,6 +343,10 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     }
 
     private void startAchievement() {
+        if (isDestory) {
+            mLogtf.d("startAchievement:isDestory=true");
+            return;
+        }
         if (mGetInfo.getPattern() == 2) {
             englishSpeekMode = new EnglishSpeekModeStand();
         } else {
@@ -360,7 +369,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void onDestory() {
         super.onDestory();
-        destory = true;
+        isDestory = true;
         logger.d("onDestory:speakerRecognitioner=" + speakerRecognitioner);
         if (englishSpeekAction != null) {
             englishSpeekAction.destory();
@@ -602,6 +611,28 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     }
                     break;
                 }
+                case XESCODE.ARTS_STOP_QUESTION: {
+                    postDelayedIfNotFinish(new Runnable() {
+                        @Override
+                        public void run() {
+                            String liveid = mGetInfo.getId();
+                            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+                            getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                    StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
+                                            (responseEntity);
+                                    mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
+                                    mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
+                                    if (starAction != null) {
+                                        starAction.onGetStar(starAndGoldEntity);
+                                    }
+                                }
+                            });
+                        }
+                    }, 500);
+                    break;
+                }
                 default:
                     break;
             }
@@ -614,7 +645,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     public int[] getNoticeFilter() {
         return new int[]{XESCODE.ROOM_STAR_OPEN, XESCODE.ROOM_STAR_SEND_T,
                 XESCODE.ROOM_STAR_CLOSE, XESCODE.XCR_ROOM_DB_START, XESCODE.XCR_ROOM_DB_CLOSE,
-                XESCODE.XCR_ROOM_DB_PRAISE, XESCODE.XCR_ROOM_DB_REMIND};
+                XESCODE.XCR_ROOM_DB_PRAISE, XESCODE.XCR_ROOM_DB_REMIND, XESCODE.ARTS_STOP_QUESTION};
     }
 
     public void onSendMsg(String msg) {
@@ -637,7 +668,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void request(OnAudioRequest onAudioRequest) {
         audioRequest.set(true);
-        logger.d("request:englishSpeekBll=" + englishSpeekAction);
+        logger.d("request:englishSpeekBll=" + (englishSpeekAction == null));
         if (englishSpeekAction != null) {
             handler.removeMessages(1);
             englishSpeekAction.stop(onAudioRequest);
@@ -651,7 +682,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     @Override
     public void release() {
         audioRequest.set(false);
-        logger.d("release:englishSpeekBll=" + englishSpeekAction);
+        logger.d("release:englishSpeekBll=" + (englishSpeekAction == null));
         if (englishSpeekAction != null) {
             handler.sendEmptyMessageDelayed(1, 2000);
         }

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 
 /**
@@ -22,6 +23,14 @@ public interface SpeechEvalAction {
 
     void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, OnSpeechEval onSpeechEval);
 
+    /**
+     * 新课件{@linkplain LiveHttpManager#sendSpeechEvalResultNewArts}
+     * 旧课件{@linkplain LiveHttpManager#sendSpeechEvalResult2}
+     *
+     * @param id
+     * @param stuAnswer
+     * @param onSpeechEval
+     */
     void sendSpeechEvalResult2(String id, String stuAnswer, OnSpeechEval onSpeechEval);
 
     void onSpeechSuccess(String num);

@@ -610,7 +610,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
         isAnaswer = isShow ? 1 : 0;
         if (mLiveMessagePager != null) {
-            mLiveMessagePager.onQuestionShow(null, isShow);
+            mLiveMessagePager.onQuestionShow(videoQuestionLiveEntity, isShow);
         }
     }
 

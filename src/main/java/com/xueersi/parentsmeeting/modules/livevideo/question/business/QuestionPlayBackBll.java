@@ -146,6 +146,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     LiveBackBll.ShowQuestion showQuestion) {
         mRootView.setVisibility(View.VISIBLE);
         int vCategory = questionEntity.getvCategory();
+        logger.i("showQuestion :"+vCategory);
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
                 LiveVideoConfig.isNewArts = false;
@@ -217,6 +218,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             }
             break;
             case LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE: {
+                logger.i("showQuestion :"+vCategory+":"+questionEntity.getvQuestionType()+":"+questionEntity.getType()+":"+questionEntity.toString());
                 LiveVideoConfig.isNewArts = true;
                 VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
                         .getApplication(), false,
@@ -255,6 +257,13 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                             videoQuestionLiveEntity.setIsVoice(isVoices);
                             videoQuestionLiveEntity.assess_ref = assess;
                             videoQuestionLiveEntity.speechContent = answers;
+                        }
+                        //非常重要，不然新课件平台，roleplay无法进入
+                        logger.i("yzl_showQuestion type = "+videoQuestionLiveEntity.type);
+                        if("5".equals(videoQuestionLiveEntity.type)){
+                            logger.i("yzl_init new rolePlay bll");
+                            RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
+                            questionBll.setRolePlayMachineAction(rolePlayerBll);
                         }
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
                         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
@@ -563,7 +572,11 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         StringBuilder sb = new StringBuilder();
         String url;
         if("5".equals(type)){
-            url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_ROALPLAY_URL;
+            if(mVideoEntity.getPattern() == 2){
+                url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_STANDROALPLAY_URL;
+            }else{
+                url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_ROALPLAY_URL;
+            }
         }else {
             url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_CHINESEREADING_URL;
         }

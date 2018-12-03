@@ -21,6 +21,7 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by linyuqiang on 2018/9/10.
@@ -53,10 +54,12 @@ public class SpeakerRecognitioner {
     Context context;
     private SpeakerPredict speakerPredict;
     SpeakerRecognitionerInterface speakerRecognitionerInterface;
-    LogToFile logToFile;
+    private LogToFile logToFile;
+    private AtomicBoolean audioRequest;
 
-    SpeakerRecognitioner(Context context) {
+    SpeakerRecognitioner(Context context, AtomicBoolean audioRequest) {
         logger.setLogMethod(false);
+        this.audioRequest = audioRequest;
         this.context = context;
         logToFile = new LogToFile(context, TAG);
         pingPool = new ThreadPoolExecutor(1, 1,
@@ -118,6 +121,10 @@ public class SpeakerRecognitioner {
                         .getInstance();
                 MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                 String stuId = userInfoEntity.getStuId();
+                logToFile.d("start:audioRequest=" + audioRequest.get());
+                if (audioRequest.get()) {
+                    return;
+                }
                 if (mAudioRecord == null) {
                     try {
                         initAudioRecorder();
@@ -139,9 +146,8 @@ public class SpeakerRecognitioner {
 //                                byte[] pcm_data = toByteArray(mPCMBuffer, readSize);
 //                            logger.d("start:predict=" + readSize + ",pcm_data=" + pcm_data.length);
                         synchronized (lock) {
-                            if (destory) {
-                                logger.d("start:predict=destory");
-                                stop();
+                            if (destory || audioRequest.get()) {
+                                logToFile.d("start:predict=" + destory + ",Request=" + audioRequest.get());
                                 return;
                             }
                             String predict = speakerRecognitionerInterface.predict(mPCMBuffer, readSize, index++, stuId, false);
@@ -159,7 +165,7 @@ public class SpeakerRecognitioner {
     }
 
     public void stop() {
-        logger.d("stop:isStart=" + isStart + ",mAudioRecord=" + mAudioRecord);
+        logToFile.d("stop:isStart=" + isStart);
         isStart = false;
         if (mAudioRecord != null) {
             mAudioRecord.stop();
@@ -169,7 +175,7 @@ public class SpeakerRecognitioner {
     }
 
     public void destory() {
-        logger.d("destory:isStart=" + isStart);
+        logToFile.d("destory:isStart=" + isStart);
         synchronized (lock) {
             destory = true;
             if (speakerRecognitionerInterface != null) {

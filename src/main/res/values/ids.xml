@@ -326,6 +326,10 @@
     <item name="tv_livevideo_speecteval_error" type="id" />
     <item name="ll_livevideo_speecteval_result_mine" type="id" />
     <item name="iv_livevideo_speecteval_result_mine" type="id" />
+    <item name="iv_livevideo_speecteval_result_gold" type="id" />
+    <item name="tv_livevideo_speecteval_result_gold" type="id" />
+    <item name="iv_livevideo_speecteval_result_energy" type="id" />
+    <item name="tv_livevideo_speecteval_result_energy" type="id" />
     <item name="v_live_star_result_out" type="id" />
     <item name="sp_live_star_result" type="id" />
     <item name="iv_live_star_result_light" type="id" />
@@ -520,10 +524,17 @@
     <item name="tv_live_speech_result_fluency_text" type="id" />
     <item name="civ_live_speech_result_head" type="id" />
     <item name="v_live_speech_result_center" type="id" />
+    <item name="vs_live_speech_result_myenergy" type="id" />
     <item name="rl_live_speech_result_myenergy" type="id" />
+    <item name="vs_live_speech_result_roleplay_myenergy" type="id" />
+    <item name="rl_live_speech_result_roleplay_myenergy" type="id" />
+    <item name="iv_live_speech_result_myenergy" type="id" />
     <item name="tv_live_speech_result_myenergy" type="id" />
     <item name="iv_live_speech_result_mygold" type="id" />
     <item name="tv_live_speech_result_mygold" type="id" />
+    <item name="iv_live_speech_result_mypraise" type="id" />
+    <item name="tv_live_speech_result_mypraise" type="id" />
+    <item name="v_live_speech_result_line" type="id" />
     <item name="rv_live_speech_result_other" type="id" />
     <item name="rl_live_speech_result_member_head" type="id" />
     <item name="civ_live_speech_result_member_head" type="id" />
@@ -802,6 +813,9 @@
     <item name="v_arts_answer_result_detail_bg" type="id" />
     <item name="tv_arts_answer_result_detail_title" type="id" />
     <item name="rcl_arts_answer_result_detail" type="id" />
+    <item name="vs_arts_answer_result_voice" type="id" />
+    <item name="tv_arts_answer_result_voice_right" type="id" />
+    <item name="tv_arts_answer_result_voice_my" type="id" />
     <item name="iv_arts_answer_result_detail_close_btn" type="id" />
     <item name="iv_arts_answer_result_state_head" type="id" />
     <item name="iv_arts_answer_result_detail_head" type="id" />

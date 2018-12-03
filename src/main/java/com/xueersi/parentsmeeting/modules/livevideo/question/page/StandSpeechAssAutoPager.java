@@ -31,7 +31,6 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
-import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
@@ -743,7 +742,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mLogtf.d("onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + "," +
                 "haveAnswer=" + haveAnswer + ",nbest=" + nbest);
         if (haveAnswer) {
-            onSpeechEvalSuccess(resultEntity, 0);
+            onSpeechEvalSuccess(resultEntity, 0, 0);
         } else {
             try {
                 final JSONObject answers = new JSONObject();
@@ -768,8 +767,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     public void onSpeechEval(Object object) {
                         JSONObject jsonObject = (JSONObject) object;
                         int gold = jsonObject.optInt("gold");
+                        int energy = jsonObject.optInt("energy");
                         haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
-                        onSpeechEvalSuccess(resultEntity, gold);
+                        logger.d("onSpeechEval:jsonObject=" + jsonObject);
+                        onSpeechEvalSuccess(resultEntity, gold, energy);
                         speechEvalAction.onSpeechSuccess(id);
                     }
 
@@ -852,21 +853,13 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             if (havename) {
                 String strGold = "+" + gold;
                 View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout
-                        .layout_live_stand_red_mine2, null);
+                        .layout_live_stand_speech_head, null);
                 TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id
                         .tv_livevideo_redpackage_name);
                 tv_livevideo_redpackage_name.setText("" + userName);
-                TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id
-                        .tv_livevideo_redpackage_num);
-                ImageView iv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id
-                        .iv_livevideo_redpackage_num);
-                tv_livevideo_redpackage_num.setText(strGold);
                 tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 23f);
-                tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 18f);
                 tv_livevideo_redpackage_name.setTextColor(0xff97091D);
-                tv_livevideo_redpackage_num.setTextColor(0xff97091D);
                 tv_livevideo_redpackage_name.setTypeface(fontFace);
-                iv_livevideo_redpackage_num.setImageResource(R.drawable.bg_live_stand_red_gold_big);
                 int width = 122;
                 int height = 72;
                 int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
@@ -875,8 +868,6 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 layout_live_stand_red_mine1.layout(0, 0, width, height);
 
                 canvas.save();
-                int measuredWidth = layout_live_stand_red_mine1.getMeasuredWidth();
-                int measuredHeight = layout_live_stand_red_mine1.getMeasuredHeight();
 //                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2,
 // 345 + (height - measuredHeight) / 2);
                 canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 348);
@@ -899,7 +890,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         return null;
     }
 
-    private void onSpeechEvalSuccess(final ResultEntity resultEntity, final int gold) {
+    private void onSpeechEvalSuccess(final ResultEntity resultEntity, final int gold, int energy) {
         isSpeechSuccess = true;
         ivLivevideoSpeectevalWave.setVisibility(View.INVISIBLE);
         rlSpeectevalBg.setVisibility(View.GONE);
@@ -913,6 +904,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         final RelativeLayout group = (RelativeLayout) mView;
         final View resultMine = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_speech_mine,
                 group, false);
+        TextView tv_livevideo_speecteval_result_gold = resultMine.findViewById(R.id.tv_livevideo_speecteval_result_gold);
+        tv_livevideo_speecteval_result_gold.setText("+" + gold);
+        TextView tv_livevideo_speecteval_result_energy = resultMine.findViewById(R.id.tv_livevideo_speecteval_result_energy);
+        tv_livevideo_speecteval_result_energy.setText("+" + energy);
         InputStream inputStream = null;
         try {
             inputStream = mContext.getAssets().open

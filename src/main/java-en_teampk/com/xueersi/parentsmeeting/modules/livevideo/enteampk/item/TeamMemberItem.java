@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.enteampk.item;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -8,12 +10,15 @@ import android.widget.TextView;
 
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 public class TeamMemberItem implements AdapterItemInterface<TeamMemberEntity> {
+    private Logger logger = LiveLoggerFactory.getLogger("TeamMemberItem");
     private RelativeLayout ivTeampkMember;
     private TextView tvTeampkName;
     private ImageView civTeampkHead;
@@ -52,11 +57,12 @@ public class TeamMemberItem implements AdapterItemInterface<TeamMemberEntity> {
                     tvTeampkName.getViewTreeObserver().removeOnPreDrawListener(this);
                     int[] loc = ViewUtil.getLoc(tvTeampkName, group);
                     ImageView imageView = new ImageView(group.getContext());
-                    imageView.setImageResource(R.drawable.app_zhanduipk_xuanzhong_pic);
+                    Bitmap bitmap = BitmapFactory.decodeResource(group.getResources(), R.drawable.app_zhanduipk_xuanzhong_pic);
+                    imageView.setImageBitmap(bitmap);
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lp.leftMargin = loc[0];
+                    lp.leftMargin = loc[0] - (bitmap.getWidth() - tvTeampkName.getWidth()) / 2;
                     lp.topMargin = loc[1];
-                    lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                    logger.d("updateViews:my=" + loc[0] + "," + loc[1]);
                     group.addView(imageView, lp);
                     return false;
                 }

@@ -16,6 +16,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.CustomVerticalBannerView;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;

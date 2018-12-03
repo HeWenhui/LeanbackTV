@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
@@ -52,8 +53,8 @@ import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEn
  * 直播创建语音答题
  */
 public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
-    private String TAG = "LiveStandVoiceAnswerCreat";
-    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+    private static String TAG = "LiveStandVoiceAnswerCreat";
+    protected static Logger logger = LoggerFactory.getLogger(TAG);
     private QuestionSwitch questionSwitch;
     private String headUrl;
     private String userName;
@@ -125,7 +126,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                 type = questionEntity.getvQuestionType();
             }
         }
-        if ( (LiveVideoConfig.isNewArts && entity.getResultType() == 2) || (!LiveVideoConfig.isNewArts && (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4))) {
+        if ((LiveVideoConfig.isNewArts && entity.getResultType() == 2) || (!LiveVideoConfig.isNewArts && (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4))) {
             String path;
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
 //                questionBll.initSelectAnswerRightResultVoice(entity);
@@ -156,7 +157,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 //                    group.addView(rlResult);
                     questionBll.initQuestionAnswerReslut(rlResult);
                     lottieAnimationView.playAnimation();
-                    setRightGold(context, lottieAnimationView, entity.getGoldNum());
+                    setRightGold(context, lottieAnimationView, entity.getGoldNum(), entity.getEnergy());
                     final LiveSoundPool liveSoundPool = LiveSoundPool.createSoundPool();
                     final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(liveSoundPool);
                     rlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
@@ -181,7 +182,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 
                         @Override
                         public void onViewDetachedFromWindow(View v) {
-                            logger.d( "onViewDetachedFromWindow right");
+                            logger.d("onViewDetachedFromWindow right");
                             questionBll.removeBaseVoiceAnswerPager(baseVoiceAnswerPager);
                             liveSoundPool.stop(task);
                             Handler handler = new Handler(Looper.getMainLooper());
@@ -257,7 +258,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 
                         @Override
                         public void onViewDetachedFromWindow(View v) {
-                            logger.d( "onViewDetachedFromWindow error");
+                            logger.d("onViewDetachedFromWindow error");
                             questionBll.removeBaseVoiceAnswerPager(baseVoiceAnswerPager);
                             liveSoundPool.stop(task);
                             Handler handler = new Handler(Looper.getMainLooper());
@@ -276,8 +277,13 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         return isSuccess;
     }
 
-    private void setRightGold(Context context, LottieAnimationView lottieAnimationView, int goldCount) {
-        String num = "获得 " + goldCount + " 枚金币";
+    public static void setRightGold(Context context, LottieAnimationView lottieAnimationView, int goldCount, int energy) {
+        View resultMine = LayoutInflater.from(context).inflate(R.layout.layout_live_stand_voice_right, null);
+        TextView tv_livevideo_speecteval_result_gold = resultMine.findViewById(R.id.tv_livevideo_speecteval_result_gold);
+        tv_livevideo_speecteval_result_gold.setText("+" + goldCount);
+        TextView tv_livevideo_speecteval_result_energy = resultMine.findViewById(R.id.tv_livevideo_speecteval_result_energy);
+        tv_livevideo_speecteval_result_energy.setText("+" + energy);
+
         AssetManager manager = context.getAssets();
         Bitmap img_7Bitmap;
         try {
@@ -286,17 +292,19 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
-            Paint paint = new Paint();
-            paint.setTextSize(48);
-            paint.setColor(0xffCC6E12);
-            Typeface fontFace = FontCache.getTypeface(context, "fangzhengcuyuan.ttf");
-            paint.setTypeface(fontFace);
-            float width = paint.measureText(num);
-            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
+
+            int width = img_7Bitmap.getWidth();
+            int height = img_7Bitmap.getHeight();
+            int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+            int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+            resultMine.measure(widthMeasureSpec, heightMeasureSpec);
+            resultMine.layout(0, 0, width, height);
+            resultMine.draw(canvas);
+
             img_7Bitmap.recycle();
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
-            logger.e( "setRightGold", e);
+            logger.e("setRightGold", e);
             return;
         }
         lottieAnimationView.updateBitmap("image_22", img_7Bitmap);
@@ -322,7 +330,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             img_7Bitmap.recycle();
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
-            logger.e( "setRightGold", e);
+            logger.e("setRightGold", e);
             return;
         }
         lottieAnimationView.updateBitmap("image_5", img_7Bitmap);

@@ -1,6 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE1;
 
 /**
  * 文科 答题结果
@@ -15,7 +21,7 @@ public class AnswerResultEntity {
     public static final int RESULT_TYPE_OLD_COURSE_WARE = 1;
     /** 文科课件平台 新课件 */
     public static final int RESULT_TYPE_NEW_COURSE_WARE = 2;
-
+    public int isVoice = 0;
     private String liveId;
     private String stuId;
     /** 后端生成的虚拟id */
@@ -145,9 +151,12 @@ public class AnswerResultEntity {
         this.resultType = resultType;
     }
 
+    /** 试题类型  1 填空题 */
+    public static int TEST_TYPE_1 = 1;
+    /** 试题类型  2选择题 */
+    public static int TEST_TYPE_2 = 2;
 
     public static class Answer {
-
         private String liveId;
         private String stuId;
         private String testId;
@@ -257,5 +266,36 @@ public class AnswerResultEntity {
 
     }
 
+    public static AnswerResultEntity getAnswerResultEntity(VideoQuestionLiveEntity videoQuestionLiveEntity, VideoResultEntity entity) {
+        AnswerResultEntity answerResultEntity = new AnswerResultEntity();
+        answerResultEntity.isVoice = 1;
+        ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
+        answerResultEntity.setAnswerList(answerList);
+        if (entity.getResultType() == VideoResultEntity.QUE_RES_TYPE1) {
+            answerResultEntity.setIsRight(2);
+        } else if (entity.getResultType() == VideoResultEntity.QUE_RES_TYPE2) {
+            answerResultEntity.setIsRight(0);
+        } else if (entity.getResultType() == VideoResultEntity.QUE_RES_TYPE3) {
+            answerResultEntity.setIsRight(1);
+        }
+        {
+            AnswerResultEntity.Answer answer = new AnswerResultEntity.Answer();
+            List<String> rightAnswers = new ArrayList<>();
+            rightAnswers.add(entity.getStandardAnswer());
+            answer.setRightAnswers(rightAnswers);
+            answer.setIsRight(entity.getResultType());
+            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
+                answer.setTestType(AnswerResultEntity.TEST_TYPE_2);
+                List<String> choiceList = new ArrayList<>();
+                choiceList.add(entity.getYourAnswer());
+                answer.setChoiceList(choiceList);
+            } else {
+                answer.setTestType(AnswerResultEntity.TEST_TYPE_1);
+            }
+
+            answerList.add(answer);
+        }
+        return answerResultEntity;
+    }
 
 }

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class EnTeamPkRankEntity {
     private int myTeam = 0;
-    private int aTotalScore;//: 180, // a队总能量值
-    private int aCurrentScore;//: 40,// a队本轮能量增加值
+    private int myTeamTotal;//: 180, // a队总能量值
+    private int myTeamCurrent;//: 40,// a队本轮能量增加值
     private int apkTeamId;//:4,       // a队头像id
-    private int bTotalScore;//:200, // b队总能量值
-    private int bCurrentScore;//":50,// b队本轮能量增加值
+    private int opTeamTotal;//:200, // b队总能量值
+    private int opTeamCurrent;//":50,// b队本轮能量增加值
     private int bpkTeamId;//:5,       // b队头像id
     ArrayList<TeamMemberEntity> memberEntities = new ArrayList<>();
 
@@ -20,20 +20,20 @@ public class EnTeamPkRankEntity {
         this.myTeam = myTeam;
     }
 
-    public int getaTotalScore() {
-        return aTotalScore;
+    public int getMyTeamTotal() {
+        return myTeamTotal;
     }
 
-    public void setaTotalScore(int aTotalScore) {
-        this.aTotalScore = aTotalScore;
+    public void setMyTeamTotal(int myTeamTotal) {
+        this.myTeamTotal = myTeamTotal;
     }
 
-    public int getaCurrentScore() {
-        return aCurrentScore;
+    public int getMyTeamCurrent() {
+        return myTeamCurrent;
     }
 
-    public void setaCurrentScore(int aCurrentScore) {
-        this.aCurrentScore = aCurrentScore;
+    public void setMyTeamCurrent(int myTeamCurrent) {
+        this.myTeamCurrent = myTeamCurrent;
     }
 
     public int getApkTeamId() {
@@ -44,20 +44,20 @@ public class EnTeamPkRankEntity {
         this.apkTeamId = apkTeamId;
     }
 
-    public int getbTotalScore() {
-        return bTotalScore;
+    public int getOpTeamTotal() {
+        return opTeamTotal;
     }
 
-    public void setbTotalScore(int bTotalScore) {
-        this.bTotalScore = bTotalScore;
+    public void setOpTeamTotal(int opTeamTotal) {
+        this.opTeamTotal = opTeamTotal;
     }
 
-    public int getbCurrentScore() {
-        return bCurrentScore;
+    public int getOpTeamCurrent() {
+        return opTeamCurrent;
     }
 
-    public void setbCurrentScore(int bCurrentScore) {
-        this.bCurrentScore = bCurrentScore;
+    public void setOpTeamCurrent(int opTeamCurrent) {
+        this.opTeamCurrent = opTeamCurrent;
     }
 
     public int getBpkTeamId() {

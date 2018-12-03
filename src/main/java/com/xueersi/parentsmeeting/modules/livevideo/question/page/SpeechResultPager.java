@@ -10,6 +10,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,11 +37,13 @@ public class SpeechResultPager extends LiveBasePager {
     private ImageView iv_live_speech_result_close;
     private TextView tv_live_speech_result_score;
     private ImageView civ_live_speech_result_head;
+    private View v_live_speech_result_line;
     private RecyclerView rv_live_speech_result_other;
     private TextView tv_live_speech_result_accuracy_text;
     private TextView tv_live_speech_result_fluency_text;
     private TextView tv_live_speech_result_mygold;
     private TextView tv_live_speech_result_myenergy;
+    private TextView tv_live_speech_result_mypraise;
     private OnClose onAutoClose;
     private SpeechResultEntity speechResultEntity;
 
@@ -60,9 +63,18 @@ public class SpeechResultPager extends LiveBasePager {
     @Override
     public View initView() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_speech_result, group, false);
+        if (speechResultEntity.praise == -1) {
+            ViewStub vs_live_speech_result_myenergy = view.findViewById(R.id.vs_live_speech_result_myenergy);
+            vs_live_speech_result_myenergy.inflate();
+        } else {
+            ViewStub vs_live_speech_result_roleplay_myenergy = view.findViewById(R.id.vs_live_speech_result_roleplay_myenergy);
+            vs_live_speech_result_roleplay_myenergy.inflate();
+            tv_live_speech_result_mypraise = view.findViewById(R.id.tv_live_speech_result_mypraise);
+        }
         iv_live_speech_result_close = view.findViewById(R.id.iv_live_speech_result_close);
         tv_live_speech_result_score = view.findViewById(R.id.tv_live_speech_result_score);
         civ_live_speech_result_head = view.findViewById(R.id.civ_live_speech_result_head);
+        v_live_speech_result_line = view.findViewById(R.id.v_live_speech_result_line);
         rv_live_speech_result_other = view.findViewById(R.id.rv_live_speech_result_other);
         tv_live_speech_result_accuracy_text = view.findViewById(R.id.tv_live_speech_result_accuracy_text);
         tv_live_speech_result_fluency_text = view.findViewById(R.id.tv_live_speech_result_fluency_text);
@@ -79,11 +91,16 @@ public class SpeechResultPager extends LiveBasePager {
         tv_live_speech_result_fluency_text.setText("" + speechResultEntity.fluency);
         tv_live_speech_result_mygold.setText("+" + speechResultEntity.gold);
         tv_live_speech_result_myenergy.setText("+" + speechResultEntity.enery);
+        if (tv_live_speech_result_mypraise != null) {
+            tv_live_speech_result_mypraise.setText("" + speechResultEntity.praise);
+        }
         ImageLoader.with(mContext).load(speechResultEntity.headUrl).error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civ_live_speech_result_head);
         ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
         if (speechResultMembers.isEmpty()) {
-            rv_live_speech_result_other.setVisibility(View.INVISIBLE);
+            rv_live_speech_result_other.setVisibility(View.GONE);
+            v_live_speech_result_line.setVisibility(View.GONE);
         } else {
+            v_live_speech_result_line.setVisibility(View.VISIBLE);
             rv_live_speech_result_other.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             RCommonAdapter<SpeechResultMember> adapter = new RCommonAdapter<>(mContext, speechResultMembers);
             adapter.addItemViewDelegate(new SpeechResultOtherItem());
@@ -137,9 +154,9 @@ public class SpeechResultPager extends LiveBasePager {
     }
 
     private void setCloseText(TextView textView, AtomicInteger integer) {
-        SpannableStringBuilder spannable = new SpannableStringBuilder(integer + "s后关闭");
-        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#FFFF7A1D")), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setText(spannable);
+//        SpannableStringBuilder spannable = new SpannableStringBuilder(integer + "s后关闭");
+//        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#FFFF7A1D")), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(integer + "s后关闭");
     }
 
     public interface OnClose {

@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -32,6 +33,7 @@ import org.xutils.xutils.x;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ren.yale.android.cachewebviewlib.utils.JsonWrapper;
 
@@ -64,21 +66,22 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         EnTeamPkBll teamPkBll = new EnTeamPkBll(activity);
         teamPkBll.setRootView(mRootView);
         teamPkBll.setEnTeamPkHttp(new EnTeamPkHttpImp());
-        if (englishPk.hasGroup == 1) {
+//        if (englishPk.hasGroup == 1) {
+        try {
             String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
-            try {
-                JSONObject jsonObject = new JSONObject(string);
-                if (jsonObject.has(getInfo.getId())) {
-                    ResponseEntity responseEntity = new ResponseEntity();
-                    responseEntity.setJsonObject(jsonObject.getJSONObject(getInfo.getId()));
-                    pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
-                    teamPkBll.setPkTeamEntity(pkTeamEntity);
-                }
-            } catch (Exception e) {
-                pkTeamEntity = null;
-                CrashReport.postCatchedException(e);
+            JSONObject jsonObject = new JSONObject(string);
+            if (jsonObject.has(getInfo.getId())) {
+                ResponseEntity responseEntity = new ResponseEntity();
+                responseEntity.setJsonObject(jsonObject.getJSONObject(getInfo.getId()));
+                pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
+                logger.d("onLiveInited:pkTeamEntity=null?" + (pkTeamEntity == null));
+                teamPkBll.setPkTeamEntity(pkTeamEntity);
             }
+        } catch (Exception e) {
+            pkTeamEntity = null;
+            CrashReport.postCatchedException(e);
         }
+//        }
         enTeamPkAction = teamPkBll;
         enTeamPkAction.onLiveInited(getInfo);
         EnTeamPkQuestionShowAction enTeamPkQuestionShowAction = new EnTeamPkQuestionShowAction();
@@ -94,8 +97,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //            Random random = new Random();
 //            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
 //            enTeamPkRankEntity.setApkTeamId(2);
-//            enTeamPkRankEntity.setaCurrentScore(random.nextInt(30));
-//            enTeamPkRankEntity.setaTotalScore(30 + random.nextInt(20));
+//            enTeamPkRankEntity.setMyTeamCurrent(random.nextInt(30));
+//            enTeamPkRankEntity.setMyTeamTotal(50);
 //            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
 //            for (int i = 0; i < 4; i++) {
 //                TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
@@ -103,14 +106,15 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                if (i == 0) {
 //                    teamMemberEntity.isMy = true;
 //                }
+//                teamMemberEntity.headurl = "https://xesfile.xesimg.com/user/h/57375.jpg";
 //                teamMemberEntity.name = "测试" + i;
 //                teamMemberEntity.energy = 10 + i;
 //                memberEntities.add(teamMemberEntity);
 //            }
 //            enTeamPkRankEntity.setBpkTeamId(3);
-//            enTeamPkRankEntity.setbCurrentScore(100 - enTeamPkRankEntity.getaCurrentScore());
-//            enTeamPkRankEntity.setbTotalScore(100 - enTeamPkRankEntity.getaTotalScore());
-//            enTeamPkAction.onRankLead(enTeamPkRankEntity);
+//            enTeamPkRankEntity.setOpTeamCurrent(100 - enTeamPkRankEntity.getMyTeamCurrent());
+//            enTeamPkRankEntity.setOpTeamTotal(52);
+//            enTeamPkAction.onRankLead(enTeamPkRankEntity, TeamPkLeadPager.TEAM_TYPE_2);
 //        }
     }
 
@@ -127,6 +131,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     class EnTeamPkHttpImp implements EnTeamPkHttp {
         int getSelfTeamInfoTimes = 1;
+        int getEnglishPkGroupTimes = 1;
 
         private void saveTeam(ResponseEntity responseEntity) {
             String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
@@ -235,11 +240,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
 
         @Override
-        public void getEnglishPkRank(final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
-            getHttpManager().getEnglishPkRank(new HttpCallBack(false) {
+        public void getEnglishPkGroup(final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
+            getHttpManager().getEnglishPkGroup(new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) {
-                    logger.d("getEnglishPkRank:onPmSuccess" + responseEntity.getJsonObject());
+                    logger.d("getEnglishPkGroup:onPmSuccess" + responseEntity.getJsonObject());
                     pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
                     abstractBusinessDataCallBack.onDataSucess(pkTeamEntity);
                     if (pkTeamEntity != null) {
@@ -249,18 +254,27 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
-                    logger.e("getEnglishPkRank:onPmError=" + responseEntity.getErrorMsg());
+                    logger.e("getEnglishPkGroup:onPmError=" + responseEntity.getErrorMsg());
                     abstractBusinessDataCallBack.onDataFail(1, responseEntity.getErrorMsg());
                 }
 
                 @Override
                 public void onPmFailure(Throwable error, String msg) {
                     if (error instanceof SocketTimeoutException) {
-                        logger.e("getEnglishPkRank:onPmFailure(Timeout)msg=" + msg);
+                        logger.e("getEnglishPkGroup:onPmFailure(Timeout)msg=" + msg);
                     } else {
-                        logger.e("getEnglishPkRank:onPmFailure" + msg, error);
+                        logger.e("getEnglishPkGroup:onPmFailure" + msg, error);
                     }
-                    abstractBusinessDataCallBack.onDataFail(0, msg);
+                    if (getEnglishPkGroupTimes > 10) {
+                        abstractBusinessDataCallBack.onDataFail(0, msg);
+                        return;
+                    }
+                    postDelayedIfNotFinish(new Runnable() {
+                        @Override
+                        public void run() {
+                            getEnglishPkGroup(abstractBusinessDataCallBack);
+                        }
+                    }, (getEnglishPkGroupTimes++) * 1000);
                 }
             });
         }
@@ -281,23 +295,41 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             case XESCODE.XCR_ROOM_TEAMPK_RESULT:
                 logger.d("onNotice:XCR_ROOM_TEAMPK_RESULT:pkTeamEntity=" + pkTeamEntity);
                 if (pkTeamEntity != null) {
-                    String teamId = "" + pkTeamEntity.getMyTeam();
-                    getHttpManager().updataEnglishPkByTestId(teamId, "", new HttpCallBack() {
+                    final String teamId = "" + pkTeamEntity.getMyTeam();
+                    getHttpManager().getEnglishPkTotalRank(teamId, "", new HttpCallBack(false) {
+                        AtomicInteger tryCount = new AtomicInteger(5);
+                        HttpCallBack callBack = this;
+
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) {
-                            logger.d("updataEnglishPkByTestId:onPmSuccess" + responseEntity.getJsonObject());
+                            logger.d("getEnglishPkTotalRank:onPmSuccess=" + responseEntity.getJsonObject());
+                            EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity);
+                            if (pkTeamEntity != null && enTeamPkRankEntity != null) {
+                                enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
+                                if (enTeamPkAction != null) {
+                                    enTeamPkAction.onRankLead(enTeamPkRankEntity, TeamPkLeadPager.TEAM_TYPE_2);
+                                }
+                            }
                         }
 
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
-                            logger.e("updataEnglishPkByTestId:onPmError" + responseEntity.getErrorMsg());
+                            logger.e("getEnglishPkTotalRank:onPmError=" + responseEntity.getErrorMsg());
                         }
 
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
-                            logger.e("updataEnglishPkByTestId:onPmFailure" + msg, error);
+                            logger.e("getEnglishPkTotalRank:onPmFailure=" + msg, error);
+                            if (tryCount.decrementAndGet() > 0) {
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        getHttpManager().getEnglishPkTotalRank(teamId, "", callBack);
+                                    }
+                                }, 1000);
+                            }
                         }
                     });
                 }
@@ -315,21 +347,25 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void onCourseEnd() {
-        VideoQuestionLiveEntity old = videoQuestionLiveEntity;
-        mLogtf.d("onCourseEnd:isShow:old=null?" + (old == null) + ",pkTeamEntity=null?" + (pkTeamEntity == null));
+        final VideoQuestionLiveEntity old = videoQuestionLiveEntity;
         if (old != null) {
             videoQuestionLiveEntity = null;
             if (pkTeamEntity != null) {
-                String teamId = "" + pkTeamEntity.getMyTeam();
-                getHttpManager().updataEnglishPkByTestId(teamId, old.id, new HttpCallBack() {
+                final String teamId = "" + pkTeamEntity.getMyTeam();
+                final String testId = ("" + old.id).replace(",", "-");
+                mLogtf.d("onCourseEnd:isShow:old=" + old.id + ",testId=" + testId + ",pkTeamEntity=" + teamId);
+                getHttpManager().updataEnglishPkByTestId(teamId, testId, new HttpCallBack(false) {
+                    AtomicInteger tryCount = new AtomicInteger(5);
+                    HttpCallBack callBack = this;
+
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
-                        logger.d("onCourseEnd:onPmSuccess" + responseEntity.getJsonObject());
+                        logger.d("onCourseEnd:onPmSuccess=" + responseEntity.getJsonObject());
                         EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity);
                         if (pkTeamEntity != null && enTeamPkRankEntity != null) {
                             enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
                             if (enTeamPkAction != null) {
-                                enTeamPkAction.onRankLead(enTeamPkRankEntity);
+                                enTeamPkAction.onRankLead(enTeamPkRankEntity, TeamPkLeadPager.TEAM_TYPE_1);
                             }
                         }
                     }
@@ -337,16 +373,32 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
-                        logger.e("onCourseEnd:onPmError" + responseEntity.getErrorMsg());
+                        logger.e("onCourseEnd:onPmError=" + responseEntity.getErrorMsg());
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
-                        logger.e("onCourseEnd:onPmFailure" + msg, error);
+                        if (error instanceof SocketTimeoutException) {
+                            logger.e("onCourseEnd:onPmFailure(Timeout)msg=" + msg + ",try=" + tryCount.get());
+                        } else {
+                            logger.e("onCourseEnd:onPmFailure=" + msg + ",try=" + tryCount.get(), error);
+                        }
+                        if (tryCount.decrementAndGet() > 0) {
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getHttpManager().updataEnglishPkByTestId(teamId, testId, callBack);
+                                }
+                            }, 1000);
+                        }
                     }
                 });
+            } else {
+                mLogtf.d("onCourseEnd:isShow:old=null?" + old.id + ",pkTeamEntity=null");
             }
+        } else {
+            mLogtf.d("onCourseEnd:isShow:old=null,pkTeamEntity=null?" + (pkTeamEntity == null));
         }
     }
 
@@ -357,7 +409,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             videoQuestionLiveEntity = null;
             if (pkTeamEntity != null) {
                 String teamId = "" + pkTeamEntity.getMyTeam();
-                getHttpManager().updataEnglishPkByTestId(teamId, old.id, new HttpCallBack() {
+                getHttpManager().updataEnglishPkByTestId(teamId, old.id, new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         logger.d("onQuestionEnd:onPmSuccess" + responseEntity.getJsonObject());
@@ -365,7 +417,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         if (pkTeamEntity != null && enTeamPkRankEntity != null) {
                             enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
                             if (enTeamPkAction != null) {
-                                enTeamPkAction.onRankLead(enTeamPkRankEntity);
+                                enTeamPkAction.onRankLead(enTeamPkRankEntity, TeamPkLeadPager.TEAM_TYPE_1);
                             }
                         }
                     }

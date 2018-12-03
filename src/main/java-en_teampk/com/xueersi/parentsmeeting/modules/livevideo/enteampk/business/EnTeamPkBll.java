@@ -70,7 +70,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
             });
         } else {
             if (pkTeamEntity == null) {
-                enTeamPkHttp.getEnglishPkRank(new AbstractBusinessDataCallBack() {
+                enTeamPkHttp.getEnglishPkGroup(new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objects) {
                         pkTeamEntity = (PkTeamEntity) objects[0];
@@ -82,7 +82,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     }
 
     private void addTop() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_join, rootView, false);
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_join, rootView, false);
         TextView tv_livevideo_en_teampk_top_name = view.findViewById(R.id.tv_livevideo_en_teampk_top_name);
         ImageView iv_livevideo_en_teampk_top_img = view.findViewById(R.id.iv_livevideo_en_teampk_top_img);
         if (pkTeamEntity != null) {
@@ -95,6 +95,12 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
             }
         }
         rootView.addView(view);
+        rootView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rootView.removeView(view);
+            }
+        }, 2000);
     }
 
     @Override
@@ -191,23 +197,25 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     }
 
     @Override
-    public void onRankLead(final EnTeamPkRankEntity enTeamPkRankEntity) {
+    public void onRankLead(final EnTeamPkRankEntity enTeamPkRankEntity, final int type) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                teamPkLeadPager = new TeamPkLeadPager(mContext, enTeamPkRankEntity, pattern);
+                teamPkLeadPager = new TeamPkLeadPager(mContext, enTeamPkRankEntity, type, pattern);
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 if (pattern != 2) {
                     layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
                 }
                 rootView.addView(teamPkLeadPager.getRootView(), layoutParams);
+                final TeamPkLeadPager finalTeamPkLeadPager = teamPkLeadPager;
+                teamPkLeadPager = null;
+                int delay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 10000 : 5000;
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        rootView.removeView(teamPkLeadPager.getRootView());
-                        teamPkLeadPager = null;
+                        rootView.removeView(finalTeamPkLeadPager.getRootView());
                     }
-                }, 5000);
+                }, delay);
             }
         });
     }

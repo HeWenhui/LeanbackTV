@@ -469,7 +469,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         @Override
         public void run() {
             logger.e("======>initArtsExtLiveInfoTask run:");
-            mHttpManager.getArtsExtLiveInfo(LiveBll2.this.mLiveId, LiveBll2.this.mStuCouId, new HttpCallBack() {
+            mHttpManager.getArtsExtLiveInfo(LiveBll2.this.mLiveId, LiveBll2.this.mStuCouId, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
@@ -1094,4 +1094,8 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
     }
 
+    /** 测试notice */
+    public void testNotice(String notice) {
+        mIRCcallback.onNotice("", "", "", "", notice);
+    }
 }

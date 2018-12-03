@@ -226,6 +226,6 @@ public interface XESCODE {
     /** 文科单词听写 */
     int ARTS_WORD_DICTATION = 1003;
 
-    int XCR_ROOM_TEAMPK_OPEN = 1004;//  ("1004")  //通知战队pk分组
-    int XCR_ROOM_TEAMPK_RESULT = 1005;//     ("1005")  //发布战队PK结果
+    int XCR_ROOM_TEAMPK_OPEN = 1050;//  ("1004")  //通知战队pk分组
+    int XCR_ROOM_TEAMPK_RESULT = 1051;//     ("1005")  //发布战队PK结果
 }

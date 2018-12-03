@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -755,7 +754,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     student.setNickname(stu.getString("nickname"));
                     student.setEn_name(stu.getString("en_name"));
                     student.createShowName();
-                    student.setRight(stu.optInt("isRight") == 1);
+                    student.setRight(stu.optInt("isRight") == 1 || stu.optInt("isRight") == 2);
                     String avatar_path = stu.getString("avatar_path");
                     student.setAvatar_path(avatar_path);
                     entity.getStudents().add(student);
@@ -1178,10 +1177,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             JSONObject goldObj = jsonObject.getJSONObject("gold");
             starAndGoldEntity.setGoldCount(goldObj.optInt("goldAmount", 0));
             StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
-            JSONObject pkEnergyObj = goldObj.optJSONObject("pkEnergy");
-            pkEnergy.me = pkEnergyObj.optInt("me");
-            pkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
-            pkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
+            JSONObject pkEnergyObj = jsonObject.optJSONObject("pkEnergy");
+            if (pkEnergyObj != null) {
+                pkEnergy.me = pkEnergyObj.optInt("me");
+                pkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
+                pkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
+            }
         } catch (JSONException e) {
             MobAgent.httpResponseParserError(TAG, "parseStuGoldCount", e.getMessage());
             e.printStackTrace();
@@ -1858,19 +1859,20 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         try {
             EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-            enTeamPkRankEntity.setaTotalScore(jsonObject.optInt("aTotalScore"));
-            enTeamPkRankEntity.setaCurrentScore(jsonObject.optInt("aCurrentScore"));
-            enTeamPkRankEntity.setApkTeamId(jsonObject.optInt("apkTeamId"));
+            enTeamPkRankEntity.setMyTeamTotal(jsonObject.optInt("myTeamTotal"));
+            enTeamPkRankEntity.setMyTeamCurrent(jsonObject.optInt("myTeamCurrent"));
+            enTeamPkRankEntity.setApkTeamId(jsonObject.optInt("myPkHeadTeamId"));
 
-            enTeamPkRankEntity.setbTotalScore(jsonObject.optInt("bTotalScore"));
-            enTeamPkRankEntity.setbCurrentScore(jsonObject.optInt("bCurrentScore"));
-            enTeamPkRankEntity.setBpkTeamId(jsonObject.optInt("bpkTeamId"));
+            enTeamPkRankEntity.setOpTeamTotal(jsonObject.optInt("opTeamTotal"));
+            enTeamPkRankEntity.setOpTeamCurrent(jsonObject.optInt("opTeamCurrent"));
+            enTeamPkRankEntity.setBpkTeamId(jsonObject.optInt("opPkHeadTeamId"));
             ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
             JSONArray jsonArray = jsonObject.optJSONArray("top3");
             if (jsonArray != null) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject top3Obj = jsonArray.getJSONObject(i);
                     TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                    teamMemberEntity.id = top3Obj.optInt("stuId");
                     teamMemberEntity.name = top3Obj.optString("name");
                     teamMemberEntity.headurl = top3Obj.optString("head");
                     teamMemberEntity.energy = top3Obj.optInt("energy");

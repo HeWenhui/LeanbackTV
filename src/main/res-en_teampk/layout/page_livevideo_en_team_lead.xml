@@ -4,20 +4,17 @@
 
     <ImageView
         android:id="@id/iv_livevideo_en_teampk_lead_mid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
-        android:src="@drawable/bg_livevideo_en_teampk_lead_mid" />
+        android:layout_width="80dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="18dp" />
 
     <ImageView
         android:id="@id/iv_livevideo_en_teampk_mine"
         android:layout_width="123dp"
         android:layout_height="135dp"
         android:layout_marginTop="49dp"
-        android:layout_marginEnd="17dp"
         android:layout_marginRight="17dp"
-        android:layout_toStartOf="@+id/iv_livevideo_en_teampk_vs"
+        android:layout_toStartOf="@id/iv_livevideo_en_teampk_vs"
         android:layout_toLeftOf="@id/iv_livevideo_en_teampk_vs"
         android:src="@drawable/livevideo_enteampk_benchangzhanduifenzu_01sweetheartkate_pic_normal" />
 
@@ -71,7 +68,7 @@
             android:src="@drawable/zhanduipk_kezhongdati_huomiao_pic_nor" />
 
         <TextView
-            android:id="@id/iv_livevideo_en_teampk_lead_fire_add_left"
+            android:id="@id/tv_livevideo_en_teampk_lead_fire_add_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"

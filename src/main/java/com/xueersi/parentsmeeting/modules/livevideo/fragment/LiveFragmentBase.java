@@ -563,4 +563,11 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             }
         });
     }
+
+    /** 测试notice */
+    public void testNotice(String notice) {
+        if (mLiveBll != null) {
+            mLiveBll.testNotice(notice);
+        }
+    }
 }
