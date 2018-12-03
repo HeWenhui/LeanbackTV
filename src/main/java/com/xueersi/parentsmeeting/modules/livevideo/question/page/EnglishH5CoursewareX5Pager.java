@@ -201,12 +201,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             String command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
             wvSubjectWeb.loadUrl(command);
         }
-        StableLogHashMap logHashMap = new StableLogHashMap("coursewareDidLoad");
-        logHashMap.put("coursewareid", id);
-        logHashMap.put("coursewaretype", courseware_type);
-        logHashMap.put("status", "success");
-        logHashMap.put("loadurl", url);
-        umsAgentDebugSys(eventId, logHashMap.getData());
         if (englishH5Entity.getNewEnglishH5()) {
             StableLogHashMap newlogHashMap = new StableLogHashMap("loadPlatformtest");
             newlogHashMap.put("os", "Android");
@@ -216,6 +210,16 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             newlogHashMap.put("loadurl", mLoadUrls);
             newlogHashMap.put("nonce", newlogHashMap.creatNonce());
             umsAgentDebugPv("live_platformtest", newlogHashMap.getData());
+        } else {
+            if (failingUrl == null) {
+                StableLogHashMap logHashMap = new StableLogHashMap("coursewareDidLoad");
+                logHashMap.put("testid", id);
+                logHashMap.put("coursewaretype", courseware_type);
+                logHashMap.put("status", "success");
+                logHashMap.put("loadurl", url);
+                logHashMap.put("isplayback", isPlayBack ? "1" : "0");
+                umsAgentDebugInter(eventId, logHashMap.getData());
+            }
         }
     }
 
@@ -223,12 +227,13 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     protected void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareDidLoad");
-        logHashMap.put("coursewareid", id);
+        logHashMap.put("testid", id);
         logHashMap.put("coursewaretype", courseware_type);
         logHashMap.put("status", "fail");
         logHashMap.put("loadurl", url);
+        logHashMap.put("isplayback", isPlayBack ? "1" : "0");
         logHashMap.put("msg", description);
-        umsAgentDebugSys(eventId, logHashMap.getData());
+        umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     @Override

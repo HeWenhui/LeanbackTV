@@ -58,7 +58,7 @@ import ren.yale.android.cachewebviewlib.utils.MD5Utils;
  * 普通互动题，h5显示页面
  */
 public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWebInter {
-    private String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
+    private String questionEventId = LiveVideoConfig.LIVE_H5_TEST;
     private Button btSubjectClose;
     private Button btSubjectCalljs;
     private WebView wvSubjectWeb;
