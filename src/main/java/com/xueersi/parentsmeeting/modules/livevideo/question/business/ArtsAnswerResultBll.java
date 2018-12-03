@@ -193,7 +193,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             @Override
             public void run() {
                 if(mGetInfo.getPattern() == 2){
-                    showH5Result();
+                    showH5Result(mAnswerReulst);
                     close = false;
                 }else{
                     closeRemindUI();
@@ -203,68 +203,134 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             }
         });
     }
-    private void showH5Result() {
-        String path = "live_stand_voice_my_right.json";
-        LottieComposition.Factory.fromAssetFileName(mContext, path, new OnCompositionLoadedListener() {
-            @Override
-            public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
-                if (lottieComposition == null) {
+    private void showH5Result(AnswerResultEntity detail) {
+        if(detail.getIsRight() == 1 || detail.getIsRight() == 2){
+            String path = "live_stand_voice_my_right.json";
+            LottieComposition.Factory.fromAssetFileName(mContext, path, new OnCompositionLoadedListener() {
+                @Override
+                public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
+                    if (lottieComposition == null) {
 //                    disMissAnswerResult();
-                    return;
-                }
-                disMissAnswerResult();
-                mRlResult = (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_voice_result, null);
-                LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
-                lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_right");
-                lottieAnimationView.setComposition(lottieComposition);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-                mRlResult.addView(lottieAnimationView, lp);
+                        return;
+                    }
+                    disMissAnswerResult();
+                    mRlResult = (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_voice_result, null);
+                    LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
+                    lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_right");
+                    lottieAnimationView.setComposition(lottieComposition);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    mRlResult.addView(lottieAnimationView, lp);
 //                    final ViewGroup group = (ViewGroup) baseVoiceAnswerPager.getRootView();
 //                    group.addView(rlResult);
-                rlAnswerResultLayout.addView(mRlResult);
-                lottieAnimationView.playAnimation();
-                setRightGold(mContext, lottieAnimationView, mAnswerReulst.getGold());
-                mLiveSoundPool = LiveSoundPool.createSoundPool();
-                final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(mLiveSoundPool);
-                mRlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        close = true;
-                        StandLiveMethod.onClickVoice(mLiveSoundPool);
-                        rlAnswerResultLayout.removeView(mRlResult);
-                    }
-                });
-                mRlResult.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-                    @Override
-                    public void onViewAttachedToWindow(View v) {
+                    rlAnswerResultLayout.addView(mRlResult);
+                    lottieAnimationView.playAnimation();
+                    setRightGold(mContext, lottieAnimationView, mAnswerReulst.getGold());
+                    mLiveSoundPool = LiveSoundPool.createSoundPool();
+                    final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(mLiveSoundPool);
+                    mRlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            close = true;
+                            StandLiveMethod.onClickVoice(mLiveSoundPool);
+                            rlAnswerResultLayout.removeView(mRlResult);
+                        }
+                    });
+                    mRlResult.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                        @Override
+                        public void onViewAttachedToWindow(View v) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onViewDetachedFromWindow(View v) {
-                        logger.d( "onViewDetachedFromWindow right");
-                        mLiveSoundPool.stop(task);
-                        rlAnswerResultLayout.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(!close){
-                                    StandLiveMethod.onClickVoice(mLiveSoundPool);
-                                    rlAnswerResultLayout.removeView(mRlResult);
+                        @Override
+                        public void onViewDetachedFromWindow(View v) {
+                            logger.d( "onViewDetachedFromWindow right");
+                            mLiveSoundPool.stop(task);
+                            rlAnswerResultLayout.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(!close){
+                                        StandLiveMethod.onClickVoice(mLiveSoundPool);
+                                        rlAnswerResultLayout.removeView(mRlResult);
+                                    }
                                 }
-                            }
-                        });
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mLiveSoundPool.release();
-                            }
-                        }, 500);
+                            });
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mLiveSoundPool.release();
+                                }
+                            }, 500);
+                        }
+                    });
+                }
+            });
+        }else{
+            String path = "live_stand_voice_my_wrong.json";
+            LottieComposition.Factory.fromAssetFileName(mContext, path, new OnCompositionLoadedListener() {
+                @Override
+                public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
+                    if (lottieComposition == null) {
+//                    disMissAnswerResult();
+                        return;
                     }
-                });
-            }
-        });
+                    disMissAnswerResult();
+                    mRlResult = (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_voice_result_wrong, null);
+                    LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
+                    lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_wrong");
+                    lottieAnimationView.setComposition(lottieComposition);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    mRlResult.addView(lottieAnimationView, lp);
+//                    final ViewGroup group = (ViewGroup) baseVoiceAnswerPager.getRootView();
+//                    group.addView(rlResult);
+                    rlAnswerResultLayout.addView(mRlResult);
+                    lottieAnimationView.playAnimation();
+//                    setRightGold(mContext, lottieAnimationView, mAnswerReulst.getGold());
+                    setWrongTip(mContext, lottieAnimationView, mAnswerReulst.getAnswerList().get(0).getRightAnswers().get(0) + "");
+                    mLiveSoundPool = LiveSoundPool.createSoundPool();
+                    final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(mLiveSoundPool);
+                    mRlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            close = true;
+                            StandLiveMethod.onClickVoice(mLiveSoundPool);
+                            rlAnswerResultLayout.removeView(mRlResult);
+                        }
+                    });
+                    mRlResult.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                        @Override
+                        public void onViewAttachedToWindow(View v) {
+
+                        }
+
+                        @Override
+                        public void onViewDetachedFromWindow(View v) {
+                            logger.d( "onViewDetachedFromWindow error");
+                            mLiveSoundPool.stop(task);
+                            rlAnswerResultLayout.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(!close){
+                                        StandLiveMethod.onClickVoice(mLiveSoundPool);
+                                        rlAnswerResultLayout.removeView(mRlResult);
+                                    }
+                                }
+                            });
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mLiveSoundPool.release();
+                                }
+                            }, 500);
+                        }
+                    });
+                }
+            });
+        }
+
     }
 
     private void closeRemindUI() {
@@ -973,6 +1039,32 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         lottieAnimationView.updateBitmap("image_22", img_7Bitmap);
     }
 
+    private void setWrongTip(Context context, LottieAnimationView lottieAnimationView, String standardAnswer) {
+        String num = "正确答案: " + standardAnswer;
+        AssetManager manager = context.getAssets();
+        Bitmap img_7Bitmap;
+        try {
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/my_wrong/img_5.png"));
+//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
+            Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(creatBitmap);
+            canvas.drawBitmap(img_7Bitmap, 0, 0, null);
+            Paint paint = new Paint();
+            paint.setTextSize(48);
+            paint.setColor(0xff5586A3);
+            Typeface fontFace = FontCache.getTypeface(context, "fangzhengcuyuan.ttf");
+            paint.setTypeface(fontFace);
+            float width = paint.measureText(num);
+            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
+            img_7Bitmap.recycle();
+            img_7Bitmap = creatBitmap;
+        } catch (IOException e) {
+            logger.e( "setRightGold", e);
+            return;
+        }
+        lottieAnimationView.updateBitmap("image_5", img_7Bitmap);
+    }
+
     /**
      * 回答问题结果提示框延迟三秒消失
      */
@@ -980,7 +1072,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                rlAnswerResultLayout.removeView(mRlResult);
+                if(!close){
+                    rlAnswerResultLayout.removeView(mRlResult);
+                }
             }
         }, 5000);
     }
