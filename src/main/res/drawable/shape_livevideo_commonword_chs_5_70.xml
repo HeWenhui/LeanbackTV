@@ -6,5 +6,5 @@
         android:bottomRightRadius="5dp"
         android:topLeftRadius="5dp"
         android:topRightRadius="5dp" /><!-- 设置圆角半径 -->
-    <solid android:color="@color/transparent_70" />
+    <solid android:color="@color/COLOR_B2000000" />
 </shape>
