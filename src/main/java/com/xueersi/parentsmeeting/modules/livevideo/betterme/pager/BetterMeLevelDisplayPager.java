@@ -4,14 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.item.BetterMeLevelEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -178,17 +177,19 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
             this.mPageCount = pageCount;
 
             mImgList = new ArrayList<>();
-            img_select = R.drawable.ic_check_box_checked_red;
-            img_unSelect = R.drawable.ic_check_box_unchecked;
-            final int imgSize = 25;
+            img_select = R.drawable.app_xiaomubiao_shellwindow_yema_img_yes;
+            img_unSelect = R.drawable.app_xiaomubiao_shellwindow_yema_img_no;
+            final int imgSize = SizeUtils.Dp2Px(mContext, 10);
 
             for (int i = 0; i < mPageCount; i++) {
                 ImageView imageView = new ImageView(context);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 //为小圆点左右添加间距
-                params.leftMargin = 10;
-                params.rightMargin = 10;
+                params.leftMargin = SizeUtils.Dp2Px(mContext, 4);
+                ;
+                params.rightMargin = SizeUtils.Dp2Px(mContext, 4);
+                ;
                 //给小圆点一个默认大小
                 params.height = imgSize;
                 params.width = imgSize;
@@ -204,7 +205,8 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
         }
 
         @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        }
 
         @Override
         public void onPageSelected(int position) {
@@ -219,6 +221,7 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
         }
 
         @Override
-        public void onPageScrollStateChanged(int state) {}
+        public void onPageScrollStateChanged(int state) {
+        }
     }
 }
