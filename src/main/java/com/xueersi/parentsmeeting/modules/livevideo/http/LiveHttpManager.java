@@ -1492,16 +1492,19 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param tutorEvaluOption
      * @param requestCallBack
      */
-    public void saveArtsEvaluationTeacher(String liveId, String stuCouId, String teacherEvaluLevel, String
-            teacherEvaluOption, String tutorEvaluLevel, String
-            tutorEvaluOption, HttpCallBack requestCallBack) {
+    public void saveArtsEvaluationTeacher(String liveId, String courseId,String teacherId, String teacherScore, String
+            teacherOption,String counserorId, String counselorScore, String
+                                                  counselorOption,String classId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
-        params.addBodyParam("stuCouId", stuCouId);
-        params.addBodyParam("teacherEvaluLevel", teacherEvaluLevel);
-        params.addBodyParam("teacherEvaluOption", teacherEvaluOption);
-        params.addBodyParam("tutorEvaluLevel", tutorEvaluLevel);
-        params.addBodyParam("tutorEvaluOption", tutorEvaluOption);
+        params.addBodyParam("courseId", courseId);
+        params.addBodyParam("teacherId",teacherId);
+        params.addBodyParam("teacherScore", teacherScore);
+        params.addBodyParam("teacherOption", teacherOption);
+        params.addBodyParam("counserorId",counserorId);
+        params.addBodyParam("counselorScore", counselorScore);
+        params.addBodyParam("counselorOption", counselorOption);
+        params.addBodyParam("classId",classId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_ARTS_EVALUATE_TEACHER, params, requestCallBack);
     }

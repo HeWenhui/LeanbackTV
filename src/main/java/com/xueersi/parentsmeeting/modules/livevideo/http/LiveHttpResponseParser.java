@@ -1754,8 +1754,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         ArtsExtLiveInfo info = new ArtsExtLiveInfo();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
-        info.setPop(data.optInt("isPop", 0) == 1 ? true : false);
-        info.setPoptime(data.optLong("poptime"));
         return info;
     }
 
