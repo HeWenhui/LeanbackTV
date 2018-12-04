@@ -61,10 +61,8 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     protected LiveVideoFragmentBase getFragment() {
         int pattern = getIntent().getIntExtra("pattern", 0);
         if (pattern == 2) {
-            LiveVideoConfig.isStandLive = true;
             return new StandLiveVideoFragment();
         }
-        LiveVideoConfig.isStandLive = false;
         return new LiveVideoFragment();
     }
 
