@@ -114,22 +114,22 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         ProxUtil.getProxUtil().put(context, WebViewRequest.class, webViewRequest);
     }
 
-    public EnglishH5Cache(Context context, String liveId) {
-        this.context = context;
-        Activity activity = (Activity) context;
-        liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
-        bottomContent = (RelativeLayout) activity.findViewById(R.id.rl_course_video_live_question_content);
-        this.liveId = liveId;
-        cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
-        if (cacheFile == null) {
-            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
-        }
-//        cacheFile = new File(context.getCacheDir(), "cache/webviewCache");
-        if (!cacheFile.exists()) {
-            cacheFile.mkdirs();
-        }
-        ProxUtil.getProxUtil().put(context, WebViewRequest.class, webViewRequest);
-    }
+//    public EnglishH5Cache(Context context, String liveId) {
+//        this.context = context;
+//        Activity activity = (Activity) context;
+//        liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
+//        bottomContent = (RelativeLayout) activity.findViewById(R.id.rl_course_video_live_question_content);
+//        this.liveId = liveId;
+//        cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
+//        if (cacheFile == null) {
+//            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
+//        }
+////        cacheFile = new File(context.getCacheDir(), "cache/webviewCache");
+//        if (!cacheFile.exists()) {
+//            cacheFile.mkdirs();
+//        }
+//        ProxUtil.getProxUtil().put(context, WebViewRequest.class, webViewRequest);
+//    }
 
     private WebViewRequest webViewRequest = new WebViewRequest() {
         @Override
@@ -295,7 +295,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         // 一次多发的接口调用
         if (LiveVideoConfig.isScience) {
             ScienceMulPreDownLoad(todayLiveCacheDir);
-        } else if (mGetInfo.getIsArts() == 2) {
+        } else if (mGetInfo != null && mGetInfo.getIsArts() == 2) {
             //语文一题多发
             chineseMulPreDownLoad(todayLiveCacheDir);
         } else {
