@@ -276,12 +276,22 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         liveGetInfo.setStuId(userInfoEntity.getStuId());
         liveGetInfo.setStuCouId(stuCourId);
         if (liveVideoSAConfig != null) {
-            liveGetInfo.setSubjectiveTestAnswerResult(liveVideoSAConfig.inner.subjectiveTestAnswerResult);
+            liveGetInfo.setSubjectiveTestAnswerResult(
+                    (isArts == 2) ?
+                            liveVideoSAConfig.inner.chsSubjectiveTestAnswerResult :
+                            liveVideoSAConfig.inner.subjectiveTestAnswerResult);
         }
         liveGetInfo.setTestPaperUrl("https://live.xueersi.com/Live/getMultiTestPaper");
         liveGetInfo.setIs_show_ranks("0");
         liveGetInfo.setLiveType(mLiveType);
         liveGetInfo.setIsArts(isArts);
+        LiveGetInfo.MainTeacherInfo mainTeacherInfo = liveGetInfo.getMainTeacherInfo();
+        mainTeacherInfo.setTeacherId(mVideoEntity.getMainTeacherId());
+        mainTeacherInfo.setTeacherName(mVideoEntity.getMainTeacherName());
+        mainTeacherInfo.setTeacherImg(mVideoEntity.getMainTeacherImg());
+        liveGetInfo.setTeacherId(mVideoEntity.getTutorTeacherId());
+        liveGetInfo.setTeacherName(mVideoEntity.getTutorTeacherName());
+        liveGetInfo.setTeacherIMG(mVideoEntity.getTutorTeacherImg());
         MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
         if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
             liveGetInfo.setEn_name(mMyInfo.getEnglishName());
@@ -586,6 +596,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     private void showQuestion(VideoQuestionEntity oldQuestionEntity, ShowQuestion showQuestion) {
         LiveBackBaseBll liveBackBaseBll = array.get(mQuestionEntity.getvCategory());
+        logger.i("showQuestion :"+liveBackBaseBll);
         if (liveBackBaseBll != null) {
             liveBackBaseBll.showQuestion(oldQuestionEntity, mQuestionEntity, showQuestion);
         } else {

@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -15,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.understand.page.SmallChineseUnderstandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.page.SmallEnglishUnderstandPager;
 
 import java.util.HashMap;
@@ -27,6 +30,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  */
 
 public class UnderstandBll implements UnderstandAction, Handler.Callback {
+    private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private String TAG = "UnderstandBll";
     private String understandEventId = LiveVideoConfig.LIVE_DOYOUSEE;
     private Activity activity;
@@ -46,6 +50,10 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
     public final int CANCEL_REDPAG = 1;
 
     SmallEnglishUnderstandPager smallEnglishUnderstandPager;
+    /**
+     * 语文懂了么
+     */
+    SmallChineseUnderstandPager smallChineseUnderstandPager;
 
     public UnderstandBll(Activity activity, LiveAndBackDebug liveAndBackDebug) {
         this.activity = activity;
@@ -98,6 +106,7 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                 RelativeLayout.LayoutParams params = null;
                 //如果不是小英
                 if (!isSmallEnglish) {
+                    logger.i("进入到非小英");
                     if (LiveVideoConfig.isPrimary) {
                         understandView = activity.getLayoutInflater().inflate(
                                 R.layout.dialog_livevideo_primary_understand, rlQuestionContent, false);
@@ -108,17 +117,41 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                                 removeView(rlQuestionContent, understandView);
                             }
                         });
+                        understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
+                                (listener);
+                        understandView.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
+                    } else if (LiveVideoConfig.isSmallChinese) {
+                        logger.i("显示语文三分屏");
+                        smallChineseUnderstandPager = new SmallChineseUnderstandPager(activity);
+                        smallChineseUnderstandPager.setListener(new SmallChineseUnderstandPager.UnderStandListener() {
+                            /**关闭当前监听器*/
+                            @Override
+                            public void close() {
+                                removeView(rlQuestionContent, understandView);
+                            }
+
+                            /**是否懂了*/
+                            @Override
+                            public void underStand(boolean underStand) {
+                                smallChineseUnderstandOnclick(underStand);
+                            }
+                        });
+                        understandView = smallChineseUnderstandPager.getRootView();
+
                     } else {
                         understandView = activity.getLayoutInflater().inflate(R.layout.layout_livevideo_understand,
                                 rlQuestionContent,
                                 false);
                         ((TextView) understandView.findViewById(R.id.tv_livevideo_under_user)).setText(mGetInfo
-                                .getStuName
-                                        () + " 你好");
+                                .getStuName() + " 你好");
+                        understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
+                                (listener);
+                        understandView.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
                     }
-                    understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
-                            (listener);
-                    understandView.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
+
+//                    understandView.findViewById(R.id.tv_livevideo_understand_donotunderstand).setOnClickListener
+//                            (listener);
+//                    understandView.findViewById(R.id.tv_livevideo_understand_understand).setOnClickListener(listener);
 //                    ((TextView) understandView.findViewById(R.id.tv_livevideo_under_user)).setText(mGetInfo.getStuName
 //                            () + " 你好");
                     params = (RelativeLayout.LayoutParams) understandView.getLayoutParams();
@@ -216,7 +249,34 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
         }
     };
 
+    /**
+     * 小学英语三分屏上传日志
+     *
+     * @param isUnderstand
+     */
     private void smallEnglishUnderstandOnclick(boolean isUnderstand) {
+        mLogtf.d("understand:isUnderstand=" + isUnderstand);
+        String nonce = "" + StableLogHashMap.creatNonce();
+        understandHttp.understand(isUnderstand, nonce);
+        mIsShowUnderstand = false;
+        Map<String, String> mData = new HashMap<>();
+        mData.put("logtype", "sendUnderstand");
+        mData.put("answerType", isUnderstand ? "1" : "0");
+        mData.put("expect", "1");
+        mData.put("nonce", "" + nonce);
+        mData.put("sno", "3");
+        mData.put("stable", "1");
+        liveAndBackDebug.umsAgentDebugInter(understandEventId, mData);
+
+        removeView(rlQuestionContent, understandView);
+    }
+
+    /**
+     * 小学语文三分屏懂了吗进行http请求，上传日志，同小英
+     *
+     * @param isUnderstand
+     */
+    private void smallChineseUnderstandOnclick(boolean isUnderstand) {
         mLogtf.d("understand:isUnderstand=" + isUnderstand);
         String nonce = "" + StableLogHashMap.creatNonce();
         understandHttp.understand(isUnderstand, nonce);

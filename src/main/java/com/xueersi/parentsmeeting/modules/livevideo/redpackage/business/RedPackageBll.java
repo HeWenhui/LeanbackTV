@@ -19,35 +19,43 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.lib.framework.utils.EventBusUtil;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.SmallChineseRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.pager.SmallEnglishRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author linyuqiang
- *         Created by linyuqiang on 2016/9/23.
+ * Created by linyuqiang on 2016/9/23.
  */
 public class RedPackageBll implements RedPackageAction, Handler.Callback {
+    private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private static final String TAG = "RedPackageBll";
     private WeakHandler mVPlayVideoControlHandler = new WeakHandler(this);
     private LogToFile mLogtf;
     private Activity activity;
     private ReceiveGold receiveGold;
     LiveHttpResponseParser mHttpResponseParser = null;
-
+    /** 小学英语 */
     SmallEnglishRedPackagePager artsRedPackagePager;
+    /** 小学语文 */
+    SmallChineseRedPackagePager chineseRedPackagePager;
     private LiveGetInfo mGetInfo;
     /**
      * 直播id
@@ -86,6 +94,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
 
     @Override
     public void onReadPackage(final int operateId, final OnReceivePackage onReceivePackage) {
+        logger.i(String.valueOf(operateId));
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -95,7 +104,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     }
 
     private void onGetPackage(VideoResultEntity entity) {
-        if (!isSmallEnglish) {
+        if (!isSmallEnglish && !LiveVideoConfig.isSmallChinese) {
             rlRedpacketContent.removeAllViews();
         }
         if (!isLive && entity.getResultType() == 0) {
@@ -135,6 +144,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
         RelativeLayout.LayoutParams params = null;
         //小英
         if (isSmallEnglish) {
+
             artsRedPackagePager = new SmallEnglishRedPackagePager(activity);
             view = artsRedPackagePager.getRootView();
             //小英红包打开红包按钮的监听器
@@ -146,19 +156,35 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             });
             artsRedPackagePager.setCancelRedPackageTouchListener(cancelRedPackageTouchListener);
 
-//            Drawable drawable = activity.getResources().getDrawable(R.drawable
-//                    .bg_livevideo_small_english_redppackage_board);
-//            if (isLive) {
-//                params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
-//                        .MATCH_PARENT);
-//                LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
-//                params.leftMargin = (liveVideoPoint.x3 - liveVideoPoint.x2 - drawable.getIntrinsicWidth()) / 2;
-//            } else {
             params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams
                     .MATCH_PARENT);
             params.addRule(RelativeLayout.CENTER_HORIZONTAL);
 //            }
 
+        } else if (LiveVideoConfig.isSmallChinese) {
+            //
+            logger.i("在家小英的红包");
+            if (chineseRedPackagePager == null) {
+                chineseRedPackagePager = new SmallChineseRedPackagePager(activity);
+            } else {//再次发红包
+                chineseRedPackagePager.updateView(false, 0);
+            }
+            chineseRedPackagePager.setListener(new SmallChineseRedPackagePager.SmallChineseRedPackageListener() {
+                @Override
+                public void close() {
+                    if (chineseRedPackagePager != null && chineseRedPackagePager.getRootView().getParent() == rlRedpacketContent) {
+                        rlRedpacketContent.removeView(chineseRedPackagePager.getRootView());
+                    }
+                }
+
+                @Override
+                public void submit() {
+                    sendReceiveGold(operateId, mVSectionID);
+                }
+            });
+            view = chineseRedPackagePager.getRootView();
+            params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            params.addRule(RelativeLayout.CENTER_IN_PARENT);
         } else {
             view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_view, rlRedpacketContent, false);
             ImageView imageView = view.findViewById(R.id.iv_livevideo_redpackage_monkey);
@@ -216,7 +242,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
                 VideoResultEntity entity = (VideoResultEntity) objData[0];
                 onGetPackage(entity);
                 // 广播 领取红包成功事件
-                EventBusUtil.post(new RedPackageEvent(mVSectionID, entity.getGoldNum(),
+                EventBus.getDefault().post(new RedPackageEvent(mVSectionID, entity.getGoldNum(),
                         operateId + "", RedPackageEvent.STATE_CODE_SUCCESS));
             }
 
@@ -240,13 +266,12 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
     private void initRedPacketResult(int goldNum) {
         //小英
         if (isSmallEnglish) {
-
+            //如果监听器没有设置（监听器理论上不会出现没有设置的情况，但是测试发现，加上保证无错误）
             if (artsRedPackagePager.getCancelRedPackageTouchListener() == null) {
                 artsRedPackagePager.setCancelRedPackageTouchListener(cancelRedPackageTouchListener);
             }
-            //如果当前artsRedPackagePager仍然在rlRedPackketContent中(即没有remove掉)
-            if (artsRedPackagePager != null && artsRedPackagePager.getRootView().getRootView() != null &&
-                    artsRedPackagePager.getRootView().getParent() != rlRedpacketContent) {
+            //如果当前artsRedPackagePager仍然在rlRedPackketContent中(即已经remove掉)
+            if (artsRedPackagePager != null && artsRedPackagePager.getRootView().getParent() != rlRedpacketContent) {
                 rlRedpacketContent.addView(artsRedPackagePager.getRootView());
             }
             artsRedPackagePager.updateStatus(String.valueOf(goldNum));
@@ -270,6 +295,22 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
 //                    }
 //                }
 //            }, 3000);
+        } else if (LiveVideoConfig.isSmallChinese) {
+
+            if (chineseRedPackagePager != null && chineseRedPackagePager.getRootView().getParent() != rlRedpacketContent) {
+                rlRedpacketContent.addView(chineseRedPackagePager.getRootView());
+            }
+            chineseRedPackagePager.updateView(true, goldNum);
+            postDelayedIfNotFinish(new Runnable() {
+                @Override
+                public void run() {
+                    // 更新 本场成就
+                    UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(activity, UpdateAchievement.class);
+                    if (updateAchievement != null) {
+                        updateAchievement.getStuGoldCount();
+                    }
+                }
+            }, 0);
         } else {
             String msg = "+" + goldNum + "金币";
             View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_success, rlRedpacketContent,

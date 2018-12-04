@@ -9,6 +9,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 
 public class StandExperienceUnderstandPager<T extends IStandExperienceUnderstandContract.IUnderStandPresenter> extends BasePager
@@ -132,7 +133,7 @@ public class StandExperienceUnderstandPager<T extends IStandExperienceUnderstand
 //    }
 
     @Override
-    public void onQuestionShow(boolean isShow) {
+    public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
         if (iUnderStandPresenter != null) {
             iUnderStandPresenter.removeView();
         }

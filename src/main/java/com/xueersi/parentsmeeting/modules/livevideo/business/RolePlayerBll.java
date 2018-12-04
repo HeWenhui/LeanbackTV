@@ -296,6 +296,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 updateAchievement.getStuGoldCount();
             }
         }
+        bottomContent = null;
+        mRolePlayerPager = null;
     }
 
     /**

@@ -6,8 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -216,6 +214,9 @@ public class LiveVideoAction implements VideoAction {
                         } else if (mGetInfo != null && mGetInfo.getSmallEnglish()) {//如果是小学英语
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable
                                     .livevideo_small_english_zw_dengdaida_bg_psnormal);
+                        } else if (LiveVideoConfig.isSmallChinese) {
+                            dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.
+                                    livevideo_small_chinese_zw_dengdaida_bg_psnormal);
                         } else {
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable
                                     .livevideo_zw_dengdaida_bg_normal);

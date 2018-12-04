@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.speechrecognizer.PhoneScore;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -28,6 +29,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
+
+import java.util.ArrayList;
 
 
 /**
@@ -70,7 +73,11 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     private AudioPlayerManager mAudioPlayerManager;//音频播放管理类
     private final LiveAndBackDebug liveAndBackDebug;//只为记录日志调用
     private boolean mIsPlaying = false;//标记当前语音正在播放,true 表示正在播放； flase 表示已经停止播放
-    private boolean mIsVideoUnClick = true;//标记当前语音是否可点击；true 不可点击 false 可点击；默认true
+
+    /**
+     * 标记当前对话是不是准备开始
+     */
+    boolean mIsWaittingNormal;
 
     /**
      * 测评
@@ -212,6 +219,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
         switch (entity.getMsgStatus()) {
             case RolePlayerEntity.RolePlayerMessageStatus.WAIT_NORMAL:
+                mIsWaittingNormal = true;
                 mIsPlaying = true;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
 
@@ -219,6 +227,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 tvCountTime.setVisibility(View.INVISIBLE);
                 civUserHead.invalidate();
                 tvMessageContent.setTextColor(mContext.getResources().getColor(R.color.COLOR_333333));
+
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
                 mIsPlaying = true;
@@ -244,7 +253,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
                                     tvCountTime.setVisibility(View.VISIBLE);
                                 }
-                                logger.i( mPosition + " / " + time);
+                                //logger.i( mPosition + " / " + time);
                                 entity.setEndReadTime((int) time);
 
                             }
@@ -287,6 +296,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 break;
 
             case RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ:
+
                 logger.i( "取消点赞");
                 mIsPlaying = false;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
@@ -297,7 +307,6 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 tvCountTime.setVisibility(View.INVISIBLE);
                 showSpeechStar();
                 speechPhoneScore();
-
                 break;
             default:
                 break;
@@ -313,7 +322,6 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     private void speechPhoneScore() {
         tvMessageContent.setTextColor(mContext.getResources().getColor(R.color
                 .COLOR_333333));
-        String[] textArray;
         if (mEntity.getLstPhoneScore().isEmpty()) {
             if (mEntity.getSpeechScore() >= 75) {
                 tvMessageContent.setTextColor(mContext.getResources().getColor(R.color.COLOR_53C058));
@@ -422,21 +430,6 @@ public class RolePlayerSelfItem extends RolePlayerItem {
         }
     }
 
-
-    /**
-     * 设置语音可否点击
-     *
-     * @param isVideoUnClick true为不可点击；false为可点击，默认true不可点击
-     */
-    public void setVideoUnClick(boolean isVideoUnClick) {
-        mIsVideoUnClick = isVideoUnClick;
-        mEntity.setUnClick(mIsVideoUnClick);
-        //changeYuyinClickable();
-    }
-
-    private void changeYuyinClickable() {
-        vVoiceMain.setClickable(mIsVideoUnClick ? false : true);
-    }
 
     public void relaseAudioPlay() {
 

@@ -14,12 +14,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5P
  */
 public class LiveQuestionWebCreate implements QuestionWebCreate {
     @Override
-    public QuestionWebX5Pager create(Context context, VideoQuestionLiveEntity videoQuestionLiveEntity, BaseQuestionWebInter.StopWebQuestion questionBll, LiveGetInfo liveGetInfo, boolean IS_SCIENCE, String stuCouId) {
+    public QuestionWebX5Pager create(Context context, VideoQuestionLiveEntity videoQuestionLiveEntity, BaseQuestionWebInter.StopWebQuestion questionBll, LiveGetInfo liveGetInfo, int isArts, String stuCouId) {
         videoQuestionLiveEntity.setLive(true);
         QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(context, videoQuestionLiveEntity, questionBll, liveGetInfo
                 .getTestPaperUrl(), liveGetInfo.getStuId(), liveGetInfo.getUname(),
                 liveGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(),
-                videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), IS_SCIENCE, stuCouId,
+                videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), isArts, stuCouId,
                 "1".equals(liveGetInfo.getIsAllowTeamPk()));
         return questionWebPager;
     }

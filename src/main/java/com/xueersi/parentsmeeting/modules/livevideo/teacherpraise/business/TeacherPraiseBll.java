@@ -26,13 +26,10 @@ import org.json.JSONObject;
 
 /**
  * @author chenkun
- * 老师点赞
+ *         老师点赞
  */
 public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
-    /**
-     * lottie 资源相对 asset 中的路径
-     */
-    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/pkresult/";
+
     private Activity mActivity;
     private LottieAnimationView animationView;
     private ViewGroup decorView;
@@ -74,31 +71,44 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
     }
 
     private void startAnim() {
-        if (animationView != null) {
-            String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "teacher_praise/images";
-            String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "teacher_praise/data.json";
-            final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
-            animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mActivity));
-            animationView.setImageAssetDelegate(new ImageAssetDelegate() {
-                @Override
-                public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                    return effectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
-                            lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
-                            mActivity);
-                }
-            });
-            animationView.playAnimation();
-            animationView.addAnimatorListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
-                    if (studyReportAction != null) {
-                        studyReportAction.cutImageAndVideo(LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE, decorView, false, false);
-                    }
-                    closeTeacherPriase();
-                }
-            });
+
+        if (animationView == null) {
+            return;
         }
+
+        String lottieResPath = "team_pk/pkresult/teacher_praise/images";
+        String lottieJsonPath = "team_pk/pkresult/teacher_praise/data.json";
+
+        if (mGetInfo.getIsArts() == 2) {
+            lottieResPath = "chinesePk/praise/images";
+            lottieJsonPath = "chinesePk/praise/data.json";
+        } else {
+            lottieResPath = "team_pk/pkresult/teacher_praise/images";
+            lottieJsonPath = "team_pk/pkresult/teacher_praise/data.json";
+        }
+
+        final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
+        animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mActivity));
+        animationView.setImageAssetDelegate(new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return effectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
+                        mActivity);
+            }
+        });
+        animationView.playAnimation();
+        animationView.addAnimatorListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
+                if (studyReportAction != null) {
+                    studyReportAction.cutImageAndVideo(LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE, decorView, false, false);
+                }
+                closeTeacherPriase();
+            }
+        });
+
     }
 
     private void closeTeacherPriase() {

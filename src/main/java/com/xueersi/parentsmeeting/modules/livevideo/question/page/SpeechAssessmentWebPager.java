@@ -121,7 +121,7 @@
 //
 //    private final int RECORD_WITE = 11000;
 //    String stuCouId;
-//    boolean IS_SCIENCE;
+//    boolean isArts;
 //    private boolean isStandingLive = false;
 //    // private AudioPlayerManager mAudioPlayerManager;
 //    /**
@@ -136,7 +136,7 @@
 //    public SpeechAssessmentWebPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String
 //            liveid, String testId, String stuId, boolean isLive,
 //                                      String nonce,
-//                                      SpeechEvalAction speechEvalAction, String stuCouId, boolean IS_SCIENCE,
+//                                      SpeechEvalAction speechEvalAction, String stuCouId, boolean isArts,
 //                                      LivePagerBack livePagerBack) {
 //        super(context);
 //        setBaseVideoQuestionEntity(baseVideoQuestionEntity);
@@ -147,7 +147,7 @@
 //        this.isLive = isLive;
 //        this.speechEvalAction = speechEvalAction;
 //        this.stuCouId = stuCouId;
-//        this.IS_SCIENCE = IS_SCIENCE;
+//        this.isArts = isArts;
 //        this.livePagerBack = livePagerBack;
 //        dir = LiveCacheFile.geCacheFile(mContext, "liveSpeech");
 //        if (!dir.exists()) {
@@ -203,7 +203,7 @@
 //                VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
 //                termId = videoQuestionLiveEntity.getTermId();
 //            }
-//            String isArts = IS_SCIENCE == false ? "1" : "0";
+//            String isArts = isArts == false ? "1" : "0";
 //            url = "https://student.xueersi.com/science/AutoLive/SpeechEval";
 //            url += "?isArts=" + isArts + "&liveId=" + liveid + "&testId=" + testId +
 //                    "&stuId=" + stuId + "&termId=" + termId;
@@ -211,7 +211,7 @@
 //                url += "&isStandingLive=1&isAudio=1";
 //            }
 //        } else {
-//            String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
+//            String host = isArts ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
 ////        String url = "http://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") + "/speechEval/" +
 ////                liveid + "/" + stuCouId + "/" + testId + "/" + stuId;
 //            url = "https://live.xueersi.com/" + host + "/" + (isLive ? "Live" : "LivePlayBack") +

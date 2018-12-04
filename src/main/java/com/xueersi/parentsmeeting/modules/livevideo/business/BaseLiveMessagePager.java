@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveExPressionEditDat
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
@@ -133,9 +134,6 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     //其他部分的献花
     public final static int OTHER_FLOWER = 2;
 
-    private boolean isSmallEnglish = false;
-
-
     public BaseLiveMessagePager(Context context) {
         super(context);
         logger.setLogMethod(false);
@@ -145,6 +143,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
             @Override
             public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
 
+                logger.i(pool.isShutdown() + "加入线程池被拒绝了");
             }
         });
         Resources resources = context.getResources();
@@ -321,12 +320,12 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         dvMessageDanmaku.setOnDanmakuClickListener(new IDanmakuView.OnDanmakuClickListener() {
             @Override
             public void onDanmakuClick(BaseDanmaku latest) {
-                logger.i( "onDanmakuClick text:" + latest.text);
+                logger.i("onDanmakuClick text:" + latest.text);
             }
 
             @Override
             public void onDanmakuClick(IDanmakus danmakus) {
-                logger.i( "onDanmakuClick danmakus size:" + danmakus.size());
+                logger.i("onDanmakuClick danmakus size:" + danmakus.size());
             }
         });
         dvMessageDanmaku.prepare(mParser, mDanmakuContext);
@@ -483,7 +482,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
         danmaku.priority = 1;  // 一定会显示, 一般用于本机发送的弹幕
         danmaku.isLive = false;
         danmaku.time = dvMessageDanmaku.getCurrentTime() + 1200;
-        if(LiveVideoConfig.isPrimary){
+        if (LiveVideoConfig.isPrimary) {
             danmaku.textSize = 20f * (mParser.getDisplayer().getDensity() - 0.6f);
         } else {
             danmaku.textSize = 25f * (mParser.getDisplayer().getDensity() - 0.6f);
@@ -704,7 +703,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
             if (index != -1) {
                 kc = kc.substring(0, index);
             }
-            logger.i( "startCourseDetail:kc=" + kc);
+            logger.i("startCourseDetail:kc=" + kc);
             String courseId = "";
             String groupId = "";
             String[] courseIds = kc.split("-");
@@ -722,13 +721,13 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
             OtherModulesEnter.intentTo((Activity) mContext, courseId, groupId, "", url);
             return true;
         } catch (Exception e) {
-            logger.e( "startCourseDetail", e);
+            logger.e("startCourseDetail", e);
             return false;
         }
     }
 
     @Override
-    public void onQuestionShow(boolean isShow) {
+    public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
 
     }
 
@@ -740,6 +739,7 @@ public abstract class BaseLiveMessagePager extends BasePager implements RoomActi
     @Override
     public void onDestroy() {
         if (pool != null) {
+            logger.i("线程池被shutdown");
             pool.shutdown();
         }
         super.onDestroy();

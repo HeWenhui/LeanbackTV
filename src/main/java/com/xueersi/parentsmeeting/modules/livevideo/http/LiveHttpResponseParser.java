@@ -102,6 +102,44 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param liveTopic
      * @param getInfo
      */
+    public void parseLiveGetInfoChinese(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
+        getInfo.setEducationStage(data.optString("educationStage", "0"));
+        try {
+            getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+//            LiveVideoConfig.isPrimary = true;
+//        } else {
+        LiveVideoConfig.isPrimary = false;
+//        }
+        LiveVideoConfig.isScience = false;
+        //小英萌萌哒皮肤专用
+        if (data.has("useSkin")) {
+            getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+            LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
+        } else {
+            getInfo.setSmallEnglish(false);
+        }
+//        getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
+        LiveVideoConfig.educationstage = getInfo.getEducationStage();
+//        LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
+//        LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
+//        getInfo.setStuPutUpHandsNum(data.optInt("stuPutUpHandsNum"));
+//        getInfo.setAllowLinkMicNew(data.optInt("allowLinkMicNew"));
+//        if (getInfo.getAllowLinkMicNew() == 1) {
+//            getInfo.setAllowLinkMic(false);
+//        }
+    }
+
+    /**
+     * 解析getInfo 文科
+     *
+     * @param data
+     * @param liveTopic
+     * @param getInfo
+     */
     public void parseLiveGetInfoLibarts(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
         // 文科表扬榜
         if (data.has("liveRank")) {
@@ -114,9 +152,19 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         //小英萌萌哒皮肤专用
         if (data.has("useSkin")) {
             getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+            LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
         }
+    }
+
+    /**
+     * 解析getInfo之前，先把之前用来判断状态的静态变量置空，以免上一次的状态影响这一次
+     */
+    private void setStaticStatusNull() {
+        //小学语文MMD皮肤
+        LiveVideoConfig.isSmallChinese = false;
+
     }
 
     /**
@@ -125,6 +173,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
+            //解析getInfo之前，先把之前用来判断状态的静态变量置空
+            setStaticStatusNull();
             getInfo.setId(data.getString("id"));
             getInfo.setIs_show_ranks(data.optString("is_show_ranks"));
             //getInfo.setIs_show_ranks("1");
@@ -259,6 +309,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         getInfo.setGoldCount(goldCountObj.optInt("goldAmount", 0));
                     }
                 }
+                LiveGetInfo.EvaluateTeacherEntity evaluateTeacherEntity = new LiveGetInfo.EvaluateTeacherEntity();
+                evaluateTeacherEntity.setEvaluateIsOpen(data.optInt("evaluateIsOpen", 0) == 1 ? true : false);
+                evaluateTeacherEntity.setEvaluateTime(data.optLong("evaluateTime", 0));
+                getInfo.setEvaluateTeacherEntity(evaluateTeacherEntity);
             }
             getInfo.setStat(data.getInt("stat"));
             getInfo.setRtmpUrl(data.getString("rtmpUrl"));
@@ -349,6 +403,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 if (getInfo.getIsArts() == 1) {
                     parseLiveGetInfoLibarts(data, liveTopic, getInfo);
+                } else if (getInfo.getIsArts() == 2) {
+                    parseLiveGetInfoChinese(data, liveTopic, getInfo);
                 } else {
                     parseLiveGetInfoScience(data, liveTopic, getInfo);
                 }

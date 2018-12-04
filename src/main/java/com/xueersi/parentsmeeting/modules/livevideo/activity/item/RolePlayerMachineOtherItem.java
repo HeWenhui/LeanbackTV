@@ -240,9 +240,15 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
      * 恢复对话的样式
      */
     private void recoverMsgUiStatus() {
-        ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
-        vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-        tvMessageContent.setTextColor(Color.parseColor("#333333"));
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                tvMessageContent.setTextColor(Color.parseColor("#333333"));
+            }
+        });
+
     }
 
     /**

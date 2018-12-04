@@ -30,6 +30,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsMoreChoice;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreCache;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -93,12 +94,15 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
     private int count = 0;
     private Boolean add = true;
 
-    public EnglishH5Cache(Context context, String liveId) {
+    private LiveGetInfo mGetInfo;
+
+    public EnglishH5Cache(Context context, LiveGetInfo mGetInfo) {
         this.context = context;
         Activity activity = (Activity) context;
         liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
         bottomContent = (RelativeLayout) activity.findViewById(R.id.rl_course_video_live_question_content);
-        this.liveId = liveId;
+        this.liveId = mGetInfo.getId();
+        this.mGetInfo = mGetInfo;
         cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
         if (cacheFile == null) {
             cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
@@ -109,6 +113,23 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         }
         ProxUtil.getProxUtil().put(context, WebViewRequest.class, webViewRequest);
     }
+
+//    public EnglishH5Cache(Context context, String liveId) {
+//        this.context = context;
+//        Activity activity = (Activity) context;
+//        liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
+//        bottomContent = (RelativeLayout) activity.findViewById(R.id.rl_course_video_live_question_content);
+//        this.liveId = liveId;
+//        cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
+//        if (cacheFile == null) {
+//            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
+//        }
+////        cacheFile = new File(context.getCacheDir(), "cache/webviewCache");
+//        if (!cacheFile.exists()) {
+//            cacheFile.mkdirs();
+//        }
+//        ProxUtil.getProxUtil().put(context, WebViewRequest.class, webViewRequest);
+//    }
 
     private WebViewRequest webViewRequest = new WebViewRequest() {
         @Override
@@ -274,6 +295,9 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         // 一次多发的接口调用
         if (LiveVideoConfig.isScience) {
             ScienceMulPreDownLoad(todayLiveCacheDir);
+        } else if (mGetInfo != null && mGetInfo.getIsArts() == 2) {
+            //语文一题多发
+            chineseMulPreDownLoad(todayLiveCacheDir);
         } else {
             ArtsMulPreDownLoad(todayLiveCacheDir);
         }
@@ -563,6 +587,56 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         });
     }
 
+    public void chineseMulPreDownLoad(final File path) {
+        mHttpManager.getChineseCoureWareUrl(liveId, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.e("responseEntity.getJsonObject=" + responseEntity.getJsonObject());
+                JSONObject objects = new JSONObject(responseEntity.getJsonObject().toString());
+                JSONArray array = objects.optJSONArray("list");
+                JSONArray res = objects.optJSONArray("resource");
+                JSONArray loadpages = objects.optJSONArray("loadpages");
+                mList = new ArrayList<>();
+                mtexts = new ArrayList<>();
+                for (int i = 0; i < array.length(); i++) {
+                    MoreCache cache = new MoreCache();
+                    JSONObject object = array.getJSONObject(i);
+                    cache.setPackageId(object.optString("packageId"));
+                    cache.setPackageSource(object.optString("packageSource"));
+                    cache.setIsTemplate(object.optInt("isTemplate"));
+                    cache.setPageId(object.optString("pageId"));
+                    cache.setResourceUrl(object.optString("resourceUrl"));
+                    cache.setTemplateUrl(object.optString("templateUrl"));
+                    mList.add(cache);
+                }
+                for (int i = 0; i < res.length(); i++) {
+                    String txt = res.optString(i);
+                    mtexts.add(txt);
+                }
+                for (int i = 0; i < loadpages.length(); i++) {
+                    String txt = loadpages.optString(i);
+                    mtexts.add(txt);
+                }
+                logger.e("list=" + mList.size());
+                logger.e("text=" + mtexts.size());
+                if (mList.size() > 0) {
+                    download(path);
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                super.onFailure(call, e);
+                logger.e("getCourseWareUrl:onFailure:e=" + e);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                logger.e("getCourseWareUrl:onPmError:e=" + responseEntity.getErrorMsg());
+            }
+        });
+    }
 
     public void start() {
         isStart = true;
