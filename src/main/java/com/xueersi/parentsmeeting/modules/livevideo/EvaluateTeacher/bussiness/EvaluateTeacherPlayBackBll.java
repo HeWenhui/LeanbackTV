@@ -49,6 +49,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
             mParser = new EvaluateResponseParser();
             mHttpManager = liveBackBll.getmHttpManager();
             if (liveGetInfo.getIsArts() == 1) {
+                logger.i("IsArts:"+liveGetInfo.getIsArts()+" IsSmallEnglish:"+liveGetInfo.getSmallEnglish());
                 if (liveGetInfo.getSmallEnglish()) {
                     evaluateTeacherPager = new SmallEnglishEvaluateTeacherPager(mContext, liveGetInfo);
                 } else {
@@ -56,6 +57,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
                 }
                 getArtsEvaluateOption(liveGetInfo.getSmallEnglish());
             } else if (liveGetInfo.getIsArts() == 0) {
+                logger.i("IsArts:"+liveGetInfo.getIsArts()+" IsPrimaryScience:"+ liveGetInfo.getIsPrimarySchool());
                 if (1 == liveGetInfo.getIsPrimarySchool()) {
                     evaluateTeacherPager = new PrimaryScienceEvaluateTeacherPager(mContext, liveGetInfo);
                 } else {
@@ -63,6 +65,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
                 }
                 getSciecneEvaluateOption();
             } else if (liveGetInfo.getIsArts() == 2) {
+                logger.i("IsArts:"+liveGetInfo.getIsArts());
                 evaluateTeacherPager = new EvaluateTeacherPager(mContext, liveGetInfo);
                 getArtsEvaluateOption(false);
             } else {
@@ -80,10 +83,9 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
 
     @Override
     public boolean showPager() {
-        logger.i("getCurrentPosition" + liveBackBll.getvPlayer().getCurrentPosition());
         if (0 != mVideoEntity.getEvaluateTimePer() && ((liveBackBll.getvPlayer().getCurrentPosition() + 0.0) /
-                liveBackBll
-                        .getvPlayer().getDuration()) > mVideoEntity.getEvaluateTimePer()) {
+                liveBackBll.getvPlayer().getDuration()) > mVideoEntity.getEvaluateTimePer()) {
+            logger.i("showEvaluateTeacher");
             liveBackBll.getvPlayer().stop();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -134,6 +136,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
 
 
     private void quitLive() {
+        logger.i("quit livevideo");
         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
                 .evaluate_teacher_1708002));
         if (liveBackPlayVideoFragment.isLandSpace()) {
@@ -169,6 +172,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
         HttpCallBack callBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.i("uploadEvaluation success");
                 evaluateTeacherPager.showSuccessPager(new EvaluateTeacherPager.CountDownCallback() {
                     @Override
                     public void finishVideo() {
@@ -179,6 +183,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
+                logger.i("uploadEvaluation fail");
                 super.onPmFailure(error, msg);
                 evaluateTeacherPager.showUploadFailPager();
                 evaluateTeacherPager.setReUpload();

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.LoggingInterceptor;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.http.EvaluateResponseParser;
@@ -50,6 +51,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
                 mHttpManager = mLiveBll.getHttpManager();
                 mParser = new EvaluateResponseParser();
                 if (getInfo.getIsArts() == 1) {
+                    logger.i("IsArts:"+getInfo.getIsArts()+" IsSmallEnglish:"+getInfo.getSmallEnglish());
                     if (getInfo.getSmallEnglish()) {
                         evaluateTeacherPager = new SmallEnglishEvaluateTeacherPager(mContext, getInfo);
                     } else {
@@ -57,6 +59,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
                     }
                     getArtsEvaluateOption(getInfo.getSmallEnglish());
                 } else  if (getInfo.getIsArts() == 0){
+                    logger.i("IsArts:"+getInfo.getIsArts()+" IsPrimaryScience:"+ getInfo.getIsPrimarySchool());
                     if (1 == getInfo.getIsPrimarySchool()) {
                         evaluateTeacherPager = new PrimaryScienceEvaluateTeacherPager(mContext, getInfo);
                     } else {
@@ -64,6 +67,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
                     }
                     getSciecneEvaluateOption();
                 }else if (getInfo.getIsArts() == 2) {
+                    logger.i("IsArts:"+getInfo.getIsArts());
                     evaluateTeacherPager = new EvaluateTeacherPager(mContext, getInfo);
                     getArtsEvaluateOption(false);
                 } else {
@@ -84,6 +88,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
     @Override
     public boolean showPager() {
         if ((mGetInfo.getEvaluateTeacherEntity() != null && System.currentTimeMillis() > mGetInfo.getEvaluateTeacherEntity().getEvaluateTime())) {
+            logger.i("showEvaluateTeacher");
             liveFragment.stopPlayer();
             mLiveBll.onIRCmessageDestory();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
@@ -138,6 +143,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
     }
 
     private void quitLive() {
+        logger.i("quit livevideo");
         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
                 .evaluate_teacher_1708002));
         if (mLiveBll.getmIsLand().get()) {
@@ -172,6 +178,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
         HttpCallBack callBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.i("uploadEvaluation success");
                 evaluateTeacherPager.showSuccessPager(new EvaluateTeacherPager.CountDownCallback() {
                     @Override
                     public void finishVideo() {
@@ -183,6 +190,7 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
+                logger.i("uploadEvaluation fail");
                 evaluateTeacherPager.showUploadFailPager();
                 evaluateTeacherPager.setReUpload();
             }

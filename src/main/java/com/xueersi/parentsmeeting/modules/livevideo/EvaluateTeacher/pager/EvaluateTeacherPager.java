@@ -67,12 +67,14 @@ public class EvaluateTeacherPager extends BaseEvaluateTeacherPaper {
 
     @Override
     public void showSuccessPager(CountDownCallback callback) {
+        logger.i("showUploadSuccessPager");
         tvResultStatus.setText("感谢评价");
         ivResult.setImageResource(R.drawable.ic_monkey_success_img_normal);
         super.showSuccessPager(callback);
     }
 
     public void showUploadFailPager() {
+        logger.i("showUploadFailPager");
         tvResultStatus.setText("提交失败，请重试!");
         super.showUploadFailPager();
     }

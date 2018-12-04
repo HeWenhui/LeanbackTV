@@ -84,6 +84,7 @@ public class SmallEnglishEvaluateTeacherPager extends BaseEvaluateTeacherPaper {
 
     @Override
     public void showUploadFailPager() {
+        logger.i("showUploadFailPager");
         rlBackground.setBackgroundResource(R.drawable.livevideo_evaluateteacher_bg1_nor);
         ivResult.setImageResource(R.drawable.livevideo_evaluateteacher_shibai_img_nor);
         super.showUploadFailPager();
@@ -91,6 +92,7 @@ public class SmallEnglishEvaluateTeacherPager extends BaseEvaluateTeacherPaper {
 
     @Override
     public void showSuccessPager(CountDownCallback callback) {
+        logger.i("showUploadSuccessPager");
         super.showSuccessPager(callback);
     }
 
