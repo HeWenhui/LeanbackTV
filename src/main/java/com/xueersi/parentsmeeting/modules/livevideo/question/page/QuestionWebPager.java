@@ -62,7 +62,7 @@
 //    private String testPaperUrl;
 //    private String jsExamSubmitAll = "javascript:examSubmitAll()";
 //    private String isShowRanks;
-//    private boolean IS_SCIENCE;
+//    private boolean isArts;
 //    private String stuCouId;
 //    private int isTeamPkRoom; //是否是 teampk 房间
 //    private int mGoldNum;
@@ -70,9 +70,9 @@
 //
 //    public QuestionWebPager(Context context, StopWebQuestion questionBll, String testPaperUrl,
 //                            String stuId, String stuName, String liveid, String testId,
-//                            String nonce, String isShowRanks, boolean IS_SCIENCE, String stuCouId) {
+//                            String nonce, String isShowRanks, boolean isArts, String stuCouId) {
 //        super(context);
-//        this.IS_SCIENCE = IS_SCIENCE;
+//        this.isArts = isArts;
 //        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
 //                + ".txt"));
 //        this.questionBll = questionBll;
@@ -145,7 +145,7 @@
 //            examUrl += "&nonce=" + nonce;
 //        }
 //        examUrl += "&stuCouId=" + stuCouId;
-//        examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+//        examUrl += "&isArts=" + (isArts ? "0" : "1");
 //        examUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
 //        wvSubjectWeb.loadUrl(examUrl);
 //        Loger.e("QuestionWebPager", "======> loadUrl:" + examUrl);

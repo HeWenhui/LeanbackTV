@@ -67,14 +67,14 @@
 //    String jsExamSubmitAll = "javascript:examSubmitAll()";
 //    private LiveBll mLiveBll;
 //    private String isShowRankList;
-//    boolean IS_SCIENCE;
+//    boolean isArts;
 //    String stuCouId;
 //    private int isTeamPkRoom;
 //    private int mGoldNum;
 //    private int mEnergyNum;
 //
 //    public ExamQuestionPager(Context context, LiveBll liveBll, QuestionBll questionBll, String stuId
-//            , String stuName, String liveid, String num, String nonce, String isShowRankList, boolean IS_SCIENCE, String stuCouId, int isTeamPkRoom) {
+//            , String stuName, String liveid, String num, String nonce, String isShowRankList, boolean isArts, String stuCouId, int isTeamPkRoom) {
 //        super(context);
 //        logToFile = new LogToFile(TAG, new File(Environment.getExternalStorageDirectory(), "parentsmeeting/log/" + TAG
 //                + ".txt"));
@@ -85,7 +85,7 @@
 //        this.liveid = liveid;
 //        this.num = num;
 //        this.nonce = nonce;
-//        this.IS_SCIENCE = IS_SCIENCE;
+//        this.isArts = isArts;
 //        this.stuCouId = stuCouId;
 //        logToFile.i("ExamQuestionPager:liveid=" + liveid + ",num=" + num);
 //        this.isShowRankList = isShowRankList;
@@ -142,7 +142,7 @@
 ////        wvSubjectWeb.loadUrl("file:///android_asset/testjs.html");
 //        ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
 //        ((AnimationDrawable) ivLoading.getBackground()).start();
-//        String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
+//        String host = isArts ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
 //        EXAM_URL = "https://live.xueersi.com/" + host + "/LiveExam/examPaper";
 //        examUrl = EXAM_URL + "?liveId=" + liveid
 //                + "&testPlan=" + num + "&isPlayBack=0&stuId=" + stuId + "&stuName=" + stuName;
@@ -151,7 +151,7 @@
 //        }
 //        examUrl += "&stuCouId=" + stuCouId;
 //        examUrl += "&isTowall=" + isShowRankList;
-//        examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+//        examUrl += "&isArts=" + (isArts ? "0" : "1");
 //        examUrl += "&isShowTeamPk=" + (LiveBll.isAllowTeamPk ? "1" : "0");
 //        Loger.e("ExamQuestionPager", "======> loadUrl:" + examUrl);
 //        wvSubjectWeb.loadUrl(examUrl);

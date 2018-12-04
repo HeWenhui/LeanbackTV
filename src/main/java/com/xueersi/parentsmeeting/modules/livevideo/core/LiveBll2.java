@@ -390,6 +390,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
+        } else if (mGetInfo.getIsArts() == 2) {//
+            appID = UmsConstants.ARTS_APP_ID;
+            liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {
             appID = UmsConstants.LIVE_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
@@ -1016,6 +1019,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
         if (liveUidRx != null) {
             liveUidRx.onDestory();
+        }
+    }
+
+    public void onIRCmessageDestory() {
+        if (mIRCMessage != null) {
+            mIRCMessage.destory();
         }
     }
 

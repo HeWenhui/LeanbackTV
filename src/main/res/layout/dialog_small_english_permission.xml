@@ -7,6 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
+
         <ImageView
             android:id="@+id/iv_dialog_small_english_bg"
             android:layout_width="512dp"
@@ -17,11 +18,11 @@
             android:id="@+id/tv_dialog_small_english_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_alignTop="@+id/iv_dialog_small_english_bg"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="110dp"
-            android:paddingLeft="10dp"
             android:gravity="center"
+            android:paddingLeft="10dp"
             android:text=""
             android:textColor="#FF756565"
             android:textSize="17sp" />
@@ -30,8 +31,8 @@
             android:id="@+id/tv_dialog_small_english_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_alignTop="@+id/iv_dialog_small_english_bg"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="162dp"
             android:paddingLeft="10dp"
             android:text=""
@@ -44,8 +45,8 @@
             android:layout_alignBottom="@+id/iv_dialog_small_english_bg"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="134dp"
-            android:paddingLeft="10dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="10dp">
 
             <ImageView
                 android:id="@+id/iv_dialog_small_english_cancel"

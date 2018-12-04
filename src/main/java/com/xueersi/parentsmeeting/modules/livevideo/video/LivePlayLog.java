@@ -18,15 +18,18 @@ import com.netease.LDNetDiagnoService.LDNetTraceRoute;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseHttpBusiness;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.lib.analytics.umsagent.DeviceInfo;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
@@ -42,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xutils.xutils.ex.HttpException;
 
 import java.io.File;
 import java.io.IOException;
@@ -153,6 +157,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     //    private HashMap<String, String> tidAndPri = new HashMap<>();
     private PlayBufferEntity bufferStartEntity = new PlayBufferEntity();
 
+
+    /** 文件 */
+    private File liveLog920;
+    /** 日志上传类型*/
+    private String LIVE_920_TYPE = "";
+
     static {
         dateFormat = new SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.getDefault());
     }
@@ -186,6 +196,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         this.isLive = isLive;
         saveLogDir = LiveCacheFile.geCacheFile(activity, "liveplaylog");
         saveLogDirDebug = LiveCacheFile.geCacheFile(activity, "liveplaylogdebug");
+        liveLog920 = LiveCacheFile.geCacheFile(activity, "liveLog920");
+
 //        Handler handler = new Handler(Looper.getMainLooper());
 //        handler.postDelayed(new Runnable() {
 //            @Override
@@ -1516,5 +1528,374 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + "getNetworkType", e);
         }
         return net;
+    }
+
+
+    //////////////   920 日志/////////////////
+
+
+    /**
+     * 上传920 日志
+     * @param dataJson
+     */
+    public void postLiveLog920 (String dataJson) {
+        if(TextUtils.isEmpty(LIVE_920_TYPE) || TextUtils.equals(LIVE_920_TYPE,LiveVideoConfig.LIVE_LOG_920_HOST)) {
+            postLiveLogHost920(dataJson,true);
+        } else {
+            postLiveLogIp920(dataJson,0,"",1l,true);
+        }
+    }
+
+    /**
+     * 上传日志 host方式
+     *
+     * @param dataJson
+     */
+    public void postLiveLogHost920(final String dataJson,final boolean isFirst) {
+        final HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.setJson(dataJson);
+        httpRequestParams.setWriteAndreadTimeOut(10);
+        final long time = System.currentTimeMillis();
+        baseHttpBusiness.baseSendPostNoBusinessJson(LiveVideoConfig.URL_CDN_LOG, httpRequestParams, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException ex) {
+                if(isFirst) {
+                    int code = -1;
+                    String msg = "otherError";
+                    if (ex instanceof HttpException) {
+                        HttpException error = (HttpException) ex;
+                        if (error.getCode() >= 300) {
+                            code = PlayFailCode.PlayFailCode20.code;
+                            msg = PlayFailCode.PlayFailCode20.tip;
+                        }
+                    } else if (ex instanceof UnknownHostException) {
+                        code = PlayFailCode.PlayFailCode10.code;
+                        msg = PlayFailCode.PlayFailCode10.tip;
+
+                    } else if (ex instanceof SocketTimeoutException) {
+                        code = PlayFailCode.PlayFailCode15.code;
+                        msg = PlayFailCode.PlayFailCode15.tip;
+
+                    }
+
+                    long dely = System.currentTimeMillis() - time;
+
+                    postLiveLogIp920(dataJson, code, msg, dely, false);
+                } else {
+                    // 保存日志到文件
+                    save920History(httpRequestParams);
+                }
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                LIVE_920_TYPE = LiveVideoConfig.LIVE_LOG_920_HOST;
+            }
+        });
+    }
+
+
+
+    /**
+     * 上传日志 ip方式
+     *
+     * @param code
+     * @param msg
+     * @param delay
+     */
+    public void postLiveLogIp920(final String dataJson, final int code, final String msg, final long
+            delay, final boolean isFirst) {
+        final HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.setJson(dataJson);
+        httpRequestParams.setWriteAndreadTimeOut(10);
+        baseHttpBusiness.baseSendPostNoBusinessJson(LiveVideoConfig.URL_CND_LOG_IP, httpRequestParams, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                if(isFirst) {
+                    postLiveLogHost920(dataJson,false);
+                } else {
+                    // 保存日志到文件
+                    save920History(httpRequestParams);
+                }
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(!isFirst) {
+                    onHostError(LiveVideoConfig.URL_CDN_LOG, code, msg, delay);
+                }
+                LIVE_920_TYPE = LiveVideoConfig.LIVE_LOG_920_IP;
+            }
+        });
+    }
+
+    /**
+     * 域名不通，IP 上传日志成功 日志上报
+     *
+     * @param url
+     * @param code
+     * @param msg
+     * @param delay
+     */
+    private void onHostError(String url, int code, String msg, long delay) {
+        JSONObject jsonObject = getHostErrorLog(url, code, msg, delay);
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.setJson(String.valueOf(jsonObject));
+        baseHttpBusiness.baseSendPostNoBusinessJson(LiveVideoConfig.URL_CND_LOG_IP, httpRequestParams, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+            }
+        });
+        getTraceRouteLog(url);
+        Loger.d("livelog_920", jsonObject.toString());
+    }
+
+
+    /**
+     * 获取host 日志 pri 0
+     *
+     * @param url
+     * @param code
+     * @param msg
+     * @param delay
+     * @return
+     */
+    private JSONObject getHostErrorLog(String url, int code, String msg, long delay) {
+        JSONObject jsonObject = getDefaultInfo();
+        try {
+            jsonObject.put("pri", "0");
+            jsonObject.put("host_log", "hostlog");
+            JSONObject priData = new JSONObject();
+            priData.put("url", url);
+            priData.put("code", code + "");
+            priData.put("msg", msg);
+            URLDNS urldns = new URLDNS();
+            try {
+                DNSUtil.getDns(urldns, url);
+            } catch (UnknownHostException e1) {
+                e1.printStackTrace();
+            }
+            priData.put("dns", urldns.time);
+            priData.put("delay", delay);
+            jsonObject.put("pridata", priData);
+        } catch (Exception ex) {
+
+        }
+        return jsonObject;
+    }
+
+
+    /**
+     * 默认参数获取
+     *
+     * @return
+     */
+    private JSONObject getDefaultInfo() {
+        JSONObject defaultKey = new JSONObject();
+        try {
+            String psId = UserBll.getInstance().getMyUserInfoEntity().getPsimId();
+            defaultKey.put("ver", "1");
+            defaultKey.put("serv", "920");
+            defaultKey.put("ts", System.currentTimeMillis());
+            defaultKey.put("appId", "" + UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
+            defaultKey.put("psId", "" + psId);
+            defaultKey.put("agent", "m-android_" + AppUtils.getAppVersionName(BaseApplication.getContext()));
+            defaultKey.put("os", "" + Build.VERSION.SDK_INT);
+            defaultKey.put("dev", "" + DeviceInfo.getDeviceName());
+            defaultKey.put("arch", "" + HardWareUtil.getCpuName());
+            defaultKey.put("net", getNet());
+            int totalRam = HardWareUtil.getTotalRam();
+            defaultKey.put("ram", totalRam);
+            defaultKey.put("cpu", HardWareUtil.getCPURateDesc());
+            defaultKey.put("mem", getMemRate());
+
+
+            defaultKey.put("cip", "" + oldCipdispatch);
+            defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
+            String hostIp = getRemoteIp();
+            defaultKey.put("sip", "" + hostIp);
+            defaultKey.put("tid", "" + AppBll.getInstance().getAppInfoEntity().getAppUUID());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return defaultKey;
+
+    }
+
+
+    /**
+     * 获取traceRoute信息和pri 1 日志
+     *
+     * @param url
+     */
+    private void getTraceRouteLog(final String url) {
+
+        Bundle bundle = new Bundle();
+        String host = DNSUtil.getHost(url);
+        final JSONObject deFaultJson = getDefaultInfo();
+        ldNetTraceClient.startTraceRoute(host, bundle, new LDNetTraceRoute.LDNetTraceRouteListener() {
+            @Override
+            public void OnNetTraceUpdated(String log) {
+//                logger.d("OnNetTraceUpdated:log=" + log);
+            }
+
+            @Override
+            public void OnNetTraceFinished() {
+
+            }
+
+            @Override
+            public void onTraceRouteEnd(JavaTraceResult[] javaTraceResults) {
+                if (javaTraceResults.length > 0) {
+
+
+                    try {
+                        deFaultJson.put("pri", "1");
+                        deFaultJson.put("url", url);
+                        deFaultJson.put("host_log", "hostlog");
+                        deFaultJson.put("ldnetversion", LDNetTraceRoute.VERSION);
+                        JSONArray traceArray = new JSONArray();
+                        for (int i = 0; i < javaTraceResults.length; i++) {
+                            JavaTraceResult javaTraceResult = javaTraceResults[i];
+                            JSONObject traceObj = new JSONObject();
+                            traceObj.put("ttl", javaTraceResult.ttl);
+                            traceObj.put("send", 4);
+                            traceObj.put("best", javaTraceResult.rttMin);
+                            ArrayList<String> times = javaTraceResult.getTimes();
+                            if (times.size() > 0) {
+                                try {
+                                    traceObj.put("last", Float.parseFloat(times.get(times.size() - 1)));
+                                } catch (Exception e) {
+
+                                }
+                            } else {
+                                traceObj.put("last", 0);
+                            }
+                            traceObj.put("worst", javaTraceResult.rttMax);
+                            traceObj.put("avrg", javaTraceResult.rttAvg);
+                            traceObj.put("loss", javaTraceResult.lost);
+                            traceObj.put("recv", javaTraceResult.receivedpackets);
+                            traceObj.put("sip", javaTraceResult.bothHost);
+                            traceArray.put(traceObj);
+                        }
+                        deFaultJson.put("trace", traceArray);
+                        Loger.d("livelog_920", deFaultJson.toString());
+                        HttpRequestParams httpRequestParams = new HttpRequestParams();
+                        httpRequestParams.setJson(String.valueOf(deFaultJson));
+                        baseHttpBusiness.baseSendPostNoBusinessJson(LiveVideoConfig.URL_CND_LOG_IP,
+                                httpRequestParams, new Callback() {
+                                    @Override
+                                    public void onFailure(Call call, IOException e) {
+
+                                    }
+
+                                    @Override
+                                    public void onResponse(Call call, Response response) throws IOException {
+
+                                    }
+                                });
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+
+    String liveLogPath920 = "liveLog920";
+
+    private void save920History(HttpRequestParams httpRequestParams) {
+        try {
+            String jsonStr = httpRequestParams.getJson();
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            StringBuffer stringBuffer = new StringBuffer();
+            String url = jsonObject.getString("url");
+            String sip = jsonObject.getString("sip");
+            String cip = jsonObject.getString("cip");
+            String lip = jsonObject.getString("lip");
+            String priIndex = jsonObject.getString("priIndex");
+            stringBuffer.append(url);
+            stringBuffer.append(sip);
+            stringBuffer.append(cip);
+            stringBuffer.append(lip);
+
+            JSONArray historyLogArray = getOld920Log();
+            boolean isHave = false;
+            if (historyLogArray != null && historyLogArray.length() > 0) {
+                JSONObject historyJson = null;
+                for (int i = 0; i < historyLogArray.length(); i++) {
+                    historyJson = historyLogArray.getJSONObject(i);
+                    if (TextUtils.equals(historyJson.optString("priIndex"), priIndex)) {
+                        int cnt = historyJson.optInt("cnt");
+                        historyJson.put("lts",System.currentTimeMillis());
+                        historyJson.put("cnt", cnt + 1);
+                        isHave = true;
+                        break;
+                    }
+                }
+            }
+            // 如果有历史日志
+            if ( !isHave) {
+                if (historyLogArray == null) {
+                    historyLogArray = new JSONArray();
+                }
+                JSONObject json = new JSONObject();
+                json.put("url",url);
+                json.put("sip",sip);
+                json.put("cip",cip);
+                json.put("lip",lip);
+                json.put("fts",System.currentTimeMillis());
+                json.put("priIndex",priIndex);
+                historyLogArray.put(json);
+            }
+            if (!liveLog920.exists()) {
+                liveLog920.mkdirs();
+            }
+            File file = new File(liveLog920, liveLogPath920 + ".txt");
+            FileStringUtil.saveStrToFile(com.alibaba.fastjson.JSONObject.toJSONString(historyLogArray) + "\n", file, true);
+
+        } catch (Exception e) {
+
+        }
+
+    }
+
+
+    private JSONArray getOld920Log() {
+        JSONArray jsonArray = null;
+        try {
+            if (liveLog920 == null) {
+                return null ;
+            }
+        File[] fs = liveLog920.listFiles();
+        File file920 = null;
+        if (fs != null && fs.length > 0) {
+            for (int i = 0; i < fs.length; i++) {
+                if (TextUtils.equals(fs[i].getName(), liveLogPath920)) {
+                    file920 = fs[i];
+                    break;
+                }
+            }
+            if (file920 != null) {
+                String string = FileStringUtil.readFromFile(file920);
+
+                    jsonArray = new JSONArray(string);
+
+
+            }
+
+        }
+        } catch (Exception e) {
+        }
+        return jsonArray;
     }
 }

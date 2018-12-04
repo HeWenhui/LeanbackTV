@@ -421,7 +421,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                 }
                             });
                         }
-                    }, 4000);
+                    },4000);
                 }
             }
 
@@ -705,7 +705,10 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
                     FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
                             .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    decorView.addView(frameLayout, layoutParams);
+                    if (frameLayout.getParent() == null) {
+                        decorView.addView(frameLayout, layoutParams);
+                    }
+
 //                    mFlowerWindow.setBackgroundDrawable(dw);
 //                    mFlowerWindow.setContentView(smallEnglishSendFlowerPager.getRootView());
 //                    mFlowerWindow.showAtLocation(mView, Gravity.LEFT, 0, 0);

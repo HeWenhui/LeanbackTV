@@ -88,6 +88,7 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
 
             //对话信息的数据实体中需要存入试题id
             String test_id = jsonObject.optString("test_id");
+            rolePlayerEntity.setTestId(test_id);
             rolePlayerEntity.setCountDownSecond(minute * 60);
 
             //对话信息
@@ -177,6 +178,7 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
             int minute = jsonObject.optInt("rolePlayTime");
             //对话信息的数据实体中需要存入试题id
             String test_id = jsonObject.optString("testId");
+            rolePlayerEntity.setTestId(test_id);
             rolePlayerEntity.setCountDownSecond(minute * 60);
             JSONArray arrSpeech = objContent.optJSONArray("speeches");
             for (int i = 0; i < arrSpeech.length(); i++) {
@@ -221,8 +223,9 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
             RolePlayerEntity rolePlayerEntity = new RolePlayerEntity();
             rolePlayerEntity.setPullDZCount(0);//每次试题返回的时候，将点赞置为0
             rolePlayerEntity.getLstRolePlayerMessage().clear();//在试题信息返回的时候先清空数据集合，防止当服务器返回重复数据的时候，本地也出现重复
+            rolePlayerEntity.setNewArts(true); // 判断是否是文科新课件平台的标识
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-
+            logger.i(" rolePlay jsonObject:"+ jsonObject.toString());
             JSONObject objContent = jsonObject.optJSONObject("content");
             int minute = jsonObject.optInt("rolePlayTime");
 
@@ -232,6 +235,7 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
 
             //对话信息的数据实体中需要存入试题id
             String test_id = jsonObject.optString("testId");
+            rolePlayerEntity.setTestId(test_id);
             rolePlayerEntity.setCountDownSecond(minute * 60);
 
             //对话信息

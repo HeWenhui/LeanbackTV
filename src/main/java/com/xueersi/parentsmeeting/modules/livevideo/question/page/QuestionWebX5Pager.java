@@ -50,7 +50,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import ren.yale.android.cachewebviewlib.CacheWebView;
-
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
 /**
@@ -79,7 +78,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private String testPaperUrl;
     private String jsExamSubmitAll = "javascript:examSubmitAll()";
     private String isShowRanks;
-    private boolean IS_SCIENCE;
+    private int isArts;
     private String stuCouId;
     private int isTeamPkRoom; //是否是 teampk 房间
     private int mGoldNum;
@@ -97,13 +96,13 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     public QuestionWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, StopWebQuestion questionBll, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
-                              String nonce, String isShowRanks, boolean IS_SCIENCE, String stuCouId, boolean allowTeamPk) {
+                              String nonce, String isShowRanks, int isArts, String stuCouId, boolean allowTeamPk) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
 //        if (baseVideoQuestionEntity != null) {
 //            isLive = baseVideoQuestionEntity.isLive();
 //        }
-        this.IS_SCIENCE = IS_SCIENCE;
+        this.isArts = isArts;
         this.questionBll = questionBll;
         this.stuId = stuId;
         this.stuName = stuName;
@@ -243,7 +242,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 examUrl += "&nonce=" + nonce;
             }
             examUrl += "&stuCouId=" + stuCouId;
-            examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+            examUrl += "&isArts=" + (isArts);
 //            examUrl += "&isPlayBack=" + (isLive ? "0" : "1");
             examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
             wvSubjectWeb.loadUrl(examUrl);
@@ -306,12 +305,12 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
         if (wvSubjectWeb instanceof CacheWebView) {
             CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
-            if (IS_SCIENCE){
+            if (isArts == 0) {
                 cacheWebView.getWebViewCache().setNeedHttpDns(true);
-            }else {
+            } else {
                 cacheWebView.getWebViewCache().setNeedHttpDns(false);
             }
-            cacheWebView.getWebViewCache().setIsScience(IS_SCIENCE);
+            cacheWebView.getWebViewCache().setIsScience(isArts == 0);
         }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);

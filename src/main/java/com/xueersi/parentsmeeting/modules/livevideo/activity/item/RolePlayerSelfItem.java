@@ -254,7 +254,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
 
                                     tvCountTime.setVisibility(View.VISIBLE);
                                 }
-                                logger.i( mPosition + " / " + time);
+                                //logger.i( mPosition + " / " + time);
                                 entity.setEndReadTime((int) time);
 
                             }
@@ -297,6 +297,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 break;
 
             case RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ:
+
                 logger.i( "取消点赞");
                 mIsPlaying = false;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
@@ -306,10 +307,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 tvCountTime.setText("");
                 tvCountTime.setVisibility(View.INVISIBLE);
                 showSpeechStar();
-                if(!mIsWaittingNormal){
-                    speechPhoneScore();
-                }
-                mIsWaittingNormal = false;
+                speechPhoneScore();
                 break;
             default:
                 break;
@@ -325,7 +323,6 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     private void speechPhoneScore() {
         tvMessageContent.setTextColor(mContext.getResources().getColor(R.color
                 .COLOR_333333));
-        String[] textArray;
         if (mEntity.getLstPhoneScore().isEmpty()) {
             if (mEntity.getSpeechScore() >= 75) {
                 tvMessageContent.setTextColor(mContext.getResources().getColor(R.color.COLOR_53C058));
