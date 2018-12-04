@@ -1016,6 +1016,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
     }
 
+    public void onIRCmessageDestory() {
+        if (mIRCMessage != null) {
+            mIRCMessage.destory();
+        }
+    }
+
     /////////////////////////////  播放相关 //////////////////////////////////
 
     private VideoAction mVideoAction;

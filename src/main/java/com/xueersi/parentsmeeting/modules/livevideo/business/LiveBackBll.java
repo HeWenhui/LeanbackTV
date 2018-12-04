@@ -282,6 +282,13 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         liveGetInfo.setIs_show_ranks("0");
         liveGetInfo.setLiveType(mLiveType);
         liveGetInfo.setIsArts(isArts);
+        LiveGetInfo.MainTeacherInfo mainTeacherInfo = liveGetInfo.getMainTeacherInfo();
+        mainTeacherInfo.setTeacherId(mVideoEntity.getMainTeacherId());
+        mainTeacherInfo.setTeacherName(mVideoEntity.getMainTeacherName());
+        mainTeacherInfo.setTeacherImg(mVideoEntity.getMainTeacherImg());
+        liveGetInfo.setTeacherId(mVideoEntity.getTutorTeacherId());
+        liveGetInfo.setTeacherName(mVideoEntity.getTutorTeacherName());
+        liveGetInfo.setTeacherIMG(mVideoEntity.getTutorTeacherImg());
         MyUserInfoEntity mMyInfo = UserBll.getInstance().getMyUserInfoEntity();
         if (!StringUtils.isEmpty(mMyInfo.getEnglishName())) {
             liveGetInfo.setEn_name(mMyInfo.getEnglishName());

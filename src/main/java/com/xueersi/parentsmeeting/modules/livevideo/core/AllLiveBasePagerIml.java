@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.EvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
@@ -66,17 +67,17 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     }
 
     /**
-     * 将evaluteTeacherPager排到最后，最后获得onUserBackPressed事件
+     * 将evaluteTeacherPager排到最前，最后获得onUserBackPressed事件
      */
     private void sortPager (ArrayList<LiveBasePager> liveBasePagersTemp){
         LiveBasePager liveBasePager;
         for (int i = 0; i < liveBasePagersTemp.size(); i++) {
-            if (liveBasePagersTemp.get(i) instanceof EvaluateTeacherPager){
+            if (liveBasePagersTemp.get(i) instanceof BaseEvaluateTeacherPaper){
                 liveBasePager = liveBasePagersTemp.get(i);
-                for (int j = i + 1; j <liveBasePagersTemp.size(); j++) {
-                    liveBasePagersTemp.set(j-1,liveBasePagersTemp.get(j));
+                for (int j = i - 1; j >= 0; j--) {
+                    liveBasePagersTemp.set(j+1,liveBasePagersTemp.get(j));
                 }
-                liveBasePagersTemp.set(liveBasePagersTemp.size()-1,liveBasePager);
+                liveBasePagersTemp.set(0,liveBasePager);
                 break;
             }
         }
