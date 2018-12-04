@@ -1,16 +1,18 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -33,10 +35,6 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     protected MediaPlayerControl mPlayer;
     protected LiveMediaController controller;
     protected Context mContext;
-    /** 顶部动画向下出现 */
-    private Animation mAnimSlideInTop;
-    /** 顶部动画向上隐藏 */
-    private Animation mAnimSlideOutTop;
     /** 聊天，默认开启 */
     private Button btMesOpen;
     /** 聊天常用语 */
@@ -51,6 +49,8 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     ArrayList<MediaChildViewClick> mediaChildViewClicks = new ArrayList<>();
     private LinearLayout llMarkPopMenu;
     private View vMarkGuide;
+    private AnimatorSet mAnimatorsetIn;
+    private AnimatorSet mAnimatorSetOut;
 
     public BaseLiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context);
@@ -74,10 +74,23 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     protected void initResources() {
         inflateLayout();
         findViewItems();
-        mAnimSlideInTop = AnimationUtils.loadAnimation(mContext, R.anim.anim_mediactrl_slide_in_top);
-        mAnimSlideOutTop = AnimationUtils.loadAnimation(mContext, R.anim.anim_mediactrl_slide_out_top);
-        mAnimSlideInTop.setFillAfter(true);
-        mAnimSlideOutTop.setFillAfter(true);
+
+        int screenHight = ScreenUtils.getScreenHeight();
+        //防止 getScreenHight 失败 导致UI 显示异常
+        screenHight = screenHight > 0?screenHight:1000;
+        ObjectAnimator  transIn = ObjectAnimator.ofFloat(this,"translationY",screenHight,0);
+        ObjectAnimator  alphaIn =  ObjectAnimator.ofFloat(this,"alpha",0.0f,1.0f);
+        mAnimatorsetIn = new AnimatorSet();
+        mAnimatorsetIn.setDuration(300);
+        mAnimatorsetIn.playTogether(transIn,alphaIn);
+
+
+        ObjectAnimator  transOut = ObjectAnimator.ofFloat(this,"translationY",0,screenHight);
+        ObjectAnimator  alphaOut =  ObjectAnimator.ofFloat(this,"alpha",1.0f,0.0f);
+        mAnimatorSetOut = new AnimatorSet();
+        mAnimatorSetOut.setDuration(300);
+        mAnimatorSetOut.playTogether(transOut,alphaOut);
+
     }
 
     /** 播放器的布局界面 */
@@ -169,12 +182,12 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     @Override
     public void onShow() {
         setVisibility(View.VISIBLE);
-        startAnimation(mAnimSlideInTop);
+        mAnimatorsetIn.start();
     }
 
     @Override
     public void onHide() {
-        startAnimation(mAnimSlideOutTop);
+         mAnimatorSetOut.start();
         if(llMarkPopMenu!=null){
             llMarkPopMenu.setVisibility(GONE);
         }

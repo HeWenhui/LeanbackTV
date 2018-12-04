@@ -4,6 +4,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
  * Created by Zhang Yuansun on 2018/1/23.
  */
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.RectF;
 import android.view.LayoutInflater;
@@ -14,6 +18,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerTopInter;
 import com.xueersi.parentsmeeting.module.videoplayer.media.FractionalTouchDelegate;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
@@ -29,11 +35,11 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
     private LiveMediaController mMediaController;
     protected Context mContext;
 
-    /** 底部动画向上出现 */
+  /*  *//** 底部动画向上出现 *//*
     private Animation mAnimSlideInBottom;
-    /** 底部动画向下隐藏 */
+    *//** 底部动画向下隐藏 *//*
     private Animation mAnimSlideOutBottom;
-
+*/
     /** 上方信息栏布局 */
     protected View mSystemInfoLayout;
     /** 顶部信息栏左边的回退按钮 */
@@ -44,6 +50,9 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
     private ImageView mAllView;
     /** 标题栏右侧按钮 */
     private View vTitleRight;
+    private AnimatorSet mAnimatorsetIn;
+    private ObjectAnimator mTransOut;
+    private AnimatorSet mAnimatorSetOut;
 
     public BaseLiveMediaControllerTop(Context context, LiveMediaController controller, LiveMediaController
             .MediaPlayerControl mPlayer) {
@@ -58,29 +67,37 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
         inflateLayout();
         findViewItems();
         // 初始化上下控制栏的动画
-        mAnimSlideOutBottom = AnimationUtils.loadAnimation(mContext, com.xueersi.parentsmeeting.base.R.anim
-                .anim_mediactrl_slide_out_bottom);
-        mAnimSlideInBottom = AnimationUtils.loadAnimation(mContext, com.xueersi.parentsmeeting.base.R.anim
-                .anim_mediactrl_slide_in_bottom);
-        mAnimSlideOutBottom.setFillAfter(true);
-        mAnimSlideInBottom.setFillAfter(true);
-        mAnimSlideOutBottom.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
+       initAnim();
+    }
 
+    /**
+     * 初始化 属性动画
+     */
+    private void initAnim() {
+        int screenHight = ScreenUtils.getScreenHeight();
+        int height = SizeUtils.Dp2Px(mContext,35f);
+        ObjectAnimator  mTransIn = ObjectAnimator.ofFloat(mSystemInfoLayout,"translationY",-height,0);
+        ObjectAnimator  alphaIn =  ObjectAnimator.ofFloat(mSystemInfoLayout,"alpha",0.0f,1.0f);
+        mAnimatorsetIn = new AnimatorSet();
+        mAnimatorsetIn.setDuration(300);
+        mAnimatorsetIn.playTogether(mTransIn,alphaIn);
+
+        mTransOut = ObjectAnimator.ofFloat(mSystemInfoLayout,"translationY",0,-height);
+        ObjectAnimator  alphaOut =  ObjectAnimator.ofFloat(mSystemInfoLayout,"alpha",1.0f,0.0f);
+        mAnimatorSetOut = new AnimatorSet();
+        mAnimatorSetOut.setDuration(300);
+        mAnimatorSetOut.playTogether(mTransOut,alphaOut);
+
+        mTransOut.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animation animation) {
+            public void onAnimationEnd(Animator animation) {
                 mMediaController.hiderl_video_mediacontroller(); // 隐藏控制栏
                 mMediaController.showButtons(false); // 隐藏系统按钮
                 mMediaController.removeMessages(LiveMediaController.MSG_HIDE_SYSTEM_UI);
                 mMediaController.sendEmptyMessage(LiveMediaController.MSG_HIDE_SYSTEM_UI); // 隐藏状态栏
             }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
         });
+
     }
 
     /** 播放器的布局界面 */
@@ -127,12 +144,12 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
     @Override
     public void onShow() {
         mSystemInfoLayout.setVisibility(View.VISIBLE);
-        mSystemInfoLayout.startAnimation(mAnimSlideInBottom);
+        mAnimatorsetIn.start();
     }
 
     @Override
     public void onHide() {
-        mSystemInfoLayout.startAnimation(mAnimSlideOutBottom);
+        mAnimatorSetOut.start();
     }
 
     /** 设置横竖屏切换按钮是否显示 */
