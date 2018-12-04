@@ -210,7 +210,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 @Override
                 public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
                     if (lottieComposition == null) {
-//                    disMissAnswerResult();
                         return;
                     }
                     disMissAnswerResult();
@@ -272,7 +271,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 @Override
                 public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
                     if (lottieComposition == null) {
-//                    disMissAnswerResult();
                         return;
                     }
                     disMissAnswerResult();
@@ -287,7 +285,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 //                    group.addView(rlResult);
                     rlAnswerResultLayout.addView(mRlResult);
                     lottieAnimationView.playAnimation();
-//                    setRightGold(mContext, lottieAnimationView, mAnswerReulst.getGold());
                     setWrongTip(mContext, lottieAnimationView, mAnswerReulst.getAnswerList().get(0).getRightAnswers().get(0) + "");
                     mLiveSoundPool = LiveSoundPool.createSoundPool();
                     final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(mLiveSoundPool);
