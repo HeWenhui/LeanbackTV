@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -15,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 public class SmallEnglishEvaluateTeacherPager extends BaseEvaluateTeacherPaper {
 
     private ImageView ivLoading;
+    private ImageView ivTryagaingLoading;
 
     public SmallEnglishEvaluateTeacherPager(Context context, LiveGetInfo getInfo) {
         super(context, getInfo);
@@ -36,7 +39,16 @@ public class SmallEnglishEvaluateTeacherPager extends BaseEvaluateTeacherPaper {
             @Override
             public void onClick(View view) {
                 rlSubmit.setBackgroundResource(R.drawable.livevideo_evaluateteacher_shellwindow_tijiao_btn_loading);
+                ivTryagaingLoading = mView.findViewById(R.id.iv_livevideo_evaluate_tryagain_loading);
                 ivLoading.setVisibility(View.VISIBLE);
+                buttonOnClick.submit(mainEva, tutorEva);
+            }
+        });
+        btnReSubmit.setOnClickListener(new OnUnDoubleClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnReSubmit.setEnabled(false);
+                ivTryagaingLoading.setVisibility(View.VISIBLE);
                 buttonOnClick.submit(mainEva, tutorEva);
             }
         });
@@ -45,13 +57,31 @@ public class SmallEnglishEvaluateTeacherPager extends BaseEvaluateTeacherPaper {
 
     @Override
     public void initData() {
+        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
         optCheckCorlor = 0xFFB73800;
         optUncheckColor = 0xFF7B6E6E;
         scoreCheckColor = 0xFFB73800;
         scoreUncheckColor = 0xFF7B6E6E;
-
+        tvMainName.setTypeface(fontFace);
+        tvTutorName.setTypeface(fontFace);
+        tvResultCountDown.setTypeface(fontFace);
+        rbMainUnSat.setTypeface(fontFace);
+        rbMainSat.setTypeface(fontFace);
+        rbMainVerySat.setTypeface(fontFace);
+        rbTutorSat.setTypeface(fontFace);
+        rbTutorUnSat.setTypeface(fontFace);
+        rbTutorVerySat.setTypeface(fontFace);
+        cbMainOpt1.setTypeface(fontFace);
+        cbMainOpt2.setTypeface(fontFace);
+        cbMainOpt3.setTypeface(fontFace);
+        cbMainOpt4.setTypeface(fontFace);
+        cbTutorOpt1.setTypeface(fontFace);
+        cbTutorOpt2.setTypeface(fontFace);
+        cbTutorOpt3.setTypeface(fontFace);
+        cbTutorOpt4.setTypeface(fontFace);
         super.initData();
     }
+
     @Override
     public void showUploadFailPager() {
         rlBackground.setBackgroundResource(R.drawable.livevideo_evaluateteacher_bg1_nor);
@@ -62,5 +92,12 @@ public class SmallEnglishEvaluateTeacherPager extends BaseEvaluateTeacherPaper {
     @Override
     public void showSuccessPager(CountDownCallback callback) {
         super.showSuccessPager(callback);
+    }
+
+    @Override
+    public void setReUpload() {
+        ivTryagaingLoading.setVisibility(View.GONE);
+        btnReSubmit.setEnabled(true);
+        super.setReUpload();
     }
 }

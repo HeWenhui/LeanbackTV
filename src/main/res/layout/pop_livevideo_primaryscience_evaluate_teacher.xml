@@ -50,7 +50,7 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_weight="5"
-            android:background="@drawable/shape_livevideo_primaryscience_evaluate_teacher_bg">
+            android:background="@drawable/lspj_tanchuang_xuanxiang_btn_bg_normal">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -226,7 +226,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="40dp"
             android:layout_weight="5"
-            android:background="@drawable/shape_livevideo_smallenglish_evaluate_teacher_bg">
+            android:background="@drawable/lspj_tanchuang_xuanxiang_btn_bg_normal">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -405,13 +405,13 @@
             android:background="@drawable/selector_livevideo_primaryscience_evaluate_teacher_upload">
 
             <ImageView
-                android:id="@+id/iv_livevideo_smallenglish_evaluate_loading"
+                android:id="@+id/iv_livevideo_primaryscience_evaluate_loading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
-                android:src="@drawable/livevideo_evaluateteacher_shellwindow_loading_icon"
+                android:src="@drawable/lspj_tanchuang_loading_icon_normal"
                 android:visibility="gone" />
 
         </RelativeLayout>
@@ -432,7 +432,7 @@
             android:layout_marginTop="67dp"
             android:src="@drawable/lspj_pingjia_line_img_normal" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -448,12 +448,24 @@
             <Button
                 android:id="@id/btn_livevideo_evaluate_tryagain"
                 style="@style/text_font16_ffffff_style"
+                android:layout_below="@id/iv_livevideo_evaluate_submit_result"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="21dp"
                 android:background="@drawable/selector_livevideo_primaryscience_evaluate_teacher_reupload" />
-        </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_livevideo_evaluate_tryagain_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/btn_livevideo_evaluate_tryagain"
+                android:layout_alignBottom="@id/btn_livevideo_evaluate_tryagain"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                android:src="@drawable/lspj_tanchuang_loading_icon_normal" />
+
+        </RelativeLayout>
 
         <TextView
             android:id="@id/tv_livevideo_evaluate_count_down"

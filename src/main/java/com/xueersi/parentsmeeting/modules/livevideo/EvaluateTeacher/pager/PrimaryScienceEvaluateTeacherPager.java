@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -14,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 public class PrimaryScienceEvaluateTeacherPager extends BaseEvaluateTeacherPaper {
 
     private ImageView ivLoading;
+    private ImageView ivTryagaingLoading;
 
     public PrimaryScienceEvaluateTeacherPager(Context context, LiveGetInfo getInfo) {
         super(context, getInfo);
@@ -24,8 +26,10 @@ public class PrimaryScienceEvaluateTeacherPager extends BaseEvaluateTeacherPaper
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.pop_livevideo_primaryscience_evaluate_teacher, null);
-        ivLoading = mView.findViewById(R.id.iv_livevideo_smallenglish_evaluate_loading);
+        ivLoading = mView.findViewById(R.id.iv_livevideo_primaryscience_evaluate_loading);
+        ivTryagaingLoading = mView.findViewById(R.id.iv_livevideo_evaluate_tryagain_loading);
         super.initView();
+        setTextTypeFace();
         return mView;
     }
 
@@ -34,22 +38,50 @@ public class PrimaryScienceEvaluateTeacherPager extends BaseEvaluateTeacherPaper
         rlSubmit.setOnClickListener(new OnUnDoubleClickListener() {
             @Override
             public void onClick(View view) {
-                rlSubmit.setBackgroundResource(R.drawable.lspj_tanchuang_btn_tijiao_loading);
                 ivLoading.setVisibility(View.VISIBLE);
+                buttonOnClick.submit(mainEva, tutorEva);
+            }
+        });
+        btnReSubmit.setOnClickListener(new OnUnDoubleClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnReSubmit.setEnabled(false);
+                ivTryagaingLoading.setVisibility(View.VISIBLE);
                 buttonOnClick.submit(mainEva, tutorEva);
             }
         });
         super.initListener();
     }
-
+    private void setTextTypeFace(){
+        Typeface fontFace = Typeface.createFromAsset(mContext.getAssets(), "fangzhengcuyuan.ttf");
+        tvMainName.setTypeface(fontFace);
+        tvTutorName.setTypeface(fontFace);
+        tvResultCountDown.setTypeface(fontFace);
+        rbMainUnSat.setTypeface(fontFace);
+        rbMainSat.setTypeface(fontFace);
+        rbMainVerySat.setTypeface(fontFace);
+        rbTutorSat.setTypeface(fontFace);
+        rbTutorUnSat.setTypeface(fontFace);
+        rbTutorVerySat.setTypeface(fontFace);
+        cbMainOpt1.setTypeface(fontFace);
+        cbMainOpt2.setTypeface(fontFace);
+        cbMainOpt3.setTypeface(fontFace);
+        cbMainOpt4.setTypeface(fontFace);
+        cbTutorOpt1.setTypeface(fontFace);
+        cbTutorOpt2.setTypeface(fontFace);
+        cbTutorOpt3.setTypeface(fontFace);
+        cbTutorOpt4.setTypeface(fontFace);
+    }
     @Override
     public void initData() {
+
         optCheckCorlor = 0xFFFF7403;
         optUncheckColor = 0xFFBC7D57;
         scoreCheckColor = 0xFF8F4D26;
         scoreUncheckColor = 0xFFBC7D57;
         super.initData();
     }
+
     @Override
     public void showUploadFailPager() {
         rlBackground.setBackgroundResource(R.drawable.lspj_pingjia_thanks_bg_img_normal);
@@ -60,5 +92,11 @@ public class PrimaryScienceEvaluateTeacherPager extends BaseEvaluateTeacherPaper
     @Override
     public void showSuccessPager(CountDownCallback callback) {
         super.showSuccessPager(callback);
+    }
+
+    @Override
+    public void setReUpload() {
+        ivTryagaingLoading.setVisibility(View.GONE);
+        super.setReUpload();
     }
 }

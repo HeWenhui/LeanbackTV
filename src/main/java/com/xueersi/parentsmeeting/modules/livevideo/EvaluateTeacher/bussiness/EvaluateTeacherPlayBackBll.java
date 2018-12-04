@@ -9,83 +9,82 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.http.EvaluateResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.EvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.PrimaryScienceEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.SmallEnglishEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by：WangDe on 2018/11/27 16:12
+ * Created by：WangDe on 2018/12/2 22:06
  */
-public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateAction, IButtonOnClick {
+public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShowEvaluateAction, IButtonOnClick {
+    LiveBackPlayerFragment liveBackPlayVideoFragment;
     RelativeLayout bottomContent;
     private BaseEvaluateTeacherPaper evaluateTeacherPager;
     private RelativeLayout rlLiveMessageContent;
     private LiveHttpManager mHttpManager;
     private int reSubmitCount = 0;
-    LiveVideoFragment liveFragment;
     EvaluateResponseParser mParser;
 
-    public EvaluateTeacherBll(Activity context, LiveBll2 liveBll) {
-        super(context, liveBll);
-
+    public EvaluateTeacherPlayBackBll(Activity activity, LiveBackBll liveBackBll) {
+        super(activity, liveBackBll);
     }
 
     @Override
-    public void onLiveInited(LiveGetInfo getInfo) {
-
-        if (getInfo != null) {
-            if (getInfo.getEvaluateTeacherEntity() != null && getInfo.getEvaluateTeacherEntity().isEvaluateIsOpen()) {
-                mHttpManager = mLiveBll.getHttpManager();
-                mParser = new EvaluateResponseParser();
-                if (getInfo.getIsArts() == 1) {
-                    if (getInfo.getSmallEnglish()) {
-                        evaluateTeacherPager = new SmallEnglishEvaluateTeacherPager(mContext, getInfo);
-                    } else {
-                        evaluateTeacherPager = new EvaluateTeacherPager(mContext, getInfo);
-                    }
-                    getArtsEvaluateOption(getInfo.getSmallEnglish());
-                } else  if (getInfo.getIsArts() == 0){
-                    if (1 == getInfo.getIsPrimarySchool()) {
-                        evaluateTeacherPager = new PrimaryScienceEvaluateTeacherPager(mContext, getInfo);
-                    } else {
-                        evaluateTeacherPager = new EvaluateTeacherPager(mContext, getInfo);
-                    }
-                    getSciecneEvaluateOption();
-                }else if (getInfo.getIsArts() == 2) {
-                    evaluateTeacherPager = new EvaluateTeacherPager(mContext, getInfo);
-                    getArtsEvaluateOption(false);
+    public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object>
+            businessShareParamMap) {
+        super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
+        if (liveGetInfo != null && 1 == mVideoEntity.getEvaluateIsOpen()) {
+            mParser = new EvaluateResponseParser();
+            mHttpManager = liveBackBll.getmHttpManager();
+            if (liveGetInfo.getIsArts() == 1) {
+                if (liveGetInfo.getSmallEnglish()) {
+                    evaluateTeacherPager = new SmallEnglishEvaluateTeacherPager(mContext, liveGetInfo);
                 } else {
-                    return;
+                    evaluateTeacherPager = new EvaluateTeacherPager(mContext, liveGetInfo);
                 }
-                evaluateTeacherPager.setIShowEvaluateAction(this);
-                evaluateTeacherPager.setButtonOnClick(this);
+                getArtsEvaluateOption(liveGetInfo.getSmallEnglish());
+            } else if (liveGetInfo.getIsArts() == 0) {
+                if (1 == liveGetInfo.getIsPrimarySchool()) {
+                    evaluateTeacherPager = new PrimaryScienceEvaluateTeacherPager(mContext, liveGetInfo);
+                } else {
+                    evaluateTeacherPager = new EvaluateTeacherPager(mContext, liveGetInfo);
+                }
+                getSciecneEvaluateOption();
+            } else if (liveGetInfo.getIsArts() == 2) {
+                evaluateTeacherPager = new EvaluateTeacherPager(mContext, liveGetInfo);
+                getArtsEvaluateOption(false);
+            } else {
+                return;
             }
+            evaluateTeacherPager.setIShowEvaluateAction(this);
+            evaluateTeacherPager.setButtonOnClick(this);
         }
-        super.onLiveInited(getInfo);
     }
 
-    @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        this.bottomContent = bottomContent;
+    public void setLiveFragmentBase(LiveBackPlayerFragment liveBackPlayVideoFragment) {
+        this.liveBackPlayVideoFragment = liveBackPlayVideoFragment;
     }
+
 
     @Override
     public boolean showPager() {
-        if ((mGetInfo.getEvaluateTeacherEntity() != null && System.currentTimeMillis() > mGetInfo.getEvaluateTeacherEntity().getEvaluateTime())) {
-            liveFragment.stopPlayer();
-            mLiveBll.onIRCmessageDestory();
+        logger.i("getCurrentPosition" + liveBackBll.getvPlayer().getCurrentPosition());
+        if (0 != mVideoEntity.getEvaluateTimePer() && ((liveBackBll.getvPlayer().getCurrentPosition() + 0.0) /
+                liveBackBll
+                        .getvPlayer().getDuration()) > mVideoEntity.getEvaluateTimePer()) {
+            liveBackBll.getvPlayer().stop();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             if (rlLiveMessageContent == null) {
@@ -133,20 +132,18 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
         quitLive();
     }
 
-    public void setLiveFragment(LiveVideoFragment liveFragment) {
-        this.liveFragment = liveFragment;
-    }
 
     private void quitLive() {
         UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
                 .evaluate_teacher_1708002));
-        if (mLiveBll.getmIsLand().get()) {
+        if (liveBackPlayVideoFragment.isLandSpace()) {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             activity.finish();
         } else {
             activity.finish();
         }
     }
+
 
     private String getEvaluteOption(Map<String, String> data) {
         String option = "";
@@ -188,17 +185,15 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
             }
 
         };
-        if (mGetInfo.getIsArts() == 1) {
-            mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStuCouId(), mGetInfo.getMainTeacherId(),
-                    teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
-                    tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
+        if (liveGetInfo.getIsArts() == 1) {
+            mHttpManager.saveArtsEvaluationTeacher(liveGetInfo.getId(), liveGetInfo.getStuCouId(), liveGetInfo
+                            .getMainTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
+                    tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
         } else {
-            mHttpManager.saveScienceEvaluationTeacher(mLiveId, mGetInfo.getStuCouId(), mGetInfo.getMainTeacherId(),
-                    teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
-                    tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
+            mHttpManager.saveScienceEvaluationTeacher(liveGetInfo.getId(), liveGetInfo.getStuCouId(), liveGetInfo
+                            .getMainTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
+                    tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
         }
-
-
     }
 
     private void getArtsEvaluateOption(boolean isSmallEnglish) {
@@ -229,4 +224,5 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
             }
         });
     }
+
 }

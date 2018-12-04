@@ -39,6 +39,7 @@ public class EvaluateTeacherPager extends BaseEvaluateTeacherPaper {
 
     @Override
     public void initData() {
+        submitAlpha = 0.6f;
         super.initData();
     }
 
@@ -53,17 +54,32 @@ public class EvaluateTeacherPager extends BaseEvaluateTeacherPaper {
 
             }
         });
+        btnReSubmit.setOnClickListener(new OnUnDoubleClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnReSubmit.setEnabled(false);
+                btnReSubmit.setAlpha(0.6f);
+                buttonOnClick.submit(mainEva, tutorEva);
+            }
+        });
         super.initListener();
     }
 
     @Override
     public void showSuccessPager(CountDownCallback callback) {
         tvResultStatus.setText("感谢评价");
+        ivResult.setImageResource(R.drawable.ic_monkey_success_img_normal);
         super.showSuccessPager(callback);
     }
 
     public void showUploadFailPager() {
         tvResultStatus.setText("提交失败，请重试!");
         super.showUploadFailPager();
+    }
+
+    @Override
+    public void setReUpload() {
+        btnReSubmit.setAlpha(1.0f);
+        super.setReUpload();
     }
 }

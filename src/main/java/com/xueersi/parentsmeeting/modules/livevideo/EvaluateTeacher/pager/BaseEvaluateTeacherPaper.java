@@ -97,6 +97,7 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
     public int optUncheckColor = 0xFF666666;
     public int scoreCheckColor = 0xFF333333;
     public int scoreUncheckColor = 0xFF666666;
+    public float submitAlpha = 1.0f;
 
     public BaseEvaluateTeacherPaper(Context context) {
         super(context);
@@ -131,9 +132,9 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
         cbMainOpt4 = mView.findViewById(R.id.cb_livevideo_evaluate_main_option_4);
         /** 辅导评价*/
         rgTutorEvaluate = mView.findViewById(R.id.rg_livevideo_evaluate_tutor);
-        rbTutorUnSat = mView.findViewById(R.id.rb_livevideo_evaluate_main_unsatisfactory);
-        rbTutorSat = mView.findViewById(R.id.rb_livevideo_evaluate_main_satisfactory);
-        rbTutorVerySat = mView.findViewById(R.id.rb_livevideo_evaluate_main_very_satisfactory);
+        rbTutorUnSat = mView.findViewById(R.id.rb_livevideo_evaluate_tutor_unsatisfactory);
+        rbTutorSat = mView.findViewById(R.id.rb_livevideo_evaluate_tutor_satisfactory);
+        rbTutorVerySat = mView.findViewById(R.id.rb_livevideo_evaluate_tutor_very_satisfactory);
         llTutorEvaluate = mView.findViewById(R.id.ll_livevideo_evaluate_tutor_option);
         cbTutorOpt1 = mView.findViewById(R.id.cb_livevideo_evaluate_tutor_option_1);
         cbTutorOpt2 = mView.findViewById(R.id.cb_livevideo_evaluate_tutor_option_2);
@@ -154,25 +155,25 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
         loadImage(ivMain, getInfo.getMainTeacherInfo().getTeacherImg(), R.drawable.bg_main_default_head_image);
         loadImage(ivTutor, getInfo.getTeacherIMG(), R.drawable.bg_tutor_default_head_imge);
         String mainName = getInfo.getMainTeacherInfo().getTeacherName();
-        if (mainName != null){
+        if (mainName != null) {
             tvMainName.setText(mainName);
         }
         String tutorName = getInfo.getTeacherName();
-        if (tutorName!= null){
+        if (tutorName != null) {
             tvTutorName.setText(getInfo.getTeacherName());
         }
     }
 
     @Override
     public void initListener() {
-        cbMainOpt1.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor));
-        cbMainOpt2.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor));
-        cbMainOpt3.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor));
-        cbMainOpt4.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor));
-        cbTutorOpt1.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor));
-        cbTutorOpt2.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor));
-        cbTutorOpt3.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor));
-        cbTutorOpt4.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor));
+        cbMainOpt1.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
+        cbMainOpt2.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
+        cbMainOpt3.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
+        cbMainOpt4.setOnCheckedChangeListener(new MainOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
+        cbTutorOpt1.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
+        cbTutorOpt2.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
+        cbTutorOpt3.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
+        cbTutorOpt4.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
         rbMainUnSat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, optUncheckColor));
         rbMainSat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, optUncheckColor));
         rbMainVerySat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, optUncheckColor));
@@ -195,19 +196,19 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
                 cbMainOpt4.setChecked(false);
                 rlSubmit.setEnabled(false);
                 if (i == R.id.rb_livevideo_evaluate_main_unsatisfactory) {
-                    mainEva.put("eva", "1");
+                    mainEva.put("eva", rbMainUnSat.getText().toString());
                     cbMainOpt1.setText(mainOptionUnSat.get(0));
                     cbMainOpt2.setText(mainOptionUnSat.get(1));
                     cbMainOpt3.setText(mainOptionUnSat.get(2));
                     cbMainOpt4.setText(mainOptionUnSat.get(3));
                 } else if (i == R.id.rb_livevideo_evaluate_main_satisfactory) {
-                    mainEva.put("eva", "2");
+                    mainEva.put("eva", rbMainSat.getText().toString());
                     cbMainOpt1.setText(mainOptionSat.get(0));
                     cbMainOpt2.setText(mainOptionSat.get(1));
                     cbMainOpt3.setText(mainOptionSat.get(2));
                     cbMainOpt4.setText(mainOptionSat.get(3));
                 } else if (i == R.id.rb_livevideo_evaluate_main_very_satisfactory) {
-                    mainEva.put("eva", "3");
+                    mainEva.put("eva", rbMainVerySat.getText().toString());
                     cbMainOpt1.setText(mainOptionVerySat.get(0));
                     cbMainOpt2.setText(mainOptionVerySat.get(1));
                     cbMainOpt3.setText(mainOptionVerySat.get(2));
@@ -223,22 +224,21 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
                 cbTutorOpt2.setChecked(false);
                 cbTutorOpt3.setChecked(false);
                 cbTutorOpt4.setChecked(false);
-//                rlSubmit.setClickable(false);
                 rlSubmit.setEnabled(false);
                 if (i == R.id.rb_livevideo_evaluate_tutor_unsatisfactory) {
-                    tutorEva.put("eva", "1");
+                    tutorEva.put("eva", rbTutorUnSat.getText().toString());
                     cbTutorOpt1.setText(tutorOptionUnSat.get(0));
                     cbTutorOpt2.setText(tutorOptionUnSat.get(1));
                     cbTutorOpt3.setText(tutorOptionUnSat.get(2));
                     cbTutorOpt4.setText(tutorOptionUnSat.get(3));
                 } else if (i == R.id.rb_livevideo_evaluate_tutor_satisfactory) {
-                    tutorEva.put("eva", "2");
+                    tutorEva.put("eva", rbTutorSat.getText().toString());
                     cbTutorOpt1.setText(tutorOptionSat.get(0));
                     cbTutorOpt2.setText(tutorOptionSat.get(1));
                     cbTutorOpt3.setText(tutorOptionSat.get(2));
                     cbTutorOpt4.setText(tutorOptionSat.get(3));
                 } else if (i == R.id.rb_livevideo_evaluate_tutor_very_satisfactory) {
-                    tutorEva.put("eva", "3");
+                    tutorEva.put("eva", rbTutorVerySat.getText().toString());
                     cbTutorOpt1.setText(tutorOptionVerySat.get(0));
                     cbTutorOpt2.setText(tutorOptionVerySat.get(1));
                     cbTutorOpt3.setText(tutorOptionVerySat.get(2));
@@ -249,6 +249,7 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
         btnReSubmit.setOnClickListener(new OnUnDoubleClickListener() {
             @Override
             public void onClick(View view) {
+                btnReSubmit.setEnabled(false);
                 buttonOnClick.submit(mainEva, tutorEva);
             }
         });
@@ -273,20 +274,20 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
     public void setOptionEntity(EvaluateOptionEntity optionEntity) {
         this.optionEntity = optionEntity;
         Map<String, String> score = optionEntity.getEvaluateScore();
-        rbMainUnSat.setText(score.get("1"));
-        rbMainSat.setText(score.get("2"));
-        rbMainVerySat.setText(score.get("3"));
-        rbTutorUnSat.setText(score.get("1"));
-        rbTutorSat.setText(score.get("2"));
-        rbMainVerySat.setText(score.get("3"));
+        rbMainUnSat.setText(score.get("choose1"));
+        rbMainSat.setText(score.get("choose2"));
+        rbMainVerySat.setText(score.get("choose3"));
+        rbTutorUnSat.setText(score.get("choose1"));
+        rbTutorSat.setText(score.get("choose2"));
+        rbMainVerySat.setText(score.get("choose3"));
         Map<String, List<String>> mainOption = optionEntity.getTeacherEvaluOption();
-        mainOptionUnSat = mainOption.get("1");
-        mainOptionSat = mainOption.get("2");
-        mainOptionVerySat = mainOption.get("3");
+        mainOptionUnSat = mainOption.get("choose1");
+        mainOptionSat = mainOption.get("choose2");
+        mainOptionVerySat = mainOption.get("choose3");
         Map<String, List<String>> tutorOption = optionEntity.getTutorEvaluOption();
-        tutorOptionUnSat = tutorOption.get("1");
-        tutorOptionSat = tutorOption.get("2");
-        tutorOptionVerySat = tutorOption.get("3");
+        tutorOptionUnSat = tutorOption.get("choose1");
+        tutorOptionSat = tutorOption.get("choose2");
+        tutorOptionVerySat = tutorOption.get("choose3");
         //打乱顺序
         Collections.shuffle(mainOptionUnSat);
         Collections.shuffle(mainOptionSat);
@@ -320,7 +321,9 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
         tvResultCountDown.setVisibility(View.GONE);
         btnReSubmit.setVisibility(View.VISIBLE);
     }
-
+    public void setReUpload(){
+        btnReSubmit.setEnabled(true);
+    }
     public interface CountDownCallback {
         void finishVideo();
     }
@@ -353,10 +356,12 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
     class MainOptListener implements CompoundButton.OnCheckedChangeListener {
         int checkColor;
         int uncheckColor;
+        float submitAlpha;
 
-        MainOptListener(int checkColor, int uncheckColor) {
+        MainOptListener(int checkColor, int uncheckColor,float submitAlpha) {
             this.checkColor = checkColor;
             this.uncheckColor = uncheckColor;
+            this.submitAlpha = submitAlpha;
         }
 
         @Override
@@ -375,26 +380,29 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
                 if (!cbMainOpt1.isChecked() && !cbMainOpt2.isChecked() && !cbMainOpt3.isChecked() &&
                         !cbMainOpt4.isChecked()) {
                     rlSubmit.setEnabled(false);
-                    rlSubmit.setAlpha(0.6f);
+                    rlSubmit.setAlpha(submitAlpha);
                 }
             }
         }
     }
+
     //评价辅导响应事件
     class TutorOptListener implements CompoundButton.OnCheckedChangeListener {
         int checkColor;
         int uncheckColor;
+        float submitAlpha;
 
-        TutorOptListener(int checkColor, int uncheckColor) {
+        TutorOptListener(int checkColor, int uncheckColor,float submitAlpha) {
             this.checkColor = checkColor;
             this.uncheckColor = uncheckColor;
+            this.submitAlpha = submitAlpha;
         }
 
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             if (b) {
                 tutorEva.put(compoundButton.getText().toString(), "1");
-                compoundButton.setTextColor(0xFFB73800);
+                compoundButton.setTextColor(checkColor);
                 if (cbMainOpt1.isChecked() || cbMainOpt2.isChecked() || cbMainOpt3.isChecked() ||
                         cbMainOpt4.isChecked()) {
                     rlSubmit.setEnabled(true);
@@ -402,15 +410,16 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
                 }
             } else {
                 tutorEva.put(compoundButton.getText().toString(), "0");
-                compoundButton.setTextColor(0xFF7B6E6E);
+                compoundButton.setTextColor(uncheckColor);
                 if (!cbTutorOpt1.isChecked() && !cbTutorOpt2.isChecked() && !cbTutorOpt3.isChecked() &&
                         !cbTutorOpt4.isChecked()) {
                     rlSubmit.setEnabled(false);
-                    rlSubmit.setAlpha(0.6f);
+                    rlSubmit.setAlpha(submitAlpha);
                 }
             }
         }
     }
+
     //主辅评价分数
     class ScoreListener implements CompoundButton.OnCheckedChangeListener {
         int checkColor;

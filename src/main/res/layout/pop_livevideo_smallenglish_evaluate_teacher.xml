@@ -433,7 +433,7 @@
             android:layout_marginTop="67dp"
             android:src="@drawable/livevideo_evaluateteacher_fengexian_img_nor" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -443,18 +443,29 @@
                 android:id="@id/iv_livevideo_evaluate_submit_result"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
                 android:src="@drawable/livevideo_evaluateteacher_ganxie_img_nor" />
 
             <Button
                 android:id="@id/btn_livevideo_evaluate_tryagain"
                 style="@style/text_font16_ffffff_style"
+                android:layout_below="@id/iv_livevideo_evaluate_submit_result"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="21dp"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/selector_livevideo_smallenglish_evaluate_teacher_reupload" />
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/iv_livevideo_evaluate_tryagain_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/btn_livevideo_evaluate_tryagain"
+                android:layout_alignBottom="@id/btn_livevideo_evaluate_tryagain"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                android:src="@drawable/livevideo_evaluateteacher_shellwindow_loading_icon" />
+        </RelativeLayout>
 
         <TextView
             android:id="@id/tv_livevideo_evaluate_count_down"
