@@ -47,7 +47,7 @@
 //    private EnglishH5CoursewareBll mEnglishH5CoursewareBll;
 //    private String isShowRanks;
 //    private RelativeLayout rlLivevideoSubjectWeb;
-//    private boolean IS_SCIENCE;
+//    private boolean isArts;
 //    private int mGoldNum;
 //    private int mEnergyNum;
 //
@@ -56,7 +56,7 @@
 //        mEnglishH5CoursewareBll = englishH5CoursewareBll;
 //    }
 //
-//    public EnglishH5CoursewarePager(Context context, boolean isPlayBack, String liveId, String url, String id, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, LiveAndBackDebug liveAndBackDebug, String isShowRanks, boolean IS_SCIENCE) {
+//    public EnglishH5CoursewarePager(Context context, boolean isPlayBack, String liveId, String url, String id, final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose, LiveAndBackDebug liveAndBackDebug, String isShowRanks, boolean isArts) {
 //        super(context);
 //        this.liveId = liveId;
 //        this.url = url;
@@ -67,7 +67,7 @@
 //        this.courseware_type = courseware_type;
 //        this.nonce = nonce;
 //        this.isShowRanks = isShowRanks;
-//        this.IS_SCIENCE = IS_SCIENCE;
+//        this.isArts = isArts;
 //        initWebView();
 //        setErrorTip("H5课件加载失败，请重试");
 //        setLoadTip("H5课件正在加载，请稍候");
@@ -232,7 +232,7 @@
 //        if (isPlayBack) {
 //            loadUrl += "&isPlayBack=1";
 //        }
-//        loadUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+//        loadUrl += "&isArts=" + (isArts ? "0" : "1");
 //        if (!StringUtils.isEmpty(nonce)) {
 //            loadUrl += "&nonce=" + nonce;
 //        }

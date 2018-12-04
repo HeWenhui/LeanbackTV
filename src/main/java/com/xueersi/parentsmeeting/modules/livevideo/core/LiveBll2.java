@@ -390,6 +390,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
+        } else if (mGetInfo.getIsArts() == 2) {//
+            appID = UmsConstants.ARTS_APP_ID;
+            liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {
             appID = UmsConstants.LIVE_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
@@ -469,7 +472,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         @Override
         public void run() {
             logger.e("======>initArtsExtLiveInfoTask run:");
-            mHttpManager.getArtsExtLiveInfo(LiveBll2.this.mLiveId, LiveBll2.this.mStuCouId, new HttpCallBack() {
+            mHttpManager.getArtsExtLiveInfo(LiveBll2.this.mLiveId, LiveBll2.this.mStuCouId, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);

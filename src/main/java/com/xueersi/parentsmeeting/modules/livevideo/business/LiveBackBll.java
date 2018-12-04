@@ -276,7 +276,10 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         liveGetInfo.setStuId(userInfoEntity.getStuId());
         liveGetInfo.setStuCouId(stuCourId);
         if (liveVideoSAConfig != null) {
-            liveGetInfo.setSubjectiveTestAnswerResult(liveVideoSAConfig.inner.subjectiveTestAnswerResult);
+            liveGetInfo.setSubjectiveTestAnswerResult(
+                    (isArts == 2) ?
+                            liveVideoSAConfig.inner.chsSubjectiveTestAnswerResult :
+                            liveVideoSAConfig.inner.subjectiveTestAnswerResult);
         }
         liveGetInfo.setTestPaperUrl("https://live.xueersi.com/Live/getMultiTestPaper");
         liveGetInfo.setIs_show_ranks("0");
@@ -593,6 +596,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     private void showQuestion(VideoQuestionEntity oldQuestionEntity, ShowQuestion showQuestion) {
         LiveBackBaseBll liveBackBaseBll = array.get(mQuestionEntity.getvCategory());
+        logger.i("showQuestion :"+liveBackBaseBll);
         if (liveBackBaseBll != null) {
             liveBackBaseBll.showQuestion(oldQuestionEntity, mQuestionEntity, showQuestion);
         } else {

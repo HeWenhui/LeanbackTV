@@ -127,15 +127,32 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                                   String classId, String isSubmit, String type,
                                   double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
         if (LiveVideoConfig.isNewArts) {
-            HttpRequestParams params = new HttpRequestParams();
-            String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
-            setDefaultParameter(params);
-            params.addBodyParam("liveId", classId);
-            params.addBodyParam("answers", testResult);
-            params.addBodyParam("isPlayBack", "2");
-            params.addBodyParam("isForce", "1");
-            params.addBodyParam("Cookie", AppBll.getInstance().getUserToken());
-            sendPost(url, params, requestCallBack);
+            if("16".equals(isSubmit) || "15".equals(isSubmit)){
+                HttpRequestParams params = new HttpRequestParams();
+                String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSH5_ANSWER;
+                setDefaultParameter(params);
+                params.addBodyParam("testId", testId);
+                params.addBodyParam("liveId", classId);
+                params.addBodyParam("type", srcType);
+                params.addBodyParam("isRight", isRight ? "1" : "0");
+                params.addBodyParam("isPlayBack", "1");
+                params.addBodyParam("isSubmit", isSubmit);
+                params.addBodyParam("voiceUrl", "");
+                params.addBodyParam("voiceTime", "" + voiceTime);
+                params.addBodyParam("url", "");
+                params.addBodyParam("imageUrl", "");
+                sendPost(url, params, requestCallBack);
+            }else{
+                HttpRequestParams params = new HttpRequestParams();
+                String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
+                setDefaultParameter(params);
+                params.addBodyParam("liveId", classId);
+                params.addBodyParam("answers", testResult);
+                params.addBodyParam("isPlayBack", "2");
+                params.addBodyParam("isForce", "1");
+                params.addBodyParam("Cookie", AppBll.getInstance().getUserToken());
+                sendPost(url, params, requestCallBack);
+            }
         } else {
             String liveUrl = liveVideoSAConfigInner.URL_LIVE_SUBMIT_TEST_H5_ANSWER;
             HttpRequestParams params = new HttpRequestParams();
@@ -187,7 +204,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
      * @param operateId
      * @param requestCallBack
      */
-    public void getLivePlayRedPacket(String enStuId, String operateId, String liveId, HttpCallBack
+    public void  getLivePlayRedPacket(String enStuId, String operateId, String liveId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);

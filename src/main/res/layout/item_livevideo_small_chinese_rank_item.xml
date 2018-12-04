@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@+id/tv_livevideo_rank_item_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@+id/tv_livevideo_rank_item_mid"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        app:layout_constraintLeft_toRightOf="@+id/tv_livevideo_rank_item_left"
+        app:layout_constraintRight_toLeftOf="@+id/tv_livevideo_rank_item_right"
+        tools:text="王佳佳" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@+id/tv_livevideo_rank_item_right"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="100%" />
+</android.support.constraint.ConstraintLayout>

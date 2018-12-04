@@ -96,7 +96,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         }
         LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat();
         int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
-        liveBaseEnglishH5CoursewareCreat.setIS_SCIENCE(isArts != 1);
+        liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         if (isArts != 1) {
             if (mAnswerRankBll != null) {
                 liveBaseEnglishH5CoursewareCreat.setmAnswerRankBll(mAnswerRankBll);
@@ -107,7 +107,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         englishH5CoursewareBll.setGetInfo(getInfo);
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            englishH5Cache = new EnglishH5Cache(activity, mLiveId);
+            englishH5Cache = new EnglishH5Cache(activity, mGetInfo);
             englishH5Cache.setHttpManager(mLiveBll.getHttpManager());
             englishH5Cache.getCourseWareUrl();
         }
@@ -166,9 +166,11 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         try {
             //文科新课件平台  topic
             if (isNewArtsH5Courseware(jsonObject)) {
+                LiveVideoConfig.isNewArts = true;
                 boolean isCourseware = jsonObject.optBoolean("isCourseware");
                 JSONObject coursewareH5 = jsonObject.getJSONObject("coursewareH5");
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                videoQuestionLiveEntity.setNewArtsCourseware(true);
                 videoQuestionLiveEntity.gold = coursewareH5.optDouble("gold");
                 videoQuestionLiveEntity.package_socurce = coursewareH5.optInt("package_socurce");
                 videoQuestionLiveEntity.time = coursewareH5.optDouble("time");
@@ -176,8 +178,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.type = coursewareH5.optString("ptype");
                 String status = coursewareH5.optString("status", "off");
                 if ("on".equals(status)) {
-                    LiveVideoConfig.isNewArts = true;
-                    videoQuestionLiveEntity.setNewArtsCourseware(true);
                     JSONArray idObject = coursewareH5.optJSONArray("id");
                     String idStr = getIdStr(idObject);
                     videoQuestionLiveEntity.id = idStr;
@@ -196,8 +196,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 if (jsonObject.has("coursewareOnlineTech")) {
                     JSONObject onlineTechObj = jsonObject.getJSONObject("coursewareOnlineTech");
                     if (!"{}".equals(onlineTechObj.toString())) {
-                        LiveVideoConfig.isNewArts = true;
-                        videoQuestionLiveEntity.setNewArtsCourseware(true);
                         H5OnlineTechEntity h5OnlineTechEntity = new H5OnlineTechEntity();
                         h5OnlineTechEntity.setStatus(onlineTechObj.optString("status"));
                         status = onlineTechObj.optString("status");
@@ -252,7 +250,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         LiveVideoConfig.isSend = false;
                         id = h5_Experiment.getString("id");
                         courseware_type = h5_Experiment.getString("courseware_type");
-                        play_url = mLiveBll.getLiveVideoSAConfig().inner.coursewareH5 + mLiveId + "/" + mLiveBll
+                        String pre = mGetInfo.getIsArts() == 2 ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
+                        play_url = pre + mLiveId + "/" + mLiveBll
                                 .getStuCouId() + "/" + id +
                                 "/" + courseware_type
                                 + "/" + mGetInfo.getStuId();
@@ -334,7 +333,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
      * @return
      */
     private boolean isNewArtsH5Courseware(JSONObject jsonObject) {
-        return jsonObject.has("coursewareH5") || jsonObject.has("coursewareOnlineTech");
+        return (jsonObject.has("coursewareH5") || jsonObject.has("coursewareOnlineTech"));
     }
 
     private String getIdStr(JSONArray jsonArray) {
@@ -375,7 +374,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         if ("on".equals(status)) {
                             id = object.getString("id");
                             courseware_type = object.getString("courseware_type");
-                            play_url = mLiveBll.getLiveVideoSAConfig().inner.coursewareH5 + mLiveId + "/" + mLiveBll
+                            String pre = mGetInfo.getIsArts() == 2 ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
+                            play_url = pre + mLiveId + "/" + mLiveBll
                                     .getStuCouId() + "/"
                                     + id + "/" + courseware_type
                                     + "/" + mGetInfo.getStuId();
@@ -422,7 +422,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                     LiveVideoConfig.isSend = object.optBoolean("open");
 //                    String status = object.optString("status", "off");
-                    String status = LiveVideoConfig.isSend ? "on": "off";
+                    String status = LiveVideoConfig.isSend ? "on" : "off";
                     String nonce = object.optString("nonce");
                     LiveVideoConfig.nonce = nonce;
                     LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
@@ -626,7 +626,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             }
             if (LiveVideoConfig.isNewArts) {
                 Log.d("Duncan", "onPutQuestionResultNewArts3");
-                if("15".equals(videoQuestionLiveEntity.voiceType) || "16".equals(videoQuestionLiveEntity.voiceType)){
+                if ("15".equals(videoQuestionLiveEntity.voiceType) || "16".equals(videoQuestionLiveEntity.voiceType)) {
                     getHttpManager().liveSubmitNewArtsRealH5Answer(videoQuestionLiveEntity.type,
                             videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
                             isRight, new HttpCallBack() {
@@ -647,11 +647,11 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                     if (onAnswerReslut != null) {
                                         onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
                                     }
-                                    ArtsAnswerResultEvent detail = new ArtsAnswerResultEvent(null,ArtsAnswerResultEvent.TYPE_NATIVE_UPLOAD_VOICE_SELECT_BLANK);
+                                    ArtsAnswerResultEvent detail = new ArtsAnswerResultEvent(null, ArtsAnswerResultEvent.TYPE_NATIVE_UPLOAD_VOICE_SELECT_BLANK);
                                     detail.setIsRight(isRights ? 2 : 0);
                                     detail.setTestId(videoQuestionLiveEntity.id);
                                     EventBus.getDefault().post(detail);
-                                    Log.e("Duncan","====>newH5voiceanswerpager" + responseEntity.getJsonObject());
+                                    Log.e("Duncan", "====>newH5voiceanswerpager" + responseEntity.getJsonObject());
                                 }
 
                                 @Override
@@ -697,8 +697,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                     if (onAnswerReslut != null) {
                                         onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
                                     }
-                                    EventBus.getDefault().post(new ArtsAnswerResultEvent(responseEntity.getJsonObject().toString(),ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK));
-                                    Log.e("EnglisH5IRC","====>send answerResultEvent called:"+responseEntity.getJsonObject());
+                                    EventBus.getDefault().post(new ArtsAnswerResultEvent(responseEntity.getJsonObject().toString(), ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK));
+                                    Log.e("EnglisH5IRC", "====>send answerResultEvent called:" + responseEntity.getJsonObject());
                                 }
 
                                 @Override
