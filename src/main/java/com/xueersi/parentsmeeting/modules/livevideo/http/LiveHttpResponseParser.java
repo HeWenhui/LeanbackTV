@@ -309,6 +309,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         getInfo.setGoldCount(goldCountObj.optInt("goldAmount", 0));
                     }
                 }
+                LiveGetInfo.EvaluateTeacherEntity evaluateTeacherEntity = new LiveGetInfo.EvaluateTeacherEntity();
+                evaluateTeacherEntity.setEvaluateIsOpen(data.optInt("evaluateIsOpen", 0) == 1 ? true : false);
+                evaluateTeacherEntity.setEvaluateTime(data.optLong("evaluateTime", 0));
+                getInfo.setEvaluateTeacherEntity(evaluateTeacherEntity);
             }
             getInfo.setStat(data.getInt("stat"));
             getInfo.setRtmpUrl(data.getString("rtmpUrl"));

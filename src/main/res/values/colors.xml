@@ -65,4 +65,12 @@
 
     <color name="COLOR_47827E">#47827E</color>
     <color name="COLOR_B2000000">#B2000000</color>
+    <color name="COLOR_FF8C8080">#FF8C8080</color>
+    <color name="COLOR_FFFFFEFE">#FFFFFEFE</color>
+    <color name="COLOR_FF7B6E6E">#FF7B6E6E</color>
+    <color name="COLOR_FF5F5252">#FF5F5252</color>
+    <color name="COLOR_FF8F4D26">#FF8F4D26</color>
+    <color name="COLOR_FFBC7D57">#FFBC7D57</color>
+    <color name="COLOR_FF8EBAA2">#FF8EBAA2</color>
+
 </resources>
