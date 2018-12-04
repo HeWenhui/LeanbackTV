@@ -87,8 +87,9 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
 
     @Override
     public boolean showPager() {
-        if ((mGetInfo.getEvaluateTeacherEntity() != null && System.currentTimeMillis() > mGetInfo.getEvaluateTeacherEntity().getEvaluateTime())) {
+        if ((mGetInfo.getEvaluateTeacherEntity() != null && System.currentTimeMillis()/1000 > mGetInfo.getEvaluateTeacherEntity().getEvaluateTime())) {
             logger.i("showEvaluateTeacher");
+            logger.i("currenttime:"+ System.currentTimeMillis()+"  getEvaluatetime:"+mGetInfo.getEvaluateTeacherEntity().getEvaluateTime());
             liveFragment.stopPlayer();
             mLiveBll.onIRCmessageDestory();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams

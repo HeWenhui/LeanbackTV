@@ -29,6 +29,7 @@ public class SmallEnglishEvaluateTeacherPager extends BaseEvaluateTeacherPaper {
     public View initView() {
         mView = View.inflate(mContext, R.layout.pop_livevideo_smallenglish_evaluate_teacher, null);
         ivLoading = mView.findViewById(R.id.iv_livevideo_smallenglish_evaluate_loading);
+        ivTryagaingLoading = mView.findViewById(R.id.iv_livevideo_evaluate_tryagain_loading);
         super.initView();
         return mView;
     }
@@ -38,8 +39,7 @@ public class SmallEnglishEvaluateTeacherPager extends BaseEvaluateTeacherPaper {
         rlSubmit.setOnClickListener(new OnUnDoubleClickListener() {
             @Override
             public void onClick(View view) {
-                rlSubmit.setBackgroundResource(R.drawable.livevideo_evaluateteacher_shellwindow_tijiao_btn_loading);
-                ivTryagaingLoading = mView.findViewById(R.id.iv_livevideo_evaluate_tryagain_loading);
+                rlSubmit.setBackgroundResource(R.drawable.livevideo_evaluateteacher_shellwindow_tijiao_btn_nor);
                 ivLoading.setVisibility(View.VISIBLE);
                 buttonOnClick.submit(mainEva, tutorEva);
             }
