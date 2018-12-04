@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -29,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -50,13 +53,17 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        unique_id = mGetInfo.getId() + "_" + mGetInfo.getStudentLiveInfo().getClassId();
         LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
         logger.d("onLiveInited:unique_id=" + unique_id + ",use==" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
 //        if (AppConfig.DEBUG) {
 //            englishPk.canUsePK = 1;
 //            englishPk.hasGroup = 0;
 //        }
+        if (englishPk.canUsePK == 0) {
+            mLiveBll.removeBusinessBll(this);
+            return;
+        }
+        unique_id = mGetInfo.getId() + "_" + mGetInfo.getStudentLiveInfo().getClassId();
         EnTeamPkBll teamPkBll = new EnTeamPkBll(activity);
         teamPkBll.setRootView(mRootView);
         teamPkBll.setEnTeamPkHttp(new EnTeamPkHttpImp());
@@ -180,7 +187,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             } else {
                 nick_name = "s_" + mGetInfo.getId() + "_3_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
             }
-            mLogtf.d("reportStuInfo:nick_name=" + nick_name + "mode=" + mGetInfo.getMode());
+            mLogtf.d("reportStuInfo:nick_name=" + nick_name + ",mode=" + mGetInfo.getMode());
             LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
             getHttpManager().reportStuInfo(LiveTopic.MODE_CLASS.equals(mGetInfo.getMode()) ? "1" : "0", mGetInfo.getStuId(), mGetInfo.getStuName(), mGetInfo.getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name, unique_id, new HttpCallBack(false) {
                 @Override
@@ -270,7 +277,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     } else {
                         logger.e("getEnglishPkGroup:onPmFailure" + msg, error);
                     }
-                    if (getEnglishPkGroupTimes > 10) {
+                    if (getEnglishPkGroupTimes > 10 || pkTeamEntity != null) {
                         abstractBusinessDataCallBack.onDataFail(0, msg);
                         return;
                     }
