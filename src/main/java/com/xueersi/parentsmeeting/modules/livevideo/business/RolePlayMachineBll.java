@@ -161,8 +161,12 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
         this.videoQuestionLiveEntity = videoQuestionLiveEntity;
         //拉取试题
-        requestTestInfos();
-
+        boolean isNew = videoQuestionLiveEntity.isNewArtsH5Courseware();
+        if(isNew){
+            requestNewArtsTestInfos();
+        }else{
+            requestTestInfos();
+        }
         //addPagerToWindow();
     }
 
@@ -171,37 +175,98 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
      */
     @Override
     public void requestTestInfos() {
-        logger.i("请求试题信息 mRolePlayerEntity.toString() = " + videoQuestionLiveEntity.id);
+        if(videoQuestionLiveEntity != null){
+            logger.i("请求试题信息 mRolePlayerEntity.toString() = " + videoQuestionLiveEntity.id);
+        }
+
         mRolePlayerHttpManager.requestRolePlayTestInfos(mLiveId, mStuCouId, videoQuestionLiveEntity.id, new
                 HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        mRolePlayerEntity = mRolePlayerHttpResponseParser.parserRolePlayInfos(responseEntity);
-                        logger.i("服务器试题信息返回 " + responseEntity.getJsonObject().toString());
-                        logger.i( "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
-                                ".getLstRolePlayerMessage()" +
-                                ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
-                                mRolePlayerEntity.toString());
+                        mRolePlayerEntity = mRolePlayerHttpResponseParser.parserRolePlayGroupAndTestInfos(responseEntity);
+                        if(responseEntity != null && responseEntity.getJsonObject() != null){
+                            logger.i("人机服务器试题信息返回 " + responseEntity.getJsonObject().toString());
+                            logger.i( "人机服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
+                                    ".getLstRolePlayerMessage()" +
+                                    ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
+                                    mRolePlayerEntity.toString());
+                        }
 
-                        //将roleplay pager挂载到直播窗口
-                       // addPagerToWindow();
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
-                        logger.i( "onPmError:" + responseEntity.getErrorMsg());
-                        onStopQuestion(null,null);
+                        if(responseEntity != null){
+                            logger.i( "onPmError:人机" + responseEntity.getErrorMsg());
+                        }
+                        //有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
+                        pmErrorAfterpmSuccess();
+
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
-                        logger.i( "onPmFailure:" + msg);
+                        logger.i( "onPmFailure:人机" + msg);
                     }
                 });
     }
 
+    /**
+     * 有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
+     */
+    private void pmErrorAfterpmSuccess() {
+
+        //有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
+        if(mRolePlayerEntity == null){
+            onStopQuestion(null,null);
+        }else{
+            List<RolePlayerEntity.RolePlayerHead> rolePlayerHeads = mRolePlayerEntity.getLstRoleInfo();
+            List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages = mRolePlayerEntity.getLstRolePlayerMessage();
+            if(rolePlayerHeads == null || rolePlayerMessages == null || rolePlayerHeads.size() <=0 || rolePlayerMessages.size() <= 0){
+                //角色信息，或者试题信息没有的时候，结束当前界面
+                onStopQuestion(null,null);
+            }
+        }
+    }
+
+    // 文科新课件平台获取分组和试题信息
+    private void requestNewArtsTestInfos() {
+        if (mRolePlayerEntity != null) {
+            mRolePlayerHttpManager.requestNewArtsRolePlayTestInfos(mLiveId, mStuCouId, videoQuestionLiveEntity.id, mLiveGetInfo.getStuId(),new
+                    HttpCallBack(false) {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            mRolePlayerEntity =  mRolePlayerHttpResponseParser.parserNewRolePlayGroupAndTestInfos(responseEntity);
+                            if(responseEntity != null && responseEntity.getJsonObject() != null){
+                                logger.i( "新课件平台人机分组和试题 服务器试题信息返回 " + responseEntity.getJsonObject().toString());
+                                logger.i( "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
+                                        ".getLstRolePlayerMessage()" +
+                                        ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
+                                        mRolePlayerEntity.toString());
+                            }
+                        }
+
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            super.onPmError(responseEntity);
+                            if(responseEntity != null){
+                                logger.i( "onPmError: 新课件平台人机分组和试题" + responseEntity.getErrorMsg());
+                            }
+                            //有时会发生onPmSuccess执行之后onPmError又回调导致，无法进入roleplay的问题
+                            pmErrorAfterpmSuccess();
+
+                        }
+
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            super.onPmFailure(error, msg);
+                            logger.i( "onPmFailure: 新课件平台人机分组和试题" + msg);
+                        }
+                    });
+        }
+    }
     /**
      * 将roleplay pager挂载到直播窗口
      */
