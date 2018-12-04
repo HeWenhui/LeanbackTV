@@ -66,8 +66,6 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
     protected void initResources() {
         inflateLayout();
         findViewItems();
-        // 初始化上下控制栏的动画
-       initAnim();
     }
 
     /**
@@ -75,7 +73,12 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
      */
     private void initAnim() {
         int screenHight = ScreenUtils.getScreenHeight();
-        int height = SizeUtils.Dp2Px(mContext,35f);
+        int height = 0;
+        mSystemInfoLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        height = mSystemInfoLayout.getMeasuredHeight();
+        if(height == 0){
+            height  = SizeUtils.Dp2Px(mContext,35f);
+        }
         ObjectAnimator  mTransIn = ObjectAnimator.ofFloat(mSystemInfoLayout,"translationY",-height,0);
         ObjectAnimator  alphaIn =  ObjectAnimator.ofFloat(mSystemInfoLayout,"alpha",0.0f,1.0f);
         mAnimatorsetIn = new AnimatorSet();
@@ -115,6 +118,8 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
         mAllView.setOnClickListener(mAllViewClickListener);
         vTitleRight = findViewById(R.id.iv_video_mark_points);
         FractionalTouchDelegate.setupDelegate(mSystemInfoLayout, mBack, new RectF(1.0f, 1f, 1.2f, 1.2f));
+        // 初始化上下控制栏的动画
+        initAnim();
     }
 
     /** 回退监听 */
