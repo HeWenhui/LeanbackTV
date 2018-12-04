@@ -73,7 +73,6 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     private AudioPlayerManager mAudioPlayerManager;//音频播放管理类
     private final LiveAndBackDebug liveAndBackDebug;//只为记录日志调用
     private boolean mIsPlaying = false;//标记当前语音正在播放,true 表示正在播放； flase 表示已经停止播放
-    private boolean mIsVideoUnClick = true;//标记当前语音是否可点击；true 不可点击 false 可点击；默认true
 
     /**
      * 标记当前对话是不是准备开始
@@ -431,21 +430,6 @@ public class RolePlayerSelfItem extends RolePlayerItem {
         }
     }
 
-
-    /**
-     * 设置语音可否点击
-     *
-     * @param isVideoUnClick true为不可点击；false为可点击，默认true不可点击
-     */
-    public void setVideoUnClick(boolean isVideoUnClick) {
-        mIsVideoUnClick = isVideoUnClick;
-        mEntity.setUnClick(mIsVideoUnClick);
-        //changeYuyinClickable();
-    }
-
-    private void changeYuyinClickable() {
-        vVoiceMain.setClickable(mIsVideoUnClick ? false : true);
-    }
 
     public void relaseAudioPlay() {
 

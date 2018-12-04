@@ -666,126 +666,131 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (mEntity == null) {
-                logger.i("数据实体已经销毁，handler不再处理剩余消息");
-                return;
-            }
-            if (msg.what == READ_MESSAGE) {
-                //恢复上一条的状态
-                if (mCurrentReadIndex > 0) {
-                    int position = 0;
-                    if (msg.obj != null) {
-                        position = (int) msg.obj;
-                    }
-                    vwvSpeechVolume.stop();
-                    if (position == 0) {
-                        RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get
-                                (mCurrentReadIndex - 1);
-                        if ((mCurrentReadIndex - 1) == mEntity.getSelfLastIndex()) {
-                            logger.i("提交结果");
-                            if (mtype.isNewArts()) {
-                                mRolePlayBll.requestNewArtsResult();
-                            } else {
-                                mRolePlayBll.requestResult();
-                            }
-                        }
-                        if (upMessage.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH) {
-                            upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
-                        }
-                        if (upMessage.getRolePlayer().isSelfRole()) {
-                            //自己朗读完毕，只通知除自己以外的其他组内成员
-                            mRolePlayBll.selfReadEnd(upMessage.getStars(), upMessage.getSpeechScore(), upMessage
-                                            .getFluency(), upMessage.getAccuracy(), upMessage.getPosition(), mEntity,
-                                    upMessage.getRolePlayer().getRoleId());
-                        }
-                        mRolePlayerAdapter.updataSingleRow(lvReadList, upMessage);
-
-                    } else {
-                        for (int i = position; i >= mCurrentReadIndex - 1; i--) {
-                            RolePlayerEntity.RolePlayerMessage tempMessage = mEntity.getLstRolePlayerMessage().get(i);
-                            if (tempMessage.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH) {
-                                tempMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
-                            }
-                            mRolePlayerAdapter.updataSingleRow(lvReadList, tempMessage);
-                        }
-                        mCurrentReadIndex = position + 1;
-
-                    }
-                    if (mIse != null) {
-
-                        mIse.cancel();
-                    }
-                }
-                if (mCurrentReadIndex == (mEntity.getLstRolePlayerMessage().size())) {
-                    //已经对话完毕
-                    endRolePlayer();
+            try{
+                if (mEntity == null) {
+                    logger.i("数据实体已经销毁，handler不再处理剩余消息");
                     return;
-                } else {
-                    //lvReadList.smoothScrollToPosition(mCurrentReadIndex + 1);
-
-                    if (mCurrentReadIndex == 1) {
-                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvBeginTipMsg
-                                .getLayoutParams();
-                        int animDistance = tvBeginTipMsg.getHeight() + layoutParams.topMargin;
-                        ObjectAnimator oaAnimTransY = ObjectAnimator.ofFloat(tvBeginTipMsg, ImageView.TRANSLATION_Y,
-                                0, -animDistance * 3 / 2);
-                        oaAnimTransY.setInterpolator(new AccelerateInterpolator());
-                        oaAnimTransY.addListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-
+                }
+                if (msg.what == READ_MESSAGE) {
+                    //恢复上一条的状态
+                    if (mCurrentReadIndex > 0) {
+                        int position = 0;
+                        if (msg.obj != null) {
+                            position = (int) msg.obj;
+                        }
+                        vwvSpeechVolume.stop();
+                        if (position == 0) {
+                            RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get
+                                    (mCurrentReadIndex - 1);
+                            if ((mCurrentReadIndex - 1) == mEntity.getSelfLastIndex()) {
+                                logger.i("提交结果");
+                                if (mtype.isNewArts()) {
+                                    mRolePlayBll.requestNewArtsResult();
+                                } else {
+                                    mRolePlayBll.requestResult();
+                                }
                             }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-
+                            if (upMessage.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH) {
+                                upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
                             }
-
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-
+                            if (upMessage.getRolePlayer().isSelfRole()) {
+                                //自己朗读完毕，只通知除自己以外的其他组内成员
+                                mRolePlayBll.selfReadEnd(upMessage.getStars(), upMessage.getSpeechScore(), upMessage
+                                                .getFluency(), upMessage.getAccuracy(), upMessage.getPosition(), mEntity,
+                                        upMessage.getRolePlayer().getRoleId());
                             }
+                            mRolePlayerAdapter.updataSingleRow(lvReadList, upMessage);
 
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-
+                        } else {
+                            for (int i = position; i >= mCurrentReadIndex - 1; i--) {
+                                RolePlayerEntity.RolePlayerMessage tempMessage = mEntity.getLstRolePlayerMessage().get(i);
+                                if (tempMessage.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH) {
+                                    tempMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
+                                }
+                                mRolePlayerAdapter.updataSingleRow(lvReadList, tempMessage);
                             }
-                        });
-                        oaAnimTransY.setDuration(500);
-                        oaAnimTransY.start();
-                        tvBeginTipMsg.setVisibility(View.GONE);
-                        lvReadList.setSelection(mCurrentReadIndex);
-                        logger.i("滚动到下一条" + mCurrentReadIndex);
-                        logger.i("第一条读完了，将提示带着平滑动画消失");
+                            mCurrentReadIndex = position + 1;
 
+                        }
+                        if (mIse != null) {
 
+                            mIse.cancel();
+                        }
+                    }
+                    if (mCurrentReadIndex == (mEntity.getLstRolePlayerMessage().size())) {
+                        //已经对话完毕
+                        endRolePlayer();
+                        return;
                     } else {
-                        lvReadList.setSelection(mCurrentReadIndex);
-                        logger.i("滚动到下一条" + mCurrentReadIndex);
+                        //lvReadList.smoothScrollToPosition(mCurrentReadIndex + 1);
+
+                        if (mCurrentReadIndex == 1) {
+                            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvBeginTipMsg
+                                    .getLayoutParams();
+                            int animDistance = tvBeginTipMsg.getHeight() + layoutParams.topMargin;
+                            ObjectAnimator oaAnimTransY = ObjectAnimator.ofFloat(tvBeginTipMsg, ImageView.TRANSLATION_Y,
+                                    0, -animDistance * 3 / 2);
+                            oaAnimTransY.setInterpolator(new AccelerateInterpolator());
+                            oaAnimTransY.addListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationCancel(Animator animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animator animation) {
+
+                                }
+                            });
+                            oaAnimTransY.setDuration(500);
+                            oaAnimTransY.start();
+                            tvBeginTipMsg.setVisibility(View.GONE);
+                            lvReadList.setSelection(mCurrentReadIndex);
+                            logger.i("滚动到下一条" + mCurrentReadIndex);
+                            logger.i("第一条读完了，将提示带着平滑动画消失");
+
+
+                        } else {
+                            lvReadList.setSelection(mCurrentReadIndex);
+                            logger.i("滚动到下一条" + mCurrentReadIndex);
+                        }
+
+
                     }
 
+                    //取出当前这条的延时时间
+                    RolePlayerEntity.RolePlayerMessage currentMessage = mEntity.getLstRolePlayerMessage().get
+                            (mCurrentReadIndex);
+                    currentMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY);
+                    mRolePlayerAdapter.updataSingleRow(lvReadList, currentMessage);
+                    speechReadMessage(currentMessage, mEntity);
 
+                    mCurrentReadIndex++;
+                    Message temp = mReadHandler.obtainMessage();
+                    temp.what = READ_MESSAGE;
+                    logger.i("currentMessage.getMaxReadTime() = " + currentMessage.getMaxReadTime());
+                    mReadHandler.sendMessageDelayed(temp, (currentMessage.getMaxReadTime()) * 1000);
+                    mReadHandler.sendEmptyMessageDelayed(GO_SPEECH, (currentMessage.getMaxReadTime() - 1) * 1000);
+                } else if (msg.what == GO_SPEECH) {
+                    //结束评测
+                    if (mIse != null) {
+                        mIse.stop();
+                    }
                 }
-
-                //取出当前这条的延时时间
-                RolePlayerEntity.RolePlayerMessage currentMessage = mEntity.getLstRolePlayerMessage().get
-                        (mCurrentReadIndex);
-                currentMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY);
-                mRolePlayerAdapter.updataSingleRow(lvReadList, currentMessage);
-                speechReadMessage(currentMessage, mEntity);
-
-                mCurrentReadIndex++;
-                Message temp = mReadHandler.obtainMessage();
-                temp.what = READ_MESSAGE;
-                logger.i("currentMessage.getMaxReadTime() = " + currentMessage.getMaxReadTime());
-                mReadHandler.sendMessageDelayed(temp, (currentMessage.getMaxReadTime()) * 1000);
-                mReadHandler.sendEmptyMessageDelayed(GO_SPEECH, (currentMessage.getMaxReadTime() - 1) * 1000);
-            } else if (msg.what == GO_SPEECH) {
-                //结束评测
-                if (mIse != null) {
-                    mIse.stop();
-                }
+            }catch (Exception e){
+                    logger.i("exception when begin roleplay");
             }
+
         }
     };
 
@@ -1031,25 +1036,30 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
      * 对话结束后，离开频道
      */
     public void leaveChannel() {
-        if (mWorkerThread != null) {
-            mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
-                @Override
-                public void onLevelChannel(int leaveChannel) {
-                    StableLogHashMap logHashMap = new StableLogHashMap("getLeaveChannel");
-                    logHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
-                    if (leaveChannel != 0) {
-                        logHashMap.put("errcode", "" + leaveChannel);
+        try {
+            if (mWorkerThread != null) {
+                mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
+                    @Override
+                    public void onLevelChannel(int leaveChannel) {
+                        StableLogHashMap logHashMap = new StableLogHashMap("getLeaveChannel");
+                        logHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
+                        if (leaveChannel != 0) {
+                            logHashMap.put("errcode", "" + leaveChannel);
+                        }
                     }
+                });
+                mWorkerThread.exit();
+                try {
+                    mWorkerThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            });
-            mWorkerThread.exit();
-            try {
-                mWorkerThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                mWorkerThread = null;
             }
-            mWorkerThread = null;
+        }catch (Exception e){
+            logger.i("rolePlay leave channel exception");
         }
+
     }
 
     /**
