@@ -72,6 +72,30 @@
                 </TableRow>
             </TableLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_experience_grading_papers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="14dp"
+                android:layout_centerHorizontal="true"
+                >
+                <TextView
+                    android:id="@+id/tv_experience_grading_papers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/text_font12_333333_style"
+                    android:layout_gravity="center_horizontal"
+                    android:text="去做定级试卷"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/im_ty_jtright_icon_normal"
+                    android:layout_gravity="center_vertical"
+                    />
+            </LinearLayout>
+
+
 
         </RelativeLayout>
 

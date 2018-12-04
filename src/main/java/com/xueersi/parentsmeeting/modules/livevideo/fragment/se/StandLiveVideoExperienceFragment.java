@@ -47,9 +47,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.buycourse.ExperienceBuyCoursePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.livemessage.StandExperienceMessageBll;
@@ -501,9 +501,11 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         //播放完成后的定级卷
         liveBackBll.addBusinessBll(new StandExperienceEvaluationBll(activity, liveBackBll));
         //定级完成后的结果页
-//        liveBackBll.addBusinessBll(new ExperienceBuyCoursePresenter(activity, liveBackBll));
+//        liveBackBll.addBusinessBll(new ExperienceBuyCourseExperiencePresenter(activity, liveBackBll));
         //播放完成后的反馈弹窗
         liveBackBll.addBusinessBll(new StandExperienceLearnFeedbackBll(activity, liveBackBll));
+        ExperienceQuitFeedbackBll experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity,liveBackBll,null,true);
+        liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
     }
 
     @Override
@@ -1093,6 +1095,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     protected void onUserBackPressed() {
         boolean userBackPressed = liveBackBll.onUserBackPressed();
         if (!userBackPressed) {
+
+
+
             super.onUserBackPressed();
         }
     }

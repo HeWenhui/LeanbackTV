@@ -155,9 +155,9 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
             //如果prek为false，并且examUrl不为null,则加载定级卷
             if (!mVideoEntity.isPrek() && !TextUtils.isEmpty(mVideoEntity.getExamUrl())) {
                 //展示购课窗口
-//            if (liveBackBaseBll instanceof ExperienceBuyCoursePresenter) {
-//                ((ExperienceBuyCoursePresenter) liveBackBaseBll).showNextWindow();
-//                showNextWindow((ExperienceBuyCoursePresenter) liveBackBaseBll);
+//            if (liveBackBaseBll instanceof ExperienceBuyCourseExperiencePresenter) {
+//                ((ExperienceBuyCourseExperiencePresenter) liveBackBaseBll).showNextWindow();
+//                showNextWindow((ExperienceBuyCourseExperiencePresenter) liveBackBaseBll);
 //            }
                 //定级卷展示窗口
                 if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
@@ -177,7 +177,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
      *
      * @param mPresenter
      */
-    public void showNextWindow(IPresenter mPresenter) {
+    public void showNextWindow(IExperiencePresenter mPresenter) {
         if (mPresenter != null) {
             mPresenter.showWindow();
         }

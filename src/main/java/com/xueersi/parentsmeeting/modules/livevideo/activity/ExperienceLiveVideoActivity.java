@@ -81,6 +81,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
+import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.experience.pager.ExperienceQuitFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
@@ -271,10 +273,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             mData.put("timestamp", System.currentTimeMillis() + "");
             mData.put("liveid", mVideoEntity.getLiveId());
             mData.put("termid", mVideoEntity.getChapterId());
-            if (mGetInfo != null && mGetInfo.getStuName() != null){
+            if (mGetInfo != null && mGetInfo.getStuName() != null) {
                 mData.put("uname", mGetInfo.getStuName());
             } else {
-                mData.put("uname","");
+                mData.put("uname", "");
             }
             UmsAgentManager.umsAgentOtherBusiness(ExperienceLiveVideoActivity.this, appID, UmsConstants.uploadBehavior,
                     mData);
@@ -941,6 +943,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId()));
         liveBackBll.addBusinessBll(new EnglishH5ExperienceBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5ExperienceBll(activity, liveBackBll));
+        ExperienceQuitFeedbackBll experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity,liveBackBll,ums,false);
+        experienceQuitFeedbackBll.setLiveVideo(this);
+        liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
         liveBackBll.onCreate();
     }
 
@@ -1158,7 +1163,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             public void onClose(String type) {
                 StableLogHashMap logHashMap = new StableLogHashMap("afterClassFeedbackClose");
                 logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
-                logHashMap.put("closetype",type);
+                logHashMap.put("closetype", type);
                 ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
                 bottomContent.removeView(expFeedbackPager.getRootView());
                 mFeedbackWindow.dismiss();
@@ -1489,26 +1494,15 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
     }
 
-    ExperienceQuitFeedbackDialog expDialog;
-
     @Override
     public void onBackPressed() {
         boolean userBackPressed = liveBackBll.onUserBackPressed();
         if (!userBackPressed) {
-            if (isShowQuitDialog && expDialog == null) {
-                showQuitFeedbackDialog();
-            } else if (expDialog != null && expDialog.isDialogShow()) {
-                expDialog.cancelDialog();
-                expDialog = null;
-            } else if (mWindow == null && mFeedbackWindow == null) {
-                StableLogHashMap logHashMap = new StableLogHashMap("exitRoom");
-                logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
-                ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
-                super.onBackPressed();
-            }
+            StableLogHashMap logHashMap = new StableLogHashMap("exitRoom");
+            logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
+            ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
+            super.onBackPressed();
         }
-
-
     }
 
     @Override
@@ -1521,46 +1515,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     public void onStop() {
         super.onStop();
         liveBackBll.onStop();
-    }
-
-    private void showQuitFeedbackDialog() {
-        expDialog = new ExperienceQuitFeedbackDialog(this);
-        expDialog.setParam(mVideoEntity);
-        expDialog.setOnClickConfirmlListener(new ExperienceQuitFeedbackDialog.ILeaveClassCallback() {
-            @Override
-            public void leaveClass() {
-                StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackClose");
-                logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
-                logHashMap.put("closetype","1");
-                ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
-                expDialog.cancelDialog();
-                expDialog = null;
-                if (mIsLand) {
-                    // 如果是横屏则切换为竖屏
-                    if (mIsAutoOrientation) {
-                        changeLOrP();
-                    } else {
-                        onUserBackPressed();
-                    }
-                } else {
-                    onUserBackPressed();
-                }
-            }
-        });
-        expDialog.setDialogCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackClose");
-                logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
-                logHashMap.put("closetype","2");
-                ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
-                expDialog = null;
-            }
-        });
-        expDialog.showDialog();
-        StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackOpen");
-        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
-        ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
     }
 }
 
