@@ -593,6 +593,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
 //                    return;
 //                }
                 if (mEntity == null) {
+                    logger.e("waitRolePlayer but test is empty");
                     return;
                 }
                 mEntity.setCountDownSecond(mEntity.getCountDownSecond() - 1);
@@ -627,20 +628,21 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                 return t.getRolePlayer().isSelfRole();
             }
         };
-        lvReadList.setAdapter(mRolePlayerAdapter);
-        lvReadList.setVisibility(View.VISIBLE);
-        lvReadList.setDividerHeight(SizeUtils.Dp2Px
-                (mContext, 5));
-        vHead = new View(mContext);
-        //修改类型转换异常
-        ListView.LayoutParams lp = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px
-                (mContext, 50));
-        vHead.setLayoutParams(lp);
-        lvReadList.addFooterView(vHead);
 
-//        int rop = ScreenUtils.getScreenHeight() / 2;;
-//        lvReadList.smoothScrollToPositionFromTop(0, -rop);
-//        lvReadList.setSelection(0);
+        try {
+            lvReadList.setAdapter(mRolePlayerAdapter);
+            lvReadList.setVisibility(View.VISIBLE);
+            lvReadList.setDividerHeight(SizeUtils.Dp2Px
+                    (mContext, 5));
+            vHead = new View(mContext);
+            //修改类型转换异常
+            ListView.LayoutParams lp = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.Dp2Px
+                    (mContext, 50));
+            vHead.setLayoutParams(lp);
+            lvReadList.addFooterView(vHead);
+        }catch (Exception e){
+            logger.e("waitRolePlayer but test lvReadList may be null ："+lvReadList+" : "+e.toString()+":"+e.getMessage());
+        }
 
 
         //整个前奏3秒后开始
