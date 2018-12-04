@@ -88,6 +88,7 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
 
             //对话信息的数据实体中需要存入试题id
             String test_id = jsonObject.optString("test_id");
+            rolePlayerEntity.setTestId(test_id);
             rolePlayerEntity.setCountDownSecond(minute * 60);
 
             //对话信息
@@ -177,6 +178,7 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
             int minute = jsonObject.optInt("rolePlayTime");
             //对话信息的数据实体中需要存入试题id
             String test_id = jsonObject.optString("testId");
+            rolePlayerEntity.setTestId(test_id);
             rolePlayerEntity.setCountDownSecond(minute * 60);
             JSONArray arrSpeech = objContent.optJSONArray("speeches");
             for (int i = 0; i < arrSpeech.length(); i++) {
@@ -233,6 +235,7 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
 
             //对话信息的数据实体中需要存入试题id
             String test_id = jsonObject.optString("testId");
+            rolePlayerEntity.setTestId(test_id);
             rolePlayerEntity.setCountDownSecond(minute * 60);
 
             //对话信息

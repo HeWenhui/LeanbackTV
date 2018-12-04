@@ -999,7 +999,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             lvReadList.setUnScroll(mIsListViewUnSroll);//恢复列表滑动
         }
         if (mRolePlayBll != null) {
-            mRolePlayBll.cancelDZ();//取消点赞
+             mRolePlayBll.cancelDZ();//取消点赞
         }
 
     }
