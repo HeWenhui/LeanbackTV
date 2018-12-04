@@ -6,7 +6,6 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.Contract.ScienceSpeechBullletContract;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.page.SpeechBulletScreenPager;
-import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.view.ChineseSpeechBulletView;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -45,11 +44,7 @@ public class SpeechBulletScreenIRCBll extends LiveBaseBll implements TopicAction
 
     public SpeechBulletScreenIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
-        if (LiveVideoConfig.isSmallChinese) {
-            this.speechBulletView = new ChineseSpeechBulletView(context, false);
-        } else {
-            this.speechBulletView = new SpeechBulletScreenPager(context, false);
-        }
+        this.speechBulletView = new SpeechBulletScreenPager(context, false);
         speechBulletView.setPresenter(this);
     }
 
