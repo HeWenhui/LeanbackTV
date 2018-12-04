@@ -503,26 +503,31 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
      * 确定角色准备开始RolePlayer
      */
     private void roleConfirmPage() {
-        mHeadShowAdapter = new RolePlayerHeadShowAdapter(mContext, mEntity.getLstRoleInfo());
-        int roleHeadsSize = mEntity.getLstRoleInfo().size();
-        //当角色小于3个的时候，为保证角色头像都居中显示，动态改变列数
-        if (roleHeadsSize < 3) {
-            gvRoleHeadShow.setNumColumns(roleHeadsSize);
-            gvRoleHeadShow.setHorizontalSpacing(-20);
-        } else {
-            gvRoleHeadShow.setNumColumns(3);
-            gvRoleHeadShow.setHorizontalSpacing(SizeUtils.Dp2Px(mContext, 42));
-        }
-        gvRoleHeadShow.setAdapter(mHeadShowAdapter);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //rlMatchPager.setVisibility(View.GONE);
-                //进入朗读页
-                waitRolePlayer();
+        try{
+            mHeadShowAdapter = new RolePlayerHeadShowAdapter(mContext, mEntity.getLstRoleInfo());
+            int roleHeadsSize = mEntity.getLstRoleInfo().size();
+            //当角色小于3个的时候，为保证角色头像都居中显示，动态改变列数
+            if (roleHeadsSize < 3) {
+                gvRoleHeadShow.setNumColumns(roleHeadsSize);
+                gvRoleHeadShow.setHorizontalSpacing(-20);
+            } else {
+                gvRoleHeadShow.setNumColumns(3);
+                gvRoleHeadShow.setHorizontalSpacing(SizeUtils.Dp2Px(mContext, 42));
             }
-        }, WAIT_ROLE_HEAD_SHOW);
+            gvRoleHeadShow.setAdapter(mHeadShowAdapter);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //rlMatchPager.setVisibility(View.GONE);
+                    //进入朗读页
+                    waitRolePlayer();
+                }
+            }, WAIT_ROLE_HEAD_SHOW);
+        }catch (Exception e){
+            logger.e("group success but exception :"+e.toString()+"；"+e.getMessage());
+        }
+
     }
 
     /**
