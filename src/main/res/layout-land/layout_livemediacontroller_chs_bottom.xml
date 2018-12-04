@@ -24,28 +24,28 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_message_psopen" />
+            android:background="@drawable/bg_livevideo_message_open" />
 
         <Button
             android:id="@id/bt_livevideo_message_common"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_message_pscommon" />
+            android:background="@drawable/bg_livevideo_message_common" />
 
         <Button
             android:id="@id/bt_livevideo_message_flowers"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_message_psflowers" />
+            android:background="@drawable/bg_livevideo_message_flowers" />
 
         <Button
             android:id="@id/bt_livevideo_voicechat_raise_hands"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_voicechat_raise_pshands"
+            android:background="@drawable/bg_livevideo_voicechat_raise_hands"
             android:visibility="gone" />
 
         <Button
@@ -53,7 +53,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_voicechat_psrank"
+            android:background="@drawable/bg_livevideo_voicechat_rank"
             android:visibility="gone" />
 
         <Button
