@@ -32,6 +32,7 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.speech.SpeechConfig;
+import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
@@ -170,7 +171,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     /**
      * 语音评测
      */
-    protected SpeechUtils mIse;
+    protected SpeechEvaluatorUtils mIse;
     private SpeechEvaluatorInter speechEvaluatorInter;
     private File saveVideoFile, dir;
 
@@ -534,7 +535,12 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                                 (mCurrentReadIndex - 1);
                         if ((mCurrentReadIndex - 1) == mEntity.getSelfLastIndex()) {
                             logger.i("提交结果 mCurrentReadIndex = " + mCurrentReadIndex);
-                            mRolePlayBll.requestResult();
+
+                            if(mEntity.isNewArts()){
+                                mRolePlayBll.requestNewArtsResult();
+                            }else {
+                                mRolePlayBll.requestResult();
+                            }
 
                         }
                         if (upMessage.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH) {
@@ -676,40 +682,33 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
                 //走英语离线测评
                 logger.i(TAG + "走英语离线测评");
-//                mIse = new SpeechEvaluatorUtils(
-//                        true);
-                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+               mIse = new SpeechEvaluatorUtils(true);
+//                mIse = SpeechEvaluatorUtils.getInstance(mContext.getApplicationContext());
 
                 break;
-//            case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
-//                //走语文离线测评
-//                logger.i(TAG+"走语文离线测评");
-//                mIse = new SpeechEvaluatorUtils(true, com.tal.speech.speechrecognizer.Constants
-//                        .ASSESS_PARAM_LANGUAGE_CH);
-//                break;
+            case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
+                //走语文离线测评
+                logger.i(TAG+"走语文离线测评");
+                mIse = new SpeechEvaluatorUtils(true, com.tal.speech.speechrecognizer.Constants
+                        .ASSESS_PARAM_LANGUAGE_CH);
+                break;
             default:
                 //走英语离线测评
                 logger.i(TAG + "走英语离线测评");
-//                mIse = new SpeechEvaluatorUtils(
-//                        true);
-                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+               mIse = new SpeechEvaluatorUtils(true);
+//                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
                 break;
         }
 
 
         mIse.cancel();
-        SpeechParamEntity param = new SpeechParamEntity();
-        param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
-        param.setStrEvaluator(spechMsg);
-        param.setLocalSavePath(saveVideoFile.getAbsolutePath());
-        param.setMultRef(false);
-        param.setPcm(true);
-        mIse.startRecog(param, new EvaluatorListener() {
-            @Override
-            public void onBeginOfSpeech() {
-                logger.i("开始测评 mCurrentReadIndex = " + mCurrentReadIndex);
-                vwvSpeechVolume.start();
-            }
+        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(spechMsg, saveVideoFile.getAbsolutePath(), false,
+                new RolePlayerPager.RoleEvaluatorListener() {
+                    @Override
+                    public void onBeginOfSpeech() {
+                        logger.i("开始测评 mCurrentReadIndex = "+mCurrentReadIndex);
+                        vwvSpeechVolume.start();
+                    }
 
             @Override
             public void onResult(ResultEntity resultEntity) {
@@ -751,8 +750,15 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 logger.i("volume = " + volume);
             }
 
-        });
+            @Override
+            public void onRecordPCMData(short[] shorts, int readSize) {
+                        // logger.i("RolePlayerDemoTest", "通过声网走");
+                        //通过声网走
 
+
+            }
+
+                });
     }
 
 
@@ -775,7 +781,12 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         }
         if (!mEntity.isResult()) {
             logger.i("结束RolePlayer,结果还未提交，再次提交结果");
-            mRolePlayBll.requestResult();
+            if(mEntity.isNewArts()){
+                mRolePlayBll.requestNewArtsResult();
+            }else {
+                mRolePlayBll.requestResult();
+            }
+
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override

@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.page.PrimaryScienceSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.page.ClassSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.page.ClassmateSignPager;
+import com.xueersi.parentsmeeting.modules.livevideo.rollcall.page.SmallChineseClassSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.page.SmallEnglishClassSignPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
@@ -116,6 +117,10 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
      * 小学理科点名
      */
     private PrimaryScienceSignPager mPrimaryScienceSignPager;
+    /**
+     * 小学语文pager
+     */
+    private SmallChineseClassSignPager chineseClassSignPager;
 
     public RollCallBll(Activity activity) {
         mLogtf = new LogToFile(activity, TAG);
@@ -146,7 +151,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
 
     public void initView(final RelativeLayout bottomContent) {
-        logger.e( "======>:bottomContent" + bottomContent);
+        logger.e("======>:bottomContent" + bottomContent);
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -229,17 +234,47 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                         if (mPrimaryScienceSignPager != null && LiveVideoConfig.isPrimary) {
                             mPrimaryScienceSignPager.updateStatus(classSignEntity.getStatus());
                             return;
-                        } else if(mClassSignPager != null && !LiveVideoConfig.isPrimary){
+                        } else if (mClassSignPager != null && !LiveVideoConfig.isPrimary &&
+                                !LiveVideoConfig.isSmallChinese) {
                             mClassSignPager.updateStatus(classSignEntity.getStatus());
+                            return;
+                        } else if (chineseClassSignPager != null && LiveVideoConfig.isSmallChinese) {
+                            chineseClassSignPager.updateStatus(classSignEntity.getStatus());
                             return;
                         }
                         mIsShowUserSign = true;
-                        if(LiveVideoConfig.isPrimary){
+                        if (LiveVideoConfig.isPrimary) {
                             mPrimaryScienceSignPager = new PrimaryScienceSignPager(activity, RollCallBll.this, classSignEntity);
                             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                                     .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                             params.addRule(RelativeLayout.CENTER_IN_PARENT);
                             rlRollCallContent.addView(mPrimaryScienceSignPager.getRootView(), params);
+                        } else if (LiveVideoConfig.isSmallChinese) {//
+                            if (chineseClassSignPager != null) {
+                                chineseClassSignPager.updateStatus(classSignEntity.getStatus());
+                                return;
+                            }
+                            chineseClassSignPager = new SmallChineseClassSignPager(activity, classSignEntity);
+                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                            rlRollCallContent.addView(chineseClassSignPager.getRootView(), layoutParams);
+                            chineseClassSignPager.setSign(new SmallChineseClassSignPager.Sign() {
+                                @Override
+                                public void close() {
+                                    stopRollCall();
+                                }
+
+                                @Override
+                                public void sign(HttpCallBack httpCallBack) {
+                                    userSign(classSignEntity, httpCallBack);
+                                }
+
+                                @Override
+                                public boolean containsView() {
+                                    return chineseClassSignPager != null && chineseClassSignPager.getRootView()
+                                            .getParent() == rlRollCallContent;
+                                }
+                            });
                         } else {
                             mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity);
                             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
@@ -304,10 +339,8 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
         });
     }
 
-    // FIXME: 2018/7/22 zyy
-
     /**
-     * 这里属于View操作，不建议在这里进行View的相关操作，Bll更多应该执行Presenter的作用，后期待整改
+     * 停止
      */
     @Override
     public void stopRollCall() {
@@ -326,7 +359,9 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                 }
             });
         } else {
-            if(LiveVideoConfig.isPrimary){
+            logger.i("显示弹窗");
+            if (LiveVideoConfig.isPrimary) {
+
                 mIsShowUserSign = false;
                 mVPlayVideoControlHandler.post(new Runnable() {
                     @Override
@@ -338,7 +373,20 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                     }
                 });
                 mVPlayVideoControlHandler.sendEmptyMessage(NO_USERSIGN);
-            }else{
+            } else if (LiveVideoConfig.isSmallChinese) {
+                logger.i("显示语文弹窗");
+                mIsShowUserSign = false;
+                mVPlayVideoControlHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (chineseClassSignPager != null) {
+                            rlRollCallContent.removeView(chineseClassSignPager.getRootView());
+                            chineseClassSignPager = null;
+                        }
+                        mVPlayVideoControlHandler.sendEmptyMessage(NO_USERSIGN);
+                    }
+                });
+            } else {
                 mIsShowUserSign = false;
                 mVPlayVideoControlHandler.post(new Runnable() {
                     @Override
@@ -417,7 +465,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
      * @return
      */
     public boolean isTimeAvaliable(long classBeginTime, long nowTime) {
-        logger.e( "====>isTimeAvaliable:" + classBeginTime);
+        logger.e("====>isTimeAvaliable:" + classBeginTime);
         boolean result = false;
         try {
             if (classBeginTime > 0 && nowTime > 0) {
@@ -428,7 +476,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                 //自动关闭时间
                 autoCloseSignDelay = classBeginTime - nowTime < 0 ? 0 : classBeginTime - nowTime;
                 //autoCloseSignDelay = 2*60*1000;
-                logger.e( "====> isTimeAvaliable :+ " + result + ":" + autoShowSignDelay + ":" +
+                logger.e("====> isTimeAvaliable :+ " + result + ":" + autoShowSignDelay + ":" +
                         autoCloseSignDelay);
             }
         } catch (Exception e) {
@@ -456,17 +504,42 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                     if (mPrimaryScienceSignPager != null && LiveVideoConfig.isPrimary) {
                         mPrimaryScienceSignPager.updateStatus(classSignEntity.getStatus());
                         return;
-                    }else if(mClassSignPager != null && !LiveVideoConfig.isPrimary){
+                    } else if (mClassSignPager != null && !LiveVideoConfig.isPrimary) {
                         mClassSignPager.updateStatus(classSignEntity.getStatus());
+                        return;
+                    } else if (chineseClassSignPager != null && LiveVideoConfig.isSmallChinese) {
+                        chineseClassSignPager.updateStatus(classSignEntity.getStatus());
                         return;
                     }
                     mIsShowUserSign = true;
-                    if(LiveVideoConfig.isPrimary){
+                    if (LiveVideoConfig.isPrimary) {
                         mPrimaryScienceSignPager = new PrimaryScienceSignPager(activity, RollCallBll.this, classSignEntity);
                         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                                 .WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         params.addRule(RelativeLayout.CENTER_IN_PARENT);
                         rlRollCallContent.addView(mPrimaryScienceSignPager.getRootView(), params);
+                    } else if (LiveVideoConfig.isSmallChinese) {
+                        chineseClassSignPager = new SmallChineseClassSignPager(activity, classSignEntity);
+                        chineseClassSignPager.setSign(new SmallChineseClassSignPager.Sign() {
+                            @Override
+                            public void close() {
+                                stopRollCall();
+                            }
+
+                            @Override
+                            public void sign(HttpCallBack httpCallBack) {
+                                userSign(classSignEntity, httpCallBack);
+                            }
+
+                            @Override
+                            public boolean containsView() {
+                                return chineseClassSignPager != null && chineseClassSignPager.getRootView()
+                                        .getParent() == rlRollCallContent;
+                            }
+                        });
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+                        rlRollCallContent.addView(chineseClassSignPager.getRootView(), params);
                     } else {
                         mClassSignPager = new ClassSignPager(activity, RollCallBll.this, classSignEntity);
                         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
@@ -503,12 +576,15 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
                 }
 
                 if (!isSmallEnglish) {
-                    if(mPrimaryScienceSignPager != null && LiveVideoConfig.isPrimary){
+                    if (mPrimaryScienceSignPager != null && LiveVideoConfig.isPrimary) {
                         rlRollCallContent.removeView(mPrimaryScienceSignPager.getRootView());
                         mPrimaryScienceSignPager = null;
-                    }else if(mClassSignPager != null && !LiveVideoConfig.isPrimary) {
+                    } else if (mClassSignPager != null && !LiveVideoConfig.isPrimary) {
                         rlRollCallContent.removeView(mClassSignPager.getRootView());
                         mClassSignPager = null;
+                    } else if (chineseClassSignPager != null && LiveVideoConfig.isSmallChinese) {
+                        rlRollCallContent.removeView(chineseClassSignPager.getRootView());
+                        chineseClassSignPager = null;
                     }
                 } else {
                     if (smallEnglishClassSignPager != null && smallEnglishClassSignPager.getRootView().getParent() ==
@@ -534,7 +610,7 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
 
     public void onLiveInited(LiveGetInfo data, RelativeLayout rootView, int liveType) {
         this.mRootView = rootView;
-        logger.e( "======>onLiveInited called:" + data + ":" + mRootView);
+        logger.e("======>onLiveInited called:" + data + ":" + mRootView);
         mGetInfo = data;
         if (mGetInfo != null) {
             isSmallEnglish = mGetInfo.getSmallEnglish();

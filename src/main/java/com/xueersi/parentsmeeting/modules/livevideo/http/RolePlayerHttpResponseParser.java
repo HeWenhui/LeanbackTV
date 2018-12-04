@@ -221,8 +221,9 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
             RolePlayerEntity rolePlayerEntity = new RolePlayerEntity();
             rolePlayerEntity.setPullDZCount(0);//每次试题返回的时候，将点赞置为0
             rolePlayerEntity.getLstRolePlayerMessage().clear();//在试题信息返回的时候先清空数据集合，防止当服务器返回重复数据的时候，本地也出现重复
+            rolePlayerEntity.setNewArts(true); // 判断是否是文科新课件平台的标识
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-
+            logger.i(" rolePlay jsonObject:"+ jsonObject.toString());
             JSONObject objContent = jsonObject.optJSONObject("content");
             int minute = jsonObject.optInt("rolePlayTime");
 

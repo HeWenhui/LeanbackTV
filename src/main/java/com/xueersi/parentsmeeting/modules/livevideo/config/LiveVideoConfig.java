@@ -12,6 +12,7 @@ import com.xueersi.common.entity.EnglishH5Entity;
  */
 public class LiveVideoConfig {
     public static String HTTP_HOST = "https://laoshi.xueersi.com";
+    public static String HTTP_PRIMARY_CHINESE_HOST = "https://app.chs.xueersi.com";
     /** 直播辅导用户在线心跳 */
     public final static String URL_LIVE_TUTORIAL_USER_ONLINE = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/userOnline";
     /** 公开直播用户在线心跳 */
@@ -190,9 +191,9 @@ public class LiveVideoConfig {
     public static String LIVE_PLAY_ERROR = "live_play_error";
     /** 直播-学习报告截图 */
     public static String LIVE_STUDY_REPORT_IMG = "live_study_report_img";
-    /** 直播-小英语音聊天*/
+    /** 直播-小英语音聊天 */
     public static String LIVE_VOICE_CHAT = "voicechat";
-    /** 直播-小英语音弹幕*/
+    /** 直播-小英语音弹幕 */
     public static String LIVE_VOICE_BULLET = "voicebullet";
 
     /**
@@ -284,6 +285,8 @@ public class LiveVideoConfig {
     public static EnglishH5Entity englishH5Entity;
     /** 小学阶段年级的标识 */
     public static Boolean isPrimary = false;
+    /** 小学语文换肤 */
+    public static Boolean isSmallChinese = false;
     /** 一题多发的直播回放的标识 */
     public static Boolean isMulLiveBack = false;
     /** 年级阶段的标识 */
@@ -349,11 +352,12 @@ public class LiveVideoConfig {
 
     /** 文科新课件平台的标识 */
     public static Boolean isNewArts = false;
-    /** 全身直播的标识*/
+    /** 全身直播的标识 */
     public static Boolean isStandLive = false;
-    /** H5语音答题新增字段*/
+    /** H5语音答题新增字段 */
     public static String userAnswer;
     public static String answer;
+
     /** 学习报告精彩瞬间 */
     public interface STUDY_REPORT {
         /** 贡献之星 */

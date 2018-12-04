@@ -17,4 +17,5 @@ public class ArtsExtLiveInfo {
     public String getNewCourseWarePlatform() {
         return newCourseWarePlatform;
     }
+
 }

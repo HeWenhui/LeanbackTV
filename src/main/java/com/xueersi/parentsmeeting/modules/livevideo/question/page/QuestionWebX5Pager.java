@@ -50,7 +50,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import ren.yale.android.cachewebviewlib.CacheWebView;
-
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
 /**
@@ -79,13 +78,13 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private String testPaperUrl;
     private String jsExamSubmitAll = "javascript:examSubmitAll()";
     private String isShowRanks;
-    private boolean IS_SCIENCE;
+    private int isArts;
     private String stuCouId;
     private int isTeamPkRoom; //是否是 teampk 房间
     private int mGoldNum;
     private int mEngerNum;
     private boolean allowTeamPk;
-//    private boolean isLive = true;
+    //    private boolean isLive = true;
     private File mMorecacheout;
     private File cacheFile;
     private String type;
@@ -97,13 +96,13 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     public QuestionWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, StopWebQuestion questionBll, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
-                              String nonce, String isShowRanks, boolean IS_SCIENCE, String stuCouId, boolean allowTeamPk) {
+                              String nonce, String isShowRanks, int isArts, String stuCouId, boolean allowTeamPk) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
 //        if (baseVideoQuestionEntity != null) {
 //            isLive = baseVideoQuestionEntity.isLive();
 //        }
-        this.IS_SCIENCE = IS_SCIENCE;
+        this.isArts = isArts;
         this.questionBll = questionBll;
         this.stuId = stuId;
         this.stuName = stuName;
@@ -135,7 +134,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
      * @param questionBll
      * @param testInfo    试题信息
      */
-    public QuestionWebX5Pager(Context context, StopWebQuestion questionBll, VideoQuestionLiveEntity testInfo,String liveid) {
+    public QuestionWebX5Pager(Context context, StopWebQuestion questionBll, VideoQuestionLiveEntity testInfo, String liveid) {
         super(context);
         this.questionBll = questionBll;
         examUrl = testInfo.getUrl();
@@ -219,14 +218,14 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient());
-        logger.e("=======> isNewArtsTest:"+isNewArtsTest);
+        logger.e("=======> isNewArtsTest:" + isNewArtsTest);
         // 文科新课件平台 填空选择题
         if (isNewArtsTest) {
             WebSettings webSetting = wvSubjectWeb.getSettings();
             webSetting.setBuiltInZoomControls(true);
             webSetting.setJavaScriptEnabled(true);
-            wvSubjectWeb.addJavascriptInterface(this,"wx_xesapp");
-            logger.e("=======> loadUrl:"+examUrl);
+            wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
+            logger.e("=======> loadUrl:" + examUrl);
             wvSubjectWeb.loadUrl(examUrl);
         } else {
             ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
@@ -237,11 +236,11 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 examUrl += "&nonce=" + nonce;
             }
             examUrl += "&stuCouId=" + stuCouId;
-            examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1");
+            examUrl += "&isArts=" + (isArts);
 //            examUrl += "&isPlayBack=" + (isLive ? "0" : "1");
             examUrl += "&isShowTeamPk=" + (allowTeamPk ? "1" : "0");
             wvSubjectWeb.loadUrl(examUrl);
-            logger.e( "======> loadUrl:" + examUrl);
+            logger.e("======> loadUrl:" + examUrl);
         }
         mGoldNum = -1;
         mEngerNum = -1;
@@ -256,7 +255,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             public void onViewDetachedFromWindow(View v) {
                 LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEngerNum, LiveRoomH5CloseEvent.H5_TYPE_INTERACTION, testId);
                 if (questionBll != null && questionBll instanceof QuestionBll) {
-                    logger.e( "=======> postEvent closeByTeacher:" + ((QuestionBll) questionBll).isWebViewCloseByTeacher());
+                    logger.e("=======> postEvent closeByTeacher:" + ((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
                 }
@@ -278,14 +277,12 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     /**
      * 文科 课件 答题结果回调
-     *
      */
     @JavascriptInterface
-    public void showAnswerResult_LiveVideo(String data){
-         logger.e("=========>showAnswerResult_LiveVideo:"+data);
-         EventBus.getDefault().post(new ArtsAnswerResultEvent(data,ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
+    public void showAnswerResult_LiveVideo(String data) {
+        logger.e("=========>showAnswerResult_LiveVideo:" + data);
+        EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
-
 
 
     @android.webkit.JavascriptInterface
@@ -302,12 +299,12 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
         if (wvSubjectWeb instanceof CacheWebView) {
             CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
-            if (IS_SCIENCE){
+            if (isArts == 0) {
                 cacheWebView.getWebViewCache().setNeedHttpDns(true);
-            }else {
+            } else {
                 cacheWebView.getWebViewCache().setNeedHttpDns(false);
             }
-            cacheWebView.getWebViewCache().setIsScience(IS_SCIENCE);
+            cacheWebView.getWebViewCache().setIsScience(isArts == 0);
         }
 //        int scale = DeviceUtils.getScreenWidth(mContext) * 100 / 878;
 //        wvSubjectWeb.setInitialScale(scale);
@@ -327,7 +324,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 //        wvSubjectWeb.loadUrl(String.format("javascript:examSubmitAll(" + code + ")"));
         isEnd = true;
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
-        Log.e("QuestionX5Pager","=======>examSubmitAll called:");
+        Log.e("QuestionX5Pager", "=======>examSubmitAll called:");
     }
 
     @Override
@@ -385,9 +382,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         public MyWebViewClient() {
             super(TAG);
         }
+
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
-            if("100000000".equals(type)){
+            if ("100000000".equals(type)) {
                 File file;
                 int index = s.indexOf("courseware_pages");
                 if (index != -1) {
@@ -397,7 +395,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         url2 = url2.substring(0, index2);
                     }
                     file = new File(mMorecacheout, url2);
-                    logger.e( "shouldInterceptRequest:file=" + file + ",file=" + file.exists());
+                    logger.e("shouldInterceptRequest:file=" + file + ",file=" + file.exists());
                 } else {
                     file = new File(mMorecacheout, MD5Utils.getMD5(s));
                     index = s.lastIndexOf("/");
@@ -428,8 +426,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-            logger.e( "shouldInterceptRequestnew:totalurl=" + request.getUrl().toString());
-            if(isNewArtsTest){
+            logger.e("shouldInterceptRequestnew:totalurl=" + request.getUrl().toString());
+            if (isNewArtsTest) {
                 File file;
                 int index = request.getUrl().toString().indexOf("courseware_pages");
                 if (index != -1) {
@@ -439,8 +437,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         url2 = url2.substring(0, index2);
                     }
                     file = new File(mMorecacheout, url2);
-                    logger.e( "shouldInterceptRequestnew:fileone=" + file + ",fileone=" + file.exists());
-                    logger.e( "shouldInterceptRequestnew:realurl=" + request.getUrl().toString());
+                    logger.e("shouldInterceptRequestnew:fileone=" + file + ",fileone=" + file.exists());
+                    logger.e("shouldInterceptRequestnew:realurl=" + request.getUrl().toString());
                 } else {
                     file = new File(mMorecacheout, MD5Utils.getMD5(request.getUrl().toString()));
                     index = request.getUrl().toString().lastIndexOf("/");
@@ -448,8 +446,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                     if (index != -1) {
                         name = request.getUrl().toString().substring(index);
                     }
-                    logger.e( "shouldInterceptRequestnew:filetwo=" + file.getName() + ",name=" + name + ",filetwo=" + file.exists());
-                    logger.e( "shouldInterceptRequestnew:ttfurl=" + request.getUrl().toString());
+                    logger.e("shouldInterceptRequestnew:filetwo=" + file.getName() + ",name=" + name + ",filetwo=" + file.exists());
+                    logger.e("shouldInterceptRequestnew:ttfurl=" + request.getUrl().toString());
                 }
                 if (file.exists()) {
                     FileInputStream inputStream = null;
@@ -459,24 +457,24 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                         WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
                         HashMap map = new HashMap();
-                        map.put("Access-Control-Allow-Origin","*");
+                        map.put("Access-Control-Allow-Origin", "*");
                         webResourceResponse.setResponseHeaders(map);
-                        logger.e( "读取本地资源了new" + webResourceResponse.getResponseHeaders());
+                        logger.e("读取本地资源了new" + webResourceResponse.getResponseHeaders());
                         return webResourceResponse;
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
             }
-            logger.e( "没有本地资源就去网络请求咯咯咯new");
-            logger.e( "shouldInterceptRequestnew:lasturl=" + request.getUrl().toString());
+            logger.e("没有本地资源就去网络请求咯咯咯new");
+            logger.e("shouldInterceptRequestnew:lasturl=" + request.getUrl().toString());
             return super.shouldInterceptRequest(view, request);
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             mLogtf.i("onPageFinished:url=" + url + ",failingUrl=" + failingUrl + ",isEnd=" + isEnd);
-            if(!isNewArtsTest){
+            if (!isNewArtsTest) {
                 if (isEnd && url.equals(examUrl)) {
                     wvSubjectWeb.loadUrl(jsExamSubmitAll);
                     mLogtf.i("onPageFinished:examSubmitAll");
@@ -533,7 +531,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             mLogtf.i("shouldOverrideUrlLoading:url=" + url);
 
-            logger.e( "======> shouldOverrideUrlLoading:" + url);
+            logger.e("======> shouldOverrideUrlLoading:" + url);
 
             if (url.contains("science/Live/getMultiTestResult")) {
                 if (questionBll instanceof QuestionBll) {
