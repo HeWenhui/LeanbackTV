@@ -158,9 +158,16 @@ public class RolePlayerOtherItem extends RolePlayerItem {
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
                 logger.i( "完成播放");
                 mIsPlaying = false;
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
-                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-                tvMessageContent.setTextColor(Color.parseColor("#333333"));
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        logger.i( "currentThread:"+Thread.currentThread());
+                        ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+                        vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                        tvMessageContent.setTextColor(Color.parseColor("#333333"));
+                    }
+                });
+
             }
 
             @Override
@@ -171,6 +178,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
+                        logger.i( "currentThread:"+Thread.currentThread());
                         //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
                         ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
                         vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
@@ -194,6 +202,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
+                        logger.i( "currentThread:"+Thread.currentThread());
                         ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
                         vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
                         tvMessageContent.setTextColor(Color.parseColor("#333333"));

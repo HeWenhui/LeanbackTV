@@ -255,8 +255,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     public void close() {
         onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
         onBack();
-//        LiveVideoConfig.isNewEnglishH5 = false;
-//        LiveVideoConfig.isMulLiveBack = false;
     }
 
     @Override
@@ -630,30 +628,5 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         return englishH5Entity;
     }
 
-    private void setRightGold(Context context, LottieAnimationView lottieAnimationView, int goldCount) {
-        String num = "获得 " + goldCount + " 枚金币";
-        AssetManager manager = context.getAssets();
-        Bitmap img_7Bitmap;
-        try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/my_right/img_22.png"));
-//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
-            Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(creatBitmap);
-            canvas.drawBitmap(img_7Bitmap, 0, 0, null);
-            Paint paint = new Paint();
-            paint.setTextSize(48);
-            paint.setColor(0xffCC6E12);
-            Typeface fontFace = FontCache.getTypeface(context, "fangzhengcuyuan.ttf");
-            paint.setTypeface(fontFace);
-            float width = paint.measureText(num);
-            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
-            img_7Bitmap.recycle();
-            img_7Bitmap = creatBitmap;
-        } catch (IOException e) {
-            logger.e("setRightGold", e);
-            return;
-        }
-        lottieAnimationView.updateBitmap("image_22", img_7Bitmap);
-    }
 
 }
