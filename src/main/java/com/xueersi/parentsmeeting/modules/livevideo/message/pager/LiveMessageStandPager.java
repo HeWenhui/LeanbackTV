@@ -1403,18 +1403,23 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     }
 
     @Override
-    public void onOpenVoiceNotic(boolean openVoice, String type) {
+    public void onOpenVoiceNotic(final boolean openVoice, final String type) {
         logger.d("openvoice:" + openVoice + "from:" + type);
-        if (openVoice) {
-            ivMessageClose.performClick();
-            if (!("ENGLISH_H5_COURSEWARE".equals(type) || "ARTS_H5_COURSEWARE".equals(type) ||
-                    "EXAM_START".equals(type) || "ARTS_SEND_QUESTION".equals(type) || "SENDQUESTION"
-                    .equals(type))) {
-                btnVoiceMesOpen.setEnabled(false);
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (openVoice) {
+                    ivMessageClose.performClick();
+                    if (!("ENGLISH_H5_COURSEWARE".equals(type) || "ARTS_H5_COURSEWARE".equals(type) ||
+                            "EXAM_START".equals(type) || "ARTS_SEND_QUESTION".equals(type) || "SENDQUESTION"
+                            .equals(type))) {
+                        btnVoiceMesOpen.setEnabled(false);
+                    }
+                } else {
+                    btnVoiceMesOpen.setEnabled(true);
+                }
             }
-        } else {
-            btnVoiceMesOpen.setEnabled(true);
-        }
+        });
     }
 
     /*添加聊天信息，超过120，移除60个*/
