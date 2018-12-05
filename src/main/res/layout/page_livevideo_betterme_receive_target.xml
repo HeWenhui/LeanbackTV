@@ -1,23 +1,14 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/iv_livevideo_betterme_introduction_bg"
-        android:layout_width="500dp"
-        android:layout_height="375dp"
-        android:layout_centerInParent="true"
-        android:src="@drawable/shellwindow_sendflower_board" />
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/iv_livevideo_betterme_introduction_bg"
-        android:layout_alignTop="@id/iv_livevideo_betterme_introduction_bg"
-        android:layout_alignRight="@id/iv_livevideo_betterme_introduction_bg"
-        android:layout_alignBottom="@id/iv_livevideo_betterme_introduction_bg"
+        android:layout_width="564dp"
+        android:layout_height="375dp"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/app_xiaomubiao_shellwindow_duanweizhanshi_bg" >
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -44,8 +35,9 @@
                     android:textColor="#ff756565"
                     android:textSize="6sp" />
             </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
 
-</RelativeLayout>
+</FrameLayout>

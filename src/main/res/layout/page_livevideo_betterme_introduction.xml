@@ -23,7 +23,7 @@
             android:layout_width="270dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:gravity="center"
+            android:gravity="left|center_vertical"
             android:lineSpacingExtra="4dp"
             android:text="AI老师会为你量身定制每节课的小目标,完成小目标你就可以："
             android:textColor="#ff756565"
@@ -54,7 +54,7 @@
             android:id="@+id/btn_livevideo_better_introduction_gotit"
             android:layout_width="118dp"
             android:layout_height="39dp"
-            android:layout_marginTop="29dp"
+            android:layout_marginTop="26dp"
             android:src="@drawable/selector_livevideo_betterme_introduction_gotit"
             tools:text="知道啦" />
 

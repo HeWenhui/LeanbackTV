@@ -1,10 +1,15 @@
 package com.xueersi.parentsmeeting.modules.livevideo.betterme.presenter;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Message;
 import android.view.ViewGroup;
 
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeLevelDisplayPager;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -19,9 +24,13 @@ import org.json.JSONObject;
  * @author zhangyuansun
  * created  at 2018/11/28
  */
-public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
+public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, BetterMeContract.BetterMePresenter {
+    BetterMeContract.BetterMeView mBetterMeView;
+
     public BetterMeIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
+        mBetterMeView = new BetterMePager(mContext);
+        mBetterMeView.setPresenter(this);
     }
 
     @Override
@@ -37,14 +46,13 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        mRootView.postDelayed(new Runnable() {
+        mBetterMeView.setRootView(mRootView);
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mRootView.addView(new BetterMeLevelDisplayPager(mContext, true).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
-                        .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                mBetterMeView.showIntroductionPager();
             }
         }, 3000);
-
     }
 
     @Override

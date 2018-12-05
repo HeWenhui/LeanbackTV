@@ -3,57 +3,68 @@
     android:layout_height="match_parent"
     android:background="@color/transparent_80">
 
-    <LinearLayout
-        android:layout_width="564dp"
-        android:layout_height="375dp"
-        android:layout_gravity="center"
-        android:background="@drawable/app_xiaomubiao_shellwindow_duanweizhanshi_bg"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingTop="80dp">
-
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="段位展示"
-            android:textColor="#ffe65c00"
-            android:textSize="20sp" />
-
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:gravity="center"
-            android:text="段位徽章会在直播间头像上显示"
-            android:textColor="#ff8c8080"
-            android:textSize="11sp" />
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/vp_livevideo_betterme_introduction"
-            android:layout_width="316dp"
-            android:layout_height="142dp"
-            android:layout_marginTop="8dp">
-
-        </android.support.v4.view.ViewPager>
-
-        <LinearLayout
-            android:id="@+id/dot_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:gravity="center"
-            android:orientation="horizontal" />
-
-    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="564dp"
         android:layout_height="375dp"
-        android:layout_gravity="center"
-        android:gravity="center_vertical">
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@drawable/app_xiaomubiao_shellwindow_duanweizhanshi_bg"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="80dp">
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="段位展示"
+                android:textColor="#ffe65c00"
+                android:textSize="20sp" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
+                android:text="段位徽章会在直播间头像上显示"
+                android:textColor="#ff8c8080"
+                android:textSize="11sp" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_livevideo_betterme_introduction"
+                android:layout_width="316dp"
+                android:layout_height="142dp"
+                android:layout_marginTop="8dp">
+
+            </android.support.v4.view.ViewPager>
+
+            <LinearLayout
+                android:id="@+id/dot_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:orientation="horizontal" />
+
+        </LinearLayout>
+        
+        <ImageView
+            android:id="@+id/iv_livevideo_betterme_level_close"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="54dp"
+            android:layout_marginRight="79dp"
+            android:src="@drawable/selector_live_enpk_shell_window_guanbi_btn"
+            android:layout_alignParentRight="true"/>
 
         <ImageView
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_livevideo_betterme_level_arrow_left"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="80dp"
             android:layout_width="38dp"
@@ -61,11 +72,14 @@
             android:src="@drawable/selector_livevideo_betterme_leveldisplay_arrow_left" />
 
         <ImageView
+            android:id="@+id/iv_livevideo_betterme_level_arrow_right"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="80dp"
             android:layout_width="38dp"
             android:layout_height="38dp"
             android:src="@drawable/selector_livevideo_betterme_leveldisplay_arrow_right" />
+
     </RelativeLayout>
 
 

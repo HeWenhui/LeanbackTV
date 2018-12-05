@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.item.BetterMeLevelEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMePager;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.OnPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import java.util.ArrayList;
@@ -25,10 +27,24 @@ import java.util.List;
  * created  at 2018/11/26
  */
 public class BetterMeLevelDisplayPager extends LiveBasePager {
+    /**
+     * 左箭头
+     */
+    private ImageView ivArrowLeft;
+    /**
+     * 右箭头
+     */
+    private ImageView ivArrowRight;
+    /**
+     * 关闭
+     */
+    private ImageView ivClose;
+    private int currentPagerItem = 0;
     private ViewPager mViewPager;
     private LinearLayout llPagerIndicator;
     private BetterMeLevelDisplayPagerAdapter mPagerAdapter;
     private List<BetterMeLevelEntity> mLevelEntityList = new ArrayList<>();
+    private OnPagerClose onPagerClose;
     /**
      * 段位名称
      */
@@ -79,9 +95,11 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
         super(context);
     }
 
-    public BetterMeLevelDisplayPager(Context context, boolean isNewView) {
-        super(context, isNewView);
+    public BetterMeLevelDisplayPager(Context context, OnPagerClose onPagerClose) {
+        super(context);
+        this.onPagerClose = onPagerClose;
         initData();
+        initListener();
     }
 
     @Override
@@ -89,6 +107,9 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
         View view = View.inflate(mContext, R.layout.page_livevideo_betterme_level_display, null);
         mViewPager = view.findViewById(R.id.vp_livevideo_betterme_introduction);
         llPagerIndicator = view.findViewById(R.id.dot_horizontal);
+        ivClose = view.findViewById(R.id.iv_livevideo_betterme_level_close);
+        ivArrowLeft = view.findViewById(R.id.iv_livevideo_betterme_level_arrow_left);
+        ivArrowRight = view.findViewById(R.id.iv_livevideo_betterme_level_arrow_right);
         return view;
     }
 
@@ -105,6 +126,37 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
         mPagerAdapter = new BetterMeLevelDisplayPagerAdapter(mLevelEntityList);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(new PageIndicator(mContext, llPagerIndicator, mLevelEntityList.size() / 2));
+        ivArrowLeft.setEnabled(false);
+    }
+
+    @Override
+    public void initListener() {
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPagerClose.onClose(BetterMeLevelDisplayPager.this);
+                onPagerClose.onNext(BetterMePager.PAGER_INTRODUCTION);
+            }
+        });
+        ivArrowLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentPagerItem > 0) {
+                    mViewPager.setCurrentItem(--currentPagerItem);
+                    ivArrowRight.setEnabled(true);
+                }
+            }
+        });
+        ivArrowRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentPagerItem < ((LEVEL_NUMBER - 1) / 2)) {
+                    mViewPager.setCurrentItem(++currentPagerItem);
+                    ivArrowLeft.setEnabled(true);
+                }
+            }
+        });
+
     }
 
     class BetterMeLevelDisplayPagerAdapter extends PagerAdapter {
@@ -118,7 +170,7 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
 
         @Override
         public int getCount() {
-            return mLevelList.size() / 2;
+            return (mLevelList.size() + 1) / 2;
         }
 
         @NonNull
@@ -218,6 +270,17 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
                     (mImgList.get(i)).setBackgroundResource(img_unSelect);
                 }
             }
+            if (position == 0) {
+                ivArrowLeft.setEnabled(false);
+            } else {
+                ivArrowLeft.setEnabled(true);
+            }
+            if (position == (LEVEL_NUMBER - 1) / 2) {
+                ivArrowRight.setEnabled(false);
+            } else {
+                ivArrowRight.setEnabled(true);
+            }
+            currentPagerItem = position;
         }
 
         @Override
