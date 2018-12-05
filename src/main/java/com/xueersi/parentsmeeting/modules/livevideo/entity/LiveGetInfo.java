@@ -282,6 +282,10 @@ public class LiveGetInfo {
     //暂停点赞多长时间弹出礼物
     private int praiseAutoBarrageTime=1;
 
+
+    // add by William on 2018/12/5  专属老师用
+    public EPlanInfoBean ePlanInfo;
+
     public int getPraiseAutoCutTime() {
         return praiseAutoCutTime;
     }
@@ -984,7 +988,8 @@ public class LiveGetInfo {
         /**
          * 课id，加入聊天服务的房间
          */
-        private String classId;
+        private String
+                classId;
         private String shutupStatus;
         /**
          * 弹出学习报告 1弹，0不弹
@@ -1242,4 +1247,9 @@ public class LiveGetInfo {
         return artsExtLiveInfo;
     }
 
+    public static class EPlanInfoBean {
+        public String ePlanId;
+        public String eTeacherId;
+        public String eClassId;
+    }
 }

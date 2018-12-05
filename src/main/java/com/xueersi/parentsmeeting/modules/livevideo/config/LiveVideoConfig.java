@@ -11,6 +11,9 @@ import com.xueersi.common.entity.EnglishH5Entity;
  * Created by Administrator on 2017/3/31.
  */
 public class LiveVideoConfig {
+
+    public static final String TEST_HOST="https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example";
+
     public static String HTTP_HOST = "https://laoshi.xueersi.com";
     /** 直播辅导用户在线心跳 */
     public final static String URL_LIVE_TUTORIAL_USER_ONLINE = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/userOnline";
@@ -86,7 +89,9 @@ public class LiveVideoConfig {
             "/MyCourse/submitLiveTutoringTestAnswer";
 
     /** 播放器数据初始化 */
-    public final static String URL_LIVE_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveCourse/getInfo";
+   // public final static String URL_LIVE_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveCourse/getInfo";
+    public final static String URL_LIVE_GET_INFO = TEST_HOST + "/LiveCourse/getInfo";
+
     /** 直播辅导播放器数据初始化 */
     public final static String URL_LIVE_TUTORIAL_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/initInfo";
     /** 公开直播播放器数据初始化 */
