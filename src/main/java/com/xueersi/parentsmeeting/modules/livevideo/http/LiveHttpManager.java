@@ -547,12 +547,13 @@ public class LiveHttpManager extends BaseHttpBusiness {
     public void liveSubmitNewArtsRealH5Answer(String srcType, String testId, String liveId, String
             testAnswer, String type, String userMode, String isSubmit,
                                               double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
+        String types = srcType;
         HttpRequestParams params = new HttpRequestParams();
         String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSH5_ANSWER;
         setDefaultParameter(params);
         params.addBodyParam("testId", testId);
         params.addBodyParam("liveId", liveId);
-        params.addBodyParam("type", srcType);
+        params.addBodyParam("type", types);
         params.addBodyParam("isRight", isRight ? "1" : "0");
         params.addBodyParam("isPlayBack", "1");
         params.addBodyParam("isSubmit", isSubmit);
