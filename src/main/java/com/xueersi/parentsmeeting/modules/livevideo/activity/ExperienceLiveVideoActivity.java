@@ -72,7 +72,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.dialog.ExperienceQuitFeedbackDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -210,10 +209,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private int rePlayCount = 0;
 
     private static final int MAX_REPLAY_COUNT = 4;
-    /** 判断是否显示退出反馈弹窗 */
-    private boolean isShowQuitDialog = false;
+
     /** 显示弹窗阈值 课程开始25min内进入课程的退出时显示弹窗 */
     private static final long SHOW_QUIT_DIALOG_THRESHOLD = 1500000;
+    private ExperienceQuitFeedbackBll experienceQuitFeedbackBll;
 
     // 定时获取聊天记录的任务
     class ScanRunnable implements Runnable {
@@ -943,7 +942,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId()));
         liveBackBll.addBusinessBll(new EnglishH5ExperienceBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5ExperienceBll(activity, liveBackBll));
-        ExperienceQuitFeedbackBll experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity,liveBackBll,ums,false);
+        experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity,liveBackBll,false);
         experienceQuitFeedbackBll.setLiveVideo(this);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
         liveBackBll.onCreate();
@@ -1028,6 +1027,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
                 vPlayer.releaseSurface();
                 vPlayer.stop();
+                if (experienceQuitFeedbackBll != null){
+                    experienceQuitFeedbackBll.playComplete();
+                }
                 // 测试体验课播放器的结果页面
                 lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
                         getDataCallBack);
@@ -1035,9 +1037,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
             Long keyTime = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
                     startTime);
-            if (keyTime < SHOW_QUIT_DIALOG_THRESHOLD) {
-                isShowQuitDialog = true;
-            }
             seekTo(keyTime);
 
 //            seekTo(590000);
@@ -1358,17 +1357,19 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //        onUserBackPressed();
         // 直播结束后，显示结束的提示图片
         isPlay = false;
-        isShowQuitDialog = false;
         ivTeacherNotpresent.setVisibility(View.VISIBLE);
 //        ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
         ivTeacherNotpresent.setBackgroundResource(R.drawable.live_free_play_end);
-
+//        liveBackBll.
         // 获取学生的学习反馈
         lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
                 getDataCallBack);
         EventBus.getDefault().post(new BrowserEvent.ExperienceLiveEndEvent(1));
         if (scanRunnable != null) {
             scanRunnable.exit();
+        }
+        if (experienceQuitFeedbackBll != null){
+            experienceQuitFeedbackBll.playComplete();
         }
         mHandler.removeCallbacks(mPlayDuration);
 

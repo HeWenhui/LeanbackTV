@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/COLOR_CC000000"
     >
 
     <LinearLayout
@@ -79,12 +80,14 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="14dp"
                 android:layout_centerHorizontal="true"
+                android:visibility="gone"
                 >
                 <TextView
                     android:id="@+id/tv_experience_grading_papers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/text_font12_333333_style"
+                    android:textColor="@color/COLOR_F13232"
+                    android:textSize="12sp"
                     android:layout_gravity="center_horizontal"
                     android:text="去做定级试卷"/>
                 <ImageView

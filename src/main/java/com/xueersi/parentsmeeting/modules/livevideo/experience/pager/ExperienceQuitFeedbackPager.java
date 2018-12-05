@@ -45,7 +45,8 @@ public class ExperienceQuitFeedbackPager extends LiveBasePager {
     private LinearLayout llGradingPaper;
     private IExperiencePresenter mExpPresenter;
     private TextView tvGradingPaper;
-    private boolean isShow;
+    private boolean isShow = false;
+    private boolean gradingPaperShow = false;
 
     public ExperienceQuitFeedbackPager(Context context) {
         super(context);
@@ -122,7 +123,7 @@ public class ExperienceQuitFeedbackPager extends LiveBasePager {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mButtonListener.backClass();
+                isShow = mButtonListener.removePager();
             }
         });
         btnLeave.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +136,7 @@ public class ExperienceQuitFeedbackPager extends LiveBasePager {
             @Override
             public void onClick(View view) {
                 mExpPresenter.showWindow();
+                gradingPaperShow = true;
             }
         });
         super.initListener();
@@ -164,15 +166,29 @@ public class ExperienceQuitFeedbackPager extends LiveBasePager {
         llGradingPaper.setVisibility(View.VISIBLE);
     }
 
+    public void removeAllCheck(){
+        cbItem5.setChecked(false);
+        cbItem4.setChecked(false);
+        cbItem3.setChecked(false);
+        cbItem2.setChecked(false);
+        cbItem1.setChecked(false);
+        data.clear();
+    }
 
     @Override
     public boolean onUserBackPressed() {
-        if(!isShow){
-            isShow = mButtonListener.showPager();
-        }else{
-            isShow = mButtonListener.removePager();
+        //显示定级卷时点击返回直接关闭
+        if (!gradingPaperShow){
+            if(!isShow){
+                isShow = mButtonListener.showPager();
+                return isShow;
+            }else{
+                isShow = mButtonListener.removePager();
+            }
+            return true;
+        }else {
+            return false;
         }
-        return true;
     }
 
     public interface IButtonClickListener {
@@ -182,7 +198,6 @@ public class ExperienceQuitFeedbackPager extends LiveBasePager {
 
         void leaveClass(Map<String, Boolean> data);
 
-        void backClass();
     }
 
 

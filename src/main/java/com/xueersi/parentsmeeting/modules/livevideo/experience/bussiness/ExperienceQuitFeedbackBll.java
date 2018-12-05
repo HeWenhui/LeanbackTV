@@ -14,15 +14,12 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.pager.ExperienceQuitFeedbackPager;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivityBase;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.IStandExperienceEvaluationContract;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination.StandExperienceEvaluationPager;
@@ -36,22 +33,21 @@ import java.util.Map;
  * Created by：WangDe on 2018/12/4 20:54
  */
 public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements ExperienceQuitFeedbackPager
-        .IButtonClickListener,IExperiencePresenter {
+        .IButtonClickListener, IExperiencePresenter {
     LivePlayBackHttpManager livePlayBackHttpManager;
     ExperienceQuitFeedbackPager expPager;
     private RelativeLayout rlLiveMessageContent;
-    private boolean firstTime;
+    private boolean firstTime = true;
     private long startTime;
     private long SHOW_QUIT_DIALOG_THRESHOLD = 1500000;
     private boolean isShowQuitDialog = false;
     private IStandExperienceEvaluationContract.IEvaluationView mEvaluationView;
     private boolean isStand;
     private ExperienceLiveVideoActivity liveVideoActivityBase;
-    LiveAndBackDebug ums;
 
-    public ExperienceQuitFeedbackBll(Activity activity, LiveBackBll liveBackBll,LiveAndBackDebug ums,boolean isStand) {
+
+    public ExperienceQuitFeedbackBll(Activity activity, LiveBackBll liveBackBll, boolean isStand) {
         super(activity, liveBackBll);
-        this.ums = ums;
         this.isStand = isStand;
     }
 
@@ -76,45 +72,53 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         }
     }
 
-    public void setExperienceType(boolean isStand){
+    public void setExperienceType(boolean isStand) {
         this.isStand = isStand;
     }
 
-    public void setLiveVideo(ExperienceLiveVideoActivity liveVideoActivityBase){
+    public void setLiveVideo(ExperienceLiveVideoActivity liveVideoActivityBase) {
         this.liveVideoActivityBase = liveVideoActivityBase;
     }
 
+    public void playComplete() {
+        isShowQuitDialog = false;
+    }
 
     @Override
     public boolean showPager() {
-        StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackOpen");
-        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
-        if (ums != null){
-            ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
-        }else {
+        if (isShowQuitDialog) {
+            StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackOpen");
+            logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
             UmsAgentManager.umsAgentOtherBusiness(activity, "1305801", UmsConstants.uploadBehavior,
                     logHashMap.getData());
-        }
-
-        if (!mVideoEntity.isPrek() && !TextUtils.isEmpty(mVideoEntity.getExamUrl())) {
-            expPager.showGradingPaper();
-            mEvaluationView = new StandExperienceEvaluationPager(activity, this);
-        }
-        final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
-                .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        if (rlLiveMessageContent == null) {
-            rlLiveMessageContent = new RelativeLayout(activity);
-            mRootView.addView(rlLiveMessageContent, params);
+            if (!mVideoEntity.isPrek() && !TextUtils.isEmpty(mVideoEntity.getExamUrl())) {
+                expPager.showGradingPaper();
+                mEvaluationView = new StandExperienceEvaluationPager(activity, this);
+            }
+            final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                    .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            if (rlLiveMessageContent == null) {
+                rlLiveMessageContent = new RelativeLayout(activity);
+                mRootView.addView(rlLiveMessageContent, params);
+            } else {
+                rlLiveMessageContent.removeAllViews();
+            }
+            final View view = expPager.getRootView();
+            rlLiveMessageContent.addView(view, params);
+            return true;
         } else {
-            rlLiveMessageContent.removeAllViews();
+            return false;
         }
-        final View view = expPager.getRootView();
-        rlLiveMessageContent.addView(view, params);
-        return true;
     }
 
     @Override
     public boolean removePager() {
+        StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackClose");
+        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
+        logHashMap.put("closetype", "2");
+        UmsAgentManager.umsAgentOtherBusiness(activity, "1305801", UmsConstants.uploadBehavior,
+                logHashMap.getData());
+        expPager.removeAllCheck();
         if (rlLiveMessageContent != null) {
             rlLiveMessageContent.removeAllViews();
         }
@@ -122,16 +126,13 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
     }
 
     @Override
-    public void leaveClass(Map<String,Boolean> data) {
+    public void leaveClass(Map<String, Boolean> data) {
         StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackClose");
         logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
         logHashMap.put("closetype", "1");
-        if (ums != null){
-            ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
-        }else {
-            UmsAgentManager.umsAgentOtherBusiness(activity, "1305801", UmsConstants.uploadBehavior,
-                    logHashMap.getData());
-        }
+        UmsAgentManager.umsAgentOtherBusiness(activity, "1305801", UmsConstants.uploadBehavior,
+                logHashMap.getData());
+
         String content = "";
         for (String key : data.keySet()) {
             if (data.get(key)) {
@@ -152,49 +153,30 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
                 logger.i("failure" + msg);
             }
         });
-        if(isStand){
+        if (isStand) {
             ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
             activityChangeLand.changeLOrP();
-        }else {
-            if (liveVideoActivityBase != null){
+        } else {
+            if (liveVideoActivityBase != null) {
                 liveVideoActivityBase.changeLOrP();
             }
         }
         activity.finish();
     }
 
-    @Override
-    public void backClass() {
-        StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackClose");
-        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
-        logHashMap.put("closetype", "2");
-        if (ums != null){
-            ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
-        }else {
-            UmsAgentManager.umsAgentOtherBusiness(activity, "1305801", UmsConstants.uploadBehavior,
-                    logHashMap.getData());
-        }
-        if (rlLiveMessageContent != null) {
-            rlLiveMessageContent.removeAllViews();
-        }
-    }
 
     @Override
     public void showWindow() {
         StableLogHashMap logHashMap = new StableLogHashMap("openLevelTestOnLive");
         logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
-        if (ums != null){
-            ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
-        }else {
-            UmsAgentManager.umsAgentOtherBusiness(activity, "1305801", UmsConstants.uploadBehavior,
-                    logHashMap.getData());
-        }
+        UmsAgentManager.umsAgentOtherBusiness(activity, "1305801", UmsConstants.uploadBehavior,
+                logHashMap.getData());
         if (mEvaluationView != null) {
-            if(isStand){
+            if (isStand) {
                 ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
                 activityChangeLand.changeLOrP();
-            }else {
-                if (liveVideoActivityBase != null){
+            } else {
+                if (liveVideoActivityBase != null) {
                     liveVideoActivityBase.changeLOrP();
                 }
             }

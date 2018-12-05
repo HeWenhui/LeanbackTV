@@ -79,6 +79,9 @@ import tv.danmaku.ijk.media.player.AvformatOpenInputError;
  */
 public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase implements MediaControllerAction,
         ActivityChangeLand {
+
+    private ExperienceQuitFeedbackBll experienceQuitFeedbackBll;
+
     {
         /** 布局默认资源 */
         mLayoutVideo = R.layout.frag_live_back_video;
@@ -504,7 +507,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        liveBackBll.addBusinessBll(new ExperienceBuyCourseExperiencePresenter(activity, liveBackBll));
         //播放完成后的反馈弹窗
         liveBackBll.addBusinessBll(new StandExperienceLearnFeedbackBll(activity, liveBackBll));
-        ExperienceQuitFeedbackBll experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity,liveBackBll,null,true);
+        experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity,liveBackBll,true);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
     }
 
@@ -1141,6 +1144,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
 //                getDataCallBack);
         liveBackBll.resultAllComplete();
+        if(experienceQuitFeedbackBll != null){
+            experienceQuitFeedbackBll.playComplete();
+        }
 //        onUserBackPressed();
     }
 
