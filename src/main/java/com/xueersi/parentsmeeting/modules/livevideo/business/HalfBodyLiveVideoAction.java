@@ -227,26 +227,21 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
 
     @Override
     public void setFirstBackgroundVisible(int visible) {
-        logger.e("====>setFirstBackgroundVisible: " + visible);
-        Log.e("onTeacherNotPresent", "=========>setFirstBackgroundVisible called:" + visible);
+       // Log.e("loadingView","========>setFirstBackgroundVisible:"+visible);
         if (rlFirstBackgroundView == null) {
             return;
         }
         rlFirstBackgroundView.setVisibility(visible);
         if (visible == View.VISIBLE) {
             setTeacherNotpresent(rlFirstBackgroundView);
+            ivTeacherNotpresent.setVisibility(View.VISIBLE);
+            setTeacherNotpresent(ivTeacherNotpresent);
         }
         if (visible == View.GONE) {
             ivTeacherNotpresent.setVisibility(View.GONE);
-            rlFirstBackgroundView.setVisibility(View.GONE);
             //showVedioLoading(visible);
             if (ivVodeoLoading != null) {
                 ivVodeoLoading.setVisibility(View.INVISIBLE);
-            }
-        } else {
-            if (ivTeacherNotpresent.getVisibility() == View.VISIBLE) {
-                setTeacherNotpresent(ivTeacherNotpresent);
-                //showVedioLoading(visible);
             }
         }
     }
@@ -254,7 +249,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
 
     @Override
     public void onTeacherNotPresent(boolean isBefore) {
-        Log.e("onTeacherNotPresent", "=========>onTeacherNotPresent called:" + isBefore);
+       // Log.e("loadingView", "=========>onTeacherNotPresent called:" + isBefore);
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -271,14 +266,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
                     mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View
                             .INVISIBLE);
                 }
-
-         /*       if (ivVodeoLoading != null) {
-                    ivVodeoLoading.setVisibility(View.INVISIBLE);
-                }
-                ivTeacherNotpresent.setVisibility(View.VISIBLE);
-                setTeacherNotpresent(ivTeacherNotpresent);
-                mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View
-                        .INVISIBLE);*/
             }
         });
     }
@@ -428,6 +415,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
         showVedioLoading(View.VISIBLE);
+       // Log.e("loadingView","========>onLiveStart:");
     }
 
     private View bufferView;
