@@ -103,7 +103,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
             } else {
                 rlLiveMessageContent.removeAllViews();
             }
-            final View view = expPager.getRootView();
+            View view = expPager.getRootView();
             rlLiveMessageContent.addView(view, params);
             return true;
         } else {

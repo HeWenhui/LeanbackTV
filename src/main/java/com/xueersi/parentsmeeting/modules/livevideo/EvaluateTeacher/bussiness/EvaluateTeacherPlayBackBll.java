@@ -96,7 +96,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
             } else {
                 rlLiveMessageContent.removeAllViews();
             }
-            final View view = evaluateTeacherPager.getRootView();
+            View view = evaluateTeacherPager.getRootView();
             rlLiveMessageContent.addView(view, params);
             UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
                     .evaluate_teacher_1708001));
