@@ -19,7 +19,7 @@
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/livevideo_pscommon_wordsdivider"
+        android:background="#1AFFFFFF"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="1px"/>
 </RelativeLayout>
