@@ -4,10 +4,19 @@ import java.util.ArrayList;
 
 public class PkTeamEntity {
     private int myTeam = 0;
-    private int aId  ;
+    private int pkTeamId;
+    private int aId;
     private ArrayList<TeamMemberEntity> aTeamMemberEntity = new ArrayList<>();
-    private int bId  ;
+    private int bId;
     private ArrayList<TeamMemberEntity> bTeamMemberEntity = new ArrayList<>();
+
+    public int getPkTeamId() {
+        return pkTeamId;
+    }
+
+    public void setPkTeamId(int pkTeamId) {
+        this.pkTeamId = pkTeamId;
+    }
 
     public int getMyTeam() {
         return myTeam;

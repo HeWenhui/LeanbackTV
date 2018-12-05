@@ -1,9 +1,4 @@
 {
   "name": "live",
-  "business": [
-    {
-      "class": "com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.EnTeamPkIRCBll",
-      "intent": "allowLinkMicNew"
-    }
-  ]
+  "business": []
 }

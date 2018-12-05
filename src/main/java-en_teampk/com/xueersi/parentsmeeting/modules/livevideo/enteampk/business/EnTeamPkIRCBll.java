@@ -54,7 +54,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
-        logger.d("onLiveInited:unique_id=" + unique_id + ",use==" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
+        logger.d("onLiveInited:use=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
 //        if (AppConfig.DEBUG) {
 //            englishPk.canUsePK = 1;
 //            englishPk.hasGroup = 0;
@@ -64,6 +64,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             return;
         }
         unique_id = mGetInfo.getId() + "_" + mGetInfo.getStudentLiveInfo().getClassId();
+        logger.d("onLiveInited:unique_id=" + unique_id);
         EnTeamPkBll teamPkBll = new EnTeamPkBll(activity);
         teamPkBll.setRootView(mRootView);
         teamPkBll.setEnTeamPkHttp(new EnTeamPkHttpImp());
@@ -130,21 +131,21 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
     }
 
+    private void saveTeam(ResponseEntity responseEntity) {
+        String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
+        try {
+            JSONObject jsonObject = new JSONObject(string);
+            jsonObject.put(mGetInfo.getId(), responseEntity.getJsonObject());
+            mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM, jsonObject.toString(), ShareDataManager.SHAREDATA_USER);
+        } catch (JSONException e) {
+            mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
+            CrashReport.postCatchedException(e);
+        }
+    }
+
     class EnTeamPkHttpImp implements EnTeamPkHttp {
         int getSelfTeamInfoTimes = 1;
         int getEnglishPkGroupTimes = 1;
-
-        private void saveTeam(ResponseEntity responseEntity) {
-            String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
-            try {
-                JSONObject jsonObject = new JSONObject(string);
-                jsonObject.put(mGetInfo.getId(), responseEntity.getJsonObject());
-                mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM, jsonObject.toString(), ShareDataManager.SHAREDATA_USER);
-            } catch (JSONException e) {
-                mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
-                CrashReport.postCatchedException(e);
-            }
-        }
 
         @Override
         public void getSelfTeamInfo(final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
@@ -185,7 +186,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (!StringUtils.isEmpty(connectNickname)) {
                 nick_name = connectNickname;
             } else {
-                nick_name = "s_" + mGetInfo.getId() + "_3_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
+                nick_name = "s_3_" + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
             }
             mLogtf.d("reportStuInfo:nick_name=" + nick_name + ",mode=" + mGetInfo.getMode());
             LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
@@ -307,7 +308,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT:
                 logger.d("onNotice:XCR_ROOM_TEAMPK_RESULT:pkTeamEntity=" + pkTeamEntity);
                 if (pkTeamEntity != null) {
-                    final String teamId = "" + pkTeamEntity.getMyTeam();
+                    final String teamId = "" + pkTeamEntity.getPkTeamId();
                     getHttpManager().getEnglishPkTotalRank(teamId, "", new HttpCallBack(false) {
                         AtomicInteger tryCount = new AtomicInteger(5);
                         HttpCallBack callBack = this;
@@ -348,6 +349,18 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_GO:
                 logger.d("onNotice:XCR_ROOM_TEAMPK_GO:data=" + data);
+                try {
+                    ResponseEntity responseEntity = new ResponseEntity();
+                    responseEntity.setJsonObject(data.getJSONObject("teamInfo"));
+                    pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
+                    enTeamPkAction.setPkTeamEntity(pkTeamEntity);
+                    if (pkTeamEntity != null) {
+                        saveTeam(responseEntity);
+                    }
+                } catch (Exception e) {
+                    logger.d("XCR_ROOM_TEAMPK_GO", e);
+                    CrashReport.postCatchedException(e);
+                }
                 break;
             case XESCODE.ARTS_STOP_QUESTION:
                 onCourseEnd();
@@ -366,7 +379,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (old != null) {
             videoQuestionLiveEntity = null;
             if (pkTeamEntity != null) {
-                final String teamId = "" + pkTeamEntity.getMyTeam();
+                final String teamId = "" + pkTeamEntity.getPkTeamId();
                 final String testId = ("" + old.id).replace(",", "-");
                 mLogtf.d("onCourseEnd:isShow:old=" + old.id + ",testId=" + testId + ",pkTeamEntity=" + teamId);
                 getHttpManager().updataEnglishPkByTestId(teamId, testId, new HttpCallBack(false) {
@@ -423,7 +436,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (old != null) {
             videoQuestionLiveEntity = null;
             if (pkTeamEntity != null) {
-                String teamId = "" + pkTeamEntity.getMyTeam();
+                String teamId = "" + pkTeamEntity.getPkTeamId();
                 getHttpManager().updataEnglishPkByTestId(teamId, old.id, new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {

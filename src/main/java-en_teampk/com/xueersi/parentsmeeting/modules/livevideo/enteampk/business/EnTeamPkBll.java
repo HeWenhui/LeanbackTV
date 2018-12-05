@@ -56,8 +56,24 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         this.rootView = rootView;
     }
 
+    @Override
     public void setPkTeamEntity(PkTeamEntity pkTeamEntity) {
         this.pkTeamEntity = pkTeamEntity;
+//        if (AppConfig.DEBUG) {
+//            teamPkRankResultPager = new TeamPkRankResultPager(mContext, pkTeamEntity);
+//            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+//            layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
+//            rootView.addView(teamPkRankResultPager.getRootView(), layoutParams);
+//            teamPkRankResultPager.setOnStartClick(new TeamPkRankResultPager.OnStartClick() {
+//                @Override
+//                public void onClick() {
+//                    if (teamPkRankResultPager != null) {
+//                        rootView.removeView(teamPkRankResultPager.getRootView());
+//                        teamPkRankResultPager = null;
+//                    }
+//                }
+//            });
+//        }
     }
 
     @Override
@@ -104,6 +120,9 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 mLogtf.d("onDataFail:destory=" + destory + ",errStatus=" + errStatus + ",times=" + reportTimes);
+                if (pkTeamEntity != null) {
+                    return;
+                }
                 if (!destory && errStatus == 1) {
                     if (reportTimes++ > 3) {
                         return;
@@ -190,6 +209,9 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                             public void onDataFail(int errStatus, String failMsg) {
                                 super.onDataFail(errStatus, failMsg);
                                 logger.d("onRankStart:onDataFail:errStatus=" + errStatus + ",destory=" + destory);
+                                if (pkTeamEntity != null) {
+                                    return;
+                                }
                                 if (!destory || getSelfTeamInfoTimes > 9) {
                                     handler.postDelayed(new Runnable() {
                                         @Override
@@ -218,6 +240,9 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                             public void onDataFail(int errStatus, String failMsg) {
                                 super.onDataFail(errStatus, failMsg);
                                 logger.d("onDataFail:errStatus=" + errStatus + ",destory=" + destory);
+                                if (pkTeamEntity != null) {
+                                    return;
+                                }
                                 if (!destory || getSelfTeamInfoTimes > 9) {
                                     handler.postDelayed(new Runnable() {
                                         @Override

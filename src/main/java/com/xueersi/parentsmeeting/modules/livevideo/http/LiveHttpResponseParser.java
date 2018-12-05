@@ -1869,6 +1869,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             PkTeamEntity pkTeamEntity = new PkTeamEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             {
+                pkTeamEntity.setPkTeamId(jsonObject.getInt("pkTeamId"));
                 pkTeamEntity.setaId(jsonObject.getInt("team_a_id"));
                 ArrayList<TeamMemberEntity> aTeamMemberEntity = pkTeamEntity.getaTeamMemberEntity();
                 JSONArray team_a_mate = jsonObject.getJSONArray("team_a_mate");

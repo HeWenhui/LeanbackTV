@@ -902,7 +902,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" ,stringBuilder.toString());
 
             } else if (ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT == event.getType()) {
-                onRolePlayAnswerResult(event.getDataStr());
+                onRolePlayAnswerResult(event.getDataStr(),event.getSpeechResultEntity());
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_rolePlay:").append(event.getDataStr());
                 UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll"+"_ArtsAnswerResult_rolePlay",stringBuilder.toString());
@@ -940,7 +940,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      *
      * @param dataStr
      */
-    private void onRolePlayAnswerResult(String dataStr) {
+    private void onRolePlayAnswerResult(String dataStr,SpeechResultEntity speechResultEntity) {
         if (!TextUtils.isEmpty(dataStr)) {
             try {
                 JSONObject jsonObject = new JSONObject(dataStr);

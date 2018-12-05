@@ -271,13 +271,7 @@ public class AnswerResultEntity {
         answerResultEntity.isVoice = 1;
         ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
         answerResultEntity.setAnswerList(answerList);
-        if (entity.getResultType() == VideoResultEntity.QUE_RES_TYPE1) {
-            answerResultEntity.setIsRight(2);
-        } else if (entity.getResultType() == VideoResultEntity.QUE_RES_TYPE2) {
-            answerResultEntity.setIsRight(0);
-        } else if (entity.getResultType() == VideoResultEntity.QUE_RES_TYPE3) {
-            answerResultEntity.setIsRight(1);
-        }
+        answerResultEntity.setIsRight(entity.getResultType());
         {
             AnswerResultEntity.Answer answer = new AnswerResultEntity.Answer();
             List<String> rightAnswers = new ArrayList<>();

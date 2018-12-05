@@ -144,24 +144,24 @@ public class EnAchievePager extends LiveBasePager {
                         }
                     });
                 }
-                if (AppConfig.DEBUG) {
-                    Random random = new Random();
-                    StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
-                    int nextInt = random.nextInt();
-                    int goldCount2 = goldCount;
-                    int energyCount2 = energyCount;
-                    if (nextInt % 3 == 0) {
-                        goldCount2 += random.nextInt(20);
-                        energyCount2 += random.nextInt(20);
-                    } else if (nextInt % 3 == 1) {
-                        goldCount2 += random.nextInt(20);
-                    } else {
-                        energyCount2 += random.nextInt(20);
-                    }
-                    starAndGoldEntity.setGoldCount(goldCount2);
-                    starAndGoldEntity.getPkEnergy().me = energyCount2;
-                    onGetStar(starAndGoldEntity);
-                }
+//                if (AppConfig.DEBUG) {
+//                    Random random = new Random();
+//                    StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
+//                    int nextInt = random.nextInt();
+//                    int goldCount2 = goldCount;
+//                    int energyCount2 = energyCount;
+//                    if (nextInt % 3 == 0) {
+//                        goldCount2 += random.nextInt(20);
+//                        energyCount2 += random.nextInt(20);
+//                    } else if (nextInt % 3 == 1) {
+//                        goldCount2 += random.nextInt(20);
+//                    } else {
+//                        energyCount2 += random.nextInt(20);
+//                    }
+//                    starAndGoldEntity.setGoldCount(goldCount2);
+//                    starAndGoldEntity.getPkEnergy().me = energyCount2;
+//                    onGetStar(starAndGoldEntity);
+//                }
             }
         });
     }

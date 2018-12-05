@@ -1079,9 +1079,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 public void onPmSuccess(final ResponseEntity responseEntity) {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     JSONObject detail = jsonObject.optJSONObject("data");
-                    mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmSuccess=" + jsonObject);
-                    boolean isAnswer = detail.optInt("isAnswer") == 1;
-                    isAnswered.isAnswer(isAnswer);
+                    if (detail != null) {
+                        mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmSuccess=" + jsonObject);
+                        boolean isAnswer = detail.optInt("isAnswer") == 1;
+                        isAnswered.isAnswer(isAnswer);
+                    } else {
+                        boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
+                        isAnswered.isAnswer(isAnswer);
+                    }
                 }
 
                 @Override

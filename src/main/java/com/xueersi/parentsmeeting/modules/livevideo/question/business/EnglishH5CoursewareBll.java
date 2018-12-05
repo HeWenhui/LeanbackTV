@@ -726,7 +726,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
     @Override
     public void initArtsAnswerRightResultVoice(AnswerResultEntity entity) {
-        final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(context, entity, new AnswerResultStateListener() {
+        final View popupWindow_view = QuestionResultView.initArtsAnswerRightResultVoice(context, entity, new AnswerResultStateListener() {
             @Override
             public void onCompeletShow() {
                 disMissAnswerResult();

@@ -403,6 +403,7 @@
     <item name="rl_livevideo_speechbul_root" type="id" />
     <item name="tv_livevideo_speechbul_title" type="id" />
     <item name="tv_livevideo_speechbul_title_count" type="id" />
+    <item name="tv_livevideo_speechbul_title_switch" type="id" />
     <item name="tv_livevideo_speechbul_close" type="id" />
     <item name="vwv_livevideo_speechbul_wave" type="id" />
     <item name="tv_livevideo_speechbul_countdown" type="id" />
