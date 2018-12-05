@@ -12,6 +12,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
@@ -36,7 +37,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         .IButtonClickListener, IExperiencePresenter {
     LivePlayBackHttpManager livePlayBackHttpManager;
     ExperienceQuitFeedbackPager expPager;
-    private RelativeLayout rlLiveMessageContent;
+    private RelativeLayout rlViewContent;
     private boolean firstTime = true;
     private long startTime;
     private long SHOW_QUIT_DIALOG_THRESHOLD = 1500000;
@@ -65,6 +66,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
             isShowQuitDialog = true;
         }
         if (isShowQuitDialog) {
+            logger.i("create expager");
             livePlayBackHttpManager = new LivePlayBackHttpManager(mContext);
             expPager = new ExperienceQuitFeedbackPager(mContext);
             expPager.setButtonListener(this);
@@ -81,12 +83,13 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
     }
 
     public void playComplete() {
+        logger.i("playComplete");
         isShowQuitDialog = false;
     }
 
     @Override
     public boolean showPager() {
-        if (isShowQuitDialog) {
+        if (isShowQuitDialog && mRootView != null) {
             StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackOpen");
             logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
             UmsAgentManager.umsAgentOtherBusiness(activity, "1305801", UmsConstants.uploadBehavior,
@@ -97,14 +100,15 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
             }
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            if (rlLiveMessageContent == null) {
-                rlLiveMessageContent = new RelativeLayout(activity);
-                mRootView.addView(rlLiveMessageContent, params);
+            if (rlViewContent == null) {
+                rlViewContent = new RelativeLayout(activity);
+                rlViewContent.setId(R.id.rl_livevideo_experience_feedback_quit);
+                mRootView.addView(rlViewContent, params);
             } else {
-                rlLiveMessageContent.removeAllViews();
+                rlViewContent.removeAllViews();
             }
             View view = expPager.getRootView();
-            rlLiveMessageContent.addView(view, params);
+            rlViewContent.addView(view, params);
             return true;
         } else {
             return false;
@@ -119,8 +123,8 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         UmsAgentManager.umsAgentOtherBusiness(activity, "1305801", UmsConstants.uploadBehavior,
                 logHashMap.getData());
         expPager.removeAllCheck();
-        if (rlLiveMessageContent != null) {
-            rlLiveMessageContent.removeAllViews();
+        if (rlViewContent != null) {
+            rlViewContent.removeAllViews();
         }
         return false;
     }

@@ -122,13 +122,10 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
 
     @Override
     public void submit(Map<String, String> mainEva, Map<String, String> tutorEva) {
-        reSubmitCount = 0;
         String teacherEvaluLevel = mainEva.get("eva");
         String teacherEvaluOption = "";
         String tutorEvaluLevel = tutorEva.get("eva");
         String tutorEvaluOption = "";
-        mainEva.remove("eva");
-        tutorEva.remove("eva");
         teacherEvaluOption = getEvaluteOption(mainEva);
         tutorEvaluOption = getEvaluteOption(tutorEva);
         uploadEvaluation(teacherEvaluLevel, teacherEvaluOption, tutorEvaluLevel, tutorEvaluOption);
@@ -201,8 +198,12 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
             mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStuCouId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
-        } else {
+        } else if (mGetInfo.getIsArts() == 0){
             mHttpManager.saveScienceEvaluationTeacher(mLiveId, mGetInfo.getStuCouId(), mGetInfo.getMainTeacherId(),
+                    teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
+                    tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
+        } else {
+            mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStuCouId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
         }
