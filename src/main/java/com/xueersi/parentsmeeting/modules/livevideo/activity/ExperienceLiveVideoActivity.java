@@ -803,32 +803,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         bottomContent.addView(liveMediaControllerBottom);
         final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         setFirstParam(lp);
-        final View contentView = findViewById(android.R.id.content);
-        contentView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
-                        .OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        boolean isLand = getResources().getConfiguration().orientation == Configuration
-                                .ORIENTATION_LANDSCAPE;
-                        //logger.i( "setVideoWidthAndHeight:isLand=" + isLand);
-                        if (!isLand) {
-                            return;
-                        }
-                        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
-                                (int) VIDEO_HEIGHT, VIDEO_RATIO);
-                        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                        LiveVideoPoint.initLiveVideoPoint((Activity) mContext, LiveVideoPoint.getInstance(), lp);
-                        setFirstParam(lp);
-                        mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
-
-//                        mLiveMessagePager.setVideoWidthAndHeight(lp.width, lp.height);
-                    }
-                });
-            }
-        }, 10);
     }
 
     private void setFirstParam(ViewGroup.LayoutParams lp) {
@@ -859,7 +833,32 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mLiveMessagePager = new LiveMessagePager(this, questionBll, ums, liveMediaControllerBottom,
                 liveMessageLandEntities, null);
         logger.d("initViewLive:time1=" + (System.currentTimeMillis() - before));
+        final View contentView = findViewById(android.R.id.content);
+        contentView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                        .OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        boolean isLand = getResources().getConfiguration().orientation == Configuration
+                                .ORIENTATION_LANDSCAPE;
+                        //logger.i( "setVideoWidthAndHeight:isLand=" + isLand);
+                        if (!isLand) {
+                            return;
+                        }
+                        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
+                                (int) VIDEO_HEIGHT, VIDEO_RATIO);
+                        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+                        LiveVideoPoint.initLiveVideoPoint((Activity) mContext, LiveVideoPoint.getInstance(), lp);
+                        setFirstParam(lp);
+                        mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
 
+//                        mLiveMessagePager.setVideoWidthAndHeight(lp.width, lp.height);
+                    }
+                });
+            }
+        }, 10);
         // 关联聊天人数
         mLiveMessagePager.setPeopleCount(peopleCount);
         mLiveMessagePager.setMessageBll(liveMessageBll);
