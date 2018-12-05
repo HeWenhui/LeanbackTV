@@ -627,7 +627,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             if (LiveVideoConfig.isNewArts) {
                 Log.d("Duncan", "onPutQuestionResultNewArts3");
                 if ("15".equals(videoQuestionLiveEntity.voiceType) || "16".equals(videoQuestionLiveEntity.voiceType)) {
-                    getHttpManager().liveSubmitNewArtsRealH5Answer(videoQuestionLiveEntity.type,
+                    getHttpManager().liveSubmitNewArtsRealH5Answer(videoQuestionLiveEntity.voiceType,
                             videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
                             isRight, new HttpCallBack() {
                                 @Override
