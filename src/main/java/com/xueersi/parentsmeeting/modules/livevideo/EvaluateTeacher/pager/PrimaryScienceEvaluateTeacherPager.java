@@ -93,6 +93,8 @@ public class PrimaryScienceEvaluateTeacherPager extends BaseEvaluateTeacherPaper
     @Override
     public void showSuccessPager(CountDownCallback callback) {
         logger.i("showUploadSuccessPager");
+        rlBackground.setBackgroundResource(R.drawable.lspj_pingjia_thanks_bg_img_normal);
+        ivResult.setImageResource(R.drawable.lspj_pingjia_result_thanks_img_normal);
         super.showSuccessPager(callback);
     }
 
