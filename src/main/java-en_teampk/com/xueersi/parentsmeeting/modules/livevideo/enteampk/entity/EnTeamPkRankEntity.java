@@ -10,6 +10,7 @@ public class EnTeamPkRankEntity {
     private int opTeamTotal;//:200, // b队总能量值
     private int opTeamCurrent;//":50,// b队本轮能量增加值
     private int bpkTeamId;//:5,       // b队头像id
+    private int isWin = 0;
     ArrayList<TeamMemberEntity> memberEntities = new ArrayList<>();
 
     public int getMyTeam() {
@@ -74,5 +75,13 @@ public class EnTeamPkRankEntity {
 
     public void setMemberEntities(ArrayList<TeamMemberEntity> memberEntities) {
         this.memberEntities = memberEntities;
+    }
+
+    public int getIsWin() {
+        return isWin;
+    }
+
+    public void setIsWin(int isWin) {
+        this.isWin = isWin;
     }
 }

@@ -1919,6 +1919,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             enTeamPkRankEntity.setMyTeamTotal(jsonObject.optInt("myTeamTotal"));
             enTeamPkRankEntity.setMyTeamCurrent(jsonObject.optInt("myTeamCurrent"));
             enTeamPkRankEntity.setApkTeamId(jsonObject.optInt("myPkHeadTeamId"));
+            enTeamPkRankEntity.setIsWin(jsonObject.optInt("isWin"));
 
             enTeamPkRankEntity.setOpTeamTotal(jsonObject.optInt("opTeamTotal"));
             enTeamPkRankEntity.setOpTeamCurrent(jsonObject.optInt("opTeamCurrent"));

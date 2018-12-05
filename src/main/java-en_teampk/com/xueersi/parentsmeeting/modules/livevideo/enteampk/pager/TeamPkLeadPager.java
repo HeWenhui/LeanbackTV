@@ -150,7 +150,7 @@ public class TeamPkLeadPager extends LiveBasePager {
         }
         int[] res = EnTeamPkConfig.TEAM_RES;
         ivTeampkMine.setImageResource(res[enTeamPkRankEntity.getMyTeam()]);
-        int progress = 0;
+        int progress = 50;
         float fprog = 0.0f;
         int total = enTeamPkRankEntity.getMyTeamTotal() + enTeamPkRankEntity.getOpTeamTotal();
         ivTeampkOther.setImageResource(res[enTeamPkRankEntity.getBpkTeamId()]);
