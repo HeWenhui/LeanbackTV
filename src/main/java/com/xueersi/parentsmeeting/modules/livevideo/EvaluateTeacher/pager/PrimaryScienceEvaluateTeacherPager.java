@@ -47,6 +47,7 @@ public class PrimaryScienceEvaluateTeacherPager extends BaseEvaluateTeacherPaper
             public void onClick(View view) {
                 btnReSubmit.setEnabled(false);
                 ivTryagaingLoading.setVisibility(View.VISIBLE);
+
                 buttonOnClick.submit(mainEva, tutorEva);
             }
         });
