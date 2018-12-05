@@ -132,8 +132,11 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
             EXAM_URL = EXAM_URL.replace(ShareBusinessConfig.LIVE_SCIENCE, ShareBusinessConfig.LIVE_LIBARTS);
         }
         if (EXAM_URL.contains("xueersi.com/LiveExam")) {
-            String host = isArts != 1 ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
-            EXAM_URL = EXAM_URL.replace("xueersi.com/LiveExam", "xueersi.com/" + host + "/LiveExam");
+            // TODO: 2018/12/5
+            if (isArts != 2) {
+                String host = isArts != 1 ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
+                EXAM_URL = EXAM_URL.replace("xueersi.com/LiveExam", "xueersi.com/" + host + "/LiveExam");
+            }
         }
         examUrl = EXAM_URL + "?liveId=" + liveid
                 + "&testPlan=" + num + "&isPlayBack=1&stuId=" + userInfoEntity.getStuId() + "&stuName=" + mAppInfoEntity.getLoginUserName();
