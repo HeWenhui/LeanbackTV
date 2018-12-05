@@ -180,13 +180,16 @@ public class ExperienceQuitFeedbackPager extends LiveBasePager {
         //显示定级卷时点击返回直接关闭
         if (!gradingPaperShow){
             if(!isShow){
+                logger.i("show pager");
                 isShow = mButtonListener.showPager();
                 return isShow;
             }else{
+                logger.i("remove pager");
                 isShow = mButtonListener.removePager();
             }
             return true;
         }else {
+            logger.i("quit video");
             return false;
         }
     }

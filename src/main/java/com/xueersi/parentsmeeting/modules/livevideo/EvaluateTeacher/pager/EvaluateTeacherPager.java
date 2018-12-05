@@ -76,6 +76,7 @@ public class EvaluateTeacherPager extends BaseEvaluateTeacherPaper {
     public void showUploadFailPager() {
         logger.i("showUploadFailPager");
         tvResultStatus.setText("提交失败，请重试!");
+        ivResult.setImageResource(R.drawable.ic_monkey_img_normal);
         super.showUploadFailPager();
     }
 

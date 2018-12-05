@@ -122,8 +122,6 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
         String teacherEvaluOption = "";
         String tutorEvaluLevel = tutorEva.get("eva");
         String tutorEvaluOption = "";
-        mainEva.remove("eva");
-        tutorEva.remove("eva");
         teacherEvaluOption = getEvaluteOption(mainEva);
         tutorEvaluOption = getEvaluteOption(tutorEva);
         uploadEvaluation(teacherEvaluLevel, teacherEvaluOption, tutorEvaluLevel, tutorEvaluOption);

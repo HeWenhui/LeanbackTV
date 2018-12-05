@@ -180,8 +180,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             });
         }
-        QuestionWebCache webCache = new QuestionWebCache(activity);
+
         if (mGetInfo.getIsArts() == 0) {
+            QuestionWebCache webCache = new QuestionWebCache(activity);
             webCache.startCache();
         }
     }
@@ -460,7 +461,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 }
 
-                if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay .equals( "1")){
+                if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
                     logger.i("onNotice 新课件平台，走人机start,拉取试题");
                     RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
                     mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
@@ -476,6 +477,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (mQuestionAction != null) {
                     try {
                         mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
+                        //解决多人的时候，除了初次的多人正常进对话，其他的都进不去
+                        rolePlayAction = null;
+                        rolePlayMachineAction = null;
                         if (mQuestionAction instanceof QuestionBll) {
                             ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
                             logger.e("======>LiveBll setWebViewCloseByTeacher: " +
@@ -495,6 +499,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (mQuestionAction != null) {
                     try {
                         mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
+                        //解决多人的时候，除了初次的多人正常进对话，其他的都进不去
+                        rolePlayAction = null;
+                        rolePlayMachineAction = null;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
