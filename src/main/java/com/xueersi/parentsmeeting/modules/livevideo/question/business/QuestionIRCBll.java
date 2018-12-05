@@ -180,8 +180,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             });
         }
-        QuestionWebCache webCache = new QuestionWebCache(activity);
+
         if (mGetInfo.getIsArts() == 0) {
+            QuestionWebCache webCache = new QuestionWebCache(activity);
             webCache.startCache();
         }
     }
@@ -460,7 +461,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 }
 
-                if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay .equals( "1")){
+                if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
                     logger.i("onNotice 新课件平台，走人机start,拉取试题");
                     RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
                     mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
