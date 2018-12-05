@@ -23,7 +23,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
@@ -1696,7 +1695,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 学生获取战队信息
-     *
      * @param requestCallBack
      */
     public void getSelfTeamInfo(String stu_id, String unique_id, HttpCallBack requestCallBack) {
@@ -1722,10 +1720,12 @@ public class LiveHttpManager extends BaseHttpBusiness {
     /**
      * 学生上报个人信息
      *
+     * @param mode
      * @param requestCallBack
      */
-    public void reportStuInfo(String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, HttpCallBack requestCallBack) {
+    public void reportStuInfo(String mode, String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("mode", "" + mode);
         params.addBodyParam("stu_id", "" + stu_id);
         params.addBodyParam("stu_name", stu_name);
         params.addBodyParam("stu_head", stu_head);
