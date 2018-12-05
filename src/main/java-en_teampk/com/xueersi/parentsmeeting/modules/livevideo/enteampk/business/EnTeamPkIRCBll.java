@@ -251,6 +251,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         @Override
         public void getEnglishPkGroup(final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
+            if (pkTeamEntity != null) {
+                abstractBusinessDataCallBack.onDataSucess(pkTeamEntity);
+                return;
+            }
             getHttpManager().getEnglishPkGroup(new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) {

@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -1689,7 +1690,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     /**
      * 弹幕推送
      *
-     * @param json            json数据
+     * @param json     json数据
      * @param callback
      */
     public void pushSpeechBullet(String json, okhttp3.Callback callback) {
@@ -1807,6 +1808,9 @@ public class LiveHttpManager extends BaseHttpBusiness {
      */
     public void reportStuInfo(String mode, String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
+//        if (AppConfig.DEBUG) {
+//            mode = "1";
+//        }
         params.addBodyParam("mode", "" + mode);
         params.addBodyParam("stu_id", "" + stu_id);
         params.addBodyParam("stu_name", stu_name);
