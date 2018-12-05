@@ -35,11 +35,9 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
     private LiveMediaController mMediaController;
     protected Context mContext;
 
-  /*  *//** 底部动画向上出现 *//*
     private Animation mAnimSlideInBottom;
-    *//** 底部动画向下隐藏 *//*
     private Animation mAnimSlideOutBottom;
-*/
+
     /** 上方信息栏布局 */
     protected View mSystemInfoLayout;
     /** 顶部信息栏左边的回退按钮 */
@@ -66,6 +64,36 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
     protected void initResources() {
         inflateLayout();
         findViewItems();
+        // 初始化上下控制栏的动画
+        mAnimSlideOutBottom = AnimationUtils.loadAnimation(mContext, com.xueersi.parentsmeeting.base.R.anim
+                .anim_mediactrl_slide_out_bottom);
+        mAnimSlideInBottom = AnimationUtils.loadAnimation(mContext, com.xueersi.parentsmeeting.base.R.anim
+                .anim_mediactrl_slide_in_bottom);
+        mAnimSlideOutBottom.setFillAfter(true);
+        mAnimSlideInBottom.setFillAfter(true);
+        mAnimSlideOutBottom.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mMediaController.hiderl_video_mediacontroller(); // 隐藏控制栏
+                mMediaController.showButtons(false); // 隐藏系统按钮
+                mMediaController.removeMessages(LiveMediaController.MSG_HIDE_SYSTEM_UI);
+                mMediaController.sendEmptyMessage(LiveMediaController.MSG_HIDE_SYSTEM_UI); // 隐藏状态栏
+                if(mSystemInfoLayout != null){
+                    mSystemInfoLayout.setVisibility(GONE);
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+
+
     }
 
     /**
@@ -119,7 +147,7 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
         vTitleRight = findViewById(R.id.iv_video_mark_points);
         FractionalTouchDelegate.setupDelegate(mSystemInfoLayout, mBack, new RectF(1.0f, 1f, 1.2f, 1.2f));
         // 初始化上下控制栏的动画
-        initAnim();
+       // initAnim();
     }
 
     /** 回退监听 */
@@ -149,12 +177,14 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
     @Override
     public void onShow() {
         mSystemInfoLayout.setVisibility(View.VISIBLE);
-        mAnimatorsetIn.start();
+        //mAnimatorsetIn.start();
+        mSystemInfoLayout.startAnimation(mAnimSlideInBottom);
     }
 
     @Override
     public void onHide() {
-        mAnimatorSetOut.start();
+       // mAnimatorSetOut.start();
+        mSystemInfoLayout.startAnimation(mAnimSlideOutBottom);
     }
 
     /** 设置横竖屏切换按钮是否显示 */
