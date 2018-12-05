@@ -103,14 +103,17 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
             if (rlViewContent == null) {
                 rlViewContent = new RelativeLayout(activity);
                 rlViewContent.setId(R.id.rl_livevideo_experience_feedback_quit);
+                mRootView.setVisibility(View.VISIBLE);
                 mRootView.addView(rlViewContent, params);
             } else {
                 rlViewContent.removeAllViews();
             }
             View view = expPager.getRootView();
+            logger.i("showpager");
             rlViewContent.addView(view, params);
             return true;
         } else {
+            logger.i("quitlive");
             return false;
         }
     }
@@ -126,6 +129,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         if (rlViewContent != null) {
             rlViewContent.removeAllViews();
         }
+        logger.i("removepager");
         return false;
     }
 
