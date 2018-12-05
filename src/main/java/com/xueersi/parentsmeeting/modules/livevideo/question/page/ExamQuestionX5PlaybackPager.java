@@ -122,9 +122,11 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         AppInfoEntity mAppInfoEntity = AppBll.getInstance().getAppInfoEntity();
         String EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL, ShareBusinessConfig.EXAM_URL, ShareDataManager.SHAREDATA_USER);
-        if (isArts != 1) {
+        if (isArts == 0) {
             EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_SCIENCE, EXAM_URL, ShareDataManager.SHAREDATA_USER);
             EXAM_URL = EXAM_URL.replace(ShareBusinessConfig.LIVE_LIBARTS, ShareBusinessConfig.LIVE_SCIENCE);
+        } else if (isArts == 2) {
+            EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_CHS, EXAM_URL, ShareDataManager.SHAREDATA_USER);
         } else {
             EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_LIBARTS, EXAM_URL, ShareDataManager.SHAREDATA_USER);
             EXAM_URL = EXAM_URL.replace(ShareBusinessConfig.LIVE_SCIENCE, ShareBusinessConfig.LIVE_LIBARTS);

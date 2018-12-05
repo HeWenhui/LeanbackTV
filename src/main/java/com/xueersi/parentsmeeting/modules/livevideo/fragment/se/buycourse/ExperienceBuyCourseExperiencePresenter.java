@@ -9,14 +9,13 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 
-public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll implements IPresenter {
+public class ExperienceBuyCourseExperiencePresenter extends StandExperienceEventBaseBll implements IExperiencePresenter {
     //第一次拿到数据才暂时，第二次再请求就不展示了
     private boolean isFirstGetResult = true;
 
@@ -29,7 +28,7 @@ public class ExperienceBuyCoursePresenter extends StandExperienceEventBaseBll im
      * @param activity
      * @param liveBackBll
      */
-    public ExperienceBuyCoursePresenter(Activity activity, StandExperienceLiveBackBll liveBackBll) {
+    public ExperienceBuyCourseExperiencePresenter(Activity activity, StandExperienceLiveBackBll liveBackBll) {
         super(activity, liveBackBll);
         mPager = new ExperienceBuyCourseView(activity, this);
     }

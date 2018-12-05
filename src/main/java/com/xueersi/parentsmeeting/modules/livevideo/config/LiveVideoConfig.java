@@ -123,6 +123,8 @@ public class LiveVideoConfig {
     public static String LIVE_EXPERIENCE_EXIT = "LiveFreePlayEvent";
     /** 体验播放器-聊天内容 */
     public static String LIVE_EXPERIENCE_IMMSG = "LiveFreePlayEvent";
+    /** 体验课事件 */
+    public static String LIVE_EXPERIENCE = "experienceLiveClass";
     /** 直播-H5课件互动题 */
     public static String LIVE_ENGLISH_COURSEWARE = "live_h5waretest";
     /** 直播-接麦 */
@@ -244,6 +246,10 @@ public class LiveVideoConfig {
     public static String URL_AUTO_LIVE_FEAD_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/learnFeedback";
     /** 提交体验课学习反馈 */
     public static String URL_AUTO_LIVE_LEARN_FEED_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitFeedback";
+    /**
+     * 提交体验课退出反馈
+     */
+    public static String URL_AUTO_LIVE_QUIT_FEED_BACK = AppConfig.HTTP_HOST_TEAMPK+"/science/AutoLive/submitClassQuitFeedback";
     /** 视频播放失败的eventId */
     public final static String STAND_EXPERIENCE_LIVE_PLAY_ERROR = "stand_experience_live_play_error";
 

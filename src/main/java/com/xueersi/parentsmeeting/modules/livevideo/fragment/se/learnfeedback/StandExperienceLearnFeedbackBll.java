@@ -12,7 +12,7 @@ import org.json.JSONArray;
 /**
  * 学习反馈窗口的Presenter层
  */
-public class StandExperienceLearnFeedbackBll extends StandExperienceEventBaseBll implements IStandExperienceLearnFeedbackContract.ISendHttp {
+public class StandExperienceLearnFeedbackBll extends StandExperienceEventBaseBll implements IStandExperienceLearnFeedbackContract.IExperienceSendHttp {
 
     StandExperienceLearnFeedBackPager mPager;
 

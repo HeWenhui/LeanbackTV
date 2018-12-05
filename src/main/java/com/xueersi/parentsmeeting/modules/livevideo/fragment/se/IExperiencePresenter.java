@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment.se;
 
-public interface IPresenter {
+public interface IExperiencePresenter {
     //当前Presenter需要显示的View
     void showWindow();
 

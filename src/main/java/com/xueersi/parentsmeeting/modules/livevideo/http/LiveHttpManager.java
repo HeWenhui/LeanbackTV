@@ -1718,7 +1718,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param requestCallBack
      */
     public void saveArtsEvaluationTeacher(String liveId, String courseId,String teacherId, String teacherScore, String
-            teacherOption,String counserorId, String counselorScore, String
+            teacherOption,String counselorId, String counselorScore, String
                                                   counselorOption,String classId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
@@ -1726,7 +1726,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("teacherId",teacherId);
         params.addBodyParam("teacherScore", teacherScore);
         params.addBodyParam("teacherOption", teacherOption);
-        params.addBodyParam("counserorId",counserorId);
+        params.addBodyParam("counselorId",counselorId);
         params.addBodyParam("counselorScore", counselorScore);
         params.addBodyParam("counselorOption", counselorOption);
         params.addBodyParam("classId",classId);
@@ -1748,7 +1748,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param requestCallBack
      */
     public void saveScienceEvaluationTeacher(String liveId, String courseId,String teacherId, String teacherScore, String
-            teacherOption,String counserorId, String counselorScore, String
+            teacherOption,String counselorId, String counselorScore, String
             counselorOption,String classId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
@@ -1756,7 +1756,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("teacherId",teacherId);
         params.addBodyParam("teacherScore", teacherScore);
         params.addBodyParam("teacherOption", teacherOption);
-        params.addBodyParam("counserorId",counserorId);
+        params.addBodyParam("counselorId",counselorId);
         params.addBodyParam("counselorScore", counselorScore);
         params.addBodyParam("counselorOption", counselorOption);
         params.addBodyParam("classId",classId);

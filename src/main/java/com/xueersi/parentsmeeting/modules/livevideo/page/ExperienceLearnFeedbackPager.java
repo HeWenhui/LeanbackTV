@@ -124,7 +124,7 @@ public class ExperienceLearnFeedbackPager extends BasePager {
             @Override
             public void onClick(View v) {
                 if (closeAction != null) {
-                    closeAction.onClose();
+                    closeAction.onClose("2");
                 }
                 setBackgroundAlpha(1f);
             }
@@ -157,7 +157,7 @@ public class ExperienceLearnFeedbackPager extends BasePager {
                                     });
                 }
                 if (closeAction != null) {
-                    closeAction.onClose();
+                    closeAction.onClose("1");
                 }
                 setBackgroundAlpha(1f);
 
@@ -174,23 +174,8 @@ public class ExperienceLearnFeedbackPager extends BasePager {
 
     //关闭该pager接口
     public interface CloseAction {
-        void onClose();
-
+        void onClose(String type);
     }
 
-    /**
-     * 目前全身直播体验课专用,提交一系列
-     */
-    public interface LearnFeedBackPagerListener extends CloseAction {
-        void submitClick(String useId, String liveId, String subjectId, String gradId, String chapterId, String
-                suggest, JSONObject jsonObject, HttpCallBack httpCallBack);
-    }
-
-    private LearnFeedBackPagerListener learnFeedBackPagerListener;
-
-    public void setLearnFeedBackPagerListener(LearnFeedBackPagerListener learnFeedBackPagerListener) {
-        this.learnFeedBackPagerListener = learnFeedBackPagerListener;
-        this.closeAction = learnFeedBackPagerListener;
-    }
 
 }
