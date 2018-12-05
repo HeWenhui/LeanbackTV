@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageLan
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePortPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallChineseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
@@ -204,15 +205,16 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
         long before = System.currentTimeMillis();
         if (!isSmallEnglish) {
-            if (LiveVideoConfig.isPrimary) {
+            if (LiveVideoConfig.isPrimary ) {
                 LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
-            }
-//            else if(){//如果是语文
+            } else if (LiveVideoConfig.isSmallChinese) {//如果是语文
+                SmallChineseLiveMessagePager chineseLiveMessagePager = new SmallChineseLiveMessagePager(activity, this, null, baseLiveMediaControllerBottom
+                        , liveMessageLandEntities, liveMessagePortEntities);
+                mLiveMessagePager = chineseLiveMessagePager;
 
-//            }
-            else {
+            } else {
                 LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
@@ -275,11 +277,15 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 // liveMessageLandEntities);
 //            }
             if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
-                if (!isSmallEnglish) {
+                if (!isSmallEnglish && !LiveVideoConfig.isSmallChinese) {
                     LiveMessagePager liveMessagePager =
                             new LiveMessagePager(activity, this, null, baseLiveMediaControllerBottom,
                                     liveMessageLandEntities, liveMessagePortEntities);
                     mLiveMessagePager = liveMessagePager;
+                } else if (LiveVideoConfig.isSmallChinese) {
+                    SmallChineseLiveMessagePager chineseLiveMessagePager = new SmallChineseLiveMessagePager(activity, this, null, baseLiveMediaControllerBottom
+                            , liveMessageLandEntities, liveMessagePortEntities);
+                    mLiveMessagePager = chineseLiveMessagePager;
                 } else {
                     SmallEnglishLiveMessagePager liveMessagePager = new SmallEnglishLiveMessagePager(activity, this,
                             null, baseLiveMediaControllerBottom,
@@ -288,10 +294,15 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 }
             } else {
                 long before = System.currentTimeMillis();
-                if (!isSmallEnglish) {
+                if (!isSmallEnglish && !LiveVideoConfig.isSmallChinese) {
                     LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
                             baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                     mLiveMessagePager = liveMessagePager;
+                } else if (LiveVideoConfig.isSmallChinese) {
+                    SmallChineseLiveMessagePager chineseLiveMessagePager = new SmallChineseLiveMessagePager(activity,
+                            this, null, baseLiveMediaControllerBottom
+                            , liveMessageLandEntities, null);
+                    mLiveMessagePager = chineseLiveMessagePager;
                 } else {
                     SmallEnglishLiveMessagePager liveMessagePager = new SmallEnglishLiveMessagePager(activity, this,
                             null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);

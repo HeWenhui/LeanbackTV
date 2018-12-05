@@ -50,7 +50,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new
                 LiveBackBaseEnglishH5CoursewareCreat();
         int isArts = liveBackBll.getIsArts();
-        liveBaseEnglishH5CoursewareCreat.setIS_SCIENCE(isArts != 1);
+        liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
         liveBaseEnglishH5CoursewareCreat.setLivePagerBack(englishH5CoursewareBll);
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);

@@ -265,28 +265,30 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_close_btn_in);
         scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
         closeBtn.startAnimation(scaleAnimation);
-        final TextView textView = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
-        textView.setVisibility(View.VISIBLE);
-        final AtomicInteger integer = new AtomicInteger(5);
-        setCloseText(textView, integer);
-        textView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int count = integer.decrementAndGet();
-                if (count == 0) {
-                    answerListShowing = false;
-                    if (mStateListener != null) {
-                        mStateListener.onAutoClose(ArtsPSEAnswerResultPager.this);
+        if (mData.isVoice == 1){
+            final TextView textView = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
+            textView.setVisibility(View.VISIBLE);
+            final AtomicInteger integer = new AtomicInteger(5);
+            setCloseText(textView, integer);
+            textView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    int count = integer.decrementAndGet();
+                    if (count == 0) {
+                        answerListShowing = false;
+                        if (mStateListener != null) {
+                            mStateListener.onAutoClose(ArtsPSEAnswerResultPager.this);
+                        } else {
+                            ViewGroup group = (ViewGroup) mView.getParent();
+                            group.removeView(mView);
+                        }
                     } else {
-                        ViewGroup group = (ViewGroup) mView.getParent();
-                        group.removeView(mView);
+                        setCloseText(textView, integer);
+                        textView.postDelayed(this, 1000);
                     }
-                } else {
-                    setCloseText(textView, integer);
-                    textView.postDelayed(this, 1000);
                 }
-            }
-        }, 1000);
+            }, 1000);
+        }
     }
 
     private void setCloseText(TextView textView, AtomicInteger integer) {

@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,10 +18,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.item.TeamMemberItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TeamPkRankResultPager extends LiveBasePager {
     private ImageView ivTeampkMine;
@@ -30,6 +33,7 @@ public class TeamPkRankResultPager extends LiveBasePager {
     private Button btRankStart;
     private ImageView ivRankScore;
     private LinearLayout llScoreTip;
+    private TextView tv_livevideo_en_teampk_rank_start_close;
     private OnStartClick onStartClick;
     private CommonAdapter<TeamMemberEntity> myTeamAdapter;
     private CommonAdapter<TeamMemberEntity> otherTeamAdapter;
@@ -58,6 +62,7 @@ public class TeamPkRankResultPager extends LiveBasePager {
         btRankStart = view.findViewById(R.id.bt_livevideo_en_teampk_rank_start);
         ivRankScore = view.findViewById(R.id.iv_livevideo_en_teampk_rank_score);
         llScoreTip = view.findViewById(R.id.ll_livevideo_en_teampk_rank_score_tip);
+        tv_livevideo_en_teampk_rank_start_close = view.findViewById(R.id.tv_livevideo_en_teampk_rank_start_close);
         return view;
     }
 
@@ -155,6 +160,33 @@ public class TeamPkRankResultPager extends LiveBasePager {
                 return false;
             }
         });
+        final AtomicInteger integer = new AtomicInteger(10);
+        setCloseText(tv_livevideo_en_teampk_rank_start_close, integer);
+        tv_livevideo_en_teampk_rank_start_close.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int count = integer.decrementAndGet();
+                if (count == 0) {
+                    if (onStartClick != null) {
+                        onStartClick.onClick();
+                    } else {
+                        ViewGroup group = (ViewGroup) mView.getParent();
+                        if(group!=null){
+                            group.removeView(mView);
+                        }
+                    }
+                } else {
+                    setCloseText(tv_livevideo_en_teampk_rank_start_close, integer);
+                    tv_livevideo_en_teampk_rank_start_close.postDelayed(this, 1000);
+                }
+            }
+        }, 1000);
+    }
+
+    private void setCloseText(TextView textView, AtomicInteger integer) {
+//        SpannableStringBuilder spannable = new SpannableStringBuilder(integer + "s后关闭");
+//        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#FFFF7A1D")), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(integer + "s后关闭");
     }
 
     public interface OnStartClick {

@@ -16,14 +16,14 @@ import java.util.ArrayList;
  */
 
 public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
-    private boolean IS_SCIENCE = true;
+    private int isArts = 0;
     private LiveGetInfo liveGetInfo;
     private AnswerRankIRCBll mAnswerRankIRCBll;
     QuestionHttp questionHttp;
     QuestionBll questionBll;
 
-    public void setIS_SCIENCE(boolean IS_SCIENCE) {
-        this.IS_SCIENCE = IS_SCIENCE;
+    public void setisArts(int isArts) {
+        this.isArts = isArts;
     }
 
     public void setLiveGetInfo(LiveGetInfo liveGetInfo) {
@@ -54,7 +54,7 @@ public class LiveExamQuestionCreat implements BaseExamQuestionCreat {
         }
         BaseExamQuestionInter examQuestionPager = new ExamQuestionX5Pager(activity, questionBll, liveGetInfo.getStuId
                 (), liveGetInfo.getUname(), liveid, videoQuestionLiveEntity, mAnswerRankBll == null ? "0" : mAnswerRankBll
-                .getIsShow(), IS_SCIENCE, liveGetInfo.getStuCouId(), "1".equals(liveGetInfo.getIsAllowTeamPk()));
+                .getIsShow(), isArts, liveGetInfo.getStuCouId(), "1".equals(liveGetInfo.getIsAllowTeamPk()));
         return examQuestionPager;
     }
 }

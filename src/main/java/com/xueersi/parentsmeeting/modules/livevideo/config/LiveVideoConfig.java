@@ -12,6 +12,7 @@ import com.xueersi.common.entity.EnglishH5Entity;
  */
 public class LiveVideoConfig {
     public static String HTTP_HOST = "https://laoshi.xueersi.com";
+    public static String HTTP_PRIMARY_CHINESE_HOST = "https://app.chs.xueersi.com";
     /** 文科的接口域名 */
     public static String APP_ARTS_HTTP_HOST = "https://app.arts.xueersi.com";
     /** 直播辅导用户在线心跳 */
@@ -192,9 +193,9 @@ public class LiveVideoConfig {
     public static String LIVE_PLAY_ERROR = "live_play_error";
     /** 直播-学习报告截图 */
     public static String LIVE_STUDY_REPORT_IMG = "live_study_report_img";
-    /** 直播-小英语音聊天 */
+    /** 直播-小英语音聊天*/
     public static String LIVE_VOICE_CHAT = "voicechat";
-    /** 直播-小英语音弹幕 */
+    /** 直播-小英语音弹幕*/
     public static String LIVE_VOICE_BULLET = "voicebullet";
 
     public static class ShareData {
@@ -265,6 +266,17 @@ public class LiveVideoConfig {
     public static String URL_CDN_LOG = "http://log.xescdn.com/log";
     public static String URL_CDN_LOG1 = "http://log1.xescdn.com/log";
     public static String URL_CDN_LOG2 = "http://log2.xescdn.com/log";
+
+    public static String URL_CND_LOG_IP = "http://42.62.96.154:80/log";
+
+    /** 920日志IP 地址*/
+    public static String SP_URL_LIVE_CND_LOG_920_TYPE = "sp_url_live_cnd_log_920_type";
+    /** 920类型 IP*/
+    public static String LIVE_LOG_920_IP = "ip";
+    /** 920类型 HOST*/
+    public static String LIVE_LOG_920_HOST = "host";
+
+
     /** 更多课程数量的记录 */
     public static int MORE_COURSE;
     public static Boolean isloading = false;
@@ -279,6 +291,8 @@ public class LiveVideoConfig {
     public static EnglishH5Entity englishH5Entity;
     /** 小学阶段年级的标识 */
     public static Boolean isPrimary = false;
+    /** 小学语文换肤 */
+    public static Boolean isSmallChinese = false;
     /** 一题多发的直播回放的标识 */
     public static Boolean isMulLiveBack = false;
     /** 年级阶段的标识 */

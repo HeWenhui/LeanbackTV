@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.BaseEvaluateTeacherPaper;
+import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.EvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInter;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -28,6 +30,7 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
     public boolean onUserBackPressed() {
         logger.d( "onUserBackPressed:liveBasePagers=" + liveBasePagers.size());
         ArrayList<LiveBasePager> liveBasePagersTemp = new ArrayList<>(liveBasePagers);
+        sortPager(liveBasePagersTemp);
         for (int i = liveBasePagersTemp.size() - 1; i >= 0; i--) {
             LiveBasePager liveBasePager = liveBasePagersTemp.get(i);
             boolean onUserBackPressed = liveBasePager.onUserBackPressed();
@@ -59,6 +62,23 @@ public class AllLiveBasePagerIml implements AllLiveBasePagerInter {
             LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(context, LiveBackBll.ShowQuestion.class);
             if (showQuestion != null) {
                 showQuestion.onHide(liveBasePager.getBaseVideoQuestionEntity());
+            }
+        }
+    }
+
+    /**
+     * 将evaluteTeacherPager排到最前，最后获得onUserBackPressed事件
+     */
+    private void sortPager (ArrayList<LiveBasePager> liveBasePagersTemp){
+        LiveBasePager liveBasePager;
+        for (int i = 0; i < liveBasePagersTemp.size(); i++) {
+            if (liveBasePagersTemp.get(i) instanceof BaseEvaluateTeacherPaper){
+                liveBasePager = liveBasePagersTemp.get(i);
+                for (int j = i - 1; j >= 0; j--) {
+                    liveBasePagersTemp.set(j+1,liveBasePagersTemp.get(j));
+                }
+                liveBasePagersTemp.set(0,liveBasePager);
+                break;
             }
         }
     }

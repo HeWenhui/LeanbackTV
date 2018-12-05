@@ -150,7 +150,7 @@ public class TeamPkLeadPager extends LiveBasePager {
         }
         int[] res = EnTeamPkConfig.TEAM_RES;
         ivTeampkMine.setImageResource(res[enTeamPkRankEntity.getMyTeam()]);
-        int progress = 0;
+        int progress = 50;
         float fprog = 0.0f;
         int total = enTeamPkRankEntity.getMyTeamTotal() + enTeamPkRankEntity.getOpTeamTotal();
         ivTeampkOther.setImageResource(res[enTeamPkRankEntity.getBpkTeamId()]);
@@ -197,6 +197,13 @@ public class TeamPkLeadPager extends LiveBasePager {
         rlTeampkLeadBottom.addView(layout_livevideo_en_team_lead_star);
         GridView gv_livevideo_en_teampk_lead_star = layout_livevideo_en_team_lead_star.findViewById(R.id.gv_livevideo_en_teampk_lead_star);
         ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
+        int oldSize = myTeamEntitys.size();
+        for (int i = 4; i < myTeamEntitys.size(); i++) {
+            myTeamEntitys.remove(i);
+            i--;
+        }
+        int newSize = myTeamEntitys.size();
+        logger.d("showRank:oldSize=" + oldSize + ",newSize=" + newSize);
         CommonAdapter<TeamMemberEntity> myTeamAdapter = new CommonAdapter<TeamMemberEntity>(myTeamEntitys) {
             HashMap<TeamMemberEntity, LottieAnimationView> map = new HashMap<>();
 

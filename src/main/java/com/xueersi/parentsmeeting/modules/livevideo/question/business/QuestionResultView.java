@@ -117,39 +117,14 @@ public class QuestionResultView {
         return popupWindow_view;
     }
 
-    public static View initSelectAnswerRightResultVoice(Context context, AnswerResultEntity answerResultEntity, AnswerResultStateListener stateListener) {
-        answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_CORRECT);
-        ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
-        AnswerResultEntity.Answer answer = new AnswerResultEntity.Answer();
-        answerList.add(answer);
-        answerResultEntity.setAnswerList(answerList);
+    public static View initArtsAnswerRightResultVoice(Context context, AnswerResultEntity answerResultEntity, AnswerResultStateListener stateListener) {
+//        answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_CORRECT);
+//        ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
+//        AnswerResultEntity.Answer answer = new AnswerResultEntity.Answer();
+//        answerList.add(answer);
+//        answerResultEntity.setAnswerList(answerList);
         ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(context, answerResultEntity, stateListener);
         return artsPSEAnswerResultPager.getRootView();
     }
 
-    public static View initFillinAnswerRightResultVoice(Context context, AnswerResultEntity answerResultEntity, AnswerResultStateListener stateListener) {
-        answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_CORRECT);
-        ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
-        answerResultEntity.setAnswerList(answerList);
-        ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(context, answerResultEntity, stateListener);
-        return artsPSEAnswerResultPager.getRootView();
-    }
-
-    /** 语音答题回答错误 */
-    public static View initSelectAnswerWrongResultVoice(Context context, AnswerResultEntity answerResultEntity, AnswerResultStateListener stateListener) {
-        answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_ERRRO);
-        ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
-        answerResultEntity.setAnswerList(answerList);
-        ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(context, answerResultEntity, stateListener);
-        return artsPSEAnswerResultPager.getRootView();
-    }
-
-    /** 语音答题回答错误 */
-    public static View initFillAnswerWrongResultVoice(Context context, AnswerResultEntity answerResultEntity, AnswerResultStateListener stateListener) {
-        answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_ERRRO);
-        ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
-        answerResultEntity.setAnswerList(answerList);
-        ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(context, answerResultEntity, stateListener);
-        return artsPSEAnswerResultPager.getRootView();
-    }
 }
