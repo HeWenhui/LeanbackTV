@@ -510,6 +510,12 @@ public class IRCMessage {
         for (String channel : mChannels){
             mConnection.sendNotice("#" + channel, notice);
         }
+   /*     for (int i=0; i<mChannels.length;i++){
+            String channel = mChannels[i];
+            if (mChannels.length==1 || i!=0){
+                mConnection.sendNotice("#" + channel, notice);
+            }
+        }*/
     }
 
     /**
@@ -540,8 +546,14 @@ public class IRCMessage {
     public void sendMessage(String message) {
         //mConnection.sendMessage("#" + mChannel, message);
         for (String channel : mChannels){
-            mConnection.sendMessage("#" + channel, message);
+            mConnection.sendNotice("#" + channel, message);
         }
+  /*      for (int i=0; i<mChannels.length;i++){
+            String channel = mChannels[i];
+            if (mChannels.length==1 || i!=0){
+                mConnection.sendNotice("#" + channel, message);
+            }
+        }*/
     }
 
     /**

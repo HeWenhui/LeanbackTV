@@ -426,6 +426,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         businessBllTemps.clear();
         logger.d("=======>onGetInfoSuccess 333333333");
         String channel = "";
+        String eChannel = "";
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
             channel = "1" + ROOM_MIDDLE + mGetInfo.getId();
         } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
@@ -443,12 +444,15 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 mHttpManager.addBodyParam("courseId", mCourseId);
             }
             channel = mGetInfo.getId() + "-" + studentLiveInfo.getClassId();
+            if (mGetInfo.ePlanInfo != null){
+                eChannel = mGetInfo.getId() + "-" + mGetInfo.ePlanInfo.eClassId;
+            }
         }
         logger.e("=======>onGetInfoSuccess 444444444");
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel);
+        mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, TextUtils.isEmpty(eChannel)?channel:channel,eChannel);
         IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
