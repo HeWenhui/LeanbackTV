@@ -18,6 +18,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
@@ -1356,7 +1357,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_PKTEAMINFO, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_PKTEAMINFO, params, requestCallBack);
     }
 
     /**
@@ -1370,7 +1371,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_MATCHTEAM, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_MATCHTEAM, params, requestCallBack);
     }
 
     /**
@@ -1391,7 +1392,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_GETSTUCHESTURL + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_GETSTUCHESTURL + "/" + liveId, params, requestCallBack);
 
     }
 
@@ -1412,7 +1413,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_GETCLASSCHESTRESULT + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_GETCLASSCHESTRESULT + "/" + liveId, params, requestCallBack);
     }
 
     /**
@@ -1432,7 +1433,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("addEnergy", addEnergy + "");
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_ADDPERSONANDTEAMENERGY + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_ADDPERSONANDTEAMENERGY + "/" + liveId, params, requestCallBack);
     }
 
     /**
@@ -1451,7 +1452,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_LIVESTUGOLDANDTOTALENERGY + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_LIVESTUGOLDANDTOTALENERGY + "/" + liveId, params, requestCallBack);
     }
 
     /**
@@ -1473,7 +1474,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", testId);
         params.addBodyParam("testPlan", testPlan);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR + "/" + liveId, params, requestCallBack);
     }
 
     /**
@@ -1492,7 +1493,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", testId);
         params.addBodyParam("testPlan", testPlan);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_STUPKRESULT + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_STUPKRESULT + "/" + liveId, params, requestCallBack);
     }
 
     /**
@@ -1518,7 +1519,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("ctId", ctId);
         params.addBodyParam("pSrc", pSrc);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params, requestCallBack);
     }
 
 
@@ -1731,6 +1732,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("counselorScore", counselorScore);
         params.addBodyParam("counselorOption", counselorOption);
         params.addBodyParam("classId",classId);
+        params.setWriteAndreadTimeOut(5);
         sendPost(liveVideoSAConfigInner.URL_LIVE_ARTS_EVALUATE_TEACHER, params, requestCallBack);
     }
 
@@ -1760,6 +1762,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("counselorScore", counselorScore);
         params.addBodyParam("counselorOption", counselorOption);
         params.addBodyParam("classId",classId);
+        params.setWriteAndreadTimeOut(5);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SCIENCE_EVALUATE_TEACHER, params, requestCallBack);
     }
 
