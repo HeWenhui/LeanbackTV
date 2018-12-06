@@ -277,6 +277,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected void createMediaControllerBottom() {
         Intent intent = activity.getIntent();
         LiveVideoConfig.isPrimary = intent.getBooleanExtra("isPrimary", false);
+        LiveVideoConfig.isSmallChinese = intent.getBooleanExtra("isSmallChinese", false);
         liveMediaControllerBottom = new LiveMediaControllerBottom(activity, mMediaController, videoFragment);
         liveMediaControllerBottom.setVisibility(View.INVISIBLE);
     }
