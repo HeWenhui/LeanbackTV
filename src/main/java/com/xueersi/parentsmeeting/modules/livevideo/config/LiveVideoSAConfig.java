@@ -7,7 +7,6 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
  * Created by linyuqiang on 2018/2/27.
  */
 public class LiveVideoSAConfig {
-    String CH_HTTP_HOST = "https://app.chs.xueersi.com";
 
     String HTTP_HOST;
     public Inner inner;
@@ -188,28 +187,6 @@ public class LiveVideoSAConfig {
         public String URL_TEMPK_STUPKRESULT = HTTP_HOST + "/LiveCourse/stuPKResult";
         /** 贡献之星结果 */
         public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStar";
-
-
-        /** 获取分队信息 */
-        public String URL_CHPK_PKTEAMINFO = CH_HTTP_HOST + "/LiveCourse/getTeamNameAndMembers";
-        /** pk对手信息 */
-        public String URL_CHPK_MATCHTEAM = CH_HTTP_HOST + "/LiveCourse/getMatchResult";
-        /** 获取本场次 金币，能量信息 */
-        public String URL_CHPK_LIVESTUGOLDANDTOTALENERGY = CH_HTTP_HOST + "/LiveCourse/liveStuGoldAndTotalEnergy";
-        /** 添加能能量值接口 */
-        public String URL_CHPK_ADDPERSONANDTEAMENERGY = CH_HTTP_HOST + "/LiveCourse/addPersonAndTeamEnergy";
-        /** 学生开宝箱 */
-        public String URL_CHPK_GETSTUCHESTURL = CH_HTTP_HOST + "/LiveCourse/getStuChest";
-        /** 班级宝箱结果 */
-        public String URL_CHPK_GETCLASSCHESTRESULT = CH_HTTP_HOST + "/LiveCourse/getClassChestResult";
-        /** 战队pk结果 */
-        public String URL_CHPK_STUPKRESULT = CH_HTTP_HOST + "/LiveCourse/stuPKResult";
-        /** 贡献之星结果 */
-        public String URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR = CH_HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStar";
-
-        /** 贡献之星结果多题型 */
-        public String URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL = CH_HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStarNew";
-
 
         /** 文科表扬榜 */
         public String URL_ARTS_PRAISE_LIST = "https://app.arts.xueersi.com/LiveRank/getRankData";

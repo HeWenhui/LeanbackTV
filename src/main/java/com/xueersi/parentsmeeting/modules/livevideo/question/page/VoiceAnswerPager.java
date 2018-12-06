@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
@@ -84,28 +85,54 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     String type;
     int netWorkType = NetWorkHelper.WIFI_STATE;
     private long entranceTime;
+    private VideoQuestionLiveEntity mDetail;
 
     public VoiceAnswerPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, JSONObject assess_ref,
                             String type, QuestionSwitch questionSwitch) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
+        this.mDetail = (VideoQuestionLiveEntity)baseVideoQuestionEntity;
         this.questionSwitch = questionSwitch;
         this.type = type;
         this.assess_ref = assess_ref;
-        if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
-            try {
-                answer = assess_ref.getJSONArray("answer").getString(0);
-            } catch (JSONException e) {
-                e.printStackTrace();
+        if(LiveVideoConfig.isNewArts){
+            if (LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(mDetail.getVoiceType()) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(mDetail.getVoiceType())) {
+                try {
+                    answer = assess_ref.getJSONArray("answer").getString(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else if(LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(type)){
+                try {
+                    answer = assess_ref.getJSONArray("answer").getString(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    JSONArray array = assess_ref.getJSONArray("options");
+                    answer = array.getJSONObject(0).getJSONArray("content").getString(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        } else {
-            try {
-                JSONArray array = assess_ref.getJSONArray("options");
-                answer = array.getJSONObject(0).getJSONArray("content").getString(0);
-            } catch (JSONException e) {
-                e.printStackTrace();
+        }else{
+            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
+                try {
+                    answer = assess_ref.getJSONArray("answer").getString(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    JSONArray array = assess_ref.getJSONArray("options");
+                    answer = array.getJSONObject(0).getJSONArray("content").getString(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
+
         initListener();
         initData();
     }
@@ -475,7 +502,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         if (phoneScores.isEmpty()) {
             logger.d("onResult(SUCCESS):phoneScores.isEmpty");
         } else {
-            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
+            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(type)) {
                 logger.e("选择题！！！" + "type:" + type);
                 int rightIndex = -1;
                 int rightCount = 0;
