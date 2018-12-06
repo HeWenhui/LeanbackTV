@@ -223,7 +223,7 @@ public class WebViewCache {
         return null;
     }
 
-    public InputStream httpRequest(CacheWebViewClient client, CacheStrategy cacheStrategy, String url) {
+    public InputStream httpRequest(CacheWebViewClient client, CacheStrategy cacheStrategy, String url,IP ip) {
         HttpURLConnection httpURLConnection = null;
         boolean isFail = false;
         Exception dnsException = new Exception();
@@ -237,6 +237,7 @@ public class WebViewCache {
                 if (!StringUtils.isEmpty(ip3)) {
                     String[] ips = ip3.split(";");
                     url = url.replaceFirst(oldUrl.getHost(), ips[0]);
+                    ip.setIp(ips[0]);
                 }
             }
             URL urlRequest = new URL(url);
@@ -330,12 +331,17 @@ public class WebViewCache {
             UmsAgentManager.umsAgentDebug(mContext, "1305801", "dns_fail", mData);
             if (dnsFail < 3) {
                 dnsFail++;
-                InputStream inputStream = httpRequest(client, cacheStrategy, url);
+                InputStream inputStream = httpRequest(client, cacheStrategy, url,ip);
                 if (inputStream != null) {
                     dnsFail = 0;
                     mData.clear();
                     mData.put("message", "success");
                     mData.put("url", url);
+                    if (ip.getIp() != null){
+                        mData.put("ip",ip.getIp());
+                    }else {
+                        mData.put("ip","");
+                    }
                     try {
                         mData.put("host", new URL(url).getHost());
                     } catch (MalformedURLException e1) {
@@ -348,6 +354,17 @@ public class WebViewCache {
             }
         }
         return null;
+    }
+    class IP{
+        private String ip;
+
+        public String getIp() {
+            return ip;
+        }
+
+        public void setIp(String ip) {
+            this.ip = ip;
+        }
     }
 
     private HashMap getAllHttpHeaders(String url) {
@@ -557,7 +574,7 @@ public class WebViewCache {
             inputStream = getCacheInputStream(url);
         }
         if (inputStream == null) {
-            inputStream = httpRequest(client, cacheStrategy, url);
+            inputStream = httpRequest(client, cacheStrategy, url,new IP());
         }
         String encode = "UTF-8";
         if (!TextUtils.isEmpty(encoding)) {
