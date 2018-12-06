@@ -182,19 +182,21 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 logger.i("uploadEvaluation fail");
-                super.onPmFailure(error, msg);
                 evaluateTeacherPager.showUploadFailPager();
                 evaluateTeacherPager.setReUpload();
+                super.onPmFailure(error, msg);
             }
 
         };
         if (liveGetInfo.getIsArts() == 1) {
-            mHttpManager.saveArtsEvaluationTeacher(liveGetInfo.getId(), liveGetInfo.getStuCouId(), liveGetInfo
-                            .getMainTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
+            mHttpManager.saveArtsEvaluationTeacher(liveGetInfo.getId(), mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
+                    tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
+        } else if (liveGetInfo.getIsArts() == 0 ) {
+            mHttpManager.saveScienceEvaluationTeacher(liveGetInfo.getId(),mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId()
+                            , teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
                     tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
         } else {
-            mHttpManager.saveScienceEvaluationTeacher(liveGetInfo.getId(), liveGetInfo.getStuCouId(), liveGetInfo
-                            .getMainTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
+            mHttpManager.saveArtsEvaluationTeacher(liveGetInfo.getId(), mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
                     tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
         }
     }
