@@ -353,6 +353,10 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             appID = UmsConstants.ARTS_APP_ID_BACK;
             IS_SCIENCE = false;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
+        } else if (isArts == 2) {
+            appID = UmsConstants.ARTS_APP_ID_BACK;
+            IS_SCIENCE = false;
+            liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {
             appID = UmsConstants.LIVE_APP_ID_BACK;
             IS_SCIENCE = true;
@@ -429,6 +433,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     protected void initLiveRemarkBll() {
+        // TODO: 2018/12/5  
         if (isArts == 1 || "PublicLiveDetailActivity".equals(where)) {
             return;
         }
@@ -485,8 +490,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                     liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));
                 }
             }
-            if (!islocal){
-                EvaluateTeacherPlayBackBll evaluateTeacherPlayBackBll = new EvaluateTeacherPlayBackBll(activity,liveBackBll);
+            if (!islocal) {
+                EvaluateTeacherPlayBackBll evaluateTeacherPlayBackBll = new EvaluateTeacherPlayBackBll(activity, liveBackBll);
                 evaluateTeacherPlayBackBll.setLiveFragmentBase(liveBackPlayVideoFragment);
                 liveBackBll.addBusinessBll(evaluateTeacherPlayBackBll);
             }

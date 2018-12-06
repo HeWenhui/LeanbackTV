@@ -97,7 +97,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat();
         int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
         liveBaseEnglishH5CoursewareCreat.setArts(isArts);
-        if (isArts != 1) {
+        if (isArts == 0) {
+            // TODO: 2018/12/5
             if (mAnswerRankBll != null) {
                 liveBaseEnglishH5CoursewareCreat.setmAnswerRankBll(mAnswerRankBll);
             }
