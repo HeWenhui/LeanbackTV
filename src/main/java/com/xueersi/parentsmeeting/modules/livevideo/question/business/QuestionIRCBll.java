@@ -476,7 +476,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                 if (mQuestionAction != null) {
                     try {
-                        mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
+                        mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("nonce"));
                         //解决多人的时候，除了初次的多人正常进对话，其他的都进不去
                         rolePlayAction = null;
                         rolePlayMachineAction = null;
@@ -498,7 +498,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 String package_socurce = object.optString("package_socurce");
                 if (mQuestionAction != null) {
                     try {
-                        mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
+                        mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("nonce"));
                         //解决多人的时候，除了初次的多人正常进对话，其他的都进不去
                         rolePlayAction = null;
                         rolePlayMachineAction = null;

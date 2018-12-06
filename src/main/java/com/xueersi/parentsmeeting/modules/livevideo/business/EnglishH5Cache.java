@@ -269,7 +269,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                         Message msg = handler.obtainMessage(1);
                         msg.what = 1;
                         msg.obj = url;
-                        handler.sendMessageDelayed(msg, i * 5000);
+                        handler.sendMessageDelayed(msg, i * 20000);
                     }
                 } catch (JSONException e) {
                     logger.e("onPmSuccess", e);
@@ -768,7 +768,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 Message msg = handler.obtainMessage(1);
                 msg.what = 1;
                 msg.obj = url;
-                handler.sendMessageDelayed(msg, i * 5000);
+                handler.sendMessageDelayed(msg, i * 20000);
             }
         }
     }

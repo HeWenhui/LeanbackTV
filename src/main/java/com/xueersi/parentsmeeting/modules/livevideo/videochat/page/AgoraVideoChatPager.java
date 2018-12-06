@@ -98,12 +98,14 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         @Override
         public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
             mLogtf.d("onFirstRemoteVideoDecoded:uid=" + uid);
-            startRemote.set(true);
-            videoChatEvent.stopPlay();
-            doRenderRemoteUi(uid);
-            StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
-            if (studyReportAction != null) {
-                studyReportAction.onFirstRemoteVideoDecoded(uid);
+            if (("" + uid).equals(getInfo.getMainTeacherId()) || ("" + uid).equals(getInfo.getTeacherId())) {
+                startRemote.set(true);
+                videoChatEvent.stopPlay();
+                doRenderRemoteUi(uid);
+                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
+                if (studyReportAction != null) {
+                    studyReportAction.onFirstRemoteVideoDecoded(uid);
+                }
             }
         }
 
