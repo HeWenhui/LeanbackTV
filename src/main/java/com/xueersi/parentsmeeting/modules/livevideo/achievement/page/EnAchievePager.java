@@ -54,6 +54,14 @@ public class EnAchievePager extends LiveBasePager {
     private int goldCount;
     private int energyCount;
 
+    /**
+     * 小目标
+     */
+    private TextView tvAchiveNumTarget;
+    private TextView tvAchiveNumRight;
+    private ProgressBar pgAchiveNumTarget;
+    private TextView tvAchiveNumTips;
+
     public EnAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
         this.parent = relativeLayout;
@@ -79,6 +87,14 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveNumStar = mView.findViewById(R.id.tv_livevideo_en_achive_num_star);
         tvAchiveNumGold = mView.findViewById(R.id.tv_livevideo_en_achive_num_gold);
         tvAchiveNumFire = mView.findViewById(R.id.tv_livevideo_en_achive_num_fire);
+
+        /**
+         * 小目标
+         */
+        tvAchiveNumTarget = mView.findViewById(R.id.tv_livevideo_en_achive_num_target);
+        tvAchiveNumRight = mView.findViewById(R.id.tv_livevideo_en_achive_num_right);
+        tvAchiveNumTips = mView.findViewById(R.id.tv_livevideo_en_achive_num_tips);
+        pgAchiveNumTarget = mView.findViewById(R.id.pg_livevideo_en_achive_num_target);
         return mView;
     }
 
@@ -315,6 +331,21 @@ public class EnAchievePager extends LiveBasePager {
                 setLayout();
             }
         }
+    }
+
+    /**
+     * 设置小目标进度
+     */
+    private void setEngTargetPro(int progress) {
+        logger.d("setEngTargetPro:progress=" + progress);
+        if (pgAchiveNumTarget == null) {
+            return;
+        }
+        if (progress < 0 || progress > 100) {
+            return;
+        }
+        pgAchiveNumTarget.setProgress(progress);
+
     }
 
     private void setLayout() {

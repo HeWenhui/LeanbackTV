@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.presenter.EnglishSpeechBulletIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.presenter.BetterMeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
@@ -262,6 +263,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 mLiveBll.addBusinessBll(videoChatIRCBll);
             }
         }
+        mLiveBll.addBusinessBll(new BetterMeIRCBll(activity, mLiveBll));
         EvaluateTeacherBll evaluateTeacherBll = new EvaluateTeacherBll(activity,mLiveBll);
         evaluateTeacherBll.setLiveFragment(this);
         mLiveBll.addBusinessBll(evaluateTeacherBll);
