@@ -1731,6 +1731,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("counselorScore", counselorScore);
         params.addBodyParam("counselorOption", counselorOption);
         params.addBodyParam("classId",classId);
+        params.setWriteAndreadTimeOut(5);
         sendPost(liveVideoSAConfigInner.URL_LIVE_ARTS_EVALUATE_TEACHER, params, requestCallBack);
     }
 
@@ -1760,6 +1761,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("counselorScore", counselorScore);
         params.addBodyParam("counselorOption", counselorOption);
         params.addBodyParam("classId",classId);
+        params.setWriteAndreadTimeOut(5);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SCIENCE_EVALUATE_TEACHER, params, requestCallBack);
     }
 
