@@ -97,7 +97,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat();
         int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
         liveBaseEnglishH5CoursewareCreat.setArts(isArts);
-        if (isArts != 1) {
+        if (isArts == 0) {
+            // TODO: 2018/12/5
             if (mAnswerRankBll != null) {
                 liveBaseEnglishH5CoursewareCreat.setmAnswerRankBll(mAnswerRankBll);
             }
@@ -627,7 +628,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             if (LiveVideoConfig.isNewArts) {
                 Log.d("Duncan", "onPutQuestionResultNewArts3");
                 if ("15".equals(videoQuestionLiveEntity.voiceType) || "16".equals(videoQuestionLiveEntity.voiceType)) {
-                    getHttpManager().liveSubmitNewArtsRealH5Answer(videoQuestionLiveEntity.type,
+                    getHttpManager().liveSubmitNewArtsRealH5Answer(videoQuestionLiveEntity.voiceType,
                             videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
                             isRight, new HttpCallBack() {
                                 @Override

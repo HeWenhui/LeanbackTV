@@ -3,14 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.VoiceBarrageMsgEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
@@ -225,6 +222,7 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
     }
 
     public void parseLiveGetInfo(JSONObject data, LiveGetInfo liveGetInfo, int mLiveType, int isArts) {
+        // TODO: 2018/12/5  
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (isArts == 1) {
                 parseLiveGetInfoLibarts(data, liveGetInfo);
