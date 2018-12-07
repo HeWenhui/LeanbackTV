@@ -149,7 +149,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         }
         content = content.substring(0, content.length() - 1);
         livePlayBackHttpManager.sendExperienceQuitFeedback(UserBll.getInstance().getMyUserInfoEntity()
-                .getStuId(), mVideoEntity.getChapterId(), content, new HttpCallBack() {
+                .getStuId(), mVideoEntity.getChapterId(), content, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 logger.i("success" + responseEntity.toString());
@@ -157,7 +157,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                super.onPmFailure(error, msg);
+//                super.onPmFailure(error, msg);
                 logger.i("failure" + msg);
             }
         });
@@ -188,6 +188,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
                     liveVideoActivityBase.changeLOrP();
                 }
             }
+            isShowQuitDialog =false;
             logger.i("旋转屏幕");
             mEvaluationView.showWebView(mVideoEntity.getExamUrl());
             mRootView.addView(mEvaluationView.getRootView(), RelativeLayout.LayoutParams
