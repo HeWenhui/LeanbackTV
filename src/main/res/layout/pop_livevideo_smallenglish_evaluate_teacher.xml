@@ -4,6 +4,7 @@
     android:id="@id/rl_livevideo_evaluate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
     android:background="@drawable/livevideo_evaluateteacher_bg_nor">
 
     <RelativeLayout

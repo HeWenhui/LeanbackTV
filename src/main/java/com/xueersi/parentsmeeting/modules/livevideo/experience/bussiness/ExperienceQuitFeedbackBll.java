@@ -200,6 +200,14 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
     public void removeWindow() {
         if (mEvaluationView.getRootView() != null && mEvaluationView.getRootView().getParent() == mRootView) {
             mRootView.removeView(mEvaluationView.getRootView());
+            if (isStand) {
+                ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
+                activityChangeLand.changeLOrP();
+            } else {
+                if (liveVideoActivityBase != null) {
+                    liveVideoActivityBase.changeLOrP();
+                }
+            }
         }
     }
 
