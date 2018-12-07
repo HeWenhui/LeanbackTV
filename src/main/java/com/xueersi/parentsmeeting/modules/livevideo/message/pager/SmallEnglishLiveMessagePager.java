@@ -87,6 +87,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
@@ -225,6 +226,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
     private String mSpeechFail = "模型正在启动，请稍后";
     /** 是否结束说话 */
     boolean isSpeekDone = false;
+    boolean isRecogSpeeking = false;
     private SpeechUtils speechUtils;
     private ISpeechRecogInterface mISpeechRecogInterface;
 
@@ -359,7 +361,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         mSdm = ShareDataManager.getInstance();
         isShowSpeechRecog = mSdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager
                 .SHAREDATA_USER);
-        logger.i("speech : isshow"+isShowSpeechRecog);
+        logger.i("speech : isshow" + isShowSpeechRecog);
         cpuRecogTime = mSdm.getLong(SpeechEvaluatorUtils.RECOG_TIME, 2500l, ShareDataManager.SHAREDATA_NOT_CLEAR);
         speechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
         logger.i("initData:time1=" + (System.currentTimeMillis() - before));
@@ -399,9 +401,11 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                         mRecogtestEndTime = System.currentTimeMillis();
                                     }
                                     if (result.getStatus() == ResultEntity.SUCCESS) {
-                                        isShowSpeechRecog = (mRecogtestEndTime - mRecogtestBeginTime) < 3000l ? true : false;
-                                        if (isShowSpeechRecog){
-                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog, ShareDataManager.SHAREDATA_USER);
+                                        isShowSpeechRecog = (mRecogtestEndTime - mRecogtestBeginTime) < 3000l ? true
+                                                : false;
+                                        if (isShowSpeechRecog) {
+                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog,
+                                                    ShareDataManager.SHAREDATA_USER);
                                         }
                                     }
                                 }
@@ -696,7 +700,10 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
                     FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
                             .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    decorView.addView(frameLayout, layoutParams);
+                    if (frameLayout.getParent() == null) {
+                        decorView.addView(frameLayout, layoutParams);
+                    }
+
 //                    mFlowerWindow.setBackgroundDrawable(dw);
 //                    mFlowerWindow.setContentView(smallEnglishSendFlowerPager.getRootView());
 //                    mFlowerWindow.showAtLocation(mView, Gravity.LEFT, 0, 0);
@@ -823,6 +830,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                             mView.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    isRecogSpeeking = false;
                                     startVoiceInput();
                                 }
                             }, 300);
@@ -920,7 +928,10 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             mAudioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
                 public void requestSuccess() {
-                    startEvaluator();
+                    if (!isRecogSpeeking) {
+                        startEvaluator();
+                        isRecogSpeeking = true;
+                    }
                 }
             });
         }
@@ -1811,7 +1822,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
 
     @Override
-    public void onQuestionShow(final boolean isShow) {
+    public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, final boolean isShow) {
         mView.post(new Runnable() {
             @Override
             public void run() {
@@ -1965,13 +1976,14 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     public void stopEvaluator() {
         logger.i("stopEvaluator()");
+        if (isRecogSpeeking && mAudioRequest != null) {
+            mAudioRequest.release();
+        }
         isSpeekDone = true;
+        isRecogSpeeking = false;
         mView.removeCallbacks(mHintRunnable);
         mView.removeCallbacks(mNorecogRunnable);
         mView.removeCallbacks(mNovoiceRunnable);
-        if (mAudioRequest != null) {
-            mAudioRequest.release();
-        }
         vwvVoiceChatWave.setVisibility(View.GONE);
         if (speechUtils != null) {
             speechUtils.cancel();
@@ -2034,6 +2046,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             logger.i("识别失败，请检查存储权限！");
             XESToastUtils.showToast(mContext, "识别失败，请检查存储权限！");
         } else if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
+            isRecogSpeeking = false;
             startVoiceInput();
             return;
         } else if (resultEntity.getErrorNo() == ResultCode.SPEECH_CANCLE) {
@@ -2090,6 +2103,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 mView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        isRecogSpeeking = false;
                         startVoiceInput();
                     }
                 }, 300);

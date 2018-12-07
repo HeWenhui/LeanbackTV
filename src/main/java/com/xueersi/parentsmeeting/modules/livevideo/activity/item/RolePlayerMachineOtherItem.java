@@ -191,13 +191,7 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
                 super.onStop(dataSource, manager);
                 logger.i("停止播放");
                 mIsPlaying = false;
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
-                        recoverMsgUiStatus();
-                    }
-                });
+                recoverMsgUiStatus();
 
             }
 
@@ -240,9 +234,17 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
      * 恢复对话的样式
      */
     private void recoverMsgUiStatus() {
-        ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
-        vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-        tvMessageContent.setTextColor(Color.parseColor("#333333"));
+        //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                logger.i( "currentThread:"+Thread.currentThread());
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                tvMessageContent.setTextColor(Color.parseColor("#333333"));
+            }
+        });
+
     }
 
     /**

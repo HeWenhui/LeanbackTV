@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.CountDownTimer;
@@ -35,7 +34,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
-import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
@@ -43,9 +41,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.speech.SpeechConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -54,7 +50,6 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.Contract.ScienceSpeechBullletContract;
-import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.CloseConfirmDialog;
@@ -63,7 +58,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
 import org.json.JSONArray;
@@ -123,10 +117,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
      * 语音录入标题
      */
     private TextView tvSpeechbulTitle;
-    /**
-     * 小喇叭动效
-     */
-    private ImageView ivSpeechbulVoice;
     /**
      * 关闭按钮
      */
@@ -237,10 +227,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
         switchFSPanelLinearLayout = mView.findViewById(R.id.rl_livevideo_speechbul_panelroot);
         rlSpeechbulBottomContent = mView.findViewById(R.id.rl_livevideo_speechbul_bottom_content);
         tvSpeechbulTitle = mView.findViewById(R.id.tv_livevideo_speechbul_title);
-        ivSpeechbulVoice = mView.findViewById(R.id.iv_livevideo_speechbul_voice);
-        ivSpeechbulVoice.setBackgroundResource(R.drawable.animlst_livevide_speechbul_voice_anim);
-        AnimationDrawable animationDrawable = (AnimationDrawable) ivSpeechbulVoice.getBackground();
-        animationDrawable.start();
         ivSpeechbulClose = mView.findViewById(R.id.tv_livevideo_speechbul_close);
         vwvSpeechbulWave = mView.findViewById(R.id.vwv_livevideo_speechbul_wave);
         etSpeechbulWords = mView.findViewById(R.id.et_livevideo_speechbul_words);
@@ -413,7 +399,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
                 tvSpeechbulTitle.setText(VOICE_RECOG_HINT);
                 rlSpeechbulInputContent.setVisibility(View.GONE);
                 tvSpeechbulTitle.setVisibility(View.VISIBLE);
-                ivSpeechbulVoice.setVisibility(View.VISIBLE);
                 vwvSpeechbulWave.setVisibility(View.VISIBLE);
                 startEvaluator();
                 isretalk = "1";
@@ -514,9 +499,9 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
             if (mDanmakuView == null) {
                 rlSpeechBulContent.addView(initDanmaku(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                         .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                RelativeLayout.LayoutParams rp = (RelativeLayout.LayoutParams) mDanmakuView.getLayoutParams();
-                rp.setMargins(0, SizeUtils.Dp2Px(mContext, 17), 0, 0);
-                mDanmakuView.setLayoutParams(rp);
+//                RelativeLayout.LayoutParams rp = (RelativeLayout.LayoutParams) mDanmakuView.getLayoutParams();
+//                rp.setMargins(0, SizeUtils.Dp2Px(mContext, 17), 0, 0);
+//                mDanmakuView.setLayoutParams(rp);
             }
             rlSpeechBulContent.addView(initView().getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -798,7 +783,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
                 }
             } else {
                 if (!TextUtils.isEmpty(content)) {
-                    ivSpeechbulVoice.setVisibility(View.GONE);
                     tvSpeechbulTitle.setText(content);
                     hasValidSpeechInput = true;
                 }
@@ -876,7 +860,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
         stopEvaluator();
         aiText = evaluateResult;
         tvSpeechbulTitle.setVisibility(View.GONE);
-        ivSpeechbulVoice.setVisibility(View.GONE);
         vwvSpeechbulWave.setVisibility(View.GONE);
         rlSpeechbulInputContent.setVisibility(View.VISIBLE);
         tvSpeechbulRepeat.setVisibility(View.VISIBLE);
@@ -899,7 +882,6 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
     private void pleaseSayAgain() {
         stopEvaluator();
         tvSpeechbulTitle.setText(VOICE_RECOG_NOVOICE_HINT);
-        ivSpeechbulVoice.setVisibility(View.VISIBLE);
         mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -918,7 +900,7 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
     private int BITMAP_WIDTH_ME = 42;//头像的宽度
     private int BITMAP_HEIGHT_ME = 42;//头像的高度
     private float DANMU_TEXT_SIZE = 14;//弹幕字体的大小
-    private int DANMU_PADDING = 11;//控制两行弹幕之间的间距
+    private int DANMU_PADDING = 5;//控制两行弹幕之间的间距
     private int DANMU_RADIUS = 16;//圆角半径
     private int DANMU_BACKGROUND_HEIGHT = 33;
 

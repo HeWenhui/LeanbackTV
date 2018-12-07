@@ -12,6 +12,7 @@ import com.xueersi.common.entity.EnglishH5Entity;
  */
 public class LiveVideoConfig {
     public static String HTTP_HOST = "https://laoshi.xueersi.com";
+    public static String HTTP_PRIMARY_CHINESE_HOST = "https://app.chs.xueersi.com";
     /** 直播辅导用户在线心跳 */
     public final static String URL_LIVE_TUTORIAL_USER_ONLINE = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/userOnline";
     /** 公开直播用户在线心跳 */
@@ -122,6 +123,8 @@ public class LiveVideoConfig {
     public static String LIVE_EXPERIENCE_EXIT = "LiveFreePlayEvent";
     /** 体验播放器-聊天内容 */
     public static String LIVE_EXPERIENCE_IMMSG = "LiveFreePlayEvent";
+    /** 体验课事件 */
+    public static String LIVE_EXPERIENCE = "experienceLiveClass";
     /** 直播-H5课件互动题 */
     public static String LIVE_ENGLISH_COURSEWARE = "live_h5waretest";
     /** 直播-接麦 */
@@ -190,9 +193,9 @@ public class LiveVideoConfig {
     public static String LIVE_PLAY_ERROR = "live_play_error";
     /** 直播-学习报告截图 */
     public static String LIVE_STUDY_REPORT_IMG = "live_study_report_img";
-    /** 直播-小英语音聊天*/
+    /** 直播-小英语音聊天 */
     public static String LIVE_VOICE_CHAT = "voicechat";
-    /** 直播-小英语音弹幕*/
+    /** 直播-小英语音弹幕 */
     public static String LIVE_VOICE_BULLET = "voicebullet";
 
     /**
@@ -243,6 +246,10 @@ public class LiveVideoConfig {
     public static String URL_AUTO_LIVE_FEAD_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/learnFeedback";
     /** 提交体验课学习反馈 */
     public static String URL_AUTO_LIVE_LEARN_FEED_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitFeedback";
+    /**
+     * 提交体验课退出反馈
+     */
+    public static String URL_AUTO_LIVE_QUIT_FEED_BACK = AppConfig.HTTP_HOST_TEAMPK+"/science/AutoLive/submitClassQuitFeedback";
     /** 视频播放失败的eventId */
     public final static String STAND_EXPERIENCE_LIVE_PLAY_ERROR = "stand_experience_live_play_error";
 
@@ -259,6 +266,17 @@ public class LiveVideoConfig {
     public static String URL_CDN_LOG = "http://log.xescdn.com/log";
     public static String URL_CDN_LOG1 = "http://log1.xescdn.com/log";
     public static String URL_CDN_LOG2 = "http://log2.xescdn.com/log";
+
+    public static String URL_CND_LOG_IP = "http://42.62.96.154:80/log";
+
+    /** 920日志IP 地址*/
+    public static String SP_URL_LIVE_CND_LOG_920_TYPE = "sp_url_live_cnd_log_920_type";
+    /** 920类型 IP*/
+    public static String LIVE_LOG_920_IP = "ip";
+    /** 920类型 HOST*/
+    public static String LIVE_LOG_920_HOST = "host";
+
+
     /** 更多课程数量的记录 */
     public static int MORE_COURSE;
     public static Boolean isloading = false;
@@ -273,6 +291,8 @@ public class LiveVideoConfig {
     public static EnglishH5Entity englishH5Entity;
     /** 小学阶段年级的标识 */
     public static Boolean isPrimary = false;
+    /** 小学语文换肤 */
+    public static Boolean isSmallChinese = false;
     /** 一题多发的直播回放的标识 */
     public static Boolean isMulLiveBack = false;
     /** 年级阶段的标识 */
@@ -338,6 +358,11 @@ public class LiveVideoConfig {
 
     /** 文科新课件平台的标识 */
     public static Boolean isNewArts = false;
+    /** 全身直播的标识 */
+    public static Boolean isStandLive = false;
+    /** H5语音答题新增字段 */
+    public static String userAnswer;
+    public static String answer;
 
     /** 学习报告精彩瞬间 */
     public interface STUDY_REPORT {

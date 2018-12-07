@@ -396,8 +396,10 @@
     <!--直播-语音弹幕-->
     <item name="rl_livevideo_content_speechbul" type="id" />
     <item name="rl_livevideo_speechbul_root" type="id" />
+    <item name="rl_livevideo_speechbul_title" type="id" />
     <item name="tv_livevideo_speechbul_title" type="id" />
     <item name="tv_livevideo_speechbul_title_count" type="id" />
+    <item name="tv_livevideo_speechbul_title_switch" type="id" />
     <item name="tv_livevideo_speechbul_close" type="id" />
     <item name="vwv_livevideo_speechbul_wave" type="id" />
     <item name="tv_livevideo_speechbul_countdown" type="id" />
@@ -912,4 +914,51 @@
     <item name="v_livevideo_chat_myline" type="id" />
     <item name="rl_livevideo_chat_voice" type="id" />
     <item name="vw_livevideo_chat_voice" type="id" />
+
+    <!--小语皮肤-->
+    <item name="tv_livevideo_primary_chinese_toast_content" type="id" />
+    <!-- 给老师评价-->
+    <item name="rl_livevideo_evalutate_teacher" type="id" />
+    <!-- 教师评价弹窗-->
+    <item name="rl_livevideo_evaluate" type="id"/>
+    <item name="rl_livevideo_evaluate_title" type="id"/>
+    <item name="iv_livevideo_evaluate_close" type="id"/>
+    <item name="ll_livevideo_evaluate" type="id"/>
+    <item name="ll_livevideo_evaluate_main" type="id"/>
+    <item name="iv_livevideo_evaluate_main" type="id"/>
+    <item name="iv_livevideo_evaluate_main_icon" type="id"/>
+    <item name="iv_livevideo_evaluate_main_status" type="id"/>
+    <item name="tv_livevideo_evaluate_main_name" type="id"/>
+    <item name="rg_livevideo_evaluate_main" type="id"/>
+    <item name="rb_livevideo_evaluate_main_unsatisfactory" type="id"/>
+    <item name="rb_livevideo_evaluate_main_satisfactory" type="id"/>
+    <item name="rb_livevideo_evaluate_main_very_satisfactory" type="id"/>
+    <item name="ll_livevideo_evaluate_main_option" type="id"/>
+    <item name="cb_livevideo_evaluate_main_option_1" type="id"/>
+    <item name="cb_livevideo_evaluate_main_option_2" type="id"/>
+    <item name="cb_livevideo_evaluate_main_option_3" type="id"/>
+    <item name="cb_livevideo_evaluate_main_option_4" type="id"/>
+    <item name="ll_livevideo_evaluate_tutor" type="id"/>
+    <item name="iv_livevideo_evaluate_tutor" type="id"/>
+    <item name="iv_livevideo_evaluate_tutor_status" type="id"/>
+    <item name="tv_livevideo_evaluate_tutor_name" type="id"/>
+    <item name="rg_livevideo_evaluate_tutor" type="id"/>
+    <item name="rb_livevideo_evaluate_tutor_unsatisfactory" type="id"/>
+    <item name="rb_livevideo_evaluate_tutor_satisfactory" type="id"/>
+    <item name="rb_livevideo_evaluate_tutor_very_satisfactory" type="id"/>
+    <item name="ll_livevideo_evaluate_tutor_option" type="id"/>
+    <item name="cb_livevideo_evaluate_tutor_option_1" type="id"/>
+    <item name="cb_livevideo_evaluate_tutor_option_2" type="id"/>
+    <item name="cb_livevideo_evaluate_tutor_option_3" type="id"/>
+    <item name="cb_livevideo_evaluate_tutor_option_4" type="id"/>
+    <item name="rl_livevideo_evaluate_submit" type="id"/>
+    <item name="tv_livevideo_evaluate_submit_text" type="id"/>
+    <item name="pb_livevideo_evaluate_submit_loading" type="id"/>
+    <item name="rl_livevideo_evaluate_submit_result" type="id"/>
+    <item name="iv_livevideo_evaluate_submit_result" type="id"/>
+    <item name="tv_livevideo_evaluate_submit_status" type="id"/>
+    <item name="tv_livevideo_evaluate_count_down" type="id"/>
+    <item name="btn_livevideo_evaluate_tryagain" type="id"/>
+    <!-- 体验课退出反馈-->
+    <item name="rl_livevideo_experience_feedback_quit" type="id" />
 </resources>

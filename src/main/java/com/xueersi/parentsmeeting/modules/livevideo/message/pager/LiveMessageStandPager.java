@@ -76,6 +76,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.StandLiveMessOtherItem;
@@ -173,7 +174,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     /** 当前音量 */
     private int mVolume = 0;
 
-    boolean isVoice = true;
+    boolean isVoice = false;
     //当前语音输入转换的文本
     String mVoiceContent = "";
     String mMsgContent = "";
@@ -298,6 +299,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
      * @param isVisible
      */
     private boolean isNotExpericence = true;
+
     public void setStarGoldImageViewVisible(boolean isVisible) {
         isNotExpericence = isVisible;
         btnVoiceMesOpen.setVisibility(View.GONE);
@@ -763,18 +765,20 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                                         isShowSpeechRecog = (mRecogtestEndTime - mRecogtestBeginTime) < 3000l ? true
                                                 : false;
                                         if (isShowSpeechRecog) {
-                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog, ShareDataManager.SHAREDATA_USER);
+                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog,
+                                                    ShareDataManager.SHAREDATA_USER);
                                             initOpenBt(false, true);
                                         }
                                     }
                                 }
+
                                 @Override
                                 public void onVolumeUpdate(int volume) {
 
                                 }
                             });
                         }
-                    },4000);
+                    }, 4000);
                 }
             }
 
@@ -1288,7 +1292,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         }
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
-                        if (isNotExpericence){
+                        if (isNotExpericence) {
                             btnVoiceMesOpen.setVisibility(View.VISIBLE);
                         }
                         Animation animation;
@@ -1399,18 +1403,23 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     }
 
     @Override
-    public void onOpenVoiceNotic(boolean openVoice, String type) {
+    public void onOpenVoiceNotic(final boolean openVoice, final String type) {
         logger.d("openvoice:" + openVoice + "from:" + type);
-        if (openVoice) {
-            ivMessageClose.performClick();
-            if (!("ENGLISH_H5_COURSEWARE".equals(type) || "ARTS_H5_COURSEWARE".equals(type) ||
-                    "EXAM_START".equals(type) || "ARTS_SEND_QUESTION".equals(type) || "SENDQUESTION"
-                    .equals(type))) {
-                btnVoiceMesOpen.setEnabled(false);
+        mView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (openVoice) {
+                    ivMessageClose.performClick();
+                    if (!("ENGLISH_H5_COURSEWARE".equals(type) || "ARTS_H5_COURSEWARE".equals(type) ||
+                            "EXAM_START".equals(type) || "ARTS_SEND_QUESTION".equals(type) || "SENDQUESTION"
+                            .equals(type))) {
+                        btnVoiceMesOpen.setEnabled(false);
+                    }
+                } else {
+                    btnVoiceMesOpen.setEnabled(true);
+                }
             }
-        } else {
-            btnVoiceMesOpen.setEnabled(true);
-        }
+        });
     }
 
     /*添加聊天信息，超过120，移除60个*/
@@ -1518,7 +1527,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     }
 
     @Override
-    public void onQuestionShow(final boolean isShow) {
+    public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, final boolean isShow) {
         isAnaswer = isShow;
         mainHandler.post(new Runnable() {
             @Override
@@ -1549,7 +1558,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
                         logger.i("显示聊天框");
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
-                        if (isNotExpericence){
+                        if (isNotExpericence) {
                             btnVoiceMesOpen.setVisibility(View.VISIBLE);
                         }
                         if (isMessageLayoutShow) {
@@ -1718,14 +1727,14 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     public void stopEvaluator() {
         logger.d("stopEvaluator()");
+        if (isVoice && mAudioRequest != null) {
+            mAudioRequest.release();
+        }
         isSpeekDone = true;
         isVoice = false;
         mainHandler.removeCallbacks(mNorecogRunnable);
         mainHandler.removeCallbacks(mNovoiceRunnable);
         mainHandler.removeCallbacks(mHintRunnable);
-        if (mAudioRequest != null) {
-            mAudioRequest.release();
-        }
         if (mSpeechUtils != null) {
             vwvVoiceChatWave.setVisibility(View.GONE);
             mSpeechUtils.cancel();

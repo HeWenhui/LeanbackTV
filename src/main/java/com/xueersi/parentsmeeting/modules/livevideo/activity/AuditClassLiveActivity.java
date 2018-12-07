@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -136,7 +135,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     private boolean mIsResume = false;
     private LiveVideoSAConfig liveVideoSAConfig;
     /** 是不是文理 */
-    public boolean IS_SCIENCE;
+    public int isArts;
     private long resumeTime;
     private LogToFile mLogtf;
 
@@ -789,7 +788,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     public void onLiveInit(LiveGetInfo getInfo) {
         mGetInfo = getInfo;
         liveVideoSAConfig = mLiveBll.getLiveVideoSAConfig();
-        IS_SCIENCE = liveVideoSAConfig.IS_SCIENCE;
+        isArts = mGetInfo.getIsArts();
         mMediaController.setFileName(getInfo.getName());
         mLiveBll.setHalfBodyLive(isHalfBodyLive());
         mHandler.post(new Runnable() {
@@ -835,7 +834,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 UmsAgentManager.umsAgentStatistics(mContext, LiveVideoConfig.LIVE_VIDEO_AUDIO_LIVE,
                         "times=" + times + ",mVSectionID=" + mVSectionID + ",roomClick");
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("isArts", !IS_SCIENCE);
+                bundle.putInt("isArts", isArts);
                 OtherModulesEnter.intentToAuditClassActivity(AuditClassLiveActivity.this, mVSectionID, stuCouId, bundle);
             }
         });

@@ -14,5 +14,5 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5P
  */
 public interface QuestionWebCreate {
     QuestionWebX5Pager create(Context context, VideoQuestionLiveEntity videoQuestionLiveEntity, BaseQuestionWebInter.StopWebQuestion questionBll, LiveGetInfo liveGetInfo,
-                              boolean IS_SCIENCE, String stuCouId);
+                              int isArts, String stuCouId);
 }

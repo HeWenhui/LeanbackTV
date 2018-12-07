@@ -10,13 +10,13 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.provider.WebFunctionProvider;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWebviewX5Pager implements
+public class StandExperienceEvaluationPager<T extends IExperiencePresenter> extends BaseWebviewX5Pager implements
         IStandExperienceEvaluationContract.IEvaluationView {
     private T iPresenter;
 

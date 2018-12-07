@@ -51,7 +51,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestio
  */
 public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp {
     QuestionBll questionBll;
-    String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6","18","19"};
+    String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6", "18", "19"};
     private List<String> questiongtype = Arrays.asList(ptTypeFilters);
 
 
@@ -94,7 +94,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         LiveBackExamQuestionCreat liveBackExamQuestionCreat = new LiveBackExamQuestionCreat();
         liveBackExamQuestionCreat.setLiveGetInfo(liveGetInfo);
         int isArts = liveBackBll.getIsArts();
-        liveBackExamQuestionCreat.setIS_SCIENCE(isArts != 1);
+        liveBackExamQuestionCreat.setArts(isArts);
         liveBackExamQuestionCreat.setLivePagerBack(questionBll);
         liveBackExamQuestionCreat.setExamStop(new LiveBackExamStop(activity, questionBll));
         questionBll.setBaseExamQuestionCreat(liveBackExamQuestionCreat);
@@ -106,13 +106,15 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         liveBackSubjectResultCreat.setWrapQuestionWebStop(wrapQuestionWebStop);
         questionBll.setBaseSubjectResultCreat(liveBackSubjectResultCreat);
         questionBll.setQuestionWebCreate(new LiveBackQuestionWebCreate());
-        QuestionWebCache webCache = new QuestionWebCache(activity);
-        webCache.startCache();
+        if (isArts == 0) {
+            QuestionWebCache webCache = new QuestionWebCache(activity);
+            webCache.startCache();
+        }
     }
 
     @Override
     public int[] getCategorys() {
-        return new int[]{LocalCourseConfig.CATEGORY_QUESTION, LocalCourseConfig.CATEGORY_EXAM,LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE};
+        return new int[]{LocalCourseConfig.CATEGORY_QUESTION, LocalCourseConfig.CATEGORY_EXAM, LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE};
     }
 
     @Override
@@ -129,7 +131,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             break;
             case LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE,videoQuestionLiveEntity));
+                EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
                 questionBll.onStopQuestion(questionEntity.getvQuestionType(), "");
             }
             break;
@@ -146,6 +148,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     LiveBackBll.ShowQuestion showQuestion) {
         mRootView.setVisibility(View.VISIBLE);
         int vCategory = questionEntity.getvCategory();
+        logger.i("showQuestion :" + vCategory);
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
                 LiveVideoConfig.isNewArts = false;
@@ -176,9 +179,9 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 //                    }
 //                }
 
-                if(!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !"1".equals(videoQuestionLiveEntity.multiRolePlay) ){
+                if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !"1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                     logger.i("走人机start,拉取试题");
-                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
+                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
                     questionBll.setRolePlayMachineAction(rolePlayerBll);
 
                 }
@@ -217,6 +220,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             }
             break;
             case LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE: {
+                logger.i("showQuestion :" + vCategory + ":" + questionEntity.getvQuestionType() + ":" + questionEntity.getType() + ":" + questionEntity.toString());
                 LiveVideoConfig.isNewArts = true;
                 VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity
                         .getApplication(), false,
@@ -226,26 +230,26 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                     @Override
                     public void onClick(View v) {
                         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                        if(questionEntity.getvCategory() == 1001){
+                        if (questionEntity.getvCategory() == 1001) {
                             List<String> testIds = new ArrayList<>();
-                            if(testIds.size() > 0){
+                            if (testIds.size() > 0) {
                                 testIds.clear();
                             }
                             String type = "";
                             String isVoices = "";
                             String assess = "";
                             String answers = "";
-                            for(int i = 0 ; i < questionEntity.getReleaseInfos().size() ; i++){
+                            for (int i = 0; i < questionEntity.getReleaseInfos().size(); i++) {
                                 testIds.add(questionEntity.getReleaseInfos().get(i).getId());
                                 type = questionEntity.getReleaseInfos().get(0).getType();
                                 isVoices = questionEntity.getReleaseInfos().get(0).getIsVoice();
                                 assess = questionEntity.getReleaseInfos().get(0).getAssess_ref();
                                 answers = questionEntity.getReleaseInfos().get(0).getAnswer();
                             }
-                            if("5".equals(type) || "6".equals(type)){
-                                videoQuestionLiveEntity.setUrl(buildRoleplayUrl(getTestIdS(testIds),type));
+                            if ("5".equals(type) || "6".equals(type)) {
+                                videoQuestionLiveEntity.setUrl(buildRoleplayUrl(getTestIdS(testIds), type));
                                 videoQuestionLiveEntity.isAllow42 = "0";
-                            }else{
+                            } else {
                                 videoQuestionLiveEntity.setUrl(buildCourseUrl(getTestIdS(testIds)));
                                 videoQuestionLiveEntity.isAllow42 = "1";
                             }
@@ -256,11 +260,18 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                             videoQuestionLiveEntity.assess_ref = assess;
                             videoQuestionLiveEntity.speechContent = answers;
                         }
+                        //非常重要，不然新课件平台，roleplay无法进入
+                        logger.i("yzl_showQuestion type = " + videoQuestionLiveEntity.type);
+                        if ("5".equals(videoQuestionLiveEntity.type)) {
+                            logger.i("yzl_init new rolePlay bll");
+                            RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
+                            questionBll.setRolePlayMachineAction(rolePlayerBll);
+                        }
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
                         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
                         videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
-                        if(questiongtype.contains(videoQuestionLiveEntity.type)){
-                            EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTIONS_SHOW,videoQuestionLiveEntity));
+                        if (questiongtype.contains(videoQuestionLiveEntity.type)) {
+                            EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTIONS_SHOW, videoQuestionLiveEntity));
                             questionBll.showQuestion(videoQuestionLiveEntity);
                             showQuestion.onShow(true, videoQuestionLiveEntity);
                         }
@@ -558,13 +569,17 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         });
     }
 
-    private String buildRoleplayUrl(String id,String type) {
+    private String buildRoleplayUrl(String id, String type) {
         String isPlayback = "1";
         StringBuilder sb = new StringBuilder();
         String url;
-        if("5".equals(type)){
-            url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_ROALPLAY_URL;
-        }else {
+        if ("5".equals(type)) {
+            if (mVideoEntity.getPattern() == 2) {
+                url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_STANDROALPLAY_URL;
+            } else {
+                url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_ROALPLAY_URL;
+            }
+        } else {
             url = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false).inner.URL_NEWARTS_CHINESEREADING_URL;
         }
         sb.append(url).append("?liveId=").append(mVideoEntity.getLiveId())
@@ -578,7 +593,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         StringBuilder stringBuilder = new StringBuilder();
         try {
             if (testIds != null) {
-                for (int i = 0 ;i < testIds.size(); i++) {
+                for (int i = 0; i < testIds.size(); i++) {
                     if (i < (testIds.size() - 1)) {
                         stringBuilder.append(testIds.get(i)).append(",");
                     } else {

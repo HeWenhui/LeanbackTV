@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyArtsLiveMsgPager;
@@ -30,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageLan
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePortPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageStandPager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallChineseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.SmallEnglishLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LivePsMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
@@ -178,7 +180,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
         mLiveMessagePager.closeChat(isCloseChat);
         if (isAnaswer != -1) {//这表示收到过答题变化
-            mLiveMessagePager.onQuestionShow(isAnaswer == 1);
+            mLiveMessagePager.onQuestionShow(null, isAnaswer == 1);
         }
         if (mode != null) {
             mLiveMessagePager.onopenchat(openchat, mode, false);
@@ -266,7 +268,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.closeChat(isCloseChat);
         if (isAnaswer != -1) {
             //这表示收到过答题变化
-            mLiveMessagePager.onQuestionShow(isAnaswer == 1);
+            mLiveMessagePager.onQuestionShow(null,isAnaswer == 1);
         }
         if (mode != null) {
             mLiveMessagePager.onopenchat(openchat, mode, false);
@@ -314,15 +316,16 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
         long before = System.currentTimeMillis();
         if (!isSmallEnglish) {
-            if (LiveVideoConfig.isPrimary) {
+            if (LiveVideoConfig.isPrimary ) {
                 LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
-            }
-//            else if(){//如果是语文
+            } else if (LiveVideoConfig.isSmallChinese) {//如果是语文
+                SmallChineseLiveMessagePager chineseLiveMessagePager = new SmallChineseLiveMessagePager(activity, this, null, baseLiveMediaControllerBottom
+                        , liveMessageLandEntities, liveMessagePortEntities);
+                mLiveMessagePager = chineseLiveMessagePager;
 
-//            }
-            else {
+            } else {
                 LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
@@ -385,23 +388,20 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 // liveMessageLandEntities);
 //            }
             if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
-                if (!isSmallEnglish) {
-                    LiveMessagePager liveMessagePager =
-                            new LiveMessagePager(activity, this, null, baseLiveMediaControllerBottom,
-                                    liveMessageLandEntities, liveMessagePortEntities);
-                    mLiveMessagePager = liveMessagePager;
-                } else {
-                    SmallEnglishLiveMessagePager liveMessagePager = new SmallEnglishLiveMessagePager(activity, this,
-                            null, baseLiveMediaControllerBottom,
-                            liveMessageLandEntities, liveMessagePortEntities);
-                    mLiveMessagePager = liveMessagePager;
-                }
+                LiveMessagePager liveMessagePager =
+                        new LiveMessagePager(activity, this, null, baseLiveMediaControllerBottom, liveMessageLandEntities, liveMessagePortEntities);
+                mLiveMessagePager = liveMessagePager;
             } else {
                 long before = System.currentTimeMillis();
-                if (!isSmallEnglish) {
+                if (!isSmallEnglish && !LiveVideoConfig.isSmallChinese) {
                     LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
                             baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                     mLiveMessagePager = liveMessagePager;
+                } else if (LiveVideoConfig.isSmallChinese) {
+                    SmallChineseLiveMessagePager chineseLiveMessagePager = new SmallChineseLiveMessagePager(activity,
+                            this, null, baseLiveMediaControllerBottom
+                            , liveMessageLandEntities, null);
+                    mLiveMessagePager = chineseLiveMessagePager;
                 } else {
                     SmallEnglishLiveMessagePager liveMessagePager = new SmallEnglishLiveMessagePager(activity, this,
                             null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
@@ -718,10 +718,10 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     }
 
     @Override
-    public void onQuestionShow(boolean isShow) {
+    public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
         isAnaswer = isShow ? 1 : 0;
         if (mLiveMessagePager != null) {
-            mLiveMessagePager.onQuestionShow(isShow);
+            mLiveMessagePager.onQuestionShow(videoQuestionLiveEntity, isShow);
         }
     }
 

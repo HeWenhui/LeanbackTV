@@ -13,6 +13,8 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -49,7 +51,12 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
         if(event.getEnvetnType() == LiveBackQuestionEvent.QUSTIONS_SHOW){
             mAnswerResultBll.closeAnswerResult(false);
         }else if(event.getEnvetnType() == LiveBackQuestionEvent.QUSTION_CLOSE){
-            mAnswerResultBll.closeAnswerResult(true);
+            if(liveGetInfo.getPattern() == 2){
+                EventBus.getDefault().post(new AnswerResultCplShowEvent());
+                Log.e("mqtt","submitData" + "hahaha");
+            }else{
+                mAnswerResultBll.closeAnswerResult(true);
+            }
         }
     }
 

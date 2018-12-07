@@ -57,14 +57,14 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
     /** 是不是考试结束 */
     private boolean isEnd = false;
     String jsExamSubmitAll = "javascript:examSubmitAll()";
-    boolean IS_SCIENCE;
+    int isArts;
     String stuCouId;
 
-    public ExamQuestionX5PlaybackPager(Context context, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, boolean IS_SCIENCE, String stuCouId, ExamStop examStop, LivePagerBack livePagerBack) {
+    public ExamQuestionX5PlaybackPager(Context context, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, int isArts, String stuCouId, ExamStop examStop, LivePagerBack livePagerBack) {
         super(context);
         this.examStop = examStop;
         this.liveid = liveid;
-        this.IS_SCIENCE = IS_SCIENCE;
+        this.isArts = isArts;
         setBaseVideoQuestionEntity(videoQuestionLiveEntity);
         this.num = videoQuestionLiveEntity.getvQuestionID();
         this.stuCouId = stuCouId;
@@ -122,20 +122,25 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         AppInfoEntity mAppInfoEntity = AppBll.getInstance().getAppInfoEntity();
         String EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL, ShareBusinessConfig.EXAM_URL, ShareDataManager.SHAREDATA_USER);
-        if (IS_SCIENCE) {
+        if (isArts == 0) {
             EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_SCIENCE, EXAM_URL, ShareDataManager.SHAREDATA_USER);
             EXAM_URL = EXAM_URL.replace(ShareBusinessConfig.LIVE_LIBARTS, ShareBusinessConfig.LIVE_SCIENCE);
+        } else if (isArts == 2) {
+            EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_CHS, EXAM_URL, ShareDataManager.SHAREDATA_USER);
         } else {
             EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_LIBARTS, EXAM_URL, ShareDataManager.SHAREDATA_USER);
             EXAM_URL = EXAM_URL.replace(ShareBusinessConfig.LIVE_SCIENCE, ShareBusinessConfig.LIVE_LIBARTS);
         }
         if (EXAM_URL.contains("xueersi.com/LiveExam")) {
-            String host = IS_SCIENCE ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
-            EXAM_URL = EXAM_URL.replace("xueersi.com/LiveExam", "xueersi.com/" + host + "/LiveExam");
+            // TODO: 2018/12/5
+            if (isArts != 2) {
+                String host = isArts != 1 ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
+                EXAM_URL = EXAM_URL.replace("xueersi.com/LiveExam", "xueersi.com/" + host + "/LiveExam");
+            }
         }
         examUrl = EXAM_URL + "?liveId=" + liveid
                 + "&testPlan=" + num + "&isPlayBack=1&stuId=" + userInfoEntity.getStuId() + "&stuName=" + mAppInfoEntity.getLoginUserName();
-        examUrl += "&isArts=" + (IS_SCIENCE ? "0" : "1") + "&stuCouId=" + stuCouId;
+        examUrl += "&isArts=" + isArts + "&stuCouId=" + stuCouId;
         wvSubjectWeb.loadUrl(examUrl);
     }
 
