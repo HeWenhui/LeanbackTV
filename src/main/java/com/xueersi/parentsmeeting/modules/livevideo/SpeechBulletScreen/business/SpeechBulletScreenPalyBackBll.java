@@ -63,9 +63,9 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
             public void run() {
                 mSpeechBulPlaybackPager = new SpeechBulletScreenPlayBackPager(activity);
                 mRootView.addView(mSpeechBulPlaybackPager.getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                RelativeLayout.LayoutParams rp = (RelativeLayout.LayoutParams) mSpeechBulPlaybackPager.getRootView().getLayoutParams();
-                rp.setMargins(0, SizeUtils.Dp2Px(mContext, 17), 0, 0);
-                mSpeechBulPlaybackPager.getRootView().setLayoutParams(rp);
+//                RelativeLayout.LayoutParams rp = (RelativeLayout.LayoutParams) mSpeechBulPlaybackPager.getRootView().getLayoutParams();
+//                rp.setMargins(0, SizeUtils.Dp2Px(mContext, 17), 0, 0);
+//                mSpeechBulPlaybackPager.getRootView().setLayoutParams(rp);
             }
         });
         getVoiceBarrageMsg(liveGetInfo.getId(), liveGetInfo.getStuCouId(), new AbstractBusinessDataCallBack() {
