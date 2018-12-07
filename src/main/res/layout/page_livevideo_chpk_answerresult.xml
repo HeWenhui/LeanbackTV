@@ -15,7 +15,7 @@
             android:layout_height="27dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="25dp"
-            android:src="@drawable/livevideo_tool_energy_img_disable"
+            android:src="@drawable/livevideo_chpk_energy_img_disable"
             android:id="@id/iv_answer_question_energy" />
 
         <TextView
@@ -72,7 +72,7 @@
                 android:layout_width="20dp"
                 android:layout_height="27dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/livevideo_tool_energy_img_disable"
+                android:src="@drawable/livevideo_chpk_energy_img_disable"
                 android:id="@id/iv_vote_award_energy" />
 
             <TextView
