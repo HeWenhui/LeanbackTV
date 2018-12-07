@@ -806,7 +806,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                 vPlayer.setState(PlayerService.STATE_NEED_RESUME);
             }
             vPlayer.releaseSurface();
-            //这个会影响暂停视频，返回后台继续播放。但是悬浮窗还需要
+            //TODO 这个会影响暂停视频，返回后台继续播放。但是悬浮窗还需要
             if (mIsPlayerEnable && vPlayer.needResume()) {
                 vPlayer.start();
             }
