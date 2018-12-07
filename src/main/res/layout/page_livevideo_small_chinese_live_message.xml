@@ -62,7 +62,7 @@
             android:layout_alignTop="@+id/iv_livevideo_small_chinese_pk_background"
             android:layout_alignRight="@+id/tzcytv_livevideo_small_chinese_live_message_online_people_num"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="55dp"
+            android:layout_marginTop="49dp"
             android:background="@drawable/bg_livevideo_small_chinese_live_message_top_background" />
 
         <ImageView
@@ -72,7 +72,7 @@
             android:layout_alignTop="@+id/iv_livevideo_small_chinese_pk_background"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="78dp"
+            android:layout_marginTop="72dp"
             android:background="@drawable/bg_livevideo_small_chinese_live_message_message_background" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
