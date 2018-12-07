@@ -203,7 +203,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
      * @param bottomContent
      */
     public void initHalfBodyLive(final RelativeLayout bottomContent) {
-
         final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         if (rlLiveMessageContent == null) {
