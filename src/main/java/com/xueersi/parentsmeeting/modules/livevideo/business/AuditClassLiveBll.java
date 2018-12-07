@@ -10,10 +10,20 @@ import android.os.Looper;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.LogerTag;
+import com.xueersi.lib.analytics.umsagent.UmsAgent;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsConstants;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -28,21 +38,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
-import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
-import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.lib.analytics.umsagent.UmsAgent;
-import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.analytics.umsagent.UmsConstants;
-import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
-import com.xueersi.lib.framework.utils.NetWorkHelper;
-import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveGetPlayServer;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.video.TeacherIsPresent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -583,6 +583,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         if (mGetInfo.getIsArts() == 1) {
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
+        } else if (mGetInfo.getIsArts() == 2) {
+            appID = UmsConstants.ARTS_APP_ID;
+            liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {
             appID = UmsConstants.LIVE_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);

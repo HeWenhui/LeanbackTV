@@ -174,12 +174,12 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
         cbTutorOpt2.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
         cbTutorOpt3.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
         cbTutorOpt4.setOnCheckedChangeListener(new TutorOptListener(optCheckCorlor, optUncheckColor,submitAlpha));
-        rbMainUnSat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, optUncheckColor));
-        rbMainSat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, optUncheckColor));
-        rbMainVerySat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, optUncheckColor));
-        rbTutorUnSat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, optUncheckColor));
-        rbTutorSat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, optUncheckColor));
-        rbTutorVerySat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, optUncheckColor));
+        rbMainUnSat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, scoreUncheckColor));
+        rbMainSat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, scoreUncheckColor));
+        rbMainVerySat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, scoreUncheckColor));
+        rbTutorUnSat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, scoreUncheckColor));
+        rbTutorSat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, scoreUncheckColor));
+        rbTutorVerySat.setOnCheckedChangeListener(new ScoreListener(scoreCheckColor, scoreUncheckColor));
         ivCloseClass.setOnClickListener(new OnUnDoubleClickListener() {
             @Override
             public void onClick(View view) {
