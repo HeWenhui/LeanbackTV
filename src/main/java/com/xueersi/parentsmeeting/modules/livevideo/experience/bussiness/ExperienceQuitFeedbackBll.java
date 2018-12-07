@@ -95,7 +95,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
             UmsAgentManager.umsAgentOtherBusiness(activity, "1305801", UmsConstants.uploadBehavior,
                     logHashMap.getData());
             if (!mVideoEntity.isPrek() && !TextUtils.isEmpty(mVideoEntity.getExamUrl())) {
-                expPager.showGradingPaper();
+                expPager.showGradingPaper(true);
                 mEvaluationView = new StandExperienceEvaluationPager(activity, this);
             }
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
@@ -188,7 +188,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
                     liveVideoActivityBase.changeLOrP();
                 }
             }
-            isShowQuitDialog =false;
+            isShowQuitDialog = false;
             logger.i("旋转屏幕");
             mEvaluationView.showWebView(mVideoEntity.getExamUrl());
             mRootView.addView(mEvaluationView.getRootView(), RelativeLayout.LayoutParams
@@ -208,6 +208,17 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
                     liveVideoActivityBase.changeLOrP();
                 }
             }
+            expPager.showGradingPaper(false);
+            isShowQuitDialog = true;
+        }
+    }
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        expPager.onDestroy();
+        if (mEvaluationView instanceof StandExperienceEvaluationPager) {
+            ((StandExperienceEvaluationPager) mEvaluationView).onDestroy();
         }
     }
 
