@@ -47,8 +47,8 @@ public class SmallEnglishEvaluateTeacherPager extends BaseEvaluateTeacherPaper {
         btnReSubmit.setOnClickListener(new OnUnDoubleClickListener() {
             @Override
             public void onClick(View view) {
-                btnReSubmit.setEnabled(false);
                 ivTryagaingLoading.setVisibility(View.VISIBLE);
+                btnReSubmit.setEnabled(false);
                 buttonOnClick.submit(mainEva, tutorEva);
             }
         });

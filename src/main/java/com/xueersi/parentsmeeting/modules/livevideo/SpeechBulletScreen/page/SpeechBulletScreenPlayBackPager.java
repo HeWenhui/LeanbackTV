@@ -75,7 +75,7 @@ public class SpeechBulletScreenPlayBackPager extends LiveBasePager {
     private int BITMAP_WIDTH_ME = 42;//头像的宽度
     private int BITMAP_HEIGHT_ME = 42;//头像的高度
     private float DANMU_TEXT_SIZE = 14;//弹幕字体的大小
-    private int DANMU_PADDING = 11;//控制两行弹幕之间的间距
+    private int DANMU_PADDING = 5;//控制两行弹幕之间的间距
     private int DANMU_RADIUS = 16;//圆角半径
     private int DANMU_BACKGROUND_HEIGHT = 33;
 
