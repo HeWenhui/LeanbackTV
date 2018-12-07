@@ -126,7 +126,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     private StudentCoinAndTotalEnergyEntity mCurrentPkState;
 
-    /**当前老师模式*/
+    /**
+     * 当前老师模式
+     */
     private String mTeacherMode = LiveTopic.MODE_TRANING;
 
     public TeamPkBll(Activity context, LiveBll2 liveBll) {
@@ -168,15 +170,17 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
-        this.mTeacherMode = mode;
-        if (isHalfBodyLiveRoom()) {
-            //延时5秒 适配切屏动画
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showPkStateLayout();
-                }
-            }, 5000);
+        if (isAvailable) {
+            this.mTeacherMode = mode;
+            if (isHalfBodyLiveRoom()) {
+                //延时5秒 适配切屏动画
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        showPkStateLayout();
+                    }
+                }, 5000);
+            }
         }
     }
 
@@ -722,7 +726,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     private int getRightMargin() {
         int returnValue = 0;
-        if(!isFullScreenMode()){
+        if (!isFullScreenMode()) {
             int screenWidth = ScreenUtils.getScreenWidth();
             returnValue = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
         }
@@ -731,6 +735,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
     /**
      * 当时是否是全屏模式
+     *
      * @return
      */
     public boolean isFullScreenMode() {
@@ -754,7 +759,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             @Override
             public void onGlobalLayout() {
 
-                if(!isFullScreenMode()){
+                if (!isFullScreenMode()) {
                     ViewGroup viewGroup = (ViewGroup) mActivity.getWindow().getDecorView();
                     View videoView = viewGroup.findViewById(R.id.vv_course_video_video);
                     ViewGroup.LayoutParams lp = videoView.getLayoutParams();
@@ -834,7 +839,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
     @Override
     public void onLiveInited(LiveGetInfo data) {
-
         if (data != null && "1".equals(data.getIsAllowTeamPk())) {
             mHttpManager = getHttpManager();
             setRoomInitInfo(data);
@@ -842,9 +846,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             roomInitInfo = data;
             isAIPartner = roomInitInfo.getIsAIPartner() == 1;
             isAvailable = true;
+            this.mTeacherMode = mLiveBll.getMode();
         }
-        this.mTeacherMode = mLiveBll.getMode();
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
