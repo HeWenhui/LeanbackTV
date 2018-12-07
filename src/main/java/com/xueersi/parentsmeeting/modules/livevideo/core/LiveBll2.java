@@ -423,6 +423,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 businessBll.onLiveInited(getInfo);
                 logger.d("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll);
             } catch (Exception e) {
+                CrashReport.postCatchedException(e);
                 logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
             }
         }
@@ -620,7 +621,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                     for (NoticeAction noticeAction : noticeActions) {
                         try {
                             noticeAction.onNotice(sourceNick, target, object, mtype);
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             CrashReport.postCatchedException(e);
                         }
                     }
@@ -677,7 +678,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                     for (TopicAction mTopicAction : mTopicActions) {
                         try {
                             mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             CrashReport.postCatchedException(e);
                         }
 

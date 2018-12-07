@@ -25,7 +25,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBl
 
 public class PrimaryScienceSignPager extends BasePager {
     String TAG = "PrimaryScienceSignPager";
-    RollCallAction rollCallAction;
     RollCallBll rollCallBll;
     RelativeLayout rlSignStatus1, rlSignStatus2;
     LinearLayout mLinearLayout;
@@ -41,7 +40,6 @@ public class PrimaryScienceSignPager extends BasePager {
 
     public PrimaryScienceSignPager(Context context, RollCallBll rollCallBll, ClassSignEntity classSignEntity) {
         super(context);
-        this.rollCallAction = rollCallAction;
         this.classSignEntity = classSignEntity;
         this.rollCallBll = rollCallBll;
         logToFile = new LogToFile(context, TAG);
@@ -51,12 +49,6 @@ public class PrimaryScienceSignPager extends BasePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_primary_sign, null);
-//        rlSignStatus1 = (RelativeLayout) mView.findViewById(R.id.rl_livevideo_sign_status1);
-//        rlSignStatus2 = (RelativeLayout) mView.findViewById(R.id.rl_livevideo_sign_status2);
-//        tvSignName = (TextView) mView.findViewById(R.id.tv_livevideo_sign_name);
-//        btLearnreportCheck = (Button) mView.findViewById(R.id.bt_livevideo_learnreport_check);
-//        ivSignStatus = (ImageView) mView.findViewById(R.id.iv_livevideo_sign_status);
-//        tvSignStatus = (TextView) mView.findViewById(R.id.tv_livevideo_sign_status);
         mLinearLayout = (LinearLayout) mView.findViewById(R.id.ll_start_sign);
         tvSignName = (TextView) mView.findViewById(R.id.tv_sign_name);
         btLearnreportCheck = (Button) mView.findViewById(R.id.bt_primary_sign);
@@ -73,10 +65,9 @@ public class PrimaryScienceSignPager extends BasePager {
         btLearnreportCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //liveBll.onRollCallSuccess();
                 if (classSignEntity.getStatus() != 1) {
                     logToFile.d("stopRollCall");
-                    rollCallAction.stopRollCall();
+                    rollCallBll.stopRollCall();
                     return;
                 }
                 rollCallBll.userSign(classSignEntity, new HttpCallBack() {

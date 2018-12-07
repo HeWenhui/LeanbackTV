@@ -47,7 +47,7 @@
                 android:layout_height="20dp"
                 android:layout_below="@id/tv_teampk_pkresult_myteam_final_anergy"
                 app:innerProgressBarHeight="7dp"
-                app:sliderHeader="@drawable/livevideo_tool_energy_img_disable" />
+                app:sliderHeader="@drawable/livevideo_chpk_energy_img_disable" />
         </RelativeLayout>
     </RelativeLayout>
 
@@ -281,7 +281,7 @@
                 android:layout_marginRight="18dp"
                 android:layout_marginTop="-4dp"
                 app:innerProgressBarHeight="7dp"
-                app:sliderHeader="@drawable/livevideo_tool_energy_img_disable" />
+                app:sliderHeader="@drawable/livevideo_chpk_energy_img_disable" />
             <!--   app:sliderHeaderBg="@drawable/livevideo_slider_bg" -->
         </RelativeLayout>
 
