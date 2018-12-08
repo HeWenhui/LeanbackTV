@@ -72,7 +72,7 @@
     <color name="COLOR_FF8F4D26">#FF8F4D26</color>
     <color name="COLOR_FFBC7D57">#FFBC7D57</color>
     <color name="COLOR_FF8EBAA2">#FF8EBAA2</color>
-
+    <color name="COLOR_FFFFFEFF">#FFFFFEFF</color>
     <color name="COLOR_14FFFFFF">#14FFFFFF</color>
     <color name="COLOR_28FFFFFF">#28FFFFFF</color>
 </resources>

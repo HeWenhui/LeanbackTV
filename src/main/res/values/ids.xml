@@ -401,6 +401,7 @@
     <!--直播-语音弹幕-->
     <item name="rl_livevideo_content_speechbul" type="id" />
     <item name="rl_livevideo_speechbul_root" type="id" />
+    <item name="rl_livevideo_speechbul_title" type="id" />
     <item name="tv_livevideo_speechbul_title" type="id" />
     <item name="tv_livevideo_speechbul_title_count" type="id" />
     <item name="tv_livevideo_speechbul_title_switch" type="id" />
@@ -807,6 +808,7 @@
     <item name="bt_livevideo_worddictation_close" type="id" />
 
 
+
     <!--文科答题结果页-->
     <item name="tv_arts_answer_result_state" type="id" />
     <item name="rl_arts_answer_result_state" type="id" />
@@ -926,6 +928,8 @@
     <item name="tv_livevideo_evaluate_submit_status" type="id"/>
     <item name="tv_livevideo_evaluate_count_down" type="id"/>
     <item name="btn_livevideo_evaluate_tryagain" type="id"/>
+    <!-- 体验课退出反馈-->
+    <item name="rl_livevideo_experience_feedback_quit" type="id" />
     <!--英语本场成就-->
     <item name="rl_livevideo_en_achive_back" type="id" />
     <item name="iv_livevideo_en_achive_title" type="id" />

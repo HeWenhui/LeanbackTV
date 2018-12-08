@@ -15,7 +15,7 @@
 //import com.xueersi.common.http.ResponseEntity;
 //import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
-//import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IPresenter;
+//import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IExperiencePresenter;
 //
 //import org.json.JSONArray;
 //import org.json.JSONException;
@@ -27,9 +27,9 @@
 //
 //public class LearnFeedBackPager extends BasePager {
 //
-//    private IPresenter mPresenter;
+//    private IExperiencePresenter mPresenter;
 //
-//    private ISendHttp mSendHttp;
+//    private IExperienceSendHttp mSendHttp;
 //
 //    private RadioGroup rgDifficulty;
 //    private RadioGroup rgSatisficing;

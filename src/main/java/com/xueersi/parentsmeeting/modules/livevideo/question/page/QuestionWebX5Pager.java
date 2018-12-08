@@ -305,6 +305,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
         if (wvSubjectWeb instanceof CacheWebView) {
             CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+            // TODO: 2018/12/5  
             if (isArts == 0) {
                 cacheWebView.getWebViewCache().setNeedHttpDns(true);
             } else {

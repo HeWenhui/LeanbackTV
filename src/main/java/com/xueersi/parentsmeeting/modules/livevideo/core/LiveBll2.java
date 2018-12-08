@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -422,6 +423,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 businessBll.onLiveInited(getInfo);
                 logger.d("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll);
             } catch (Exception e) {
+                CrashReport.postCatchedException(e);
                 logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
             }
         }
@@ -617,7 +619,11 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
                 if (noticeActions != null && noticeActions.size() > 0) {
                     for (NoticeAction noticeAction : noticeActions) {
-                        noticeAction.onNotice(sourceNick, target, object, mtype);
+                        try {
+                            noticeAction.onNotice(sourceNick, target, object, mtype);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(e);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -670,7 +676,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 }
                 if (mTopicActions != null && mTopicActions.size() > 0) {
                     for (TopicAction mTopicAction : mTopicActions) {
-                        mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
+                        try {
+                            mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(e);
+                        }
+
                     }
                 }
                 mLiveTopic.copy(liveTopic);

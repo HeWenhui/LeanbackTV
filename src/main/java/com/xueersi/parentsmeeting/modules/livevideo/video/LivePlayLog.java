@@ -160,7 +160,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
     /** 文件 */
     private File liveLog920;
-    /** 日志上传类型*/
+    /** 日志上传类型 */
     private String LIVE_920_TYPE = "";
 
     static {
@@ -385,7 +385,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         String cip = oldCipdispatch;
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
-        defaultKey.put("sip", "" + getRemoteIp());
+        defaultKey.put("sip", "" + getRemoteIp(""));
         defaultKey.put("tid", "" + tid);
 
         JSONObject dataJson = new JSONObject();
@@ -437,7 +437,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         String cip = oldCipdispatch;
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
-        defaultKey.put("sip", "" + getRemoteIp());
+        defaultKey.put("sip", "" + getRemoteIp(""));
         defaultKey.put("tid", "" + tid);
 
         JSONObject dataJson = new JSONObject();
@@ -582,7 +582,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                                 String cip = oldCipdispatch;
                                 defaultKey.put("cip", "" + cip);
                                 defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
-                                String hostIp = getRemoteIp();
+                                String hostIp = getRemoteIp(urldns.ip);
                                 defaultKey.put("sip", "" + hostIp);
                                 defaultKey.put("tid", "" + finalTid);
 
@@ -661,7 +661,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         String cip = oldCipdispatch;
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
-        String msip = getRemoteIp();
+        String msip = getRemoteIp("");
         defaultKey.put("sip", "" + msip);
         defaultKey.put("tid", "" + tid);
 
@@ -700,7 +700,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         String cip = oldCipdispatch;
         defaultKey.put("cip", "" + cip);
         defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
-        String msip = getRemoteIp();
+        String msip = getRemoteIp("");
         defaultKey.put("sip", "" + msip);
         defaultKey.put("tid", "" + tid);
 
@@ -818,13 +818,18 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         }
     }
 
-    private String getRemoteIp() {
+    private String getRemoteIp(String defaultIp) {
         String remoteIp;
         if (lastPlayserverEntity != null) {
             String ipAddress = lastPlayserverEntity.getIpAddress();
             if (StringUtils.isEmpty(ipAddress)) {
                 if (StringUtils.isEmpty(sip)) {
-                    remoteIp = lastPlayserverEntity.getAddress();
+                    if (StringUtils.isEmpty(defaultIp)) {
+                        remoteIp = lastPlayserverEntity.getAddress();
+                    } else {
+                        remoteIp = defaultIp;
+                        sip = defaultIp;
+                    }
                 } else {
                     remoteIp = sip;
                 }
@@ -871,7 +876,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 String cip = oldCipdispatch;
                 defaultKey.put("cip", "" + cip);
                 defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
-                String remoteIp = getRemoteIp();
+                String remoteIp = getRemoteIp("");
                 defaultKey.put("sip", "" + remoteIp);
                 defaultKey.put("tid", "" + finalTid);
 
@@ -1224,7 +1229,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 String cip = oldCipdispatch;
                 defaultKey.put("cip", "" + cip);
                 defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
-                String msip = getRemoteIp();
+                String msip = getRemoteIp("");
                 defaultKey.put("sip", "" + msip);
                 defaultKey.put("tid", "" + finalTid);
 
@@ -1502,7 +1507,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     return new PlayFailCode(arg2, "" + error.getTag());
             }
         }
-        return new PlayFailCode(arg2, "other-"+arg2);
+        return new PlayFailCode(arg2, "other-" + arg2);
     }
 
     private int getNet() {
@@ -1536,13 +1541,14 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
     /**
      * 上传920 日志
+     *
      * @param dataJson
      */
-    public void postLiveLog920 (String dataJson) {
-        if(TextUtils.isEmpty(LIVE_920_TYPE) || TextUtils.equals(LIVE_920_TYPE,LiveVideoConfig.LIVE_LOG_920_HOST)) {
-            postLiveLogHost920(dataJson,true);
+    public void postLiveLog920(String dataJson) {
+        if (TextUtils.isEmpty(LIVE_920_TYPE) || TextUtils.equals(LIVE_920_TYPE, LiveVideoConfig.LIVE_LOG_920_HOST)) {
+            postLiveLogHost920(dataJson, true);
         } else {
-            postLiveLogIp920(dataJson,0,"",1l,true);
+            postLiveLogIp920(dataJson, 0, "", 1l, true);
         }
     }
 
@@ -1551,7 +1557,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
      *
      * @param dataJson
      */
-    public void postLiveLogHost920(final String dataJson,final boolean isFirst) {
+    public void postLiveLogHost920(final String dataJson, final boolean isFirst) {
         final HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.setJson(dataJson);
         httpRequestParams.setWriteAndreadTimeOut(10);
@@ -1559,7 +1565,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         baseHttpBusiness.baseSendPostNoBusinessJson(LiveVideoConfig.URL_CDN_LOG, httpRequestParams, new Callback() {
             @Override
             public void onFailure(Call call, IOException ex) {
-                if(isFirst) {
+                if (isFirst) {
                     int code = -1;
                     String msg = "otherError";
                     if (ex instanceof HttpException) {
@@ -1595,7 +1601,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     }
 
 
-
     /**
      * 上传日志 ip方式
      *
@@ -1611,8 +1616,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         baseHttpBusiness.baseSendPostNoBusinessJson(LiveVideoConfig.URL_CND_LOG_IP, httpRequestParams, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                if(isFirst) {
-                    postLiveLogHost920(dataJson,false);
+                if (isFirst) {
+                    postLiveLogHost920(dataJson, false);
                 } else {
                     // 保存日志到文件
                     save920History(httpRequestParams);
@@ -1621,7 +1626,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(!isFirst) {
+                if (!isFirst) {
                     onHostError(LiveVideoConfig.URL_CDN_LOG, code, msg, delay);
                 }
                 LIVE_920_TYPE = LiveVideoConfig.LIVE_LOG_920_IP;
@@ -1718,7 +1723,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
             defaultKey.put("cip", "" + oldCipdispatch);
             defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
-            String hostIp = getRemoteIp();
+            String hostIp = getRemoteIp("");
             defaultKey.put("sip", "" + hostIp);
             defaultKey.put("tid", "" + AppBll.getInstance().getAppInfoEntity().getAppUUID());
         } catch (Exception e) {
@@ -1836,7 +1841,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                     historyJson = historyLogArray.getJSONObject(i);
                     if (TextUtils.equals(historyJson.optString("priIndex"), priIndex)) {
                         int cnt = historyJson.optInt("cnt");
-                        historyJson.put("lts",System.currentTimeMillis());
+                        historyJson.put("lts", System.currentTimeMillis());
                         historyJson.put("cnt", cnt + 1);
                         isHave = true;
                         break;
@@ -1844,17 +1849,17 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                 }
             }
             // 如果有历史日志
-            if ( !isHave) {
+            if (!isHave) {
                 if (historyLogArray == null) {
                     historyLogArray = new JSONArray();
                 }
                 JSONObject json = new JSONObject();
-                json.put("url",url);
-                json.put("sip",sip);
-                json.put("cip",cip);
-                json.put("lip",lip);
-                json.put("fts",System.currentTimeMillis());
-                json.put("priIndex",priIndex);
+                json.put("url", url);
+                json.put("sip", sip);
+                json.put("cip", cip);
+                json.put("lip", lip);
+                json.put("fts", System.currentTimeMillis());
+                json.put("priIndex", priIndex);
                 historyLogArray.put(json);
             }
             if (!liveLog920.exists()) {
@@ -1874,26 +1879,26 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         JSONArray jsonArray = null;
         try {
             if (liveLog920 == null) {
-                return null ;
+                return null;
             }
-        File[] fs = liveLog920.listFiles();
-        File file920 = null;
-        if (fs != null && fs.length > 0) {
-            for (int i = 0; i < fs.length; i++) {
-                if (TextUtils.equals(fs[i].getName(), liveLogPath920)) {
-                    file920 = fs[i];
-                    break;
+            File[] fs = liveLog920.listFiles();
+            File file920 = null;
+            if (fs != null && fs.length > 0) {
+                for (int i = 0; i < fs.length; i++) {
+                    if (TextUtils.equals(fs[i].getName(), liveLogPath920)) {
+                        file920 = fs[i];
+                        break;
+                    }
                 }
-            }
-            if (file920 != null) {
-                String string = FileStringUtil.readFromFile(file920);
+                if (file920 != null) {
+                    String string = FileStringUtil.readFromFile(file920);
 
                     jsonArray = new JSONArray(string);
 
 
-            }
+                }
 
-        }
+            }
         } catch (Exception e) {
         }
         return jsonArray;

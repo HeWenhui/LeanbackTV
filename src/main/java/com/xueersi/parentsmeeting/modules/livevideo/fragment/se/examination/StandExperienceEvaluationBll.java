@@ -5,14 +5,14 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 public class StandExperienceEvaluationBll extends
-        StandExperienceEventBaseBll implements IPresenter {
+        StandExperienceEventBaseBll implements IExperiencePresenter {
 
     private IStandExperienceEvaluationContract.IEvaluationView mView;
 
@@ -59,6 +59,14 @@ public class StandExperienceEvaluationBll extends
 
         if (mView.getRootView() != null && mView.getRootView().getParent() == mRootView) {
             mRootView.removeView(mView.getRootView());
+        }
+    }
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        if (mView instanceof StandExperienceEvaluationPager) {
+            ((StandExperienceEvaluationPager) mView).onDestroy();
         }
     }
 

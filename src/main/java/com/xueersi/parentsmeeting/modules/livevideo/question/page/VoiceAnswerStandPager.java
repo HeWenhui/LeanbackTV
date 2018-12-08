@@ -169,18 +169,26 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         this.assess_ref = assess_ref;
         this.headUrl = headUrl;
         this.userName = StandLiveTextView.getShortName(userName);
-        if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
+        if(LiveVideoConfig.isNewArts){
             try {
                 answer = assess_ref.getJSONArray("answer").getString(0);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else {
-            try {
-                JSONArray array = assess_ref.getJSONArray("options");
-                answer = array.getJSONObject(0).getJSONArray("content").getString(0);
-            } catch (JSONException e) {
-                e.printStackTrace();
+        }else{
+            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
+                try {
+                    answer = assess_ref.getJSONArray("answer").getString(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    JSONArray array = assess_ref.getJSONArray("options");
+                    answer = array.getJSONObject(0).getJSONArray("content").getString(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
         initListener();
@@ -777,7 +785,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         if (phoneScores.isEmpty()) {
             logger.d("onResult(SUCCESS):phoneScores.isEmpty");
         } else {
-            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
+            if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(type)) {
                 int rightIndex = -1;
                 int rightCount = 0;
                 String sss = "";

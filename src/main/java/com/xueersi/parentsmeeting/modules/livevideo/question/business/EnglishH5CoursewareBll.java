@@ -420,6 +420,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 if (h5CoursewarePager != null) {
                     h5CoursewarePager.destroy();
                     bottomContent.removeView(h5CoursewarePager.getRootView());
+                    onQuestionShow(null, false, "onBack");
                 }
             }
         });

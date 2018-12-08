@@ -90,7 +90,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         liveBaseEnglishH5CoursewareCreat.setLivePagerBack(englishH5CoursewareBll);
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            englishH5Cache = new EnglishH5Cache(activity, liveGetInfo.getId());
+            englishH5Cache = new EnglishH5Cache(activity, liveGetInfo);
             englishH5Cache.setHttpManager(getmHttpManager());
             englishH5Cache.getCourseWareUrl();
         }

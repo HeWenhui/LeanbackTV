@@ -508,6 +508,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mDsipalyer = null;
             EventBus.getDefault().post(new AnswerResultCplShowEvent());
         }
+        if(mGetInfo.getPattern() == 2){
+            EventBus.getDefault().post(new AnswerResultCplShowEvent());
+        }
 
         logger.e("=====>closeAnswerResult:" + forceSumbmit + ":" + this);
         this.forceSumbmit = forceSumbmit;

@@ -122,16 +122,21 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
         AppInfoEntity mAppInfoEntity = AppBll.getInstance().getAppInfoEntity();
         String EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL, ShareBusinessConfig.EXAM_URL, ShareDataManager.SHAREDATA_USER);
-        if (isArts != 1) {
+        if (isArts == 0) {
             EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_SCIENCE, EXAM_URL, ShareDataManager.SHAREDATA_USER);
             EXAM_URL = EXAM_URL.replace(ShareBusinessConfig.LIVE_LIBARTS, ShareBusinessConfig.LIVE_SCIENCE);
+        } else if (isArts == 2) {
+            EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_CHS, EXAM_URL, ShareDataManager.SHAREDATA_USER);
         } else {
             EXAM_URL = mShareDataManager.getString(ShareBusinessConfig.SP_LIVE_EXAM_URL_LIBARTS, EXAM_URL, ShareDataManager.SHAREDATA_USER);
             EXAM_URL = EXAM_URL.replace(ShareBusinessConfig.LIVE_SCIENCE, ShareBusinessConfig.LIVE_LIBARTS);
         }
         if (EXAM_URL.contains("xueersi.com/LiveExam")) {
-            String host = isArts != 1 ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
-            EXAM_URL = EXAM_URL.replace("xueersi.com/LiveExam", "xueersi.com/" + host + "/LiveExam");
+            // TODO: 2018/12/5
+            if (isArts != 2) {
+                String host = isArts != 1 ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
+                EXAM_URL = EXAM_URL.replace("xueersi.com/LiveExam", "xueersi.com/" + host + "/LiveExam");
+            }
         }
         examUrl = EXAM_URL + "?liveId=" + liveid
                 + "&testPlan=" + num + "&isPlayBack=1&stuId=" + userInfoEntity.getStuId() + "&stuName=" + mAppInfoEntity.getLoginUserName();

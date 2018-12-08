@@ -87,6 +87,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
                 liveBackBll.getvPlayer().getDuration()) > mVideoEntity.getEvaluateTimePer()) {
             logger.i("showEvaluateTeacher");
             liveBackBll.getvPlayer().stop();
+            liveBackBll.getvPlayer().release();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             if (rlLiveMessageContent == null) {
@@ -96,7 +97,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
             } else {
                 rlLiveMessageContent.removeAllViews();
             }
-            final View view = evaluateTeacherPager.getRootView();
+            View view = evaluateTeacherPager.getRootView();
             rlLiveMessageContent.addView(view, params);
             UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
                     .evaluate_teacher_1708001));
@@ -122,8 +123,6 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
         String teacherEvaluOption = "";
         String tutorEvaluLevel = tutorEva.get("eva");
         String tutorEvaluOption = "";
-        mainEva.remove("eva");
-        tutorEva.remove("eva");
         teacherEvaluOption = getEvaluteOption(mainEva);
         tutorEvaluOption = getEvaluteOption(tutorEva);
         uploadEvaluation(teacherEvaluLevel, teacherEvaluOption, tutorEvaluLevel, tutorEvaluOption);
@@ -184,19 +183,21 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 logger.i("uploadEvaluation fail");
-                super.onPmFailure(error, msg);
                 evaluateTeacherPager.showUploadFailPager();
                 evaluateTeacherPager.setReUpload();
+                super.onPmFailure(error, msg);
             }
 
         };
         if (liveGetInfo.getIsArts() == 1) {
-            mHttpManager.saveArtsEvaluationTeacher(liveGetInfo.getId(), liveGetInfo.getStuCouId(), liveGetInfo
-                            .getMainTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
+            mHttpManager.saveArtsEvaluationTeacher(liveGetInfo.getId(), mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
+                    tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
+        } else if (liveGetInfo.getIsArts() == 0 ) {
+            mHttpManager.saveScienceEvaluationTeacher(liveGetInfo.getId(),mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId()
+                            , teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
                     tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
         } else {
-            mHttpManager.saveScienceEvaluationTeacher(liveGetInfo.getId(), liveGetInfo.getStuCouId(), liveGetInfo
-                            .getMainTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
+            mHttpManager.saveArtsEvaluationTeacher(liveGetInfo.getId(), mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
                     tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
         }
     }
