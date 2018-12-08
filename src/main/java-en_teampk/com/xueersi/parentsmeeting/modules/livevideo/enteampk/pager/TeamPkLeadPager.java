@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +53,7 @@ public class TeamPkLeadPager extends LiveBasePager {
     private TextView ivTeampkLeadFireAddRight;
     private TextView tvTeampkLeadScoreRight;
     private int pattern;
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     public TeamPkLeadPager(Context context, EnTeamPkRankEntity enTeamPkRankEntity, int type, int pattern) {
         super(context, false);
@@ -166,16 +169,14 @@ public class TeamPkLeadPager extends LiveBasePager {
             final ViewGroup group = (ViewGroup) mView;
             final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_lead_win, group, false);
             group.addView(view);
-            mView.postDelayed(new Runnable() {
+            handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     group.removeView(view);
-                    showRank();
                 }
             }, 100);
-        } else {
-            showRank();
         }
+        showRank();
         pgTeampkLead.setProgress(progress);
         final float finalFprog = fprog;
         logger.d("initData:fprog=" + fprog);

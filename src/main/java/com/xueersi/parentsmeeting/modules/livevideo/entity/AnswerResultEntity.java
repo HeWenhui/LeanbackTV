@@ -272,6 +272,8 @@ public class AnswerResultEntity {
         ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
         answerResultEntity.setAnswerList(answerList);
         answerResultEntity.setIsRight(entity.getResultType());
+        answerResultEntity.setGold(entity.getGoldNum());
+        answerResultEntity.setEnergy(entity.getEnergy());
         {
             AnswerResultEntity.Answer answer = new AnswerResultEntity.Answer();
             List<String> rightAnswers = new ArrayList<>();

@@ -906,6 +906,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             entity.setTestId(jsonObject.optString("testId"));
             entity.setResultType(jsonObject.optInt("tip"));
             entity.setGoldNum(jsonObject.optInt("gold"));
+            entity.setEnergy(jsonObject.optInt("energy"));
             entity.setMsg(jsonObject.optString("msg"));
             entity.setRightNum(jsonObject.optInt("rightnum"));
 //            entity.setIsAnswer(jsonObject.optInt("isAnswer", 0));
@@ -931,6 +932,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         JSONObject total = jsonObject.optJSONObject("total");
         entity.setGoldNum(Integer.parseInt(total.optString("gold")));
         entity.setRightNum(Integer.parseInt(total.optString("isRight")));
+        entity.setEnergy(total.optInt("energy"));
         JSONArray split = jsonObject.optJSONArray("split");
         for (int i = 0; i < split.length(); i++) {
             JSONObject obj = split.optJSONObject(i);
