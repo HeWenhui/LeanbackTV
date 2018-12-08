@@ -340,7 +340,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             super.onPmFailure(error, msg);
                             logger.e("getEnglishPkTotalRank:onPmFailure=" + msg, error);
                             if (tryCount.decrementAndGet() > 0) {
-                                mHandler.postDelayed(new Runnable() {
+                                postDelayedIfNotFinish(new Runnable() {
                                     @Override
                                     public void run() {
                                         getHttpManager().getEnglishPkTotalRank(teamId, "", callBack);
@@ -417,7 +417,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             logger.e("onCourseEnd:onPmFailure=" + msg + ",try=" + tryCount.get(), error);
                         }
                         if (tryCount.decrementAndGet() > 0) {
-                            mHandler.postDelayed(new Runnable() {
+                            postDelayedIfNotFinish(new Runnable() {
                                 @Override
                                 public void run() {
                                     getHttpManager().updataEnglishPkByTestId(teamId, testId, callBack);
