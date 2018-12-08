@@ -3,19 +3,9 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@id/iv_livevideo_en_teampk_lead_left"
+        android:id="@id/iv_livevideo_en_teampk_lead_mid"
         android:layout_width="80dp"
         android:layout_height="28dp"
-        android:layout_alignLeft="@id/iv_livevideo_en_teampk_mine"
-        android:layout_alignRight="@id/iv_livevideo_en_teampk_mine"
-        android:layout_marginTop="18dp" />
-
-    <ImageView
-        android:id="@id/iv_livevideo_en_teampk_lead_right"
-        android:layout_width="80dp"
-        android:layout_height="28dp"
-        android:layout_alignLeft="@id/iv_livevideo_en_teampk_other"
-        android:layout_alignRight="@id/iv_livevideo_en_teampk_other"
         android:layout_marginTop="18dp" />
 
     <ImageView

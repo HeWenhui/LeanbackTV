@@ -99,13 +99,13 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //            Random random = new Random();
 //            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
 //            enTeamPkRankEntity.setApkTeamId(2);
-//            enTeamPkRankEntity.setMyTeamCurrent(random.nextInt(30));
-//            enTeamPkRankEntity.setMyTeamTotal(50);
+//            enTeamPkRankEntity.setMyTeamCurrent(5);
+//            enTeamPkRankEntity.setMyTeamTotal(52);
 //            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
 //            for (int i = 0; i < 4; i++) {
 //                TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
 //                teamMemberEntity.id = 100 + i;
-//                if (i == 0) {
+//                if (i == 2) {
 //                    teamMemberEntity.isMy = true;
 //                }
 //                teamMemberEntity.headurl = "https://xesfile.xesimg.com/user/h/57375.jpg";
@@ -114,9 +114,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                memberEntities.add(teamMemberEntity);
 //            }
 //            enTeamPkRankEntity.setBpkTeamId(3);
-//            enTeamPkRankEntity.setOpTeamCurrent(100 - enTeamPkRankEntity.getMyTeamCurrent());
-//            enTeamPkRankEntity.setOpTeamTotal(52);
-//            enTeamPkAction.onRankLead(enTeamPkRankEntity, TeamPkLeadPager.TEAM_TYPE_2);
+//            enTeamPkRankEntity.setOpTeamCurrent(3);
+//            enTeamPkRankEntity.setOpTeamTotal(50);
+//            enTeamPkAction.onRankLead(enTeamPkRankEntity, TeamPkLeadPager.TEAM_TYPE_1);
 //        }
     }
 
@@ -395,6 +395,15 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         logger.d("onCourseEnd:onPmSuccess=" + responseEntity.getJsonObject());
                         EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity);
                         if (pkTeamEntity != null && enTeamPkRankEntity != null) {
+                            ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
+                            for (int i = 0; i < myTeamEntitys.size(); i++) {
+                                TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
+                                if (mGetInfo.getStuId().equals("" + teamMemberEntity.id)) {
+                                    myTeamEntitys.remove(i);
+                                    myTeamEntitys.add(teamMemberEntity);
+                                    break;
+                                }
+                            }
                             enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
                             if (enTeamPkAction != null) {
                                 enTeamPkAction.onRankLead(enTeamPkRankEntity, TeamPkLeadPager.TEAM_TYPE_1);

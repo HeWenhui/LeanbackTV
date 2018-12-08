@@ -84,7 +84,7 @@
             android:layout_above="@id/iv_livevideo_en_teampk_rank_score"
             android:layout_alignParentRight="true"
             android:layout_marginRight="7dp"
-            android:background="@drawable/zhanduipk_fenzhandui_defenmiij_btn_normal1"
+            android:background="@drawable/livevideo_enpk_fenzhandui_defenmiij_btn_normal1"
             android:clickable="true"
             android:orientation="vertical"
             android:visibility="gone" />

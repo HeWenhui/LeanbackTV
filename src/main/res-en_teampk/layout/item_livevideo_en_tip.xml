@@ -21,7 +21,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@id/tv_livevideo_en_teampk_rank_score_tip_lable"
-        android:src="@drawable/zhanduipk_toast_huomiao_pic" />
+        android:src="@drawable/livevideo_enpk_toast_huomiao_pic" />
 
     <TextView
         android:id="@id/tv_livevideo_en_teampk_rank_score_tip"
