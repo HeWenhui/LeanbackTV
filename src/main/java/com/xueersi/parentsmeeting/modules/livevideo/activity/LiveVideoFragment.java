@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
@@ -27,9 +28,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
+import com.xueersi.parentsmeeting.modules.livevideo.config.AllBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -158,9 +161,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      */
     private void addBusiness(Activity activity) {
         //是文科
-        String jsonName;
+        BllConfigEntity[] bllConfigEntities;
         if (isArts == 1) {
-            jsonName = "live_business_arts.json";
+            bllConfigEntities = AllBllConfig.live_business_arts;
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
@@ -184,7 +187,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             videoChatIRCBll.setLiveFragmentBase(this);
             mLiveBll.addBusinessBll(videoChatIRCBll);
         } else if (isArts == 2) {
-            jsonName = "live_business_cn.json";
+            bllConfigEntities = AllBllConfig.live_business_cn;
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
@@ -213,7 +216,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             videoChatIRCBll.setLiveFragmentBase(this);
             mLiveBll.addBusinessBll(videoChatIRCBll);
         } else {
-            jsonName = "live_business_science.json";
+            bllConfigEntities = AllBllConfig.live_business_science;
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
@@ -258,29 +261,19 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         evaluateTeacherBll.setLiveFragment(this);
         mLiveBll.addBusinessBll(evaluateTeacherBll);
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
-        String live_business_arts = AssetsUtil.getJsonStrFromAssets(activity, jsonName);
-        try {
-            JSONObject jsonObject = new JSONObject(live_business_arts);
-            JSONArray business = jsonObject.getJSONArray("business");
-            for (int i = 0; i < business.length(); i++) {
-                try {
-                    JSONObject businessObj = business.getJSONObject(i);
-                    try {
-                        String className = businessObj.getString("class");
-                        Class<? extends LiveBaseBll> clazz = (Class<? extends LiveBaseBll>) Class.forName(className);
-                        Constructor<? extends LiveBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBll2.class});
-                        LiveBaseBll liveBaseBll = constructor.newInstance(activity, mLiveBll);
-                        mLiveBll.addBusinessBll(liveBaseBll);
-                        logger.d("addBusiness:business=" + className);
-                    } catch (Exception e) {
-                        logger.e("addBusiness", e);
-                    }
-                } catch (Exception e) {
-                    logger.d("addBusiness:business=", e);
-                }
+        for (int i = 0; i < bllConfigEntities.length; i++) {
+            try {
+                BllConfigEntity bllConfigEntity = bllConfigEntities[i];
+                String className = bllConfigEntity.className;
+                Class<? extends LiveBaseBll> clazz = (Class<? extends LiveBaseBll>) Class.forName(className);
+                Constructor<? extends LiveBaseBll> constructor = clazz.getConstructor(new Class[]{Activity.class, LiveBll2.class});
+                LiveBaseBll liveBaseBll = constructor.newInstance(activity, mLiveBll);
+                mLiveBll.addBusinessBll(liveBaseBll);
+                logger.d("addBusiness:business=" + className);
+            } catch (Exception e) {
+                logger.d("addBusiness:business=", e);
+                CrashReport.postCatchedException(e);
             }
-        } catch (JSONException e) {
-            logger.d("addBusiness:live_business_arts=" + live_business_arts, e);
         }
     }
 
