@@ -89,7 +89,7 @@ public class LiveVideoConfig {
             "/MyCourse/submitLiveTutoringTestAnswer";
 
     /** 播放器数据初始化 */
-   // public final static String URL_LIVE_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveCourse/getInfo";
+//    public final static String URL_LIVE_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveCourse/getInfo";
     public final static String URL_LIVE_GET_INFO = TEST_HOST + "/LiveCourse/getInfo";
 
     /** 直播辅导播放器数据初始化 */

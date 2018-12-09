@@ -445,7 +445,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
             }
             channel = mGetInfo.getId() + "-" + studentLiveInfo.getClassId();
             if (mGetInfo.ePlanInfo != null){
-                eChannel = mGetInfo.getId() + "-" + mGetInfo.ePlanInfo.eClassId;
+                eChannel = mGetInfo.ePlanInfo.ePlanId + "-" + mGetInfo.ePlanInfo.eClassId;
             }
         }
         logger.e("=======>onGetInfoSuccess 444444444");
