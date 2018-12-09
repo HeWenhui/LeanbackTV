@@ -106,7 +106,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
 //            enTeamPkRankEntity.setApkTeamId(2);
 //            enTeamPkRankEntity.setMyTeamCurrent(3);
-//            enTeamPkRankEntity.setMyTeamTotal(52);
+//            enTeamPkRankEntity.setMyTeamTotal(54);
 //            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
 //            for (int i = 0; i < 4; i++) {
 //                TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
@@ -115,7 +115,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                    teamMemberEntity.isMy = true;
 //                }
 //                teamMemberEntity.headurl = "https://xesfile.xesimg.com/user/h/57375.jpg";
-//                teamMemberEntity.name = "测试" + i;
+//                teamMemberEntity.name = "测试测试测试测试测试" + i;
 //                teamMemberEntity.energy = 10 + i;
 //                memberEntities.add(teamMemberEntity);
 //            }
@@ -429,7 +429,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                 TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
                                 if (mGetInfo.getStuId().equals("" + teamMemberEntity.id)) {
                                     myTeamEntitys.remove(i);
-                                    myTeamEntitys.add(teamMemberEntity);
+                                    myTeamEntitys.add(0, teamMemberEntity);
                                     break;
                                 }
                             }

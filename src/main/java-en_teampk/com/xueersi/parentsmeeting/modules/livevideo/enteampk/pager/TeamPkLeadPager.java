@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -53,11 +54,13 @@ public class TeamPkLeadPager extends LiveBasePager {
     private TextView tvTeampkLeadScoreRight;
     private int pattern;
     private Handler handler = new Handler(Looper.getMainLooper());
+    private OnClose onClose;
 
-    public TeamPkLeadPager(Context context, EnTeamPkRankEntity enTeamPkRankEntity, int type, int pattern) {
+    public TeamPkLeadPager(Context context, EnTeamPkRankEntity enTeamPkRankEntity, int type, int pattern, OnClose onClose) {
         super(context, false);
         this.type = type;
         this.pattern = pattern;
+        this.onClose = onClose;
         mView = initView();
         this.enTeamPkRankEntity = enTeamPkRankEntity;
         initData();
@@ -194,7 +197,9 @@ public class TeamPkLeadPager extends LiveBasePager {
             fprog = (float) (enTeamPkRankEntity.getMyTeamTotal()) / (float) (total);
             progress = (int) ((float) (enTeamPkRankEntity.getMyTeamTotal() * 100) / (float) (total));
         }
-        if (type == TEAM_TYPE_1 && win >= 0) {
+        int delay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 10000 : 5000;
+        if (type == TEAM_TYPE_2 && win >= 0) {
+            delay += 3000;
             final ViewGroup group = (ViewGroup) mView;
             final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_lead_win, group, false);
             group.addView(view);
@@ -203,7 +208,7 @@ public class TeamPkLeadPager extends LiveBasePager {
                 public void run() {
                     group.removeView(view);
                 }
-            }, 100);
+            }, 3000);
         }
         showRank();
         pgTeampkLead.setProgress(progress);
@@ -220,6 +225,12 @@ public class TeamPkLeadPager extends LiveBasePager {
                 return false;
             }
         });
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                onClose.close(TeamPkLeadPager.this);
+            }
+        }, delay);
     }
 
     private void showRank() {
@@ -263,5 +274,9 @@ public class TeamPkLeadPager extends LiveBasePager {
     @Override
     public void initListener() {
         super.initListener();
+    }
+
+    public interface OnClose {
+        void close(BasePager basePager);
     }
 }

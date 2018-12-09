@@ -128,8 +128,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //            answerResultEntity.isVoice = 1;
 //            answerResultEntity.setEnergy(11);
 //            answerResultEntity.setGold(2);
-//            answerResultEntity.setIsRight(0);
-//            answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_CORRECT);
+//            answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_PART_CORRECT);
 //            ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
 //            AnswerResultEntity.Answer answer = new AnswerResultEntity.Answer();
 //            answer.setTestType(AnswerResultEntity.TEST_TYPE_2);
