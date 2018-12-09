@@ -11,11 +11,11 @@
         android:background="@drawable/zhanduipk_shell_window_fantastic_bg">
 
         <ImageView
+            android:id="@id/iv_live_speech_result_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="21dp"
-            android:src="@drawable/zhanduipk_shell_window_fantastic5_bg" />
+            android:layout_marginTop="21dp" />
 
         <ImageView
             android:id="@id/iv_live_speech_result_close"
