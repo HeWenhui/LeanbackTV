@@ -197,25 +197,26 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
         UmsAgentManager.umsAgentOtherBusiness(activity, "1305801", UmsConstants.uploadBehavior,
                 logHashMap.getData());
-        if (mEvaluationView != null) {
+        if (mEvaluationView == null) {
             mEvaluationView = new StandExperienceEvaluationPager(activity, this);
-            if (isStand) {
-                ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
-                activityChangeLand.changeLOrP();
-            } else {
-                if (liveVideoActivityBase != null) {
-                    liveVideoActivityBase.changeLOrP();
-                }
-            }
-//            liveBackBll.getvPlayer().stop();
-            //跳转到定级卷时暂停播放
-            liveBackBll.getvPlayer().pause();
-            isShowQuitDialog = false;
-            logger.i("旋转屏幕");
-            mEvaluationView.showWebView(mVideoEntity.getExamUrl());
-            mRootView.addView(mEvaluationView.getRootView(), RelativeLayout.LayoutParams
-                    .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         }
+        if (isStand) {
+            ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
+            activityChangeLand.changeLOrP();
+        } else {
+            if (liveVideoActivityBase != null) {
+                liveVideoActivityBase.changeLOrP();
+            }
+        }
+//            liveBackBll.getvPlayer().stop();
+        //跳转到定级卷时暂停播放
+        liveBackBll.getvPlayer().pause();
+        isShowQuitDialog = false;
+        logger.i("旋转屏幕");
+        mEvaluationView.showWebView(mVideoEntity.getExamUrl());
+        mRootView.addView(mEvaluationView.getRootView(), RelativeLayout.LayoutParams
+                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+
     }
 
     /**
@@ -256,6 +257,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
             }
             if (mEvaluationView instanceof StandExperienceEvaluationPager) {
                 ((StandExperienceEvaluationPager) mEvaluationView).onDestroy();
+                mEvaluationView = null;
             }
         }
     }
