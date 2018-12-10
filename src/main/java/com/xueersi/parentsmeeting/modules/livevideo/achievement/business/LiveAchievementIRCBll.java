@@ -534,7 +534,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     }
 
     @Override
-    public void onNotice(String sourceNick, String target, JSONObject object, int type) {
+    public void onNotice(String sourceNick, String target, JSONObject object, final int type) {
         try {
             switch (type) {
                 case XESCODE.ROOM_STAR_OPEN:
@@ -612,6 +612,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     break;
                 }
                 case XESCODE.ARTS_STOP_QUESTION: {
+                    final long before = System.currentTimeMillis();
                     postDelayedIfNotFinish(new Runnable() {
                         @Override
                         public void run() {
@@ -620,12 +621,30 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
                                 @Override
                                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                    StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
+                                    final StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
                                             (responseEntity);
                                     mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
                                     mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
-                                    if (starAction != null) {
-                                        starAction.onGetStar(starAndGoldEntity);
+                                    StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+                                    LiveGetInfo.EnPkEnergy enpkEnergy = mGetInfo.getEnpkEnergy();
+                                    enpkEnergy.me = pkEnergy.me;
+                                    enpkEnergy.myTeam = pkEnergy.myTeam;
+                                    enpkEnergy.opTeam = pkEnergy.opTeam;
+                                    long time = System.currentTimeMillis() - before;
+                                    mLogtf.d("getStuGoldCount:onPmSuccess:time=" + time);
+                                    if (time < 5000) {
+                                        postDelayedIfNotFinish(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (starAction != null) {
+                                                    starAction.onGetStar(starAndGoldEntity);
+                                                }
+                                            }
+                                        }, 5000 - time);
+                                    } else {
+                                        if (starAction != null) {
+                                            starAction.onGetStar(starAndGoldEntity);
+                                        }
                                     }
                                 }
                             });

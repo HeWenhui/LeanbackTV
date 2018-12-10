@@ -102,7 +102,6 @@
         android:layout_width="123dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="3dp"
         android:background="@drawable/selector_live_en_stand_achive_open"
         android:button="@null"
         android:checked="true" />

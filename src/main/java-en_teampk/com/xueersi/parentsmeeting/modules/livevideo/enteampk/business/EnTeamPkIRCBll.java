@@ -382,17 +382,19 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_GO:
                 logger.d("onNotice:XCR_ROOM_TEAMPK_GO:data=" + data);
-                try {
-                    ResponseEntity responseEntity = new ResponseEntity();
-                    responseEntity.setJsonObject(data.getJSONObject("teamInfo"));
-                    pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
-                    enTeamPkAction.setPkTeamEntity(pkTeamEntity);
-                    if (pkTeamEntity != null) {
-                        saveTeam(responseEntity);
+                if (pkTeamEntity == null) {
+                    try {
+                        ResponseEntity responseEntity = new ResponseEntity();
+                        responseEntity.setJsonObject(data.getJSONObject("teamInfo"));
+                        pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
+                        enTeamPkAction.setPkTeamEntity(pkTeamEntity);
+                        if (pkTeamEntity != null) {
+                            saveTeam(responseEntity);
+                        }
+                    } catch (Exception e) {
+                        logger.d("XCR_ROOM_TEAMPK_GO", e);
+                        CrashReport.postCatchedException(e);
                     }
-                } catch (Exception e) {
-                    logger.d("XCR_ROOM_TEAMPK_GO", e);
-                    CrashReport.postCatchedException(e);
                 }
                 break;
             case XESCODE.ARTS_STOP_QUESTION:
