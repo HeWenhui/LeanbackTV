@@ -113,6 +113,11 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     private List<LiveRoomH5CloseEvent> h5CloseEvents;
 
     /**
+     * 当前pk状态
+     */
+    private StudentCoinAndTotalEnergyEntity mCurrentPkState;
+
+    /**
      * 是否是带碎片的直播间
      */
     private boolean isAIPartner;
@@ -485,6 +490,11 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
         if (pkStateRootView != null) {
             pkStateRootView.setVisibility(View.VISIBLE);
+
+            if (mCurrentPkState != null) {
+                pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),
+                        mCurrentPkState.getMyEnergy(), mCurrentPkState.getCompetitorEnergy(), false);
+            }
         }
 
         // step 2  初始化 又测 pk 状态栏
@@ -945,11 +955,9 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         HttpCallBack callback = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                StudentCoinAndTotalEnergyEntity energyEntity = mHttpResponseParser.parseStuCoinAndTotalEnergy
-                        (responseEntity);
-
-                if (pkStateRootView != null && energyEntity != null) {
-                    pkStateRootView.bindData(energyEntity.getStuLiveGold(), energyEntity.getMyEnergy(), energyEntity
+                mCurrentPkState = mHttpResponseParser.parseStuCoinAndTotalEnergy(responseEntity);
+                if (pkStateRootView != null && mCurrentPkState != null) {
+                    pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(), mCurrentPkState.getMyEnergy(), mCurrentPkState
                             .getCompetitorEnergy(), showPopWindow);
                 }
             }
