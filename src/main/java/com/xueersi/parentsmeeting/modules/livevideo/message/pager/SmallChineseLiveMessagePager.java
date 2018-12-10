@@ -436,15 +436,44 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                     commonAction.isAnaswer();
                     return;
                 }
-                if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
-                    if (!ircState.isOpenbarrage()) {
-                        commonAction.clickIsnotOpenbarrage();
-                        return;
+
+
+                if (commonAction instanceof GiftDisable) {
+                    //理科送礼物功能，主讲，辅导,都要先判断上课模式
+                    if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                        if (!ircState.isOpenZJLKbarrage()) {
+                            //主讲没有开启送礼物
+                            ((GiftDisable) commonAction).clickIsnotOpenbarrage(ircState.getMode());
+                            return;
+                        }
+                    } else {
+                        if (!ircState.isOpenFDLKbarrage()) {
+                            //辅导没有开启送礼物
+                            ((GiftDisable) commonAction).clickIsnotOpenbarrage(ircState.getMode());
+                            return;
+                        }
                     }
                 } else {
-                    commonAction.clickTran();
-                    return;
+                    if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                        if (!ircState.isOpenbarrage()) {
+                            commonAction.clickIsnotOpenbarrage();
+                            return;
+                        }
+                    } else {
+                        commonAction.clickTran();
+                        return;
+                    }
                 }
+
+//                if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+//                    if (!ircState.isOpenbarrage()) {
+//                        commonAction.clickIsnotOpenbarrage();
+//                        return;
+//                    }
+//                } else {
+//                    commonAction.clickTran();
+//                    return;
+//                }
                 //小英
                 if (smallChineseSendGiftPager != null) {
                     //添加到正中间
@@ -903,9 +932,17 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             XESToastUtils.showToast(mContext, "正在答题，不能送礼物");
         }
 
+
+        //重载，添加参数：讲课模式
+        public void clickIsnotOpenbarrage(String classMode) {
+            String teacher = LiveTopic.MODE_CLASS.equals(classMode) ? "主讲" : "辅导";
+            XESToastUtils.showToast(mContext, teacher + "老师未开启送礼物功能");
+        }
+
+
         @Override
         public void clickIsnotOpenbarrage() {
-            XESToastUtils.showToast(mContext, "老师未开启送礼物功能");
+
         }
 
         @Override
