@@ -351,7 +351,10 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
             if (LiveVideoConfig.isPrimary) {
                 dwTeacherNotpresen = ResourcesCompat.getDrawable(activity.getResources(), R.drawable
                         .livevideo_zw_dengdaida_bg_psnormal, null);
-            } else {
+            } else if (LiveVideoConfig.isSmallChinese) {
+                dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.
+                        livevideo_small_chinese_zw_dengdaida_bg_psnormal);
+            }else {
                 dwTeacherNotpresen = ResourcesCompat.getDrawable(activity.getResources(), R.drawable
                         .livevideo_zw_dengdaida_bg_normal, null);
             }

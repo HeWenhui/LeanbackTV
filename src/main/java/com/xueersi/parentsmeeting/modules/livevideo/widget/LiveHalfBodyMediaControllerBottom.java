@@ -46,7 +46,10 @@ public class LiveHalfBodyMediaControllerBottom extends LiveStandMediaControllerB
             if(tranLiveView == null){
                 if (LiveVideoConfig.isPrimary) {
                     tranLiveView  = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom, this,false);
-                } else {
+                }else if(LiveVideoConfig.isSmallChinese) {
+                    tranLiveView  = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom, this,false);
+                }
+                else {
                     tranLiveView  = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this,false);
                 }
             }
