@@ -45,7 +45,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
     private IStandExperienceEvaluationContract.IEvaluationView mEvaluationView;
     private boolean isStand;
     private ExperienceLiveVideoActivity liveVideoActivityBase;
-
+    VideoLivePlayBackEntity mVideoEntity;
 
     public ExperienceQuitFeedbackBll(Activity activity, LiveBackBll liveBackBll, boolean isStand) {
         super(activity, liveBackBll);
@@ -56,6 +56,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object>
             businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
+        this.mVideoEntity = mVideoEntity;
         if (firstTime) {
             startTime = System.currentTimeMillis();
             firstTime = false;
@@ -87,8 +88,14 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         isShowQuitDialog = false;
     }
 
+    /**
+     * 显示体验课退出反馈弹窗
+     *
+     * @return
+     */
     @Override
     public boolean showPager() {
+        //isShowQuitDialog 会在显示定级卷和完成体验课时置为false
         if (isShowQuitDialog && mRootView != null) {
             StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackOpen");
             logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
@@ -96,7 +103,6 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
                     logHashMap.getData());
             if (!mVideoEntity.isPrek() && !TextUtils.isEmpty(mVideoEntity.getExamUrl())) {
                 expPager.showGradingPaper(true);
-                mEvaluationView = new StandExperienceEvaluationPager(activity, this);
             }
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -118,6 +124,11 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         }
     }
 
+    /**
+     * 返回体验课直播间
+     *
+     * @return
+     */
     @Override
     public boolean removePager() {
         StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackClose");
@@ -133,6 +144,11 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         return false;
     }
 
+    /**
+     * 退出体验课直播间
+     *
+     * @param data
+     */
     @Override
     public void leaveClass(Map<String, Boolean> data) {
         StableLogHashMap logHashMap = new StableLogHashMap("onClassFeedbackClose");
@@ -172,33 +188,44 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         activity.finish();
     }
 
-
+    /**
+     * 显示定级卷
+     */
     @Override
     public void showWindow() {
         StableLogHashMap logHashMap = new StableLogHashMap("openLevelTestOnLive");
         logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
         UmsAgentManager.umsAgentOtherBusiness(activity, "1305801", UmsConstants.uploadBehavior,
                 logHashMap.getData());
-        if (mEvaluationView != null) {
-            if (isStand) {
-                ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
-                activityChangeLand.changeLOrP();
-            } else {
-                if (liveVideoActivityBase != null) {
-                    liveVideoActivityBase.changeLOrP();
-                }
-            }
-            isShowQuitDialog = false;
-            logger.i("旋转屏幕");
-            mEvaluationView.showWebView(mVideoEntity.getExamUrl());
-            mRootView.addView(mEvaluationView.getRootView(), RelativeLayout.LayoutParams
-                    .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        if (mEvaluationView == null) {
+            mEvaluationView = new StandExperienceEvaluationPager(activity, this);
         }
+        if (isStand) {
+            ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
+            activityChangeLand.changeLOrP();
+        } else {
+            if (liveVideoActivityBase != null) {
+                liveVideoActivityBase.changeLOrP();
+            }
+        }
+//            liveBackBll.getvPlayer().stop();
+        //跳转到定级卷时暂停播放
+        liveBackBll.getvPlayer().pause();
+        isShowQuitDialog = false;
+        logger.i("旋转屏幕");
+        mEvaluationView.showWebView(mVideoEntity.getExamUrl());
+        mRootView.addView(mEvaluationView.getRootView(), RelativeLayout.LayoutParams
+                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+
     }
 
+    /**
+     * 关闭定级卷
+     */
     @Override
     public void removeWindow() {
-        if (mEvaluationView.getRootView() != null && mEvaluationView.getRootView().getParent() == mRootView) {
+        if (mEvaluationView != null && mEvaluationView.getRootView() != null && mEvaluationView.getRootView()
+                .getParent() == mRootView) {
             mRootView.removeView(mEvaluationView.getRootView());
             if (isStand) {
                 ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
@@ -208,8 +235,30 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
                     liveVideoActivityBase.changeLOrP();
                 }
             }
-            expPager.showGradingPaper(false);
-            isShowQuitDialog = true;
+            if (liveBackBll != null) {
+                //定级卷关闭回到直播间 重新开始播放
+                liveBackBll.getvPlayer().start();
+                long mTotaltime = liveBackBll.getvPlayer().getDuration();
+                long currentPos = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
+                        startTime);
+                //判断体验课是否完成了，来跳转进度
+                if (mTotaltime > currentPos) {
+                    isShowQuitDialog = true;
+                    liveBackBll.getvPlayer().seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System
+                            .currentTimeMillis() -
+                            startTime));
+                } else {
+                    liveBackBll.getvPlayer().seekTo(mTotaltime);
+                }
+
+            }
+            if (expPager != null) {
+                expPager.showGradingPaper(false);
+            }
+            if (mEvaluationView instanceof StandExperienceEvaluationPager) {
+                ((StandExperienceEvaluationPager) mEvaluationView).onDestroy();
+                mEvaluationView = null;
+            }
         }
     }
 
