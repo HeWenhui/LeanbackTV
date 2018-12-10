@@ -3,7 +3,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.betterme.view;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BasePager;
@@ -11,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeIntroductionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeLevelDisplayPager;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeReceiveTargetPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 
 /**
@@ -38,11 +42,66 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
         this.mContext = context;
     }
 
+    /**
+     * 测试代码，提测删掉
+     */
+    private void test() {
+        if (rlBetterMeContent == null) {
+            rlBetterMeContent = new RelativeLayout(mContext);
+            rlBetterMeContent.setId(R.id.rl_livevideo_content_speechbul);
+            if (mRootView != null) {
+                mRootView.addView(rlBetterMeContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+        }
+        LinearLayout llTest = new LinearLayout(mContext);
+        rlBetterMeContent.addView(llTest);
+        Button btnTest1 = new Button(mContext);
+        btnTest1.setText("小目标介绍");
+        Button btnTest2 = new Button(mContext);
+        btnTest2.setText("段位展示");
+        Button btnTest3 = new Button(mContext);
+        btnTest3.setText("本场小目标");
+        Button btnTest4 = new Button(mContext);
+        btnTest4.setText("完成小目标");
+        llTest.addView(btnTest1);
+        llTest.addView(btnTest2);
+        llTest.addView(btnTest3);
+        llTest.addView(btnTest4);
+        btnTest1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showIntroductionPager();
+            }
+        });
+        btnTest2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLevelDisplayPager();
+            }
+        });
+        btnTest3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showReceiveTargetPager();
+            }
+        });
+        btnTest4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+    }
+
     @Override
     public void setRootView(RelativeLayout rootView) {
         this.mRootView = rootView;
+        test();
     }
 
+    /**
+     * 小目标介绍
+     */
     @Override
     public void showIntroductionPager() {
         if (rlBetterMeContent == null) {
@@ -57,6 +116,9 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
+    /**
+     * 段位展示
+     */
     @Override
     public void showLevelDisplayPager() {
         if (rlBetterMeContent == null) {
@@ -67,6 +129,22 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
             }
         }
         rlBetterMeContent.addView(new BetterMeLevelDisplayPager(mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    /**
+     * 收到本场小目标
+     */
+    @Override
+    public void showReceiveTargetPager() {
+        if (rlBetterMeContent == null) {
+            rlBetterMeContent = new RelativeLayout(mContext);
+            if (mRootView != null) {
+                mRootView.addView(rlBetterMeContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+        }
+        rlBetterMeContent.addView(new BetterMeReceiveTargetPager(mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 

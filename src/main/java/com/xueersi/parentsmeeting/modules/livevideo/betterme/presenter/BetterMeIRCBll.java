@@ -47,12 +47,6 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         mBetterMeView.setRootView(mRootView);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mBetterMeView.showIntroductionPager();
-            }
-        }, 3000);
     }
 
     @Override

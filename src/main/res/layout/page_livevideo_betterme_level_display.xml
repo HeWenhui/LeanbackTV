@@ -1,7 +1,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent_80">
+    android:background="@color/transparent_80"
+    android:clickable="true"
+    android:focusable="true">
 
 
     <RelativeLayout
@@ -24,7 +26,7 @@
                 android:gravity="center"
                 android:text="段位展示"
                 android:textColor="#ffe65c00"
-                android:textSize="20sp" />
+                android:textSize="20dp" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:layout_width="wrap_content"
@@ -33,7 +35,7 @@
                 android:gravity="center"
                 android:text="段位徽章会在直播间头像上显示"
                 android:textColor="#ff8c8080"
-                android:textSize="11sp" />
+                android:textSize="11dp" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/vp_livevideo_betterme_introduction"
@@ -52,32 +54,32 @@
                 android:orientation="horizontal" />
 
         </LinearLayout>
-        
+
         <ImageView
             android:id="@+id/iv_livevideo_betterme_level_close"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:layout_alignParentRight="true"
             android:layout_marginTop="54dp"
             android:layout_marginRight="79dp"
-            android:src="@drawable/selector_live_enpk_shell_window_guanbi_btn"
-            android:layout_alignParentRight="true"/>
+            android:src="@drawable/selector_live_enpk_shell_window_guanbi_btn" />
 
         <ImageView
-            android:layout_centerVertical="true"
             android:id="@+id/iv_livevideo_betterme_level_arrow_left"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="80dp"
             android:layout_width="38dp"
             android:layout_height="38dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="80dp"
             android:src="@drawable/selector_livevideo_betterme_leveldisplay_arrow_left" />
 
         <ImageView
             android:id="@+id/iv_livevideo_betterme_level_arrow_right"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="80dp"
             android:layout_width="38dp"
             android:layout_height="38dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="80dp"
             android:src="@drawable/selector_livevideo_betterme_leveldisplay_arrow_right" />
 
     </RelativeLayout>

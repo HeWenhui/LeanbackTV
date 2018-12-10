@@ -43,7 +43,7 @@ public class BetterMeIntroductionPager extends BasePager {
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_betterme_introduction, null);
         tvViewLevel = view.findViewById(R.id.tv_livevideo_betterme_introduction_viewlevel);
-        btnGotit = view.findViewById(R.id.btn_livevideo_better_introduction_gotit);
+        btnGotit = view.findViewById(R.id.btn_livevideo_betterme_introduction_gotit);
         return view;
     }
 

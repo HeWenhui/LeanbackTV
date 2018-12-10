@@ -60,12 +60,12 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
      * 段位图片资源
      */
     public static int[] LEVEL_IMAGE_RES = new int[]{
-            R.drawable.app_livevideo_enteampk_boy_bg_img_nor,
-            R.drawable.app_livevideo_enteampk_boy_bg_img_nor,
-            R.drawable.app_livevideo_enteampk_boy_bg_img_nor,
-            R.drawable.app_livevideo_enteampk_boy_bg_img_nor,
-            R.drawable.app_livevideo_enteampk_boy_bg_img_nor,
-            R.drawable.app_livevideo_enteampk_boy_bg_img_nor
+            R.drawable.app_xiaomubiao_qingtong,
+            R.drawable.app_xiaomubiao_baiyin,
+            R.drawable.app_xiaomubiao_huangjin,
+            R.drawable.app_xiaomubiao_bojin,
+            R.drawable.app_xiaomubiao_zuanshi,
+            R.drawable.app_xiaomubiao_wangzhe
     };
     /**
      * 如何升星
@@ -238,9 +238,9 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 //为小圆点左右添加间距
-                params.leftMargin = SizeUtils.Dp2Px(mContext, 4);
+                params.leftMargin = SizeUtils.Dp2Px(mContext, 3);
                 ;
-                params.rightMargin = SizeUtils.Dp2Px(mContext, 4);
+                params.rightMargin = SizeUtils.Dp2Px(mContext, 3);
                 ;
                 //给小圆点一个默认大小
                 params.height = imgSize;

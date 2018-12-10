@@ -15,6 +15,7 @@ public interface BetterMeContract {
         void setRootView(RelativeLayout rootView);
         void showIntroductionPager();
         void showLevelDisplayPager();
+        void showReceiveTargetPager();
     }
 
     interface BetterMePresenter extends BasePresenter {

@@ -2,7 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent_80">
+    android:background="@color/transparent_80"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
         android:layout_width="564dp"
@@ -27,7 +29,7 @@
             android:lineSpacingExtra="4dp"
             android:text="AI老师会为你量身定制每节课的小目标,完成小目标你就可以："
             android:textColor="#ff756565"
-            android:textSize="14sp" />
+            android:textSize="14dp" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:layout_width="wrap_content"
@@ -36,7 +38,7 @@
             android:gravity="center"
             android:text="提升你在直播间的段位"
             android:textColor="#ff756565"
-            android:textSize="19sp" />
+            android:textSize="19dp" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@+id/tv_livevideo_betterme_introduction_viewlevel"
@@ -48,10 +50,10 @@
             android:gravity="center"
             android:text="查看具体段位"
             android:textColor="#fffe6600"
-            android:textSize="11sp" />
+            android:textSize="11dp" />
 
         <ImageView
-            android:id="@+id/btn_livevideo_better_introduction_gotit"
+            android:id="@+id/btn_livevideo_betterme_introduction_gotit"
             android:layout_width="118dp"
             android:layout_height="39dp"
             android:layout_marginTop="26dp"
