@@ -108,7 +108,7 @@ public class VideoPopView {
     private void createRealVideo(String courseId, String classId) {
         boolean isPermission = XesPermission.applyFloatWindow(activity);
         //有对应权限或者系统版本小于7.0
-        if (isPermission || Build.VERSION.SDK_INT < 23) {
+        if (isPermission || Build.VERSION.SDK_INT < 24) {
             if (videoView.getParent() != null) {
                 mParent = (ViewGroup) videoView.getParent();
                 if (mParent != null) {
