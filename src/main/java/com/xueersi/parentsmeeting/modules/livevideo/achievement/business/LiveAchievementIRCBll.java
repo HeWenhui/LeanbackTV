@@ -288,6 +288,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 //                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
                     liveAchievementEngBll.initView(mRootView, mContentView);
+                    liveAchievementEngBll.setLiveAchievementHttp(LiveAchievementIRCBll.this);
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
                     EnglishSpeekEnBll englishSpeekBll = new EnglishSpeekEnBll(activity, mGetInfo);
                     if (speakerRecognitioner != null) {
@@ -352,6 +353,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 //                    liveAchievementEngBll.setLiveBll(LiveAchievementIRCBll.this);
 //                    liveAchievementEngBll.setLiveAndBackDebug(mLiveBll);
                 liveAchievementEngBll.initView(mRootView, mContentView);
+                liveAchievementEngBll.setLiveAchievementHttp(LiveAchievementIRCBll.this);
                 LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
                 LiveAchievementIRCBll.this.englishSpeekAction = null;
             }
