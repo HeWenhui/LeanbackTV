@@ -42,6 +42,8 @@ public class EnAchievePager extends LiveBasePager {
     private RelativeLayout rlAchiveContent;
     private ViewStub vsAchiveBottom;
     private ViewStub vsAchiveBottom2;
+    private RelativeLayout pkView;
+    private ViewGroup pkEmptyView;
     private ProgressBar pgAchivePk;
     private ImageView progressImageView;
     private Activity activity;
@@ -91,26 +93,52 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveNumFire.setText("" + enpkEnergy.me);
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
         View view = activity.findViewById(R.id.iv_livevideo_message_small_bg);
-        if (1 == englishPk.canUsePK) {
-            View v = vsAchiveBottom.inflate();
-            pgAchivePk = v.findViewById(R.id.pg_livevideo_en_achive_pk);
-            int progress = 50;
-            if (enpkEnergy.myTeam + enpkEnergy.opTeam != 0) {
-                progress = (int) ((float) enpkEnergy.myTeam * 100 / (float) (enpkEnergy.myTeam + enpkEnergy.opTeam));
-            }
-            setEngPro(progress);
-            tv_livevideo_en_achive_pk_energy_my = v.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
-            tv_livevideo_en_achive_pk_energy_my.setText("" + enpkEnergy.myTeam);
-            tv_livevideo_en_achive_pk_energy_other = v.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
-            tv_livevideo_en_achive_pk_energy_other.setText("" + enpkEnergy.opTeam);
+        if (1 == englishPk.canUsePK && 1 == englishPk.hasGroup) {
+            showPk();
         } else {
-            vsAchiveBottom2.inflate();
+            pkEmptyView = (ViewGroup) vsAchiveBottom2.inflate();
+            ImageView tv_livevideo_en_achive_pk_energy_my_lable = mView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my_lable);
+            if (1 == englishPk.canUsePK) {
+                tv_livevideo_en_achive_pk_energy_my_lable.setImageResource(R.drawable.app_livevideo_enteampk_benchangchengjiu_zhunbeizuozhan_title_pic_nor);
+            } else {
+                tv_livevideo_en_achive_pk_energy_my_lable.setImageResource(R.drawable.app_livevideo_enteampk_benchangchengjiu_zhanduiweifenpei_title_pic_nor);
+            }
         }
         if (view != null) {
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
             lp.topMargin = (int) (73 * ScreenUtils.getScreenDensity());
             view.setLayoutParams(lp);
         }
+    }
+
+    public void onEnglishPk() {
+        if (pkEmptyView != null) {
+            pkEmptyView.removeAllViews();
+            ViewGroup group = (ViewGroup) pkEmptyView.getParent();
+            if (group != null) {
+                group.removeView(pkEmptyView);
+            }
+        }
+        showPk();
+    }
+
+    private void showPk() {
+        LiveGetInfo.EnPkEnergy enpkEnergy = mLiveGetInfo.getEnpkEnergy();
+        View view = vsAchiveBottom.inflate();
+        if (view == null) {
+            return;
+        }
+        pkView = (RelativeLayout) view;
+        pgAchivePk = pkView.findViewById(R.id.pg_livevideo_en_achive_pk);
+        int progress = 50;
+        if (enpkEnergy.myTeam + enpkEnergy.opTeam != 0) {
+            progress = (int) ((float) enpkEnergy.myTeam * 100 / (float) (enpkEnergy.myTeam + enpkEnergy.opTeam));
+        }
+        setEngPro(progress);
+        tv_livevideo_en_achive_pk_energy_my = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
+        tv_livevideo_en_achive_pk_energy_my.setText("" + enpkEnergy.myTeam);
+        tv_livevideo_en_achive_pk_energy_other = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
+        tv_livevideo_en_achive_pk_energy_other.setText("" + enpkEnergy.opTeam);
     }
 
     @Override
@@ -349,4 +377,5 @@ public class EnAchievePager extends LiveBasePager {
         }
         return null;
     }
+
 }

@@ -95,4 +95,11 @@ public class LiveAchievementEngBll implements StarInteractAction {
             enAchievePager.onStarAdd(star, x, y);
         }
     }
+
+    @Override
+    public void onEnglishPk() {
+        if (enAchievePager != null) {
+            enAchievePager.onEnglishPk();
+        }
+    }
 }

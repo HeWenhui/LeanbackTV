@@ -25,6 +25,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
@@ -91,6 +92,9 @@ public class EnStandAchievePager extends LiveBasePager {
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
         if (1 == englishPk.canUsePK) {
             pkview = (ViewGroup) vsAchiveBottom.inflate();
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) pkview.getLayoutParams();
+            layoutParams.topMargin = SizeUtils.Dp2Px(mContext, 12);
+            pkview.setLayoutParams(layoutParams);
             pgAchivePk = pkview.findViewById(R.id.pg_livevideo_en_achive_pk);
             tv_livevideo_en_achive_pk_energy_my = pkview.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
             tv_livevideo_en_achive_pk_energy_other = pkview.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
@@ -160,7 +164,7 @@ public class EnStandAchievePager extends LiveBasePager {
         int[] loc = ViewUtil.getLoc(pgAchivePk, pkview);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
         lp.leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
-        lp.topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2 - 10;
+        lp.topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2 - 18;
         logger.d("initListener:left=" + loc[0] + ",top=" + loc[1]);
         progressImageView.setLayoutParams(lp);
         progressImageView.setVisibility(View.VISIBLE);

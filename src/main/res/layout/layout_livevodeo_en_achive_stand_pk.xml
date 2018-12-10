@@ -71,8 +71,8 @@
 
     <ProgressBar
         android:id="@id/pg_livevideo_en_achive_pk"
-        style="@style/ProgressBar_live_en_pk"
-        android:layout_width="145dp"
+        style="@style/ProgressBar_live_en_pk_stand"
+        android:layout_width="147dp"
         android:layout_height="17dp"
         android:layout_below="@id/rl_livevideo_en_achive_pk_back"
         android:layout_centerHorizontal="true"

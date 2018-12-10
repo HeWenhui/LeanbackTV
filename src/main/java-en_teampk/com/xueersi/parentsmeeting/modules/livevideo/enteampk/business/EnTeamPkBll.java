@@ -28,7 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpdata {
     private Handler handler = new Handler(Looper.getMainLooper());
     /** 得到本组信息重试 */
-    int getSelfTeamInfoTimes = 1;
+    private int getSelfTeamInfoTimes = 1;
     private RelativeLayout rootView;
     private TeamPkRankPager teamPkRankPager;
     private boolean teamEnd = false;

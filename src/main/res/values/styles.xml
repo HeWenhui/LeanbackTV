@@ -56,4 +56,7 @@
     <style name="ProgressBar_live_en_pk" parent="@android:style/Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/layerlst_livevideo_enpk_pk_prog</item>
     </style>
+    <style name="ProgressBar_live_en_pk_stand" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/layerlst_livevideo_enpk_pk_stand_prog</item>
+    </style>
 </resources>

@@ -1105,6 +1105,26 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
     }
 
+    HashMap<Class, ArrayList<LiveEvent>> eventMap = new HashMap<>();
+
+    public void postEvent(Class c, Object object) {
+        ArrayList<LiveEvent> arrayList = eventMap.get(c);
+        if (arrayList != null) {
+            for (int i = 0; i < arrayList.size(); i++) {
+                arrayList.get(i).onEvent(object);
+            }
+        }
+    }
+
+    public void registEvent(Class c, LiveEvent object) {
+        ArrayList<LiveEvent> arrayList = eventMap.get(c);
+        if (arrayList == null) {
+            arrayList = new ArrayList<>();
+            eventMap.put(c, arrayList);
+        }
+        arrayList.add(object);
+    }
+
     /**
      * 各模块调用此方法  查找其他模块暴露的 参数信息
      *

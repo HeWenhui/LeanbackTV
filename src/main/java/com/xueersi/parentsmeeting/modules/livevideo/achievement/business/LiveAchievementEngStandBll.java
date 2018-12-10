@@ -76,4 +76,9 @@ public class LiveAchievementEngStandBll implements StarInteractAction {
             enAchievePager.onStarAdd(star, x, y);
         }
     }
+
+    @Override
+    public void onEnglishPk() {
+
+    }
 }

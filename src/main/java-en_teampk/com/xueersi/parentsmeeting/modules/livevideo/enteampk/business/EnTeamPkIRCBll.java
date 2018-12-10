@@ -74,22 +74,22 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         EnTeamPkBll teamPkBll = new EnTeamPkBll(activity);
         teamPkBll.setRootView(mRootView);
         teamPkBll.setEnTeamPkHttp(new EnTeamPkHttpImp());
-//        if (englishPk.hasGroup == 1) {
-        try {
-            String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
-            JSONObject jsonObject = new JSONObject(string);
-            if (jsonObject.has(getInfo.getId())) {
-                ResponseEntity responseEntity = new ResponseEntity();
-                responseEntity.setJsonObject(jsonObject.getJSONObject(getInfo.getId()));
-                pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
-                logger.d("onLiveInited:pkTeamEntity=null?" + (pkTeamEntity == null));
-                teamPkBll.setPkTeamEntity(pkTeamEntity);
+        if (englishPk.hasGroup == 1) {
+            try {
+                String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
+                JSONObject jsonObject = new JSONObject(string);
+                if (jsonObject.has(getInfo.getId())) {
+                    ResponseEntity responseEntity = new ResponseEntity();
+                    responseEntity.setJsonObject(jsonObject.getJSONObject(getInfo.getId()));
+                    pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
+                    logger.d("onLiveInited:pkTeamEntity=null?" + (pkTeamEntity == null));
+                    teamPkBll.setPkTeamEntity(pkTeamEntity);
+                }
+            } catch (Exception e) {
+                pkTeamEntity = null;
+                CrashReport.postCatchedException(e);
             }
-        } catch (Exception e) {
-            pkTeamEntity = null;
-            CrashReport.postCatchedException(e);
         }
-//        }
         enTeamPkAction = teamPkBll;
         teamPkBll.onLiveInited(getInfo);
         EnTeamPkQuestionShowAction enTeamPkQuestionShowAction = new EnTeamPkQuestionShowAction();
@@ -159,7 +159,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) {
                     logger.d("getSelfTeamInfo:onPmSuccess" + responseEntity.getJsonObject());
-                    pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
+                    pkTeamEntity = parsegetSelfTeamInfo(responseEntity);
                     abstractBusinessDataCallBack.onDataSucess(pkTeamEntity);
                     if (pkTeamEntity != null) {
                         saveTeam(responseEntity);
@@ -288,7 +288,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) {
                     logger.d("getEnglishPkGroup:onPmSuccess" + responseEntity.getJsonObject());
-                    pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
+                    pkTeamEntity = parsegetSelfTeamInfo(responseEntity);
                     abstractBusinessDataCallBack.onDataSucess(pkTeamEntity);
                     if (pkTeamEntity != null) {
                         saveTeam(responseEntity);
@@ -324,6 +324,16 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             });
         }
+    }
+
+    private PkTeamEntity parsegetSelfTeamInfo(ResponseEntity responseEntity) {
+        PkTeamEntity pkTeamEntity2 = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
+        if (pkTeamEntity == null && pkTeamEntity2 != null) {
+            LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
+            englishPk.hasGroup = 1;
+            mLiveBll.postEvent(EnPkTeam.class, pkTeamEntity2);
+        }
+        return pkTeamEntity2;
     }
 
     @Override
@@ -386,7 +396,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     try {
                         ResponseEntity responseEntity = new ResponseEntity();
                         responseEntity.setJsonObject(data.getJSONObject("teamInfo"));
-                        pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
+                        pkTeamEntity = parsegetSelfTeamInfo(responseEntity);
                         enTeamPkAction.setPkTeamEntity(pkTeamEntity);
                         if (pkTeamEntity != null) {
                             saveTeam(responseEntity);

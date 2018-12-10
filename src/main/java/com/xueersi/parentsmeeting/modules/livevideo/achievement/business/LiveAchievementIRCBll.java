@@ -24,8 +24,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.EnPkTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -93,6 +95,20 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                 });
                             }
                         }, 500);
+                    }
+                });
+            } else {
+                mLiveBll.registEvent(EnPkTeam.class, new LiveEvent() {
+                    @Override
+                    public void onEvent(Object object) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (starAction != null) {
+                                    starAction.onEnglishPk();
+                                }
+                            }
+                        });
                     }
                 });
             }
