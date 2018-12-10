@@ -5,12 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
     android:background="@color/COLOR_F9F9F9">
 
     <RelativeLayout
         android:id="@id/rl_livevideo_evaluate_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
+        android:background="@color/COLOR_FFFFFEFF"
        >
         <TextView
             style="@style/text_font17_333333_style"
@@ -81,7 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="14dp"
                     android:layout_toRightOf="@id/iv_livevideo_evaluate_main"
                     android:paddingBottom="1dp"
                     android:paddingTop="1dp"
@@ -95,7 +97,7 @@
                     style="@style/text_font17_333333_style"
                     android:layout_width="68dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
+                    android:layout_marginLeft="2dp"
                     android:layout_centerVertical="true"
                     android:ellipsize="end"
                     android:singleLine="true"
@@ -125,9 +127,12 @@
                         android:layout_height="wrap_content"
                         android:button="@drawable/selector_livevideo_evaluate_teacher_unsatisfactory"
                         android:paddingLeft="8dp"
-                        android:layout_weight="1"
                         android:text="不满意" />
-
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"/>
                     <RadioButton
                         android:id="@id/rb_livevideo_evaluate_main_satisfactory"
                         style="@style/text_font13_666666_style"
@@ -135,9 +140,12 @@
                         android:layout_height="wrap_content"
                         android:button="@drawable/selector_livevideo_evaluate_teacher_satisfactory"
                         android:paddingLeft="8dp"
-                        android:layout_weight="1"
                         android:text="基本满意" />
-
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"/>
                     <RadioButton
                         android:id="@id/rb_livevideo_evaluate_main_very_satisfactory"
                         style="@style/text_font13_666666_style"
@@ -145,7 +153,7 @@
                         android:layout_height="wrap_content"
                         android:button="@drawable/selector_livevideo_evaluate_teacher_very_satisfactory"
                         android:paddingLeft="8dp"
-                        android:layout_weight="1"
+                        android:layout_marginRight="30dp"
                         android:text="满意" />
                 </RadioGroup>
                 <LinearLayout
@@ -260,7 +268,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="14dp"
                     android:layout_toRightOf="@+id/iv_livevideo_evaluate_tutor"
                     android:paddingBottom="1dp"
                     android:paddingTop="1dp"
@@ -274,7 +282,7 @@
                     style="@style/text_font17_333333_style"
                     android:layout_width="68dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
+                    android:layout_marginLeft="2dp"
                     android:layout_centerVertical="true"
                     android:ellipsize="end"
                     android:singleLine="true"
@@ -305,9 +313,12 @@
                         android:layout_height="wrap_content"
                         android:button="@drawable/selector_livevideo_evaluate_teacher_unsatisfactory"
                         android:paddingLeft="8dp"
-                        android:layout_weight="1"
                         android:text="不满意" />
-
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"/>
                     <RadioButton
                         android:id="@id/rb_livevideo_evaluate_tutor_satisfactory"
                         style="@style/text_font13_666666_style"
@@ -315,9 +326,12 @@
                         android:layout_height="wrap_content"
                         android:button="@drawable/selector_livevideo_evaluate_teacher_satisfactory"
                         android:paddingLeft="8dp"
-                        android:layout_weight="1"
                         android:text="基本满意" />
-
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"/>
                     <RadioButton
                         android:id="@id/rb_livevideo_evaluate_tutor_very_satisfactory"
                         style="@style/text_font13_666666_style"
@@ -325,7 +339,7 @@
                         android:layout_height="wrap_content"
                         android:button="@drawable/selector_livevideo_evaluate_teacher_very_satisfactory"
                         android:paddingLeft="8dp"
-                        android:layout_weight="1"
+                        android:layout_marginRight="30dp"
                         android:text="满意" />
                 </RadioGroup>
                 <LinearLayout
@@ -423,7 +437,7 @@
                 style="?android:attr/progressBarStyle"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:layout_marginLeft="90dp"
+                android:layout_marginLeft="85dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:visibility="gone"

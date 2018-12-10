@@ -62,6 +62,14 @@ public class StandExperienceEvaluationBll extends
         }
     }
 
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        if (mView instanceof StandExperienceEvaluationPager) {
+            ((StandExperienceEvaluationPager) mView).onDestroy();
+        }
+    }
+
     //显示下一个View
     @Override
     public void showNextWindow() {

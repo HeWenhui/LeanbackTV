@@ -87,6 +87,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
                 liveBackBll.getvPlayer().getDuration()) > mVideoEntity.getEvaluateTimePer()) {
             logger.i("showEvaluateTeacher");
             liveBackBll.getvPlayer().stop();
+            liveBackBll.getvPlayer().release();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             if (rlLiveMessageContent == null) {

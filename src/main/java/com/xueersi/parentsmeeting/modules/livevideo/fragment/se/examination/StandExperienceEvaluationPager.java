@@ -53,7 +53,6 @@ public class StandExperienceEvaluationPager<T extends IExperiencePresenter> exte
                         @Override
                         public void run() {
                             iPresenter.removeWindow();
-                            wvSubjectWeb.destroy();
                             iPresenter.showNextWindow();
                         }
                     });
@@ -192,4 +191,11 @@ public class StandExperienceEvaluationPager<T extends IExperiencePresenter> exte
         wvSubjectWeb.onResume();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (wvSubjectWeb != null) {
+            wvSubjectWeb.destroy();
+        }
+    }
 }

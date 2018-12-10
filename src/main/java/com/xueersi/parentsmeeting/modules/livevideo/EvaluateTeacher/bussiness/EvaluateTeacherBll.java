@@ -51,23 +51,23 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
                 mHttpManager = mLiveBll.getHttpManager();
                 mParser = new EvaluateResponseParser();
                 if (getInfo.getIsArts() == 1) {
-                    logger.i("IsArts:"+getInfo.getIsArts()+" IsSmallEnglish:"+getInfo.getSmallEnglish());
+                    logger.i("IsArts:" + getInfo.getIsArts() + " IsSmallEnglish:" + getInfo.getSmallEnglish());
                     if (getInfo.getSmallEnglish()) {
                         evaluateTeacherPager = new SmallEnglishEvaluateTeacherPager(mContext, getInfo);
                     } else {
                         evaluateTeacherPager = new EvaluateTeacherPager(mContext, getInfo);
                     }
                     getArtsEvaluateOption(getInfo.getSmallEnglish());
-                } else  if (getInfo.getIsArts() == 0){
-                    logger.i("IsArts:"+getInfo.getIsArts()+" IsPrimaryScience:"+ getInfo.getIsPrimarySchool());
+                } else if (getInfo.getIsArts() == 0) {
+                    logger.i("IsArts:" + getInfo.getIsArts() + " IsPrimaryScience:" + getInfo.getIsPrimarySchool());
                     if (1 == getInfo.getIsPrimarySchool()) {
                         evaluateTeacherPager = new PrimaryScienceEvaluateTeacherPager(mContext, getInfo);
                     } else {
                         evaluateTeacherPager = new EvaluateTeacherPager(mContext, getInfo);
                     }
                     getSciecneEvaluateOption();
-                }else if (getInfo.getIsArts() == 2) {
-                    logger.i("IsArts:"+getInfo.getIsArts());
+                } else if (getInfo.getIsArts() == 2) {
+                    logger.i("IsArts:" + getInfo.getIsArts());
                     evaluateTeacherPager = new EvaluateTeacherPager(mContext, getInfo);
                     getArtsEvaluateOption(false);
                 } else {
@@ -75,6 +75,8 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
                 }
                 evaluateTeacherPager.setIShowEvaluateAction(this);
                 evaluateTeacherPager.setButtonOnClick(this);
+            } else {
+                mLiveBll.removeBusinessBll(this);
             }
         }
         super.onLiveInited(getInfo);
@@ -87,9 +89,9 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
 
     @Override
     public boolean showPager() {
-        if ((mGetInfo.getEvaluateTeacherEntity() != null && System.currentTimeMillis()/1000 > mGetInfo.getEvaluateTeacherEntity().getEvaluateTime())) {
+        if ((mGetInfo.getEvaluateTeacherEntity() != null && System.currentTimeMillis() / 1000 > mGetInfo.getEvaluateTeacherEntity().getEvaluateTime())) {
             logger.i("showEvaluateTeacher");
-            logger.i("currenttime:"+ System.currentTimeMillis()+"  getEvaluatetime:"+mGetInfo.getEvaluateTeacherEntity().getEvaluateTime());
+            logger.i("currenttime:" + System.currentTimeMillis() + "  getEvaluatetime:" + mGetInfo.getEvaluateTeacherEntity().getEvaluateTime());
             liveFragment.stopPlayer();
             mLiveBll.onIRCmessageDestory();
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
@@ -195,15 +197,15 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
 
         };
         if (mGetInfo.getIsArts() == 1) {
-            mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStuCouId(), mGetInfo.getMainTeacherId(),
+            mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
-        } else if (mGetInfo.getIsArts() == 0){
-            mHttpManager.saveScienceEvaluationTeacher(mLiveId, mGetInfo.getStuCouId(), mGetInfo.getMainTeacherId(),
+        } else if (mGetInfo.getIsArts() == 0) {
+            mHttpManager.saveScienceEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
         } else {
-            mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStuCouId(), mGetInfo.getMainTeacherId(),
+            mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
         }
