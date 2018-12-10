@@ -893,7 +893,7 @@
     <item name="iv_livevideo_evaluate_submit_result" type="id"/>
     <item name="tv_livevideo_evaluate_submit_status" type="id"/>
     <item name="tv_livevideo_evaluate_count_down" type="id"/>
-    <item name="btn_livevideo_evaluate_tryagain" type="id"/>
+    <item name="rl_livevideo_evaluate_tryagain" type="id"/>
     <!-- 体验课退出反馈-->
     <item name="rl_livevideo_experience_feedback_quit" type="id" />
 </resources>

@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.http.EvaluateResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.EvaluateTeacherPager;
+import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.PrimaryChineseEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.PrimaryScienceEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.SmallEnglishEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -66,7 +67,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
                 getSciecneEvaluateOption();
             } else if (liveGetInfo.getIsArts() == 2) {
                 logger.i("IsArts:"+liveGetInfo.getIsArts());
-                evaluateTeacherPager = new EvaluateTeacherPager(mContext, liveGetInfo);
+                evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, liveGetInfo);
                 getArtsEvaluateOption(false);
             } else {
                 return;
