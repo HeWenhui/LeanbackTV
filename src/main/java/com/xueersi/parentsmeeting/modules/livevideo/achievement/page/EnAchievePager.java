@@ -104,11 +104,12 @@ public class EnAchievePager extends LiveBasePager {
                 tv_livevideo_en_achive_pk_energy_my_lable.setImageResource(R.drawable.app_livevideo_enteampk_benchangchengjiu_zhanduiweifenpei_title_pic_nor);
             }
         }
-        if (view != null) {
-            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-            lp.topMargin = (int) (73 * ScreenUtils.getScreenDensity());
-            view.setLayoutParams(lp);
-        }
+        //默认展开才需要
+//        if (view != null) {
+//            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+//            lp.topMargin = (int) (73 * ScreenUtils.getScreenDensity());
+//            view.setLayoutParams(lp);
+//        }
     }
 
     public void onEnglishPk() {

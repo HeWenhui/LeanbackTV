@@ -9,7 +9,8 @@
         android:layout_width="177dp"
         android:layout_height="140dp"
         android:layout_marginTop="30dp"
-        android:background="@drawable/shape_live_en_stand_achive_bg">
+        android:background="@drawable/shape_live_en_stand_achive_bg"
+        android:visibility="gone">
 
         <RelativeLayout
             android:id="@id/rl_livevideo_en_achive_stand_content"
@@ -104,6 +105,6 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/selector_live_en_stand_achive_open"
         android:button="@null"
-        android:checked="true" />
+        android:checked="false" />
 
 </RelativeLayout>

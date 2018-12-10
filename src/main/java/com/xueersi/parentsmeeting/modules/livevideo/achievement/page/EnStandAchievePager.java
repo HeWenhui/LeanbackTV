@@ -54,6 +54,7 @@ public class EnStandAchievePager extends LiveBasePager {
     private int starCount;
     private int goldCount;
     private int energyCount;
+    private boolean firstCheck = false;
 
     public EnStandAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
@@ -112,6 +113,12 @@ public class EnStandAchievePager extends LiveBasePager {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 rlAchiveStandBg.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                if (!firstCheck) {
+                    firstCheck = true;
+                    if (pgAchivePk != null) {
+                        setEngPro(pgAchivePk.getProgress());
+                    }
+                }
 //                if (AppConfig.DEBUG) {
 //                    Random random = new Random();
 //                    StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
@@ -161,12 +168,28 @@ public class EnStandAchievePager extends LiveBasePager {
     }
 
     private void setLayout() {
-        int[] loc = ViewUtil.getLoc(pgAchivePk, pkview);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
-        lp.leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
-        lp.topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2 - 18;
-        logger.d("initListener:left=" + loc[0] + ",top=" + loc[1]);
-        progressImageView.setLayoutParams(lp);
+        if (progressImageView.getWidth() == 0) {
+            progressImageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    int[] loc = ViewUtil.getLoc(pgAchivePk, pkview);
+                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
+                    lp.leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
+                    lp.topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2 - 18;
+                    logger.d("initListener:left=" + loc[0] + ",top=" + loc[1]);
+                    progressImageView.setLayoutParams(lp);
+                    progressImageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                    return false;
+                }
+            });
+        } else {
+            int[] loc = ViewUtil.getLoc(pgAchivePk, pkview);
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
+            lp.leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
+            lp.topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2 - 18;
+            logger.d("initListener:left=" + loc[0] + ",top=" + loc[1]);
+            progressImageView.setLayoutParams(lp);
+        }
         progressImageView.setVisibility(View.VISIBLE);
     }
 
