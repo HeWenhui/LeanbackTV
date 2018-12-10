@@ -90,6 +90,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
 
     /**
      * 显示体验课退出反馈弹窗
+     *
      * @return
      */
     @Override
@@ -102,7 +103,6 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
                     logHashMap.getData());
             if (!mVideoEntity.isPrek() && !TextUtils.isEmpty(mVideoEntity.getExamUrl())) {
                 expPager.showGradingPaper(true);
-                mEvaluationView = new StandExperienceEvaluationPager(activity, this);
             }
             final ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                     .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -126,6 +126,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
 
     /**
      * 返回体验课直播间
+     *
      * @return
      */
     @Override
@@ -145,6 +146,7 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
 
     /**
      * 退出体验课直播间
+     *
      * @param data
      */
     @Override
@@ -185,17 +187,18 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         }
         activity.finish();
     }
+
     /**
      * 显示定级卷
      */
     @Override
     public void showWindow() {
-        //显示定级卷
         StableLogHashMap logHashMap = new StableLogHashMap("openLevelTestOnLive");
         logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
         UmsAgentManager.umsAgentOtherBusiness(activity, "1305801", UmsConstants.uploadBehavior,
                 logHashMap.getData());
         if (mEvaluationView != null) {
+            mEvaluationView = new StandExperienceEvaluationPager(activity, this);
             if (isStand) {
                 ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
                 activityChangeLand.changeLOrP();
@@ -220,7 +223,8 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
      */
     @Override
     public void removeWindow() {
-        if (mEvaluationView.getRootView() != null && mEvaluationView.getRootView().getParent() == mRootView) {
+        if (mEvaluationView != null && mEvaluationView.getRootView() != null && mEvaluationView.getRootView()
+                .getParent() == mRootView) {
             mRootView.removeView(mEvaluationView.getRootView());
             if (isStand) {
                 ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
@@ -249,6 +253,9 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
             }
             if (expPager != null) {
                 expPager.showGradingPaper(false);
+            }
+            if (mEvaluationView instanceof StandExperienceEvaluationPager) {
+                ((StandExperienceEvaluationPager) mEvaluationView).onDestroy();
             }
         }
     }
