@@ -6,7 +6,15 @@
         <!--滑动头图片资源引用-->
         <attr name="sliderHeader" format="reference"></attr>
         <attr name="sliderHeaderBg" format="reference"></attr>
+        <!--边线颜色-->
         <attr name="border_line_color" format="color"/>
+        <!--进度条颜色-->
+        <attr name="progress_color_start" format="color"/>
+        <attr name="progress_color_end" format="color"/>
+        <!--背景颜色-->
+        <attr name="bg_color_start" format="color"/>
+        <attr name="bg_color_end" format="color"/>
+
     </declare-styleable>
 
     <declare-styleable name="SmoothAddNumTextView">

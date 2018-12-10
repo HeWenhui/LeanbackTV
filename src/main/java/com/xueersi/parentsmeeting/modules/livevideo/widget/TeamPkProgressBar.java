@@ -113,8 +113,36 @@ public class TeamPkProgressBar extends View {
      */
     private float progressRightBound = -1;
 
-    /**边框颜色*/
+    /**
+     * 边框颜色
+     */
     private int mBorderColor;
+
+    private static final String PROGRESS_STARTCOLOR_DEF = "#FFCF1B";
+    private static final String PROGRESS_ENDCOLOR_DEF = "#FF881B";
+
+
+    private static final String BG_STARTCOLOR_DEF = "#6DBCFF";
+    private static final String BG_ENDCOLOR_DEF = "#0094E0";
+
+    /**
+     * 进度条起始颜色
+     */
+    private int mProgressColor_start;
+    /**
+     * 进度条终止颜色
+     */
+    private int mProgressColor_end;
+
+    /**
+     * 背景条起始颜色
+     */
+    private int mBgColor_start;
+    /**
+     * 背景终止颜色始颜色
+     */
+    private int mBgColor_end;
+
 
     public TeamPkProgressBar(Context context) {
         this(context, null);
@@ -133,6 +161,15 @@ public class TeamPkProgressBar extends View {
         slidHearResId = typedArray.getResourceId(R.styleable.TeamPkProgressBar_sliderHeader, -1);
         sliderBgResId = typedArray.getResourceId(R.styleable.TeamPkProgressBar_sliderHeaderBg, -1);
         mBorderColor = typedArray.getResourceId(R.styleable.TeamPkProgressBar_border_line_color, Color.BLACK);
+        mProgressColor_start = typedArray.getResourceId(R.styleable.TeamPkProgressBar_progress_color_start, Color
+                .parseColor(PROGRESS_STARTCOLOR_DEF));
+        mProgressColor_end = typedArray.getResourceId(R.styleable.TeamPkProgressBar_progress_color_end, Color
+                .parseColor(PROGRESS_ENDCOLOR_DEF));
+
+        mBgColor_start = typedArray.getResourceId(R.styleable.TeamPkProgressBar_bg_color_start, Color.parseColor
+                (BG_STARTCOLOR_DEF));
+        mBgColor_end = typedArray.getResourceId(R.styleable.TeamPkProgressBar_bg_color_end, Color.parseColor
+                (BG_ENDCOLOR_DEF));
         typedArray.recycle();
         initSlidHeader();
         initPaint();
@@ -348,7 +385,8 @@ public class TeamPkProgressBar extends View {
     }
 
     float tempOffsetX;
-     private static final float HALF_PROGRESS = 0.5f;
+    private static final float HALF_PROGRESS = 0.5f;
+
     @Override
     public void computeScroll() {
 
@@ -405,8 +443,8 @@ public class TeamPkProgressBar extends View {
 
             if (totalProgressPaintShader == null) {
                 totalProgressPaintShader = new LinearGradient(progressRect.centerX(), progressRect.top
-                        , progressRect.centerX(), progressRect.bottom, Color.parseColor("#6DBCFF"),
-                        Color.parseColor("#0094E0"), Shader.TileMode.CLAMP);
+                        , progressRect.centerX(), progressRect.bottom, mBgColor_start, mBgColor_end, Shader.TileMode
+                        .CLAMP);
                 totalProgressPaint.setShader(totalProgressPaintShader);
             }
 
@@ -420,10 +458,9 @@ public class TeamPkProgressBar extends View {
                 offsetX = progressRect.width() * getProgress() / getMaxProgress();
                 setProgressRightBound(offsetX);
             }
-            currentProgressPaintShader = new LinearGradient(progressRect.left + offsetX/2, progressRect.top,
-                    progressRect.left + offsetX/2, progressRect.bottom,
-                    Color.parseColor("#FFCF1B"),
-                    Color.parseColor("#FF881B"), Shader.TileMode.CLAMP);
+            currentProgressPaintShader = new LinearGradient(progressRect.left + offsetX / 2, progressRect.top,
+                    progressRect.left + offsetX / 2, progressRect.bottom,
+                    mProgressColor_start, mProgressColor_end, Shader.TileMode.CLAMP);
             currentProgressPaint.setShader(currentProgressPaintShader);
 
             if (currentPorgressRect == null) {
@@ -464,7 +501,7 @@ public class TeamPkProgressBar extends View {
                 float startX = currentPorgressRect.right - mSliderWidth / 2;
                 float startY = (getMeasuredHeight() - mSliderHeight) / 2;
 
-                float  leftBound = animExtraSpace / 2;
+                float leftBound = animExtraSpace / 2;
                 if (animExtraSpace != 0) {
                     if (startX < leftBound) {
                         startX = leftBound;
