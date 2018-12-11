@@ -238,6 +238,10 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_ARTS_GET_EVALUATE_OPTION = "https://app.arts.xueersi.com/LiveCourse/showEvaluationOptions";
         /** 理科获得对老师评价选项*/
         public String URL_LIVE_SCIENCE_GET_EVALUATE_OPTION = "https://laoshi.xueersi.com/science/LiveCourse/getEvaluateContent";
+        /** 小语获得对老师评价选项*/
+        public String URL_LIVE_CHS_GET_EVALUATE_OPTION = "https://app.chs.xueersi.com/LiveCourse/getEvaluateInfo";
+        /** 小语学生对老师评价*/
+        public String URL_LIVE_CHS_EVALUATE_TEACHER = "https://app.chs.xueersi.com/LiveCourses/submitEvaluate";
     }
 
 }

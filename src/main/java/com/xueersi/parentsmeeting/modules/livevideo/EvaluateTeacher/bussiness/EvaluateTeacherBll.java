@@ -70,12 +70,12 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
                 } else if (getInfo.getIsArts() == 2) {
                     logger.i("IsArts:" + getInfo.getIsArts());
                     evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, getInfo);
-                    getArtsEvaluateOption(false);
+                    getChsEvaluateOption();
                 } else {
                     return;
                 }
-                evaluateTeacherPager.setIShowEvaluateAction(this);
-                evaluateTeacherPager.setButtonOnClick(this);
+            evaluateTeacherPager.setIShowEvaluateAction(this);
+            evaluateTeacherPager.setButtonOnClick(this);
             } else {
                 mLiveBll.removeBusinessBll(this);
             }
@@ -205,13 +205,28 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
             mHttpManager.saveScienceEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
-        } else {
-            mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
+        } else if (mGetInfo.getIsArts() == 2) {
+            mHttpManager.saveChsEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
         }
 
 
+    }
+
+    private void getChsEvaluateOption() {
+        mHttpManager.getChsEvaluationOption(new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.i("arts:success");
+                evaluateTeacherPager.setOptionEntity(mParser.parseEvaluateInfo(responseEntity));
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+            }
+        });
     }
 
     private void getArtsEvaluateOption(boolean isSmallEnglish) {
