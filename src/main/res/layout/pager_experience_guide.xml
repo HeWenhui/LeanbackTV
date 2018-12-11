@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/rl_experience_guide_home_pager"
+        layout="@layout/item_experience_guide_home_pager"
+        android:visibility="gone"></include>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_experience_guide_teacher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:foreground="@color/COLOR_CC000000"
+                android:src="@drawable/experience_guide_teacher_bg" />
+
+            <ImageView
+                android:id="@+id/iv_experience_guide_courseware"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/iv_experience_guide_teacher"
+                android:background="@drawable/experience_guide_courseware_bg"
+                android:foreground="@color/COLOR_CC000000" />
+
+            <RelativeLayout
+                android:id="@id/rl_livevideo_info"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/iv_experience_guide_teacher"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@+id/iv_experience_guide_courseware"
+                android:foreground="@color/COLOR_CC000000">
+
+                <TextView
+                    android:id="@id/tv_livevideo_message_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:background="@color/COLOR_333333"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:text="本组在线 (22/30)"
+                    android:textColor="@color/white" />
+
+                <View
+                    android:id="@id/v_livevideo_message_gap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="1px"
+                    android:layout_below="@id/tv_livevideo_message_count"
+                    android:background="#5C5C5C" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/v_livevideo_message_gap"
+                    android:background="@color/COLOR_333333">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="我"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/iv_experience_guide_courseware"
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:src="@drawable/experience_guide_courseware_arrows"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="课件区"
+                    android:layout_marginTop="14dp"
+                    android:textColor="@color/COLOR_FFFFFF"
+                    android:textSize="22sp" />
+                <TextView
+                    android:layout_width="116dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    style="@style/text_font14_ffffff_style"
+                    android:lines="2"
+                    android:layout_marginTop="18dp"
+                    android:text="这里将展示老师的上课内容哦"
+                    />
+
+                <Button
+                    style="@style/text_font16_ffffff_style"
+                    android:layout_width="120dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="28dp"
+                    android:background="@drawable/shape_corners_7dp_00000000"
+                    android:text="继续" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="聊天区"
+                    android:textColor="@color/COLOR_FFFFFF"
+                    android:textStyle="bold"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/text_font14_ffffff_style"
+                    android:textStyle="bold"
+                    android:layout_marginTop="18dp"
+                    android:text="这里是同学们畅所欲言的地方"/>
+
+                <Button
+                    style="@style/text_font16_ffffff_style"
+                    android:layout_width="120dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="28dp"
+                    android:background="@drawable/shape_corners_7dp_00000000"
+                    android:text="继续" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="1.直播区域介绍"
+                android:textColor="@color/COLOR_FFFFFF"
+                android:textSize="22sp" />
+
+            <Button
+                style="@style/text_font16_ffffff_style"
+                android:layout_width="120dp"
+                android:layout_height="38dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/shape_corners_7dp_00000000"
+                android:text="继续" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/text_font13_ffffff_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:drawableLeft="@drawable/experience_guide_back_icon_white"
+            android:drawablePadding="5dp"
+            android:text="退出" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>
