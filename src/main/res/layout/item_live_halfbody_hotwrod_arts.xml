@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="38dp">
+
+    <TextView
+        android:id="@id/tv_livevideo_common_word"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="13sp"/>
+
+    <ImageView
+        android:id="@+id/iv_divider"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shape_live_hotword_div_line_arts"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+</RelativeLayout>

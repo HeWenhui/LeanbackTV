@@ -119,6 +119,17 @@ public class PkTeamResultPager extends BasePager {
     private ContributionLayoutManager mLayoutManager;
     private SoundPoolHelper soundPoolHelper;
 
+
+    /**
+     * 底部贡献之星 右边距
+     */
+    private static final float CONTRIBUTION_VIEW_RIGHTMARGIN = 0.046f;
+
+    /**
+     * 半身直播 贡献之星 右边距
+     */
+    private static final float CONTRIBUTION_VIEW_RIGHTMARGIN_HALFBODY =0.15f;
+
     /**
      * pk 结果页 所用到的 音效资源id
      */
@@ -188,6 +199,14 @@ public class PkTeamResultPager extends BasePager {
         mContributions = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
         //一行显示item 个数
         int spanCount = 5;
+        // 多屏幕 适配
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rclContributionRank.getLayoutParams();
+        if(mTeamPkBll != null && mTeamPkBll.isHalfBodyLiveRoom()){
+            params.rightMargin = (int) (mView.getMeasuredWidth() * CONTRIBUTION_VIEW_RIGHTMARGIN_HALFBODY);
+        }else{
+            params.rightMargin = (int) (mView.getMeasuredWidth() * CONTRIBUTION_VIEW_RIGHTMARGIN);
+        }
+        rclContributionRank.setLayoutParams(params);
         mLayoutManager = new ContributionLayoutManager(spanCount);
         int itemWidth = rclContributionRank.getMeasuredWidth() / spanCount;
         mLayoutManager.setItemWidth(itemWidth);

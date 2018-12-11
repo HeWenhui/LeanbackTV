@@ -66,6 +66,13 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
             boolean allowLinkMic = getInfo.isAllowLinkMic();
             btRaiseHands.setVisibility(allowLinkMic ? VISIBLE : GONE);
         }
+        noticeUIChange();
+    }
+
+    /**
+     * 通知UI 状态改变
+     */
+    protected void noticeUIChange() {
         for (OnViewChange onViewChange : onViewChanges) {
             onViewChange.onViewChange(this);
         }
