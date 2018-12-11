@@ -180,6 +180,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 
     @Override
     public void submitData() {
+        if (isFinish) {
+            return;
+        }
         isFinish = true;
         if (isNewArtsCourseware && !"17".equals(detailInfo.type)) {
             wvSubjectWeb.loadUrl(jsArtsForceSubmit);

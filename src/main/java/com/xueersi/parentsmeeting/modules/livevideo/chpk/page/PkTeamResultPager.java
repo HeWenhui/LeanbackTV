@@ -62,7 +62,7 @@ import java.util.List;
 public class PkTeamResultPager extends BasePager {
     private static final String TAG = "TeamPkResultPager";
     private LottieAnimationView lottieAnimationView;
-    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/pkresult/";
+
     private final ChinesePkBll mTeamPkBll;
     /**
      * 老师点赞动画
@@ -573,8 +573,8 @@ public class PkTeamResultPager extends BasePager {
         // 播放背景音乐
         playMusic(R.raw.war_bg, SOUND_VOLUME_BG, true);
 
-        final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "vsteam/images";
-        String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "vsteam/data.json";
+        final String lottieResPath = "chinesePk/vsteam/images";
+        String lottieJsonPath = "chinesePk/vsteam/data.json";
         String[] targetFileNames = {"img_2.png", "img_8.png", "img_1.png", "img_7.png", "img_0.png", "img_12.png", "img_3.png", "img_9.png"};
         final TeamPkResultLottieEffectInfo lottieEffectInfo = new TeamPkResultLottieEffectInfo(lottieResPath, lottieJsonPath);
         lottieEffectInfo.setTargetFileFilter(targetFileNames);
