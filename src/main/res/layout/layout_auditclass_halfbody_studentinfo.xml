@@ -96,7 +96,6 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="2dp"
                 android:layout_toRightOf="@id/tv_live_auditclass_checktime_anchor"
-                android:text="00:00"
                 android:textColor="@color/COLOR_CCFFFFFF"
                 android:textSize="10sp" />
 
@@ -106,7 +105,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:text="00:00:00"
                 android:textColor="@color/COLOR_CCFFFFFF"
                 android:textSize="10sp" />
 
