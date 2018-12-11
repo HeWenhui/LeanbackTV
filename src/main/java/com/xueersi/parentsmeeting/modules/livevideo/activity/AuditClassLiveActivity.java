@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -925,7 +924,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
        // videoViewWidth = (int) (windowWidth * (windowRatio / VIDEO_RATIO)*
         videoViewWidth = (int) (windowWidth*0.75f);
         videoViewHeight = (int) (videoViewWidth * 1/VIDEO_RATIO);
-        Log.e(TAG,"=======>calculateLayoutParam:"+videoViewWidth+":"+videoViewHeight);
+        //Log.e(TAG,"=======>calculateLayoutParam:"+videoViewWidth+":"+videoViewHeight);
         return new  CenterLayout.LayoutParams(videoViewWidth,videoViewHeight,0,0);
     }
 
@@ -946,7 +945,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             params.rightMargin = rightMargin;
             rlFirstBackgroundView.setLayoutParams(params);
             ivTeacherNotpresent.setLayoutParams(params);
-            Log.e(TAG,"====>setHalfBodyUiPrama:"+params.rightMargin);
+           // Log.e(TAG,"====>setHalfBodyUiPrama:"+params.rightMargin);
             viewRoot.setLayoutParams(params);
         }
 
@@ -957,7 +956,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         if (xvlp.width != wradio || xvlp.height != hradio) {
             xvlp.width  = wradio;
             xvlp.height = hradio;
-            Log.e(TAG,"=====>setHalfBodyUiPrama:"+wradio+":"+hradio+":"+xvlp.height);
+            //Log.e(TAG,"=====>setHalfBodyUiPrama:"+wradio+":"+hradio+":"+xvlp.height);
             xvlp.topMargin = 0;
             rlLivevideoStudentVideo.setLayoutParams(xvlp);
         }
