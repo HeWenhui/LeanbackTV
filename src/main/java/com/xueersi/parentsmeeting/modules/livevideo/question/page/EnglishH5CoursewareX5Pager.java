@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebSettings;
@@ -28,6 +29,7 @@ import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -69,7 +71,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private boolean isFinish = false;
     private String jsSubmitData = "javascript:submitData()";
     private String jsforceSubmit = "javascript:forceSubmit()";
-    /** 文科新课件平台 强制提交js */
+    /**
+     * 文科新课件平台 强制提交js
+     */
     private String jsArtsForceSubmit = "javascript:examSubmitAll()";
     private EnglishH5CoursewareBll.OnH5ResultClose onClose;
     private String id;
@@ -84,7 +88,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private int mGoldNum;
     private int mEnergyNum;
     private final File mMorecacheout;
-    /** 公共资源 */
+    /**
+     * 公共资源
+     */
     private File mPublicCacheout;
     private EnglishH5Entity englishH5Entity;
     private String mLoadUrls;
@@ -367,17 +373,28 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         logger.d("shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
                     }
                     if (file.exists()) {
-                        FileInputStream inputStream = null;
                         try {
-                            inputStream = new FileInputStream(file);
-                            String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
-                            String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-                            WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
-                            webResourceResponse.setResponseHeaders(header);
-                            Log.e("Duncan", "artsload");
-                            return webResourceResponse;
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
+                            HashMap<String, String> hashMap = new HashMap<>();
+                            hashMap.put("url", url);
+                            hashMap.put("filepath", file.getPath());
+                            hashMap.put("filelength", "" + file.length());
+                            UmsAgentManager.umsAgentDebug(mContext, TAG + "_cache", hashMap);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(e);
+                        }
+                        if(file.length()>0){
+                            FileInputStream inputStream = null;
+                            try {
+                                inputStream = new FileInputStream(file);
+                                String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
+                                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                                WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                                webResourceResponse.setResponseHeaders(header);
+                                Log.e("Duncan", "artsload");
+                                return webResourceResponse;
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                     return super.shouldInterceptRequest(view, s);
