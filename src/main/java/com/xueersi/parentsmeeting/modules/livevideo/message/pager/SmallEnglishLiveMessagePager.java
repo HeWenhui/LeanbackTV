@@ -401,11 +401,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                         mRecogtestEndTime = System.currentTimeMillis();
                                     }
                                     if (result.getStatus() == ResultEntity.SUCCESS) {
-                                        isShowSpeechRecog = (mRecogtestEndTime - mRecogtestBeginTime) < 3000l ? true
-                                                : false;
-                                        if (isShowSpeechRecog) {
-                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog,
-                                                    ShareDataManager.SHAREDATA_USER);
+                                        isShowSpeechRecog = (mRecogtestEndTime - mRecogtestBeginTime) < 3000l ? true : false;
+                                        if (isShowSpeechRecog){
+                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog, ShareDataManager.SHAREDATA_USER);
                                         }
                                     }
                                 }
