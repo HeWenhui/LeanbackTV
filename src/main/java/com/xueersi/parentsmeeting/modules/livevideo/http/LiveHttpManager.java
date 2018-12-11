@@ -807,6 +807,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         setDefaultParameter(params);
         String url = isArts?LiveVideoConfig.URL_HALFBODY_LIVE_STULIVEINFO_ARTS
                 :LiveVideoConfig.URL_HALFBODY_LIVE_STULIVEINFO;
+
         sendPost(url, params, requestCallBack);
     }
 
