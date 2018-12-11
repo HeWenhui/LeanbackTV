@@ -29,7 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
  * 战队pk  右侧状态栏
  *
  * @author chekun
- * created  at 2018/4/16 18:38
+ *         created  at 2018/4/16 18:38
  */
 public class TeamPkStateLayout extends FrameLayout {
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -93,8 +93,10 @@ public class TeamPkStateLayout extends FrameLayout {
 
 
     protected void initView() {
-        if(LiveVideoConfig.isPrimary){
+        if (LiveVideoConfig.isPrimary) {
             LayoutInflater.from(getContext()).inflate(R.layout.team_pspk_state_layout, this);
+        } else if (LiveVideoConfig.isSmallChinese) {
+            LayoutInflater.from(getContext()).inflate(R.layout.chinese_pk_state_layout, this);
         } else {
             LayoutInflater.from(getContext()).inflate(R.layout.team_pk_state_layout, this);
         }
@@ -107,7 +109,7 @@ public class TeamPkStateLayout extends FrameLayout {
             @Override
             public void onGlobalLayout() {
                 //logger.e( "===========>:onGlobalLayout"+TeamPkStateLayout.this.getMeasuredWidth());
-                if(TeamPkStateLayout.this.getMeasuredWidth() > 0){
+                if (TeamPkStateLayout.this.getMeasuredWidth() > 0) {
                     try {
                         addPkStatBar();
                     } catch (Exception e) {
@@ -168,7 +170,7 @@ public class TeamPkStateLayout extends FrameLayout {
         mMyTeamEnergy = mMyTeamEnergy + ownEnergyAdd;
         mOtherTeamEnergy = mOtherTeamEnergy + otherEnergyAdd;
         mCoinNum = mCoinNum + coinAdd;
-        logger.e( "====>updateData22222:" + mMyTeamEnergy + ":" + mOtherTeamEnergy + ":" + mCoinNum);
+        logger.e("====>updateData22222:" + mMyTeamEnergy + ":" + mOtherTeamEnergy + ":" + mCoinNum);
         if (mTeamPkBll != null && coinAdd > 0) {
             TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(), mCoinNum + "");
         }
@@ -207,14 +209,14 @@ public class TeamPkStateLayout extends FrameLayout {
         int addProgress = (int) (ratio * 100 + 0.5f) - pkProgressBar.getProgress();
         if (addProgress > 0) {
             pkProgressBar.smoothAddProgress(addProgress);
-            logger.e( "====>updateData smoothAddProgress:" + addProgress + ":" + pkProgressBar.getProgress());
+            logger.e("====>updateData smoothAddProgress:" + addProgress + ":" + pkProgressBar.getProgress());
 
         } else {
            /* if (pkProgressBar.isAnimRunning()) {
                 pkProgressBar.cancel();
             }*/
             pkProgressBar.setProgress((int) (ratio * 100));
-            logger.e( "====>updateData setProgress:" + (int) (ratio * 100));
+            logger.e("====>updateData setProgress:" + (int) (ratio * 100));
         }
     }
 
@@ -228,8 +230,8 @@ public class TeamPkStateLayout extends FrameLayout {
      * @param showPopWindow   是否显示顶部进度状态
      */
     public void bindData(long coinNum, long myTeamEnergy, long otherTeamEnergy, boolean showPopWindow) {
-        logger.e( "====> PkstateLayout bindData 111:" + coinNum + ":" + myTeamEnergy + ":" + otherTeamEnergy);
-        logger.e( "====> PkstateLayout bindData 333:" + mCoinNum + ":" + mMyTeamEnergy + ":" +
+        logger.e("====> PkstateLayout bindData 111:" + coinNum + ":" + myTeamEnergy + ":" + otherTeamEnergy);
+        logger.e("====> PkstateLayout bindData 333:" + mCoinNum + ":" + mMyTeamEnergy + ":" +
                 mOtherTeamEnergy);
         this.showPopWindow = showPopWindow;
         if (!dataInited) {
@@ -239,7 +241,7 @@ public class TeamPkStateLayout extends FrameLayout {
             int addCoin = (int) (coinNum - mCoinNum);
             int ownEnergyAdd = (int) (myTeamEnergy - mMyTeamEnergy);
             int otherEnergyAdd = (int) (otherTeamEnergy - mOtherTeamEnergy);
-            logger.e( "====> PkstateLayout bindData 222:" + addCoin + ":" + ownEnergyAdd + ":" +
+            logger.e("====> PkstateLayout bindData 222:" + addCoin + ":" + ownEnergyAdd + ":" +
                     otherEnergyAdd);
             updateData(ownEnergyAdd, otherEnergyAdd, addCoin);
         }
@@ -313,11 +315,11 @@ public class TeamPkStateLayout extends FrameLayout {
      * @param energy
      */
     public void showEnergyMyContribute(int energy) {
-        if(tvEnergyMyContribution != null){
+        if (tvEnergyMyContribution != null) {
             tvEnergyMyContribution.setVisibility(VISIBLE);
-            energy = energy < 0?0:energy;
-            tvEnergyMyContribution.setText("我贡献了"+energy+"个能量");
-            showViewWithFadeInOutEffect(tvEnergyMyContribution,ENERGY_MY_CONTRIBUTION_DURATION);
+            energy = energy < 0 ? 0 : energy;
+            tvEnergyMyContribution.setText("我贡献了" + energy + "个能量");
+            showViewWithFadeInOutEffect(tvEnergyMyContribution, ENERGY_MY_CONTRIBUTION_DURATION);
         }
     }
 

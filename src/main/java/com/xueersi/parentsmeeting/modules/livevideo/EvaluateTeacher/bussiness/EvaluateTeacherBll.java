@@ -197,15 +197,15 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
 
         };
         if (mGetInfo.getIsArts() == 1) {
-            mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStuCouId(), mGetInfo.getMainTeacherId(),
+            mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
         } else if (mGetInfo.getIsArts() == 0) {
-            mHttpManager.saveScienceEvaluationTeacher(mLiveId, mGetInfo.getStuCouId(), mGetInfo.getMainTeacherId(),
+            mHttpManager.saveScienceEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
         } else {
-            mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStuCouId(), mGetInfo.getMainTeacherId(),
+            mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
         }

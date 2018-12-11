@@ -4,6 +4,7 @@
     android:id="@id/rl_livevideo_evaluate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
     android:background="@drawable/lspj_pingjia_bg_img_normal">
 
     <RelativeLayout
@@ -37,7 +38,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rl_livevideo_evaluate_title"
-        android:layout_marginTop="20dp"
         android:orientation="vertical"
         android:visibility="visible">
 
@@ -47,8 +47,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_weight="5"
             android:background="@drawable/lspj_tanchuang_xuanxiang_btn_bg_normal">
 
@@ -59,15 +59,15 @@
 
                 <ImageView
                     android:id="@+id/iv_evaluateteacher_main_portait"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="18dp"
+                    android:layout_marginLeft="20dp"
                     android:src="@drawable/livevideo_evaluateteacher_touxiangline_img_nor"/>
                 <ImageView
                     android:id="@id/iv_livevideo_evaluate_main"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="58dp"
+                    android:layout_height="58dp"
                     android:layout_centerVertical="true"
                     android:layout_alignLeft="@+id/iv_evaluateteacher_main_portait"
                     android:layout_marginLeft="1dp"
@@ -77,8 +77,8 @@
                     android:id="@id/iv_livevideo_evaluate_main_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
                     android:layout_marginLeft="13dp"
+                    android:layout_marginTop="11dp"
                     android:layout_toRightOf="@+id/iv_evaluateteacher_main_portait"
                     android:background="@drawable/shape_livevideo_evaluate_teacher_main_bg"
                     android:paddingLeft="2dp"
@@ -93,9 +93,10 @@
                     android:id="@id/tv_livevideo_evaluate_main_name"
                     android:layout_width="68dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="6dp"
-                    android:layout_toRightOf="@id/iv_livevideo_evaluate_main_status"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_below="@+id/iv_livevideo_evaluate_main_status"
+                    android:layout_toRightOf="@id/iv_evaluateteacher_main_portait"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:textSize="17sp"
@@ -107,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="26dp"
+                android:layout_marginLeft="20dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -122,31 +123,35 @@
                         android:id="@id/rb_livevideo_evaluate_main_unsatisfactory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
                         android:button="@drawable/selector_livevideo_evaluate_primaryscience_teacher_unsatisfactory"
                         android:paddingLeft="8dp"
-                        android:layout_marginLeft="2dp"
-                        android:textSize="16sp"
+                        android:text="不满意"
                         android:textColor="@color/COLOR_FFBC7D57"
-                        android:text="不满意" />
+                        android:textSize="16sp" />
+
                     <View
                         android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1" />
+
                     <RadioButton
                         android:id="@id/rb_livevideo_evaluate_main_satisfactory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:button="@drawable/selector_livevideo_evaluate_primaryscience_teacher_satisfactory"
                         android:paddingLeft="8dp"
-                        android:textSize="16sp"
+                        android:text="基本满意"
                         android:textColor="@color/COLOR_FFBC7D57"
-                        android:text="基本满意" />
+                        android:textSize="16sp" />
+
                     <View
                         android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1" />
+
                     <RadioButton
                         android:id="@id/rb_livevideo_evaluate_main_very_satisfactory"
                         android:layout_width="wrap_content"
@@ -154,10 +159,9 @@
                         android:layout_weight="1"
                         android:button="@drawable/selector_livevideo_evaluate_primaryscience_teacher_very_satisfactory"
                         android:paddingLeft="8dp"
-                        android:textSize="16sp"
+                        android:text="满意"
                         android:textColor="@color/COLOR_FFBC7D57"
-                        android:layout_marginRight="38dp"
-                        android:text="满意" />
+                        android:textSize="16sp" />
                 </RadioGroup>
 
                 <LinearLayout
@@ -248,9 +252,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="40dp"
+            android:layout_marginRight="20dp"
             android:layout_weight="5"
             android:background="@drawable/lspj_tanchuang_xuanxiang_btn_bg_normal">
 
@@ -261,15 +265,15 @@
 
                 <ImageView
                     android:id="@+id/iv_evaluateteacher_tutor_portait"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="18dp"
+                    android:layout_marginLeft="20dp"
                     android:src="@drawable/livevideo_evaluateteacher_touxiangline_img_nor"/>
                 <ImageView
                     android:id="@id/iv_livevideo_evaluate_tutor"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="58dp"
+                    android:layout_height="58dp"
                     android:layout_centerVertical="true"
                     android:layout_alignLeft="@+id/iv_evaluateteacher_tutor_portait"
                     android:layout_marginLeft="1dp"
@@ -280,8 +284,8 @@
                     style="@style/text_font13_ffffff_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="13dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="11dp"
                     android:layout_toRightOf="@+id/iv_evaluateteacher_tutor_portait"
                     android:background="@drawable/shape_livevideo_evaluate_teacher_tutor_bg"
                     android:paddingLeft="2dp"
@@ -296,9 +300,10 @@
                     android:id="@id/tv_livevideo_evaluate_tutor_name"
                     android:layout_width="68dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="6dp"
-                    android:layout_toRightOf="@+id/iv_livevideo_evaluate_tutor_status"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_below="@+id/iv_livevideo_evaluate_tutor_status"
+                    android:layout_toRightOf="@+id/iv_evaluateteacher_tutor_portait"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:textSize="17sp"
@@ -311,7 +316,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="26dp"
+                android:layout_marginLeft="20dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -360,7 +365,6 @@
                         android:paddingLeft="8dp"
                         android:textSize="16sp"
                         android:textColor="@color/COLOR_FFBC7D57"
-                        android:layout_marginRight="38dp"
                         android:text="满意" />
                 </RadioGroup>
 
@@ -461,8 +465,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="9dp"
-                android:layout_marginBottom="17dp"
+                android:layout_marginLeft="11dp"
+                android:layout_marginBottom="16dp"
                 android:src="@drawable/lspj_tanchuang_loading_icon_normal"
                 android:visibility="gone" />
 

@@ -78,7 +78,7 @@ public class PrimaryScienceEvaluateTeacherPager extends BaseEvaluateTeacherPaper
 
         optCheckCorlor = 0xFFFF7403;
         optUncheckColor = 0xFFBC7D57;
-        scoreCheckColor = 0xFF8F4D26;
+        scoreCheckColor = 0xFFFF7403;
         scoreUncheckColor = 0xFFBC7D57;
         super.initData();
     }

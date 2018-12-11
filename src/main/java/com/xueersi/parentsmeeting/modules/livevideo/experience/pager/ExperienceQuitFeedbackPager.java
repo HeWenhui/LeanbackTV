@@ -162,8 +162,13 @@ public class ExperienceQuitFeedbackPager extends LiveBasePager {
         btnLeave.setEnabled(false);
     }
 
-    public void showGradingPaper(){
-        llGradingPaper.setVisibility(View.VISIBLE);
+    public void showGradingPaper(boolean isShow){
+        if (isShow){
+            llGradingPaper.setVisibility(View.VISIBLE);
+        }else{
+            gradingPaperShow = false;
+        }
+
     }
 
     public void removeAllCheck(){
