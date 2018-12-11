@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -35,6 +36,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -124,17 +126,16 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     private SmallChineseSendGiftPager smallChineseSendGiftPager;
     //测试使用的布尔值，用来控制无限发送弹幕
 //    private boolean blTestSEBullet = true;
-    //打开献花弹窗时，北京变为60%黑色不透明，且不可点击.
-//    private FrameLayout frameLayout;
     //整个布局的根View,用来献花弹窗增加背景时使用
     private ViewGroup decorView;
-
-    /** 小学语文送花的pager */
-//    private SmallChineseSendGiftPager smallChineseSendGiftPager;
     /**
      * 聊天消息的颜色
      */
     private int[] messageColors;
+    /** 战队PK背景imageView */
+    private ImageView ivPkBackGround;
+    /** 使用顶部布局 */
+    private ImageView ivMessageTopIcon;
 //    private Drawable messageBackgroundColors[];
     /** 小学语文测试，一直发弹幕， */
     private boolean isSendFlower = false;
@@ -218,9 +219,37 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
 
         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
+        ivPkBackGround = mView.findViewById(R.id.iv_livevideo_small_chinese_pk_background);
+        ivMessageTopIcon = mView.findViewById(R.id.iv_livevideo_small_chinese_live_message_top_icon);
 
         return mView;
     }
+
+    /** 动态调整排行榜背景高度 */
+    private void dynamicChangeTopIcon() {
+        Drawable topIconDrawable = mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_rank_top_icon);
+        int topIconHeight = topIconDrawable.getIntrinsicHeight();
+        int topIconWid = topIconDrawable.getIntrinsicWidth();
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+
+        int ivRealWid = liveVideoPoint.x4 - liveVideoPoint.x3;
+        double mag = ivRealWid * 1.0 / topIconWid;
+        int ivRealHeight = (int) (mag * topIconHeight);
+
+        ViewGroup.LayoutParams layoutParams = ivPkBackGround.getLayoutParams();
+        layoutParams.width = ivRealWid;
+        layoutParams.height = ivRealHeight;
+        ivPkBackGround.setLayoutParams(layoutParams);
+        logger.i("wid = " + topIconWid + ", height = " + ", ivRealHeight = " + ivRealHeight + ", ivWid = " + ivRealWid + ",mag = " + mag);
+
+
+        /** 聊天区顶部icon的高度 */
+        RelativeLayout.LayoutParams rankLayout = (RelativeLayout.LayoutParams) ivMessageTopIcon.getLayoutParams();
+        int btnTopMargin = (int) (SizeUtils.Dp2Px(mContext, 49) * mag);
+        rankLayout.topMargin = btnTopMargin;
+        ivMessageTopIcon.setLayoutParams(rankLayout);
+    }
+
 
     @Override
     public void initData() {
@@ -238,6 +267,11 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
         logger.i("initData:minisize=" + minisize);
+        dynamicChangeTopIcon();
+        if (getInfo.getIsAllowTeamPk().equals("1")) {
+
+            ivPkBackGround.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_team_pk_background));
+        }
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
             @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
