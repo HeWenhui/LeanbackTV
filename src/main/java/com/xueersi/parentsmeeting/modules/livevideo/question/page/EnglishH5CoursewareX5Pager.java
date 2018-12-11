@@ -458,12 +458,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 logger.e("======> mulloadUrlLive:" + reloadurl);
             }
         } else {
-            if (isNewArtsCourseware) {
-                String loadUrl = url;
-                loadUrl(loadUrl);
-                reloadurl = loadUrl;
-                Loger.e(TAG, "======> newArtsH5CourseWare url:" + url);
-            } else {
                 String loadUrl = url + "?t=" + System.currentTimeMillis();
                 if (!url.isEmpty() && url.substring(url.length() - 1).equals("&")) {
                     loadUrl = url + "t=" + System.currentTimeMillis();
@@ -482,7 +476,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 logger.e("======> loadUrl:" + loadUrl);
                 reloadurl = loadUrl;
                 logger.e("======> loadUrlLive:" + reloadurl);
-            }
         }
         if (mLogtf != null) {
             mLogtf.d("initData:reloadurl=" + reloadurl);
