@@ -361,7 +361,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         mSdm = ShareDataManager.getInstance();
         isShowSpeechRecog = mSdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager
                 .SHAREDATA_USER);
-        logger.i("speech : isshow" + isShowSpeechRecog);
+        logger.i("speech : isshow"+isShowSpeechRecog);
         cpuRecogTime = mSdm.getLong(SpeechEvaluatorUtils.RECOG_TIME, 2500l, ShareDataManager.SHAREDATA_NOT_CLEAR);
         speechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
         logger.i("initData:time1=" + (System.currentTimeMillis() - before));
