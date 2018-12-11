@@ -229,7 +229,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             text = mLiveMessagePager.getMessageContentText();
             isRegister = mLiveMessagePager.isRegister();
             isHaveFlowers = mLiveMessagePager.isHaveFlowers();
-            isCloseChat = mLiveMessagePager.isCloseChat();
             mLiveMessagePager.onDestroy();
         }
 
@@ -264,7 +263,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         if (peopleCount.get() > 0) {
             mLiveMessagePager.onUserList("", new User[peopleCount.get()]);
         }
-        mLiveMessagePager.closeChat(isCloseChat);
         if (isAnaswer != -1) {
             //这表示收到过答题变化
             mLiveMessagePager.onQuestionShow(null,isAnaswer == 1);
