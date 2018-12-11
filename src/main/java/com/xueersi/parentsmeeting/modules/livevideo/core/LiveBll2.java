@@ -17,6 +17,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -32,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebugAnalysis;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
@@ -42,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
@@ -57,6 +60,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -65,7 +69,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author chekun
  * created  at 2018/6/20 10:32
  */
-public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLogs {
+public class LiveBll2 extends BaseBll implements LiveAndBackDebugAnalysis, LiveOnLineLogs {
     Logger logger = LoggerFactory.getLogger("LiveBll2");
     /** 需处理 topic 业务集合 */
     private List<TopicAction> mTopicActions = new ArrayList<>();
@@ -876,6 +880,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
     }
 
+    @Override
+    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+        setLogParam(eventId, mData);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+    }
+
     /**
      * 上传log 添加 公共参数
      *
@@ -901,10 +911,64 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
     }
 
     @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-        setLogParam(eventId, mData);
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+        Map<String, String> mData = stableLogHashMap.getData();
+        Map<String, String> analysis = stableLogHashMap.getAnalysis();
+        if (analysis.isEmpty()) {
+            umsAgentDebugSys(eventId, mData);
+        } else {
+            mData.put("eventid", "" + eventId);
+            setAnalysis(analysis);
+            UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData, analysis);
+        }
     }
+
+    @Override
+    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+        Map<String, String> mData = stableLogHashMap.getData();
+        Map<String, String> analysis = stableLogHashMap.getAnalysis();
+        if (analysis.isEmpty()) {
+            umsAgentDebugInter(eventId, mData);
+        } else {
+            mData.put("eventid", "" + eventId);
+            setAnalysis(analysis);
+            UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData, analysis);
+        }
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
+        Map<String, String> mData = stableLogHashMap.getData();
+        Map<String, String> analysis = stableLogHashMap.getAnalysis();
+        if (analysis.isEmpty()) {
+            umsAgentDebugPv(eventId, mData);
+        }else {
+            mData.put("eventid", "" + eventId);
+            setAnalysis(analysis);
+            UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData, analysis);
+        }
+    }
+
+    /**
+     * 上传log 添加 公共参数
+     *
+     * @param analysis
+     */
+    private void setAnalysis(Map<String, String> analysis) {
+        if (!analysis.containsKey("success")) {
+            analysis.put("success", "true");
+        }
+        if (!analysis.containsKey("errorcode")) {
+            analysis.put("errorcode", "0");
+        }
+        analysis.put("timestamp", "" + System.currentTimeMillis());
+        analysis.put("userid", mGetInfo.getStuId());
+        analysis.put("liveid", mLiveId);
+        analysis.put("duration", mLiveId);
+        analysis.put("clientip", IpAddressUtil.USER_IP);
+        analysis.put("traceid", "" + UUID.randomUUID());
+    }
+
 
     @Override
     public String getPrefix() {

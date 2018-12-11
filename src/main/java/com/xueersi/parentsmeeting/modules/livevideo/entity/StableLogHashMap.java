@@ -10,6 +10,7 @@ import java.util.UUID;
  */
 public class StableLogHashMap {
     Map<String, String> mData = new HashMap<>();
+    Map<String, String> analysis = new HashMap<>();
 
     public StableLogHashMap() {
 
@@ -110,5 +111,9 @@ public class StableLogHashMap {
 
     public Map<String, String> getData() {
         return mData;
+    }
+
+    public Map<String, String> getAnalysis() {
+        return analysis;
     }
 }
