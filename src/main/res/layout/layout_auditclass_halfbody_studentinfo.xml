@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_student_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="@color/COLOR_000000">
+
+        <com.xueersi.parentsmeeting.module.videoplayer.media.XESVideoView
+            android:id="@id/xv_livevideo_student_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+    <!--学生视频加载状态-->
+    <RelativeLayout
+        android:id="@id/rl_livevideo_student_load"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@id/rl_livevideo_student_video"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/rl_livevideo_student_video"
+        android:background="#535353">
+
+        <ImageView
+            android:id="@id/iv_livevideo_student_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/bg_livevideo_student_camera"
+            android:visibility="invisible" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_livevideo_student_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_livevideo_student_camera"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:paddingTop="7dp"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
+            android:visibility="invisible" />
+
+        <ProgressBar
+            android:id="@id/pb_livevideo_student_load"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:indeterminateDrawable="@drawable/animlst_video_loading" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_livevideo_student_load_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pb_livevideo_student_load"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="5dp"
+            android:text="加载学生视频"
+            android:textColor="@android:color/white"
+            android:textSize="10sp" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="19dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:background="@drawable/shape_aduitclass_online_bg"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp">
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_live_auditclass_checktime_anchor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="签到时间"
+                android:textColor="@color/COLOR_CCFFFFFF"
+                android:textSize="9sp" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_livevideo_student_check_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="2dp"
+                android:layout_toRightOf="@id/tv_live_auditclass_checktime_anchor"
+                android:textColor="@color/COLOR_CCFFFFFF"
+                android:textSize="10sp" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_livevideo_student_online"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/COLOR_CCFFFFFF"
+                android:textSize="10sp" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="2dp"
+                android:layout_toLeftOf="@id/tv_livevideo_student_online"
+                android:text="听课时长"
+                android:textColor="@color/COLOR_CCFFFFFF"
+                android:textSize="9sp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <!--旁听状态显示 UI-->
+    <RelativeLayout
+        android:id="@id/rl_livevideo_student_liveinfo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@id/rl_livevideo_student_video"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/rl_livevideo_student_video"
+        android:background="@color/COLOR_333333">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@id/cl_live_auditclass_pkinfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#33333B">
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_livevideo_auditclass_team_rank_anchor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="9dp"
+                android:layout_marginTop="9dp"
+                android:text="战队排名"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_livevideo_auditclass_myrank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="9dp"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_livevideo_auditclass_team_rank_anchor" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_livevideo_auditclass_energy_anchor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:text="本队"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                app:layout_constraintLeft_toLeftOf="@id/tv_livevideo_auditclass_team_rank_anchor"
+                app:layout_constraintTop_toBottomOf="@id/tv_livevideo_auditclass_team_rank_anchor" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_livevideo_auditclass_energy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:textColor="#FFBC2B"
+                android:textSize="10sp"
+                app:layout_constraintLeft_toRightOf="@id/tv_livevideo_auditclass_energy_anchor"
+                app:layout_constraintTop_toTopOf="@id/tv_livevideo_auditclass_energy_anchor" />
+
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_livevideo_auditclass_against_energy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="9dp"
+                android:textColor="#47B7FF"
+                android:textSize="10sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_livevideo_auditclass_energy_anchor" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_livevideo_auditclass_against_energy_anchor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="3dp"
+                android:paddingBottom="6dp"
+                android:text="对手"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                app:layout_constraintRight_toLeftOf="@id/tv_livevideo_auditclass_against_energy"
+                app:layout_constraintTop_toTopOf="@id/tv_livevideo_auditclass_against_energy" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/rcl_livevideo_auditclass_anwser_state"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/cl_live_auditclass_pkinfo"
+            android:background="#2A2A33"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+        <ImageView
+            android:id="@id/iv_live_auditclass_nodata"
+            android:layout_width="72dp"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="66dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon_live_auditclass_nodata"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

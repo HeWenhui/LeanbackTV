@@ -13,11 +13,11 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
-    compileSdkVersion 27
+    compileSdkVersion 26
+    buildToolsVersion '27.0.3'
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     compile 'org.java-websocket:Java-WebSocket:1.3.4'
     //glide库
     implementation rootProject.ext.thirdlibraries.glide
@@ -34,14 +34,12 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.audio)
     //日志
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.logger)
-//    implementation project(':ijkplayer')
+    //    implementation project(':ijkplayer')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.ijkplayer)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.player)
-
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.cloud)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.share)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.browser)
-
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.xeslottie)
     implementation rootProject.ext.thirdlibraries.arouterapi
     implementation rootProject.ext.thirdlibraries.appcompat
@@ -51,9 +49,8 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.arouterapi
     implementation rootProject.ext.thirdlibraries.bugly
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
-//    implementation project(':business:endictation')
+    //    implementation project(':business:endictation')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.endictation)
-
     implementation rootProject.ext.thirdlibraries.ticker
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)

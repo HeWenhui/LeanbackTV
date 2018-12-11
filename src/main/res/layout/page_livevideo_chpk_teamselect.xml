@@ -7,7 +7,7 @@
         android:id="@id/iv_teampk_team_select_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:src="@drawable/livevideo_chpk_background" />
 
     <ImageView
@@ -22,7 +22,7 @@
         android:id="@id/lav_teampk_team_select"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitCenter" />
+         />
 
     <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView
         android:id="@id/rcl_teampk_team"

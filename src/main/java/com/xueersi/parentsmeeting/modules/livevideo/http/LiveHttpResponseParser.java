@@ -1,12 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -17,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -296,6 +299,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.teamStuIds", e.getMessage());
                     }
                 }
+
                 getInfo.setIsArts(data.optInt("isArts", 0));//文科可以星星互动
                 getInfo.setIsEnglish(data.optInt("isEnglish", 0));
                 getInfo.setIsAllowStar(data.optInt("isAllowStar", 0));//是不是可以星星互动
@@ -1120,6 +1124,54 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         studyInfo.setMode(data.optString("mode", oldMode));
         return studyInfo;
     }
+
+    /**
+     * 解析文理半身直播 家长旁听数据
+     *
+     * @param responseEntity
+     * @param oldMode
+     * @return
+     */
+    public HalfBodyLiveStudyInfo parseStuHalfbodyLiveInfo(ResponseEntity responseEntity, String oldMode) {
+        HalfBodyLiveStudyInfo result = new HalfBodyLiveStudyInfo();
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            result.setSignTime(data.optString("signTime", ""));
+            result.setOnlineTime(data.optString("onlineTime"));
+            result.setMode(data.optString("mode",oldMode));
+            JSONObject teamInfo = data.optJSONObject("teamInfo");
+            if (teamInfo != null) {
+                result.setMyRank(teamInfo.optString("myRank"));
+                result.setOurTeamEnergy(teamInfo.optLong("ourTeamEnergy"));
+                result.setHostileTeamEnergy(teamInfo.optLong("hostileTeamEnergy"));
+            }
+
+            JSONObject testInfo = data.optJSONObject("testInfo");
+            if (testInfo != null) {
+                result.setTestRate(testInfo.optString("stuAvgRate"));
+                result.setStuAvgRate(testInfo.optString("stuAvgRate"));
+                JSONArray testListArray = testInfo.optJSONArray("testList");
+                if (testListArray != null && testListArray.length() > 0) {
+                    List<HalfBodyLiveStudyInfo.TestInfo> testInfoList = new ArrayList<>();
+                    HalfBodyLiveStudyInfo.TestInfo info = null;
+                    JSONObject testJsonObj = null;
+                    for (int i = 0; i < testListArray.length(); i++) {
+                        testJsonObj = testListArray.getJSONObject(i);
+                        info = new HalfBodyLiveStudyInfo.TestInfo();
+                        info.setAnsweredStatus(testJsonObj.optInt("answeredStatus"));
+                        info.setOrderNum(testJsonObj.optInt("orderNum"));
+                        info.setPlanAvgRightRate(testJsonObj.optString("planAvgRightRate"));
+                        testInfoList.add(info);
+                    }
+                    result.setTestList(testInfoList);
+                }
+            }
+        } catch (Exception e) {
+            MobAgent.httpResponseParserError(TAG, "parseStuHalfbodyLiveInfo", e.getMessage());
+        }
+        return result;
+    }
+
 
     public AllRankEntity parseAllRank(ResponseEntity responseEntity) {
         AllRankEntity allRankEntity = new AllRankEntity();

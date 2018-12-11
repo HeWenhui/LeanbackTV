@@ -33,47 +33,47 @@ import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
  */
 public class TeamPkStateLayout extends FrameLayout {
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
-    private TeamPkProgressBar pkProgressBar;
-    private SmoothAddNumTextView tvMyTeamEnergy;
-    private SmoothAddNumTextView tvOtherTeamEnergy;
-    private SmoothAddNumTextView tvCoin;
+    protected TeamPkProgressBar pkProgressBar;
+    protected SmoothAddNumTextView tvMyTeamEnergy;
+    protected SmoothAddNumTextView tvOtherTeamEnergy;
+    protected SmoothAddNumTextView tvCoin;
 
-    private long mMyTeamEnergy;
-    private long mOtherTeamEnergy;
-    private long mCoinNum;
+    protected long mMyTeamEnergy;
+    protected long mOtherTeamEnergy;
+    protected long mCoinNum;
     /**
      * 当前pk状态
      */
-    private TextView tvState;
-    private View statBarRootView;
+    protected TextView tvState;
+    protected View statBarRootView;
 
     /**
      * 是否显示顶部 pk状态
      */
-    private boolean showPopWindow;
+    protected boolean showPopWindow;
 
     /**
      * 顶部pk状态栏 (打成平手 ，全力追赶...)高度
      */
-    private static final int STATE_BAR_HEIGHT = 17;
+    protected static final int STATE_BAR_HEIGHT = 17;
     /**
      * 状态兰底部 margin 值
      */
-    private static final int STATE_BAR_BOTTOM_MARGIN = 6;
+    protected static final int STATE_BAR_BOTTOM_MARGIN = 6;
 
     /**
      * pk状态栏显示时间
      */
-    private static final long PK_STATE_DISPLAY_DURATION = 30 * 1000;
+    protected static final long PK_STATE_DISPLAY_DURATION = 30 * 1000;
 
     /**
      * 我贡献了多少能量显示时间
      */
-    private static final long ENERGY_MY_CONTRIBUTION_DURATION = 4 * 1000;
+    protected static final long ENERGY_MY_CONTRIBUTION_DURATION = 4 * 1000;
 
     private boolean dataInited = false;
-    private TextView tvEnergyMyContribution;
-    private TeamPkBll mTeamPkBll;
+    protected TextView tvEnergyMyContribution;
+    protected TeamPkBll mTeamPkBll;
 
     public TeamPkStateLayout(@NonNull Context context) {
         super(context);
@@ -92,7 +92,7 @@ public class TeamPkStateLayout extends FrameLayout {
     }
 
 
-    private void initView() {
+    protected void initView() {
         if (LiveVideoConfig.isPrimary) {
             LayoutInflater.from(getContext()).inflate(R.layout.team_pspk_state_layout, this);
         } else if (LiveVideoConfig.isSmallChinese) {
@@ -129,7 +129,7 @@ public class TeamPkStateLayout extends FrameLayout {
     /**
      * 添加视屏区域 pk 状态UI
      */
-    private void addPkStatBar() {
+    protected void addPkStatBar() {
         statBarRootView = View.inflate(getContext(), R.layout.team_pk_state_bar_layout, null);
         ViewGroup viewGroup = (ViewGroup) ((Activity) getContext()).getWindow().getDecorView();
         ViewGroup rootView = viewGroup.findViewById(R.id.rl_livevideo_message_root);
@@ -205,7 +205,7 @@ public class TeamPkStateLayout extends FrameLayout {
         } else {
             ratio = 0.5f;
         }
-        upDataSateText(ratio);
+        updatePkState(ratio);
         int addProgress = (int) (ratio * 100 + 0.5f) - pkProgressBar.getProgress();
         if (addProgress > 0) {
             pkProgressBar.smoothAddProgress(addProgress);
@@ -265,14 +265,14 @@ public class TeamPkStateLayout extends FrameLayout {
         } else {
             ratio = 0.5f;
         }
-        upDataSateText(ratio);
+        updatePkState(ratio);
         int currentProgress = (int) (ratio * 100);
         pkProgressBar.setProgress(currentProgress);
     }
 
-    private static final float HALF_PROGRESS = 0.5f;
+    protected static final float HALF_PROGRESS = 0.5f;
 
-    private void upDataSateText(float ratio) {
+    protected void updatePkState(float ratio) {
         if (this.showPopWindow) {
             this.showPopWindow = false;
             if (ratio > HALF_PROGRESS) {
@@ -330,7 +330,7 @@ public class TeamPkStateLayout extends FrameLayout {
      * @param targetView
      * @param duratrion
      */
-    private void showViewWithFadeInOutEffect(final View targetView, long duratrion) {
+    protected void showViewWithFadeInOutEffect(final View targetView, long duratrion) {
         if (targetView == null) {
             return;
         }

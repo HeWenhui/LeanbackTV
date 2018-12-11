@@ -14,6 +14,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -362,10 +363,12 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         });
         logger.i("initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        initCommonWord();
+       // initCommonWord();
         logger.i("initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
+
+    private boolean commonWordInited = false;
 
     private void initCommonWord() {
         final ArrayList<String> words = new ArrayList<>();
@@ -409,12 +412,15 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                 }
             }
         });
+        commonWordInited = true;
     }
 
     @Override
     public void initListener() {
         super.initListener();
         rlLivevideoCommonWord = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_word);
+
+        Log.e("SmallChinese","=========>initListener:"+liveMediaControllerBottom.getClass().getSimpleName());
         //聊天，设置监听器
         btMesOpen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -427,6 +433,12 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         btMsgCommon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+
+                if(!commonWordInited){
+                    initCommonWord();
+                }
+
+
                 liveMediaControllerBottom.onChildViewClick(v);
                 LiveMediaController controller = liveMediaControllerBottom.getController();
                 controller.show();

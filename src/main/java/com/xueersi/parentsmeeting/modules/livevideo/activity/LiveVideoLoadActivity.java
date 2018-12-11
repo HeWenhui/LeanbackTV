@@ -51,6 +51,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
         super.onDestroy();
     }
 
+
     private void initData() {
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
