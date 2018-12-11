@@ -919,7 +919,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebugAnalysis, LiveO
         } else {
             mData.put("eventid", "" + eventId);
             setAnalysis(analysis);
-            UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData, analysis);
+            UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
         }
     }
 

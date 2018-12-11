@@ -382,7 +382,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         } catch (Exception e) {
                             CrashReport.postCatchedException(e);
                         }
-                        if(file.length()>0){
+                        if (file.length() > 0) {
                             FileInputStream inputStream = null;
                             try {
                                 inputStream = new FileInputStream(file);
