@@ -68,11 +68,11 @@
 
                 <ImageView
                     android:id="@id/iv_livevideo_evaluate_main"
-                    android:layout_width="53dp"
-                    android:layout_height="53dp"
+                    android:layout_width="51dp"
+                    android:layout_height="51dp"
                     android:layout_alignLeft="@+id/iv_livevideo_evaluate_main_profile_picture_bg"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="1dp"
+                    android:layout_marginLeft="2dp"
                     android:src="@drawable/bg_main_default_head_image" />
 
                 <ImageView
@@ -273,11 +273,11 @@
 
                 <ImageView
                     android:id="@id/iv_livevideo_evaluate_tutor"
-                    android:layout_width="53dp"
-                    android:layout_height="53dp"
+                    android:layout_width="51dp"
+                    android:layout_height="51dp"
                     android:layout_alignLeft="@+id/iv_livevideo_evaluate_tutor_profile_picture_bg"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="1dp"
+                    android:layout_marginLeft="2dp"
                     android:src="@drawable/bg_tutor_default_head_imge" />
 
                 <ImageView
