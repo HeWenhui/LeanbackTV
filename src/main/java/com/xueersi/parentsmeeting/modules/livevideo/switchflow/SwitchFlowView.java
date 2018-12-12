@@ -65,6 +65,10 @@ public class SwitchFlowView extends FrameLayout {
         tvReload = view.findViewById(R.id.fzcytv_livevideo_switch_flow_reload);
     }
 
+    public View getLayoutSwitchFlow() {
+        return layoutSwitchFlow;
+    }
+
     private void initListener() {
         btnSwitchFlow.setOnClickListener(new OnClickListener() {
             @Override
@@ -75,6 +79,9 @@ public class SwitchFlowView extends FrameLayout {
                 } else {
                     setSwitchFlowPopWindowVisible(false);
                     isShow = 0;
+                }
+                if (clickListener != null) {
+                    clickListener.click(v);
                 }
             }
         });
@@ -90,6 +97,7 @@ public class SwitchFlowView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (iSwitchFlow != null) {
+                    setSwitchFlowPopWindowVisible(false);
                     iSwitchFlow.reLoad();
                 }
             }
@@ -104,7 +112,7 @@ public class SwitchFlowView extends FrameLayout {
     }
 
     /** 切流的弹窗隐藏或者显示 */
-    private final void setSwitchFlowPopWindowVisible(boolean isShow) {
+    public final void setSwitchFlowPopWindowVisible(boolean isShow) {
         layoutSwitchFlow.setVisibility(isShow ? VISIBLE : GONE);
         ivSwitchFlowArrow.setVisibility(isShow ? VISIBLE : GONE);
     }
@@ -128,6 +136,15 @@ public class SwitchFlowView extends FrameLayout {
         void reLoad();
     }
 
+    public interface ISwitchFlowClickListener {
+        void click(View v);
+    }
+
+    private ISwitchFlowClickListener clickListener;
+
+    public void setClickListener(ISwitchFlowClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
 //    public interface ISwitchRoute {
 //        /** 切换线路中 */
 //        void switchRouteing();

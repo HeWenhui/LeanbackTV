@@ -82,6 +82,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } else {
             LiveVideoConfig.isPrimary = false;
         }
+        //小英萌萌哒皮肤专用
+        if (data.has("useSkin")) {
+            getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+            LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
+        } else {
+            getInfo.setSmallEnglish(false);
+            LiveVideoConfig.isSmallChinese = false;
+        }
         getInfo.setIsPrimarySchool(isPrimarySchool);
         LiveVideoConfig.isScience = true;
         getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
@@ -121,6 +129,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
+            LiveVideoConfig.isSmallChinese = false;
         }
 //        getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
 //        LiveVideoConfig.educationstage = getInfo.getEducationStage();
@@ -155,10 +164,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
+            LiveVideoConfig.isSmallChinese = false;
         }
-        // FIXME: 2018/11/15 测试使用
-//        getInfo.setSmallEnglish(false);
-//        LiveVideoConfig.isSmallChinese = true;
+    }
+
+    /**
+     * 解析getInfo之前，先把之前用来判断状态的静态变量置空，以免上一次的状态影响这一次
+     */
+    private void setStaticStatusNull() {
+        //小学语文MMD皮肤
+        LiveVideoConfig.isSmallChinese = false;
+
     }
 
     /**
@@ -167,6 +183,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
+            //解析getInfo之前，先把之前用来判断状态的静态变量置空
+            setStaticStatusNull();
             getInfo.setId(data.getString("id"));
             getInfo.setIs_show_ranks(data.optString("is_show_ranks"));
             //getInfo.setIs_show_ranks("1");

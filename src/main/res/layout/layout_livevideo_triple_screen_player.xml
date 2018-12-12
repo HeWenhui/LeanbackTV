@@ -32,7 +32,7 @@
             android:id="@+id/iv_livevideo_triple_screen_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/anim_livevideo_triple_screen_loading"
+            android:src="@drawable/anim_livevideo_triple_screen_loading"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

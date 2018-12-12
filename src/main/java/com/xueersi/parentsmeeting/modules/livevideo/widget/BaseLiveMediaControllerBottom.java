@@ -56,6 +56,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     /** 切流使用的布局 */
     protected SwitchFlowView switchFlowView;
 
+    protected boolean isSmallEnglish;
     public BaseLiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context);
         mContext = context;

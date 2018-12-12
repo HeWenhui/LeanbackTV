@@ -90,6 +90,37 @@
                     android:visibility="gone" />
 
             </LinearLayout>
+            <!--切流是刷新失败，重试-->
+            <android.support.constraint.ConstraintLayout
+                android:id="@id/layout_livevideot_triple_screen_fail_retry"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/COLOR_66000000"
+                android:visibility="gone">
+
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                    android:id="@id/fzcy_livevideo_switch_flow_retry_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/COLOR_FFFFFF"
+                    android:textSize="17sp"
+                    app:layout_constraintBottom_toTopOf="@id/btn_livevideo_switch_flow_retry_btn"
+                    app:layout_constraintLeft_toLeftOf="@id/btn_livevideo_switch_flow_retry_btn"
+                    app:layout_constraintRight_toRightOf="@id/btn_livevideo_switch_flow_retry_btn"
+                    tools:text="fafa" />
+
+                <Button
+                    android:id="@id/btn_livevideo_switch_flow_retry_btn"
+                    android:layout_width="118dp"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/selector_livevideo_switch_flow_retry"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </android.support.constraint.ConstraintLayout>
         </RelativeLayout>
 
         <!-- 老师不再直播间 -->
@@ -98,37 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />
-        <!--切流是刷新失败，重试-->
-        <android.support.constraint.ConstraintLayout
-            android:id="@id/layout_livevideot_triple_screen_fail_retry"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/COLOR_66000000"
-            android:visibility="gone">
 
-            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-                android:id="@id/fzcy_livevideo_switch_flow_retry_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:textColor="@color/COLOR_FFFFFF"
-                android:textSize="17sp"
-                app:layout_constraintBottom_toTopOf="@id/btn_livevideo_switch_flow_retry_btn"
-                app:layout_constraintLeft_toLeftOf="@id/btn_livevideo_switch_flow_retry_btn"
-                app:layout_constraintRight_toRightOf="@id/btn_livevideo_switch_flow_retry_btn"
-                tools:text="fafa" />
-
-            <Button
-                android:id="@id/btn_livevideo_switch_flow_retry_btn"
-                android:layout_width="130dp"
-                android:layout_height="49dp"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/selector_livevideo_switch_flow_retry"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </android.support.constraint.ConstraintLayout>
         <!-- 接麦老师视频界面位置 -->
         <RelativeLayout
             android:id="@id/rl_course_video_live_agora_content"

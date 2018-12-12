@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xueersi.common.business.UserBll;
@@ -25,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.presenter
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
@@ -56,6 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyRe
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowBll;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowRoutePager;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView;
+import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchRouteSuccessDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
@@ -110,10 +110,11 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /** 是否是三分屏或者全身直播 */
     protected int pattern;
     /** 切流加载中的布局 */
-    private ConstraintLayout layoutVideoFailRetry;
+//    private ConstraintLayout layoutVideoFailRetry;
     /** 切流加载中的按钮o */
-//    private Button btnVideoFailRetry;
+    private Button btnVideoFailRetry;
 
+    /** {@link #onActivityCreated(Bundle)} */
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
         boolean onVideoCreate = super.onVideoCreate(savedInstanceState);
@@ -134,12 +135,10 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             before = System.currentTimeMillis();
             addBusiness(activity);
             logger.d("onVideoCreate:time3=" + (System.currentTimeMillis() - before));
-
             if (pattern == 1) {
                 //根据不同直播显示不同加载中动画
                 setLoadingView();
             }
-
         }
         return onVideoCreate;
     }
@@ -186,12 +185,12 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
 
     /** 三分屏使用新的的Loading,在{@link #loadView(int)} 中调用 */
-    @Override
-    protected LivePlayerFragment getFragment() {
-        LiveLivePlayerPlayFragment liveVideoPlayFragment = new LiveLivePlayerPlayFragment();
-        liveVideoPlayFragment.setLiveFragmentBase(this);
-        return liveVideoPlayFragment;
-    }
+//    @Override
+//    protected LivePlayerFragment getFragment() {
+//        LiveLivePlayerPlayFragment liveVideoPlayFragment = new LiveLivePlayerPlayFragment();
+//        liveVideoPlayFragment.setLiveFragmentBase(this);
+//        return liveVideoPlayFragment;
+//    }
 
     /**
      * 添加 直播间内 所需的功能模块
@@ -287,9 +286,100 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             }
         }
         if (pattern == 1) {
-            initSwitchFlowBll();
+            addSwitchFlowBll();
+            initSwitchFlowListener();
         }
         mLiveBll.setLiveIRCMessageBll(liveIRCMessageBll);
+    }
+
+    /** 加载切流的Bll */
+    private SwitchFlowBll switchFlowBll;
+    /** 点击重新加载按钮 */
+//    private volatile boolean isSwitchReloadShow;
+    /** 当前处于什么状态 */
+    private int switchFlowStatus = LiveVideoAction.SWITCH_FLOW_RELOAD;
+
+    /** 视频播放成功 */
+    @Override
+    protected void onPlayOpenSuccess() {
+        super.onPlayOpenSuccess();
+        //如果之前是正在切流的状态
+        if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
+            SwitchRouteSuccessDialog switchRouteSuccessDialog = new SwitchRouteSuccessDialog(activity);
+            switchRouteSuccessDialog.updateView(switchFlowPos);
+            switchRouteSuccessDialog.showDialogAutoClose(2000);
+        }
+        resetStatus();
+    }
+
+    /** 重置标志位 */
+    private void resetStatus() {
+        switchFlowStatus = LiveVideoAction.SWITCH_FLOW_RELOAD;
+        liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, 0);
+    }
+
+    private int switchFlowPos = 1;
+    /** 当前处于线路哪条线路,比list中的实际多1 */
+    private int nowRoutePos = 1;
+
+    private void addSwitchFlowBll() {
+        switchFlowBll = new SwitchFlowBll(activity, mLiveBll);
+        mLiveBll.addBusinessBll(switchFlowBll);
+        switchFlowBll.setmView(getSwitchFlowView(), liveMediaControllerBottom, new SwitchFlowView.IReLoad() {
+                    @Override
+                    public void reLoad() {
+//                        isSwitchReloadShow = true;
+                        switchFlowStatus = LiveVideoAction.SWITCH_FLOW_RELOAD;
+                        //1.重新加载,显示加载中
+                        rePlay(false);
+                        //2. 自动切流
+                        liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, nowRoutePos);
+                        mLiveVideoBll.liveGetPlayServer();
+                    }
+                },
+                new SwitchFlowRoutePager.ItemClickListener() {
+                    @Override
+                    public void itemClick(int pos) {
+                        switchFlowStatus = LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH;
+                        //todo 显示线路四切换中的字样
+                        mLiveVideoBll.playNewVideo(pos);
+                        nowRoutePos = pos + 1;
+                        liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, nowRoutePos);
+                        liveVideoAction.rePlay(false);
+//                        liveVideoAction.setVideoSwitchFlowStatus(LiveAc);
+//                        tvLoadingTint.setText("线路" + String.valueOf(pos) + "切换中...");
+                    }
+                });
+    }
+
+    /**
+     * 获取切流的btn，
+     * 在{@link #addSwitchFlowBll()}里面调用
+     * {@link SwitchFlowBll}}
+     */
+    private SwitchFlowView getSwitchFlowView() {
+//        switchFlowView =
+        return liveMediaControllerBottom.getSwitchFlowView();
+    }
+
+    private void initSwitchFlowListener() {
+        btnVideoFailRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_RELOAD) {
+                    switchFlowStatus = LiveVideoAction.SWITCH_FLOW_RELOAD;
+                    //1.重新加载,显示加载中
+                    rePlay(false);
+                    //2. 自动切流
+                    mLiveVideoBll.liveGetPlayServer();
+                } else if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
+                    rePlay(false);
+                } else {
+                    rePlay(false);
+                }
+
+            }
+        });
     }
 
     @Override
@@ -301,9 +391,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     public void showLongMediaController() {
         super.showLongMediaController();
     }
-
-    /** 加载提示 */
-//    private TextView tvLoadingTint;
 
     @Override
     protected void initView() {
@@ -322,50 +409,13 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         bottomContent.addView(liveMediaControllerBottom);
 
-        layoutVideoFailRetry = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
-//        btnVideoFailRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
+//        layoutVideoFailRetry = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
+        btnVideoFailRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
         pattern = activity.getIntent().getIntExtra("pattern", 2);
         //如果是三分屏，则需要添加加载中的监听器
 
     }
 
-    //    private boolean isSwitchRouteShow = false;
-//    private SwitchFlowView switchFlowView;
-    /** 切换线路Pager */
-
-    private SwitchFlowBll switchFlowBll;
-    /** 点击重新加载按钮 */
-    private volatile boolean isSwitchReloadShow;
-
-    /** 加载切流的Bll */
-    private void initSwitchFlowBll() {
-        switchFlowBll = new SwitchFlowBll(activity, bottomContent);
-
-        switchFlowBll.setmView(getSwitchFlowView(), new SwitchFlowView.IReLoad() {
-                    @Override
-                    public void reLoad() {
-                        isSwitchReloadShow = true;
-                        //1.重新加载,显示加载中
-                        rePlay(false);
-                        //2. 自动切流
-                        mLiveVideoBll.liveGetPlayServer();
-                    }
-                },
-                new SwitchFlowRoutePager.ItemClickListener() {
-                    @Override
-                    public void itemClick(int pos) {
-                        //todo 显示线路四切换中的字样
-//                        liveVideoAction.setVideoSwitchFlowStatus(LiveAc);
-//                        tvLoadingTint.setText("线路" + String.valueOf(pos) + "切换中...");
-                    }
-                });
-    }
-
-    /** 获取切流的btn，在{@link #initSwitchFlowBll()}里面赋值给{@link SwitchFlowBll#mView}} */
-    private SwitchFlowView getSwitchFlowView() {
-//        switchFlowView =
-        return liveMediaControllerBottom.getSwitchFlowView();
-    }
 
     @Override
     protected void resultFailed(int arg1, int arg2) {
@@ -378,45 +428,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
         switchFlowBll.setListRoute(server.getPlayserver());
-        //
-        if (server == null && isSwitchReloadShow) {
-
-        } else {
-            //调度成功
-
-        }
     }
 
-    /** 获取 */
-//    private void initListener() {
-//        btnVideoFailRetry.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                loadView(mLayoutVideo);
-//            }
-//        });
-
-//        mPager = new SwitchFlowRoutePager(activity, false);
-//        final ObjectAnimator animationIn = ObjectAnimator.ofFloat(mPager.getRootView(), "translationX", liveVideoPoint.x4, liveVideoPoint.x4 - liveVideoPoint.x3);
-//        final ObjectAnimator animationOut = ObjectAnimator.ofFloat(mPager.getRootView(), "translationX", liveVideoPoint.x4 - liveVideoPoint.x3, 0);
-//        switchFlowView.setiSwitchFlow(new SwitchFlowView.ISwitchFlow() {
-//            @Override
-//            public void reLoad() {
-//                loadView(mLayoutVideo);
-//            }
-//
-//            @Override
-//            public void switchRoute() {
-//                if (isSwitchRouteShow) {
-//                    animationIn.start();
-//                    isSwitchRouteShow = false;
-//                } else {
-//                    animationOut.start();
-//                    isSwitchRouteShow = true;
-//                }
-//            }
-//        });
-//    }
     protected void createMediaControllerBottom() {
         Intent intent = activity.getIntent();
         LiveVideoConfig.isPrimary = intent.getBooleanExtra("isPrimary", false);

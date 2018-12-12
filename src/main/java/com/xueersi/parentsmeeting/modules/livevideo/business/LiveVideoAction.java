@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -70,12 +71,14 @@ public class LiveVideoAction implements VideoAction {
     private ConstraintLayout layoutSwitchFlow;
     /** 切流失败的文字提示 */
     private FangZhengCuYuanTextView tvSwitchFlowRetry;
-
+    private LinearLayout linearLayout;
     /** 切流失败的重试按钮 */
 //    private Button btnSwitchFlowRetry;
+    public final static int SWITCH_FLOW_NORMAL = 0;
     //线程切换中
-    public final static int SWITCH_FLOW_ROUTE_SWITCH = 0;
-    public final static int SWITCH_FLOW_RELOAD = 1 << 0;
+    public final static int SWITCH_FLOW_ROUTE_SWITCH = 1;
+    //重试中
+    public final static int SWITCH_FLOW_RELOAD = 1 << 1;
     /** 切换视频流的状态 */
     private int videoSwitchFlowStatus;
 
@@ -91,6 +94,8 @@ public class LiveVideoAction implements VideoAction {
         tvLoadingHint.setText("正在获取视频资源，请稍后");
 
         layoutSwitchFlow = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
+
+        linearLayout = mContentView.findViewById(R.id.layout_livevideo_switch_flow_logo);
         tvSwitchFlowRetry = mContentView.findViewById(R.id.fzcy_livevideo_switch_flow_retry_text);
 //        btnSwitchFlowRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
 
@@ -99,7 +104,7 @@ public class LiveVideoAction implements VideoAction {
     }
 
     /** 0代表不是切换线路，正数代表切换的线路 */
-    private int route;
+    private int route = 0;
 
     public void setVideoSwitchFlowStatus(int status, int route) {
         this.videoSwitchFlowStatus = status;
@@ -148,8 +153,17 @@ public class LiveVideoAction implements VideoAction {
                                         + ",lastPlayErrorCode=" + lastPlayErrorCode);
                                 lastPlayErrorCode = null;
                                 if (!modechange) {
-                                    if ((videoSwitchFlowStatus & SWITCH_FLOW_RELOAD) != 0) {
-                                        tvLoadingHint.setText("线路" + route + "正在切换");
+                                    if (mGetInfo != null && mGetInfo.getPattern() == 1) {
+                                        if (videoSwitchFlowStatus == SWITCH_FLOW_RELOAD) {
+//                                        mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry).setVisibility(View.VISIBLE);
+                                            //网校logo
+//                                            mContentView.findViewById(R.id.layout_livevideo_switch_flow_logo).setVisibility(View.VISIBLE);
+                                            tvLoadingHint.setText(playLoad);
+                                        } else if (videoSwitchFlowStatus == SWITCH_FLOW_ROUTE_SWITCH) {
+//                                            mContentView.findViewById(R.id.layout_livevideo_switch_flow_logo).setVisibility(View.VISIBLE);
+                                            tvLoadingHint.setText("线路" + route + "正在切换");
+
+                                        }
                                     } else {
                                         tvLoadingHint.setText(playLoad);
                                     }
@@ -197,11 +211,17 @@ public class LiveVideoAction implements VideoAction {
             public void run() {
                 //如果是三分屏
                 if (mGetInfo != null && mGetInfo.getPattern() == 1) {
+                    linearLayout.setVisibility(View.GONE);
                     layoutSwitchFlow.setVisibility(View.VISIBLE);
-
+                    if (videoSwitchFlowStatus == SWITCH_FLOW_ROUTE_SWITCH) {
+                        tvSwitchFlowRetry.setText("线路" + route + "切换失败");
+                    } else if (videoSwitchFlowStatus == SWITCH_FLOW_RELOAD) {
+                        tvSwitchFlowRetry.setText("加载失败");
+                    }
+                } else {
+                    linearLayout.setVisibility(View.VISIBLE);
+                    layoutSwitchFlow.setVisibility(View.GONE);
                 }
-
-
                 if (tvLoadingHint != null) {
                     PlayErrorCode playErrorCode = PlayErrorCode.getError(arg2);
                     lastPlayErrorCode = playErrorCode;

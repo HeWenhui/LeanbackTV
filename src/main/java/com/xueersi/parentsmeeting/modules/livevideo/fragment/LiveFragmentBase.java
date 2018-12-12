@@ -245,6 +245,10 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         liveVideoPlayFragment.liveFragmentBase = this;
     }
 
+    protected void onPlayOpenSuccess() {
+
+    }
+
     public static class LiveLivePlayerPlayFragment extends LivePlayerFragment {
         private final String TAG = "LiveLivePlayerPlayFragment";
         LiveFragmentBase liveFragmentBase;
@@ -292,6 +296,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             }
             liveFragmentBase.openSuccess = true;
             liveFragmentBase.setFirstBackgroundVisible(View.GONE);
+            liveFragmentBase.onPlayOpenSuccess();
 //            if (mGetInfo != null && mGetInfo.getIsShowMarkPoint().equals("1")) {
 //                if (liveRemarkBll == null) {
 //                    liveRemarkBll = new LiveRemarkBll(activity, vPlayer);

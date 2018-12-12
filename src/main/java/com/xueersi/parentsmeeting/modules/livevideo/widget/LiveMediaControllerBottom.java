@@ -30,14 +30,14 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
         Intent paramIntent = ((Activity) mContext).getIntent();
         mArts = paramIntent.getIntExtra("isArts", -1);
         pattern = paramIntent.getIntExtra("pattern", 0);
-        boolean isSmallEnglish = paramIntent.getBooleanExtra("isSmallEnglish", false);
+        isSmallEnglish = paramIntent.getBooleanExtra("isSmallEnglish", false);
 
         if (LiveVideoConfig.isPrimary) {
             return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_ps_switch_flow_bottom, this);
         } else if (LiveVideoConfig.isSmallChinese) {
             return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_switch_flow_bottom, this);
         } else if (isSmallEnglish) {
-            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
+            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_english_switch_flow_bottom, this);
         } else {
             if (pattern == 2) {
                 return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
@@ -51,9 +51,14 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
     @Override
     public void onHide() {
         if (LiveVideoConfig.isPrimary) {
-            findViewById(R.id.rl_livevideo_common_wordps).setVisibility(GONE);
+            findViewById(R.id.rl_livevideo_common_word).setVisibility(GONE);
+            switchFlowView.setSwitchFlowPopWindowVisible(false);
         } else if (LiveVideoConfig.isSmallChinese) {
             findViewById(R.id.rl_livevideo_common_word).setVisibility(GONE);
+            switchFlowView.setSwitchFlowPopWindowVisible(false);
+        } else if (isSmallEnglish) {
+            findViewById(R.id.rl_livevideo_common_word).setVisibility(GONE);
+            switchFlowView.setSwitchFlowPopWindowVisible(false);
         } else {
             findViewById(R.id.rl_livevideo_common_word).setVisibility(GONE);
         }
