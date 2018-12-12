@@ -265,7 +265,9 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
     @Override
     public void onDestory() {
         super.onDestory();
-        expPager.onDestroy();
+        if (expPager != null) {
+            expPager.onDestroy();
+        }
         if (mEvaluationView instanceof StandExperienceEvaluationPager) {
             ((StandExperienceEvaluationPager) mEvaluationView).onDestroy();
         }
