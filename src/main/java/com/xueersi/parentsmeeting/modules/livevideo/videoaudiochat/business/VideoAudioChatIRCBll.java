@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoAudioChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -237,6 +238,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                         chatStatusChanges.get(i).onVideoChatStatusChange(status);
                     }
                 }
+                VideoAudioChatLog.getRaiseHandMsgSno2(mLiveBll, micType == 0 ? "audio" : "video", object.optString("nonce"));
             }
             break;
             case XESCODE.AgoraChat.RAISE_HAND_COUNT: {

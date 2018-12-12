@@ -9,35 +9,27 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieComposition;
-import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
-
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
-
-import com.xueersi.common.event.MiniEvent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -50,12 +42,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
-import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
-
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -83,7 +71,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private boolean isFinish = false;
     private String jsSubmitData = "javascript:submitData()";
     private String jsforceSubmit = "javascript:forceSubmit()";
-    /** 文科新课件平台 强制提交js */
+    /**
+     * 文科新课件平台 强制提交js
+     */
     private String jsArtsForceSubmit = "javascript:examSubmitAll()";
     private EnglishH5CoursewareBll.OnH5ResultClose onClose;
     private String id;
@@ -98,7 +88,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private int mGoldNum;
     private int mEnergyNum;
     private final File mMorecacheout;
-    /** 公共资源 */
+    /**
+     * 公共资源
+     */
     private File mPublicCacheout;
     private EnglishH5Entity englishH5Entity;
     private String mLoadUrls;
@@ -194,17 +186,25 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 
     @Override
     public void submitData() {
+        if (isFinish) {
+            return;
+        }
         isFinish = true;
+        String commit;
         if (isNewArtsCourseware && !"17".equals(detailInfo.type)) {
             wvSubjectWeb.loadUrl(jsArtsForceSubmit);
+            commit = jsArtsForceSubmit;
             Log.e("Duncan", "js:");
         } else {
             String command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
+            commit = command;
             Log.e("Duncan", "command:" + command);
             wvSubjectWeb.loadUrl(command);
         }
+        mLogtf.d("submitData:isNewArtsCourseware=" + isNewArtsCourseware + ",commit=" + commit);
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareEnd");
         logHashMap.put("coursewareid", id);
+        logHashMap.put("commit", commit);
         logHashMap.put("coursewaretype", courseware_type);
         umsAgentDebugInter(eventId, logHashMap.getData());
     }
@@ -378,17 +378,28 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         logger.d("shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
                     }
                     if (file.exists()) {
-                        FileInputStream inputStream = null;
                         try {
-                            inputStream = new FileInputStream(file);
-                            String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
-                            String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-                            WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
-                            webResourceResponse.setResponseHeaders(header);
-                            Log.e("Duncan", "artsload");
-                            return webResourceResponse;
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
+                            HashMap<String, String> hashMap = new HashMap<>();
+                            hashMap.put("url", s);
+                            hashMap.put("filepath", file.getPath());
+                            hashMap.put("filelength", "" + file.length());
+                            UmsAgentManager.umsAgentDebug(mContext, TAG + "_cache", hashMap);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(e);
+                        }
+                        if (file.length() > 0) {
+                            FileInputStream inputStream = null;
+                            try {
+                                inputStream = new FileInputStream(file);
+                                String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
+                                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                                WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                                webResourceResponse.setResponseHeaders(header);
+                                Log.e("Duncan", "artsload");
+                                return webResourceResponse;
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                     return super.shouldInterceptRequest(view, s);

@@ -13,14 +13,8 @@ import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationUtils;
@@ -40,8 +34,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerResultLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerStateLottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerStateNoEnergyLottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ArtsAnswerTextView;
@@ -102,7 +94,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     public static final int RESULT_TYPE_ERRRO = 0;
     private AnswerResultStateListener mStateListener;
 
-    public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity, AnswerResultStateListener stateListener) {
+    public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity,AnswerResultStateListener stateListener) {
         super(context);
         mData = entity;
         this.mStateListener = stateListener;
@@ -249,6 +241,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         layoutParams.rightMargin = (int) (screenHeight * 0.180f);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         rlAnswerRootLayout.addView(closeBtn, layoutParams);
+
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -419,6 +412,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     }
 
     private void showAnswerList() {
+
         answerListShowing = true;
         logger.e("=====>showAnswerList called");
         recyclerView = mView.findViewById(R.id.rcl_arts_answer_result_detail);
@@ -604,7 +598,9 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         mView.post(new Runnable() {
             @Override
             public void run() {
-                ((ViewGroup) mView.getParent()).removeView(mView);
+                if (mView.getParent() != null) {
+                    ((ViewGroup) mView.getParent()).removeView(mView);
+                }
             }
         });
     }

@@ -117,20 +117,28 @@ public class TeamPkAqResultPager extends BasePager {
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                try {
-                    if (awardType == AWARD_TYPE_QUESTION) {
-                        showQuestionAwardAnim();
-                    } else if (awardType == AWARD_TYPE_VOTE) {
-                        showVoteAwardAnim();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                if(mView.getMeasuredWidth() > 0){
+                    try {
+                        //延迟200 解决播放动画时卡顿问题
+                        mView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (awardType == AWARD_TYPE_QUESTION) {
+                                    showQuestionAwardAnim();
+                                } else if (awardType == AWARD_TYPE_VOTE) {
+                                    showVoteAwardAnim();
+                                }
+                            }
+                        },200);
 
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
-                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                }else{
-                    view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+                        view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }else{
+                        view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
                 }
             }
         });
@@ -200,7 +208,7 @@ public class TeamPkAqResultPager extends BasePager {
         scaleAnimation = (ScaleAnimation) AnimationUtils.
                 loadAnimation(mContext, R.anim.anim_livevido_teampk_aq_award);
         scaleAnimation.setInterpolator(new SpringScaleInterpolator(SCALE_ANIM_FACTOR));
-        rlQuestionRootView.setVisibility(View.GONE);
+        rlQuestionRootView.setVisibility(View.INVISIBLE);
         rlVotRootView.setVisibility(View.VISIBLE);
         rlVotRootView.startAnimation(scaleAnimation);
 

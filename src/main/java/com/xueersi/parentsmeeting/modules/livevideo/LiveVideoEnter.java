@@ -136,7 +136,12 @@ public class LiveVideoEnter {
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         bundle.putInt(ENTER_ROOM_FROM, from);
+
         LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
+
+        // 测试代码
+        // intentToAuditClassActivity(context,vStuCourseID,vSectionID);
+
 //        DataLoadEntity dataLoadEntity = new DataLoadEntity(context);
 //        BaseBll.postDataLoadEvent(dataLoadEntity.beginLoading());
 //        LiveHttpManager httpManager = new LiveHttpManager(context);
