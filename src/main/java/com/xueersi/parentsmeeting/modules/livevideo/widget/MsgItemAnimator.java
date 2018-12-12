@@ -40,7 +40,7 @@ public class MsgItemAnimator extends BaseItemAnimator {
     /**
      * item 可见 持续时间
      */
-    private static final long ITEM_VISIBLE_DURATION = 3000L;
+    private static final long ITEM_VISIBLE_DURATION = 6000L;
     private Handler mHandler;
     private static final float MARQUEE_ANIM_DISPATCH_FRACTION = 0f;
     private ItemFadeOutListener itemFadeOutListener;
