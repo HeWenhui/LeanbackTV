@@ -394,6 +394,15 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
                 if (mQuestionAction != null) {
 //                            mGetInfo.getLiveTopic().setTopic(getTopicFromQuestion(videoQuestionLiveEntity));
+
+                    //设置action的方法要在showQuestion之前
+                    if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
+                        logger.i("走人机start,拉取试题");
+                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                        rolePlayMachineAction = rolePlayerBll;
+
+                    }
                     mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(videoQuestionLiveEntity);
                     mQuestionAction.showQuestion(videoQuestionLiveEntity);
                     if (mAnswerRankBll != null) {
@@ -410,13 +419,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                 "SENDQUESTION");
                     }
                 }
-                if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
-                    logger.i("走人机start,拉取试题");
-                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                    mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
-                    rolePlayMachineAction = rolePlayerBll;
 
-                }
 
             }
             break;
@@ -450,6 +453,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     videoQuestionLiveEntity.setIsVoice(isVoice);
                 }
                 if (mQuestionAction != null) {
+                    //设置action的方法要在showQuestion之前
+                    if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
+                        logger.i("onNotice 新课件平台，走人机start,拉取试题");
+                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                        rolePlayMachineAction = rolePlayerBll;
+
+                    }
                     mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(videoQuestionLiveEntity);
                     mQuestionAction.showQuestion(videoQuestionLiveEntity);
                     if (mAnswerRankBll != null) {
@@ -461,13 +472,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 }
 
-                if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
-                    logger.i("onNotice 新课件平台，走人机start,拉取试题");
-                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                    mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
-                    rolePlayMachineAction = rolePlayerBll;
 
-                }
 
                 break;
             }
