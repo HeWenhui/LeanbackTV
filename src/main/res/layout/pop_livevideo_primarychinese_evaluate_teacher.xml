@@ -4,6 +4,7 @@
     android:id="@id/rl_livevideo_evaluate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
     android:background="@drawable/chinese_evaluateteacher_shellwindow_bg">
 
     <RelativeLayout
@@ -167,7 +168,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="12dp"
                     android:gravity="center"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <CheckBox
                         android:id="@id/cb_livevideo_evaluate_main_option_1"
@@ -471,7 +472,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
-                android:src="@drawable/chinese_evaluate_shellwindow_nimingtijiao_loading_bg"
+                android:src="@drawable/lspj_tanchuang_loading_icon_normal"
                 android:visibility="gone" />
 
         </RelativeLayout>
@@ -524,7 +525,7 @@
                 android:layout_alignBottom="@id/rl_livevideo_evaluate_tryagain"
                 android:layout_marginLeft="18dp"
                 android:layout_marginBottom="14dp"
-                android:src="@drawable/chinese_evaluate_shellwindow_nimingtijiao_loading_bg"
+                android:src="@drawable/lspj_tanchuang_loading_icon_normal"
                 android:visibility="gone" />
         </RelativeLayout>
 
