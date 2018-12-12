@@ -657,6 +657,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                         if (mVideoAction != null) {
                             mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
                         }
+                        liveVideoBll.onModeChange(mLiveTopic.getMode(), isPresent);
                         for (int i = 0; i < businessBlls.size(); i++) {
                             businessBlls.get(i).onModeChange(oldMode, mLiveTopic.getMode(), isPresent);
                         }
