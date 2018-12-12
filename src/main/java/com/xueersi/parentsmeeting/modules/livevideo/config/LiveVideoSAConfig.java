@@ -230,6 +230,9 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_WONDER_MOMENT = HTTP_HOST + "/LiveCourse/uploadWonderfulMomentImg";
         /** 储存学生直播在线时长(App端) https://wiki.xesv5.com/pages/viewpage.action?pageId=13838543 */
         public String URL_LIVE_STU_ONLINE_TIME = HTTP_HOST + "/LiveCourse/saveStuPlanOnlineTime";
+
+
+
         /** 文科学生对老师评价*/
         public String URL_LIVE_ARTS_EVALUATE_TEACHER = "https://app.arts.xueersi.com/LiveCourse/submitStuEvaluateTeacher";
         /** 理科提交对老师评价*/
@@ -243,5 +246,6 @@ public class LiveVideoSAConfig {
         /** 小语学生对老师评价*/
         public String URL_LIVE_CHS_EVALUATE_TEACHER = "https://app.chs.xueersi.com/LiveCourse/submitEvaluate";
     }
+
 
 }

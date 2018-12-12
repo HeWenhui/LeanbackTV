@@ -1,51 +1,86 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mediacontroller_bg">
 
-    <ImageView
-        android:id="@id/iv_livevideo_under_bg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/dounderstand"/>
+
+    <!--左右边框27dp-->
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/iv_livevideo_under_bg"
-        android:layout_alignLeft="@id/iv_livevideo_under_bg"
-        android:layout_alignRight="@id/iv_livevideo_under_bg"
-        android:layout_alignTop="@id/iv_livevideo_under_bg">
-       <LinearLayout
-           android:orientation="vertical"
-           android:layout_alignParentBottom="true"
-           android:layout_centerHorizontal="true"
-           android:layout_marginBottom="42dp"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content">
-           <ImageView
-               android:id="@+id/tv_livevideo_understand_understand"
-               android:background="@drawable/selector_understandedbg"
-               android:layout_marginBottom="-10dp"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"/>
-           <ImageView
-               android:id="@+id/tv_livevideo_understand_donotunderstand"
-               android:background="@drawable/selector_nounderstandbg"
-               android:layout_marginBottom="8dp"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"/>
-       </LinearLayout>
+        android:layout_width="412dp"
+        android:layout_height="335dp"
+        android:layout_centerInParent="true"
+        >
+
         <ImageView
-            android:id="@+id/iv_understand_close"
+            android:id="@id/iv_livevideo_under_bg"
+            android:layout_width="412dp"
+            android:layout_height="336dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="-10dp"
+            android:background="@drawable/dounderstand"
+            android:scaleType="centerCrop"
+            />
+
+        <ImageView
+            android:layout_width="233dp"
+            android:layout_height="175dp"
+            android:src="@drawable/icon_live_understand_top"
+            android:layout_centerHorizontal="true"
+            android:id="@id/iv_live_halfbody_understand_top"
+            />
+
+        <ImageView
+            android:layout_width="165dp"
+            android:layout_height="35dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon_live_ps_understand"
+            android:layout_below="@id/iv_live_halfbody_understand_top"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="27dp"
+            />
+
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginRight="26dp"
-            android:layout_marginTop="8dp"
+            android:layout_below="@id/iv_live_halfbody_understand_top"
+            android:orientation="horizontal"
+            android:layout_marginTop="55dp"
+            android:id="@id/ll_live_halfbody_understand_btns"
+            >
+
+            <ImageView
+                android:id="@+id/tv_livevideo_understand_donotunderstand"
+                android:layout_width="120dp"
+                android:layout_height="46dp"
+                android:background="@drawable/selector_nounderstandbg"
+                android:scaleType="centerCrop" />
+
+            <ImageView
+                android:id="@+id/tv_livevideo_understand_understand"
+                android:layout_width="120dp"
+                android:layout_height="46dp"
+                android:background="@drawable/selector_understandedbg"
+                android:scaleType="centerCrop"
+                android:layout_marginLeft="5dp"
+                />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_understand_close"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_alignTop="@id/iv_livevideo_under_bg"
+            android:layout_alignRight="@id/iv_livevideo_under_bg"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/selector_understandclose_ps"/>
+
+
     </RelativeLayout>
 </RelativeLayout>

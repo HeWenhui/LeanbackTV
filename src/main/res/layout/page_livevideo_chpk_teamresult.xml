@@ -1,8 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/livevideo_chpk_background">
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/livevideo_chpk_background" />
 
     <RelativeLayout
         android:id="@id/rl_teampk_pk_result_lottie_root"
@@ -82,8 +87,8 @@
                 <RelativeLayout
                     android:layout_width="160dp"
                     android:layout_height="214dp"
-                    android:background="@drawable/livevideo_list_yellow_img_disable"
-                    android:layout_marginTop="-10dp">
+                    android:layout_marginTop="-10dp"
+                    android:background="@drawable/livevideo_list_yellow_img_disable">
 
                     <ImageView
                         android:id="@id/iv_teampk_pkresult_myteam_logo"

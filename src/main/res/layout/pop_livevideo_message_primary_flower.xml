@@ -156,7 +156,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/primarygiftsend"
+            android:background="@drawable/selector_ps_giftsend"
             android:layout_marginBottom="38dp"
             />
         <ImageView
