@@ -19,7 +19,6 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:contentDescription="TODO"
             android:src="@drawable/chinese_evaluateteacher_shellwindow_title" />
 
         <ImageView
@@ -168,7 +167,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="12dp"
                     android:gravity="center"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <CheckBox
                         android:id="@id/cb_livevideo_evaluate_main_option_1"
