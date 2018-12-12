@@ -32,10 +32,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 
 
 /**
-*战队pk 实时答题
-*@author chekun
-*created  at 2018/4/17 16:26
-*/
+ * 战队pk 实时答题
+ *
+ * @author chekun
+ * created  at 2018/4/17 16:26
+ */
 public class TeamPkAqResultPager extends BasePager {
 
     private RelativeLayout rlQuestionRootView;
@@ -117,7 +118,7 @@ public class TeamPkAqResultPager extends BasePager {
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if(mView.getMeasuredWidth() > 0){
+                if (mView.getMeasuredWidth() > 0) {
                     try {
                         //延迟200 解决播放动画时卡顿问题
                         mView.postDelayed(new Runnable() {
@@ -129,14 +130,14 @@ public class TeamPkAqResultPager extends BasePager {
                                     showVoteAwardAnim();
                                 }
                             }
-                        },200);
+                        }, 200);
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }else{
+                    } else {
                         view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     }
                 }
@@ -154,8 +155,8 @@ public class TeamPkAqResultPager extends BasePager {
      * @param energy
      */
     public void setData(int goldNum, int energy) {
-        mGoldNum = goldNum;
-        mEnergy = energy;
+        mGoldNum = goldNum < 0 ? 0 : goldNum;
+        mEnergy = energy < 0 ? 0 : energy;
     }
 
 
@@ -286,10 +287,10 @@ public class TeamPkAqResultPager extends BasePager {
                 Rect endRect = pkProgressBar.getSliderDrawRect();
                 if (endRect != null) {
                     playFlayAnim(ivVoteEnergy, endRect);
-                }else{
+                } else {
                     closePager();
                 }
-            }else{
+            } else {
                 closePager();
             }
         } else {
