@@ -375,7 +375,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     if (file.exists()) {
                         try {
                             HashMap<String, String> hashMap = new HashMap<>();
-                            hashMap.put("url", url);
+                            hashMap.put("url", s);
                             hashMap.put("filepath", file.getPath());
                             hashMap.put("filelength", "" + file.length());
                             UmsAgentManager.umsAgentDebug(mContext, TAG + "_cache", hashMap);
