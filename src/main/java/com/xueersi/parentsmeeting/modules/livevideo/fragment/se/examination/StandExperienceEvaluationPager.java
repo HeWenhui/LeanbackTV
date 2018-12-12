@@ -172,7 +172,7 @@ public class StandExperienceEvaluationPager<T extends IExperiencePresenter> exte
     public void showWebView(String url) {
         if (!TextUtils.isEmpty(url)) {
             logger.i("加载url:" + url);
-//            BrowserActivity.CookieSyncNativeWeb.syncWebLogin(url);
+            BrowserActivity.CookieSyncNativeWeb.syncWebLogin(url);
             wvSubjectWeb.loadUrl(url);
 //            wvSubjectWeb.loadUrl("https://www.baidu.com/");
         } else {
