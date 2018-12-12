@@ -190,16 +190,21 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             return;
         }
         isFinish = true;
+        String commit;
         if (isNewArtsCourseware && !"17".equals(detailInfo.type)) {
             wvSubjectWeb.loadUrl(jsArtsForceSubmit);
+            commit = jsArtsForceSubmit;
             Log.e("Duncan", "js:");
         } else {
             String command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
+            commit = command;
             Log.e("Duncan", "command:" + command);
             wvSubjectWeb.loadUrl(command);
         }
+        mLogtf.d("submitData:isNewArtsCourseware=" + isNewArtsCourseware + ",commit=" + commit);
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareEnd");
         logHashMap.put("coursewareid", id);
+        logHashMap.put("commit", commit);
         logHashMap.put("coursewaretype", courseware_type);
         umsAgentDebugInter(eventId, logHashMap.getData());
     }
