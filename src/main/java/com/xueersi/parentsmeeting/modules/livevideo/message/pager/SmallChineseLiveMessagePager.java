@@ -62,6 +62,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSt
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
@@ -140,6 +141,8 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
 //    private Drawable messageBackgroundColors[];
     /** 小学语文测试，一直发弹幕， */
     private boolean isSendFlower = false;
+    /** 战队pk布局 */
+    private TeamPkStateLayout teamPkStateLayout;
 
     public SmallChineseLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                         LiveAndBackDebug ums, BaseLiveMediaControllerBottom liveMediaControllerBottom,
@@ -223,17 +226,33 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         ivPkBackGround = mView.findViewById(R.id.iv_livevideo_small_chinese_pk_background);
         ivMessageTopIcon = mView.findViewById(R.id.iv_livevideo_small_chinese_live_message_top_icon);
 
+        teamPkStateLayout = mView.findViewById(R.id.tpkL_teampk_pkstate_root);
         return mView;
     }
 
     /** 动态调整排行榜背景高度 */
     private void dynamicChangeTopIcon() {
+
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        int ivRealWid = liveVideoPoint.x4 - liveVideoPoint.x3;
+
+//        /** 调整战队pk的高度 */
+        Drawable teamPkBackground = mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_team_pk_background);
+        int pkBackgroundHeight = teamPkBackground.getIntrinsicHeight();
+        int pkBackgroundWidh = teamPkBackground.getIntrinsicWidth();
+        int pkRealWid = ivRealWid;
+        double pkMag = ivRealWid * 1.0 / pkBackgroundWidh;
+        int pkRealHeight = (int) (pkMag * pkBackgroundHeight);
+        ViewGroup.LayoutParams pkLayoutParams = teamPkStateLayout.getLayoutParams();
+        pkLayoutParams.height = pkRealHeight;
+        pkLayoutParams.width = pkRealWid;
+        teamPkStateLayout.setLayoutParams(pkLayoutParams);
+
         Drawable topIconDrawable = mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_rank_top_icon);
         int topIconHeight = topIconDrawable.getIntrinsicHeight();
         int topIconWid = topIconDrawable.getIntrinsicWidth();
-        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
 
-        int ivRealWid = liveVideoPoint.x4 - liveVideoPoint.x3;
+
         double mag = ivRealWid * 1.0 / topIconWid;
         int ivRealHeight = (int) (mag * topIconHeight);
 
@@ -271,7 +290,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         dynamicChangeTopIcon();
         if (getInfo.getIsAllowTeamPk().equals("1")) {
 
-            ivPkBackGround.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_team_pk_background));
+            ivPkBackGround.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_team_pk_background_icon));
         }
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
             @Override
@@ -363,7 +382,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         });
         logger.i("initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-       // initCommonWord();
+        // initCommonWord();
         logger.i("initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
@@ -420,7 +439,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         super.initListener();
         rlLivevideoCommonWord = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_word);
 
-        Log.e("SmallChinese","=========>initListener:"+liveMediaControllerBottom.getClass().getSimpleName());
+        Log.e("SmallChinese", "=========>initListener:" + liveMediaControllerBottom.getClass().getSimpleName());
         //聊天，设置监听器
         btMesOpen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -434,7 +453,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             @Override
             public void onClick(final View v) {
 
-                if(!commonWordInited){
+                if (!commonWordInited) {
                     initCommonWord();
                 }
 

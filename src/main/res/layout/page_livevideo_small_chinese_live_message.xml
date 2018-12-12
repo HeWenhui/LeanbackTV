@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/bg_livevideo_small_chinese_rank_top_icon" />
+                android:background="@drawable/bg_livevideo_small_chinese_rank_top_icon" />
             <!--战队pk-->
             <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout
                 android:id="@id/tpkL_teampk_pkstate_root"
