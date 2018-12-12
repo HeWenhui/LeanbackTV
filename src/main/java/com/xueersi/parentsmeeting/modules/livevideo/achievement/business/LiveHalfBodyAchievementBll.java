@@ -75,6 +75,11 @@ public class LiveHalfBodyAchievementBll implements StarInteractAction {
 
     }
 
+    @Override
+    public void onEnglishPk() {
+
+    }
+
 
     public void setLiveBll(LiveAchievementIRCBll liveAchievementIRCBll) {
 
