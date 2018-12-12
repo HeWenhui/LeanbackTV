@@ -395,7 +395,7 @@ public class TeamPkResultPager extends BasePager {
         tpbEnergyBar.setProgress(progress);
         tvMyTeamEnergy.setText(myTeamOldEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamOldEnergy + "");
-        logger.e("========>updateProgressBar22222:" + progress);
+
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
