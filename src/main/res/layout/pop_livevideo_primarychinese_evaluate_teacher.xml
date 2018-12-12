@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="11dp"
-                    android:layout_toRightOf="@id/iv_livevideo_evaluate_main_profile_picture_bg"
+                    android:layout_toRightOf="@+id/iv_livevideo_evaluate_main_profile_picture_bg"
                     android:background="@drawable/chinese_evaluate_shellwindow_zhujiang" />
 
                 <TextView
@@ -91,7 +91,7 @@
                     android:layout_below="@+id/iv_livevideo_evaluate_main_status"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="5dp"
-                    android:layout_toRightOf="@id/iv_livevideo_evaluate_main_profile_picture_bg"
+                    android:layout_toRightOf="@+id/iv_livevideo_evaluate_main_profile_picture_bg"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="李丽丽"
