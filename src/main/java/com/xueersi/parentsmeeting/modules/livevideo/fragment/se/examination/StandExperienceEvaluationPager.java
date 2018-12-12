@@ -7,7 +7,7 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 
 import com.tencent.smtt.sdk.WebSettings;
-import com.xueersi.parentsmeeting.module.browser.business.XesWebViewCookieUtils;
+import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.provider.WebFunctionProvider;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IExperiencePresenter;
@@ -172,7 +172,7 @@ public class StandExperienceEvaluationPager<T extends IExperiencePresenter> exte
     public void showWebView(String url) {
         if (!TextUtils.isEmpty(url)) {
             logger.i("加载url:" + url);
-            XesWebViewCookieUtils.syncWebLogin(url);
+            BrowserActivity.CookieSyncNativeWeb.syncWebLogin(url);
             wvSubjectWeb.loadUrl(url);
 //            wvSubjectWeb.loadUrl("https://www.baidu.com/");
         } else {

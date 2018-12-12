@@ -412,15 +412,12 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                         mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
                     }
-
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
                         logger.e("======>LiveBll setWebViewCloseByTeacher: " +
                                 "SENDQUESTION");
                     }
                 }
-
-
             }
             break;
             case XESCODE.ARTS_SEND_QUESTION: {
