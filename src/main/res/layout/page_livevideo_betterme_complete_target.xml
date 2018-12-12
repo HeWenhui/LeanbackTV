@@ -84,7 +84,7 @@
                         android:max="100"
                         android:paddingLeft="0dp"
                         android:paddingRight="0dp"
-                        android:progress="" />
+                        android:progress="10" />
 
                     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                         android:id="@+id/tv_livevideo_betterme_num_tips"
