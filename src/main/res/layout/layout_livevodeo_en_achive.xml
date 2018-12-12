@@ -6,7 +6,7 @@
         android:id="@id/rl_livevideo_en_achive_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/app_livevideo_enteampk_benchangchengjiu_bg1_img_nor">
+        android:background="@drawable/app_livevideo_enteampk_benchangchengjiu_bg_img_nor">
 
         <ImageView
             android:id="@id/iv_livevideo_en_achive_title"
@@ -25,14 +25,15 @@
             android:layout_toRightOf="@id/iv_livevideo_en_achive_title"
             android:background="@drawable/selector_live_en_achive_open"
             android:button="@null"
-            android:checked="true" />
+            android:checked="false" />
 
         <RelativeLayout
             android:id="@id/rl_livevideo_en_achive_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/iv_livevideo_en_achive_title"
-            android:layout_marginTop="9dp">
+            android:layout_marginTop="9dp"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@id/iv_livevideo_en_achive_num_fire"
@@ -177,7 +178,7 @@
     <ViewStub
         android:id="@id/vs_livevideo_en_achive_bottom2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="28dp"
         android:layout_below="@id/rl_livevideo_en_achive_back"
         android:layout="@layout/layout_livevodeo_en_achive_nopk" />
 

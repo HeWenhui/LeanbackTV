@@ -163,6 +163,41 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 appID = UmsConstants.ARTS_APP_ID_BACK;
                 IS_SCIENCE = false;
                 liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
+            } else if (isArts == 2) {
+                appID = UmsConstants.ARTS_APP_ID_BACK;
+                IS_SCIENCE = false;
+                liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
+                try {
+                    List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+                    int oldSize = -1;
+                    if (lstVideoQuestion != null) {
+                        oldSize = lstVideoQuestion.size();
+                        for (int i = 0; i < lstVideoQuestion.size(); i++) {
+                            VideoQuestionEntity questionEntity = lstVideoQuestion.get(i);
+                            //战队pk分队
+                            if (questionEntity.getvCategory() == 23 || questionEntity.getvCategory() == 25) {
+                                lstVideoQuestion.remove(i);
+                                i--;
+                            }
+                        }
+                        int size = lstVideoQuestion.size();
+                        if (size != oldSize) {
+                            try {
+                                HashMap<String, String> hashMap = new HashMap();
+                                hashMap.put("logtype", "removepk");
+                                hashMap.put("livetype", "" + mLiveType);
+                                hashMap.put("where", "" + where);
+                                hashMap.put("liveid", "" + mVideoEntity.getLiveId());
+                                hashMap.put("size", oldSize + "-" + size);
+                                UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
+                            } catch (Exception e) {
+                                CrashReport.postCatchedException(e);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(e);
+                }
             } else {
                 appID = UmsConstants.LIVE_APP_ID_BACK;
                 IS_SCIENCE = true;
@@ -597,7 +632,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     private void showQuestion(VideoQuestionEntity oldQuestionEntity, ShowQuestion showQuestion) {
         LiveBackBaseBll liveBackBaseBll = array.get(mQuestionEntity.getvCategory());
-        logger.i("showQuestion :"+liveBackBaseBll);
+        logger.i("showQuestion :" + liveBackBaseBll);
         if (liveBackBaseBll != null) {
             liveBackBaseBll.showQuestion(oldQuestionEntity, mQuestionEntity, showQuestion);
         } else {

@@ -106,8 +106,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     private RolePlayerHttpManager mRolePlayerHttpManager;
 
     private RolePlayerHttpResponseParser mRolePlayerHttpResponseParser;
-    private boolean mIsCancelDZ = false;//是否已经取消了点赞
-    private boolean mIsBeginSocket;
+
     private boolean isGoToRobot;//是否开始了人机
 
     public RolePlayerBll(Context context, RelativeLayout bottomContent, LiveAndBackDebug liveBll, LiveGetInfo liveGetInfo) {
@@ -296,8 +295,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 updateAchievement.getStuGoldCount();
             }
         }
-        bottomContent = null;
-        mRolePlayerPager = null;
+        //bottomContent = null;
+       // mRolePlayerPager = null;
     }
 
     /**
@@ -379,7 +378,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
             @Override
             public void onMessage(String result) {
-                logger.i( "result:" + result);
+                //logger.i( "result:" + result);
                 onMessageParse(result);
             }
 
@@ -525,8 +524,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             String str = jsonObject.optString("msg");
             JSONObject msgObj = new JSONObject(str);
             //JSONObject msgObj = jsonObject.getJSONObject("msg");
-            logger.i( "parse 开始解析消息 acid = " + acid + " from " + from + " msg " + msgObj.toString
-                    ());
+            //logger.i( "parse 开始解析消息 acid = " + acid + " from " + from + " msg " + msgObj.toString());
             switch (acid) {
                 case 1:
                     //边接成功，获取stuid
@@ -613,6 +611,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     break;
                 case 2000:
                     //分组结果
+                    logger.i( "group success result:" + result);
                     if (mRolePlayerEntity != null) {
 
                         mRolePlayerEntity.getLstRoleInfo().clear();

@@ -51,6 +51,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
         super.onDestroy();
     }
 
+
     private void initData() {
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
@@ -116,6 +117,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putInt("isArts", mGetInfo.getIsArts());
                     bundle.putInt("pattern", mGetInfo.getPattern());
                     bundle.putBoolean("isPrimary", LiveVideoConfig.isPrimary);
+                    bundle.putBoolean("isSmallChinese", LiveVideoConfig.isSmallChinese);
                     if (mGetInfo.getIsArts() == 0) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
                     }else {

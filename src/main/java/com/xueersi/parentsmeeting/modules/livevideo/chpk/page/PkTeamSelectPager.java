@@ -273,6 +273,7 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
         final TeamSelectLottieEffectInfo effectInfo = new TeamSelectLottieEffectInfo(lottieResPath, lottieJsonPath, "img_0.png");
         effectInfo.setLogoUrl(mTeamInfo.getTeamInfo().getImg());
         lavTeamSelectAnimView.setVisibility(View.VISIBLE);
+        lavTeamSelectAnimView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         lavTeamSelectAnimView.removeAllAnimatorListeners();
         lavTeamSelectAnimView.addAnimatorListener(new AnimatorListenerAdapter() {
             @Override
@@ -599,6 +600,7 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "team_select_start/data.json";
         final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
         lavTeamSelectAnimView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
+        lavTeamSelectAnimView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         lavTeamSelectAnimView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
@@ -798,6 +800,7 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
             }
         });
+        lavTeamSelectAnimView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         lavTeamSelectAnimView.playAnimation();
     }
 

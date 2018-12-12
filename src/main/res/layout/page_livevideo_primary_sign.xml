@@ -15,7 +15,7 @@
         android:layout_alignLeft="@id/iv_livevideo_primarysign_bg"
         android:layout_alignRight="@id/iv_livevideo_primarysign_bg"
         android:layout_alignTop="@id/iv_livevideo_primarysign_bg"
-        android:paddingBottom="22dp">
+        android:paddingBottom="50dp">
         <ImageView
             android:id="@+id/iv_livevideo_primarysign_close"
             android:layout_width="wrap_content"
@@ -32,7 +32,9 @@
             android:layout_centerHorizontal="true"
             android:gravity="center_horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            >
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@+id/tv_sign_name"
                 android:text="小董你好"
@@ -50,6 +52,7 @@
                 android:shadowColor="#2D6044"
                 android:shadowDx="2"
                 android:shadowDy="2"
+                android:layout_marginTop="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
@@ -58,27 +61,30 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/selector_primarysignbt"
-            android:layout_marginBottom="25dp"
+            android:layout_marginBottom="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            />
         <ImageView
             android:visibility="gone"
             android:id="@+id/iv_sign_success"
             android:background="@drawable/primarysignsuccess"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="60dp"
-            android:layout_width="137dp"
-            android:layout_height="127dp"/>
+            android:layout_marginBottom="40dp"
+            android:layout_width="205dp"
+            android:scaleType="centerCrop"
+            android:layout_height="80dp"/>
         <ImageView
             android:visibility="gone"
             android:id="@+id/iv_sign_fail"
             android:background="@drawable/primarysignfail"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="60dp"
-            android:layout_width="143dp"
-            android:layout_height="119dp"/>
+            android:layout_marginBottom="40dp"
+            android:scaleType="centerCrop"
+            android:layout_width="229dp"
+            android:layout_height="80dp"/>
     </RelativeLayout>
 
 

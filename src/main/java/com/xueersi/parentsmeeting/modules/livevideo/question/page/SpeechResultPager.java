@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SpeechResultPager extends LiveBasePager {
     private ViewGroup group;
+    private ImageView iv_live_speech_result_title;
     private ImageView iv_live_speech_result_close;
     private TextView tv_live_speech_result_score;
     private ImageView civ_live_speech_result_head;
@@ -46,6 +47,9 @@ public class SpeechResultPager extends LiveBasePager {
     private TextView tv_live_speech_result_mypraise;
     private OnClose onAutoClose;
     private SpeechResultEntity speechResultEntity;
+    private static int[] titleres = {R.drawable.app_livevideo_enteampk_shellwindow_nicework3_img_nor1, R.drawable.app_livevideo_enteampk_shellwindow_tryharder2_img_nor,
+            R.drawable.app_livevideo_enteampk_shellwindow_nicework3_img_nor, R.drawable.app_livevideo_enteampk_shellwindow_goodjob4_img_nor,
+            R.drawable.app_livevideo_enteampk_shellwindow_fantastic5_img_nor};
 
     public SpeechResultPager(Context context, ViewGroup group, SpeechResultEntity speechResultEntity) {
         super(context, false);
@@ -63,6 +67,7 @@ public class SpeechResultPager extends LiveBasePager {
     @Override
     public View initView() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_speech_result, group, false);
+        iv_live_speech_result_title = view.findViewById(R.id.iv_live_speech_result_title);
         if (speechResultEntity.praise == -1) {
             ViewStub vs_live_speech_result_myenergy = view.findViewById(R.id.vs_live_speech_result_myenergy);
             vs_live_speech_result_myenergy.inflate();
@@ -109,6 +114,20 @@ public class SpeechResultPager extends LiveBasePager {
 //            lp.width = (int) (85 * speechResultMembers.size() * ScreenUtils.getScreenDensity());
 //            rv_live_speech_result_other.setLayoutParams(lp);
         }
+        int score = speechResultEntity.score;
+        int progress;
+        if (score < 40) {
+            progress = 1;
+        } else if (score < 60) {
+            progress = 2;
+        } else if (score < 75) {
+            progress = 3;
+        } else if (score < 90) {
+            progress = 4;
+        } else {
+            progress = 5;
+        }
+        iv_live_speech_result_title.setImageResource(titleres[progress - 1]);
         final TextView textView = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
         textView.setVisibility(View.VISIBLE);
         final AtomicInteger integer = new AtomicInteger(5);

@@ -401,6 +401,7 @@
     <!--直播-语音弹幕-->
     <item name="rl_livevideo_content_speechbul" type="id" />
     <item name="rl_livevideo_speechbul_root" type="id" />
+    <item name="rl_livevideo_speechbul_title" type="id" />
     <item name="tv_livevideo_speechbul_title" type="id" />
     <item name="tv_livevideo_speechbul_title_count" type="id" />
     <item name="tv_livevideo_speechbul_title_switch" type="id" />
@@ -516,6 +517,7 @@
     <item name="ll_roleplayer_message_self_head_main" type="id" />
     <item name="btn_live_roleplayer_dz" type="id" />
     <!--结果页-->
+    <item name="iv_live_speech_result_title" type="id" />
     <item name="iv_live_speech_result_close" type="id" />
     <item name="tv_live_speech_result_score" type="id" />
     <item name="rl_live_speech_result_head" type="id" />
@@ -807,6 +809,7 @@
     <item name="bt_livevideo_worddictation_close" type="id" />
 
 
+
     <!--文科答题结果页-->
     <item name="tv_arts_answer_result_state" type="id" />
     <item name="rl_arts_answer_result_state" type="id" />
@@ -842,6 +845,71 @@
     <item name="rl_arts_pse_answer_result_root" type="id" />
 
     <item name="iv_arts_pse_teacher_praise" type="id" />
+
+    <!--半身直播-->
+    <item name="iv_livevideo_halfbody_connect_state" type="id"/>
+    <item name="ll_livevideo_halbody_msg_bottom" type="id"/>
+    <item name="iv_livevideo_halfbody_msg_btn" type="id"/>
+    <item name="iv_livevideo_halfbody_hot_wrod" type="id"/>
+    <item name="tv_livevideo_halfbody_msg_onlinenum" type="id"/>
+
+    <item name="rl_livevideo_halfbody_msgcontent" type="id"/>
+    <item name="lv_livevideo_halfbody_common_word" type="id" />
+
+    <!--半身直播旁听-->
+    <item name="ll_livevideo_auditclass_online_state_container" type="id"/>
+    <item name="rcl_livevideo_auditclass_anwser_state" type="id"/>
+    <item name="rcl_livevideo_auditclass_business_container" type="id"/>
+
+    <item name="tv_livevideo_auditclass_team_rank_anchor" type="id"/>
+    <item name="tv_livevideo_auditclass_team_rank" type="id"/>
+
+    <item name="tv_livevideo_auditclass_energy_anchor" type="id"/>
+    <item name="tv_livevideo_auditclass_energy" type="id"/>
+
+    <item name="tv_livevideo_auditclass_against_energy_anchor" type="id"/>
+    <item name="tv_livevideo_auditclass_against_energy" type="id"/>
+    <item name="v_livevideo_auditclass_devide_line" type="id"/>
+    <item name="tv_livevideo_auditclass_rate_anchor" type="id"/>
+    <item name="tv_livevideo_auditclass_rate" type="id"/>
+
+    <item name="tv_livevideo_auditclass_title_test_num" type="id"/>
+    <item name="tv_livevideo_auditclass_title_answer_result" type="id"/>
+    <item name="tv_livevideo_auditclass_title_rate" type="id"/>
+    <item name="tv_livevideo_auditclass_no_testinfo" type="id"/>
+    <item name="consl_livevideo_auditclass_test_tilte_container" type="id"/>
+
+    <item name="tv_livevideo_auditclass_test_index" type="id"/>
+    <item name="iv_livevideo_auditclass_answer_state" type="id"/>
+    <item name="tv_livevideo_auditclass_answer_rate" type="id"/>
+    <item name="tv_livevideo_auditclass_myrank" type="id"/>
+
+    <item name="iv_live_halfbody_pk_state" type="id"/>
+    <item name="fl_live_halfbody_coin_container" type="id"/>
+    <item name="rl_live_halfbody_energy_contribution" type="id"/>
+    <item name="tv_live_halfbody_energy_contribution" type="id"/>
+
+    <item name="rcl_live_halfbody_msg" type="id"/>
+    <item name="tv_live_halfbody_msg" type="id"/>
+    <item name="tv_live_halfbody_sys_msg" type="id"/>
+
+    <item name="rl_live_halfbody_livemsg_container" type="id"/>
+    <item name="rl_live_halfbody_mediacontroll_container" type="id"/>
+
+    <item name="rl_live_halfbody_video_loading" type="id"/>
+    <item name="tv_live_halfbody_live_state" type="id"/>
+    <item name="iv_live_halfbody_video_loading" type="id"/>
+    <item name="iv_live_halfbody_hotwrod" type="id"/>
+
+    <item name="ll_live_halfbody_understand_btns" type="id"/>
+    <item name="iv_live_halfbody_understand_top" type="id"/>
+
+    <item name="tv_live_auditclass_checktime_anchor" type="id"/>
+    <item name="gl_live_auditclass_tile_anchor" type="id"/>
+    <item name="gl_live_auditclass_item_anchor" type="id"/>
+    <item name="cl_live_auditclass_title" type="id" />
+    <item name="iv_live_auditclass_nodata" type="id" />
+    <item name="cl_live_auditclass_pkinfo" type="id" />
 
     <!--2018接麦-->
     <item name="rl_livevideo_chat_content" type="id" />
@@ -926,6 +994,8 @@
     <item name="tv_livevideo_evaluate_submit_status" type="id"/>
     <item name="tv_livevideo_evaluate_count_down" type="id"/>
     <item name="btn_livevideo_evaluate_tryagain" type="id"/>
+    <!-- 体验课退出反馈-->
+    <item name="rl_livevideo_experience_feedback_quit" type="id" />
     <!--英语本场成就-->
     <item name="rl_livevideo_en_achive_back" type="id" />
     <item name="iv_livevideo_en_achive_title" type="id" />

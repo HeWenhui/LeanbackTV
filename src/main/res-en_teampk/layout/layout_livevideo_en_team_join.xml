@@ -4,7 +4,7 @@
     android:layout_height="72dp"
     android:layout_centerHorizontal="true"
     android:layout_marginTop="7dp"
-    android:background="@drawable/zhanduipk_toast_chidao_bg_normal">
+    android:background="@drawable/livevideo_enpk_toast_chidao_bg_normal">
 
     <com.xueersi.ui.widget.CircleImageView
         android:id="@id/iv_livevideo_en_teampk_top_img"

@@ -361,7 +361,6 @@ public class RollCallBll implements RollCallAction, Handler.Callback {
         } else {
             logger.i("显示弹窗");
             if (LiveVideoConfig.isPrimary) {
-
                 mIsShowUserSign = false;
                 mVPlayVideoControlHandler.post(new Runnable() {
                     @Override

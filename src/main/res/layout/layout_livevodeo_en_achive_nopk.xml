@@ -7,7 +7,6 @@
         android:id="@id/tv_livevideo_en_achive_pk_energy_my_lable"
         android:layout_width="wrap_content"
         android:layout_height="28dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/app_livevideo_enteampk_benchangchengjiu_zhanduiweifenpei_title_pic_nor" />
+        android:layout_gravity="center_horizontal" />
 
 </FrameLayout>

@@ -751,18 +751,14 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             @Override
             public void onVolumeUpdate(int volume) {
                 vwvSpeechVolume.setVolume(volume * 3);
-                logger.i("volume = " + volume);
+                //logger.i("volume = " + volume);
             }
 
             @Override
             public void onRecordPCMData(short[] shorts, int readSize) {
                         // logger.i("RolePlayerDemoTest", "通过声网走");
                         //通过声网走
-
-
-            }
-
-                });
+            }});
     }
 
 

@@ -19,4 +19,6 @@ public interface StarInteractAction {
     void onGetStar(StarAndGoldEntity starAndGoldEntity);
 
     void onStarAdd(int star, float x, float y);
+
+    void onEnglishPk();
 }

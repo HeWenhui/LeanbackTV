@@ -47,6 +47,7 @@ public class PrimaryScienceEvaluateTeacherPager extends BaseEvaluateTeacherPaper
             public void onClick(View view) {
                 btnReSubmit.setEnabled(false);
                 ivTryagaingLoading.setVisibility(View.VISIBLE);
+
                 buttonOnClick.submit(mainEva, tutorEva);
             }
         });
@@ -77,7 +78,7 @@ public class PrimaryScienceEvaluateTeacherPager extends BaseEvaluateTeacherPaper
 
         optCheckCorlor = 0xFFFF7403;
         optUncheckColor = 0xFFBC7D57;
-        scoreCheckColor = 0xFF8F4D26;
+        scoreCheckColor = 0xFFFF7403;
         scoreUncheckColor = 0xFFBC7D57;
         super.initData();
     }
@@ -93,6 +94,8 @@ public class PrimaryScienceEvaluateTeacherPager extends BaseEvaluateTeacherPaper
     @Override
     public void showSuccessPager(CountDownCallback callback) {
         logger.i("showUploadSuccessPager");
+        rlBackground.setBackgroundResource(R.drawable.lspj_pingjia_thanks_bg_img_normal);
+        ivResult.setImageResource(R.drawable.lspj_pingjia_result_thanks_img_normal);
         super.showSuccessPager(callback);
     }
 

@@ -40,6 +40,14 @@
         <!--<item name="android:taskToBackEnterAnimation">@null</item>-->
         <!--<item name="android:taskToBackExitAnimation">@null</item>-->
     </style>
+    <style name="style_experience_quit_radiobutton">
+        <item name="android:layout_width">240dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:button">@drawable/selector_quit_feedback_item</item>
+        <item name="android:paddingLeft">14dp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/COLOR_666666</item>
+    </style>
 
     <style name="ProgressBar_live_en_achive" parent="@android:style/Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/layerlst_livevideo_enpk_achive_prog</item>
@@ -47,6 +55,9 @@
 
     <style name="ProgressBar_live_en_pk" parent="@android:style/Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/layerlst_livevideo_enpk_pk_prog</item>
+    </style>
+    <style name="ProgressBar_live_en_pk_stand" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/layerlst_livevideo_enpk_pk_stand_prog</item>
     </style>
 
     <style name="ProgressBar_live_betterme" parent="@android:style/Widget.ProgressBar.Horizontal">

@@ -19,6 +19,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -549,12 +550,13 @@ public class LiveHttpManager extends BaseHttpBusiness {
     public void liveSubmitNewArtsRealH5Answer(String srcType, String testId, String liveId, String
             testAnswer, String type, String userMode, String isSubmit,
                                               double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
+        String types = srcType;
         HttpRequestParams params = new HttpRequestParams();
         String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSH5_ANSWER;
         setDefaultParameter(params);
         params.addBodyParam("testId", testId);
         params.addBodyParam("liveId", liveId);
-        params.addBodyParam("type", srcType);
+        params.addBodyParam("type", types);
         params.addBodyParam("isRight", isRight ? "1" : "0");
         params.addBodyParam("isPlayBack", "1");
         params.addBodyParam("isSubmit", isSubmit);
@@ -793,6 +795,24 @@ public class LiveHttpManager extends BaseHttpBusiness {
         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_STUDY_INFO;
         sendPost(requestCallBack.url, params, requestCallBack);
     }
+
+    /**
+     * 文理半身直播 旁听数据接口
+     * @param liveId    直播id
+     * @param stuCouId  学生id
+     * @param  isArts   是否是文科
+     */
+    public void getHalfBodyStuLiveInfo(String liveId,String stuCouId,boolean isArts,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        setDefaultParameter(params);
+        String url = isArts?LiveVideoConfig.URL_HALFBODY_LIVE_STULIVEINFO_ARTS
+                :LiveVideoConfig.URL_HALFBODY_LIVE_STULIVEINFO;
+
+        sendPost(url, params, requestCallBack);
+    }
+
 
     public void setStuStarCount(int type, String enstuId, String liveId, String starId, HttpCallBack
             requestCallBack) {
@@ -1356,7 +1376,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_PKTEAMINFO, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_PKTEAMINFO, params, requestCallBack);
     }
 
     /**
@@ -1370,7 +1390,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_MATCHTEAM, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_MATCHTEAM, params, requestCallBack);
     }
 
     /**
@@ -1391,7 +1411,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_GETSTUCHESTURL + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_GETSTUCHESTURL + "/" + liveId, params, requestCallBack);
 
     }
 
@@ -1412,7 +1432,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_GETCLASSCHESTRESULT + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_GETCLASSCHESTRESULT + "/" + liveId, params, requestCallBack);
     }
 
     /**
@@ -1432,7 +1452,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("addEnergy", addEnergy + "");
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_ADDPERSONANDTEAMENERGY + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_ADDPERSONANDTEAMENERGY + "/" + liveId, params, requestCallBack);
     }
 
     /**
@@ -1451,7 +1471,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_LIVESTUGOLDANDTOTALENERGY + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_LIVESTUGOLDANDTOTALENERGY + "/" + liveId, params, requestCallBack);
     }
 
     /**
@@ -1473,7 +1493,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", testId);
         params.addBodyParam("testPlan", testPlan);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR + "/" + liveId, params, requestCallBack);
     }
 
     /**
@@ -1492,7 +1512,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", testId);
         params.addBodyParam("testPlan", testPlan);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_STUPKRESULT + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_STUPKRESULT + "/" + liveId, params, requestCallBack);
     }
 
     /**
@@ -1518,7 +1538,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("ctId", ctId);
         params.addBodyParam("pSrc", pSrc);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params, requestCallBack);
+        sendPost(LiveVideoChConfig.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params, requestCallBack);
     }
 
 
@@ -1720,7 +1740,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param requestCallBack
      */
     public void saveArtsEvaluationTeacher(String liveId, String courseId,String teacherId, String teacherScore, String
-            teacherOption,String counserorId, String counselorScore, String
+            teacherOption,String counselorId, String counselorScore, String
                                                   counselorOption,String classId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
@@ -1728,11 +1748,11 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("teacherId",teacherId);
         params.addBodyParam("teacherScore", teacherScore);
         params.addBodyParam("teacherOption", teacherOption);
-        params.addBodyParam("counserorId",counserorId);
+        params.addBodyParam("counselorId",counselorId);
         params.addBodyParam("counselorScore", counselorScore);
         params.addBodyParam("counselorOption", counselorOption);
         params.addBodyParam("classId",classId);
-        setDefaultParameter(params);
+        params.setWriteAndreadTimeOut(5);
         sendPost(liveVideoSAConfigInner.URL_LIVE_ARTS_EVALUATE_TEACHER, params, requestCallBack);
     }
 
@@ -1750,7 +1770,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param requestCallBack
      */
     public void saveScienceEvaluationTeacher(String liveId, String courseId,String teacherId, String teacherScore, String
-            teacherOption,String counserorId, String counselorScore, String
+            teacherOption,String counselorId, String counselorScore, String
             counselorOption,String classId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
@@ -1758,11 +1778,11 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("teacherId",teacherId);
         params.addBodyParam("teacherScore", teacherScore);
         params.addBodyParam("teacherOption", teacherOption);
-        params.addBodyParam("counserorId",counserorId);
+        params.addBodyParam("counselorId",counselorId);
         params.addBodyParam("counselorScore", counselorScore);
         params.addBodyParam("counselorOption", counselorOption);
         params.addBodyParam("classId",classId);
-        setDefaultParameter(params);
+        params.setWriteAndreadTimeOut(5);
         sendPost(liveVideoSAConfigInner.URL_LIVE_SCIENCE_EVALUATE_TEACHER, params, requestCallBack);
     }
 
@@ -1808,9 +1828,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
      */
     public void reportStuInfo(String mode, String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-//        if (AppConfig.DEBUG) {
-//            mode = "1";
-//        }
         params.addBodyParam("mode", "" + mode);
         params.addBodyParam("stu_id", "" + stu_id);
         params.addBodyParam("stu_name", stu_name);

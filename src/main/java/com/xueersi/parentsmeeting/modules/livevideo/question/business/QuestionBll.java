@@ -1069,19 +1069,23 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onStopQuestion(String ptype, final String nonce) {
-        mLogtf.d("onStopQuestion:ptype=" + ptype + " mVideoQuestionLiveEntity = " + mVideoQuestionLiveEntity);
+        mLogtf.d("onStopQuestion:ptype=" + ptype + ":" + mVideoQuestionLiveEntity+":"+rolePlayAction);
         boolean havePager = false;
         boolean oldisAnaswer = isAnaswer;
         isAnaswer = false;
+        //解决多人的时候，除了初次的多人正常进对话，其他的都进不去
         if (rolePlayAction != null && mVideoQuestionLiveEntity != null) {
-            if (mVideoQuestionLiveEntity.id.equals(rolePlayAction.getQuestionId())) {
+            logger.i("onStopQuestion:" + rolePlayAction.getQuestionId()+":"+mVideoQuestionLiveEntity.id);
+            //if (mVideoQuestionLiveEntity.id.equals(rolePlayAction.getQuestionId())) {
                 rolePlayAction.onStopQuestion(mVideoQuestionLiveEntity, nonce);
-            }
+            rolePlayAction = null;
+            //}
         }
 
         if (rolePlayMachineAction != null) {
-            logger.i("onStopQuestion:" + rolePlayMachineAction.getQuestionId());
+            logger.i("onStopQuestion:" + rolePlayMachineAction.getQuestionId()+":"+mVideoQuestionLiveEntity.id);
             rolePlayMachineAction.onStopQuestion(mVideoQuestionLiveEntity, nonce);
+            rolePlayMachineAction = null;
         }
         if (voiceAnswerPager != null) {
             havePager = true;

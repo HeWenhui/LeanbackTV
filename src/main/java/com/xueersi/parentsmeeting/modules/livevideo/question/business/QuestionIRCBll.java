@@ -128,8 +128,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //            answerResultEntity.isVoice = 1;
 //            answerResultEntity.setEnergy(11);
 //            answerResultEntity.setGold(2);
-//            answerResultEntity.setIsRight(0);
-//            answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_CORRECT);
+//            answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_PART_CORRECT);
 //            ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
 //            AnswerResultEntity.Answer answer = new AnswerResultEntity.Answer();
 //            answer.setTestType(AnswerResultEntity.TEST_TYPE_2);
@@ -242,8 +241,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             });
         }
-        QuestionWebCache webCache = new QuestionWebCache(activity);
+
         if (mGetInfo.getIsArts() == 0) {
+            QuestionWebCache webCache = new QuestionWebCache(activity);
             webCache.startCache();
         }
     }
@@ -514,6 +514,15 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
                 if (mQuestionAction != null) {
 //                            mGetInfo.getLiveTopic().setTopic(getTopicFromQuestion(videoQuestionLiveEntity));
+
+                    //设置action的方法要在showQuestion之前
+                    if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
+                        logger.i("走人机start,拉取试题");
+                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                        rolePlayMachineAction = rolePlayerBll;
+
+                    }
                     mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(videoQuestionLiveEntity);
                     mQuestionAction.showQuestion(videoQuestionLiveEntity);
                     if (mAnswerRankBll != null) {
@@ -523,21 +532,12 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
                         mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
                     }
-
                     if (mQuestionAction instanceof QuestionBll) {
                         ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(false);
                         logger.e("======>LiveBll setWebViewCloseByTeacher: " +
                                 "SENDQUESTION");
                     }
                 }
-                if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
-                    logger.i("走人机start,拉取试题");
-                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                    mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
-                    rolePlayMachineAction = rolePlayerBll;
-
-                }
-
             }
             break;
             case XESCODE.ARTS_SEND_QUESTION: {
@@ -570,6 +570,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     videoQuestionLiveEntity.setIsVoice(isVoice);
                 }
                 if (mQuestionAction != null) {
+                    //设置action的方法要在showQuestion之前
+                    if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
+                        logger.i("onNotice 新课件平台，走人机start,拉取试题");
+                        RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                        rolePlayMachineAction = rolePlayerBll;
+
+                    }
                     mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(videoQuestionLiveEntity);
                     mQuestionAction.showQuestion(videoQuestionLiveEntity);
                     if (mAnswerRankBll != null) {
@@ -581,13 +589,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 }
 
-                if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
-                    logger.i("onNotice 新课件平台，走人机start,拉取试题");
-                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                    mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
-                    rolePlayMachineAction = rolePlayerBll;
 
-                }
 
                 break;
             }
@@ -596,7 +598,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                 if (mQuestionAction != null) {
                     try {
-                        mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
+                        mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("nonce"));
+                        //解决多人的时候，除了初次的多人正常进对话，其他的都进不去
+                        rolePlayAction = null;
+                        rolePlayMachineAction = null;
                         if (mQuestionAction instanceof QuestionBll) {
                             ((QuestionBll) mQuestionAction).setWebViewCloseByTeacher(true);
                             logger.e("======>LiveBll setWebViewCloseByTeacher: " +
@@ -615,7 +620,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 String package_socurce = object.optString("package_socurce");
                 if (mQuestionAction != null) {
                     try {
-                        mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("ptype"));
+                        mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("nonce"));
+                        //解决多人的时候，除了初次的多人正常进对话，其他的都进不去
+                        rolePlayAction = null;
+                        rolePlayMachineAction = null;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

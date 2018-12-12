@@ -1,41 +1,23 @@
 package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Color;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.Interpolator;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.lib.framework.utils.EventBusUtil;
-import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LineEvaluator;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.StartInteractLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
-import com.xueersi.parentsmeeting.modules.livevideo.util.Point;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by linyuqiang on 2018/11/6.
@@ -48,11 +30,16 @@ public class LiveAchievementEngBll implements StarInteractAction {
     private Activity activity;
     private RelativeLayout bottomContent;
     private EnAchievePager enAchievePager;
+    private LiveAndBackDebug liveAndBackDebug;
+    private LiveAchievementHttp liveAchievementHttp;
+    private int starCount;
 
     public LiveAchievementEngBll(Activity activity, int liveType, LiveGetInfo mLiveGetInfo, boolean mIsLand) {
         this.activity = activity;
         this.mLiveGetInfo = mLiveGetInfo;
+        starCount = mLiveGetInfo.getStarCount();
         mLiveGetInfo.getStarCount();
+        liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
     }
 
     public void initView(RelativeLayout bottomContent, RelativeLayout mContentView) {
@@ -67,19 +54,93 @@ public class LiveAchievementEngBll implements StarInteractAction {
         relativeLayout.addView(enAchievePager.getRootView());
     }
 
+    public void setLiveAchievementHttp(LiveAchievementHttp liveAchievementHttp) {
+        this.liveAchievementHttp = liveAchievementHttp;
+    }
+
+    private String mStarid;
+    ArrayList<String> data;
+    /**
+     * 星星互动开始
+     */
+    private boolean statInteractStart = false;
+    /**
+     * 是不是像老师发送过，目前没用
+     */
+    boolean isSend = false;
+    String myMsg;
+
     @Override
     public void onStarStart(ArrayList<String> data, String starid, String answer, String nonce) {
-
+        this.mStarid = starid;
+        this.data = data;
+        statInteractStart = true;
+        if ("".equals(answer)) {
+            myMsg = null;
+        } else {
+            isSend = true;
+            myMsg = answer;
+        }
+        StartInteractLog.starOpen(liveAndBackDebug, answer, mStarid, nonce);
     }
 
     @Override
-    public void onStarStop(String id, ArrayList<String> answer, String nonce) {
+    public void onStarStop(final String id, ArrayList<String> answer, String nonce) {
+        statInteractStart = false;
+        isSend = false;
+        final String myAnswer = this.myMsg;
+        this.myMsg = null;
+        if (!answer.isEmpty() && myAnswer != null) {
+            int receive = -1;
+            for (int i = 0; i < answer.size(); i++) {
+                if (myAnswer.equals(answer.get(i))) {
+                    receive = i;
+                    break;
+                }
+            }
+            StartInteractLog.starClose(liveAndBackDebug, id, receive, myAnswer, mStarid, starCount);
+            if (receive > -1) {
+                liveAchievementHttp.setStuStarCount(1000, id, new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        starCount++;
+                        mLiveGetInfo.setStarCount(mLiveGetInfo.getStarCount() + 1);
+                        if (enAchievePager != null) {
+                            enAchievePager.onStarAdd(1, 0, 0);
+                        }
+                        StartInteractLog.setStuStarCount(liveAndBackDebug, id, myAnswer, mStarid, starCount);
+                    }
 
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        StartInteractLog.setStuStarCount(liveAndBackDebug, id, myAnswer, starCount, errStatus, failMsg);
+                    }
+                });
+            }
+        }
     }
 
     @Override
     public void onSendMsg(String msg) {
-
+        if (statInteractStart) {
+//            if (!isSend) {
+//                if ("1".equals(msg) || "2".equals(msg)) {
+//                    myMsg = msg;
+//                    liveBll.sendStat(msg);
+//                    isSend = true;
+//                }
+//            }
+            for (int i = 0; i < data.size(); i++) {
+                String str = data.get(i);
+                if (str.equalsIgnoreCase(msg)) {
+                    myMsg = msg.toLowerCase();
+                    liveAchievementHttp.sendStat(i);
+                    isSend = true;
+                    StartInteractLog.sendStarAnswer(liveAndBackDebug, msg, mStarid);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -93,6 +154,13 @@ public class LiveAchievementEngBll implements StarInteractAction {
     public void onStarAdd(int star, float x, float y) {
         if (enAchievePager != null) {
             enAchievePager.onStarAdd(star, x, y);
+        }
+    }
+
+    @Override
+    public void onEnglishPk() {
+        if (enAchievePager != null) {
+            enAchievePager.onEnglishPk();
         }
     }
 }

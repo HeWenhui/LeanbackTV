@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
+import com.xueersi.common.base.BasePager;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -27,7 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpdata {
     private Handler handler = new Handler(Looper.getMainLooper());
     /** 得到本组信息重试 */
-    int getSelfTeamInfoTimes = 1;
+    private int getSelfTeamInfoTimes = 1;
     private RelativeLayout rootView;
     private TeamPkRankPager teamPkRankPager;
     private boolean teamEnd = false;
@@ -294,21 +295,17 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         handler.post(new Runnable() {
             @Override
             public void run() {
-                teamPkLeadPager = new TeamPkLeadPager(mContext, enTeamPkRankEntity, type, pattern);
+                teamPkLeadPager = new TeamPkLeadPager(mContext, enTeamPkRankEntity, type, pattern, new TeamPkLeadPager.OnClose() {
+                    @Override
+                    public void close(BasePager basePager) {
+                        rootView.removeView(basePager.getRootView());
+                    }
+                });
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 if (pattern != 2) {
                     layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
                 }
                 rootView.addView(teamPkLeadPager.getRootView(), layoutParams);
-                final TeamPkLeadPager finalTeamPkLeadPager = teamPkLeadPager;
-                teamPkLeadPager = null;
-                int delay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 10000 : 5000;
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        rootView.removeView(finalTeamPkLeadPager.getRootView());
-                    }
-                }, delay);
             }
         });
     }

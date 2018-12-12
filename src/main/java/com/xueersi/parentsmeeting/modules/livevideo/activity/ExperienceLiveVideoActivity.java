@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -31,7 +32,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tencent.cos.xml.utils.StringUtils;
-import com.tencent.tinker.loader.shareutil.ShareOatUtil;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.AppBll;
@@ -80,6 +80,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
+import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.experience.pager.ExperienceQuitFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
@@ -208,6 +210,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
     private static final int MAX_REPLAY_COUNT = 4;
 
+    /** 显示弹窗阈值 课程开始25min内进入课程的退出时显示弹窗 */
+    private static final long SHOW_QUIT_DIALOG_THRESHOLD = 1500000;
+    private ExperienceQuitFeedbackBll experienceQuitFeedbackBll;
+
     // 定时获取聊天记录的任务
     class ScanRunnable implements Runnable {
         HandlerThread handlerThread = new HandlerThread("ScanRunnable");
@@ -263,7 +269,15 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         @Override
         public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
-            UmsAgentManager.umsAgentOtherBusiness(ExperienceLiveVideoActivity.this, appID, UmsConstants.uploadSystem,
+            mData.put("timestamp", System.currentTimeMillis() + "");
+            mData.put("liveid", mVideoEntity.getLiveId());
+            mData.put("termid", mVideoEntity.getChapterId());
+            if (mGetInfo != null && mGetInfo.getStuName() != null) {
+                mData.put("uname", mGetInfo.getStuName());
+            } else {
+                mData.put("uname", "");
+            }
+            UmsAgentManager.umsAgentOtherBusiness(ExperienceLiveVideoActivity.this, appID, UmsConstants.uploadBehavior,
                     mData);
 
         }
@@ -723,9 +737,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     jsonObject.put("from", "android_" + teamId);
                     jsonObject.put("to", teamId);
                 }
-//                lectureLivePlayBackBll.sendRecordInteract(mVideoEntity.getInteractUrl(), mVideoEntity.getChapterId(),
-//                        1);
-//                mIRCMessage.sendMessage(jsonObject.toString());
+                lectureLivePlayBackBll.sendRecordInteract(mVideoEntity.getInteractUrl(), mVideoEntity.getChapterId(),
+                        1);
+                mIRCMessage.sendMessage(jsonObject.toString());
 
 
             } catch (Exception e) {
@@ -789,32 +803,6 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         bottomContent.addView(liveMediaControllerBottom);
         final ViewGroup.LayoutParams lp = videoView.getLayoutParams();
         setFirstParam(lp);
-        final View contentView = findViewById(android.R.id.content);
-        contentView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
-                        .OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        boolean isLand = getResources().getConfiguration().orientation == Configuration
-                                .ORIENTATION_LANDSCAPE;
-                        //logger.i( "setVideoWidthAndHeight:isLand=" + isLand);
-                        if (!isLand) {
-                            return;
-                        }
-                        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
-                                (int) VIDEO_HEIGHT, VIDEO_RATIO);
-                        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                        LiveVideoPoint.initLiveVideoPoint((Activity) mContext, LiveVideoPoint.getInstance(), lp);
-                        setFirstParam(lp);
-                        mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
-
-//                        mLiveMessagePager.setVideoWidthAndHeight(lp.width, lp.height);
-                    }
-                });
-            }
-        }, 10);
     }
 
     private void setFirstParam(ViewGroup.LayoutParams lp) {
@@ -845,7 +833,32 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mLiveMessagePager = new LiveMessagePager(this, questionBll, ums, liveMediaControllerBottom,
                 liveMessageLandEntities, null);
         logger.d("initViewLive:time1=" + (System.currentTimeMillis() - before));
+        final View contentView = findViewById(android.R.id.content);
+        contentView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                        .OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        boolean isLand = getResources().getConfiguration().orientation == Configuration
+                                .ORIENTATION_LANDSCAPE;
+                        //logger.i( "setVideoWidthAndHeight:isLand=" + isLand);
+                        if (!isLand) {
+                            return;
+                        }
+                        videoView.setVideoLayout(mVideoMode, VP.DEFAULT_ASPECT_RATIO, (int) VIDEO_WIDTH,
+                                (int) VIDEO_HEIGHT, VIDEO_RATIO);
+                        ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+                        LiveVideoPoint.initLiveVideoPoint((Activity) mContext, LiveVideoPoint.getInstance(), lp);
+                        setFirstParam(lp);
+                        mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
 
+//                        mLiveMessagePager.setVideoWidthAndHeight(lp.width, lp.height);
+                    }
+                });
+            }
+        }, 10);
         // 关联聊天人数
         mLiveMessagePager.setPeopleCount(peopleCount);
         mLiveMessagePager.setMessageBll(liveMessageBll);
@@ -928,6 +941,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId()));
         liveBackBll.addBusinessBll(new EnglishH5ExperienceBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5ExperienceBll(activity, liveBackBll));
+        experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity,liveBackBll,false);
+        experienceQuitFeedbackBll.setLiveVideo(this);
+        liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
         liveBackBll.onCreate();
     }
 
@@ -990,11 +1006,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         Log.e("mqtt", "mTotaltime:" + mTotaltime);
         Log.e("mqtt", "seekto:" + mVideoEntity.getVisitTimeKey());
         // 03.22 统计用户进入体验播放器的时间
-        StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayEnter");
-        logHashMap.put("liveid", mVideoEntity.getLiveId());
-        logHashMap.put("termid", mVideoEntity.getChapterId());
-        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_ENTER);
-        ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_ENTER, logHashMap.getData());
+        StableLogHashMap logHashMap = new StableLogHashMap("enterRoom");
+        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
+        ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
         if (rlFirstBackgroundView != null) {
             rlFirstBackgroundView.setVisibility(View.GONE);
             if (baseLiveMediaControllerTop == null) {
@@ -1012,12 +1026,18 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
                 vPlayer.releaseSurface();
                 vPlayer.stop();
+                if (experienceQuitFeedbackBll != null){
+                    experienceQuitFeedbackBll.playComplete();
+                }
                 // 测试体验课播放器的结果页面
                 lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
                         getDataCallBack);
                 return;
             }
-            seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() - startTime));
+            Long keyTime = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
+                    startTime);
+            seekTo(keyTime);
+
 //            seekTo(590000);
 //            if (vPlayer != null) {
 //                long pos = (long)SharedPrefUtil.getSharedPrefUtil(mContext).getValue(mVideoEntity.getLiveId(),
@@ -1123,9 +1143,12 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         mFeedbackWindow.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
         mFeedbackWindow.setOutsideTouchable(false);
         mFeedbackWindow.setFocusable(true);
-        //mFeedbackWindow.setSoftInputMode(PopupWindow.INPUT_METHOD_NEEDED);
+        mFeedbackWindow.setSoftInputMode(PopupWindow.INPUT_METHOD_NEEDED);
         mFeedbackWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         mFeedbackWindow.showAtLocation(expFeedbackPager.getRootView(), Gravity.CENTER, 0, 0);
+        StableLogHashMap logHashMap = new StableLogHashMap("afterClassFeedbackOpen");
+        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
+        ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
         mFeedbackWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -1135,7 +1158,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         });
         expFeedbackPager.setCloseAction(new ExperienceLearnFeedbackPager.CloseAction() {
             @Override
-            public void onClose() {
+            public void onClose(String type) {
+                StableLogHashMap logHashMap = new StableLogHashMap("afterClassFeedbackClose");
+                logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
+                logHashMap.put("closetype", type);
+                ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
                 bottomContent.removeView(expFeedbackPager.getRootView());
                 mFeedbackWindow.dismiss();
                 mFeedbackWindow = null;
@@ -1332,13 +1359,16 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         ivTeacherNotpresent.setVisibility(View.VISIBLE);
 //        ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
         ivTeacherNotpresent.setBackgroundResource(R.drawable.live_free_play_end);
-
+//        liveBackBll.
         // 获取学生的学习反馈
         lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
                 getDataCallBack);
         EventBus.getDefault().post(new BrowserEvent.ExperienceLiveEndEvent(1));
         if (scanRunnable != null) {
             scanRunnable.exit();
+        }
+        if (experienceQuitFeedbackBll != null){
+            experienceQuitFeedbackBll.playComplete();
         }
         mHandler.removeCallbacks(mPlayDuration);
 
@@ -1467,7 +1497,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     @Override
     public void onBackPressed() {
         boolean userBackPressed = liveBackBll.onUserBackPressed();
-        if (mWindow == null && mFeedbackWindow == null && !userBackPressed) {
+        if (!userBackPressed) {
+            StableLogHashMap logHashMap = new StableLogHashMap("exitRoom");
+            logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
+            ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
             super.onBackPressed();
         }
     }
@@ -1484,3 +1517,4 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         liveBackBll.onStop();
     }
 }
+
