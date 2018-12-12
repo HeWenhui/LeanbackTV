@@ -124,20 +124,28 @@ public class PkAnswerResultPager extends BasePager {
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                try {
-                    if (awardType == AWARD_TYPE_QUESTION) {
-                        showQuestionAwardAnim();
-                    } else if (awardType == AWARD_TYPE_VOTE) {
-                        showVoteAwardAnim();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                if(mView.getMeasuredWidth() > 0){
+                    try {
+                        //延迟200 解决播放动画时卡顿问题
+                        mView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (awardType == AWARD_TYPE_QUESTION) {
+                                    showQuestionAwardAnim();
+                                } else if (awardType == AWARD_TYPE_VOTE) {
+                                    showVoteAwardAnim();
+                                }
+                            }
+                        },200);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+                        view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }else{
+                        view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
                 }
             }
         });
@@ -252,6 +260,7 @@ public class PkAnswerResultPager extends BasePager {
             // 能量图标动画
             pkProgressBar = teamPKStateLayout.findViewById(R.id.tpb_teampk_pkstate_energy_bar);
             Rect endRect = pkProgressBar.getSliderDrawRect();
+
             if (endRect != null && mEnergy > 0) {
                 playFlayAnim(ivEnergy, endRect);
             }
@@ -331,6 +340,10 @@ public class PkAnswerResultPager extends BasePager {
         Point controlPoint = new Point(controlX, controlY);
 
         ValueAnimator valueAnimator = ValueAnimator.ofObject(new BezierEvaluator(controlPoint), startPoint, endPoint);
+
+        valueAnimator.setDuration(FLY_ANIM_DURATION);
+        valueAnimator.start();
+
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
