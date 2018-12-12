@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.http.EvaluateResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.EvaluateTeacherPager;
+import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.PrimaryChineseEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.PrimaryScienceEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.SmallEnglishEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -49,7 +50,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
             mParser = new EvaluateResponseParser();
             mHttpManager = liveBackBll.getmHttpManager();
             if (liveGetInfo.getIsArts() == 1) {
-                logger.i("IsArts:"+liveGetInfo.getIsArts()+" IsSmallEnglish:"+liveGetInfo.getSmallEnglish());
+                logger.i("IsArts:" + liveGetInfo.getIsArts() + " IsSmallEnglish:" + liveGetInfo.getSmallEnglish());
                 if (liveGetInfo.getSmallEnglish()) {
                     evaluateTeacherPager = new SmallEnglishEvaluateTeacherPager(mContext, liveGetInfo);
                 } else {
@@ -57,7 +58,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
                 }
                 getArtsEvaluateOption(liveGetInfo.getSmallEnglish());
             } else if (liveGetInfo.getIsArts() == 0) {
-                logger.i("IsArts:"+liveGetInfo.getIsArts()+" IsPrimaryScience:"+ liveGetInfo.getIsPrimarySchool());
+                logger.i("IsArts:" + liveGetInfo.getIsArts() + " IsPrimaryScience:" + liveGetInfo.getIsPrimarySchool());
                 if (1 == liveGetInfo.getIsPrimarySchool()) {
                     evaluateTeacherPager = new PrimaryScienceEvaluateTeacherPager(mContext, liveGetInfo);
                 } else {
@@ -65,9 +66,9 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
                 }
                 getSciecneEvaluateOption();
             } else if (liveGetInfo.getIsArts() == 2) {
-                logger.i("IsArts:"+liveGetInfo.getIsArts());
-                evaluateTeacherPager = new EvaluateTeacherPager(mContext, liveGetInfo);
-                getArtsEvaluateOption(false);
+                logger.i("IsArts:" + liveGetInfo.getIsArts());
+                evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, liveGetInfo);
+                getChsEvaluateOption();
             } else {
                 return;
             }
@@ -192,14 +193,29 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
         if (liveGetInfo.getIsArts() == 1) {
             mHttpManager.saveArtsEvaluationTeacher(liveGetInfo.getId(), mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
                     tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
-        } else if (liveGetInfo.getIsArts() == 0 ) {
-            mHttpManager.saveScienceEvaluationTeacher(liveGetInfo.getId(),mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId()
-                            , teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
+        } else if (liveGetInfo.getIsArts() == 0) {
+            mHttpManager.saveScienceEvaluationTeacher(liveGetInfo.getId(), mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId()
+                    , teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
                     tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
-        } else {
-            mHttpManager.saveArtsEvaluationTeacher(liveGetInfo.getId(), mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
+        } else if (liveGetInfo.getIsArts() == 2) {
+            mHttpManager.saveChsEvaluationTeacher(liveGetInfo.getId(), mVideoEntity.getCourseId(), liveGetInfo.getMainTeacherInfo().getTeacherId(), teacherEvaluLevel, teacherEvaluOption, liveGetInfo.getTeacherId(),
                     tutorEvaluLevel, tutorEvaluOption, mVideoEntity.getClassId(), callBack);
         }
+    }
+
+    private void getChsEvaluateOption() {
+        mHttpManager.getChsEvaluationOption(new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.i("arts:success");
+                evaluateTeacherPager.setOptionEntity(mParser.parseEvaluateInfo(responseEntity));
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+            }
+        });
     }
 
     private void getArtsEvaluateOption(boolean isSmallEnglish) {

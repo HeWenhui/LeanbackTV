@@ -13,6 +13,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.http.EvaluateResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.EvaluateTeacherPager;
+import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.PrimaryChineseEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.PrimaryScienceEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.SmallEnglishEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -68,13 +69,13 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
                     getSciecneEvaluateOption();
                 } else if (getInfo.getIsArts() == 2) {
                     logger.i("IsArts:" + getInfo.getIsArts());
-                    evaluateTeacherPager = new EvaluateTeacherPager(mContext, getInfo);
-                    getArtsEvaluateOption(false);
+                    evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, getInfo);
+                    getChsEvaluateOption();
                 } else {
                     return;
                 }
-                evaluateTeacherPager.setIShowEvaluateAction(this);
-                evaluateTeacherPager.setButtonOnClick(this);
+            evaluateTeacherPager.setIShowEvaluateAction(this);
+            evaluateTeacherPager.setButtonOnClick(this);
             } else {
                 mLiveBll.removeBusinessBll(this);
             }
@@ -204,13 +205,28 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
             mHttpManager.saveScienceEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
-        } else {
-            mHttpManager.saveArtsEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
+        } else if (mGetInfo.getIsArts() == 2) {
+            mHttpManager.saveChsEvaluationTeacher(mLiveId, mGetInfo.getStudentLiveInfo().getCourseId(), mGetInfo.getMainTeacherId(),
                     teacherEvaluLevel, teacherEvaluOption, mGetInfo.getTeacherId(), tutorEvaluLevel,
                     tutorEvaluOption, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
         }
 
 
+    }
+
+    private void getChsEvaluateOption() {
+        mHttpManager.getChsEvaluationOption(new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.i("arts:success");
+                evaluateTeacherPager.setOptionEntity(mParser.parseEvaluateInfo(responseEntity));
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+            }
+        });
     }
 
     private void getArtsEvaluateOption(boolean isSmallEnglish) {

@@ -661,6 +661,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebugAnalysis, LiveO
                         if (mVideoAction != null) {
                             mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
                         }
+                        liveVideoBll.onModeChange(mLiveTopic.getMode(), isPresent);
                         for (int i = 0; i < businessBlls.size(); i++) {
                             businessBlls.get(i).onModeChange(oldMode, mLiveTopic.getMode(), isPresent);
                         }
