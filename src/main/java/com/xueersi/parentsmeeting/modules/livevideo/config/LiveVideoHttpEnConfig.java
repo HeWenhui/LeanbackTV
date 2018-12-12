@@ -19,4 +19,11 @@ public class LiveVideoHttpEnConfig {
     public static String URL_LIVE_UPDATA_GROUP = TEAKMPK_HTTP_HOST + "/LiveCourses/updataEnglishPkGroup";
     public static String URL_LIVE_UPDATA_PK_RANK = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/updataEnglishPkByTestId";
     public static String URL_LIVE_PK_TOTAL_RANK = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getEnglishPkTotalRank";
+
+    /** 英语小目标 -获取学生段位信息 */
+    public static String URL_LIVE_GET_STU_SEGMENT = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourses/getStuSegment";
+    /** 英语小目标 -获取学生这节课小目标 */
+    public static String URL_LIVE_BETTER_ME = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourses/betterMe";
+    /** 英语小目标 -实时获取学生目标完成度 */
+    public static String URL_LIVE_GET_STU_AIM_REALTIME_VAL = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourses/getStuAimRealTimeVal";
 }

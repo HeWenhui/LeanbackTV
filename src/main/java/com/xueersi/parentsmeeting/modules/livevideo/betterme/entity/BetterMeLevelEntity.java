@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.betterme.item;
+package com.xueersi.parentsmeeting.modules.livevideo.betterme.entity;
 
 /**
  * 英语小目标 段位信息

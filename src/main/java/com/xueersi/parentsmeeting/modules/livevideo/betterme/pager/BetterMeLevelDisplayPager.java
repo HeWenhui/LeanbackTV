@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.item.BetterMeLevelEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeLevelEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMePager;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.OnPagerClose;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import java.util.ArrayList;

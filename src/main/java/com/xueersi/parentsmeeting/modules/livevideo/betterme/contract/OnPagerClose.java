@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.betterme.view;
+package com.xueersi.parentsmeeting.modules.livevideo.betterme.contract;
 
 import com.xueersi.common.base.BasePager;
 

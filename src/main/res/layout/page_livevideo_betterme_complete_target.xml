@@ -6,30 +6,30 @@
     android:focusable="true">
 
     <LinearLayout
+        android:id="@+id/ll_livevideo_betterme_completetarget_content"
         android:layout_width="564dp"
         android:layout_height="375dp"
         android:layout_gravity="center"
-        android:background="@drawable/livevideo_xiaomubiao_shellwindow_jieshao_bg"
+        android:background="@drawable/app_livevideo_enteampk_shellwindow_datijieguo_bg_nor"
         android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingTop="45dp">
+        android:orientation="vertical">
 
         <ImageView
-            android:layout_width="162dp"
-            android:layout_height="29dp"
-            android:layout_marginLeft="5dp"
-            android:src="@drawable/app_xiaomubiao_shellwindow_benchangxiaomubiao_title_pic" />
+            android:id="@+id/iv_livevideo_betterme_completetarget_title"
+            android:layout_width="217dp"
+            android:layout_height="114dp"
+            android:layout_marginTop="-8dp"
+            android:src="@drawable/app_xiaomubiao_shellwindow_gongxiwancheng_title_pic" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="42dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="160dp"
                 android:layout_height="133dp"
-                android:layout_marginRight="1dp"
                 android:background="@drawable/app_xiaomubiao_shellwindow_gongxiwancheng_bg_pic"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
@@ -44,25 +44,62 @@
 
                 <ImageView
                     android:layout_width="132dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="2dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/app_xiaomubiao_shellwindow_gongxiwancheng_line_pic" />
 
-                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="23dp"
-                    android:text="开口时长"
-                    android:textColor="#ff756565"
-                    android:textSize="11dp" />
+                    android:layout_marginTop="26dp">
 
-                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="00:58"
-                    android:textColor="#fffe6600"
-                    android:textSize="19dp" />
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                        android:id="@+id/tv_livevideo_betterme_num_target"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/pg_livevideo_better_num_target"
+                        android:layout_marginLeft="3dp"
+                        android:text="正确率"
+                        android:textColor="#ff756565"
+                        android:textSize="9dp" />
+
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                        android:id="@+id/tv_livevideo_betterme_num_right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@+id/pg_livevideo_better_num_target"
+                        android:layout_marginRight="3dp"
+                        android:text="目标80%"
+                        android:textColor="#ff756565"
+                        android:textSize="9dp" />
+
+                    <ProgressBar
+                        android:id="@+id/pg_livevideo_better_num_target"
+                        style="@style/ProgressBar_live_betterme"
+                        android:layout_width="133dp"
+                        android:layout_height="13dp"
+                        android:layout_below="@+id/tv_livevideo_betterme_num_target"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:max="100"
+                        android:paddingLeft="0dp"
+                        android:paddingRight="0dp"
+                        android:progress="" />
+
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                        android:id="@+id/tv_livevideo_betterme_num_tips"
+                        android:layout_width="28dp"
+                        android:layout_height="15dp"
+                        android:layout_below="@+id/pg_livevideo_better_num_target"
+                        android:layout_alignLeft="@+id/pg_livevideo_better_num_target"
+                        android:background="@drawable/livevideo_enteampk_xiaomubiao_tips_bg_nor"
+                        android:gravity="center_horizontal|bottom"
+                        android:paddingBottom="1dp"
+                        android:text="70%"
+                        android:textColor="@color/white"
+                        android:textSize="9dp" />
+
+                </RelativeLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -84,7 +121,7 @@
 
                 <ImageView
                     android:layout_width="132dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="2dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/app_xiaomubiao_shellwindow_gongxiwancheng_line_pic" />
 
@@ -114,6 +151,7 @@
                     </LinearLayout>
 
                     <ImageView
+                        android:id="@+id/iv_livevideo_betterme_completetarget_arrow"
                         android:layout_width="9dp"
                         android:layout_height="9dp"
                         android:layout_gravity="center"
@@ -123,6 +161,7 @@
                         android:background="@drawable/app_xiaomubiao_shellwindow_jiantou_img" />
 
                     <LinearLayout
+                        android:id="@+id/ll_livevideo_betterme_completetarget_level_right"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
@@ -145,6 +184,7 @@
                 </LinearLayout>
 
                 <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                    android:id="@+id/tv_livevideo_betterme_completetarget_level_upgraded"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-4dp"
@@ -157,36 +197,36 @@
         </LinearLayout>
 
 
-            <ImageView
-                android:id="@+id/iv_livevideo_betterme_receivetarget_ready"
-                android:layout_width="118dp"
-                android:layout_height="39dp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/selector_livevideo_betterme_receivetarget_ready" />
+        <ImageView
+            android:id="@+id/iv_livevideo_betterme_completetarget_great"
+            android:layout_width="118dp"
+            android:layout_height="39dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/selector_livevideo_betterme_completetarget_great" />
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-4dp"
+            android:orientation="horizontal">
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/tv_livevideo_betterme_completetarget_countdown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="-6dp"
-                android:orientation="horizontal">
+                android:text="10s "
+                android:textColor="#ffff7a1d"
+                android:textSize="10dp" />
 
-                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-                    android:id="@+id/tv_livevideo_betterme_receivetarget_countdown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="10s "
-                    android:textColor="#ffff7a1d"
-                    android:textSize="10dp" />
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="后关闭"
+                android:textColor="#ff8c8080"
+                android:textSize="10dp" />
 
-                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="后关闭"
-                    android:textColor="#ff8c8080"
-                    android:textSize="10dp" />
-
-            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -2,14 +2,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.betterme.pager;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMePager;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.OnPagerClose;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnPagerClose;
 
 /**
  * 英语小目标 小目标介绍

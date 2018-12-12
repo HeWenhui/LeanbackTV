@@ -1,15 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.betterme.presenter;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.os.Message;
-import android.view.ViewGroup;
 
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeLevelDisplayPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;

@@ -16,6 +16,7 @@ public interface BetterMeContract {
         void showIntroductionPager();
         void showLevelDisplayPager();
         void showReceiveTargetPager();
+        void showCompleteTargetPager();
     }
 
     interface BetterMePresenter extends BasePresenter {

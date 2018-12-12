@@ -12,6 +12,8 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnPagerClose;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeCompleteTargetPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeIntroductionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeLevelDisplayPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeReceiveTargetPager;
@@ -43,7 +45,7 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
     }
 
     /**
-     * 测试代码，提测删掉
+     * 测试代码，提测删除
      */
     private void test() {
         if (rlBetterMeContent == null) {
@@ -89,6 +91,7 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
         btnTest4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showCompleteTargetPager();
             }
         });
     }
@@ -148,11 +151,32 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
+    /**
+     * 完成本场小目标
+     */
+    @Override
+    public void showCompleteTargetPager() {
+        if (rlBetterMeContent == null) {
+            rlBetterMeContent = new RelativeLayout(mContext);
+            if (mRootView != null) {
+                mRootView.addView(rlBetterMeContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+        }
+        rlBetterMeContent.addView(new BetterMeCompleteTargetPager(mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+                .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
     @Override
     public void setPresenter(BetterMeContract.BetterMePresenter presenter) {
         this.mBetterMePresenter = presenter;
     }
 
+    /**
+     * 关闭弹窗
+     *
+     * @param basePager
+     */
     @Override
     public void onClose(BasePager basePager) {
         if (rlBetterMeContent != null) {
@@ -161,6 +185,12 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
 
     }
 
+    /**
+     * 显示下一弹窗
+     *
+     * @param pagerType
+     * @param duration
+     */
     @Override
     public void onNext(final int pagerType, int duration) {
         mWeakHandler.postDelayed(new Runnable() {
