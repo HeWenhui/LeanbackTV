@@ -33,6 +33,11 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/iv_teampk_pkstate_coin"
+        app:progress_color_start="#fcd56c"
+        app:progress_color_end="#f5af4c"
+        app:bg_color_start="#29aaf6"
+        app:bg_color_end="#4087e8"
+        app:border_line_color="#005B56"
         app:innerProgressBarHeight="6dp"
         app:sliderHeader="@drawable/livevideo_chpk_energy_img" />
 
