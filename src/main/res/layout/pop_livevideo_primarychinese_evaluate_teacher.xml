@@ -70,7 +70,7 @@
                     android:id="@id/iv_livevideo_evaluate_main"
                     android:layout_width="51dp"
                     android:layout_height="51dp"
-                    android:layout_alignLeft="@+id/iv_livevideo_evaluate_main_profile_picture_bg"
+                    android:layout_alignLeft="@id/iv_livevideo_evaluate_main_profile_picture_bg"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="2dp"
                     android:src="@drawable/bg_main_default_head_image" />
@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="11dp"
-                    android:layout_toRightOf="@+id/iv_livevideo_evaluate_main_profile_picture_bg"
+                    android:layout_toRightOf="@id/iv_livevideo_evaluate_main_profile_picture_bg"
                     android:background="@drawable/chinese_evaluate_shellwindow_zhujiang" />
 
                 <TextView
@@ -91,7 +91,7 @@
                     android:layout_below="@+id/iv_livevideo_evaluate_main_status"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="5dp"
-                    android:layout_toRightOf="@+id/iv_livevideo_evaluate_main_profile_picture_bg"
+                    android:layout_toRightOf="@id/iv_livevideo_evaluate_main_profile_picture_bg"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="李丽丽"
@@ -275,7 +275,7 @@
                     android:id="@id/iv_livevideo_evaluate_tutor"
                     android:layout_width="51dp"
                     android:layout_height="51dp"
-                    android:layout_alignLeft="@+id/iv_livevideo_evaluate_tutor_profile_picture_bg"
+                    android:layout_alignLeft="@id/iv_livevideo_evaluate_tutor_profile_picture_bg"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="2dp"
                     android:src="@drawable/bg_tutor_default_head_imge" />
@@ -287,7 +287,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="11dp"
-                    android:layout_toRightOf="@+id/iv_livevideo_evaluate_tutor_profile_picture_bg"
+                    android:layout_toRightOf="@id/iv_livevideo_evaluate_tutor_profile_picture_bg"
                     android:background="@drawable/chinese_evaluate_shellwindow_fudao" />
 
                 <TextView
@@ -297,7 +297,7 @@
                     android:layout_below="@+id/iv_livevideo_evaluate_tutor_status"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="5dp"
-                    android:layout_toRightOf="@+id/iv_livevideo_evaluate_tutor_profile_picture_bg"
+                    android:layout_toRightOf="@id/iv_livevideo_evaluate_tutor_profile_picture_bg"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:textColor="@color/COLOR_FF5F5252"
