@@ -138,7 +138,7 @@ public class ChatTipBll {
             public void run() {
                 initView("raisehand");
                 linkMicNonce = nonce;
-                VideoAudioChatLog.showLinkMicPanelSno3(liveAndBackDebug, micType == 0 ? "audio" : "video", nonce);
+                VideoAudioChatLog.showLinkMicPanelSno3(liveAndBackDebug, nonce);
             }
         });
     }

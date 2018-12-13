@@ -261,9 +261,9 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 vw_livevideo_chat_voice.setColors(colors);
                 vw_livevideo_chat_voice.start();
                 if (joinChannel == 0) {
-                    VideoAudioChatLog.studentLinkMicSno10(liveAndBackDebug, nonce, "true", "0");
+                    VideoAudioChatLog.studentLinkMicSno10(liveAndBackDebug, nonce, true, "0");
                 } else {
-                    VideoAudioChatLog.studentLinkMicSno10(liveAndBackDebug, nonce, "false", "" + joinChannel);
+                    VideoAudioChatLog.studentLinkMicSno10(liveAndBackDebug, nonce, false, "" + joinChannel);
                 }
             }
         });
@@ -286,9 +286,9 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 @Override
                 public void onLevelChannel(int leaveChannel) {
                     if (leaveChannel == 0) {
-                        VideoAudioChatLog.studentLeaveMic10(liveAndBackDebug, nonce, "true", "0");
+                        VideoAudioChatLog.studentLeaveMic10(liveAndBackDebug, nonce, true, "0");
                     } else {
-                        VideoAudioChatLog.studentLeaveMic10(liveAndBackDebug, nonce, "false", "" + leaveChannel);
+                        VideoAudioChatLog.studentLeaveMic10(liveAndBackDebug, nonce, false, "" + leaveChannel);
                     }
                 }
             });
