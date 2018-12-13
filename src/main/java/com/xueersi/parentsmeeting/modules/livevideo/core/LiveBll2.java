@@ -33,7 +33,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebugAnalysis;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
@@ -69,7 +68,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author chekun
  * created  at 2018/6/20 10:32
  */
-public class LiveBll2 extends BaseBll implements LiveAndBackDebugAnalysis, LiveOnLineLogs {
+public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLogs {
     Logger logger = LoggerFactory.getLogger("LiveBll2");
     /** 需处理 topic 业务集合 */
     private List<TopicAction> mTopicActions = new ArrayList<>();
@@ -943,7 +942,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebugAnalysis, LiveO
         Map<String, String> analysis = stableLogHashMap.getAnalysis();
         if (analysis.isEmpty()) {
             umsAgentDebugPv(eventId, mData);
-        }else {
+        } else {
             mData.put("eventid", "" + eventId);
             setAnalysis(analysis);
             UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData, analysis);
@@ -962,14 +961,15 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebugAnalysis, LiveO
         if (!analysis.containsKey("errorcode")) {
             analysis.put("errorcode", "0");
         }
+        if (!analysis.containsKey("duration")) {
+            analysis.put("duration", "0");
+        }
         analysis.put("timestamp", "" + System.currentTimeMillis());
         analysis.put("userid", mGetInfo.getStuId());
         analysis.put("liveid", mLiveId);
-        analysis.put("duration", mLiveId);
         analysis.put("clientip", IpAddressUtil.USER_IP);
         analysis.put("traceid", "" + UUID.randomUUID());
     }
-
 
     @Override
     public String getPrefix() {

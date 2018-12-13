@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AllLiveBasePagerInt
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.Map;
@@ -130,6 +131,36 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
         }
         if (mLiveBll != null) {
             mLiveBll.umsAgentDebugPv(eventId, mData);
+        }
+    }
+
+    @Override
+    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+        if (mLiveBll == null) {
+            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
+        }
+        if (mLiveBll != null) {
+            mLiveBll.umsAgentDebugSys(eventId, stableLogHashMap);
+        }
+    }
+
+    @Override
+    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+        if (mLiveBll == null) {
+            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
+        }
+        if (mLiveBll != null) {
+            mLiveBll.umsAgentDebugInter(eventId, stableLogHashMap);
+        }
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
+        if (mLiveBll == null) {
+            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
+        }
+        if (mLiveBll != null) {
+            mLiveBll.umsAgentDebugPv(eventId, stableLogHashMap);
         }
     }
 

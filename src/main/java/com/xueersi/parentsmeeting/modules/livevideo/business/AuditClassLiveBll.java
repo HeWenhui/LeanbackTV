@@ -1548,4 +1548,19 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
     }
+
+    @Override
+    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+
+    }
+
+    @Override
+    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
+
+    }
 }

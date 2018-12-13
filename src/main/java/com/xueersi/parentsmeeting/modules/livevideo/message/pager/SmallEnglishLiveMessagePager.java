@@ -2132,6 +2132,21 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     }
 
+    @Override
+    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+
+    }
+
+    @Override
+    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
+
+    }
+
     /**
      * 上传交互日志、阿里云
      *
