@@ -453,6 +453,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, TextUtils.isEmpty(eChannel)?channel:channel,eChannel);
+        if (mGetInfo!=null && mGetInfo.ePlanInfo!=null){
+            mIRCMessage.modeChange(mGetInfo.getMode());
+        }
         IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
@@ -594,6 +597,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 switch (mtype) {
                     case XESCODE.MODECHANGE:
                         String mode = object.getString("mode");
+                        if (mode!=null && mIRCMessage!=null && mGetInfo!=null && mGetInfo.ePlanInfo!=null){
+                            mIRCMessage.modeChange(mode);
+                        }
                         if (!(mLiveTopic.getMode().equals(mode))) {
                             String oldMode = mLiveTopic.getMode();
                             mLiveTopic.setMode(mode);

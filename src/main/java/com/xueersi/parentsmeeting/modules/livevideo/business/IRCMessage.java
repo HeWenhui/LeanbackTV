@@ -12,6 +12,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.json.JSONException;
@@ -53,6 +54,7 @@ public class IRCMessage {
     /** 和服务器的ping，线程池 */
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
+    private String currentMode;
 
     public IRCMessage(Context context, int netWorkType, String login, String nickname, String... channel) {
         this.netWorkType = netWorkType;
@@ -273,7 +275,7 @@ public class IRCMessage {
 
             @Override
             public void onJoin(String target, String sender, String login, String hostname) {
-                if (sender.startsWith("s_") || sender.startsWith("ws_")) {
+                 if (sender.startsWith("s_") || sender.startsWith("ws_")) {
                     logger.i("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 } else {
                     mLogtf.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
@@ -507,16 +509,29 @@ public class IRCMessage {
      */
     public void sendNotice(String notice) {
       //  mConnection.sendNotice("#" + mChannel, notice);
-        for (String channel : mChannels){
+   /*     for (String channel : mChannels){
             mConnection.sendNotice("#" + channel, notice);
-        }
-   /*     for (int i=0; i<mChannels.length;i++){
-            String channel = mChannels[i];
-            if (mChannels.length==1 || i!=0){
-                mConnection.sendNotice("#" + channel, notice);
-            }
         }*/
+        for (int i=0; i<mChannels.length;i++){
+            String channel = mChannels[i];
+            if (currentMode == null){
+                mConnection.sendNotice("#" + channel, notice);
+                break;
+            }else if (LiveTopic.MODE_CLASS.equals(currentMode)){
+                if (i == 0){
+                    mConnection.sendNotice("#" + channel, notice);
+                }
+            }else if (LiveTopic.MODE_TRANING.equals(currentMode)){
+                if (i == 1){
+                    mConnection.sendNotice("#" + channel, notice);
+                }
+            }else {
+                mConnection.sendNotice("#" + channel, notice);
+                break;
+            }
+        }
     }
+
 
     /**
      * 发通知
@@ -544,16 +559,28 @@ public class IRCMessage {
      * @param message 信息
      */
     public void sendMessage(String message) {
-        //mConnection.sendMessage("#" + mChannel, message);
-        for (String channel : mChannels){
+    //    mConnection.sendMessage("#" + mChannel, message);
+     /*   for (String channel : mChannels){
             mConnection.sendNotice("#" + channel, message);
-        }
-  /*      for (int i=0; i<mChannels.length;i++){
-            String channel = mChannels[i];
-            if (mChannels.length==1 || i!=0){
-                mConnection.sendNotice("#" + channel, message);
-            }
         }*/
+        for (int i=0; i<mChannels.length;i++){
+            String channel = mChannels[i];
+            if (currentMode == null){
+                mConnection.sendNotice("#" + channel, message);
+                break;
+            }else if (LiveTopic.MODE_CLASS.equals(currentMode)){
+                if (i == 0){
+                    mConnection.sendNotice("#" + channel, message);
+                }
+            }else if (LiveTopic.MODE_TRANING.equals(currentMode)){
+                if (i == 1){
+                    mConnection.sendNotice("#" + channel, message);
+                }
+            }else {
+                mConnection.sendNotice("#" + channel, message);
+                break;
+            }
+        }
     }
 
     /**
@@ -671,5 +698,9 @@ public class IRCMessage {
 
     public void setConnectService(ConnectService connectService) {
         this.connectService = connectService;
+    }
+
+    public void modeChange(String mode){
+        currentMode = mode;
     }
 }

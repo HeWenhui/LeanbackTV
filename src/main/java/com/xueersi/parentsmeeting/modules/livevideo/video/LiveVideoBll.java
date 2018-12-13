@@ -151,10 +151,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
     }
 
     /**
-     * 直播模式变化
+     * 直播模式变化H
      *
      * @param mode      模式
-     * @param isPresent 老师在不在直播间
+     * @param isPresent 老师在不在直播间H
      */
     public void onModeChange(String mode, boolean isPresent) {
         logger.d("onModeChange:mode=" + mode + ",isPresent=" + isPresent);
