@@ -617,7 +617,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         }.start();
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
-        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
         ivExpressionCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
