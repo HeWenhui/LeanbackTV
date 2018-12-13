@@ -1,18 +1,22 @@
 package com.xueersi.parentsmeeting.modules.livevideo.switchflow;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
 public class SwitchFlowView extends FrameLayout {
@@ -28,6 +32,10 @@ public class SwitchFlowView extends FrameLayout {
     private FangZhengCuYuanTextView tvSwitch;
 
     private int isShow = 0;
+
+    private int clickColor = 0;
+
+    private int normalColor = 0;
 
     public SwitchFlowView(@NonNull Context context) {
         super(context);
@@ -52,8 +60,29 @@ public class SwitchFlowView extends FrameLayout {
 
     private void init() {
         initView();
+        initData();
         initListener();
         setSwitchFlowWholeVisible(true);
+    }
+
+    public void initData() {
+        boolean isSmallEnglish = ((Activity) getContext()).getIntent().getBooleanExtra("isSmallEnglish", false);
+        Drawable drawable = getContext().getResources().getDrawable(R.drawable.bg_livevideo_normal_swich_flow);
+        if (isSmallEnglish) {
+            clickColor = getContext().getResources().getColor(R.color.COLOR_61B2F1);
+            normalColor = getContext().getResources().getColor(R.color.COLOR_FFFFFF);
+        } else if (LiveVideoConfig.isSmallChinese) {
+            clickColor = getContext().getResources().getColor(R.color.COLOR_F0A61B);
+            normalColor = getContext().getResources().getColor(R.color.COLOR_FFFFFF);
+        } else if (LiveVideoConfig.isPrimary) {
+            getContext().getResources().getDrawable(R.drawable.bg_livevideo_ps_swich_flow);
+            clickColor = getContext().getResources().getColor(R.color.COLOR_7D553F);
+            normalColor = getContext().getResources().getColor(R.color.COLOR_FFFFFF);
+        } else {
+            clickColor = getContext().getResources().getColor(R.color.COLOR_99FFFFFF);
+            normalColor = getContext().getResources().getColor(R.color.COLOR_FFFFFF);
+        }
+        btnSwitchFlow.setBackground(drawable);
     }
 
     private void initView() {
@@ -64,6 +93,7 @@ public class SwitchFlowView extends FrameLayout {
         tvSwitch = view.findViewById(R.id.fzcytv_livevideo_switch_flow_switch);
         tvReload = view.findViewById(R.id.fzcytv_livevideo_switch_flow_reload);
     }
+
 
     public View getLayoutSwitchFlow() {
         return layoutSwitchFlow;
@@ -85,9 +115,23 @@ public class SwitchFlowView extends FrameLayout {
                 }
             }
         });
+
+
+        tvSwitch.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    tvSwitch.setTextColor(clickColor);
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    tvSwitch.setTextColor(normalColor);
+                }
+                return false;
+            }
+        });
         tvSwitch.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (iSwitchFlow != null) {
                     iSwitchFlow.switchRoute();
                 }
@@ -102,13 +146,25 @@ public class SwitchFlowView extends FrameLayout {
                 }
             }
         });
+        tvReload.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    tvReload.setTextColor(clickColor);
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    tvReload.setTextColor(normalColor);
+                }
+                return false;
+            }
+        });
 
     }
 
-    /** 切流显示或着隐藏 */
+    /** 整个布局切流显示或着隐藏 */
     private final void setSwitchFlowWholeVisible(boolean isShow) {
-        btnSwitchFlow.setVisibility(isShow ? VISIBLE : GONE);
-        setSwitchFlowPopWindowVisible(false);
+        setVisibility(isShow ? VISIBLE : GONE);
+//        btnSwitchFlow.setVisibility(isShow ? VISIBLE : GONE);
+//        setSwitchFlowPopWindowVisible(false);
     }
 
     /** 切流的弹窗隐藏或者显示 */

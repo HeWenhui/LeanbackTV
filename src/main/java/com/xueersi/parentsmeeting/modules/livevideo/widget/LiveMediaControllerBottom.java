@@ -42,7 +42,7 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
             if (pattern == 2) {
                 return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
             } else {
-                return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
+                return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_normal_bottom, this);
             }
         }
 
@@ -52,15 +52,17 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
     public void onHide() {
         if (LiveVideoConfig.isPrimary) {
             findViewById(R.id.rl_livevideo_common_word).setVisibility(GONE);
-            switchFlowView.setSwitchFlowPopWindowVisible(false);
         } else if (LiveVideoConfig.isSmallChinese) {
             findViewById(R.id.rl_livevideo_common_word).setVisibility(GONE);
-            switchFlowView.setSwitchFlowPopWindowVisible(false);
         } else if (isSmallEnglish) {
             findViewById(R.id.rl_livevideo_common_word).setVisibility(GONE);
-            switchFlowView.setSwitchFlowPopWindowVisible(false);
+        } else if (pattern == 1) {
+            findViewById(R.id.rl_livevideo_common_word).setVisibility(GONE);
         } else {
             findViewById(R.id.rl_livevideo_common_word).setVisibility(GONE);
+        }
+        if (switchFlowView != null) {
+            switchFlowView.setSwitchFlowPopWindowVisible(false);
         }
         super.onHide();
     }

@@ -56,7 +56,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="2dp"
-            android:src="@drawable/bg_livevideo_swich_flow"
+            android:src="@drawable/bg_livevideo_normal_swich_flow"
             app:layout_constraintBottom_toBottomOf="@+id/tv_livevideo_triple_screen_loading_left"
             app:layout_constraintLeft_toRightOf="@+id/tv_livevideo_triple_screen_loading_left"
             app:layout_constraintTop_toTopOf="@+id/tv_livevideo_triple_screen_loading_left" />

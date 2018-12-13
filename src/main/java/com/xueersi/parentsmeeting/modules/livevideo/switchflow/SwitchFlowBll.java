@@ -130,6 +130,9 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
             public void click(View v) {
                 liveMediaControllerBottom.onChildViewClick(v);
                 LiveMediaController controller = liveMediaControllerBottom.getController();
+                if (liveMediaControllerBottom.getLlMarkPopMenu() != null) {
+                    liveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.GONE);
+                }
                 controller.show();
             }
         });

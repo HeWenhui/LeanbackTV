@@ -15,6 +15,7 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -304,10 +305,16 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected void onPlayOpenSuccess() {
         super.onPlayOpenSuccess();
         //如果之前是正在切流的状态
-        if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
-            SwitchRouteSuccessDialog switchRouteSuccessDialog = new SwitchRouteSuccessDialog(activity);
-            switchRouteSuccessDialog.updateView(switchFlowPos);
-            switchRouteSuccessDialog.showDialogAutoClose(2000);
+        if (pattern == 1) {
+            if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
+                if (LiveVideoConfig.isSmallChinese || LiveVideoConfig.isPrimary || isSmallEnglish) {
+                    SwitchRouteSuccessDialog switchRouteSuccessDialog = new SwitchRouteSuccessDialog(activity);
+                    switchRouteSuccessDialog.updateView(switchFlowPos);
+                    switchRouteSuccessDialog.showDialogAutoClose(2000);
+                } else {
+                    XESToastUtils.showToast(activity, "线路" + switchFlowPos + "切换成功");
+                }
+            }
         }
         resetStatus();
     }

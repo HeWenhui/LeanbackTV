@@ -57,6 +57,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     protected SwitchFlowView switchFlowView;
 
     protected boolean isSmallEnglish;
+
     public BaseLiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context);
         mContext = context;
@@ -188,7 +189,6 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         if (llMarkPopMenu != null) {
             llMarkPopMenu.setVisibility(GONE);
         }
-
     }
 
     public void setController(LiveMediaController controller) {

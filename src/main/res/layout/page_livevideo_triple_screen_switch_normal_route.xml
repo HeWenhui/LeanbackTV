@@ -19,12 +19,13 @@
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_triple_screen_switch_route_tip"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:text="当播放卡顿时，可尝试播放"
-        app:layout_constraintLeft_toLeftOf="@id/fzcytv_livevideo_triple_screen_switch_route_text"
+        android:layout_marginTop="5dp"
+        android:text="当播放卡顿时，可尝试"
+        android:textSize="11sp"
         android:textColor="@color/COLOR_999999"
+        app:layout_constraintLeft_toLeftOf="@id/fzcytv_livevideo_triple_screen_switch_route_text"
         app:layout_constraintTop_toBottomOf="@id/fzcytv_livevideo_triple_screen_switch_route_text" />
 
     <ImageView

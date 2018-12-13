@@ -65,6 +65,7 @@
         android:layout_marginTop="40dp"
         android:divider="@null"
         android:dividerHeight="40dp"
+        android:listSelector="@color/transparent"
         app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_small_chinese_play_achievement_board"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_small_chinese_play_achievement_board"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_small_chinese_play_achievement_board"
