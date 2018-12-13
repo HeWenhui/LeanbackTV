@@ -16,7 +16,6 @@
            android:layout_height="match_parent"
            android:src="@drawable/bg_live_halfbody_pk"
            android:scaleType="centerCrop"
-           android:paddingTop="2dp"
            />
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_teampk_pkstate_myteam_coin_prefix"
@@ -24,9 +23,9 @@
             android:layout_height="wrap_content"
             android:text="本队"
             android:textSize="12sp"
-            android:layout_centerVertical="true"
             android:textColor="@color/white"
             android:layout_marginLeft="9dp"
+            android:layout_marginTop="4dp"
              />
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
@@ -38,8 +37,9 @@
             android:layout_toRightOf="@id/tv_teampk_pkstate_myteam_coin_prefix"
             android:text="0"
             android:textSize="12sp"
+            android:layout_marginTop="2dp"
             android:gravity="center"
-            android:layout_centerVertical="true"
+            android:layout_alignTop="@id/tv_teampk_pkstate_myteam_coin_prefix"
             />
 
 
@@ -47,12 +47,14 @@
             android:id="@id/tpb_teampk_pkstate_energy_bar"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             app:innerProgressBarHeight="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginLeft="5dp"
             android:layout_toRightOf="@id/tv_teampk_pkstate_myteam_energy"
-            app:sliderHeader="@drawable/live_halfbody_slider" />
-
+            app:sliderHeader="@drawable/live_halfbody_slider"
+            app:border_line_color="@color/COLOR_6C0E00"
+            />
+       <!-- @color/COLOR_6C0E00-->
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
             android:id="@id/tv_teampk_pkstate_otherteam_energy"
@@ -61,17 +63,18 @@
             android:text="0"
             android:textSize="12sp"
             android:textColor="@color/COLOR_74C9FF"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="2dp"
             android:layout_toRightOf="@id/tpb_teampk_pkstate_energy_bar"
             android:layout_marginLeft="5dp"
             android:gravity="center"
+            android:layout_alignTop="@id/tv_teampk_pkstate_myteam_coin_prefix"
             />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_teampk_pkstate_adversary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="4dp"
             android:text="对手"
             android:textSize="12sp"
             android:layout_marginLeft="3dp"
@@ -143,7 +146,6 @@
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="我贡献了100个能量"
             android:textColor="@color/white"
             android:layout_centerInParent="true"
             android:textSize="14sp"
