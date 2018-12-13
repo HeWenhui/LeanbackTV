@@ -914,39 +914,30 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
     public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
         Map<String, String> mData = stableLogHashMap.getData();
         Map<String, String> analysis = stableLogHashMap.getAnalysis();
-        if (analysis.isEmpty()) {
-            umsAgentDebugSys(eventId, mData);
-        } else {
-            mData.put("eventid", "" + eventId);
-            setAnalysis(analysis);
-            UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
-        }
+        mData.put("eventid", "" + eventId);
+        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
     }
 
     @Override
     public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
         Map<String, String> mData = stableLogHashMap.getData();
         Map<String, String> analysis = stableLogHashMap.getAnalysis();
-        if (analysis.isEmpty()) {
-            umsAgentDebugInter(eventId, mData);
-        } else {
-            mData.put("eventid", "" + eventId);
-            setAnalysis(analysis);
-            UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData, analysis);
-        }
+        mData.put("eventid", "" + eventId);
+        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData, analysis);
     }
 
     @Override
     public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
         Map<String, String> mData = stableLogHashMap.getData();
         Map<String, String> analysis = stableLogHashMap.getAnalysis();
-        if (analysis.isEmpty()) {
-            umsAgentDebugPv(eventId, mData);
-        } else {
-            mData.put("eventid", "" + eventId);
-            setAnalysis(analysis);
-            UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData, analysis);
-        }
+        mData.put("eventid", "" + eventId);
+        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData, analysis);
     }
 
     /**

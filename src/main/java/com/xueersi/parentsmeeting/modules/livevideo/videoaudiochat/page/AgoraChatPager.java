@@ -33,7 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoAudioChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.AgoraVideoChatInter;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.VideoAudioChatHttp;
@@ -57,7 +57,7 @@ import io.agora.rtc.video.VideoEncoderConfiguration;
  */
 public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     private String TAG = "AgoraChatPager";
-    private LiveAndBackDebug liveBll;
+    private LiveAndBackDebug liveAndBackDebug;
     private LiveGetInfo getInfo;
     private int netWorkType;
     private boolean isFail = false;
@@ -83,14 +83,14 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     String msgFrom;
     private int micType;
 
-    public AgoraChatPager(Activity activity, LiveAndBackDebug liveBll, LiveGetInfo getInfo, VideoChatEvent videoChatEvent, VideoAudioChatHttp videoChatHttp, String msgFrom, int micType) {
+    public AgoraChatPager(Activity activity, LiveAndBackDebug liveAndBackDebug, LiveGetInfo getInfo, VideoChatEvent videoChatEvent, VideoAudioChatHttp videoChatHttp, String msgFrom, int micType) {
         logger = LoggerFactory.getLogger(TAG);
         this.activity = activity;
         mContext = activity;
         this.videoChatEvent = videoChatEvent;
         this.videoChatHttp = videoChatHttp;
         this.startRemote = videoChatEvent.getStartRemote();
-        this.liveBll = liveBll;
+        this.liveAndBackDebug = liveAndBackDebug;
         this.getInfo = getInfo;
         this.msgFrom = msgFrom;
         this.micType = micType;
@@ -188,7 +188,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
             StableLogHashMap logHashMap = new StableLogHashMap("AGEventHandlerError");
             logHashMap.put("channel_name", room);
             logHashMap.put("err", "" + err);
-            liveBll.umsAgentDebugSys(eventId, logHashMap.getData());
+            liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
         }
 
         @Override
@@ -260,7 +260,11 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 int colors[] = {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff};
                 vw_livevideo_chat_voice.setColors(colors);
                 vw_livevideo_chat_voice.start();
-                VideoChatLog.sno8(liveBll, nonce, room, joinChannel);
+                if (joinChannel == 0) {
+                    VideoAudioChatLog.studentLinkMicSno10(liveAndBackDebug, nonce, "true", "0");
+                } else {
+                    VideoAudioChatLog.studentLinkMicSno10(liveAndBackDebug, nonce, "false", "" + joinChannel);
+                }
             }
         });
         show("startRecord");
@@ -275,18 +279,17 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     }
 
     @Override
-    public void stopRecord() {
+    public void stopRecord(final String nonce) {
         logger.d("stopRecord:mWorkerThread=null?" + (mWorkerThread == null));
         if (mWorkerThread != null) {
             mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
                 @Override
                 public void onLevelChannel(int leaveChannel) {
-                    StableLogHashMap logHashMap = new StableLogHashMap("getLeaveChannel");
-                    logHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
-                    if (leaveChannel != 0) {
-                        logHashMap.put("errcode", "" + leaveChannel);
+                    if (leaveChannel == 0) {
+                        VideoAudioChatLog.studentLeaveMic10(liveAndBackDebug, nonce, "true", "0");
+                    } else {
+                        VideoAudioChatLog.studentLeaveMic10(liveAndBackDebug, nonce, "false", "" + leaveChannel);
                     }
-                    liveBll.umsAgentDebugSys(eventId, logHashMap.getData());
                 }
             });
             mWorkerThread.eventHandler().removeEventHandler(agEventHandler);
@@ -312,9 +315,9 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     }
 
     @Override
-    public void removeMe() {
+    public void removeMe(String nonce) {
         containMe = false;
-        stopRecord();
+        stopRecord(nonce);
         hind("removeMe");
     }
 

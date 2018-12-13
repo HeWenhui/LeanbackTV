@@ -247,14 +247,14 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                     }
                 }
                 createChatTipBll("onJoin:startMicro");
-                chatTipBll.startMicro(onMic, "", room, from, contain, micType);
+                chatTipBll.startMicro(onMic, room, from, contain, micType);
                 onVideoChatStartChange(contain, "onJoin:startMicro");
             } else {
                 if (onMicChange) {
                     if ("on".equals(this.openNewMic)) {
                         if ("on".equals(onMic)) {
                             createChatTipBll("onJoin:startMicro2");
-                            chatTipBll.startMicro(onMic, "", room, from, contain, micType);
+                            chatTipBll.startMicro(onMic, room, from, contain, micType);
                         } else {
                             createChatTipBll("onJoin:raisehand");
                             chatTipBll.raisehand("", from, "", type);
@@ -282,7 +282,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
     }
 
     @Override
-    public void onStuMic(String status, final String room, ArrayList<ClassmateEntity> onmicClassmateEntities, ArrayList<ClassmateEntity> offmicClassmateEntities, final String from, int msgFrom) {
+    public void onStuMic(String status, final String room, ArrayList<ClassmateEntity> onmicClassmateEntities, ArrayList<ClassmateEntity> offmicClassmateEntities, final String from, int msgFrom, String nonce) {
         logger.d("onStuMic:status=" + status + ",room=" + room + ",onmic=" + onmicClassmateEntities.size() + ",offmic=" + offmicClassmateEntities.size());
         boolean contain = containMe;
         boolean peopleChange = false;
@@ -344,13 +344,13 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                 if (audioRequest != null) {
                     audioRequest.request(null);
                 }
-                chatTipBll.startMicro(onMic, "", room, from, true, micType);
+                chatTipBll.startMicro(onMic, room, from, true, micType);
             } else {
                 AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
                 if (audioRequest != null) {
                     audioRequest.release();
                 }
-                chatTipBll.startMicro(onMic, "", room, from, false, micType);
+                chatTipBll.startMicro(onMic, room, from, false, micType);
             }
             if (containMeChange) {
                 onVideoChatStartChange(contain, "onStuMic");

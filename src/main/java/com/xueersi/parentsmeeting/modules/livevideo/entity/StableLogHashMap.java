@@ -9,8 +9,8 @@ import java.util.UUID;
  * 稳定性日志
  */
 public class StableLogHashMap {
-    Map<String, String> mData = new HashMap<>();
-    Map<String, String> analysis = new HashMap<>();
+    private Map<String, String> mData = new HashMap<>();
+    private Map<String, String> analysis = new HashMap<>();
 
     public StableLogHashMap() {
 

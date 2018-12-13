@@ -217,6 +217,8 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
         }
     }
 
+    private String linkMicNonce = "";
+
     @Override
     public void onNotice(String sourceNick, String target, JSONObject object, int type) {
         String msg = "onNotice";
@@ -237,8 +239,13 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                     for (int i = 0; i < chatStatusChanges.size(); i++) {
                         chatStatusChanges.get(i).onVideoChatStatusChange(status);
                     }
+                    if ("on".equals(status)) {
+                        linkMicNonce = object.optString("nonce");
+                        VideoAudioChatLog.getRaiseHandMsgSno2(mLiveBll, micType == 0 ? "audio" : "video", linkMicNonce);
+                    } else {
+                        VideoAudioChatLog.getCloseMsgSno12(mLiveBll, linkMicNonce);
+                    }
                 }
-                VideoAudioChatLog.getRaiseHandMsgSno2(mLiveBll, micType == 0 ? "audio" : "video", object.optString("nonce"));
             }
             break;
             case XESCODE.AgoraChat.RAISE_HAND_COUNT: {
@@ -258,6 +265,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                     String from = object.optString("from", "t");
                     String status = object.getString("status");
                     String room = object.optString("room");
+                    String nonce = object.optString("nonce");
                     int micType = object.optInt("type", 0);
                     msg += ",STUDY_ONMIC:from=" + from + ",mode=" + mLiveBll.getMode();
                     ArrayList<ClassmateEntity> onmicClassmateEntities = new ArrayList<>();
@@ -285,7 +293,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                         }
                     }
                     if (videoChatAction != null) {
-                        videoChatAction.onStuMic(status, room, onmicClassmateEntities, offmicClassmateEntities, from, 1);
+                        videoChatAction.onStuMic(status, room, onmicClassmateEntities, offmicClassmateEntities, from, 1, nonce);
                     }
                 } catch (Exception e) {
 

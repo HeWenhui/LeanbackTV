@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoChatLog;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoAudioChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.MidToast;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.page.AgoraChatPager;
@@ -44,6 +45,7 @@ public class ChatTipBll {
     private RelativeLayout bottomContent;
     Handler handler = new Handler(Looper.getMainLooper());
     private LiveAndBackDebug liveAndBackDebug;
+    private String linkMicNonce = "";
     private VideoAudioChatHttp videoChatHttp;
     private int stuPutUpHandsNum = 0;
     private boolean raisehand = false;
@@ -122,7 +124,7 @@ public class ChatTipBll {
 //        bottomContent.addView(videoChatPager.getRootView());
     }
 
-    public void raisehand(String room, String from, String nonce, int micType) {
+    public void raisehand(String room, String from, final String nonce, final int micType) {
         this.msgFrom = from;
         this.room = room;
         logger.d("raisehand:from=" + from + ",nonce=" + nonce);
@@ -135,6 +137,8 @@ public class ChatTipBll {
             @Override
             public void run() {
                 initView("raisehand");
+                linkMicNonce = nonce;
+                VideoAudioChatLog.showLinkMicPanelSno3(liveAndBackDebug, micType == 0 ? "audio" : "video", nonce);
             }
         });
     }
@@ -208,9 +212,12 @@ public class ChatTipBll {
                     if (!have) {
                         return;
                     }
+                    VideoAudioChatLog.clickedRaiseHandSno4(liveAndBackDebug, "on", linkMicNonce);
                     if (testWorkerThread == null) {
                         enableLastmileTest();
                     }
+                } else {
+                    VideoAudioChatLog.cancelRaiseHandSno6(liveAndBackDebug, linkMicNonce);
                 }
                 isConnect = true;
                 raisehandClick();
@@ -414,9 +421,9 @@ public class ChatTipBll {
             @Override
             public void run() {
                 String nonce = StableLogHashMap.creatNonce();
-                VideoChatLog.sno4(liveAndBackDebug, nonce);
                 getInfo.setStuPutUpHandsNum(stuPutUpHandsNum + 1);
                 videoChatHttp.requestMicro(nonce, room, from);
+                final long before = SystemClock.elapsedRealtime();
                 videoChatHttp.chatHandAdd(new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
@@ -428,18 +435,21 @@ public class ChatTipBll {
                         } catch (Exception e) {
                             CrashReport.postCatchedException(new Exception("" + jsonObject, e));
                         }
+                        VideoAudioChatLog.raiseHandToPhpSno5(liveAndBackDebug, linkMicNonce, "true", "0", SystemClock.elapsedRealtime() - before);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
                         logger.d("chatHandAdd:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                        VideoAudioChatLog.raiseHandToPhpSno5(liveAndBackDebug, linkMicNonce, "false", "1", SystemClock.elapsedRealtime() - before);
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
                         logger.e("chatHandAdd:onPmFailure:responseEntity=" + msg);
+                        VideoAudioChatLog.raiseHandToPhpSno5(liveAndBackDebug, linkMicNonce, "false", "2", SystemClock.elapsedRealtime() - before);
                     }
                 });
             }
@@ -447,13 +457,20 @@ public class ChatTipBll {
         runnable.run();
     }
 
-    public void startMicro(final String onMic, final String nonce, final String room, String from, final boolean contain, final int micType) {
-        logger.d("startMicro:nonce=" + nonce + ",onMic=" + onMic + ",contain=" + contain + ",from=" + from);
+    public void startMicro(final String onMic, final String room, String from, final boolean contain, final int micType) {
+        logger.d("startMicro:onMic=" + onMic + ",contain=" + contain + ",from=" + from);
         this.onMic = onMic;
         this.msgFrom = from;
         this.micType = micType;
         if (contain) {
             raisehand = true;
+            if (!containMe) {
+                VideoAudioChatLog.getSelectedMsgSno9(liveAndBackDebug, linkMicNonce);
+            }
+        } else {
+            if (containMe) {
+                VideoAudioChatLog.getLeaveMsgSno9(liveAndBackDebug, linkMicNonce);
+            }
         }
         final boolean oldcontainMe = containMe;
         containMe = contain;
@@ -485,18 +502,18 @@ public class ChatTipBll {
                         tv_livevideo_chat_in_queue.setText("你已下麦，可以再次举手");
                     }
                 }
-                startRecord(room, nonce, contain, micType);
+                startRecord(room, contain, micType);
             }
         });
     }
 
-    public void startRecord(final String room, final String nonce, boolean contain, int micType) {
+    public void startRecord(final String room, boolean contain, int micType) {
         logToFile.d("startRecord:room=" + room + ",contain=" + contain + ",micType=" + micType);
         if (videoChatInter != null) {
             if (contain) {
-                videoChatInter.startRecord("startRecord", room, nonce, micType == 1);
+                videoChatInter.startRecord("startRecord", room, linkMicNonce, micType == 1);
             } else {
-                videoChatInter.removeMe();
+                videoChatInter.removeMe(linkMicNonce);
             }
             videoChatInter.updateUser(classmateChange, classmateEntities);
             return;
@@ -506,7 +523,7 @@ public class ChatTipBll {
         agoraChatPager.setTestWorkerThread(testWorkerThread);
         videoChatInter = agoraChatPager;
         if (contain) {
-            videoChatInter.startRecord("startRecord", room, nonce, micType == 1);
+            videoChatInter.startRecord("startRecord", room, linkMicNonce, micType == 1);
         }
         videoChatInter.updateUser(classmateChange, classmateEntities);
         ll_livevideo_chat_people.addView(videoChatInter.getRootView(), RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -575,7 +592,7 @@ public class ChatTipBll {
                             ll_livevideo_chat_people.removeView(agoraChatPager.getRootView());
                         }
                     }
-                    videoChatInter.stopRecord();
+                    videoChatInter.stopRecord(linkMicNonce);
                     videoChatInter = null;
                 }
             }
