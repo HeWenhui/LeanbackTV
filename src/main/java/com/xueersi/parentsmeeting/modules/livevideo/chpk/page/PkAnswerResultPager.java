@@ -136,7 +136,7 @@ public class PkAnswerResultPager extends BasePager {
                                     showVoteAwardAnim();
                                 }
                             }
-                        }, 200);
+                        }, 300);
 
                     } catch (Exception e) {
                         e.printStackTrace();
