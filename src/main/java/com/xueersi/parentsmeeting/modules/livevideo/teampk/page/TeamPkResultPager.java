@@ -45,7 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ContributionLayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothProgressBar;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
 
@@ -56,7 +56,7 @@ import java.util.List;
  * 战队 pk 结果页
  *
  * @author chekun
- *         created  at 2018/4/17 16:15
+ * created  at 2018/4/17 16:15
  */
 public class TeamPkResultPager extends BasePager {
     private static final String TAG = "TeamPkResultPager";
@@ -92,7 +92,7 @@ public class TeamPkResultPager extends BasePager {
     private SmoothAddNumTextView tvMyTeamEnergy;
     private SmoothAddNumTextView tvOtherTeamEnergy;
     private TextView tvAddEnergy;
-    private SmoothProgressBar tpbEnergyBar;
+    private TeamPkProgressBar tpbEnergyBar;
     private RecyclerView rclContributionRank;
 
     /**
@@ -128,7 +128,7 @@ public class TeamPkResultPager extends BasePager {
             R.raw.win
     };
     private RelativeLayout rlLottieRootView;
-    private SmoothProgressBar tpbFinalProgress;
+    private TeamPkProgressBar tpbFinalProgress;
     private RelativeLayout rlFinalPbBarContainer;
 
     /**
@@ -139,7 +139,7 @@ public class TeamPkResultPager extends BasePager {
     /**
      * 半身直播 贡献之星 右边距
      */
-    private static final float CONTRIBUTION_VIEW_RIGHTMARGIN_HALFBODY = 0.15f;
+    private static final float CONTRIBUTION_VIEW_RIGHTMARGIN_HALFBODY =0.15f;
 
 
     public TeamPkResultPager(Context context, TeamPkBll pkBll) {
@@ -153,6 +153,7 @@ public class TeamPkResultPager extends BasePager {
         rlLottieRootView = view.findViewById(R.id.rl_teampk_pk_result_lottie_root);
         lottieAnimationView = view.findViewById(R.id.lav_teampk_pkresult);
         tpbFinalProgress = view.findViewById(R.id.tpb_teampk_pkresult_pbbar_final);
+        tpbFinalProgress.setMaxProgress(100);
         rlFinalPbBarContainer = view.findViewById(R.id.rl_teampk_pkresult_final_pbbar_container);
 
 
@@ -174,7 +175,9 @@ public class TeamPkResultPager extends BasePager {
         tvMyTeamEnergy = view.findViewById(R.id.tv_teampk_myteam_energy);
         tvOtherTeamEnergy = view.findViewById(R.id.tv_teampk_otherteam_energy);
         tvAddEnergy = view.findViewById(R.id.tv_teampk_myteam_add_energy);
+
         tpbEnergyBar = view.findViewById(R.id.tpb_teampk_pkresult_pbbar);
+        tpbEnergyBar.setMaxProgress(100);
         timeCountDowTextView = view.findViewById(R.id.tv_teampk_pkresult_time_countdow);
 
         rclContributionRank = view.findViewById(R.id.rcl_teampk_pkresult_contribution_rank);
@@ -196,9 +199,9 @@ public class TeamPkResultPager extends BasePager {
         int spanCount = 5;
         // 多屏幕 适配
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rclContributionRank.getLayoutParams();
-        if (mTeamPkBll != null && mTeamPkBll.isHalfBodyLiveRoom()) {
+        if(mTeamPkBll != null && mTeamPkBll.isHalfBodyLiveRoom()){
             params.rightMargin = (int) (mView.getMeasuredWidth() * CONTRIBUTION_VIEW_RIGHTMARGIN_HALFBODY);
-        } else {
+        }else{
             params.rightMargin = (int) (mView.getMeasuredWidth() * CONTRIBUTION_VIEW_RIGHTMARGIN);
         }
         rclContributionRank.setLayoutParams(params);
@@ -245,7 +248,7 @@ public class TeamPkResultPager extends BasePager {
         } else {
             ratio = 0.5f;
         }
-        tpbFinalProgress.setProgress((int) (ratio * tpbFinalProgress.getMax()));
+        tpbFinalProgress.setProgress((int) (ratio * tpbFinalProgress.getMaxProgress()));
         SmoothAddNumTextView tvMyTeamFinalEngergy = rlLottieRootView.findViewById(R.id
                 .tv_teampk_pkresult_myteam_final_anergy);
         tvMyTeamFinalEngergy.setText(myTeamEnergy + "");
@@ -391,11 +394,11 @@ public class TeamPkResultPager extends BasePager {
         } else {
             ratio = 0.5f;
         }
-        int progress = (int) (ratio * tpbEnergyBar.getMax() + 0.5);
+        int progress = (int) (ratio * tpbEnergyBar.getMaxProgress() + 0.5);
         tpbEnergyBar.setProgress(progress);
         tvMyTeamEnergy.setText(myTeamOldEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamOldEnergy + "");
-
+        logger.e("========>updateProgressBar22222:" + progress);
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -413,10 +416,13 @@ public class TeamPkResultPager extends BasePager {
         } else {
             newRatio = 0.5f;
         }
-
-        int currentProgress = (int) (newRatio * tpbEnergyBar.getMax() + 0.5);
-        tpbEnergyBar.animateToProgress(currentProgress);
-
+        int currentProgress = (int) (newRatio * tpbEnergyBar.getMaxProgress() + 0.5);
+        int addProgress = currentProgress - tpbEnergyBar.getProgress();
+        if (addProgress > 0) {
+            tpbEnergyBar.smoothAddProgress(addProgress);
+        } else {
+            tpbEnergyBar.setProgress(currentProgress);
+        }
         tvMyTeamEnergy.setText(myTeamOldEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamEnergy + "");
         int addEnergy = (int) data.getMyTeamEngerInfo().getAddEnergy();
