@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCall;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
@@ -127,6 +128,11 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     @Override
     public void finish(int result) {
         super.finish(result);
-        UmsAgentManager.umsAgentDebug(this, TAG + "finish", "finish(result):" + Log.getStackTraceString(new Exception()));
+        if (LiveVideoConfig.VIDEO_CANCLE == result){
+            UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                    .livevideo_quit_171001));
+        }else {
+            UmsAgentManager.umsAgentDebug(this, TAG + "finish", "finish(result):" + Log.getStackTraceString(new Exception()));
+        }
     }
 }
