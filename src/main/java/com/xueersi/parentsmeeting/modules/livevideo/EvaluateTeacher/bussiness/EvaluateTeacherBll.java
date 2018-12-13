@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.SmallE
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
@@ -69,7 +70,11 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
                     getSciecneEvaluateOption();
                 } else if (getInfo.getIsArts() == 2) {
                     logger.i("IsArts:" + getInfo.getIsArts());
-                    evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, getInfo);
+                    if (LiveVideoConfig.isSmallChinese){
+                        evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, getInfo);
+                    } else {
+                        evaluateTeacherPager = new EvaluateTeacherPager(mContext, getInfo);
+                    }
                     getChsEvaluateOption();
                 } else {
                     return;
