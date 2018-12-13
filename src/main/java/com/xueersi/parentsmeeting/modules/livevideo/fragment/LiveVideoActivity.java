@@ -63,12 +63,12 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     @Override
     protected LiveVideoFragmentBase getFragment() {
         int pattern = getIntent().getIntExtra("pattern", 0);
-       if (pattern == 2) {
+        if (pattern == 2) {
             return new StandLiveVideoFragment();
-        }else if(pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY){
+        } else if (pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
             //半身直播
-            return  new HalfBodyLiveVideoFragement();
-        }else{
+            return new HalfBodyLiveVideoFragement();
+        } else {
             return new LiveVideoFragment();
         }
     }
@@ -128,11 +128,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     @Override
     public void finish(int result) {
         super.finish(result);
-        if (LiveVideoConfig.VIDEO_CANCLE == result){
-            UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
-                    .livevideo_quit_171001));
-        }else {
-            UmsAgentManager.umsAgentDebug(this, TAG + "finish", "finish(result):" + Log.getStackTraceString(new Exception()));
-        }
+        UmsAgentManager.umsAgentDebug(this, TAG + "finish", "finish(result):" + Log.getStackTraceString(new Exception()));
+
     }
 }
