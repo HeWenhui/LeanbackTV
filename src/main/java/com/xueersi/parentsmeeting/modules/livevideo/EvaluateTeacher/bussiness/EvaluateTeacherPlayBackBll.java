@@ -67,7 +67,11 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
                 getSciecneEvaluateOption();
             } else if (liveGetInfo.getIsArts() == 2) {
                 logger.i("IsArts:" + liveGetInfo.getIsArts());
-                evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, liveGetInfo);
+                if (liveGetInfo.isPrimaryChinese()){
+                    evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, liveGetInfo);
+                }else {
+                    evaluateTeacherPager = new EvaluateTeacherPager(mContext, liveGetInfo);
+                }
                 getChsEvaluateOption();
             } else {
                 return;
