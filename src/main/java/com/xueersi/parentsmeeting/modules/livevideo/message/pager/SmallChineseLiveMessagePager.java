@@ -288,7 +288,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
         logger.i("initData:minisize=" + minisize);
         dynamicChangeTopIcon();
-        if (getInfo.getIsAllowTeamPk().equals("1")) {
+        if (getInfo != null && getInfo.getIsAllowTeamPk() != null && getInfo.getIsAllowTeamPk().equals("1")) {
 
             ivPkBackGround.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_team_pk_background_icon));
         }
@@ -886,7 +886,11 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                 if (smallChineseSendGiftPager.isSelect()) {
                     if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
                         if (ircState.isOpenbarrage()) {
-                            String educationStage = getInfo.getEducationStage();
+                            String educationStage = "";
+                            if (getInfo != null) {
+                                educationStage = getInfo.getEducationStage();
+                            }
+//                            String educationStage = getInfo.getEducationStage();
                             ircState.praiseTeacher("", smallChineseSendGiftPager.getWhich() + "",
                                     educationStage, new HttpCallBack(false) {
                                         @Override
