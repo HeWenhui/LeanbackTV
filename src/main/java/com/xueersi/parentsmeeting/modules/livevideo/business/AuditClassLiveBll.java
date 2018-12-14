@@ -13,6 +13,7 @@ import android.widget.EditText;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -27,6 +28,7 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -595,6 +597,15 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             onLiveFailure("服务器异常", null);
             return;
         }
+
+        if(isChineseHalfBodyLive(mGetInfo)){
+            ResponseEntity responseEntity = new ResponseEntity();
+            responseEntity.setErrorMsg("语文半身直播旁听暂不支持，程序员哥哥正在夜以继日的开发哦!");
+            onLiveError(responseEntity);
+            return;
+        }
+
+
         if (mGetInfo.getPattern() == 2) {
             ResponseEntity responseEntity = new ResponseEntity();
             responseEntity.setErrorMsg("家长旁听暂不支持全身直播，程序员哥哥正在夜以继日的开发哦!");
@@ -649,6 +660,17 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         mLogtf.d("onGetInfoSuccess:mode=" + mLiveTopic.getMode());
         liveGetPlayServerFirst();
     }
+
+    /**
+     * 是否是 语文半身直播
+     * @return
+     */
+    private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo){
+        return liveGetInfo != null && liveGetInfo.getPattern()
+                == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+                && liveGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE;
+    }
+
 
     /**
      * 签名
