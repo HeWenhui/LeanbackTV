@@ -140,7 +140,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     /** 放播放器的 io.vov.vitamio.widget.CenterLayout */
     protected ViewGroup viewRoot;
     /** 加载中动画的加载文字 */
-    private TextView tvVideoLoadingText;
+    protected TextView tvVideoLoadingText;
     /** 播放器播放失败时的提供可刷新操作的背景 */
     protected View videoBackgroundRefresh;
     /** 加载中动画Loading */
@@ -441,7 +441,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     /** 加载缓冲进度动画 */
-    private void setVideoLoadingLayoutVisibility(int visibility) {
+    protected void setVideoLoadingLayoutVisibility(int visibility) {
         if (videoLoadingLayout != null) {
             videoLoadingLayout.setVisibility(visibility);
         }

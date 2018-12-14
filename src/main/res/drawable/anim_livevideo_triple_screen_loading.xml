@@ -2,14 +2,14 @@
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:drawable="@drawable/bg_livevideo_triple_screen_loading0"
-        android:duration="1000" />
+        android:duration="500" />
     <item
         android:drawable="@drawable/bg_livevideo_triple_screen_loading1"
-        android:duration="1000" />
+        android:duration="500" />
     <item
         android:drawable="@drawable/bg_livevideo_triple_screen_loading2"
-        android:duration="1000" />
+        android:duration="500" />
     <item
         android:drawable="@drawable/bg_livevideo_triple_screen_loading3"
-        android:duration="1000" />
+        android:duration="500" />
 </animation-list>

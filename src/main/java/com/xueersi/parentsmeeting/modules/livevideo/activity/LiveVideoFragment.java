@@ -306,13 +306,14 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         super.onPlayOpenSuccess();
         //如果之前是正在切流的状态
         if (pattern == 1) {
+            liveVideoAction.onPlaySuccess();
             if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
                 if (LiveVideoConfig.isSmallChinese || LiveVideoConfig.isPrimary || isSmallEnglish) {
                     SwitchRouteSuccessDialog switchRouteSuccessDialog = new SwitchRouteSuccessDialog(activity);
-                    switchRouteSuccessDialog.updateView(switchFlowPos);
+                    switchRouteSuccessDialog.updateView(nowRoutePos);
                     switchRouteSuccessDialog.showDialogAutoClose(2000);
                 } else {
-                    XESToastUtils.showToast(activity, "线路" + switchFlowPos + "切换成功");
+                    XESToastUtils.showToast(activity, "线路" + nowRoutePos + "切换成功");
                 }
             }
         }
@@ -321,11 +322,11 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
     /** 重置标志位 */
     private void resetStatus() {
-        switchFlowStatus = LiveVideoAction.SWITCH_FLOW_RELOAD;
+        switchFlowStatus = LiveVideoAction.SWITCH_FLOW_NORMAL;
         liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, 0);
     }
 
-    private int switchFlowPos = 1;
+//    private int switchFlowPos = 1;
     /** 当前处于线路哪条线路,比list中的实际多1 */
     private int nowRoutePos = 1;
 
@@ -336,19 +337,31 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     @Override
                     public void reLoad() {
 //                        isSwitchReloadShow = true;
+                        if (!mLiveBll.isPresent()) {
+                            if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
+                                mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.GONE);
+                            }
+                        }
                         switchFlowStatus = LiveVideoAction.SWITCH_FLOW_RELOAD;
                         //1.重新加载,显示加载中
                         rePlay(false);
                         //2. 自动切流
                         liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, nowRoutePos);
-                        mLiveVideoBll.liveGetPlayServer();
+                        if (mGetInfo != null && mGetInfo.getLiveTopic() != null) {
+                            mLiveVideoBll.liveGetPlayServer(mGetInfo.getLiveTopic().getMode(), false);
+                        }
                     }
                 },
                 new SwitchFlowRoutePager.ItemClickListener() {
                     @Override
                     public void itemClick(int pos) {
                         switchFlowStatus = LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH;
-                        //todo 显示线路四切换中的字样
+                        if (!mLiveBll.isPresent()) {
+                            if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
+                                mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.GONE);
+                            }
+                        }
+                        //todo 显示线路切换中的字样
                         mLiveVideoBll.playNewVideo(pos);
                         nowRoutePos = pos + 1;
                         liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, nowRoutePos);
@@ -373,18 +386,22 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         btnVideoFailRetry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                logger.i("点击重试按钮");
                 if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_RELOAD) {
-                    switchFlowStatus = LiveVideoAction.SWITCH_FLOW_RELOAD;
                     //1.重新加载,显示加载中
                     rePlay(false);
                     //2. 自动切流
-                    mLiveVideoBll.liveGetPlayServer();
+                    if (mGetInfo != null && mGetInfo.getLiveTopic() != null) {
+                        mLiveVideoBll.liveGetPlayServer(mGetInfo.getLiveTopic().getMode(), false);
+                    }
                 } else if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
                     rePlay(false);
                 } else {
                     rePlay(false);
                 }
-
+                if (!mLiveBll.isPresent()) {
+                    mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -417,8 +434,11 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         bottomContent.addView(liveMediaControllerBottom);
 
 //        layoutVideoFailRetry = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
-        btnVideoFailRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
+
         pattern = activity.getIntent().getIntExtra("pattern", 2);
+        if (pattern == 1) {
+            btnVideoFailRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
+        }
         //如果是三分屏，则需要添加加载中的监听器
 
     }
@@ -434,7 +454,13 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
-        switchFlowBll.setListRoute(server.getPlayserver());
+        if (server != null) {
+            switchFlowBll.setListRoute(server.getPlayserver());
+            logger.i(server.getPlayserver().size());
+        } else {
+            switchFlowBll.setListRoute(null);
+            logger.i("null");
+        }
     }
 
     protected void createMediaControllerBottom() {

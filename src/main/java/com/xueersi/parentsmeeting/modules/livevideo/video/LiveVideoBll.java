@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.video;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -365,7 +364,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
     /** 直接指定为只去播放 */
     public void playNewVideo(int pos) {
         String url = constructUrl(pos);
-        if (!TextUtils.isEmpty(url)) {
+        logger.i("加载的url = " + url);
+        if (url != null) {
             videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
         }
     }

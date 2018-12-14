@@ -46,7 +46,7 @@ public class SwitchFlowRouteSuccessView extends BasePager {
             color = mContext.getResources().getColor(R.color.COLOR_0096EF);
         }
         ivBackGround.setImageDrawable(drawable);
-        tvSuccess.setText("线路" + pos + "切换成功");
+        tvSuccess.setText("已切换到线路" + pos);
         tvSuccess.setTextColor(color);
     }
 

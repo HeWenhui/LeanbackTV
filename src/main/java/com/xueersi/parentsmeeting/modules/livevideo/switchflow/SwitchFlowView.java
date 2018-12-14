@@ -131,7 +131,6 @@ public class SwitchFlowView extends FrameLayout {
         tvSwitch.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (iSwitchFlow != null) {
                     iSwitchFlow.switchRoute();
                 }
@@ -164,7 +163,7 @@ public class SwitchFlowView extends FrameLayout {
     private final void setSwitchFlowWholeVisible(boolean isShow) {
         setVisibility(isShow ? VISIBLE : GONE);
 //        btnSwitchFlow.setVisibility(isShow ? VISIBLE : GONE);
-//        setSwitchFlowPopWindowVisible(false);
+        setSwitchFlowPopWindowVisible(false);
     }
 
     /** 切流的弹窗隐藏或者显示 */

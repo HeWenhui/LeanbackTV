@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -15,8 +18,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
-import com.xueersi.ui.adapter.AdapterItemInterface;
-import com.xueersi.ui.adapter.CommonAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,6 +127,7 @@ public class SwitchFlowRoutePager extends BasePager {
         ivBackGround.setLayoutParams(backLayout);
     }
 
+    private RouteAdapter routeAdapter;
 
     @Override
     public void initData() {
@@ -137,70 +139,76 @@ public class SwitchFlowRoutePager extends BasePager {
         for (int i = 0; i < routeSum; i++) {
             listRoute.add("线路" + String.valueOf(i + 1));
         }
-        if (lvRoute.getAdapter() == null) {
-            lvRoute.setAdapter(new CommonAdapter<String>(listRoute) {
-                FangZhengCuYuanTextView tvRoute;
-
+        if (routeAdapter == null) {
+            lvRoute.setSelector(R.color.transparent);
+            routeAdapter = new RouteAdapter();
+            lvRoute.setAdapter(routeAdapter);
+//                    new CommonAdapter<String>(listRoute) {
+//                FangZhengCuYuanTextView tvRoute;
+//
+//                @Override
+//                public AdapterItemInterface<String> getItemView(Object type) {
+//                    return new AdapterItemInterface<String>() {
+//                        @Override
+//                        public int getLayoutResId() {
+//                            return R.layout.item_livevideo_triple_screen_switch_flow_route;
+//                        }
+//
+//                        @Override
+//                        public void initViews(View root) {
+//                            tvRoute = root.findViewById(R.id.fzcy_livevideo_switch_flow_route_item);
+//
+////                        tvRoute.setTextColor();
+//                        }
+//
+//                        @Override
+//                        public void bindListener() {
+//                            tvRoute.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    if (itemClickListener != null && listRoute != null) {
+//                                        if (v instanceof FangZhengCuYuanTextView) {
+//                                            FangZhengCuYuanTextView nowTvRoute = (FangZhengCuYuanTextView) v;
+//                                            logger.i("tvRoute = " + nowTvRoute.getText());
+//                                            nowPos = listRoute.indexOf(nowTvRoute.getText().toString());
+//                                            logger.i("nowPos" + nowPos);
+//                                            itemClickListener.itemClick(nowPos);
+//
+//                                            notifyDataSetChanged();
+//                                        }
+//
+//                                    }
+//                                }
+//                            });
+//                        }
+//
+//                        @Override
+//                        public void updateViews(String entity, int position, Object objTag) {
+//                        }
+//                    };
+//                }
+//            }
+//            );
+            lvRoute.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public AdapterItemInterface<String> getItemView(Object type) {
-                    return new AdapterItemInterface<String>() {
-                        @Override
-                        public int getLayoutResId() {
-                            return R.layout.item_livevideo_triple_screen_switch_flow_route;
-                        }
-
-                        @Override
-                        public void initViews(View root) {
-                            tvRoute = root.findViewById(R.id.fzcy_livevideo_switch_flow_route_item);
-
-//                        tvRoute.setTextColor();
-                        }
-
-                        @Override
-                        public void bindListener() {
-                            tvRoute.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-
-                                    if (itemClickListener != null && listRoute != null) {
-                                        nowPos = listRoute.indexOf(tvRoute.getText());
-                                        itemClickListener.itemClick(nowPos);
-                                        notifyDataSetChanged();
-                                    }
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void updateViews(String entity, int position, Object objTag) {
-                            if (listRoute != null && listRoute.size() > position) {
-                                tvRoute.setText(listRoute.get(position));
-                                int textColor = mContext.getResources().getColor(R.color.COLOR_008B97);
-                                if (LiveVideoConfig.isSmallChinese) {
-                                    textColor = mContext.getResources().getColor(R.color.COLOR_008B97);
-                                    nowTextColor = mContext.getResources().getColor(R.color.COLOR_005952);
-                                } else if (LiveVideoConfig.isPrimary) {
-                                    textColor = mContext.getResources().getColor(R.color.COLOR_FFFFFF);
-                                    nowTextColor = mContext.getResources().getColor(R.color.COLOR_FF6326);
-                                } else if (isSmallEnglish) {
-                                    textColor = mContext.getResources().getColor(R.color.COLOR_C3DAFF);
-                                    nowTextColor = mContext.getResources().getColor(R.color.COLOR_FFB400);
-                                } else {
-                                    textColor = mContext.getResources().getColor(R.color.COLOR_FFFFFF);
-                                    nowTextColor = mContext.getResources().getColor(R.color.COLOR_F13232);
-                                }
-                                if (nowPos != position) {
-                                    tvRoute.setTextColor(textColor);
-                                } else {
-                                    tvRoute.setTextColor(nowTextColor);
-                                }
-                            }
-                        }
-                    };
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (position == nowPos) {
+                        return;
+                    }
+                    if (itemClickListener != null && listRoute != null) {
+                        logger.i("position = " + position);
+//                        nowTvRoute =  view;
+//                        logger.i("tvRoute = " + nowTvRoute.getText());
+//                        nowPos = listRoute.indexOf(nowTvRoute.getText().toString());
+//                        logger.i("nowPos" + nowPos);
+                        nowPos = position;
+                        itemClickListener.itemClick(position);
+                        routeAdapter.notifyDataSetChanged();
+                    }
                 }
             });
         } else {
-            ((BaseAdapter) lvRoute.getAdapter()).notifyDataSetChanged();
+            routeAdapter.notifyDataSetChanged();
         }
 
     }
@@ -213,5 +221,79 @@ public class SwitchFlowRoutePager extends BasePager {
 
     public void setItemClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    private class RouteAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return listRoute.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return listRoute.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder mHolder = null;
+            if (convertView == null) {
+                mHolder = new ViewHolder();
+                LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+                convertView = layoutInflater.inflate(R.layout.item_livevideo_triple_screen_switch_flow_route, null);
+                mHolder.tvRoute = convertView.findViewById(R.id.fzcy_livevideo_switch_flow_route_item);
+                convertView.setTag(mHolder);
+            } else {
+                mHolder = (ViewHolder) convertView.getTag();
+            }
+            if (listRoute != null && listRoute.size() > position) {
+                mHolder.tvRoute.setText(listRoute.get(position));
+                int textColor = mContext.getResources().getColor(R.color.COLOR_008B97);
+                if (LiveVideoConfig.isSmallChinese) {
+                    textColor = mContext.getResources().getColor(R.color.COLOR_008B97);
+                    nowTextColor = mContext.getResources().getColor(R.color.COLOR_005952);
+                } else if (LiveVideoConfig.isPrimary) {
+                    textColor = mContext.getResources().getColor(R.color.COLOR_FFFFFF);
+                    nowTextColor = mContext.getResources().getColor(R.color.COLOR_FF6326);
+                } else if (isSmallEnglish) {
+                    textColor = mContext.getResources().getColor(R.color.COLOR_C3DAFF);
+                    nowTextColor = mContext.getResources().getColor(R.color.COLOR_FFB400);
+                } else {
+                    textColor = mContext.getResources().getColor(R.color.COLOR_FFFFFF);
+                    nowTextColor = mContext.getResources().getColor(R.color.COLOR_F13232);
+                }
+                if (nowPos != position) {
+                    mHolder.tvRoute.setTextColor(textColor);
+                } else {
+                    mHolder.tvRoute.setTextColor(nowTextColor);
+                }
+            }
+//            mHolder.tvRoute.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (itemClickListener != null && listRoute != null) {
+//                        FangZhengCuYuanTextView nowTvRoute = (FangZhengCuYuanTextView) v;
+//                        logger.i("tvRoute = " + nowTvRoute.getText());
+//                        nowPos = listRoute.indexOf(nowTvRoute.getText().toString());
+//                        logger.i("nowPos" + nowPos);
+//                        itemClickListener.itemClick(nowPos);
+//                        notifyDataSetChanged();
+//                    }
+//                }
+//            });
+
+
+            return convertView;
+        }
+
+        private class ViewHolder {
+            FangZhengCuYuanTextView tvRoute;
+        }
     }
 }

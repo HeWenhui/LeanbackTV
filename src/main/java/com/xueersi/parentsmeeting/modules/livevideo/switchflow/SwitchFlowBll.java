@@ -45,6 +45,8 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
 
     private int route = 0;
 
+    private SwitchFlowView mView;
+
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
@@ -72,29 +74,16 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
         }
     }
 
+    private List<PlayServerEntity.PlayserverEntity> listRoute;
+
     public void setListRoute(List<PlayServerEntity.PlayserverEntity> listRoute) {
-//        this.listRoute = listRoute;
-        if (listRoute == null) {
-            logger.i("listRoute为null");
-        } else {
-            logger.i("listRoute数量为" + listRoute.size());
-        }
-        if (listRoute != null && listRoute.size() != 0) {
-            route = listRoute.size() < 4 ? listRoute.size() : 4;
-        } else if (mGetInfo != null) {
-            route = mGetInfo.getRtmpUrls().length;
-        } else {
-            route = 0;
-        }
-        if (mPager != null) {
-            mPager.setRouteSum(route);
-        }
+        this.listRoute = listRoute;
     }
 
     private SwitchFlowRoutePager.ItemClickListener itemClickListener;
 
     public void setmView(final SwitchFlowView mView, final BaseLiveMediaControllerBottom liveMediaControllerBottom, final SwitchFlowView.IReLoad iReLoad, SwitchFlowRoutePager.ItemClickListener itemClickListener) {
-//        this.mView = mView;
+        this.mView = mView;
         if (mView == null) {
             return;
         }
@@ -102,14 +91,24 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
         mView.setiSwitchFlow(new SwitchFlowView.ISwitchFlow() {
             @Override
             public void reLoad() {
+//                if (!mLiveBll.isPresent()) {
+//                    XESToastUtils.showToast(mContext, "老师不在直播间，请稍后再试");
+//                    return;
+//                }
                 iReLoad.reLoad();
             }
 
             @Override
             public void switchRoute() {
+//                if (!mLiveBll.isPresent()) {
+//                    XESToastUtils.showToast(mContext, "老师不在直播间，请稍后再试");
+//                    return;
+//                }
                 if (animationOut == null || animationIn == null || mPager == null) {
                     initPager();
                 }
+
+
                 if (!isRoutePagerShow) {
 //                    mPager.initData();
                     logger.i("显示动画开始");
@@ -141,6 +140,19 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
     private void initPager() {
         initView();
         addView();
+
+        if (listRoute == null) {
+            logger.i("listRoute为null");
+        } else {
+            logger.i("listRoute数量为" + listRoute.size());
+        }
+        if (listRoute != null && listRoute.size() != 0) {
+            route = listRoute.size() < 4 ? listRoute.size() : 4;
+        } else if (mGetInfo != null) {
+            route = mGetInfo.getRtmpUrls().length;
+        } else {
+            route = 0;
+        }
         mPager.setRouteSum(route);
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         animationIn = ObjectAnimator.ofFloat(mPager.getRootView(), "translationX", liveVideoPoint.x4 - liveVideoPoint.x3, 0);
@@ -152,7 +164,11 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
         mPager.setItemClickListener(new SwitchFlowRoutePager.ItemClickListener() {
             @Override
             public void itemClick(int pos) {
+                if (mView != null) {
+                    mView.setSwitchFlowPopWindowVisible(false);
+                }
                 animationOut.start();
+                isRoutePagerShow = false;
                 itemClickListener.itemClick(pos);
             }
         });

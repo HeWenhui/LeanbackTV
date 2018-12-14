@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -11,10 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 /**
  * 三分屏直播的基础播放Fragment，这里主要作用是现实自定义的加载中
@@ -44,13 +47,17 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
 
     private boolean isFirstShow = true;
 
+//    private TextView tvVideoLoadingText;
+
+//    private RelativeLayout videoLoadingLayout;
+
     /** 设置加载中的动画 */
     public void setLoadingAnimation(int view) {
         this.judgeView = view;
 
         switch (view) {
             case TRIPLE_SCREEN_MIDDLE_LOADING:
-                loadingDrawable = getActivity().getResources().getDrawable(R.drawable.anim_livevideo_triple_screen_loading);
+//                loadingDrawable = getActivity().getResources().getDrawable(R.drawable.anim_livevideo_triple_screen_loading);
                 break;
             case TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING:
                 loadingDrawable = getActivity().getResources().getDrawable(R.drawable.anim_livevideo_triple_screen_primary_chinese_loading);
@@ -62,42 +69,55 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                 loadingDrawable = getActivity().getResources().getDrawable(R.drawable.anim_livevideo_triple_screen_primary_science_loading);
                 break;
             case ORDINARY_LOADING:
-
                 break;
             default:
-
                 break;
         }
-
     }
 
+    boolean isSmallEnglish;
+    private ViewGroup loadingLayout;
+    private RelativeLayout rootView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         logger.d("onCreateView");
+        Intent paramIntent = getActivity().getIntent();
+        isSmallEnglish = paramIntent.getBooleanExtra("isSmallEnglish", false);
         pattern = activity.getIntent().getIntExtra("pattern", 2);
-        if (pattern != 1) {
-            return super.onCreateView(inflater, container, savedInstanceState);
-        } else {
-            // 播放器所在的io.vov.vitamio.widget.CenterLayout
-            viewRoot = (ViewGroup) inflater.inflate(R.layout.layout_livevideo_triple_screen_player, container, false);
-            videoView = viewRoot.findViewById(R.id.vv_course_video_video); // 播放器的videoView
-            videoView.initialize(activity, this, mIsHWCodec); // 初始化播放器所在的画布
-//        tvVideoLoadingText = viewRoot.findViewById(R.id.tv_course_video_loading_tip); // 加载进度文字框
-//        videoLoadingLayout = viewRoot.findViewById(R.id.rl_course_video_loading); // 加载进度动画
-            layoutLoading = viewRoot.findViewById(R.id.layout_livevideo_triple_screen_loading);
-            ivLoading = viewRoot.findViewById(R.id.iv_livevideo_triple_screen_loading);
-            setDrawable();
-            return viewRoot;
-        }
+//        if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
+//
+//            rootView = getActivity().findViewById(R.id.rl_course_video_live_question_content);
+//
+//            // 播放器所在的io.vov.vitamio.widget.CenterLayout
+//            viewRoot = (ViewGroup) inflater.inflate(R.layout.layout_livevideo_triple_screen_player, container, false);
+//            videoView = viewRoot.findViewById(R.id.vv_course_video_video); // 播放器的videoView
+//            videoView.initialize(activity, this, mIsHWCodec); // 初始化播放器所在的画布
+//            tvVideoLoadingText = viewRoot.findViewById(R.id.tv_course_video_loading_tip); // 加载进度文字框
+//            videoLoadingLayout = viewRoot.findViewById(R.id.rl_course_video_loading); // 加载进度动画
+//
+//            loadingLayout = (ViewGroup) inflater.inflate(R.layout.layout_livevideo_triple_screen_load_player, null);
+//            layoutLoading = loadingLayout.findViewById(R.id.layout_livevideo_triple_screen_loading);
+//            ivLoading = loadingLayout.findViewById(R.id.iv_livevideo_triple_screen_loading);
+//
+
+//            return viewRoot;
+//        } else if (pattern == 1) {
+//
+//        } else {
+//            return super.onCreateView(inflater, container, savedInstanceState);
+//        }
+        ViewGroup viewGroup = (ViewGroup) super.onCreateView(inflater, container, savedInstanceState);
+
+        return viewGroup;
     }
 
     private final void setDrawable() {
         ivLoading.setBackground(loadingDrawable);
     }
 
-    Handler.Callback tripleScreenLoadCallback = new Handler.Callback() {
+    Handler.Callback callback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
@@ -125,9 +145,9 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                     // 统计播放器初始化成功
                     XesMobAgent.userMarkVideoInit();
                     // 播放器初始化完毕准备开始加载指定视频
-//                    tvVideoLoadingText.setText(R.string.video_layout_loading);
+                    tvVideoLoadingText.setText(R.string.video_layout_loading);
                     onPlayOpenStart();
-//                    layoutLoading.setVisibility(iVisibible == 1 ? View.VISIBLE : View.GONE);
+                    setVideoLoadingLayoutVisibility(View.VISIBLE);
                     break;
                 case OPEN_SUCCESS:
                     // 统计播放开始
@@ -135,8 +155,7 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                     // 视频加载成功开始初始化一些播放参数，并开始播放和加载控制栏
                     loadVPlayerPrefs();
                     onPlayOpenSuccess();
-//                    setVideoLoadingLayoutVisibility(View.GONE);
-                    layoutLoading.setVisibility(View.GONE);
+                    setVideoLoadingLayoutVisibility(View.GONE);
                     setVideoLayout();
                     vPlayer.start();
                     showLongMediaController();
@@ -156,20 +175,41 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                     break;
                 case BUFFER_START:
                     // 网络视频缓冲开始
-//                    setVideoLoadingLayoutVisibility(View.VISIBLE);
-                    if (isFirstShow) {
-                        setLayoutLoadingVisible(true);
+                    if (!isFirstShow) {
+                        setVideoLoadingLayoutVisibility(View.VISIBLE);
+                    } else {
+                        rootView = getActivity().findViewById(R.id.rl_course_video_live_question_content);
+
+                        if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
+                            loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_load_player, null);
+                            layoutLoading = loadingLayout.findViewById(R.id.layout_livevideo_triple_screen_loading);
+                            ivLoading = loadingLayout.findViewById(R.id.iv_livevideo_triple_screen_loading);
+                            setDrawable();
+                        } else {
+                            loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_middle_school_load_playerload, null);
+                        }
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                        rootView.addView(loadingLayout, layoutParams);
+                        if (isSmallEnglish || LiveVideoConfig.isSmallChinese || LiveVideoConfig.isPrimary) {
+                            setLayoutLoadingVisible(true);
+                        }
                         isFirstShow = false;
+                        vPlayerHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+//                                removeLoadingView();
+                                removeLoadingView();
+//                                setLayoutLoadingVisible(false);
+                            }
+                        }, 2000);
                     }
-//                    layoutLoading.setVisibility(iVisibible == 1 ? View.VISIBLE : View.GONE);
                     vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
                     break;
                 case BUFFER_PROGRESS:
                     // 视频缓冲中进行进度更新
                     if (!vPlayer.isBuffering() || vPlayer.getBufferProgress() >= 100) {
-//                        setVideoLoadingLayoutVisibility(View.GONE);
-                        setLayoutLoadingVisible(false);
-//                        layoutLoading.setVisibility(View.GONE);
+                        setVideoLoadingLayoutVisibility(View.GONE);
                     } else {
                         // 视频缓冲中进行进度更新,tvVideoLoadingText.getVisibility()==View.GONE
 //                        tvVideoLoadingText.setText(getString(R.string.video_layout_buffering_progress,
@@ -178,18 +218,14 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                     }
                     break;
                 case BUFFER_COMPLETE:
-//                     缓冲完毕
-//                    layoutLoading.setVisibility(View.GONE);
-                    setLayoutLoadingVisible(false);
+                    // 缓冲完毕
+                    setVideoLoadingLayoutVisibility(View.GONE);
                     vPlayerHandler.removeMessages(BUFFER_PROGRESS);
                     break;
                 case CLOSE_START:
                     // 开始退出播放
-//                    tvVideoLoadingText.setText(R.string.closing_file);
-                    // TODO: 2018/12/4  正在退出怎么办?
-
-//                    layoutLoading.setVisibility(iVisibible == 1 ? View.VISIBLE : View.GONE);
-//                    setVideoLoadingLayoutVisibility(View.VISIBLE);
+                    tvVideoLoadingText.setText(R.string.closing_file);
+                    setVideoLoadingLayoutVisibility(View.VISIBLE);
                     break;
                 case CLOSE_COMPLETE:
                     // 播放器退出完毕，设置相应Boolean值
@@ -223,7 +259,17 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
 
     /** 重写这个CallBack */
     public void overrideCallBack() {
-        vPlayerHandler = new WeakHandler(tripleScreenLoadCallback);
+        if (LiveVideoConfig.isSmallChinese || LiveVideoConfig.isPrimary || isSmallEnglish) {
+            vPlayerHandler = new WeakHandler(callback);
+        }
+    }
+
+    @Override
+    public void removeLoadingView() {
+        super.removeLoadingView();
+        if (loadingLayout != null && loadingLayout.getParent() == rootView) {
+            rootView.removeView(loadingLayout);
+        }
     }
 
     public void setLayoutLoadingVisible(boolean isShow) {

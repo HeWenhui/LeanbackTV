@@ -21,60 +21,6 @@
         android:fitsSystemWindows="true"
         android:saveEnabled="true" />
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/layout_livevideo_triple_screen_loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/COLOR_3C000000"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/iv_livevideo_triple_screen_loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/anim_livevideo_triple_screen_loading"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:id="@+id/tv_livevideo_triple_screen_loading_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
-            android:layout_marginRight="100dp"
-            android:text="视频出现卡顿，可尝试点击屏幕中的"
-            android:textColor="@color/COLOR_FFFFFF"
-            android:textSize="17sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_livevideo_triple_screen_loading" />
-
-        <ImageView
-            android:id="@+id/iv_livevideo_triple_screen_loading_icon_middle"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="2dp"
-            android:src="@drawable/bg_livevideo_normal_swich_flow"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_livevideo_triple_screen_loading_left"
-            app:layout_constraintLeft_toRightOf="@+id/tv_livevideo_triple_screen_loading_left"
-            app:layout_constraintTop_toTopOf="@+id/tv_livevideo_triple_screen_loading_left" />
-
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:id="@+id/tv_livevideo_triple_scrren_loading_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:text="切换线路"
-            android:textColor="@color/COLOR_FFFFFF"
-            android:textSize="17sp"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_triple_screen_loading_icon_middle"
-            app:layout_constraintLeft_toRightOf="@+id/iv_livevideo_triple_screen_loading_icon_middle"
-            app:layout_constraintTop_toTopOf="@+id/iv_livevideo_triple_screen_loading_icon_middle" />
-
-
-    </android.support.constraint.ConstraintLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
