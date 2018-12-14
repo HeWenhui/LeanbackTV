@@ -7,6 +7,7 @@ import android.os.Looper;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
@@ -269,18 +270,21 @@ public class IRCMessage {
                 String s = "onUserList:channel=" + channel + ",users=" + users.length;
                 mLogtf.d(s);
                 if (mIRCCallback != null) {
-                    mIRCCallback.onUserList(channel, users);
+                    if (("#"+mChannels[0]).equals(channel)) {
+                        mIRCCallback.onUserList(channel, users);
+                    }
                 }
             }
 
             @Override
             public void onJoin(String target, String sender, String login, String hostname) {
-                 if (sender.startsWith("s_") || sender.startsWith("ws_")) {
+                if (sender.startsWith("s_") || sender.startsWith("ws_")) {
                     logger.i("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 } else {
                     mLogtf.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 }
                 if (mIRCCallback != null) {
+                   // Loger.d("___join2:  sender:  "+sender);
                     mIRCCallback.onJoin(target, sender, login, hostname);
                 }
             }
@@ -508,7 +512,7 @@ public class IRCMessage {
      * @param notice
      */
     public void sendNotice(String notice) {
-      //  mConnection.sendNotice("#" + mChannel, notice);
+        //  mConnection.sendNotice("#" + mChannel, notice);
    /*     for (String channel : mChannels){
             mConnection.sendNotice("#" + channel, notice);
         }*/
@@ -559,7 +563,7 @@ public class IRCMessage {
      * @param message 信息
      */
     public void sendMessage(String message) {
-    //    mConnection.sendMessage("#" + mChannel, message);
+        //    mConnection.sendMessage("#" + mChannel, message);
      /*   for (String channel : mChannels){
             mConnection.sendNotice("#" + channel, message);
         }*/
@@ -679,9 +683,6 @@ public class IRCMessage {
         /**
          * wiki地址 https://wiki.xesv5.com/pages/viewpage.action?pageId=13842928
          *
-         * @param eventId    eventId
-         * @param logtype    错误日志类型
-         * @param os         操作系统
          * @param serverIp   聊天服务器ip
          * @param serverPort 聊天服务器端口
          * @param errMsg     链接聊天服务器失败信息
@@ -701,6 +702,12 @@ public class IRCMessage {
     }
 
     public void modeChange(String mode){
+        // 专属切主讲时，断开专属聊天室
+        if (currentMode!=null && !currentMode.equals(mode)){
+            if (mChannels!=null && mChannels.length>1){
+                mConnection.partChannel("#" + mChannels[1]);
+            }
+        }
         currentMode = mode;
     }
 }

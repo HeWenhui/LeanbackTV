@@ -23,6 +23,7 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
@@ -653,6 +654,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                     if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
                         String oldMode = mLiveTopic.getMode();
                         mLiveTopic.setMode(liveTopic.getMode());
+                       // Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
                         mGetInfo.setMode(liveTopic.getMode());
                         boolean isPresent = isPresent(mLiveTopic.getMode());
                         if (mVideoAction != null) {
@@ -672,7 +674,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 }
                 //////////////
                 if (teacherModeChanged) {
+
                     mLiveTopic.setMode(liveTopic.getMode());
+                    Loger.setDebug(true);
+                  //  Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
                     mGetInfo.setMode(liveTopic.getMode());
                 }
                 if (mTopicActions != null && mTopicActions.size() > 0) {
