@@ -436,9 +436,9 @@ public class RolePlayerActivity extends XesActivity {
         super.onDestroy();
         if (mWorkerThread != null) {
             try {
-                mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
+                mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLeaveChannel() {
                     @Override
-                    public void onLevelChannel(int leaveChannel) {
+                    public void onLeaveChannel(int leaveChannel) {
                         StableLogHashMap logHashMap = new StableLogHashMap("getLeaveChannel");
                         logHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
                         if (leaveChannel != 0) {

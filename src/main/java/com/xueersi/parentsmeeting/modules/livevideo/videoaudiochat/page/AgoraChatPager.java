@@ -284,9 +284,9 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     public void stopRecord(final String nonce) {
         logger.d("stopRecord:mWorkerThread=null?" + (mWorkerThread == null));
         if (mWorkerThread != null) {
-            mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
+            mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLeaveChannel() {
                 @Override
-                public void onLevelChannel(int leaveChannel) {
+                public void onLeaveChannel(int leaveChannel) {
                     if (leaveChannel == 0) {
                         VideoAudioChatLog.studentLeaveMic10(liveAndBackDebug, linkmicid, nonce, true, "0");
                     } else {
