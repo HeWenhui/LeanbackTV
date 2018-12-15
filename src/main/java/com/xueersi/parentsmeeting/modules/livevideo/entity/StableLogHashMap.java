@@ -37,6 +37,17 @@ public class StableLogHashMap {
     }
 
     /**
+     * 收到上一步，期望是不是成功
+     *
+     * @param ex
+     * @return
+     */
+    public StableLogHashMap addEx(boolean ex) {
+        mData.put("ex", ex ? "Y" : "N");
+        return this;
+    }
+
+    /**
      * 收到上一步，期望成功
      *
      * @return

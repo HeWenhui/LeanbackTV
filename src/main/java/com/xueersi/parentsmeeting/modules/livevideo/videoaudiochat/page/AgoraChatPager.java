@@ -80,10 +80,11 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     private LottieEffectInfo bubbleEffectInfo;
     private boolean initLottile1 = false;
     private boolean initLottile2 = false;
-    String msgFrom;
+    private String msgFrom;
     private int micType;
+    private String linkmicid;
 
-    public AgoraChatPager(Activity activity, LiveAndBackDebug liveAndBackDebug, LiveGetInfo getInfo, VideoChatEvent videoChatEvent, VideoAudioChatHttp videoChatHttp, String msgFrom, int micType) {
+    public AgoraChatPager(Activity activity, LiveAndBackDebug liveAndBackDebug, LiveGetInfo getInfo, VideoChatEvent videoChatEvent, VideoAudioChatHttp videoChatHttp, String msgFrom, int micType, String linkmicid) {
         logger = LoggerFactory.getLogger(TAG);
         this.activity = activity;
         mContext = activity;
@@ -94,6 +95,7 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
         this.getInfo = getInfo;
         this.msgFrom = msgFrom;
         this.micType = micType;
+        this.linkmicid = linkmicid;
         netWorkType = NetWorkHelper.getNetWorkState(activity);
         mLogtf = new LogToFile(activity, TAG);
         mLogtf.d("AgoraChatPager:netWorkType=" + netWorkType);
@@ -261,9 +263,9 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 vw_livevideo_chat_voice.setColors(colors);
                 vw_livevideo_chat_voice.start();
                 if (joinChannel == 0) {
-                    VideoAudioChatLog.studentLinkMicSno10(liveAndBackDebug, nonce, true, "0");
+                    VideoAudioChatLog.studentLinkMicSno10(liveAndBackDebug, linkmicid, nonce, true, "0");
                 } else {
-                    VideoAudioChatLog.studentLinkMicSno10(liveAndBackDebug, nonce, false, "" + joinChannel);
+                    VideoAudioChatLog.studentLinkMicSno10(liveAndBackDebug, linkmicid, nonce, false, "" + joinChannel);
                 }
             }
         });
@@ -286,9 +288,9 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
                 @Override
                 public void onLevelChannel(int leaveChannel) {
                     if (leaveChannel == 0) {
-                        VideoAudioChatLog.studentLeaveMic10(liveAndBackDebug, nonce, true, "0");
+                        VideoAudioChatLog.studentLeaveMic10(liveAndBackDebug, linkmicid, nonce, true, "0");
                     } else {
-                        VideoAudioChatLog.studentLeaveMic10(liveAndBackDebug, nonce, false, "" + leaveChannel);
+                        VideoAudioChatLog.studentLeaveMic10(liveAndBackDebug, linkmicid, nonce, false, "" + leaveChannel);
                     }
                 }
             });
