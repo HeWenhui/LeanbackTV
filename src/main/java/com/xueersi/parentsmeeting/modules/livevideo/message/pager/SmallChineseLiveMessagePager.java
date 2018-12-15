@@ -28,7 +28,6 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -122,12 +121,11 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     LiveAndBackDebug liveAndBackDebug;
     private String liveId;
     private String termId;
-    private View mFloatView;
-    private PopupWindow mPopupWindow;
+    //    private View mFloatView;
+//    private PopupWindow mPopupWindow;
     //是否是小英
     private SmallChineseSendGiftPager smallChineseSendGiftPager;
-    //测试使用的布尔值，用来控制无限发送弹幕
-//    private boolean blTestSEBullet = true;
+
     //整个布局的根View,用来献花弹窗增加背景时使用
     private ViewGroup decorView;
     /**
@@ -140,9 +138,10 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     private ImageView ivMessageTopIcon;
 //    private Drawable messageBackgroundColors[];
     /** 小学语文测试，一直发弹幕， */
-    private boolean isSendFlower = false;
+//    private boolean isSendFlower = false;
     /** 战队pk布局 */
     private TeamPkStateLayout teamPkStateLayout;
+
 
     public SmallChineseLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                         LiveAndBackDebug ums, BaseLiveMediaControllerBottom liveMediaControllerBottom,
@@ -649,21 +648,6 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                         });
             }
         }, 10);
-//        if (isSendFlower) {
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    while (isSendFlower) {
-//                        addDanmaKuFlowers(FLOWERS_SMALL, "me", false);
-//                        try {
-//                            Thread.sleep(1000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }).start();
-//        }
     }
 
     @Override
@@ -955,12 +939,26 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
 //                @Override
 //                public void run() {
 //                    while (blTestSEBullet) {
-//                        addDanmaKuFlowers(FLOWERS_SMALL, "zyy", false);
+//                        addDanmaKuFlowers(FLOWERS_SMALL, "订好了就不改了", isGuest);
+//
 //                        try {
 //                            Thread.sleep(500);
 //                        } catch (InterruptedException e) {
 //                            e.printStackTrace();
 //                        }
+//                        addDanmaKuFlowers(FLOWERS_MIDDLE, "订好了就不改了", isGuest);
+//                        try {
+//                            Thread.sleep(500);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                        addDanmaKuFlowers(FLOWERS_BIG, "订好了就不改了", isGuest);
+//                        try {
+//                            Thread.sleep(500);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                        isGuest = !isGuest;
 //                    }
 //                }
 //            });
@@ -974,7 +972,16 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         before = System.currentTimeMillis();
 
         logger.i("initFlower:time3=" + (System.currentTimeMillis() - before));
+        if (getInfo != null && getInfo.getIsAllowTeamPk() != null && ("1").equals(getInfo.getIsAllowTeamPk())) {
+            if (ivPkBackGround != null) {
+                ivPkBackGround.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_team_pk_background_icon));
+            }
+        }
     }
+
+//    private boolean isGuest = false;
+    //测试使用的布尔值，用来控制无限发送弹幕
+//    private boolean blTestSEBullet = true;
 
     /** 移除View */
     private void removeView(View view, ViewGroup viewGroup) {

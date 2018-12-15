@@ -296,7 +296,6 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
 //                }
 //            }, 3000);
         } else if (LiveVideoConfig.isSmallChinese) {
-
             if (chineseRedPackagePager != null && chineseRedPackagePager.getRootView().getParent() != rlRedpacketContent) {
                 rlRedpacketContent.addView(chineseRedPackagePager.getRootView());
             }
@@ -311,6 +310,16 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
                     }
                 }
             }, 0);
+
+            postDelayedIfNotFinish(new Runnable() {
+                @Override
+                public void run() {
+                    //3秒后自动消失
+                    if (chineseRedPackagePager.getRootView().getParent() == rlRedpacketContent) {
+                        rlRedpacketContent.removeAllViews();
+                    }
+                }
+            }, 3000);
         } else {
             String msg = "+" + goldNum + "金币";
             View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_success, rlRedpacketContent,
