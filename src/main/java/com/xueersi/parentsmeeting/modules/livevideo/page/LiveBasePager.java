@@ -178,4 +178,14 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
         }
         return false;
     }
+
+    /**
+     * 是不是有父布局
+     *
+     * @return
+     */
+    public boolean isAttach() {
+        ViewParent parent = mView.getParent();
+        return parent != null;
+    }
 }
