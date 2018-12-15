@@ -57,7 +57,7 @@ public class SpeakerRecognitioner {
     private LogToFile logToFile;
     private AtomicBoolean audioRequest;
 
-    SpeakerRecognitioner(Context context, AtomicBoolean audioRequest) {
+    public SpeakerRecognitioner(Context context, AtomicBoolean audioRequest) {
         logger.setLogMethod(false);
         this.audioRequest = audioRequest;
         this.context = context;
