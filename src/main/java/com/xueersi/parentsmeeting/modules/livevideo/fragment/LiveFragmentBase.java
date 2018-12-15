@@ -562,5 +562,6 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                 LiveThreadPoolExecutor.destory();
             }
         });
+        LiveVideoConfig.isSmallChinese = false;
     }
 }
