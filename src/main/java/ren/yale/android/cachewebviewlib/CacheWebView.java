@@ -14,6 +14,7 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.parentsmeeting.module.browser.business.XesWebViewCookieUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -132,12 +133,14 @@ public class CacheWebView extends WebView {
         mCacheWebViewClient.setEnableCache(enableCache);
     }
     public void loadUrl(String url){
+        XesWebViewCookieUtils.syncWebLogin(url);
         if (url.startsWith("http")){
             mCacheWebViewClient.addVisitUrl(url);
         }
         super.loadUrl(url);
     }
     public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
+        XesWebViewCookieUtils.syncWebLogin(url);
         mCacheWebViewClient.addVisitUrl(url);
         if (additionalHttpHeaders!=null){
             mCacheWebViewClient.addHeaderMap(url,additionalHttpHeaders);
