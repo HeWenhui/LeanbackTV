@@ -748,39 +748,27 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
         Map<String, String> mData = stableLogHashMap.getData();
         Map<String, String> analysis = stableLogHashMap.getAnalysis();
-        if (analysis.isEmpty()) {
-            umsAgentDebugSys(eventId, mData);
-        } else {
-            mData.put("eventid", "" + eventId);
-            setAnalysis(analysis);
-            UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
-        }
+        mData.put("eventid", "" + eventId);
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
     }
 
     @Override
     public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
         Map<String, String> mData = stableLogHashMap.getData();
         Map<String, String> analysis = stableLogHashMap.getAnalysis();
-        if (analysis.isEmpty()) {
-            umsAgentDebugInter(eventId, mData);
-        } else {
-            mData.put("eventid", "" + eventId);
-            setAnalysis(analysis);
-            UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData, analysis);
-        }
+        mData.put("eventid", "" + eventId);
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData, analysis);
     }
 
     @Override
     public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
         Map<String, String> mData = stableLogHashMap.getData();
         Map<String, String> analysis = stableLogHashMap.getAnalysis();
-        if (analysis.isEmpty()) {
-            umsAgentDebugPv(eventId, mData);
-        } else {
-            mData.put("eventid", "" + eventId);
-            setAnalysis(analysis);
-            UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData, analysis);
-        }
+        mData.put("eventid", "" + eventId);
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData, analysis);
     }
 
     /**
@@ -798,11 +786,18 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         if (!analysis.containsKey("duration")) {
             analysis.put("duration", "0");
         }
+        if (!analysis.containsKey("modulekey")) {
+            analysis.put("modulekey", "");
+        }
+        if (!analysis.containsKey("moduleid")) {
+            analysis.put("moduleid", "");
+        }
         analysis.put("timestamp", "" + System.currentTimeMillis());
         analysis.put("userid", mGetInfo.getStuId());
-        analysis.put("liveid", mVideoEntity.getLiveId());
+        analysis.put("planid", mVideoEntity.getLiveId());
         analysis.put("clientip", IpAddressUtil.USER_IP);
         analysis.put("traceid", "" + UUID.randomUUID());
+        analysis.put("platform", "android");
     }
 
     public boolean onUserBackPressed() {

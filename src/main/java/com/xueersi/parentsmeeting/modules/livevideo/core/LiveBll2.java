@@ -955,11 +955,18 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         if (!analysis.containsKey("duration")) {
             analysis.put("duration", "0");
         }
+        if (!analysis.containsKey("modulekey")) {
+            analysis.put("modulekey", "");
+        }
+        if (!analysis.containsKey("moduleid")) {
+            analysis.put("moduleid", "");
+        }
         analysis.put("timestamp", "" + System.currentTimeMillis());
         analysis.put("userid", mGetInfo.getStuId());
-        analysis.put("liveid", mLiveId);
+        analysis.put("planid", mLiveId);
         analysis.put("clientip", IpAddressUtil.USER_IP);
         analysis.put("traceid", "" + UUID.randomUUID());
+        analysis.put("platform", "android");
     }
 
     @Override
