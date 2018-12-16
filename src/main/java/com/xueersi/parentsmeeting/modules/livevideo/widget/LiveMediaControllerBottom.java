@@ -43,11 +43,15 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
     @Override
     public void onHide() {
         View view;
+        String findid = "";
         if (LiveVideoConfig.isPrimary) {
+            findid = "rl_livevideo_common_wordps";
             view = findViewById(R.id.rl_livevideo_common_wordps);
         } else if (LiveVideoConfig.isSmallChinese) {
+            findid = "rl_livevideo_common_word";
             view = findViewById(R.id.rl_livevideo_common_word);
         } else {
+            findid = "rl_livevideo_common_word2";
             view = findViewById(R.id.rl_livevideo_common_word);
         }
         if (view != null) {
@@ -56,6 +60,7 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
             try {
                 HashMap<String, String> hashMap = new HashMap<>();
                 hashMap.put("myid", "" + id);
+                hashMap.put("findid", "" + findid);
                 UmsAgentManager.umsAgentDebug(mContext, TAG + "_onhide", hashMap);
             } catch (Exception e) {
                 CrashReport.postCatchedException(e);
