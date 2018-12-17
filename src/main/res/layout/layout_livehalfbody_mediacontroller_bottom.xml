@@ -17,20 +17,20 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
-            android:id="@id/bt_livevideo_message_open"
+            android:id="@id/bt_livevideo_message_common"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="bottom"
             android:layout_marginRight="20dp"
-            android:background="@drawable/bg_livevideo_message_psopen" />
+            android:background="@drawable/bg_livevideo_message_common" />
 
         <Button
-            android:id="@id/bt_livevideo_message_common"
+            android:id="@id/bt_livevideo_message_open"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginRight="20dp"
-            android:background="@drawable/bg_livevideo_message_pscommon"
+            android:background="@drawable/bg_livevideo_message_open"
             />
 
      <!--   &lt;!&ndash;只是为了接入现有框架，让程序不崩溃&ndash;&gt;-->
