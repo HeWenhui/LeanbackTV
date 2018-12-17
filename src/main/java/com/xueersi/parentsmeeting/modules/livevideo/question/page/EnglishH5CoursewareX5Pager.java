@@ -201,7 +201,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             Log.e("Duncan", "js:");
         } else {
             String command;
-            if (isArts == 0 && "3".equals(educationstage)) {
+            if (isArts == 0 && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
                 command = jsClientSubmit;
             } else {
                 command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
@@ -471,7 +471,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     String defaulturl;
                     boolean useMine = false;
                     if (isArts == 0) {
-                        if ("3".equals(educationstage)) {
+                        if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
                             useMine = true;
                             defaulturl = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtmlAPP";
                         } else {
