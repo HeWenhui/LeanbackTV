@@ -29,5 +29,5 @@
     <!-->说明: 直播-老师评价-关闭弹窗</!-->
     <string name="evaluate_teacher_1708002">{"levelone":\"17\","leveltwo":\"08\","levelthree":\"002\","businessinfo$json":{}}</string>
     <!-->说明: 直播-用户返回</!-->
-    <string name="livevideo_quit_171001">{"levelone":\"17\","leveltwo":\"1\","levelthree":\"001\","businessinfo$json":{}}</string>
+    <string name="livevideo_quit_1712001">{"levelone":\"17\","leveltwo":\"12\","levelthree":\"001\","businessinfo$json":{}}</string>
 </resources>
