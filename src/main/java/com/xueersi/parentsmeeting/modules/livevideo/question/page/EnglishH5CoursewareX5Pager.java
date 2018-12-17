@@ -71,9 +71,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private boolean isFinish = false;
     private String jsSubmitData = "javascript:submitData()";
     private String jsforceSubmit = "javascript:forceSubmit()";
-    /**
-     * 文科新课件平台 强制提交js
-     */
+    /** 理科初高中新课件平台 强制提交js */
+    private String jsClientSubmit = "javascript:__CLIENT_SUBMIT__()";
+    /** 文科新课件平台 强制提交js */
     private String jsArtsForceSubmit = "javascript:examSubmitAll()";
     private EnglishH5CoursewareBll.OnH5ResultClose onClose;
     private String id;
@@ -85,6 +85,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private String isShowRanks;
     private RelativeLayout rlLivevideoSubjectWeb;
     private int isArts;
+    private String educationstage = "";
     private int mGoldNum;
     private int mEnergyNum;
     private final File mMorecacheout;
@@ -122,6 +123,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         this.nonce = nonce;
         this.isShowRanks = isShowRanks;
         this.isArts = isArts;
+        if (isArts == 0) {
+            this.educationstage = LiveVideoConfig.educationstage;
+        }
         this.allowTeamPk = allowTeamPk;
         this.isNewArtsCourseware = englishH5Entity.isArtsNewH5Courseware();
         LiveVideoConfig.englishH5Entity = englishH5Entity;
@@ -196,7 +200,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             commit = jsArtsForceSubmit;
             Log.e("Duncan", "js:");
         } else {
-            String command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
+            String command;
+            if (isArts == 0 && "3".equals(educationstage)) {
+                command = jsClientSubmit;
+            } else {
+                command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
+            }
             commit = command;
             Log.e("Duncan", "command:" + command);
             wvSubjectWeb.loadUrl(command);
@@ -459,8 +468,24 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    String defaulturl = isArts == 2 ? "https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml" : "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
-                    String dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
+                    String defaulturl;
+                    boolean useMine = false;
+                    if (isArts == 0) {
+                        if ("3".equals(educationstage)) {
+                            useMine = true;
+                            defaulturl = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtmlAPP";
+                        } else {
+                            defaulturl = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
+                        }
+                    } else {
+                        defaulturl = "https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml";
+                    }
+                    String dynamicurl;
+                    if (useMine) {
+                        dynamicurl = defaulturl;
+                    } else {
+                        dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
+                    }
                     mLoadUrls = dynamicurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.educationstage + "&isPlayBack=0" + "&nonce=" + "" + UUID.randomUUID();
                     // 上传接收到教师端指令的日志
                     StableLogHashMap logHashMap = new StableLogHashMap("receivePlatformtest");
