@@ -143,7 +143,7 @@ public class ChatTipBll {
             public void run() {
                 initView("raisehand");
                 linkMicNonce = nonce;
-                VideoAudioChatLog.showLinkMicPanelSno3(liveAndBackDebug, linkmicid, nonce);
+                VideoAudioChatLog.showLinkMicPanelSno3(liveAndBackDebug, linkmicid, micType == 0 ? "audio" : "video", nonce);
             }
         });
     }
@@ -217,12 +217,12 @@ public class ChatTipBll {
                     if (!have) {
                         return;
                     }
-                    VideoAudioChatLog.clickedRaiseHandSno4(liveAndBackDebug, "on", linkmicid, linkMicNonce);
+                    VideoAudioChatLog.clickedRaiseHandSno4(liveAndBackDebug, "on", linkmicid, micType == 0 ? "audio" : "video", linkMicNonce);
                     if (testWorkerThread == null) {
                         enableLastmileTest();
                     }
                 } else {
-                    VideoAudioChatLog.cancelRaiseHandSno6(liveAndBackDebug, linkmicid, linkMicNonce);
+                    VideoAudioChatLog.cancelRaiseHandSno6(liveAndBackDebug, linkmicid, micType == 0 ? "audio" : "video", linkMicNonce);
                 }
                 isConnect = true;
                 raisehandClick();
@@ -440,21 +440,21 @@ public class ChatTipBll {
                         } catch (Exception e) {
                             CrashReport.postCatchedException(new Exception("" + jsonObject, e));
                         }
-                        VideoAudioChatLog.raiseHandToPhpSno5(liveAndBackDebug, linkmicid, linkMicNonce, true, "0", SystemClock.elapsedRealtime() - before);
+                        VideoAudioChatLog.raiseHandToPhpSno5(liveAndBackDebug, linkmicid, micType == 0 ? "audio" : "video", linkMicNonce, true, "0", SystemClock.elapsedRealtime() - before);
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
                         logger.d("chatHandAdd:onPmError:responseEntity=" + responseEntity.getErrorMsg());
-                        VideoAudioChatLog.raiseHandToPhpSno5(liveAndBackDebug, linkmicid, linkMicNonce, false, "1", SystemClock.elapsedRealtime() - before);
+                        VideoAudioChatLog.raiseHandToPhpSno5(liveAndBackDebug, linkmicid, micType == 0 ? "audio" : "video", linkMicNonce, false, "1", SystemClock.elapsedRealtime() - before);
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
                         logger.e("chatHandAdd:onPmFailure:responseEntity=" + msg);
-                        VideoAudioChatLog.raiseHandToPhpSno5(liveAndBackDebug, linkmicid, linkMicNonce, false, "2", SystemClock.elapsedRealtime() - before);
+                        VideoAudioChatLog.raiseHandToPhpSno5(liveAndBackDebug, linkmicid, micType == 0 ? "audio" : "video", linkMicNonce, false, "2", SystemClock.elapsedRealtime() - before);
                     }
                 });
             }
@@ -470,11 +470,11 @@ public class ChatTipBll {
         if (contain) {
             raisehand = true;
             if (!containMe) {
-                VideoAudioChatLog.getSelectedMsgSno9(liveAndBackDebug, linkmicid, nonce);
+                VideoAudioChatLog.getSelectedMsgSno9(liveAndBackDebug, linkmicid, micType == 0 ? "audio" : "video", nonce);
             }
         } else {
             if (containMe) {
-                VideoAudioChatLog.getLeaveMsgSno9(liveAndBackDebug, linkmicid, nonce);
+                VideoAudioChatLog.getLeaveMsgSno9(liveAndBackDebug, linkmicid, micType == 0 ? "audio" : "video", nonce);
             }
         }
         final boolean oldcontainMe = containMe;

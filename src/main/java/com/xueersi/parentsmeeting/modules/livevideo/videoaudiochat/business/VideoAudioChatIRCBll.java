@@ -180,6 +180,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                                 classmateEntities.add(classmateEntity);
                             }
                         }
+                        startLinkmicid = linkmicid;
                         voiceChatStatus = openNewMic;
                         videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "t", micType, linkmicid);
                     }
@@ -203,6 +204,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                                 classmateEntities.add(classmateEntity);
                             }
                         }
+                        startLinkmicid = linkmicid;
                         voiceChatStatus = openNewMic;
                         videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "f", micType, linkmicid);
                     }
@@ -249,7 +251,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                         VideoAudioChatLog.getRaiseHandMsgSno2(mLiveBll, micType == 0 ? "audio" : "video", linkmicid, linkMicNonce);
                     } else {
                         String nonce = object.optString("nonce");
-                        VideoAudioChatLog.getCloseMsgSno12(mLiveBll, startLinkmicid, nonce);
+                        VideoAudioChatLog.getCloseMsgSno12(mLiveBll, startLinkmicid, micType == 0 ? "audio" : "video", nonce);
                     }
                 }
             }
