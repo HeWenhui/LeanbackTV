@@ -158,7 +158,7 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
         public void onClick(View v) {
             mPlayer.stop(); // 回退操作
             UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
-                    .livevideo_quit_171001));
+                    .livevideo_quit_1712001));
 
         }
     };

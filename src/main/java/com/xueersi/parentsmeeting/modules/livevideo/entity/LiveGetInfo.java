@@ -208,6 +208,8 @@ public class LiveGetInfo {
     private String subjectiveTestAnswerResult;
     //是否是小英
     private boolean smallEnglish;
+
+    private boolean primaryChinese;
     /**
      * 当前的直播模式
      */
@@ -331,6 +333,14 @@ public class LiveGetInfo {
 
     public boolean getSmallEnglish() {
         return smallEnglish;
+    }
+
+    public boolean isPrimaryChinese() {
+        return primaryChinese;
+    }
+
+    public void setPrimaryChinese(boolean primaryChinese) {
+        this.primaryChinese = primaryChinese;
     }
 
     public int getGrade() {

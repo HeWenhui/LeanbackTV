@@ -409,7 +409,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                         int offX = location[0] - (mCommonWordWindow.getContentView().getMeasuredWidth() - btMsgCommon
                                 .getMeasuredWidth()) / 2;
                         int offY = location[1] - mCommonWordWindow.getContentView().getMeasuredHeight();
-                        mPopWinOffX = (int) (offX - (mCommonWordWindow.getContentView().getMeasuredWidth()) * 13 / 49f);
+                        mPopWinOffX = offX;
                         mPopWinOffY = offY - SizeUtils.Dp2Px(mContext, 5);
                     }
                     mCommonWordWindow.showAtLocation(btMsgCommon, Gravity.NO_GRAVITY, mPopWinOffX, mPopWinOffY);

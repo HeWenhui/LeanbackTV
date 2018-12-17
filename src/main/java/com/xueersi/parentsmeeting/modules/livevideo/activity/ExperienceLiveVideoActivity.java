@@ -852,8 +852,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         LiveVideoPoint.initLiveVideoPoint((Activity) mContext, LiveVideoPoint.getInstance(), lp);
                         setFirstParam(lp);
-                        mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
-
+                        if(mLiveMessagePager != null){
+                            mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
+                        }
 //                        mLiveMessagePager.setVideoWidthAndHeight(lp.width, lp.height);
                     }
                 });
