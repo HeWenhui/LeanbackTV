@@ -95,7 +95,7 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/bg_live_halfbody_coin"
             />
@@ -138,7 +138,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_live_halfbody_energy_contribution"
         android:layout_below="@id/rl_teampk_pkstate_container_2"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="9dp"
         android:id="@id/rl_live_halfbody_energy_contribution"
         android:visibility="gone"
         >
