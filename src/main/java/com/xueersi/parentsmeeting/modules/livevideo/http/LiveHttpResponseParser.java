@@ -127,6 +127,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         }
 //        getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
+        LiveVideoConfig.LIVEMULPRELOADCHS = data.optString("courseWarePreLoadUrl");
+        LiveVideoConfig.LIVEMULH5URLCHS = data.optString("getCourseWareHtml");
 //        LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
 //        LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
 //        getInfo.setStuPutUpHandsNum(data.optInt("stuPutUpHandsNum"));
@@ -167,7 +169,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     private void setStaticStatusNull() {
         //小学语文MMD皮肤
         LiveVideoConfig.isSmallChinese = false;
-
+        LiveVideoConfig.isPrimary = false;
+        LiveVideoConfig.isScience = false;
     }
 
     /**
@@ -402,8 +405,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 String[] arrSubjIds = strSubjIds.split(",");
                 getInfo.setSubjectIds(arrSubjIds);
             }
-            LiveVideoConfig.isPrimary = false;
-            LiveVideoConfig.isScience = false;
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 if (getInfo.getIsArts() == 1) {
                     parseLiveGetInfoLibarts(data, liveTopic, getInfo);

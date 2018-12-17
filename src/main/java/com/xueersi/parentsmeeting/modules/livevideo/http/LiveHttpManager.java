@@ -911,8 +911,8 @@ public class LiveHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
 
-        requestCallBack.url = TextUtils.isEmpty(LiveVideoConfig.LIVEMULPRELOAD) ? liveVideoSAConfigInner
-                .URL_LIVE_CHS_GET_MORE_WARE_URL : LiveVideoConfig.LIVEMULPRELOAD;
+        requestCallBack.url = TextUtils.isEmpty(LiveVideoConfig.LIVEMULPRELOADCHS) ? liveVideoSAConfigInner
+                .URL_LIVE_CHS_GET_MORE_WARE_URL : LiveVideoConfig.LIVEMULPRELOADCHS;
         sendPost(requestCallBack.url, params, requestCallBack);
     }
 

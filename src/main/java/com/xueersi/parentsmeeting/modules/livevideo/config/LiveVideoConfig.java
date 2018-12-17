@@ -249,7 +249,7 @@ public class LiveVideoConfig {
     /**
      * 提交体验课退出反馈
      */
-    public static String URL_AUTO_LIVE_QUIT_FEED_BACK = AppConfig.HTTP_HOST_TEAMPK+"/science/AutoLive/submitClassQuitFeedback";
+    public static String URL_AUTO_LIVE_QUIT_FEED_BACK = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/submitClassQuitFeedback";
     /** 视频播放失败的eventId */
     public final static String STAND_EXPERIENCE_LIVE_PLAY_ERROR = "stand_experience_live_play_error";
 
@@ -269,11 +269,11 @@ public class LiveVideoConfig {
 
     public static String URL_CND_LOG_IP = "http://42.62.96.154:80/log";
 
-    /** 920日志IP 地址*/
+    /** 920日志IP 地址 */
     public static String SP_URL_LIVE_CND_LOG_920_TYPE = "sp_url_live_cnd_log_920_type";
-    /** 920类型 IP*/
+    /** 920类型 IP */
     public static String LIVE_LOG_920_IP = "ip";
-    /** 920类型 HOST*/
+    /** 920类型 HOST */
     public static String LIVE_LOG_920_HOST = "host";
 
 
@@ -319,9 +319,12 @@ public class LiveVideoConfig {
     public static String LIVEPLAYBACKSTAGE;
     // 直播回放的type
     public static String LIVEPLAYBACKTYPE;
-    /** 一发多题的两个动态接口 */
+    /** 一发多题的两个动态接口-理科 */
     public static String LIVEMULPRELOAD;
     public static String LIVEMULH5URL;
+    /** 一发多题的两个动态接口-语文 */
+    public static String LIVEMULPRELOADCHS;
+    public static String LIVEMULH5URLCHS;
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;
@@ -389,9 +392,9 @@ public class LiveVideoConfig {
     public static int IRC_TYPE_NOTICE = 0;
     public static int IRC_TYPE_TOPIC = 1;
 
-    /**文理半身直播  理科家长旁听数据接口*/
+    /** 文理半身直播  理科家长旁听数据接口 */
     public static final String URL_HALFBODY_LIVE_STULIVEINFO = "https://laoshi.xueersi.com/science/LiveCourse/getStuDateOfVisitedParentPage";
-    /**文理半身直播  文科科家长旁听数据接口*/
+    /** 文理半身直播  文科科家长旁听数据接口 */
     public static final String URL_HALFBODY_LIVE_STULIVEINFO_ARTS = "https://app.chs.xueersi.com/LiveCourse/getStuDateOfVisitedParentPage";
 
 }
