@@ -137,9 +137,19 @@ public class IRCMessage {
 
             @Override
             public void onMessage(String target, String sender, String login, String hostname, String text) {
-                mLogtf.d("onMessage:sender=" + sender + ":" + text);
+                mLogtf.d("___bug 33 onMessage:sender=" + sender + ":" + text);
                 if (mIRCCallback != null) {
-                    mIRCCallback.onMessage(target, sender, login, hostname, text);
+                    if (mChannels.length>1){
+                        if (LiveTopic.MODE_CLASS.equals(currentMode)){
+                            mIRCCallback.onMessage(target, sender, login, hostname, text);
+                        }
+
+                        if (LiveTopic.MODE_TRANING.equals(currentMode)){
+                            mIRCCallback.onMessage(target, sender, login, hostname, text);
+                        }
+                    }else {
+                        mIRCCallback.onMessage(target, sender, login, hostname, text);
+                    }
                 }
             }
 
@@ -729,9 +739,11 @@ public class IRCMessage {
 
     public void modeChange(String mode){
         // 专属切主讲时，断开专属聊天室
+        Loger.d("___bug  mode change:  "+mode);
         if (currentMode!=null && !currentMode.equals(mode)){
             if (mChannels!=null && mChannels.length>1){
                 mConnection.partChannel("#" + mChannels[1]);
+                Loger.d("___bug33  partchannel:  "+mode);
             }
         }
         currentMode = mode;
