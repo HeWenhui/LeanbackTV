@@ -45,13 +45,13 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
             return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_switch_flow_bottom, this);
         } else if (isSmallEnglish) {
             return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_english_switch_flow_bottom, this);
-        }  else {
+        } else {
             id = "layout_livemediacontroller_bottom";
 
-            if (pattern == 2) {
-                return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
-            } else {
+            if (pattern == 1) {
                 return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_normal_bottom, this);
+            } else {
+                return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
             }
 //            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_english_switch_flow_bottom, this);
         }
@@ -69,7 +69,7 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
             view = findViewById(R.id.rl_livevideo_common_word);
         } else if (isSmallEnglish) {
             view = findViewById(R.id.rl_livevideo_common_word);
-        }  else if (pattern == 1) {
+        } else if (pattern == 1) {
             view = findViewById(R.id.rl_livevideo_common_word);
         } else {
             findid = "rl_livevideo_common_word2";
