@@ -462,12 +462,14 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
-        if (server != null) {
-            switchFlowBll.setListRoute(server.getPlayserver());
-            logger.i(server.getPlayserver().size());
-        } else {
-            switchFlowBll.setListRoute(null);
-            logger.i("null");
+        if(switchFlowBll != null){
+            if (server != null) {
+                switchFlowBll.setListRoute(server.getPlayserver());
+                logger.i(server.getPlayserver().size());
+            } else {
+                switchFlowBll.setListRoute(null);
+                logger.i("null");
+            }
         }
     }
     protected void createMediaControllerBottom() {

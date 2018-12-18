@@ -78,7 +78,7 @@
 
     <RelativeLayout
         android:layout_above="@id/v_livevideo_mediacontrol_bottom"
-        android:id="@+id/rl_livevideo_common_wordps"
+        android:id="@+id/rl_livevideo_common_word"
         android:layout_width="98dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="65dp"
