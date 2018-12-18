@@ -286,6 +286,21 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
 
         }
+
+        @Override
+        public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+
+        }
+
+        @Override
+        public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+
+        }
+
+        @Override
+        public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
+
+        }
     };
 
     private String TAG = "ExpericenceLiveVideoActivityLog";
