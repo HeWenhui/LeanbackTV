@@ -771,7 +771,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         for (String user : users){
             sb.append(user);
         }
-        Loger.d("___bug 44 : users:  "+sb.toString()+"____nicker:  "+nicker);
+       // Loger.d("___bug 44 : users:  "+sb.toString()+"____nicker:  "+nicker);
         for (String user : users){
             if (user.equals(nicker)){
                 return true;
