@@ -254,10 +254,10 @@ public class AuditIRCMessage {
             }
 
             @Override
-            public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
+            public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
                 mLogtf.d("onTopic:channel=" + channel + ",topic=" + topic);
                 if (mIRCCallback != null) {
-                    mIRCCallback.onTopic(channel, topic, setBy, date, changed);
+                    mIRCCallback.onTopic(channel, topic, setBy, date, changed,channelId );
                 }
             }
 

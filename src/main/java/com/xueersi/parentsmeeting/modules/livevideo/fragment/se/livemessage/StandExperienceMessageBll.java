@@ -350,7 +350,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         }
 
         @Override
-        public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
+        public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
             logger.i("=====>onTopic");
 
         }

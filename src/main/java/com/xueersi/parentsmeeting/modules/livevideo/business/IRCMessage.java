@@ -225,20 +225,18 @@ public class IRCMessage {
             }
 
             @Override
-            public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
+            public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
                 mLogtf.d("onTopic:channel=" + channel + ",topic=" + topic);
                 if (mIRCCallback != null) {
                     //  如果不是专属老师
-                    if (currentMode == null){
-                        mIRCCallback.onTopic(channel, topic, setBy, date, changed);
+                    if (mChannels.length<=1){
+                        mIRCCallback.onTopic(channel, topic, setBy, date, changed, channelId);
                     }else {
-                        if (mChannels.length>1){
-                            if (LiveTopic.MODE_CLASS.equals(currentMode)){
-                                mIRCCallback.onTopic(channel, topic, setBy, date, changed);
-                            }
-                            if (LiveTopic.MODE_TRANING.equals(currentMode)){
-                                mIRCCallback.onTopic(channel, topic, setBy, date, changed);
-                            }
+                        if (mChannels[0].equals(channelId)){
+                            mIRCCallback.onTopic(channel, topic, setBy, date, changed, channelId);
+                        }
+                        if (mChannels[1].equals(channelId)){
+                            mIRCCallback.onTopic(channel, topic, setBy, date, changed, channelId);
                         }
                     }
 
@@ -304,7 +302,7 @@ public class IRCMessage {
                                 sb.append(user.getNick());
                             }
                             s = "___bug2  onUserList:channel=" + channel + ",users=" + users.length+"___"+sb.toString();
-                          //  mLogtf.d(s);
+                            //  mLogtf.d(s);
                             mIRCCallback.onUserList(channel, users);
                         }
 
@@ -314,7 +312,7 @@ public class IRCMessage {
                                 sb.append(user.getNick());
                             }
                             s = "___bug3  onUserList:channel=" + channel + ",users=" + users.length+"___"+sb.toString();
-                           // mLogtf.d(s);
+                            // mLogtf.d(s);
                             mIRCCallback.onUserList(channel, users);
                         }
                     }
@@ -639,7 +637,7 @@ public class IRCMessage {
                 mConnection.sendMessage("#" + mChannels[0], message);
             }
         }else {
-           // Loger.d("____bug 24  channel: "+mChannels[0] +"  message:  "+message);
+            // Loger.d("____bug 24  channel: "+mChannels[0] +"  message:  "+message);
             mConnection.sendMessage("#" + mChannels[0], message);
         }
     }
@@ -760,7 +758,7 @@ public class IRCMessage {
 
     public void modeChange(String mode){
         // 专属切主讲时，断开专属聊天室
-        Loger.d("___bug  mode change:  "+mode);
+      //  Loger.d("___bug  mode change:  "+mode);
 /*        if (currentMode!=null && !currentMode.equals(mode)){
             if (mChannels!=null && mChannels.length>1){
                 mConnection.partChannel("#" + mChannels[1]);

@@ -217,14 +217,14 @@ public class IRCConnection extends PircBot {
 
     protected void onTopic(String channel, String topic) {
         if (mIRCCallback != null) {
-            mIRCCallback.onTopic(channel, topic, "", 0, false);
+            mIRCCallback.onTopic(channel, topic, "", 0, false,channel );
         }
     }
 
     @Override
-    protected void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
+    protected void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
         if (mIRCCallback != null) {
-            mIRCCallback.onTopic(channel, topic, setBy, date, changed);
+            mIRCCallback.onTopic(channel, topic, setBy, date, changed,channelId );
         }
     }
 

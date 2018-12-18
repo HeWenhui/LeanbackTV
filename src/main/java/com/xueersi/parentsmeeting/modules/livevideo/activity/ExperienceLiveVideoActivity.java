@@ -663,7 +663,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
 
         @Override
-        public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
+        public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
             logger.e("=====>onTopic");
 
         }

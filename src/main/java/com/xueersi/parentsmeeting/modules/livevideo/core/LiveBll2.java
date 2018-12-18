@@ -593,7 +593,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
 
         @Override
         public void onChannelInfo(String channel, int userCount, String topic) {
-            onTopic(channel, topic, "", 0, true);
+            onTopic(channel, topic, "", 0, true, channel);
         }
 
         @Override
@@ -647,7 +647,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
 
         @Override
-        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed) {
+        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed, String channelId) {
             if (lastTopicstr.equals(topicstr)) {
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
@@ -672,6 +672,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                         boolean isPresent = isPresent(mLiveTopic.getMode());
                         if (mVideoAction != null) {
                             mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
+                        }
+                        if (mIRCMessage!=null){
+                            mIRCMessage.modeChange(mLiveTopic.getMode());
                         }
                         liveVideoBll.onModeChange(mLiveTopic.getMode(), isPresent);
                         for (int i = 0; i < businessBlls.size(); i++) {

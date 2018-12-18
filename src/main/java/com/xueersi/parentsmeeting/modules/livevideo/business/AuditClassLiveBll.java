@@ -276,11 +276,11 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         @Override
         public void onChannelInfo(String channel, int userCount, String topic) {
             mLogtf.i("onChannelInfo:userCount=" + userCount);
-            onTopic(channel, topic, "", 0, true);
+            onTopic(channel, topic, "", 0, true, channel);
         }
 
         @Override
-        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed) {
+        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed, String channelId) {
 //            i
         }
 
