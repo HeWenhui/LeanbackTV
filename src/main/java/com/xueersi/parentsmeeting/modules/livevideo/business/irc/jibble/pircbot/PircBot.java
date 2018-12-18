@@ -1031,7 +1031,9 @@ public abstract class PircBot implements ReplyConstants {
             this.onNickChange(sourceNick, sourceLogin, sourceHostname, newNick);
         } else if (command.equals("NOTICE")) {
             // Someone is sending a notice.
-            this.onNotice(sourceNick, sourceLogin, sourceHostname, target, line.substring(line.indexOf(" :") + 2));
+            String substring = line.substring(line.indexOf("#"),line.length());
+            String channel = substring.substring(line.indexOf("#"),line.indexOf(":"));
+            this.onNotice(sourceNick, sourceLogin, sourceHostname, target, line.substring(line.indexOf(" :") + 2), channel);
         } else if (command.equals("QUIT")) {
             // Someone has quit from the IRC server.
 
@@ -1336,14 +1338,14 @@ public abstract class PircBot implements ReplyConstants {
      * <p/>
      * The implementation of this method in the PircBot abstract class performs
      * no actions and may be overridden as required.
-     *
-     * @param sourceNick     The nick of the user that sent the notice.
+     *  @param sourceNick     The nick of the user that sent the notice.
      * @param sourceLogin    The login of the user that sent the notice.
      * @param sourceHostname The hostname of the user that sent the notice.
      * @param target         The target of the notice, be it our nick or a channel name.
      * @param notice         The notice message.
+     * @param channel
      */
-    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
+    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice, String channel) {
     }
 
     /**

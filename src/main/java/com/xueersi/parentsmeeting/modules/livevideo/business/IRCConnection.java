@@ -209,9 +209,9 @@ public class IRCConnection extends PircBot {
     }
 
     @Override
-    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
+    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice, String channel) {
         if (mIRCCallback != null) {
-            mIRCCallback.onNotice(sourceNick, sourceLogin, sourceHostname, target, notice);
+            mIRCCallback.onNotice(sourceNick, sourceLogin, sourceHostname, target, notice, channel);
         }
     }
 

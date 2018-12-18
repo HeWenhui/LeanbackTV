@@ -658,7 +658,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
-                notice) {
+                notice, String channelId) {
             logger.e("=====>onNotice");
         }
 

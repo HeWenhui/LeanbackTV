@@ -7,7 +7,6 @@ import android.os.Looper;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
-import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
@@ -198,7 +197,7 @@ public class IRCMessage {
 
             @Override
             public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target,
-                                 String notice) {
+                                 String notice, String channelId) {
                 boolean send = true;
                 try {
                     JSONObject object = new JSONObject(notice);
@@ -213,7 +212,18 @@ public class IRCMessage {
                     mLogtf.d("onNotice:target=" + target + ",notice=" + notice);
                 }
                 if (mIRCCallback != null) {
-                    mIRCCallback.onNotice(sourceNick, sourceLogin, sourceHostname, target, notice);
+                    if (currentMode == null){
+                        mIRCCallback.onNotice(sourceNick, sourceLogin, sourceHostname, target, notice, channelId);
+                    }else {
+                        if (mChannels.length>1){
+                            if (("#"+mChannels[0]).equals(channelId)){
+                                mIRCCallback.onNotice(sourceNick, sourceLogin, sourceHostname, target, notice, channelId);
+                            }
+                            if (("#"+mChannels[1]).equals(channelId)){
+                                mIRCCallback.onNotice(sourceNick, sourceLogin, sourceHostname, target, notice, channelId);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -232,10 +242,10 @@ public class IRCMessage {
                     if (mChannels.length<=1){
                         mIRCCallback.onTopic(channel, topic, setBy, date, changed, channelId);
                     }else {
-                        if (mChannels[0].equals(channelId)){
+                        if (("#"+mChannels[0]).equals(channelId)){
                             mIRCCallback.onTopic(channel, topic, setBy, date, changed, channelId);
                         }
-                        if (mChannels[1].equals(channelId)){
+                        if (("#"+mChannels[1]).equals(channelId)){
                             mIRCCallback.onTopic(channel, topic, setBy, date, changed, channelId);
                         }
                     }

@@ -288,7 +288,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target,
-                             final String notice) {
+                             final String notice, String channelId) {
 
         }
 

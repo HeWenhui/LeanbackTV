@@ -239,10 +239,10 @@ public class AuditIRCMessage {
 
             @Override
             public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target,
-                                 String notice) {
+                                 String notice, String channelId) {
                 mLogtf.d("onNotice:target=" + target + ",notice=" + notice);
                 if (mIRCCallback != null) {
-                    mIRCCallback.onNotice(sourceNick, sourceLogin, sourceHostname, target, notice);
+                    mIRCCallback.onNotice(sourceNick, sourceLogin, sourceHostname, target, notice,channelId );
                 }
             }
 

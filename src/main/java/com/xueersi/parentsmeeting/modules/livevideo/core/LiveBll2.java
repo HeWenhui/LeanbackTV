@@ -462,7 +462,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, TextUtils.isEmpty(eChannel)?channel:channel,eChannel);
+        if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())){
+            mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel);
+        }else {
+            mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel,eChannel);
+        }
+        //mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, (TextUtils.isEmpty(eChannel)|| LiveTopic.MODE_CLASS.equals(getMode()))?channel:channel,eChannel);
         if (mGetInfo!=null && mGetInfo.ePlanInfo!=null){
             mIRCMessage.modeChange(mGetInfo.getMode());
         }
@@ -598,7 +603,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
-                notice) {
+                notice, String channelId) {
             try {
                 JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");

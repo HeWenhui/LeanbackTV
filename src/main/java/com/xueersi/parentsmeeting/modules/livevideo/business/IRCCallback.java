@@ -18,7 +18,8 @@ public interface IRCCallback {
 
     void onChannelInfo(String channel, int userCount, String topic);
 
-    void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice);
+    void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice, String
+            channelId);
 
     void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId);
 

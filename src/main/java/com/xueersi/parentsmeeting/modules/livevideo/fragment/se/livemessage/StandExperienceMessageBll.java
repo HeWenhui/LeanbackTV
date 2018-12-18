@@ -345,7 +345,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
-                notice) {
+                notice, String channelId) {
             logger.i("=====>onNotice");
         }
 
