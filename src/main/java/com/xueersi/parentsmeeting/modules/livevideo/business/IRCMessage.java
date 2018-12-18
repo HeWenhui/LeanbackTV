@@ -337,13 +337,13 @@ public class IRCMessage {
                 }
                 if (mIRCCallback != null) {
 
-                    if (LiveTopic.MODE_CLASS.equals(currentMode) && mChannels[0].equals(channel)){
+                    if (LiveTopic.MODE_CLASS.equals(currentMode)){
                         mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason, "");
                         logger.d("___bug16 onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                                 + sourceHostname + ",reason=" + reason+"___channel "+channel);
                     }
 
-                    if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length>1 && mChannels[1].equals(channel)){
+                    if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length>1){
                         mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason, "");
                         logger.d("___bug17 onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                                 + sourceHostname + ",reason=" + reason+"___channel "+channel);
