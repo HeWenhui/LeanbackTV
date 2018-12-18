@@ -554,24 +554,6 @@ public class IRCMessage {
    /*     for (String channel : mChannels){
             mConnection.sendNotice("#" + channel, notice);
         }*/
-        for (int i=0; i<mChannels.length;i++){
-            String channel = mChannels[i];
-            if (currentMode == null){
-                mConnection.sendNotice("#" + channel, notice);
-                break;
-            }else if (LiveTopic.MODE_CLASS.equals(currentMode)){
-                if (i == 0){
-                    mConnection.sendNotice("#" + channel, notice);
-                }
-            }else if (LiveTopic.MODE_TRANING.equals(currentMode)){
-                if (i == 1){
-                    mConnection.sendNotice("#" + channel, notice);
-                }
-            }else {
-                mConnection.sendNotice("#" + channel, notice);
-                break;
-            }
-        }
         if (mChannels.length>1){
             if (LiveTopic.MODE_TRANING.equals(currentMode)){
                 mConnection.sendNotice("#" + mChannels[1], notice);
