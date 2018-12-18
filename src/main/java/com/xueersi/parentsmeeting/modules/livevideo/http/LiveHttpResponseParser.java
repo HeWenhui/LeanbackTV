@@ -83,6 +83,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } else {
             LiveVideoConfig.isPrimary = false;
         }
+        //小英萌萌哒皮肤专用
+        if (data.has("useSkin")) {
+            getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+            LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
+        } else {
+            getInfo.setSmallEnglish(false);
+            LiveVideoConfig.isSmallChinese = false;
+        }
         getInfo.setIsPrimarySchool(isPrimarySchool);
         LiveVideoConfig.isScience = true;
         getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
@@ -122,7 +130,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        getInfo.setIsNewCourseWare(Integer.parseInt(data.optString("isNewCourseWare"), 0));
 
 //            LiveVideoConfig.isPrimary = true;
 //        } else {
@@ -135,6 +142,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
+            LiveVideoConfig.isSmallChinese = false;
         }
 //        getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
@@ -171,6 +179,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
+            LiveVideoConfig.isSmallChinese = false;
         }
     }
 

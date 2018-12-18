@@ -45,7 +45,7 @@ public class StandLiveVideoFragment extends LiveVideoFragment {
     @Override
     public void onLiveInit(LiveGetInfo getInfo) {
         super.onLiveInit(getInfo);
-        logger.d( "onLiveInit");
+        logger.d("onLiveInit");
         standMediaControllerBottom.onModeChange(getInfo.getMode(), getInfo);
     }
 
@@ -64,7 +64,7 @@ public class StandLiveVideoFragment extends LiveVideoFragment {
     protected void onVideoCreateEnd() {
         startGetInfo = false;
         liveStandFrameAnim = new LiveStandFrameAnim(activity);
-        logger.d( "onVideoCreateEnd");
+        logger.d("onVideoCreateEnd");
         liveStandFrameAnim.check(new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
@@ -88,7 +88,7 @@ public class StandLiveVideoFragment extends LiveVideoFragment {
 
     @Override
     protected void startGetInfo() {
-        logger.d( "startGetInfo:startGetInfo=" + startGetInfo);
+        logger.d("startGetInfo:startGetInfo=" + startGetInfo);
         if (startGetInfo) {
             super.startGetInfo();
         }

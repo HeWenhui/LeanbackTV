@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerBottomInter
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
@@ -51,6 +52,11 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     ArrayList<MediaChildViewClick> mediaChildViewClicks = new ArrayList<>();
     private LinearLayout llMarkPopMenu;
     private View vMarkGuide;
+    protected int pattern = 0;
+    /** 切流使用的布局 */
+    protected SwitchFlowView switchFlowView;
+
+    protected boolean isSmallEnglish;
 
     public BaseLiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context);
@@ -109,8 +115,9 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         cbMessageClock = (CheckBox) findViewById(R.id.cb_livevideo_message_clock);
         lvCommonWord = (ListView) findViewById(R.id.lv_livevideo_common_word);
         btMark = (Button) findViewById(R.id.bt_livevideo_mark);
-        llMarkPopMenu=findViewById(R.id.ll_livevideo_controller_mark_pop_menu);
-        vMarkGuide=findViewById(R.id.ll_livevideo_bottom_controller_mark_guide);
+        llMarkPopMenu = findViewById(R.id.ll_livevideo_controller_mark_pop_menu);
+        vMarkGuide = findViewById(R.id.ll_livevideo_bottom_controller_mark_guide);
+//        switchFlow = findViewById(R.id.bt_switch_flow);
         if (btMark != null) {
             btMark.setOnClickListener(new OnClickListener() {
                 @Override
@@ -119,14 +126,18 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
                 }
             });
         }
-    }
-    public LinearLayout getLlMarkPopMenu(){
-        return llMarkPopMenu;
-    }
-    public View getvMarkGuide(){
-        return vMarkGuide;
+        if (pattern == 1) {
+            switchFlowView = findViewById(R.id.layout_livevideo_triple_screen_switch_flow);
+        }
     }
 
+    public LinearLayout getLlMarkPopMenu() {
+        return llMarkPopMenu;
+    }
+
+    public View getvMarkGuide() {
+        return vMarkGuide;
+    }
 
 
     public Button getBtMesOpen() {
@@ -189,10 +200,9 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     @Override
     public void onHide() {
         startAnimation(mAnimSlideOutTop);
-        if(llMarkPopMenu!=null){
+        if (llMarkPopMenu != null) {
             llMarkPopMenu.setVisibility(GONE);
         }
-
     }
 
     public void setController(LiveMediaController controller) {
@@ -217,5 +227,9 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
 
     public LiveMediaController getController() {
         return controller;
+    }
+
+    public SwitchFlowView getSwitchFlowView() {
+        return switchFlowView;
     }
 }

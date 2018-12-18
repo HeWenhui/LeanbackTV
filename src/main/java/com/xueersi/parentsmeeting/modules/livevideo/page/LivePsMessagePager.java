@@ -394,7 +394,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 
     @Override
     public void initListener() {
-        rlLivevideoCommonWord = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_wordps);
+        rlLivevideoCommonWord = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_word);
 //        int screenWidth = ScreenUtils.getScreenWidth();
 //        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
 //        int wradio = (int) (LiveVideoActivity.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoActivity.VIDEO_WIDTH);
