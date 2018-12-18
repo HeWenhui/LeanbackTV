@@ -775,6 +775,8 @@ public class IRCMessage {
                 Loger.d("___bug33  partchannel:  "+mode);
             }
         }*/
-        currentMode = mode;
+        if (mChannels.length>1){
+            currentMode = mode;
+        }
     }
 }
