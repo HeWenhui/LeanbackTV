@@ -228,7 +228,20 @@ public class IRCMessage {
             public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
                 mLogtf.d("onTopic:channel=" + channel + ",topic=" + topic);
                 if (mIRCCallback != null) {
-                    mIRCCallback.onTopic(channel, topic, setBy, date, changed);
+                    //  如果不是专属老师
+                    if (currentMode == null){
+                        mIRCCallback.onTopic(channel, topic, setBy, date, changed);
+                    }else {
+                        if (mChannels.length>1){
+                            if (LiveTopic.MODE_CLASS.equals(currentMode)){
+                                mIRCCallback.onTopic(channel, topic, setBy, date, changed);
+                            }
+                            if (LiveTopic.MODE_TRANING.equals(currentMode)){
+                                mIRCCallback.onTopic(channel, topic, setBy, date, changed);
+                            }
+                        }
+                    }
+
                 }
             }
 
