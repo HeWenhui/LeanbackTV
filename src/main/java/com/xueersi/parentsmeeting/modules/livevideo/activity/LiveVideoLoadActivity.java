@@ -113,7 +113,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         return;
                     }
                     // 语文半身直播 暂不支持观看
-                    if(isChineseHalfBodyLive(mGetInfo)){
+                    if (isChineseHalfBodyLive(mGetInfo)) {
                         XESToastUtils.showToast(LiveVideoLoadActivity.this, "语文半身直播暂不支持,请升级版本");
                         AppBll.getInstance(mContext).checkPartUpdate("语文半身直播暂不支持,请升级版本");
                         return;
@@ -128,6 +128,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putBoolean("isPrimary", LiveVideoConfig.isPrimary);
                     bundle.putBoolean("isSmallChinese", LiveVideoConfig.isSmallChinese);
                     if (mGetInfo.getIsArts() == 0) {
+                        bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
                     }
 //                if (mGetInfo.getPattern() == 2) {
@@ -216,9 +217,10 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
     /**
      * 是否是 语文半身直播
+     *
      * @return
      */
-    private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo){
+    private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo) {
         return liveGetInfo != null && liveGetInfo.getPattern()
                 == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
                 && liveGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE;
