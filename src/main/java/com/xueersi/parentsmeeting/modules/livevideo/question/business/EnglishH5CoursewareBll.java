@@ -515,6 +515,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         if (voiceAnswerPager != null) {
             if (voiceAnswerPager.getBaseVideoQuestionEntity().getvQuestionID().equals(videoQuestionLiveEntity
                     .getvQuestionID())) {
+                logToFile.d("showVoiceAnswer:id=" + videoQuestionLiveEntity.id);
                 return;
             } else {
                 voiceAnswerPager.setEnd();
@@ -558,6 +559,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 voiceAnswerPager.setAudioRequest();
             }
         }
+        bottomContent.requestLayout();
+        bottomContent.invalidate();
     }
 
     private void stopVoiceAnswerPager() {
@@ -1176,7 +1179,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
      * 试题隐藏显示
      *
      * @param videoQuestionLiveEntity
-     * @param isShow true显示
+     * @param isShow                  true显示
      * @param method
      */
     private void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow, String method) {
