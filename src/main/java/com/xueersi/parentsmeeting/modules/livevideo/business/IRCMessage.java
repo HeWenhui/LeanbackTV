@@ -572,6 +572,16 @@ public class IRCMessage {
                 break;
             }
         }
+        if (mChannels.length>1){
+            if (LiveTopic.MODE_TRANING.equals(currentMode)){
+                mConnection.sendNotice("#" + mChannels[1], notice);
+            }
+            if (LiveTopic.MODE_CLASS.equals(currentMode)){
+                mConnection.sendNotice("#" + mChannels[0], notice);
+            }
+        }else {
+            mConnection.sendNotice("#" + mChannels[0], notice);
+        }
     }
 
 
