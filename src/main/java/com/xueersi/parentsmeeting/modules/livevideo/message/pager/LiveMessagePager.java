@@ -1091,9 +1091,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 if (ircState.isSeniorOfHighSchool()) {
                     String mode = ircState.getMode();
                    // Loger.d("___ircState:  "+ircState.getMode());
-         /*           for (User user : users){
-                        Loger.d("___ircState:  users:  "+user.getNick());
-                    }*/
+                    StringBuilder sb = new StringBuilder();
+                    for (User user : users){
+                        sb.append(user.getNick());
+                    }
+                    Loger.d("___bug6:  users:  "+sb.toString());
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
@@ -1112,7 +1114,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
             sender = "主讲老师";
         } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
-            sender = "辅导老师";
+            sender = getInfo.ePlanInfo == null ? "辅导老师" : "专属老师";
         }
         addMessage(sender, LiveMessageEntity.MESSAGE_TEACHER, text, headurl);
     }
@@ -1137,6 +1139,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
                     }
                 } catch (JSONException e) {
+                    Loger.d("____bug20  private message sender:  "+sender);
                     addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message, "");
                 }
             }

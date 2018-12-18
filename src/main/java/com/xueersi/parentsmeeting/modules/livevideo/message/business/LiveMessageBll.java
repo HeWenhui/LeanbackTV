@@ -596,12 +596,12 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            return;
 //        }
       //  Loger.d("____join:  "+sender+"___peoplecount:  "+peopleCount);
-        if (!contains(sender)){
+      //  if (!contains(sender)){
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onJoin(target, sender, login, hostname);
             }
-        }
+       // }
     }
 
     @Override

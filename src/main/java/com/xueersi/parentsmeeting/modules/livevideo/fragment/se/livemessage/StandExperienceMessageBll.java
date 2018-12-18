@@ -378,7 +378,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         }
 
         @Override
-        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel) {
 //            Loger.e("ExperiencLvieAvtiv", "=====>onQuit start:" + peopleCount);
 //            peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
             if (mLiveMessagePager != null) {

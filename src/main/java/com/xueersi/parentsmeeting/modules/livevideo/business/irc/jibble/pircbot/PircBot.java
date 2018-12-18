@@ -15,6 +15,7 @@ Modified by: Sebastian Kaspari <sebastian@yaaic.org>
 package com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot;
 
 import android.os.HandlerThread;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import com.xueersi.lib.log.LoggerFactory;
@@ -998,7 +999,18 @@ public abstract class PircBot implements ReplyConstants {
                     line.substring(line.indexOf(" :") + 2));
         } else if (command.equals("JOIN")) {
             // Someone is joining a channel.
-            String channel = target;
+
+           // String channel = target;
+            String channel = null;
+            if (!TextUtils.isEmpty(line)){
+                String[] split = line.split("#");
+                if (split.length>1){
+                    channel = split[1];
+                }
+            }
+            if (channel == null){
+                channel = target;
+            }
             this.addUser(channel, new User("", sourceNick));
             this.onJoin(channel, sourceNick, sourceLogin, sourceHostname);
         } else if (command.equals("PART")) {
@@ -1026,7 +1038,14 @@ public abstract class PircBot implements ReplyConstants {
             // XXX: Pircbot Patch - Call onQuit before removing the user. This
             // way we
             // are able to know which channels the user was on.
-            this.onQuit(sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2));
+            String channel = "";
+            if (TextUtils.isEmpty(line)){
+                String[] split = line.split("#");
+                if (split.length>1){
+                    channel = split[1];
+                }
+            }
+            this.onQuit(sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2), channel);
 
             if (sourceNick.equals(this.getNick())) {
                 this.removeAllChannels();
@@ -1395,13 +1414,13 @@ public abstract class PircBot implements ReplyConstants {
      * <p/>
      * The implementation of this method in the PircBot abstract class performs
      * no actions and may be overridden as required.
-     *
-     * @param sourceNick     The nick of the user that quit from the server.
+     *  @param sourceNick     The nick of the user that quit from the server.
      * @param sourceLogin    The login of the user that quit from the server.
      * @param sourceHostname The hostname of the user that quit from the server.
      * @param reason         The reason given for quitting the server.
+     * @param channel
      */
-    protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+    protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel) {
     }
 
     /**

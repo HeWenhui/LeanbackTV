@@ -267,10 +267,29 @@ public class IRCMessage {
             @Override
             public void onUserList(String channel, User[] users) {
                 onUserList = true;
-                String s = "onUserList:channel=" + channel + ",users=" + users.length;
+                String s = "___bug  onUserList:channel=" + channel + ",users=" + users.length;
                 mLogtf.d(s);
                 if (mIRCCallback != null) {
-                    if (("#"+mChannels[0]).equals(channel)) {
+          /*          if (("#"+mChannels[0]).equals(channel)) {
+                        mIRCCallback.onUserList(channel, users);
+                    }*/
+                    if (LiveTopic.MODE_CLASS.equals(currentMode) && ("#"+mChannels[0]).equals(channel)){
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i<users.length;i++){
+                            sb.append(users[i].getNick());
+                        }
+                        s = "___bug2  onUserList:channel=" + channel + ",users=" + users.length+"___"+sb.toString();
+                        mLogtf.d(s);
+                        mIRCCallback.onUserList(channel, users);
+                    }
+
+                    if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length>1 && ("#"+mChannels[1]).equals(channel)){
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i<users.length;i++){
+                            sb.append(users[i].getNick());
+                        }
+                        s = "___bug3  onUserList:channel=" + channel + ",users=" + users.length+"___"+sb.toString();
+                        mLogtf.d(s);
                         mIRCCallback.onUserList(channel, users);
                     }
                 }
@@ -279,27 +298,46 @@ public class IRCMessage {
             @Override
             public void onJoin(String target, String sender, String login, String hostname) {
                 if (sender.startsWith("s_") || sender.startsWith("ws_")) {
-                    logger.i("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+                    logger.i("___bug9 onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 } else {
-                    mLogtf.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+                    mLogtf.d("___bug10 onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 }
                 if (mIRCCallback != null) {
-                   // Loger.d("___join2:  sender:  "+sender);
-                    mIRCCallback.onJoin(target, sender, login, hostname);
+                    if (LiveTopic.MODE_CLASS.equals(currentMode) && mChannels[0].equals(target)){
+                        mLogtf.d("___bug14 onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+                        mIRCCallback.onJoin(target, sender, login, hostname);
+                    }
+
+                    if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length>1 && mChannels[1].equals(target)){
+                        mLogtf.d("___bug15 onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+                        mIRCCallback.onJoin(target, sender, login, hostname);
+                    }
                 }
             }
 
             @Override
-            public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+            public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String
+                    channel) {
                 if (sourceNick.startsWith("s_") || sourceNick.startsWith("ws_")) {
-                    logger.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                    logger.d("___bug11 onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                             + sourceHostname + ",reason=" + reason);
                 } else {
-                    mLogtf.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                    mLogtf.d("___bug12 onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                             + sourceHostname + ",reason=" + reason);
                 }
                 if (mIRCCallback != null) {
-                    mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
+
+                    if (LiveTopic.MODE_CLASS.equals(currentMode) && mChannels[0].equals(channel)){
+                        mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason, "");
+                        logger.d("___bug16 onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                                + sourceHostname + ",reason=" + reason+"___channel "+channel);
+                    }
+
+                    if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length>1 && mChannels[1].equals(channel)){
+                        mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason, "");
+                        logger.d("___bug17 onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                                + sourceHostname + ",reason=" + reason+"___channel "+channel);
+                    }
                 }
             }
 
@@ -567,23 +605,19 @@ public class IRCMessage {
      /*   for (String channel : mChannels){
             mConnection.sendNotice("#" + channel, message);
         }*/
-        for (int i=0; i<mChannels.length;i++){
-            String channel = mChannels[i];
-            if (currentMode == null){
-                mConnection.sendNotice("#" + channel, message);
-                break;
-            }else if (LiveTopic.MODE_CLASS.equals(currentMode)){
-                if (i == 0){
-                    mConnection.sendNotice("#" + channel, message);
-                }
-            }else if (LiveTopic.MODE_TRANING.equals(currentMode)){
-                if (i == 1){
-                    mConnection.sendNotice("#" + channel, message);
-                }
-            }else {
-                mConnection.sendNotice("#" + channel, message);
-                break;
+        if (mChannels.length>1){
+            if (LiveTopic.MODE_TRANING.equals(currentMode)){
+                mConnection.sendMessage("#" + mChannels[1], message);
+                //Loger.d("____bug 22  channel: "+mChannels[1] +"  message:  "+message);
             }
+
+            if (LiveTopic.MODE_CLASS.equals(currentMode)){
+                //Loger.d("____bug 23  channel: "+mChannels[0] +"  message:  "+message);
+                mConnection.sendMessage("#" + mChannels[0], message);
+            }
+        }else {
+           // Loger.d("____bug 24  channel: "+mChannels[0] +"  message:  "+message);
+            mConnection.sendMessage("#" + mChannels[0], message);
         }
     }
 
