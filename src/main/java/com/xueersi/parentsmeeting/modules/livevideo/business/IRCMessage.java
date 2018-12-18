@@ -137,7 +137,8 @@ public class IRCMessage {
 
             @Override
             public void onMessage(String target, String sender, String login, String hostname, String text) {
-                mLogtf.d("___bug 33 onMessage:sender=" + sender + ":" + text);
+                mLogtf.d("onMessage:sender=" + sender + ":" + text);
+                //  如果是专属老师
                 if (mIRCCallback != null) {
                     if (mChannels.length>1){
                         if (LiveTopic.MODE_CLASS.equals(currentMode)){
@@ -280,48 +281,58 @@ public class IRCMessage {
                 String s = "___bug  onUserList:channel=" + channel + ",users=" + users.length;
                 mLogtf.d(s);
                 if (mIRCCallback != null) {
-          /*          if (("#"+mChannels[0]).equals(channel)) {
+                    //  如果不是专属老师
+                    if (currentMode == null){
                         mIRCCallback.onUserList(channel, users);
-                    }*/
-                    if (LiveTopic.MODE_CLASS.equals(currentMode) && ("#"+mChannels[0]).equals(channel)){
-                        StringBuilder sb = new StringBuilder();
-                        for (int i = 0; i<users.length;i++){
-                            sb.append(users[i].getNick());
+                    }else {
+                        if (LiveTopic.MODE_CLASS.equals(currentMode) && ("#"+mChannels[0]).equals(channel)){
+                            StringBuilder sb = new StringBuilder();
+                            for (User user : users) {
+                                sb.append(user.getNick());
+                            }
+                            s = "___bug2  onUserList:channel=" + channel + ",users=" + users.length+"___"+sb.toString();
+                            mLogtf.d(s);
+                            mIRCCallback.onUserList(channel, users);
                         }
-                        s = "___bug2  onUserList:channel=" + channel + ",users=" + users.length+"___"+sb.toString();
-                        mLogtf.d(s);
-                        mIRCCallback.onUserList(channel, users);
+
+                        if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length>1 && ("#"+mChannels[1]).equals(channel)){
+                            StringBuilder sb = new StringBuilder();
+                            for (User user : users) {
+                                sb.append(user.getNick());
+                            }
+                            s = "___bug3  onUserList:channel=" + channel + ",users=" + users.length+"___"+sb.toString();
+                            mLogtf.d(s);
+                            mIRCCallback.onUserList(channel, users);
+                        }
                     }
 
-                    if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length>1 && ("#"+mChannels[1]).equals(channel)){
-                        StringBuilder sb = new StringBuilder();
-                        for (int i = 0; i<users.length;i++){
-                            sb.append(users[i].getNick());
-                        }
-                        s = "___bug3  onUserList:channel=" + channel + ",users=" + users.length+"___"+sb.toString();
-                        mLogtf.d(s);
-                        mIRCCallback.onUserList(channel, users);
-                    }
+
                 }
             }
 
             @Override
             public void onJoin(String target, String sender, String login, String hostname) {
                 if (sender.startsWith("s_") || sender.startsWith("ws_")) {
-                    logger.i("___bug9 onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+                    logger.i("___onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 } else {
-                    mLogtf.d("___bug10 onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+                    mLogtf.d("___onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 }
                 if (mIRCCallback != null) {
-                    if (LiveTopic.MODE_CLASS.equals(currentMode) && mChannels[0].equals(target)){
-                        mLogtf.d("___bug14 onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+                    //  如果不是专属老师
+                    if (currentMode == null){
+                        mLogtf.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                         mIRCCallback.onJoin(target, sender, login, hostname);
+                    }else {
+                        if (LiveTopic.MODE_CLASS.equals(currentMode) && mChannels[0].equals(target)){
+                            mLogtf.d("___personal onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+                            mIRCCallback.onJoin(target, sender, login, hostname);
+                        }
+                        if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length>1 && mChannels[1].equals(target)){
+                            mLogtf.d("___personal onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
+                            mIRCCallback.onJoin(target, sender, login, hostname);
+                        }
                     }
 
-                    if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length>1 && mChannels[1].equals(target)){
-                        mLogtf.d("___bug15 onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
-                        mIRCCallback.onJoin(target, sender, login, hostname);
-                    }
                 }
             }
 
@@ -329,25 +340,29 @@ public class IRCMessage {
             public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String
                     channel) {
                 if (sourceNick.startsWith("s_") || sourceNick.startsWith("ws_")) {
-                    logger.d("___bug11 onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                    logger.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                             + sourceHostname + ",reason=" + reason);
                 } else {
-                    mLogtf.d("___bug12 onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                    mLogtf.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                             + sourceHostname + ",reason=" + reason);
                 }
                 if (mIRCCallback != null) {
-
-                    if (LiveTopic.MODE_CLASS.equals(currentMode)){
+                    //  如果不是专属老师
+                    if (currentMode == null){
                         mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason, "");
-                        logger.d("___bug16 onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
-                                + sourceHostname + ",reason=" + reason+"___channel "+channel);
+                    }else {
+                        if (LiveTopic.MODE_CLASS.equals(currentMode)){
+                            mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason, "");
+                            logger.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                                    + sourceHostname + ",reason=" + reason+"___channel "+channel);
+                        }
+                        if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length>1){
+                            mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason, "");
+                            logger.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
+                                    + sourceHostname + ",reason=" + reason+"___channel "+channel);
+                        }
                     }
 
-                    if (LiveTopic.MODE_TRANING.equals(currentMode) && mChannels.length>1){
-                        mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason, "");
-                        logger.d("___bug17 onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
-                                + sourceHostname + ",reason=" + reason+"___channel "+channel);
-                    }
                 }
             }
 
@@ -560,11 +575,8 @@ public class IRCMessage {
      * @param notice
      */
     public void sendNotice(String notice) {
-        //  mConnection.sendNotice("#" + mChannel, notice);
-   /*     for (String channel : mChannels){
-            mConnection.sendNotice("#" + channel, notice);
-        }*/
-        if (mChannels.length>1){
+        // 如果是专属老师
+        if (mChannels.length>1 && currentMode!=null ){
             if (LiveTopic.MODE_TRANING.equals(currentMode)){
                 mConnection.sendNotice("#" + mChannels[1], notice);
             }
@@ -603,11 +615,7 @@ public class IRCMessage {
      * @param message 信息
      */
     public void sendMessage(String message) {
-        //    mConnection.sendMessage("#" + mChannel, message);
-     /*   for (String channel : mChannels){
-            mConnection.sendNotice("#" + channel, message);
-        }*/
-        if (mChannels.length>1){
+        if (mChannels.length>1 && currentMode!=null){
             if (LiveTopic.MODE_TRANING.equals(currentMode)){
                 mConnection.sendMessage("#" + mChannels[1], message);
                 //Loger.d("____bug 22  channel: "+mChannels[1] +"  message:  "+message);
