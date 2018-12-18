@@ -84,6 +84,20 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
         mAnimSlideOutTop = AnimationUtils.loadAnimation(mContext, R.anim.anim_mediactrl_slide_out_top);
         mAnimSlideInTop.setFillAfter(true);
         mAnimSlideOutTop.setFillAfter(true);
+
+        mAnimSlideOutTop.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                BaseLiveMediaControllerBottom.this.setVisibility(GONE);
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
 
     /** 播放器的布局界面 */

@@ -143,6 +143,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     private ImageView mIce;
     private ImageView mCup;
     private ImageView mHeart;
+    private Boolean first = false;
 
     public LivePsMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener, LiveAndBackDebug ums, BaseLiveMediaControllerBottom
             liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities, ArrayList<LiveMessageEntity> otherLiveMessageEntities) {
@@ -288,11 +289,11 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         if (openbarrage) {
             btMessageFlowers.setTag("1");
             btMessageFlowers.setAlpha(1.0f);
-            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
         } else {
             btMessageFlowers.setTag("0");
             btMessageFlowers.setAlpha(0.4f);
-            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
         }
     }
 
@@ -317,7 +318,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             }
             btMessageFlowers.setTag("1");
             btMessageFlowers.setAlpha(1.0f);
-            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
         } else {
             if (fromNotice) {
                 if (commonAction instanceof GiftDisable) {
@@ -332,7 +333,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             }
             btMessageFlowers.setTag("0");
             btMessageFlowers.setAlpha(0.4f);
-            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+            btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
         }
     }
 
@@ -410,6 +411,10 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         btMsgCommon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                if(!first){
+                    initCommonWord();
+                    first = true;
+                }
                 liveMediaControllerBottom.onChildViewClick(v);
                 LiveMediaController controller = liveMediaControllerBottom.getController();
                 controller.show();
@@ -612,7 +617,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         }.start();
         btMessageFlowers.setTag("0");
         btMessageFlowers.setAlpha(0.4f);
-        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
         ivExpressionCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -706,7 +711,6 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         });
         logger.i( "initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        initCommonWord();
         logger.i( "initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
@@ -1099,7 +1103,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     private void setFlowerHalfAlpha(float alpha) {
         btMessageFlowers.setAlpha(alpha);
         btMessageFlowers.setText("");
-        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
     }
 
     public void onTitleShow(boolean show) {
@@ -1135,19 +1139,21 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         {
-            int wradio = liveVideoPoint.getRightMargin();
+            int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-            if (wradio != params.width) {
+            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
                 //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
                 // + ",wradio=" + wradio + "," + params.width);
                 params.width = wradio;
+                params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
             if (cbMessageClock != null) {
+                int rightMargin = liveVideoPoint.getRightMargin();
                 params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-                if (params.rightMargin != wradio) {
-                    params.rightMargin = wradio;
+                if (params.rightMargin != rightMargin) {
+                    params.rightMargin = rightMargin;
 //                cbMessageClock.setLayoutParams(params);
                     LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
                 }
@@ -1416,17 +1422,17 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 if (disable) {
                     XESToastUtils.showToast(mContext, "你被老师禁言了");
                     btMesOpen.setAlpha(0.4f);
-                    btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
+                    btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
                 } else {
                     if (fromNotice) {
                         XESToastUtils.showToast(mContext, "老师解除了你的禁言");
                     }
                     if (ircState.openchat()) {
                         btMesOpen.setAlpha(1.0f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
+                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
                     } else {
                         btMesOpen.setAlpha(0.4f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
+                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
                     }
                 }
             }
@@ -1440,14 +1446,14 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             public void run() {
                 if (ircState.isDisable()) {
                     btMesOpen.setAlpha(0.4f);
-                    btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
+                    btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
                 } else {
                     if (openchat) {
                         btMesOpen.setAlpha(1.0f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
+                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
                     } else {
                         btMesOpen.setAlpha(0.4f);
-                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_psopen);
+                        btMesOpen.setBackgroundResource(R.drawable.bg_livevideo_message_open);
                     }
                     if (fromNotice) {
                         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -1471,11 +1477,11 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                     if (ircState.isOpenZJLKbarrage() || ircState.isOpenFDLKbarrage()) {
                         btMessageFlowers.setTag("1");
                         btMessageFlowers.setAlpha(1.0f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
                     } else {
                         btMessageFlowers.setTag("0");
                         btMessageFlowers.setAlpha(0.4f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
                     }
                     Loger.i("yzl_fd", "理科，不区分主讲，onModeChange不再往下执行");
                     return;
@@ -1487,16 +1493,16 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                     if (ircState.isOpenbarrage()) {
                         btMessageFlowers.setTag("1");
                         btMessageFlowers.setAlpha(1.0f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
                     } else {
                         btMessageFlowers.setTag("0");
                         btMessageFlowers.setAlpha(0.4f);
-                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+                        btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
                     }
                 } else {
                     btMessageFlowers.setTag("0");
                     btMessageFlowers.setAlpha(0.4f);
-                    btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_psflowers);
+                    btMessageFlowers.setBackgroundResource(R.drawable.bg_livevideo_message_flowers);
                 }
             }
         });

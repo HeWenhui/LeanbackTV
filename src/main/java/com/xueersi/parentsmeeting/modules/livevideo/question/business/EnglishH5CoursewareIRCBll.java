@@ -96,8 +96,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         }
         LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat();
         int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
-        liveBaseEnglishH5CoursewareCreat.setIS_SCIENCE(isArts != 1);
-        if (isArts != 1) {
+        liveBaseEnglishH5CoursewareCreat.setArts(isArts);
+        if (isArts == 0) {
+            // TODO: 2018/12/5
             if (mAnswerRankBll != null) {
                 liveBaseEnglishH5CoursewareCreat.setmAnswerRankBll(mAnswerRankBll);
             }
@@ -107,7 +108,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         englishH5CoursewareBll.setGetInfo(getInfo);
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            englishH5Cache = new EnglishH5Cache(activity, mLiveId);
+            englishH5Cache = new EnglishH5Cache(activity, mGetInfo);
             englishH5Cache.setHttpManager(mLiveBll.getHttpManager());
             englishH5Cache.getCourseWareUrl();
         }
@@ -250,7 +251,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         LiveVideoConfig.isSend = false;
                         id = h5_Experiment.getString("id");
                         courseware_type = h5_Experiment.getString("courseware_type");
-                        String pre = LiveVideoConfig.isSmallChinese ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
+                        String pre = mGetInfo.getIsArts() == 2 ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
                         play_url = pre + mLiveId + "/" + mLiveBll
                                 .getStuCouId() + "/" + id +
                                 "/" + courseware_type
@@ -374,7 +375,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         if ("on".equals(status)) {
                             id = object.getString("id");
                             courseware_type = object.getString("courseware_type");
-                            String pre = LiveVideoConfig.isSmallChinese ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
+                            String pre = mGetInfo.getIsArts() == 2 ? mLiveBll.getLiveVideoSAConfig().inner.chsCoursewareH5 : mLiveBll.getLiveVideoSAConfig().inner.coursewareH5;
                             play_url = pre + mLiveId + "/" + mLiveBll
                                     .getStuCouId() + "/"
                                     + id + "/" + courseware_type
@@ -516,6 +517,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
                 .getStuId())
+                .append("&xesrfh=").append(AppBll.getInstance().getUserRfh())
                 .append("&cookie=").append(AppBll.getInstance().getUserToken())
                 .append("&stuClientPath=").append(falseStr)
                 .append("&fontDir=").append(falseStr);
@@ -627,7 +629,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             if (LiveVideoConfig.isNewArts) {
                 Log.d("Duncan", "onPutQuestionResultNewArts3");
                 if ("15".equals(videoQuestionLiveEntity.voiceType) || "16".equals(videoQuestionLiveEntity.voiceType)) {
-                    getHttpManager().liveSubmitNewArtsRealH5Answer(videoQuestionLiveEntity.type,
+                    getHttpManager().liveSubmitNewArtsRealH5Answer(videoQuestionLiveEntity.voiceType,
                             videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
                             isRight, new HttpCallBack() {
                                 @Override

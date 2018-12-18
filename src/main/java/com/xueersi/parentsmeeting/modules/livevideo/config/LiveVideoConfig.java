@@ -123,6 +123,8 @@ public class LiveVideoConfig {
     public static String LIVE_EXPERIENCE_EXIT = "LiveFreePlayEvent";
     /** 体验播放器-聊天内容 */
     public static String LIVE_EXPERIENCE_IMMSG = "LiveFreePlayEvent";
+    /** 体验课事件 */
+    public static String LIVE_EXPERIENCE = "experienceLiveClass";
     /** 直播-H5课件互动题 */
     public static String LIVE_ENGLISH_COURSEWARE = "live_h5waretest";
     /** 直播-接麦 */
@@ -191,9 +193,9 @@ public class LiveVideoConfig {
     public static String LIVE_PLAY_ERROR = "live_play_error";
     /** 直播-学习报告截图 */
     public static String LIVE_STUDY_REPORT_IMG = "live_study_report_img";
-    /** 直播-小英语音聊天*/
+    /** 直播-小英语音聊天 */
     public static String LIVE_VOICE_CHAT = "voicechat";
-    /** 直播-小英语音弹幕*/
+    /** 直播-小英语音弹幕 */
     public static String LIVE_VOICE_BULLET = "voicebullet";
 
     /**
@@ -244,6 +246,10 @@ public class LiveVideoConfig {
     public static String URL_AUTO_LIVE_FEAD_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/learnFeedback";
     /** 提交体验课学习反馈 */
     public static String URL_AUTO_LIVE_LEARN_FEED_BACK = LiveVideoConfig.HTTP_HOST + "/science/AutoLive/submitFeedback";
+    /**
+     * 提交体验课退出反馈
+     */
+    public static String URL_AUTO_LIVE_QUIT_FEED_BACK = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/submitClassQuitFeedback";
     /** 视频播放失败的eventId */
     public final static String STAND_EXPERIENCE_LIVE_PLAY_ERROR = "stand_experience_live_play_error";
 
@@ -260,6 +266,17 @@ public class LiveVideoConfig {
     public static String URL_CDN_LOG = "http://log.xescdn.com/log";
     public static String URL_CDN_LOG1 = "http://log1.xescdn.com/log";
     public static String URL_CDN_LOG2 = "http://log2.xescdn.com/log";
+
+    public static String URL_CND_LOG_IP = "http://42.62.96.154:80/log";
+
+    /** 920日志IP 地址 */
+    public static String SP_URL_LIVE_CND_LOG_920_TYPE = "sp_url_live_cnd_log_920_type";
+    /** 920类型 IP */
+    public static String LIVE_LOG_920_IP = "ip";
+    /** 920类型 HOST */
+    public static String LIVE_LOG_920_HOST = "host";
+
+
     /** 更多课程数量的记录 */
     public static int MORE_COURSE;
     public static Boolean isloading = false;
@@ -302,9 +319,12 @@ public class LiveVideoConfig {
     public static String LIVEPLAYBACKSTAGE;
     // 直播回放的type
     public static String LIVEPLAYBACKTYPE;
-    /** 一发多题的两个动态接口 */
+    /** 一发多题的两个动态接口-理科 */
     public static String LIVEMULPRELOAD;
     public static String LIVEMULH5URL;
+    /** 一发多题的两个动态接口-语文 */
+    public static String LIVEMULPRELOADCHS;
+    public static String LIVEMULH5URLCHS;
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;
@@ -341,8 +361,12 @@ public class LiveVideoConfig {
 
     /** 文科新课件平台的标识 */
     public static Boolean isNewArts = false;
-    /** 全身直播的标识*/
+    /** 全身直播的标识 */
     public static Boolean isStandLive = false;
+    /** H5语音答题新增字段 */
+    public static String userAnswer;
+    public static String answer;
+
     /** 学习报告精彩瞬间 */
     public interface STUDY_REPORT {
         /** 贡献之星 */
@@ -367,4 +391,10 @@ public class LiveVideoConfig {
 
     public static int IRC_TYPE_NOTICE = 0;
     public static int IRC_TYPE_TOPIC = 1;
+
+    /** 文理半身直播  理科家长旁听数据接口 */
+    public static final String URL_HALFBODY_LIVE_STULIVEINFO = "https://laoshi.xueersi.com/science/LiveCourse/getStuDateOfVisitedParentPage";
+    /** 文理半身直播  文科科家长旁听数据接口 */
+    public static final String URL_HALFBODY_LIVE_STULIVEINFO_ARTS = "https://app.chs.xueersi.com/LiveCourse/getStuDateOfVisitedParentPage";
+
 }

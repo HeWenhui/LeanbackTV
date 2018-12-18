@@ -18,6 +18,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.bussiness.EvaluateTeacherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.presenter.EnglishSpeechBulletIRCBll;
@@ -29,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
+import com.xueersi.parentsmeeting.modules.livevideo.chpk.business.ChinesePkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -87,8 +89,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         mLayoutVideo = R.layout.activity_video_live_new;
     }
 
-    RelativeLayout bottomContent;
-    RelativeLayout rlMessageBottom;
+    protected RelativeLayout bottomContent;
+    protected RelativeLayout rlMessageBottom;
     protected String vStuCourseID;
     protected String courseId;
     /** 小学英语 */
@@ -99,7 +101,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /** 是不是文科 */
     private int isArts;
 
-    BaseLiveMediaControllerTop baseLiveMediaControllerTop;
+    protected BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     protected BaseLiveMediaControllerBottom liveMediaControllerBottom;
 
     /** onPause状态不暂停视频 */
@@ -205,6 +207,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
             mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
+
             mLiveBll.addBusinessBll(new LiveAchievementIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
@@ -226,7 +229,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
-//            mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new ChinesePkBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
@@ -286,6 +289,10 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 mLiveBll.addBusinessBll(videoChatIRCBll);
             }
         }
+        EvaluateTeacherBll evaluateTeacherBll = new EvaluateTeacherBll(activity, mLiveBll);
+        evaluateTeacherBll.setLiveFragment(this);
+        mLiveBll.addBusinessBll(evaluateTeacherBll);
+
         if (pattern == 1) {
             addSwitchFlowBll();
             initSwitchFlowListener();
@@ -427,22 +434,23 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         logger.e("========>:initView:" + bottomContent);
         // 预加载布局中退出事件
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
-        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
+        createMediaControlerTop();
+        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
         createMediaControllerBottom();
-        bottomContent.addView(baseLiveMediaControllerTop, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
-                .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        bottomContent.addView(liveMediaControllerBottom);
 
-//        layoutVideoFailRetry = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
+        // TODO: 2018/10/23  添加了LayoutParams 是否会有其他异常？
+        bottomContent.addView(liveMediaControllerBottom,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        android.util.Log.e("HalfBody","====>LiveVideoFragment initView:add mediaContriller:"
+                +liveMediaControllerBottom.getClass().getSimpleName());
 
         pattern = activity.getIntent().getIntExtra("pattern", 2);
         if (pattern == 1) {
             btnVideoFailRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
         }
         //如果是三分屏，则需要添加加载中的监听器
-
     }
-
 
     @Override
     protected void resultFailed(int arg1, int arg2) {
@@ -462,13 +470,18 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             logger.i("null");
         }
     }
-
     protected void createMediaControllerBottom() {
         Intent intent = activity.getIntent();
         LiveVideoConfig.isPrimary = intent.getBooleanExtra("isPrimary", false);
+        LiveVideoConfig.isSmallChinese = intent.getBooleanExtra("isSmallChinese", false);
         liveMediaControllerBottom = new LiveMediaControllerBottom(activity, mMediaController, videoFragment);
         liveMediaControllerBottom.setVisibility(View.INVISIBLE);
     }
+
+    protected void createMediaControlerTop(){
+        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
+    }
+
 
     @Override
     public boolean initData() {

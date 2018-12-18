@@ -38,43 +38,49 @@
         android:layout_above="@id/rl_livevideo_speechbul_panelcontent"
         android:background="#B3000000">
 
-        <TextView
-            android:id="@id/tv_livevideo_speechbul_title"
-            style="@style/text_font14_ffffff_style"
+        <RelativeLayout
+            android:id="@+id/rl_livevideo_speechbul_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="26dp"
-            android:text="语音录入中（15字以内）" />
+            android:layout_marginTop="26dp">
 
-        <TextView
-            android:id="@id/tv_livevideo_speechbul_title_count"
-            style="@style/text_font14_ffffff_style"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/tv_livevideo_speechbul_title"
-            android:layout_alignBottom="@id/tv_livevideo_speechbul_title"
-            android:layout_toRightOf="@+id/tv_livevideo_speechbul_title"
-            android:gravity="left|center_vertical" />
+            <TextView
+                android:id="@id/tv_livevideo_speechbul_title"
+                style="@style/text_font14_ffffff_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="语音录入中（15字以内）" />
 
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:id="@id/tv_livevideo_speechbul_title_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/tv_livevideo_speechbul_title"
-            android:layout_alignBottom="@id/tv_livevideo_speechbul_title"
-            android:layout_toRightOf="@+id/tv_livevideo_speechbul_title"
-            android:gravity="left|center_vertical"
-            android:textColor="#FF86AD72"
-            android:textSize="14sp"
-            android:visibility="gone" />
+            <TextView
+                android:id="@id/tv_livevideo_speechbul_title_count"
+                style="@style/text_font14_ffffff_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/tv_livevideo_speechbul_title"
+                android:layout_alignBottom="@id/tv_livevideo_speechbul_title"
+                android:layout_toRightOf="@+id/tv_livevideo_speechbul_title"
+                android:gravity="left|center_vertical" />
 
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_livevideo_speechbul_title_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/tv_livevideo_speechbul_title"
+                android:layout_alignBottom="@id/tv_livevideo_speechbul_title"
+                android:layout_toRightOf="@+id/tv_livevideo_speechbul_title"
+                android:gravity="left|center_vertical"
+                android:text="切换手动输入"
+                android:textColor="#FF86AD72"
+                android:textSize="14sp"
+                android:visibility="gone" />
+        </RelativeLayout>
 
         <com.xueersi.parentsmeeting.widget.VolumeWaveView
             android:id="@id/vwv_livevideo_speechbul_wave"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/tv_livevideo_speechbul_title"
+            android:layout_below="@id/rl_livevideo_speechbul_title"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="110dp"
@@ -134,7 +140,6 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:adjustViewBounds="true"
-                android:gravity="center"
                 android:scaleType="fitXY"
                 android:src="@drawable/selector_livevideo_primary_chinese_speechbul_send" />
 

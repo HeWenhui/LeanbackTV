@@ -41,6 +41,19 @@
     <color name="COLOR_FF364A5D">#FF364A5D</color>
     <color name="COLOR_FF333333">#FF333333</color>
     <color name="COLOR_FF000000">#FF000000</color>
+    <color name="COLOR_FFCD35">#FFCD35</color>
+    <color name="COLOR_74C9FF">#74C9FF</color>
+    <color name="COLOR_FFF6DC">#FFF6DC</color>
+
+    <color name="COLOR_FFDB5C">#FFDB5C</color>
+    <color name="COLOR_6C0E00">#6C0E00</color>
+    <!--半身直播 语文颜色资源-->
+    <color name="COLOR_EEF7C4">#EEF7C4</color>
+    <color name="COLOR_40621F">#40621F</color>
+    <color name="COLOR_CCFFFFFF">#CCFFFFFF</color>
+
+
+
     <color name="COLOR_D5AF68">#D5AF68</color>
     <color name="COLOR_FFF6D7">#FFF6D7</color>
     <color name="COLOR_FF9D30">#FF9D30</color>
@@ -78,4 +91,23 @@
     <color name="COLOR_61B2F1">#61B2F1</color>
     <color name="COLOR_87FFFFFF">#87FFFFFF</color>
     <color name="COLOR_99FFFFFF">#99FFFFFF</color>
+
+    <color name="COLOR_9A6440">#9A6440</color>
+    <color name="COLOR_039ECE">#039ECE</color>
+
+    <color name="COLOR_47827E">#47827E</color>
+    <color name="COLOR_B2000000">#B2000000</color>
+    <color name="COLOR_FF8C8080">#FF8C8080</color>
+    <color name="COLOR_FFFFFEFE">#FFFFFEFE</color>
+    <color name="COLOR_FF7B6E6E">#FF7B6E6E</color>
+    <color name="COLOR_FF5F5252">#FF5F5252</color>
+    <color name="COLOR_FF8F4D26">#FF8F4D26</color>
+    <color name="COLOR_FFBC7D57">#FFBC7D57</color>
+    <color name="COLOR_FF8EBAA2">#FF8EBAA2</color>
+    <color name="COLOR_FF755942">#FF755942</color>
+    <color name="COLOR_FF9D7F66">#FF9D7F66</color>
+
+    <color name="COLOR_FFFFFEFF">#FFFFFEFF</color>
+    <color name="COLOR_14FFFFFF">#14FFFFFF</color>
+    <color name="COLOR_28FFFFFF">#28FFFFFF</color>
 </resources>

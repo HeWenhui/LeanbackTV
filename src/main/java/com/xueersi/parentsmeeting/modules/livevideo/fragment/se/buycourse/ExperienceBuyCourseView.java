@@ -14,13 +14,13 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 
 /**
  * @author zyy
  */
-public class ExperienceBuyCourseView<T extends IPresenter> extends BasePager implements
+public class ExperienceBuyCourseView<T extends IExperiencePresenter> extends BasePager implements
         IBuyCourseContract.View {
     protected T mPresenter;
 

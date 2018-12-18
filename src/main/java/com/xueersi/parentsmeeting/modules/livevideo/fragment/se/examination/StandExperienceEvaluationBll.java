@@ -5,14 +5,14 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 public class StandExperienceEvaluationBll extends
-        StandExperienceEventBaseBll implements IPresenter {
+        StandExperienceEventBaseBll implements IExperiencePresenter {
 
     private IStandExperienceEvaluationContract.IEvaluationView mView;
 
@@ -40,8 +40,8 @@ public class StandExperienceEvaluationBll extends
 //                        "&teacherId=" + mVideoEntity.getTeacherId() + "&orderId=" + mVideoEntity.getChapterId() +
 //                        "&userId=" + UserBll.getInstance().getMyUserInfoEntity().getStuId();
 
-            ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
-            activityChangeLand.changeLOrP();
+//            ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
+//            activityChangeLand.changeLOrP();
             logger.i("旋转屏幕");
             mView.showWebView(mVideoEntity.getExamUrl());
             mRootView.addView(mView.getRootView(), RelativeLayout.LayoutParams
@@ -62,12 +62,20 @@ public class StandExperienceEvaluationBll extends
         }
     }
 
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        if (mView instanceof StandExperienceEvaluationPager) {
+            ((StandExperienceEvaluationPager) mView).onDestroy();
+        }
+    }
+
     //显示下一个View
     @Override
     public void showNextWindow() {
         logger.i("旋转屏幕");
-        ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
-        activityChangeLand.changeLOrP();
+//        ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
+//        activityChangeLand.changeLOrP();
         for (LiveBackBaseBll liveBackBaseBll : liveBackBll.getLiveBackBaseBlls()) {
             if (liveBackBaseBll instanceof StandExperienceLearnFeedbackBll) {
 //                ().showWindow();

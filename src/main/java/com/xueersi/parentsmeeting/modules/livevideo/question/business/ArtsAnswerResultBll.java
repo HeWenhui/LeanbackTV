@@ -166,7 +166,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     }
 
     private void addPager() {
-        logger.e("ArtsAnswerResultBll:addPager:" + mDsipalyer);
+        //logger.e("ArtsAnswerResultBll:addPager:" + mDsipalyer);
+
         if (mDsipalyer != null) {
             return;
         }
@@ -182,7 +183,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
         }
-        logger.e( "==========> ArtsAnswerResultBll addPager called:");
+       // logger.e( "==========> ArtsAnswerResultBll addPager called:");
     }
 
     /**
@@ -193,7 +194,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             @Override
             public void run() {
                 if(mGetInfo.getPattern() == 2){
-                    showH5Result();
+                    showH5Result(mAnswerReulst);
                     close = false;
                 }else{
                     closeRemindUI();
@@ -203,68 +204,131 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             }
         });
     }
-    private void showH5Result() {
-        String path = "live_stand_voice_my_right.json";
-        LottieComposition.Factory.fromAssetFileName(mContext, path, new OnCompositionLoadedListener() {
-            @Override
-            public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
-                if (lottieComposition == null) {
-//                    disMissAnswerResult();
-                    return;
-                }
-                disMissAnswerResult();
-                mRlResult = (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_voice_result, null);
-                LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
-                lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_right");
-                lottieAnimationView.setComposition(lottieComposition);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-                mRlResult.addView(lottieAnimationView, lp);
+    private void showH5Result(AnswerResultEntity detail) {
+        if(detail.getIsRight() == 1 || detail.getIsRight() == 2){
+            String path = "live_stand_voice_my_right.json";
+            LottieComposition.Factory.fromAssetFileName(mContext, path, new OnCompositionLoadedListener() {
+                @Override
+                public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
+                    if (lottieComposition == null) {
+                        return;
+                    }
+                    disMissAnswerResult();
+                    mRlResult = (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_voice_result, null);
+                    LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
+                    lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_right");
+                    lottieAnimationView.setComposition(lottieComposition);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    mRlResult.addView(lottieAnimationView, lp);
 //                    final ViewGroup group = (ViewGroup) baseVoiceAnswerPager.getRootView();
 //                    group.addView(rlResult);
-                rlAnswerResultLayout.addView(mRlResult);
-                lottieAnimationView.playAnimation();
-                setRightGold(mContext, lottieAnimationView, mAnswerReulst.getGold());
-                mLiveSoundPool = LiveSoundPool.createSoundPool();
-                final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(mLiveSoundPool);
-                mRlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        close = true;
-                        StandLiveMethod.onClickVoice(mLiveSoundPool);
-                        rlAnswerResultLayout.removeView(mRlResult);
-                    }
-                });
-                mRlResult.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-                    @Override
-                    public void onViewAttachedToWindow(View v) {
+                    rlAnswerResultLayout.addView(mRlResult);
+                    lottieAnimationView.playAnimation();
+                    setRightGold(mContext, lottieAnimationView, mAnswerReulst.getGold());
+                    mLiveSoundPool = LiveSoundPool.createSoundPool();
+                    final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(mLiveSoundPool);
+                    mRlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            close = true;
+                            StandLiveMethod.onClickVoice(mLiveSoundPool);
+                            rlAnswerResultLayout.removeView(mRlResult);
+                        }
+                    });
+                    mRlResult.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                        @Override
+                        public void onViewAttachedToWindow(View v) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onViewDetachedFromWindow(View v) {
-                        logger.d( "onViewDetachedFromWindow right");
-                        mLiveSoundPool.stop(task);
-                        rlAnswerResultLayout.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(!close){
-                                    StandLiveMethod.onClickVoice(mLiveSoundPool);
-                                    rlAnswerResultLayout.removeView(mRlResult);
+                        @Override
+                        public void onViewDetachedFromWindow(View v) {
+                            logger.d( "onViewDetachedFromWindow right");
+                            mLiveSoundPool.stop(task);
+                            rlAnswerResultLayout.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(!close){
+                                        StandLiveMethod.onClickVoice(mLiveSoundPool);
+                                        rlAnswerResultLayout.removeView(mRlResult);
+                                    }
                                 }
-                            }
-                        });
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mLiveSoundPool.release();
-                            }
-                        }, 500);
+                            });
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mLiveSoundPool.release();
+                                }
+                            }, 500);
+                        }
+                    });
+                }
+            });
+        }else{
+            String path = "live_stand_voice_my_wrong.json";
+            LottieComposition.Factory.fromAssetFileName(mContext, path, new OnCompositionLoadedListener() {
+                @Override
+                public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
+                    if (lottieComposition == null) {
+                        return;
                     }
-                });
-            }
-        });
+                    disMissAnswerResult();
+                    mRlResult = (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_voice_result_wrong, null);
+                    LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
+                    lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_wrong");
+                    lottieAnimationView.setComposition(lottieComposition);
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                    mRlResult.addView(lottieAnimationView, lp);
+//                    final ViewGroup group = (ViewGroup) baseVoiceAnswerPager.getRootView();
+//                    group.addView(rlResult);
+                    rlAnswerResultLayout.addView(mRlResult);
+                    lottieAnimationView.playAnimation();
+                    setWrongTip(mContext, lottieAnimationView, mAnswerReulst.getAnswerList().get(0).getRightAnswers().get(0) + "");
+                    mLiveSoundPool = LiveSoundPool.createSoundPool();
+                    final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(mLiveSoundPool);
+                    mRlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            close = true;
+                            StandLiveMethod.onClickVoice(mLiveSoundPool);
+                            rlAnswerResultLayout.removeView(mRlResult);
+                        }
+                    });
+                    mRlResult.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                        @Override
+                        public void onViewAttachedToWindow(View v) {
+
+                        }
+
+                        @Override
+                        public void onViewDetachedFromWindow(View v) {
+                            logger.d( "onViewDetachedFromWindow error");
+                            mLiveSoundPool.stop(task);
+                            rlAnswerResultLayout.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(!close){
+                                        StandLiveMethod.onClickVoice(mLiveSoundPool);
+                                        rlAnswerResultLayout.removeView(mRlResult);
+                                    }
+                                }
+                            });
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mLiveSoundPool.release();
+                                }
+                            }, 500);
+                        }
+                    });
+                }
+            });
+        }
+
     }
 
     private void closeRemindUI() {
@@ -289,7 +353,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         try {
             JSONObject jsonObject = new JSONObject(result);
             int stat = jsonObject.optInt("stat");
-            Log.e("AnswerResultBll","======>onAnswerResult2222:"+stat+":"+jsonObject.has("data"));
+           // logger.e("======>onAnswerResult2222:"+stat+":"+jsonObject.has("data"));
             JSONObject dataObject = null;
             if(resultFromVoice){
                 dataObject = jsonObject;
@@ -400,7 +464,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     }
                     mAnswerReulst.setIsRight(dataObject.optInt("isRight"));
 
-                    Log.e("AnswerResultBll","======>:"+mAnswerReulst.getIsRight() +":"+mAnswerReulst.getIdArray());
+                   // logger.e("======>:"+mAnswerReulst.getIsRight() +":"+mAnswerReulst.getIdArray());
                     JSONArray jsonArray = dataObject.optJSONArray("result");
                     if (jsonArray != null && jsonArray.length() > 0) {
                         List<AnswerResultEntity.Answer> answerList = new ArrayList<AnswerResultEntity.Answer>();
@@ -433,15 +497,18 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private boolean forceSumbmit;
 
     public void closeAnswerResult(boolean forceSumbmit) {
-        logger.e( "=====>closeAnswerResult:" + forceSumbmit + ":" + mDsipalyer);
+        //logger.e( "=====>closeAnswerResult:" + forceSumbmit + ":" + mDsipalyer);
         // 已展示过答题结果
         if (mDsipalyer != null) {
             mDsipalyer.close();
             mDsipalyer = null;
             EventBus.getDefault().post(new AnswerResultCplShowEvent());
         }
+        if(mGetInfo.getPattern() == 2){
+            EventBus.getDefault().post(new AnswerResultCplShowEvent());
+        }
 
-        logger.e("=====>closeAnswerResult:" + forceSumbmit + ":" + this);
+       // logger.e("=====>closeAnswerResult:" + forceSumbmit + ":" + this);
         this.forceSumbmit = forceSumbmit;
     }
 
@@ -457,13 +524,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     };
 
     public void remindSubmit() {
-        logger.e("======>remindSubmit:" + mArtsAnswerResultEvent + ":" + this);
+       // logger.e("======>remindSubmit:" + mArtsAnswerResultEvent + ":" + this);
         //没有答题结果页时才展示
         if (mArtsAnswerResultEvent == null) {
             rlAnswerResultLayout.post(new Runnable() {
                 @Override
                 public void run() {
-                    logger.e("======>remindSubmit:" + 000000);
                     if (remindView == null) {
                         if (isPse) {
                             remindView = View.inflate(mContext, R.layout.live_remind_submit_layout_pse, null);
@@ -474,14 +540,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                         rlAnswerResultLayout.addView(remindView, params);
                     }
-                    logger.e("======>remindSubmit:" + 11111);
                    // remindView.setVisibility(View.VISIBLE);
                     AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
                             .anim_livevido_arts_answer_result_alpha_in);
                     remindView.startAnimation(alphaAnimation);
                     rlAnswerResultLayout.removeCallbacks(autoCloseTask);
                     rlAnswerResultLayout.postDelayed(autoCloseTask, REMIND_UI_CLOSE_DELAY);
-                    logger.e("======>remindSubmit:" + 222222);
 
                 }
             });
@@ -490,7 +554,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Override
     public void onCompeletShow() {
-        logger.e( "=======onCompeletShow called:" + forceSumbmit + ":" + this);
+        //logger.e( "=======onCompeletShow called:" + forceSumbmit + ":" + this);
         if (forceSumbmit) {
             mRootView.postDelayed(new Runnable() {
                 @Override
@@ -506,7 +570,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * 表扬答题全对
      */
     private void praiseAnswerAllRight(JSONArray ids) {
-        Log.e( "AnswerResultBll","=======>praiseAnswerAllRight:" + ids+":"+mAnswerResultList.size());
        if(ids != null && ids.length() > 0){
             if(mAnswerResultList != null && mAnswerResultList.size() > 0){
                 AnswerResultEntity  resultEntity = null;
@@ -521,18 +584,18 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             id = ids.optString(j);
                             if (!resultEntity.getIdArray().contains(id)) {
                                 isTargetObj = false;
-                                Log.e( "AnswerResultBll","=======>praiseAnswerAllRight:1111111122222");
+                                //logger.e( "=======>praiseAnswerAllRight:1111111122222");
                                 break;
                             }
                         }
                     }
 
-                    Log.e( "AnswerResultBll","=======>praiseAnswerAllRight:4444444 "+isTargetObj);
+                    //logger.e( "=======>praiseAnswerAllRight:4444444 "+isTargetObj);
                     if(isTargetObj && resultEntity != null){
                         break;
                     }
                 }
-                Log.e( "AnswerResultBll","=======>praiseAnswerAllRight: targetObj="+ resultEntity);
+                //logger.e( "=======>praiseAnswerAllRight: targetObj="+ resultEntity);
                 // 找到目标答题结果  显示表扬
                 if(resultEntity != null && resultEntity.getIsRight() == ANSWER_RESULT_ALL_RIGHT){
                     showPraise();
@@ -558,15 +621,15 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                    for (int j = 0; j < resultEntity.getAnswerList().size(); j++) {
                        answer = resultEntity.getAnswerList().get(j);
                        if(testId.equals(answer.getTestId())){
-                           Log.e("AnswerResultBll","====> pariseSingleRight: find target obj");
+                           //logger.e("====> pariseSingleRight: find target obj");
                            objFound = true;
                            if(resultEntity.getResultType() == AnswerResultEntity.RESULT_TYPE_NEW_COURSE_WARE && answer.getIsRight() == 2){
-                               Log.e("AnswerResultBll","====> pariseSingleRight: new_course_ware showPraise");
+                               //logger.e("====> pariseSingleRight: new_course_ware showPraise");
                                //新课件平台 2代表正确
                                showPraise();
                            }else if(resultEntity.getResultType() == AnswerResultEntity.RESULT_TYPE_OLD_COURSE_WARE && answer.getIsRight() == 1){
                                //老课件平台 1 代表正确
-                               Log.e("AnswerResultBll","====> pariseSingleRight: old_course_ware showPraise");
+                               //logger.e("====> pariseSingleRight: old_course_ware showPraise");
                                showPraise();
                            }
                            break;
@@ -574,7 +637,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                    }
                }
                if(objFound){
-                   Log.e("AnswerResultBll","====> pariseSingleRight: end_target_search");
+                   //logger.e("====> pariseSingleRight: end_target_search");
                    break;
                }
            }
@@ -663,7 +726,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        logger.e( "=====>onNotice :" + "type=:" + type + ":data=" + data.toString());
+        //logger.e( "=====>onNotice :" + "type=:" + type + ":data=" + data.toString());
         switch (type) {
             case XESCODE.ARTS_REMID_SUBMIT:
                 int pType = data.optInt("ptype");
@@ -696,10 +759,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             case XESCODE.ARTS_PRAISE_ANSWER_RIGHT_SINGLE:
                 String testId = data.optString("id");
                 if (!TextUtils.isEmpty(testId)) {
-                    Log.e("AnswerResultBll","======>notice: pariseSingle 111");
+                    //logger.e("======>notice: pariseSingle 111");
                     pariseSingleAnswerRight(testId);
                 } else {
-                    Log.e("AnswerResultBll","======>notice: pariseAll");
+                    //logger.e("======>notice: pariseAll");
                     JSONArray ids = data.optJSONArray("ids");
                     praiseAnswerAllRight(ids);
                 }
@@ -785,7 +848,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mScoreRangeMap.put(6, new ScoreRange(90, 100));
         }
         ScoreRange range = mScoreRangeMap.get(scoreRange);
-        logger.e("====>praiseVoiceAnswer:" + range + ":" + mVoiceAnswerResultList.size());
+       // logger.e("====>praiseVoiceAnswer:" + range + ":" + mVoiceAnswerResultList.size());
         if (range != null && mVoiceAnswerResultList.size() > 0) {
             VoiceAnswerResultEvent voiceAnswerResult = null;
             for (int i = (mVoiceAnswerResultList.size()-1); i >= 0; i--) {
@@ -802,7 +865,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWebviewClose(LiveRoomH5CloseEvent event) {
-        logger.e( "=======>onWebviewClose called");
+        //logger.e( "=======>onWebviewClose called");
         //mArtsAnswerResultEvent = null;
         closeAnswerResult(false);
         //刷新右侧 金币
@@ -814,7 +877,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAnswerResult(ArtsAnswerResultEvent event) {
-        Log.e("AnswerResultBll","======>onAnswerResult:"+event);
+        //logger.e("======>onAnswerResult:"+event);
         if (event != null && !event.equals(mArtsAnswerResultEvent)) {
             mArtsAnswerResultEvent = event;
             if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()
@@ -882,8 +945,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         int score = totalObject.optInt("score");
                         VoiceAnswerResultEvent voiceAnswerResultEvent = new VoiceAnswerResultEvent(testId, score);
                         voiceAnswerResultEvent.setType(type);
-                        logger.e("========>onRolePlayAnswerResult:" + voiceAnswerResultEvent
-                                .getScore() + ":" + voiceAnswerResultEvent.getTestId());
+                       // logger.e("========>onRolePlayAnswerResult:" + voiceAnswerResultEvent
+                            //    .getScore() + ":" + voiceAnswerResultEvent.getTestId());
                         saveVoiceAnswerResult(voiceAnswerResultEvent);
                     }
                 } else {
@@ -901,7 +964,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVoiceAnswerReuslt(VoiceAnswerResultEvent event) {
-        logger.e( "====>onVoiceAnswerReuslt:" + event);
+      //  logger.e( "====>onVoiceAnswerReuslt:" + event);
         /*if (event != null && !event.equals(mVoiceAnswerResult)) {
             mVoiceAnswerResult = event;
         }*/
@@ -973,6 +1036,32 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         lottieAnimationView.updateBitmap("image_22", img_7Bitmap);
     }
 
+    private void setWrongTip(Context context, LottieAnimationView lottieAnimationView, String standardAnswer) {
+        String num = "正确答案: " + standardAnswer;
+        AssetManager manager = context.getAssets();
+        Bitmap img_7Bitmap;
+        try {
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/my_wrong/img_5.png"));
+//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
+            Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(creatBitmap);
+            canvas.drawBitmap(img_7Bitmap, 0, 0, null);
+            Paint paint = new Paint();
+            paint.setTextSize(48);
+            paint.setColor(0xff5586A3);
+            Typeface fontFace = FontCache.getTypeface(context, "fangzhengcuyuan.ttf");
+            paint.setTypeface(fontFace);
+            float width = paint.measureText(num);
+            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
+            img_7Bitmap.recycle();
+            img_7Bitmap = creatBitmap;
+        } catch (IOException e) {
+            logger.e( "setRightGold", e);
+            return;
+        }
+        lottieAnimationView.updateBitmap("image_5", img_7Bitmap);
+    }
+
     /**
      * 回答问题结果提示框延迟三秒消失
      */
@@ -980,7 +1069,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                rlAnswerResultLayout.removeView(mRlResult);
+                if(!close){
+                    rlAnswerResultLayout.removeView(mRlResult);
+                }
             }
         }, 5000);
     }

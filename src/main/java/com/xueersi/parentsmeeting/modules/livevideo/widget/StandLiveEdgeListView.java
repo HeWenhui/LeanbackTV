@@ -47,6 +47,9 @@ public class StandLiveEdgeListView extends ListView {
         shader = new LinearGradient(0, 0, 0, 1, 0xff000000, 0, Shader.TileMode.CLAMP);
         paint.setShader(shader);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+        if (android.os.Build.VERSION.SDK_INT >= 28) {
+            return;
+        }
         setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
 
             @Override

@@ -41,7 +41,7 @@ import okhttp3.Response;
  * 直播主观题结果页面
  */
 public class SubjectResultX5Pager extends LiveBasePager implements BaseSubjectResultInter {
-    private String questionEventId = LiveVideoConfig.LIVE_PUBLISH_TEST;
+    private String questionEventId = LiveVideoConfig.LIVE_H5_TEST;
     private Button btSubjectClose;
     private Button bt_livevideo_subject_calljs;
     private WebView wvSubjectWeb;

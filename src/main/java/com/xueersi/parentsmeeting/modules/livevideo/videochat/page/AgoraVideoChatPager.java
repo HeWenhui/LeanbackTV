@@ -98,12 +98,14 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         @Override
         public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
             mLogtf.d("onFirstRemoteVideoDecoded:uid=" + uid);
-            startRemote.set(true);
-            videoChatEvent.stopPlay();
-            doRenderRemoteUi(uid);
-            StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
-            if (studyReportAction != null) {
-                studyReportAction.onFirstRemoteVideoDecoded(uid);
+            if (("" + uid).equals(getInfo.getMainTeacherId()) || ("" + uid).equals(getInfo.getTeacherId())) {
+                startRemote.set(true);
+                videoChatEvent.stopPlay();
+                doRenderRemoteUi(uid);
+                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(activity, StudyReportAction.class);
+                if (studyReportAction != null) {
+                    studyReportAction.onFirstRemoteVideoDecoded(uid);
+                }
             }
         }
 
@@ -184,9 +186,9 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
 
     @Override
     public void stopRecord() {
-        mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
+        mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLeaveChannel() {
             @Override
-            public void onLevelChannel(int leaveChannel) {
+            public void onLeaveChannel(int leaveChannel) {
                 StableLogHashMap logHashMap = new StableLogHashMap("getLeaveChannel");
                 logHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
                 if (leaveChannel != 0) {

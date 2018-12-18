@@ -1,12 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -17,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -132,9 +135,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveVideoConfig.isSmallChinese = false;
         }
 //        getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
-//        LiveVideoConfig.educationstage = getInfo.getEducationStage();
-        LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
-        LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
+        LiveVideoConfig.educationstage = getInfo.getEducationStage();
+        LiveVideoConfig.LIVEMULPRELOADCHS = data.optString("courseWarePreLoadUrl");
+        LiveVideoConfig.LIVEMULH5URLCHS = data.optString("getCourseWareHtml");
+//        LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
+//        LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
 //        getInfo.setStuPutUpHandsNum(data.optInt("stuPutUpHandsNum"));
 //        getInfo.setAllowLinkMicNew(data.optInt("allowLinkMicNew"));
 //        if (getInfo.getAllowLinkMicNew() == 1) {
@@ -174,7 +179,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     private void setStaticStatusNull() {
         //小学语文MMD皮肤
         LiveVideoConfig.isSmallChinese = false;
-
+        LiveVideoConfig.isPrimary = false;
+        LiveVideoConfig.isScience = false;
     }
 
     /**
@@ -306,6 +312,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.teamStuIds", e.getMessage());
                     }
                 }
+
                 getInfo.setIsArts(data.optInt("isArts", 0));//文科可以星星互动
                 getInfo.setIsEnglish(data.optInt("isEnglish", 0));
                 getInfo.setIsAllowStar(data.optInt("isAllowStar", 0));//是不是可以星星互动
@@ -319,6 +326,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         getInfo.setGoldCount(goldCountObj.optInt("goldAmount", 0));
                     }
                 }
+                LiveGetInfo.EvaluateTeacherEntity evaluateTeacherEntity = new LiveGetInfo.EvaluateTeacherEntity();
+                evaluateTeacherEntity.setEvaluateIsOpen(data.optInt("evaluateIsOpen", 0) == 1 ? true : false);
+                evaluateTeacherEntity.setEvaluateTime(data.optLong("evaluateTime", 0));
+                getInfo.setEvaluateTeacherEntity(evaluateTeacherEntity);
             }
             getInfo.setStat(data.getInt("stat"));
             getInfo.setRtmpUrl(data.getString("rtmpUrl"));
@@ -404,8 +415,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 String[] arrSubjIds = strSubjIds.split(",");
                 getInfo.setSubjectIds(arrSubjIds);
             }
-            LiveVideoConfig.isPrimary = false;
-            LiveVideoConfig.isScience = false;
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 if (getInfo.getIsArts() == 1) {
                     parseLiveGetInfoLibarts(data, liveTopic, getInfo);
@@ -797,7 +806,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     student.setNickname(stu.getString("nickname"));
                     student.setEn_name(stu.getString("en_name"));
                     student.createShowName();
-                    student.setRight(stu.optInt("isRight") == 1);
+                    student.setRight(stu.optInt("isRight") == 1 || stu.optInt("isRight") == 2);
                     String avatar_path = stu.getString("avatar_path");
                     student.setAvatar_path(avatar_path);
                     entity.getStudents().add(student);
@@ -1126,6 +1135,54 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         studyInfo.setMode(data.optString("mode", oldMode));
         return studyInfo;
     }
+
+    /**
+     * 解析文理半身直播 家长旁听数据
+     *
+     * @param responseEntity
+     * @param oldMode
+     * @return
+     */
+    public HalfBodyLiveStudyInfo parseStuHalfbodyLiveInfo(ResponseEntity responseEntity, String oldMode) {
+        HalfBodyLiveStudyInfo result = new HalfBodyLiveStudyInfo();
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            result.setSignTime(data.optString("signTime", ""));
+            result.setOnlineTime(data.optString("onlineTime"));
+            result.setMode(data.optString("mode", oldMode));
+            JSONObject teamInfo = data.optJSONObject("teamInfo");
+            if (teamInfo != null) {
+                result.setMyRank(teamInfo.optString("myRank"));
+                result.setOurTeamEnergy(teamInfo.optLong("ourTeamEnergy"));
+                result.setHostileTeamEnergy(teamInfo.optLong("hostileTeamEnergy"));
+            }
+
+            JSONObject testInfo = data.optJSONObject("testInfo");
+            if (testInfo != null) {
+                result.setTestRate(testInfo.optString("stuAvgRate"));
+                result.setStuAvgRate(testInfo.optString("stuAvgRate"));
+                JSONArray testListArray = testInfo.optJSONArray("testList");
+                if (testListArray != null && testListArray.length() > 0) {
+                    List<HalfBodyLiveStudyInfo.TestInfo> testInfoList = new ArrayList<>();
+                    HalfBodyLiveStudyInfo.TestInfo info = null;
+                    JSONObject testJsonObj = null;
+                    for (int i = 0; i < testListArray.length(); i++) {
+                        testJsonObj = testListArray.getJSONObject(i);
+                        info = new HalfBodyLiveStudyInfo.TestInfo();
+                        info.setAnsweredStatus(testJsonObj.optInt("answeredStatus"));
+                        info.setOrderNum(testJsonObj.optInt("orderNum"));
+                        info.setPlanAvgRightRate(testJsonObj.optString("planAvgRightRate"));
+                        testInfoList.add(info);
+                    }
+                    result.setTestList(testInfoList);
+                }
+            }
+        } catch (Exception e) {
+            MobAgent.httpResponseParserError(TAG, "parseStuHalfbodyLiveInfo", e.getMessage());
+        }
+        return result;
+    }
+
 
     public AllRankEntity parseAllRank(ResponseEntity responseEntity) {
         AllRankEntity allRankEntity = new AllRankEntity();

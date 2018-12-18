@@ -94,6 +94,7 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
 
     @Override
     public void onReadPackage(final int operateId, final OnReceivePackage onReceivePackage) {
+        logger.i(String.valueOf(operateId));
         mVPlayVideoControlHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -165,22 +166,22 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
             logger.i("在家小英的红包");
             if (chineseRedPackagePager == null) {
                 chineseRedPackagePager = new SmallChineseRedPackagePager(activity);
-                chineseRedPackagePager.setListener(new SmallChineseRedPackagePager.SmallChineseRedPackageListener() {
-                    @Override
-                    public void close() {
-                        if (chineseRedPackagePager != null && chineseRedPackagePager.getRootView().getParent() == rlRedpacketContent) {
-                            rlRedpacketContent.removeView(chineseRedPackagePager.getRootView());
-                        }
-                    }
-
-                    @Override
-                    public void submit() {
-                        sendReceiveGold(operateId, mVSectionID);
-                    }
-                });
             } else {//再次发红包
                 chineseRedPackagePager.updateView(false, 0);
             }
+            chineseRedPackagePager.setListener(new SmallChineseRedPackagePager.SmallChineseRedPackageListener() {
+                @Override
+                public void close() {
+                    if (chineseRedPackagePager != null && chineseRedPackagePager.getRootView().getParent() == rlRedpacketContent) {
+                        rlRedpacketContent.removeView(chineseRedPackagePager.getRootView());
+                    }
+                }
+
+                @Override
+                public void submit() {
+                    sendReceiveGold(operateId, mVSectionID);
+                }
+            });
             view = chineseRedPackagePager.getRootView();
             params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             params.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -295,7 +296,6 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
 //                }
 //            }, 3000);
         } else if (LiveVideoConfig.isSmallChinese) {
-
             if (chineseRedPackagePager != null && chineseRedPackagePager.getRootView().getParent() != rlRedpacketContent) {
                 rlRedpacketContent.addView(chineseRedPackagePager.getRootView());
             }
@@ -310,6 +310,16 @@ public class RedPackageBll implements RedPackageAction, Handler.Callback {
                     }
                 }
             }, 0);
+
+            postDelayedIfNotFinish(new Runnable() {
+                @Override
+                public void run() {
+                    //3秒后自动消失
+                    if (chineseRedPackagePager.getRootView().getParent() == rlRedpacketContent) {
+                        rlRedpacketContent.removeAllViews();
+                    }
+                }
+            }, 3000);
         } else {
             String msg = "+" + goldNum + "金币";
             View view = activity.getLayoutInflater().inflate(R.layout.dialog_red_packet_success, rlRedpacketContent,

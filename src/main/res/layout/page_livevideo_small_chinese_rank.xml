@@ -46,7 +46,7 @@
         app:layout_constraintTop_toTopOf="@id/iv_livevideo_small_chinese_rank_left_btn" />
 
     <ImageView
-        android:id="@id/iv_livevideo_small_chinese_rank_middle_btn"
+        android:id="@+id/iv_livevideo_small_chinese_rank_middle_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_livevideo_small_chinese_rank_btn_click"
@@ -101,14 +101,14 @@
         app:layout_constraintTop_toTopOf="@id/iv_livevideo_small_chinese_rank_rank_background" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@id/fzcytv_livevideo_small_chinese_middle_text"
+        android:id="@+id/fzcytv_livevideo_small_chinese_middle_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="学员"
         android:textColor="@color/COLOR_005952"
         android:textSize="13sp"
-        app:layout_constraintLeft_toLeftOf="@id/fzcytv_livevideo_small_chinese_left_text"
-        app:layout_constraintRight_toRightOf="@id/fzcytv_livevideo_small_chinese_right_text"
+        app:layout_constraintLeft_toRightOf="@id/fzcytv_livevideo_small_chinese_left_text"
+        app:layout_constraintRight_toLeftOf="@id/fzcytv_livevideo_small_chinese_right_text"
         app:layout_constraintTop_toTopOf="@id/fzcytv_livevideo_small_chinese_left_text" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView

@@ -158,7 +158,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
      * @param isPresent 老师在不在直播间
      */
     public void onModeChange(String mode, boolean isPresent) {
-        logger.d("onModeChange:mode=" + mode + ",isPresent=" + isPresent);
+        mLogtf.d("onModeChange:mode=" + mode + ",isPresent=" + isPresent);
         liveGetPlayServer.liveGetPlayServer(mode, true);
     }
 

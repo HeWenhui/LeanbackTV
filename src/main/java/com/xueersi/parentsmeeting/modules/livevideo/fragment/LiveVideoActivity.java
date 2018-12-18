@@ -11,8 +11,11 @@ import android.view.inputmethod.InputMethodManager;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCall;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.halfbody.HalfBodyLiveVideoFragement;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 /**
@@ -61,11 +64,13 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     protected LiveVideoFragmentBase getFragment() {
         int pattern = getIntent().getIntExtra("pattern", 0);
         if (pattern == 2) {
-            LiveVideoConfig.isStandLive = true;
             return new StandLiveVideoFragment();
+        } else if (pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
+            //半身直播
+            return new HalfBodyLiveVideoFragement();
+        } else {
+            return new LiveVideoFragment();
         }
-        LiveVideoConfig.isStandLive = false;
-        return new LiveVideoFragment();
     }
 
     @Override
@@ -124,5 +129,6 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     public void finish(int result) {
         super.finish(result);
         UmsAgentManager.umsAgentDebug(this, TAG + "finish", "finish(result):" + Log.getStackTraceString(new Exception()));
+
     }
 }

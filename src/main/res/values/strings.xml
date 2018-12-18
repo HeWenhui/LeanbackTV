@@ -3,4 +3,5 @@
 
     <string name="agora_private_app_id_debug">8a751989972f4599a315ed9129471f32</string>
     <string name="agora_private_app_id_release">f8d8132f9e1446c79568e2c22e585f82</string>
+    <string name="livevideo_chpk_dispatchteam">分队仪式进行中...</string>
 </resources>

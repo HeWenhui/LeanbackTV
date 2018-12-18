@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -209,6 +208,8 @@ public class LiveGetInfo {
     private String subjectiveTestAnswerResult;
     //是否是小英
     private boolean smallEnglish;
+
+    private boolean primaryChinese;
     /**
      * 当前的直播模式
      */
@@ -332,6 +333,14 @@ public class LiveGetInfo {
 
     public boolean getSmallEnglish() {
         return smallEnglish;
+    }
+
+    public boolean isPrimaryChinese() {
+        return primaryChinese;
+    }
+
+    public void setPrimaryChinese(boolean primaryChinese) {
+        this.primaryChinese = primaryChinese;
     }
 
     public int getGrade() {
@@ -1213,6 +1222,36 @@ public class LiveGetInfo {
         public double duration = 0;
         public int speakingNum = 0;
         public String speakingLen = "";
+    }
+
+    EvaluateTeacherEntity evaluateTeacherEntity;
+    public static class EvaluateTeacherEntity{
+        boolean evaluateIsOpen = false;
+        long evaluateTime;
+
+        public boolean isEvaluateIsOpen() {
+            return evaluateIsOpen;
+        }
+
+        public void setEvaluateIsOpen(boolean evaluateIsOpen) {
+            this.evaluateIsOpen = evaluateIsOpen;
+        }
+
+        public long getEvaluateTime() {
+            return evaluateTime;
+        }
+
+        public void setEvaluateTime(long evaluateTime) {
+            this.evaluateTime = evaluateTime;
+        }
+    }
+
+    public void setEvaluateTeacherEntity(EvaluateTeacherEntity evaluateTeacherEntity){
+        this.evaluateTeacherEntity = evaluateTeacherEntity;
+    }
+
+    public EvaluateTeacherEntity getEvaluateTeacherEntity() {
+        return evaluateTeacherEntity;
     }
 
     public String getMulpreload() {

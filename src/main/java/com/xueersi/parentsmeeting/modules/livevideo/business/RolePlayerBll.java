@@ -76,7 +76,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 连接地址
      */
     private String webSocketUrl = "ws://wsarts.xueersi" +
-            ".com/roleplay/index?userId=%1$s&role=1&cookie=%2$s&liveId=%3$s";
+            ".com/roleplay/index?userId=%1$s&role=1&cookie=%2$s&liveId=%3$s&xes_rfh=%4$s";
 
     /**
      * RolePlayer数据实体
@@ -106,8 +106,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     private RolePlayerHttpManager mRolePlayerHttpManager;
 
     private RolePlayerHttpResponseParser mRolePlayerHttpResponseParser;
-    private boolean mIsCancelDZ = false;//是否已经取消了点赞
-    private boolean mIsBeginSocket;
+
     private boolean isGoToRobot;//是否开始了人机
 
     public RolePlayerBll(Context context, RelativeLayout bottomContent, LiveAndBackDebug liveBll, LiveGetInfo liveGetInfo) {
@@ -225,24 +224,30 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            mRolePlayerHttpResponseParser.parserNewArtsRolePlayTestInfos(responseEntity, mRolePlayerEntity);
-                            logger.i( "服务器试题信息返回 " + responseEntity.getJsonObject().toString());
-                            logger.i( "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
-                                    ".getLstRolePlayerMessage()" +
-                                    ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
-                                    mRolePlayerEntity.toString());
+                            mRolePlayerEntity = mRolePlayerHttpResponseParser.parserNewArtsMutRolePlayTestInfos(responseEntity, mRolePlayerEntity);
+                            if(responseEntity != null && responseEntity.getJsonObject() != null){
+                                logger.i( "多人新课件服务器试题信息返回 " + responseEntity.getJsonObject().toString());
+                                logger.i( "多人新课件服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
+                                        ".getLstRolePlayerMessage()" +
+                                        ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
+                                        mRolePlayerEntity.toString());
+                            }
+
                         }
 
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
-                            logger.i( "onPmError:" + responseEntity.getErrorMsg());
+                            if(responseEntity != null){
+                                logger.i( "onPmError:多人新课件" + responseEntity.getErrorMsg());
+                            }
+
                         }
 
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
-                            logger.i( "onPmFailure:" + msg);
+                            logger.i( "onPmFailure:多人新课件" + msg);
                         }
                     });
         }
@@ -290,6 +295,8 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                 updateAchievement.getStuGoldCount();
             }
         }
+        //bottomContent = null;
+       // mRolePlayerPager = null;
     }
 
     /**
@@ -356,7 +363,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
         mWebSocket = new WebSocketConn();
         webSocketUrl = String.format(webSocketUrl, UserBll.getInstance().getMyUserInfoEntity().getStuId(), AppBll
-                .getInstance().getUserToken(), mLiveId);
+                .getInstance().getUserToken(), mLiveId, AppBll.getInstance().getUserRfh());
         //webSocketUrl = String.format(webSocketUrl, "1237", "1111111", "1234");
         logger.i( "websocket:" + webSocketUrl);
         mWebSocket.connect(webSocketUrl, new WebSocketConn.WebSocketCallBack() {
@@ -371,7 +378,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
             @Override
             public void onMessage(String result) {
-                logger.i( "result:" + result);
+                //logger.i( "result:" + result);
                 onMessageParse(result);
             }
 
@@ -517,8 +524,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             String str = jsonObject.optString("msg");
             JSONObject msgObj = new JSONObject(str);
             //JSONObject msgObj = jsonObject.getJSONObject("msg");
-            logger.i( "parse 开始解析消息 acid = " + acid + " from " + from + " msg " + msgObj.toString
-                    ());
+            //logger.i( "parse 开始解析消息 acid = " + acid + " from " + from + " msg " + msgObj.toString());
             switch (acid) {
                 case 1:
                     //边接成功，获取stuid
@@ -605,6 +611,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     break;
                 case 2000:
                     //分组结果
+                    logger.i( "group success result:" + result);
                     if (mRolePlayerEntity != null) {
 
                         mRolePlayerEntity.getLstRoleInfo().clear();
@@ -651,28 +658,35 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            mRolePlayerHttpResponseParser.parserRolePlayTestInfos(responseEntity, mRolePlayerEntity);
-                            logger.i( "服务器试题信息返回 " + responseEntity.getJsonObject().toString());
-                            logger.i( "服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
-                                    ".getLstRolePlayerMessage()" +
-                                    ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
-                                    mRolePlayerEntity.toString());
+                            mRolePlayerHttpResponseParser.parserMutRolePlayTestInfos(responseEntity, mRolePlayerEntity);
+                            if(responseEntity != null && responseEntity.getJsonObject() != null){
+                                logger.i( "多人服务器试题信息返回 " + responseEntity.getJsonObject().toString());
+                                logger.i( "多人服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
+                                        ".getLstRolePlayerMessage()" +
+                                        ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
+                                        mRolePlayerEntity.toString());
+                            }
+
                         }
 
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
-                            logger.i( "onPmError:" + responseEntity.getErrorMsg());
+                            if(responseEntity != null){
+                                logger.i( "onPmError:多人" + responseEntity.getErrorMsg());
+                            }
+
                         }
 
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
-                            logger.i( "onPmFailure:" + msg);
+                            logger.i( "onPmFailure:多人" + msg);
                         }
                     });
         }
     }
+
 
     /**
      * 提交结果

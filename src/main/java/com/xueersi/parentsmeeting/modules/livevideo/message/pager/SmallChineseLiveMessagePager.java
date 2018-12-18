@@ -14,6 +14,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -25,8 +26,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,6 +36,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -42,7 +44,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordChsItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
@@ -52,12 +54,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
@@ -117,26 +121,27 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
     LiveAndBackDebug liveAndBackDebug;
     private String liveId;
     private String termId;
-    private View mFloatView;
-    private PopupWindow mPopupWindow;
+    //    private View mFloatView;
+//    private PopupWindow mPopupWindow;
     //是否是小英
     private SmallChineseSendGiftPager smallChineseSendGiftPager;
-    //测试使用的布尔值，用来控制无限发送弹幕
-//    private boolean blTestSEBullet = true;
-    //打开献花弹窗时，北京变为60%黑色不透明，且不可点击.
-//    private FrameLayout frameLayout;
+
     //整个布局的根View,用来献花弹窗增加背景时使用
     private ViewGroup decorView;
-
-    /** 小学语文送花的pager */
-//    private SmallChineseSendGiftPager smallChineseSendGiftPager;
     /**
      * 聊天消息的颜色
      */
     private int[] messageColors;
+    /** 战队PK背景imageView */
+    private ImageView ivPkBackGround;
+    /** 使用顶部布局 */
+    private ImageView ivMessageTopIcon;
 //    private Drawable messageBackgroundColors[];
     /** 小学语文测试，一直发弹幕， */
-    private boolean isSendFlower = false;
+//    private boolean isSendFlower = false;
+    /** 战队pk布局 */
+    private TeamPkStateLayout teamPkStateLayout;
+
 
     public SmallChineseLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                         LiveAndBackDebug ums, BaseLiveMediaControllerBottom liveMediaControllerBottom,
@@ -217,9 +222,53 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
 
         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
+        ivPkBackGround = mView.findViewById(R.id.iv_livevideo_small_chinese_pk_background);
+        ivMessageTopIcon = mView.findViewById(R.id.iv_livevideo_small_chinese_live_message_top_icon);
 
+        teamPkStateLayout = mView.findViewById(R.id.tpkL_teampk_pkstate_root);
         return mView;
     }
+
+    /** 动态调整排行榜背景高度 */
+    private void dynamicChangeTopIcon() {
+
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        int ivRealWid = liveVideoPoint.x4 - liveVideoPoint.x3;
+
+//        /** 调整战队pk的高度 */
+        Drawable teamPkBackground = mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_team_pk_background);
+        int pkBackgroundHeight = teamPkBackground.getIntrinsicHeight();
+        int pkBackgroundWidh = teamPkBackground.getIntrinsicWidth();
+        int pkRealWid = ivRealWid;
+        double pkMag = ivRealWid * 1.0 / pkBackgroundWidh;
+        int pkRealHeight = (int) (pkMag * pkBackgroundHeight);
+        ViewGroup.LayoutParams pkLayoutParams = teamPkStateLayout.getLayoutParams();
+        pkLayoutParams.height = pkRealHeight;
+        pkLayoutParams.width = pkRealWid;
+        teamPkStateLayout.setLayoutParams(pkLayoutParams);
+
+        Drawable topIconDrawable = mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_rank_top_icon);
+        int topIconHeight = topIconDrawable.getIntrinsicHeight();
+        int topIconWid = topIconDrawable.getIntrinsicWidth();
+
+
+        double mag = ivRealWid * 1.0 / topIconWid;
+        int ivRealHeight = (int) (mag * topIconHeight);
+
+        ViewGroup.LayoutParams layoutParams = ivPkBackGround.getLayoutParams();
+        layoutParams.width = ivRealWid;
+        layoutParams.height = ivRealHeight;
+        ivPkBackGround.setLayoutParams(layoutParams);
+        logger.i("wid = " + topIconWid + ", height = " + ", ivRealHeight = " + ivRealHeight + ", ivWid = " + ivRealWid + ",mag = " + mag);
+
+
+        /** 聊天区顶部icon的高度 */
+        RelativeLayout.LayoutParams rankLayout = (RelativeLayout.LayoutParams) ivMessageTopIcon.getLayoutParams();
+        int btnTopMargin = (int) (SizeUtils.Dp2Px(mContext, 49) * mag);
+        rankLayout.topMargin = btnTopMargin;
+        ivMessageTopIcon.setLayoutParams(rankLayout);
+    }
+
 
     @Override
     public void initData() {
@@ -237,6 +286,11 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         int minisize = wradio / 13;
         messageSize = Math.max((int) (ScreenUtils.getScreenDensity() * 12), minisize);
         logger.i("initData:minisize=" + minisize);
+        dynamicChangeTopIcon();
+        if (getInfo != null && getInfo.getIsAllowTeamPk() != null && getInfo.getIsAllowTeamPk().equals("1")) {
+
+            ivPkBackGround.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_team_pk_background_icon));
+        }
         messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities) {
             @Override
             public AdapterItemInterface<LiveMessageEntity> getItemView(Object type) {
@@ -327,10 +381,12 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         });
         logger.i("initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-        initCommonWord();
+        // initCommonWord();
         logger.i("initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
+
+    private boolean commonWordInited = false;
 
     private void initCommonWord() {
         final ArrayList<String> words = new ArrayList<>();
@@ -343,10 +399,9 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         lvCommonWord.setAdapter(new CommonAdapter<String>(words) {
             @Override
             public AdapterItemInterface<String> getItemView(Object type) {
-                return new CommonWordItem(mContext, this);
+                return new CommonWordChsItem(mContext, this);
             }
         });
-        /** 表情 */
         lvCommonWord.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -375,12 +430,15 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                 }
             }
         });
+        commonWordInited = true;
     }
 
     @Override
     public void initListener() {
         super.initListener();
         rlLivevideoCommonWord = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_word);
+
+        Log.e("SmallChinese", "=========>initListener:" + liveMediaControllerBottom.getClass().getSimpleName());
         //聊天，设置监听器
         btMesOpen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -393,6 +451,12 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         btMsgCommon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+
+                if (!commonWordInited) {
+                    initCommonWord();
+                }
+
+
                 liveMediaControllerBottom.onChildViewClick(v);
                 LiveMediaController controller = liveMediaControllerBottom.getController();
                 controller.show();
@@ -436,22 +500,54 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                     commonAction.isAnaswer();
                     return;
                 }
-                if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
-                    if (!ircState.isOpenbarrage()) {
-                        commonAction.clickIsnotOpenbarrage();
-                        return;
+
+
+                if (commonAction instanceof GiftDisable) {
+                    //理科送礼物功能，主讲，辅导,都要先判断上课模式
+                    if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                        if (!ircState.isOpenZJLKbarrage()) {
+                            //主讲没有开启送礼物
+                            ((GiftDisable) commonAction).clickIsnotOpenbarrage(ircState.getMode());
+                            return;
+                        }
+                    } else {
+                        if (!ircState.isOpenFDLKbarrage()) {
+                            //辅导没有开启送礼物
+                            ((GiftDisable) commonAction).clickIsnotOpenbarrage(ircState.getMode());
+                            return;
+                        }
                     }
                 } else {
-                    commonAction.clickTran();
-                    return;
+                    if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+                        if (!ircState.isOpenbarrage()) {
+                            commonAction.clickIsnotOpenbarrage();
+                            return;
+                        }
+                    } else {
+                        commonAction.clickTran();
+                        return;
+                    }
                 }
+
+//                if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
+//                    if (!ircState.isOpenbarrage()) {
+//                        commonAction.clickIsnotOpenbarrage();
+//                        return;
+//                    }
+//                } else {
+//                    commonAction.clickTran();
+//                    return;
+//                }
                 //小英
                 if (smallChineseSendGiftPager != null) {
                     //添加到正中间
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams
                             .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                    decorView.addView(smallChineseSendGiftPager.getRootView(), layoutParams);
+                    //如果giftPager的父布局为null才加入到decorView里面来
+                    if (smallChineseSendGiftPager.getRootView().getParent() == null) {
+                        decorView.addView(smallChineseSendGiftPager.getRootView(), layoutParams);
+                    }
 //                    mFlowerWindow.setBackgroundDrawable(dw);
 //                    mFlowerWindow.setContentView(smallChineseSendGiftPager.getRootView());
 //                    mFlowerWindow.showAtLocation(mView, Gravity.LEFT, 0, 0);
@@ -552,21 +648,6 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                         });
             }
         }, 10);
-//        if (isSendFlower) {
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    while (isSendFlower) {
-//                        addDanmaKuFlowers(FLOWERS_SMALL, "me", false);
-//                        try {
-//                            Thread.sleep(1000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }).start();
-//        }
     }
 
     @Override
@@ -789,7 +870,11 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                 if (smallChineseSendGiftPager.isSelect()) {
                     if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
                         if (ircState.isOpenbarrage()) {
-                            String educationStage = getInfo.getEducationStage();
+                            String educationStage = "";
+                            if (getInfo != null) {
+                                educationStage = getInfo.getEducationStage();
+                            }
+//                            String educationStage = getInfo.getEducationStage();
                             ircState.praiseTeacher("", smallChineseSendGiftPager.getWhich() + "",
                                     educationStage, new HttpCallBack(false) {
                                         @Override
@@ -854,12 +939,26 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
 //                @Override
 //                public void run() {
 //                    while (blTestSEBullet) {
-//                        addDanmaKuFlowers(FLOWERS_SMALL, "zyy", false);
+//                        addDanmaKuFlowers(FLOWERS_SMALL, "订好了就不改了", isGuest);
+//
 //                        try {
 //                            Thread.sleep(500);
 //                        } catch (InterruptedException e) {
 //                            e.printStackTrace();
 //                        }
+//                        addDanmaKuFlowers(FLOWERS_MIDDLE, "订好了就不改了", isGuest);
+//                        try {
+//                            Thread.sleep(500);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                        addDanmaKuFlowers(FLOWERS_BIG, "订好了就不改了", isGuest);
+//                        try {
+//                            Thread.sleep(500);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                        isGuest = !isGuest;
 //                    }
 //                }
 //            });
@@ -873,7 +972,16 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         before = System.currentTimeMillis();
 
         logger.i("initFlower:time3=" + (System.currentTimeMillis() - before));
+        if (getInfo != null && getInfo.getIsAllowTeamPk() != null && ("1").equals(getInfo.getIsAllowTeamPk())) {
+            if (ivPkBackGround != null) {
+                ivPkBackGround.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_team_pk_background_icon));
+            }
+        }
     }
+
+//    private boolean isGuest = false;
+    //测试使用的布尔值，用来控制无限发送弹幕
+//    private boolean blTestSEBullet = true;
 
     /** 移除View */
     private void removeView(View view, ViewGroup viewGroup) {
@@ -900,9 +1008,17 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
             XESToastUtils.showToast(mContext, "正在答题，不能送礼物");
         }
 
+
+        //重载，添加参数：讲课模式
+        public void clickIsnotOpenbarrage(String classMode) {
+            String teacher = LiveTopic.MODE_CLASS.equals(classMode) ? "主讲" : "辅导";
+            XESToastUtils.showToast(mContext, teacher + "老师未开启送礼物功能");
+        }
+
+
         @Override
         public void clickIsnotOpenbarrage() {
-            XESToastUtils.showToast(mContext, "老师未开启送礼物功能");
+
         }
 
         @Override
@@ -1280,9 +1396,8 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
 
     }
 
-
     @Override
-    public void onQuestionShow(boolean isShow) {
+    public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
 
     }
 

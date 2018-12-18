@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoAudioChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -167,6 +168,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                         String openNewMic = newLinkMic.optString("openNewMic", "off");
                         String room = newLinkMic.getString("room");
                         int micType = newLinkMic.optInt("type", 0);
+                        String linkmicid = newLinkMic.optString("linkmicid");
                         ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
                         if ("on".equals(openNewMic)) {
                             JSONArray students = newLinkMic.getJSONArray("students");
@@ -178,8 +180,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                                 classmateEntities.add(classmateEntity);
                             }
                         }
+                        startLinkmicid = linkmicid;
                         voiceChatStatus = openNewMic;
-                        videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "t", micType);
+                        videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "t", micType, linkmicid);
                     }
                 } else {
                     JSONObject room_2 = jsonObject.getJSONObject("room_2");
@@ -189,6 +192,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                         String openNewMic = newLinkMic.optString("openNewMic", "off");
                         String room = newLinkMic.getString("room");
                         int micType = newLinkMic.optInt("type", 0);
+                        String linkmicid = newLinkMic.optString("linkmicid");
                         ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
                         if ("on".equals(openNewMic)) {
                             JSONArray students = newLinkMic.getJSONArray("students");
@@ -200,8 +204,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                                 classmateEntities.add(classmateEntity);
                             }
                         }
+                        startLinkmicid = linkmicid;
                         voiceChatStatus = openNewMic;
-                        videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "f", micType);
+                        videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "f", micType, linkmicid);
                     }
                 }
                 if (!oldVoiceChatStatus.equals(voiceChatStatus)) {
@@ -216,6 +221,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
         }
     }
 
+    private String linkMicNonce = "";
+    private String startLinkmicid = "";
+
     @Override
     public void onNotice(String sourceNick, String target, JSONObject object, int type) {
         String msg = "onNotice";
@@ -229,12 +237,21 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                         LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
                     String status = object.optString("status", "off");
                     voiceChatStatus = status;
+                    String linkmicid = object.optString("linkmicid");
                     if (videoChatAction != null) {
                         msg += "RAISE_HAND:status=" + status;
-                        videoChatAction.raisehand(status, room, from, object.optString("nonce"), micType, 1);
+                        videoChatAction.raisehand(status, room, from, object.optString("nonce"), micType, linkmicid, 1);
                     }
                     for (int i = 0; i < chatStatusChanges.size(); i++) {
                         chatStatusChanges.get(i).onVideoChatStatusChange(status);
+                    }
+                    if ("on".equals(status)) {
+                        linkMicNonce = object.optString("nonce");
+                        startLinkmicid = linkmicid;
+                        VideoAudioChatLog.getRaiseHandMsgSno2(mLiveBll, micType == 0 ? "audio" : "video", linkmicid, linkMicNonce);
+                    } else {
+                        String nonce = object.optString("nonce");
+                        VideoAudioChatLog.getCloseMsgSno12(mLiveBll, startLinkmicid, micType == 0 ? "audio" : "video", nonce);
                     }
                 }
             }
@@ -256,6 +273,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                     String from = object.optString("from", "t");
                     String status = object.getString("status");
                     String room = object.optString("room");
+                    String nonce = object.optString("nonce");
                     int micType = object.optInt("type", 0);
                     msg += ",STUDY_ONMIC:from=" + from + ",mode=" + mLiveBll.getMode();
                     ArrayList<ClassmateEntity> onmicClassmateEntities = new ArrayList<>();
@@ -283,7 +301,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                         }
                     }
                     if (videoChatAction != null) {
-                        videoChatAction.onStuMic(status, room, onmicClassmateEntities, offmicClassmateEntities, from, 1);
+                        videoChatAction.onStuMic(status, room, onmicClassmateEntities, offmicClassmateEntities, from, 1, nonce);
                     }
                 } catch (Exception e) {
 

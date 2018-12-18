@@ -37,6 +37,14 @@
                 android:background="@color/COLOR_333333"
                 android:visibility="gone" />
 
+            <!--战队pk后面的背景石头-->
+            <ImageView
+                android:id="@+id/iv_livevideo_small_chinese_pk_background"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/bg_livevideo_small_chinese_rank_top_icon" />
             <!--战队pk-->
             <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout
                 android:id="@id/tpkL_teampk_pkstate_root"
@@ -45,27 +53,23 @@
                 android:visibility="gone" />
 
         </RelativeLayout>
-        <!--战队pk后面的背景石头-->
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/bg_livevideo_small_chinese_live_message_top_background"
-            android:visibility="gone" />
 
         <ImageView
             android:id="@id/iv_livevideo_small_chinese_live_message_top_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/iv_livevideo_small_chinese_play_achievement_board"
+            android:layout_alignTop="@id/rl_livevideo_message_top"
             android:layout_alignRight="@id/tzcytv_livevideo_small_chinese_live_message_online_people_num"
             android:layout_marginLeft="5dp"
+            android:layout_marginTop="49dp"
             android:background="@drawable/bg_livevideo_small_chinese_live_message_top_background" />
 
         <ImageView
             android:id="@id/iv_livevideo_small_chinese_play_achievement_board"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/rl_livevideo_message_top"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/iv_livevideo_small_chinese_live_message_top_icon"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="23dp"
@@ -100,11 +104,11 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/rl_livevideo_message_top"
-            android:layout_alignParentRight="true"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@id/iv_livevideo_small_chinese_play_achievement_board"
             android:layout_alignBottom="@id/view_help_line"
-            android:layout_marginBottom="15dp">
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="20dp">
 
             <!--<RelativeLayout-->
             <!--android:layout_width="wrap_content"-->
@@ -114,13 +118,15 @@
             <ListView
                 android:id="@id/lv_livevideo_small_chinese_live_message"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="13dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="26dp"
                 android:layout_marginRight="12dp"
                 android:divider="@null"
                 android:dividerHeight="10dp"
-                android:listSelector="@color/transparent" />
+                android:fastScrollEnabled="false"
+                android:listSelector="@color/transparent"
+                android:scrollbars="none" />
         </RelativeLayout>
 
         <View

@@ -22,6 +22,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
@@ -40,6 +41,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
+import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.bussiness.EvaluateTeacherPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
@@ -352,10 +354,19 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             appID = UmsConstants.ARTS_APP_ID_BACK;
             IS_SCIENCE = false;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
+        } else if (isArts == 2) {
+            appID = UmsConstants.ARTS_APP_ID_BACK;
+            IS_SCIENCE = false;
+            liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {
             appID = UmsConstants.LIVE_APP_ID_BACK;
             IS_SCIENCE = true;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
+        }
+        if(mVideoEntity.isMul()){
+            AppConfig.isMulLiveBack = true;
+        }else{
+            AppConfig.isMulLiveBack = false;
         }
         lectureLivePlayBackBll.setLiveVideoSAConfig(liveVideoSAConfig);
         // 如果加载不出来
@@ -428,6 +439,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     protected void initLiveRemarkBll() {
+        // TODO: 2018/12/5  
         if (isArts == 1 || "PublicLiveDetailActivity".equals(where)) {
             return;
         }
@@ -483,6 +495,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                     //回放聊天区加上MMD的皮肤
                     liveBackBll.addBusinessBll(new LiveMessageBackBll(activity, liveBackBll));
                 }
+            }
+            if (!islocal) {
+                EvaluateTeacherPlayBackBll evaluateTeacherPlayBackBll = new EvaluateTeacherPlayBackBll(activity, liveBackBll);
+                evaluateTeacherPlayBackBll.setLiveFragmentBase(liveBackPlayVideoFragment);
+                liveBackBll.addBusinessBll(evaluateTeacherPlayBackBll);
             }
         }
     }

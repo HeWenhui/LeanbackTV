@@ -15,10 +15,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5Cours
 public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5CoursewareCreat {
     private WrapOnH5ResultClose wrapOnH5ResultClose;
     LivePagerBack livePagerBack;
-    private boolean IS_SCIENCE;
+    private int isArts;
 
-    public void setIS_SCIENCE(boolean IS_SCIENCE) {
-        this.IS_SCIENCE = IS_SCIENCE;
+    public void setArts(int arts) {
+        this.isArts = arts;
     }
 
     public void setWrapOnH5ResultClose(WrapOnH5ResultClose wrapOnH5ResultClose) {
@@ -35,7 +35,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
         wrapOnH5ResultClose.setVideoQuestionH5Entity(videoQuestionH5Entity);
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
         EnglishH5CoursewareX5Pager h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
-                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", IS_SCIENCE,false);
+                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", isArts, false);
         h5CoursewarePager.setLivePagerBack(livePagerBack);
         return h5CoursewarePager;
     }

@@ -950,7 +950,7 @@ public class VideoChatBll implements VideoChatAction {
                 VideoChatBll.this.from = from;
                 openhandsStatus = status;
                 if ("on".equals(status)) {
-                    VideoChatLog.sno2(liveAndBackDebug, from, nonce);
+                    VideoChatLog.sno2(liveAndBackDebug,from , nonce);
                     videoChatEvent.showLongMediaController();
                     checkPermissionUnPerList(new RaiseHandPermissionFinish(status, from, new Runnable() {
                         @Override

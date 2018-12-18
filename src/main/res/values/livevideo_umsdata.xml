@@ -24,4 +24,10 @@
     <string name="stand_experience_1705001">{"levelone":\"17\","leveltwo":\"05\","levelthree":\"001\","businessinfo$json":{}}</string>
     <!-->说明: 直播-支付完成页-视频小窗</!-->
     <string name="stand_experience_1706001">{"levelone":\"17\","leveltwo":\"06\","levelthree":\"001\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-老师评价-弹窗出现</!-->
+    <string name="evaluate_teacher_1708001">{"levelone":\"17\","leveltwo":\"08\","levelthree":\"001\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-老师评价-关闭弹窗</!-->
+    <string name="evaluate_teacher_1708002">{"levelone":\"17\","leveltwo":\"08\","levelthree":\"002\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-用户返回</!-->
+    <string name="livevideo_quit_1712001">{"levelone":\"17\","leveltwo":\"12\","levelthree":\"001\","businessinfo$json":{}}</string>
 </resources>

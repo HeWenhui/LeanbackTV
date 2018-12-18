@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
@@ -16,6 +17,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -41,6 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
@@ -56,6 +59,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -423,6 +427,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 businessBll.onLiveInited(getInfo);
                 logger.d("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll);
             } catch (Exception e) {
+                CrashReport.postCatchedException(e);
                 logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
             }
         }
@@ -473,7 +478,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         @Override
         public void run() {
             logger.e("======>initArtsExtLiveInfoTask run:");
-            mHttpManager.getArtsExtLiveInfo(LiveBll2.this.mLiveId, LiveBll2.this.mStuCouId, new HttpCallBack() {
+            mHttpManager.getArtsExtLiveInfo(LiveBll2.this.mLiveId, LiveBll2.this.mStuCouId, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
@@ -618,7 +623,11 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 List<NoticeAction> noticeActions = mNoticeActionMap.get(mtype);
                 if (noticeActions != null && noticeActions.size() > 0) {
                     for (NoticeAction noticeAction : noticeActions) {
-                        noticeAction.onNotice(sourceNick, target, object, mtype);
+                        try {
+                            noticeAction.onNotice(sourceNick, target, object, mtype);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(e);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -652,6 +661,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                         if (mVideoAction != null) {
                             mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
                         }
+                        liveVideoBll.onModeChange(mLiveTopic.getMode(), isPresent);
                         for (int i = 0; i < businessBlls.size(); i++) {
                             businessBlls.get(i).onModeChange(oldMode, mLiveTopic.getMode(), isPresent);
                         }
@@ -671,7 +681,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 }
                 if (mTopicActions != null && mTopicActions.size() > 0) {
                     for (TopicAction mTopicAction : mTopicActions) {
-                        mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
+                        try {
+                            mTopicAction.onTopic(liveTopic, jsonObject, teacherModeChanged);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(e);
+                        }
+
                     }
                 }
                 mLiveTopic.copy(liveTopic);
@@ -866,6 +881,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
     }
 
+    @Override
+    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+        setLogParam(eventId, mData);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+    }
+
     /**
      * 上传log 添加 公共参数
      *
@@ -891,9 +912,62 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
     }
 
     @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-        setLogParam(eventId, mData);
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+        Map<String, String> mData = stableLogHashMap.getData();
+        Map<String, String> analysis = stableLogHashMap.getAnalysis();
+        mData.put("eventid", "" + eventId);
+        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
+    }
+
+    @Override
+    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+        Map<String, String> mData = stableLogHashMap.getData();
+        Map<String, String> analysis = stableLogHashMap.getAnalysis();
+        mData.put("eventid", "" + eventId);
+        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData, analysis);
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
+        Map<String, String> mData = stableLogHashMap.getData();
+        Map<String, String> analysis = stableLogHashMap.getAnalysis();
+        mData.put("eventid", "" + eventId);
+        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData, analysis);
+    }
+
+    /**
+     * 上传log 添加 公共参数
+     *
+     * @param analysis
+     */
+    private void setAnalysis(Map<String, String> analysis) {
+        if (!analysis.containsKey("success")) {
+            analysis.put("success", "true");
+        }
+        if (!analysis.containsKey("errorcode")) {
+            analysis.put("errorcode", "0");
+        }
+        if (!analysis.containsKey("duration")) {
+            analysis.put("duration", "0");
+        }
+        if (!analysis.containsKey("modulekey")) {
+            analysis.put("modulekey", "");
+        }
+        if (!analysis.containsKey("moduleid")) {
+            analysis.put("moduleid", "");
+        }
+        analysis.put("timestamp", "" + System.currentTimeMillis());
+        analysis.put("userid", mGetInfo.getStuId());
+        analysis.put("planid", mLiveId);
+        analysis.put("clientip", IpAddressUtil.USER_IP);
+        analysis.put("traceid", "" + UUID.randomUUID());
+        analysis.put("platform", "android");
     }
 
     @Override
@@ -1017,6 +1091,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
         if (liveUidRx != null) {
             liveUidRx.onDestory();
+        }
+    }
+
+    public void onIRCmessageDestory() {
+        if (mIRCMessage != null) {
+            mIRCMessage.destory();
         }
     }
 

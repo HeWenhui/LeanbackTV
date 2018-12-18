@@ -57,8 +57,6 @@ public class FloatWindowManager {
     }
 
 
-
-
     public static void hide() {
         if (mHasShown)
             mWindowManager.removeViewImmediate(mFloatLayout);
@@ -71,10 +69,13 @@ public class FloatWindowManager {
         mHasShown = true;
     }
 
-    public static void addView(Context context,View videoView,int type){
+    public static void addView(Context context, View videoView, int type) {
         wmParams = new WindowManager.LayoutParams();
         WindowManager windowManager = getWindowManager(context);
-        mFloatLayout = new FloatLayout(context,type);
+        if (mFloatLayout != null) {
+            windowManager.removeView(mFloatLayout);
+        }
+        mFloatLayout = new FloatLayout(context, type);
         if (Build.VERSION.SDK_INT >= 24) { /*android7.0不能用TYPE_TOAST*/
             wmParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         } else { /*以下代码块使得android6.0之后的用户不必再去手动开启悬浮窗权限*/
@@ -103,16 +104,16 @@ public class FloatWindowManager {
         //窗口高度
         int screenHeight = dm.heightPixels;
         //以屏幕左上角为原点，设置x、y初始值，相对于gravity
-        wmParams.x = screenWidth/2;
-        wmParams.y = screenHeight/2;
+        wmParams.x = screenWidth / 2;
+        wmParams.y = screenHeight / 2;
 
         //设置悬浮窗口长宽数据
         wmParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         wmParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-               480,
+                480,
                 270);
-        mFloatLayout.addView(videoView,params);
+        mFloatLayout.addView(videoView, params);
         mFloatLayout.setParams(wmParams);
         windowManager.addView(mFloatLayout, wmParams);
         mHasShown = true;

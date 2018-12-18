@@ -24,28 +24,28 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_message_psopen" />
+            android:background="@drawable/bg_livevideo_message_open" />
 
         <Button
             android:id="@id/bt_livevideo_message_common"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_message_pscommon" />
+            android:background="@drawable/bg_livevideo_message_common" />
 
         <Button
             android:id="@id/bt_livevideo_message_flowers"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_message_psflowers" />
+            android:background="@drawable/bg_livevideo_message_flowers" />
 
         <Button
             android:id="@id/bt_livevideo_voicechat_raise_hands"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_voicechat_raise_pshands"
+            android:background="@drawable/bg_livevideo_voicechat_raise_hands"
             android:visibility="gone" />
 
         <Button
@@ -53,7 +53,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_voicechat_psrank"
+            android:background="@drawable/bg_livevideo_voicechat_rank"
             android:visibility="gone" />
 
         <Button
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/v_livevideo_mediacontrol_bottom"
         android:layout_alignParentRight="true"
-        android:background="@drawable/selector_livevideo_psmessagelock"
+        android:background="@drawable/selector_livevideo_messagelock"
         android:button="@null"
         android:paddingRight="10dp" />
 
@@ -83,28 +83,35 @@
         android:layout_width="98dp"
         android:layout_height="wrap_content"
         android:layout_above="@id/v_livevideo_mediacontrol_bottom"
-        android:layout_marginLeft="65dp"
+        android:layout_marginLeft="50dp"
         android:layout_marginBottom="46dp"
         android:visibility="invisible">
+        <!--<ImageView-->
+            <!--android:id="@id/iv_livevideo_common_word_arrow"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_marginLeft="22dp"-->
+            <!--android:src="@drawable/bg_livevideo_common_word_arrow" />-->
+        <com.xueersi.ui.widget.AutohListview
+            android:id="@id/lv_livevideo_common_word"
+            style="@style/listview_common_style"
+            android:layout_width="98dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/iv_livevideo_common_word_arrow"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/shape_livevideo_commonword_chs_5_70"
+            android:divider="@null"
+            android:scrollbars="none"/>
 
         <ImageView
             android:id="@id/iv_livevideo_common_word_arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="22dp"
-            android:src="@drawable/bg_livevideo_common_word_arrow" />
-
-        <com.xueersi.ui.widget.AutohListview
-            android:id="@id/lv_livevideo_common_word"
-            style="@style/listview_common_style"
-            android:layout_width="98dp"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/iv_livevideo_common_word_arrow"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/shape_livevideo_commonwordps_bg"
-            android:divider="@null"
-            android:scrollbars="none" />
+            android:layout_marginLeft="45dp"
+            android:src="@drawable/bg_livevideo_chs_word_arrow" />
     </RelativeLayout>
 
 </RelativeLayout>

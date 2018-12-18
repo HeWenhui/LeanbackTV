@@ -7,16 +7,17 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 
 import com.tencent.smtt.sdk.WebSettings;
+import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.business.XesWebViewCookieUtils;
 import com.xueersi.parentsmeeting.module.browser.provider.WebFunctionProvider;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWebviewX5Pager implements
+public class StandExperienceEvaluationPager<T extends IExperiencePresenter> extends BaseWebviewX5Pager implements
         IStandExperienceEvaluationContract.IEvaluationView {
     private T iPresenter;
 
@@ -53,7 +54,6 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
                         @Override
                         public void run() {
                             iPresenter.removeWindow();
-                            wvSubjectWeb.destroy();
                             iPresenter.showNextWindow();
                         }
                     });
@@ -174,7 +174,6 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
         if (!TextUtils.isEmpty(url)) {
             logger.i("加载url:" + url);
             XesWebViewCookieUtils.syncWebLogin(url);
-
             wvSubjectWeb.loadUrl(url);
 //            wvSubjectWeb.loadUrl("https://www.baidu.com/");
         } else {
@@ -193,4 +192,11 @@ public class StandExperienceEvaluationPager<T extends IPresenter> extends BaseWe
         wvSubjectWeb.onResume();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (wvSubjectWeb != null) {
+            wvSubjectWeb.destroy();
+        }
+    }
 }
