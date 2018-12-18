@@ -541,7 +541,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
         }
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        mIRCMessage = new IRCMessage(this, mNetWorkType, channel, mGetInfo.getStuName(), chatRoomUid);
+        mIRCMessage = new IRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, channel);
         IRCTalkConf ircTalkConf = new IRCTalkConf(this, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
         //聊天连接调度失败日志
         ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {

@@ -1089,6 +1089,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
+                    String mode = ircState.getMode();
+                   // Loger.d("___ircState:  "+ircState.getMode());
+         /*           for (User user : users){
+                        Loger.d("___ircState:  users:  "+user.getNick());
+                    }*/
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
@@ -1139,11 +1144,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     @Override
-    public void onJoin(String target, String sender, String login, String hostname) {
+    public void onJoin(String target, final String sender, String login, String hostname) {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
+                  //  Loger.d("___ircState:  "+ircState.getMode()+"  sender:  "+sender);
+                   // for (User user : )
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
@@ -1157,11 +1164,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     }
 
     @Override
-    public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+    public void onQuit(String sourceNick, final String sourceLogin, String sourceHostname, String reason) {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
+                   // Loger.d("___ircState:  "+ircState.getMode()+"  sourceLogin:  "+sourceLogin);
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {

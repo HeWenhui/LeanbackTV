@@ -130,8 +130,8 @@ public class LiveGetPlayServer {
             }
             mGetInfo.setChannelname(channelname);
         } else {
-            mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
-                    + mGetInfo.getTeacherId());
+            mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + (mGetInfo.ePlanInfo==null?mGetInfo.getId():mGetInfo.ePlanInfo.ePlanId) + "_"
+                    + (mGetInfo==null?mGetInfo.getTeacherId():mGetInfo.ePlanInfo.eTeacherId));
         }
         if (livePlayLog != null) {
             livePlayLog.setChannelname(mGetInfo.getChannelname());

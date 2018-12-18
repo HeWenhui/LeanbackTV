@@ -10,6 +10,7 @@ import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
@@ -73,12 +74,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param getInfo
      */
     public void parseLiveGetInfoScience(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
+
         getInfo.setEducationStage(data.optString("educationStage", "0"));
-        try {
-            getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
         int isPrimarySchool = data.optInt("isPrimarySchool");
         if (1 == isPrimarySchool) {
             LiveVideoConfig.isPrimary = true;
@@ -95,6 +93,18 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         getInfo.setAllowLinkMicNew(data.optInt("allowLinkMicNew"));
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
+        }
+        if (data.has("ePlanInfo")){
+            try {
+                JSONObject ePlanInfo = data.getJSONObject("ePlanInfo");
+                getInfo.ePlanInfo = new LiveGetInfo.EPlanInfoBean();
+                getInfo.ePlanInfo.ePlanId = ePlanInfo.optString("ePlanId");
+                getInfo.ePlanInfo.eTeacherId = ePlanInfo.optString("eTeacherId");
+                getInfo.ePlanInfo.eClassId = ePlanInfo.optString("eClassId");
+            }
+            catch (JSONException e) {
+                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
+            }
         }
     }
 

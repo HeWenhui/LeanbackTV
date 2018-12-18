@@ -7,11 +7,13 @@ import android.os.Looper;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.json.JSONException;
@@ -33,7 +35,7 @@ public class IRCMessage {
     private IRCConnection mConnection;
     private int mConnectCount = 0, mDisconnectCount = 0;
     private IRCCallback mIRCCallback;
-    private String mChannel;
+    private String[] mChannels;
     private String mNickname;
     /** 备用用户聊天服务配置列表 */
     private List<NewTalkConfEntity> mNewTalkConf = new ArrayList<>();
@@ -53,10 +55,11 @@ public class IRCMessage {
     /** 和服务器的ping，线程池 */
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
 
+    private String currentMode;
 
-    public IRCMessage(Context context, int netWorkType, String channel, String login, String nickname) {
+    public IRCMessage(Context context, int netWorkType, String login, String nickname, String... channel) {
         this.netWorkType = netWorkType;
-        this.mChannel = channel;
+        this.mChannels = channel;
         this.mNickname = nickname;
         mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
@@ -122,7 +125,11 @@ public class IRCMessage {
             @Override
             public void onRegister() {
                 mLogtf.d("onRegister");
-                mConnection.joinChannel("#" + mChannel);
+             /*   mConnection.joinChannel("#" + mChannel);
+                mConnection.joinChannel("#300141-29981");*/
+                for (String channel:mChannels){
+                    mConnection.joinChannel("#" + channel);
+                }
                 if (mIRCCallback != null) {
                     mIRCCallback.onRegister();
                 }
@@ -263,7 +270,9 @@ public class IRCMessage {
                 String s = "onUserList:channel=" + channel + ",users=" + users.length;
                 mLogtf.d(s);
                 if (mIRCCallback != null) {
-                    mIRCCallback.onUserList(channel, users);
+                    if (("#"+mChannels[0]).equals(channel)) {
+                        mIRCCallback.onUserList(channel, users);
+                    }
                 }
             }
 
@@ -275,6 +284,7 @@ public class IRCMessage {
                     mLogtf.d("onJoin:target=" + target + ",sender=" + sender + ",login=" + login + ",hostname=" + hostname);
                 }
                 if (mIRCCallback != null) {
+                   // Loger.d("___join2:  sender:  "+sender);
                     mIRCCallback.onJoin(target, sender, login, hostname);
                 }
             }
@@ -502,8 +512,30 @@ public class IRCMessage {
      * @param notice
      */
     public void sendNotice(String notice) {
-        mConnection.sendNotice("#" + mChannel, notice);
+        //  mConnection.sendNotice("#" + mChannel, notice);
+   /*     for (String channel : mChannels){
+            mConnection.sendNotice("#" + channel, notice);
+        }*/
+        for (int i=0; i<mChannels.length;i++){
+            String channel = mChannels[i];
+            if (currentMode == null){
+                mConnection.sendNotice("#" + channel, notice);
+                break;
+            }else if (LiveTopic.MODE_CLASS.equals(currentMode)){
+                if (i == 0){
+                    mConnection.sendNotice("#" + channel, notice);
+                }
+            }else if (LiveTopic.MODE_TRANING.equals(currentMode)){
+                if (i == 1){
+                    mConnection.sendNotice("#" + channel, notice);
+                }
+            }else {
+                mConnection.sendNotice("#" + channel, notice);
+                break;
+            }
+        }
     }
+
 
     /**
      * 发通知
@@ -531,7 +563,28 @@ public class IRCMessage {
      * @param message 信息
      */
     public void sendMessage(String message) {
-        mConnection.sendMessage("#" + mChannel, message);
+        //    mConnection.sendMessage("#" + mChannel, message);
+     /*   for (String channel : mChannels){
+            mConnection.sendNotice("#" + channel, message);
+        }*/
+        for (int i=0; i<mChannels.length;i++){
+            String channel = mChannels[i];
+            if (currentMode == null){
+                mConnection.sendNotice("#" + channel, message);
+                break;
+            }else if (LiveTopic.MODE_CLASS.equals(currentMode)){
+                if (i == 0){
+                    mConnection.sendNotice("#" + channel, message);
+                }
+            }else if (LiveTopic.MODE_TRANING.equals(currentMode)){
+                if (i == 1){
+                    mConnection.sendNotice("#" + channel, message);
+                }
+            }else {
+                mConnection.sendNotice("#" + channel, message);
+                break;
+            }
+        }
     }
 
     /**
@@ -630,9 +683,6 @@ public class IRCMessage {
         /**
          * wiki地址 https://wiki.xesv5.com/pages/viewpage.action?pageId=13842928
          *
-         * @param eventId    eventId
-         * @param logtype    错误日志类型
-         * @param os         操作系统
          * @param serverIp   聊天服务器ip
          * @param serverPort 聊天服务器端口
          * @param errMsg     链接聊天服务器失败信息
@@ -649,5 +699,15 @@ public class IRCMessage {
 
     public void setConnectService(ConnectService connectService) {
         this.connectService = connectService;
+    }
+
+    public void modeChange(String mode){
+        // 专属切主讲时，断开专属聊天室
+        if (currentMode!=null && !currentMode.equals(mode)){
+            if (mChannels!=null && mChannels.length>1){
+                mConnection.partChannel("#" + mChannels[1]);
+            }
+        }
+        currentMode = mode;
     }
 }

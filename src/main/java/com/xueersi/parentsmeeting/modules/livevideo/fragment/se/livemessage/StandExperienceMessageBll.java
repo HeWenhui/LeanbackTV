@@ -197,7 +197,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
             }
         }
         mNetWorkType = NetWorkHelper.getNetWorkState(mContext);
-        mIRCMessage = new IRCMessage(mContext, mNetWorkType, channel, liveGetInfo.getStuName(), chatRoomUid);
+        mIRCMessage = new IRCMessage(mContext, mNetWorkType, liveGetInfo.getStuName(), chatRoomUid, channel);
         IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, liveGetInfo, LiveVideoConfig.LIVE_TYPE_STAND_EXPERIENCE, mHttpManager,
                 talkConfHosts);
         ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {

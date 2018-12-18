@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -93,6 +94,8 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     ArrayList<KeyboardUtil.OnKeyboardShowingListener> keyboardShowingListeners = new ArrayList<>();
     //是否启用小英MMD皮肤
     private boolean isSmallEnglish = false;
+
+    private User[] users = {};
 
     public LiveMessageBll(Activity activity, int liveType) {
         this.activity = activity;
@@ -503,6 +506,12 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
     @Override
     public void onUserList(String channel, User[] users) {
+        this.users = users;
+  /*      StringBuilder sb = new StringBuilder();
+        for (User user : users){
+            sb.append(user.getNick()+"__");
+        }
+        Loger.d("___join: userList: size "+users.length+"___content : "+sb.toString());*/
         peopleCount.set(users.length, new Exception());
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onUserList(channel, users);
@@ -586,9 +595,12 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            //老师不计算在内
 //            return;
 //        }
-        peopleCount.set(peopleCount.get() + 1, new Exception(sender));
-        if (mLiveMessagePager != null) {
-            mLiveMessagePager.onJoin(target, sender, login, hostname);
+      //  Loger.d("____join:  "+sender+"___peoplecount:  "+peopleCount);
+        if (!contains(sender)){
+            peopleCount.set(peopleCount.get() + 1, new Exception(sender));
+            if (mLiveMessagePager != null) {
+                mLiveMessagePager.onJoin(target, sender, login, hostname);
+            }
         }
     }
 
@@ -738,5 +750,19 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     @Override
     public void removeKeyboardShowing(KeyboardUtil.OnKeyboardShowingListener listener) {
         keyboardShowingListeners.remove(listener);
+    }
+
+    /**
+     *
+     * @param nicker joiner's nick
+     * @return 是否已经加入房间
+     */
+    private boolean contains(String nicker){
+        for (User user : users){
+            if (user.getNick().equals(nicker)){
+                return true;
+            }
+        }
+        return false;
     }
 }
