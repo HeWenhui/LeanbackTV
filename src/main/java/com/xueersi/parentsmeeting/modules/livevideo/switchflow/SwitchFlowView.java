@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -28,10 +29,13 @@ public class SwitchFlowView extends FrameLayout {
 
     private ImageView ivSwitchFlowArrow;
 
-    private FangZhengCuYuanTextView tvReload;
+    private FangZhengCuYuanTextView fzcyReload;
 
-    private FangZhengCuYuanTextView tvSwitch;
+    private FangZhengCuYuanTextView fzcySwitch;
 
+    private TextView tvReload;
+
+    private TextView tvSwitch;
     private int isShow = 0;
 
     private int clickColor = 0;
@@ -69,7 +73,7 @@ public class SwitchFlowView extends FrameLayout {
     }
 
     public void initData() {
-        boolean isSmallEnglish = ((Activity) getContext()).getIntent().getBooleanExtra("isSmallEnglish", false);
+        isSmallEnglish = ((Activity) getContext()).getIntent().getBooleanExtra("isSmallEnglish", false);
         Drawable drawable = getContext().getResources().getDrawable(R.drawable.bg_livevideo_normal_swich_flow);
         if (isSmallEnglish) {
             clickColor = getContext().getResources().getColor(R.color.COLOR_61B2F1);
@@ -88,13 +92,27 @@ public class SwitchFlowView extends FrameLayout {
         btnSwitchFlow.setBackground(drawable);
     }
 
+    private boolean isSmallEnglish;
+    private int pattern;
+
     private void initView() {
-        View view = View.inflate(getContext(), R.layout.page_livevideo_triple_screen_switch_flow, this);
-        btnSwitchFlow = view.findViewById(R.id.bt_switch_flow);
-        layoutSwitchFlow = view.findViewById(R.id.layout_livevideo_switch_flow_pop_window);
-        ivSwitchFlowArrow = view.findViewById(R.id.iv_livevideo_common_switch_flow_arrow);
-        tvSwitch = view.findViewById(R.id.fzcytv_livevideo_switch_flow_switch);
-        tvReload = view.findViewById(R.id.fzcytv_livevideo_switch_flow_reload);
+        isSmallEnglish = ((Activity) getContext()).getIntent().getBooleanExtra("isSmallEnglish", false);
+        pattern = ((Activity) getContext()).getIntent().getIntExtra("pattern", 2);
+        if (isSmallEnglish || LiveVideoConfig.isPrimary) {
+            View view = View.inflate(getContext(), R.layout.page_livevideo_triple_screen_switch_flow, this);
+            btnSwitchFlow = view.findViewById(R.id.bt_switch_flow);
+            layoutSwitchFlow = view.findViewById(R.id.layout_livevideo_switch_flow_pop_window);
+            ivSwitchFlowArrow = view.findViewById(R.id.iv_livevideo_common_switch_flow_arrow);
+            fzcySwitch = view.findViewById(R.id.fzcytv_livevideo_switch_flow_switch);
+            fzcyReload = view.findViewById(R.id.fzcytv_livevideo_switch_flow_reload);
+        } else {
+            View view = View.inflate(getContext(), R.layout.page_livevideo_triple_screen_normal_switch_flow, this);
+            btnSwitchFlow = view.findViewById(R.id.bt_switch_flow);
+            layoutSwitchFlow = view.findViewById(R.id.layout_livevideo_switch_flow_pop_window);
+            ivSwitchFlowArrow = view.findViewById(R.id.iv_livevideo_common_switch_flow_arrow);
+            tvSwitch = view.findViewById(R.id.fzcytv_livevideo_switch_flow_switch);
+            tvReload = view.findViewById(R.id.fzcytv_livevideo_switch_flow_reload);
+        }
     }
 
 
@@ -123,46 +141,92 @@ public class SwitchFlowView extends FrameLayout {
             }
         });
 
-
-        tvSwitch.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    tvSwitch.setTextColor(clickColor);
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    tvSwitch.setTextColor(normalColor);
+        if (fzcySwitch != null) {
+            fzcySwitch.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        fzcySwitch.setTextColor(clickColor);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        fzcySwitch.setTextColor(normalColor);
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
-        tvSwitch.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (iSwitchFlow != null) {
-                    iSwitchFlow.switchRoute();
+            });
+            fzcySwitch.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (iSwitchFlow != null) {
+                        iSwitchFlow.switchRoute();
+                    }
                 }
-            }
-        });
-        tvReload.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (iSwitchFlow != null) {
-                    setSwitchFlowPopWindowVisible(false);
-                    iSwitchFlow.reLoad();
+            });
+        }
+        if (tvSwitch != null) {
+            tvSwitch.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        tvSwitch.setTextColor(clickColor);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        tvSwitch.setTextColor(normalColor);
+                    }
+                    return false;
                 }
-            }
-        });
-        tvReload.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    tvReload.setTextColor(clickColor);
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    tvReload.setTextColor(normalColor);
+            });
+            tvSwitch.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (iSwitchFlow != null) {
+                        iSwitchFlow.switchRoute();
+                    }
                 }
-                return false;
-            }
-        });
+            });
+        }
+        if (fzcyReload != null) {
+            fzcyReload.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (iSwitchFlow != null) {
+                        setSwitchFlowPopWindowVisible(false);
+                        iSwitchFlow.reLoad();
+                    }
+                }
+            });
+            fzcyReload.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        fzcyReload.setTextColor(clickColor);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        fzcyReload.setTextColor(normalColor);
+                    }
+                    return false;
+                }
+            });
+        }
+        if (tvReload != null) {
+            tvReload.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (iSwitchFlow != null) {
+                        setSwitchFlowPopWindowVisible(false);
+                        iSwitchFlow.reLoad();
+                    }
+                }
+            });
+            tvReload.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        tvReload.setTextColor(clickColor);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        tvReload.setTextColor(normalColor);
+                    }
+                    return false;
+                }
+            });
+        }
 
     }
 

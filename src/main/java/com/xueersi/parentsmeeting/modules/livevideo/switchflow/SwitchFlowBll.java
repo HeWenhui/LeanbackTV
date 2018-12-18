@@ -95,13 +95,16 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
 
         if (listRoute == null) {
             logger.i("listRoute为null");
+            mLogtf.i("switchFlowBll listRoute=null");
         } else {
             logger.i("listRoute数量为" + listRoute.size());
+            mLogtf.i("switchFlowBll,list.size==" + listRoute.size());
         }
         if (listRoute != null && listRoute.size() != 0) {
             route = listRoute.size() < 4 ? listRoute.size() : 4;
         } else if (mGetInfo != null) {
             route = mGetInfo.getRtmpUrls().length;
+            mLogtf.i("switchFlowBll ,list.size()=" + mGetInfo.getRtmpUrls().length);
         } else {
             route = 0;
         }
@@ -138,16 +141,16 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
                 if (animationOut == null || animationIn == null || mPager == null) {
                     initPager();
                 }
-
-
                 if (!isRoutePagerShow) {
 //                    mPager.initData();
                     logger.i("显示动画开始");
+                    mLogtf.i("animator in start");
                     animationIn.start();
                     isRoutePagerShow = true;
                 } else {
                     animationOut.start();
                     logger.i("关闭动画开始");
+                    mLogtf.i("animator out start");
                     isRoutePagerShow = false;
                 }
 

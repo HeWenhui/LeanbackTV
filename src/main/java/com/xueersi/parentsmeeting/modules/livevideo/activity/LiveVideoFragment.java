@@ -153,10 +153,13 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 //            liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING);
 //        }
         if (LiveVideoConfig.isPrimary) {
+            mLogtf.i("primary_science_loading");
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_SCIENCE_LOADING);
         } else if (isSmallEnglish) {
+            mLogtf.i("primary_english_loading");
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_ENGLISH_LOADING);
         } else {
+            mLogtf.i("other loading");
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_MIDDLE_LOADING);
         }
         liveVideoPlayFragment.overrideCallBack();
@@ -323,6 +326,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 } else {
                     XESToastUtils.showToast(activity, "线路" + nowRoutePos + "切换成功");
                 }
+                mLogtf.i("route " + nowRoutePos + "(add 1) switch success");
             }
         }
         resetStatus();
@@ -345,6 +349,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     @Override
                     public void reLoad() {
 //                        isSwitchReloadShow = true;
+                        mLogtf.i("switchFlowView click reload");
                         if (!mLiveBll.isPresent()) {
                             if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
                                 mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.GONE);
@@ -363,6 +368,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 new SwitchFlowRoutePager.ItemClickListener() {
                     @Override
                     public void itemClick(int pos) {
+                        mLogtf.i("switchFlowView click switch,click pos=" + pos);
                         switchFlowStatus = LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH;
                         if (!mLiveBll.isPresent()) {
                             if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
@@ -396,6 +402,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             public void onClick(View v) {
                 logger.i("点击重试按钮");
                 if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_RELOAD) {
+                    mLogtf.i("click again btn,SWITCH_FLOW_RELOAD");
                     //1.重新加载,显示加载中
                     rePlay(false);
                     //2. 自动切流
@@ -403,8 +410,10 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                         mLiveVideoBll.liveGetPlayServer(mGetInfo.getLiveTopic().getMode(), false);
                     }
                 } else if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
+                    mLogtf.i("click again btn,SWITCH_FLOW_ROUTE_SWITCH");
                     rePlay(false);
                 } else {
+                    mLogtf.i("click again btn,other");
                     rePlay(false);
                 }
                 if (!mLiveBll.isPresent()) {

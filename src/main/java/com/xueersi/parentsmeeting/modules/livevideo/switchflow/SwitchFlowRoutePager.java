@@ -11,13 +11,13 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,9 +70,12 @@ public class SwitchFlowRoutePager extends BasePager {
 
     }
 
+    private int pattern;
+
     @Override
     public View initView() {
         isSmallEnglish = ((Activity) mContext).getIntent().getBooleanExtra("isSmallEnglish", false);
+        pattern = ((Activity) mContext).getIntent().getIntExtra("pattern", 2);
         if (LiveVideoConfig.isSmallChinese) {
             mView = View.inflate(mContext, R.layout.page_livevideo_triple_screen_switch_route, null);
             ivBackGround = mView.findViewById(R.id.iv_livevideo_small_chinese_play_achievement_board);
@@ -246,8 +249,17 @@ public class SwitchFlowRoutePager extends BasePager {
             if (convertView == null) {
                 mHolder = new ViewHolder();
                 LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                convertView = layoutInflater.inflate(R.layout.item_livevideo_triple_screen_switch_flow_route, null);
-                mHolder.tvRoute = convertView.findViewById(R.id.fzcy_livevideo_switch_flow_route_item);
+                if (isSmallEnglish || LiveVideoConfig.isPrimary) {
+                    convertView = layoutInflater.inflate(R.layout.item_livevideo_triple_screen_switch_flow_route, null);
+                    mHolder.tvRoute = convertView.findViewById(R.id.fzcy_livevideo_switch_flow_route_item);
+                } else if (pattern == 1) {
+                    convertView = layoutInflater.inflate(R.layout.item_livevideo_triple_screen_switch_flow_normal_route, null);
+                    mHolder.tvRoute = convertView.findViewById(R.id.fzcy_livevideo_switch_flow_route_item);
+                } else {
+                    convertView = layoutInflater.inflate(R.layout.item_livevideo_triple_screen_switch_flow_route, null);
+                    mHolder.tvRoute = convertView.findViewById(R.id.fzcy_livevideo_switch_flow_route_item);
+                }
+
                 convertView.setTag(mHolder);
             } else {
                 mHolder = (ViewHolder) convertView.getTag();
@@ -293,7 +305,7 @@ public class SwitchFlowRoutePager extends BasePager {
         }
 
         private class ViewHolder {
-            FangZhengCuYuanTextView tvRoute;
+            TextView tvRoute;
         }
     }
 }
