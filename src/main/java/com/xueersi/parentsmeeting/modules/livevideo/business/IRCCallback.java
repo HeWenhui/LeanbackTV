@@ -26,7 +26,7 @@ public interface IRCCallback {
 
     void onJoin(String target, String sender, String login, String hostname);
 
-    void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason);
+    void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel);
 
     void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick,
                 String reason);

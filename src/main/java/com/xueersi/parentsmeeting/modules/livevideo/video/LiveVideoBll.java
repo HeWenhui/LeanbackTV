@@ -133,6 +133,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         this.mVideoAction = mVideoAction;
     }
 
+    /** 在{@link LiveBll2}获取getInfo成功而之后,{@link LiveBll2#onGetInfoSuccess(LiveGetInfo)} */
     public void onLiveInit(LiveGetInfo getInfo, LiveTopic liveTopic) {
         this.mGetInfo = getInfo;
         liveGetPlayServer = new LiveGetPlayServer(activity, new TeacherIsPresent() {
@@ -151,10 +152,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
     }
 
     /**
-     * 直播模式变化
+     * 直播模式变化H
      *
      * @param mode      模式
-     * @param isPresent 老师在不在直播间
+     * @param isPresent 老师在不在直播间H
      */
     public void onModeChange(String mode, boolean isPresent) {
         mLogtf.d("onModeChange:mode=" + mode + ",isPresent=" + isPresent);
@@ -358,6 +359,82 @@ public class LiveVideoBll implements VPlayerListenerReg {
         msg += ",url=" + stringBuilder;
         mLogtf.d(msg);
         videoFragment.playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+    }
+
+    /** 直接指定为只去播放 */
+    public void playNewVideo(int pos) {
+        String url = constructUrl(pos);
+        logger.i("加载的url = " + url);
+        if (url != null) {
+            videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
+        }
+    }
+
+    /** 构造url */
+    private String constructUrl(int pos) {
+        String url = "";
+        String msg = "";
+        if (mServer == null) {
+            livePlayLog.setLastPlayserverEntity(null);
+            String rtmpUrl = null;
+            String[] rtmpUrls = mGetInfo.getRtmpUrls();
+            if (rtmpUrls != null) {
+                rtmpUrl = rtmpUrls[(pos) % rtmpUrls.length];
+            }
+            if (rtmpUrl == null) {
+                rtmpUrl = mGetInfo.getRtmpUrl();
+            }
+            url = rtmpUrl + "/" + mGetInfo.getChannelname();
+            msg += "mServer=null";
+            liveVideoReportBll.setPlayserverEntity(null);
+        } else {
+            List<PlayServerEntity.PlayserverEntity> playservers = mServer.getPlayserver();
+            PlayServerEntity.PlayserverEntity entity = playservers.get(pos);
+            if (StringUtils.isEmpty(entity.getIp_gslb_addr())) {
+                url = "rtmp://" + entity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+            } else {
+                final PlayServerEntity.PlayserverEntity finalEntity = entity;
+                dns_resolve_stream(entity, mServer, mGetInfo.getChannelname(), new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        if (finalEntity != lastPlayserverEntity) {
+                            return;
+                        }
+                        String provide = (String) objData[0];
+                        String url;
+                        if ("wangsu".equals(provide)) {
+                            url = objData[1] + "&username=" + mGetInfo.getUname() + "&cfrom=android";
+                            videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
+                        } else if ("ali".equals(provide)) {
+                            url = (String) objData[1];
+                            StringBuilder stringBuilder = new StringBuilder(url);
+                            addBody("Sucess", stringBuilder);
+                            url = stringBuilder + "&username=" + mGetInfo.getUname();
+                            videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
+                        } else {
+                            return;
+                        }
+                        StableLogHashMap stableLogHashMap = new StableLogHashMap("glsb3rdDnsReply");
+                        stableLogHashMap.put("message", "" + url);
+                        stableLogHashMap.put("activity", activity.getClass().getSimpleName());
+                        UmsAgentManager.umsAgentDebug(activity, LiveVideoConfig.LIVE_GSLB, stableLogHashMap.getData());
+                    }
+
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        if (finalEntity != lastPlayserverEntity) {
+                            return;
+                        }
+                        String url = "rtmp://" + finalEntity.getAddress() + "/" + mServer.getAppname() + "/" + mGetInfo.getChannelname();
+                        StringBuilder stringBuilder = new StringBuilder(url);
+                        addBody("Fail", stringBuilder);
+                        videoFragment.playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+                    }
+                });
+                return "";
+            }
+        }
+        return url;
     }
 
     /**

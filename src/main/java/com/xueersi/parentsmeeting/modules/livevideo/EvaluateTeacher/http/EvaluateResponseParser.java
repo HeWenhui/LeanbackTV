@@ -23,28 +23,36 @@ public class EvaluateResponseParser {
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
 
         JSONArray evaScoreArray = data.optJSONArray("evaluateScore");
-        Map<String, String> evaScoreMap = new HashMap<>();
-        try {
-            evaScoreMap.put("choose1", evaScoreArray.getString(0));
-            evaScoreMap.put("choose2", evaScoreArray.getString(1));
-            evaScoreMap.put("choose3", evaScoreArray.getString(2));
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (evaScoreArray != null){
+            Map<String, String> evaScoreMap = new HashMap<>();
+            try {
+                evaScoreMap.put("choose1", evaScoreArray.getString(0));
+                evaScoreMap.put("choose2", evaScoreArray.getString(1));
+                evaScoreMap.put("choose3", evaScoreArray.getString(2));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            evaluateOptionEntity.setEvaluateScore(evaScoreMap);
         }
-        evaluateOptionEntity.setEvaluateScore(evaScoreMap);
+
         JSONObject evaMainJson = data.optJSONObject("teacherEvaluOption");
-        Map<String, List<String>> evaMainMap = new HashMap<>();
-        evaMainMap.put("choose1", parseOption(evaMainJson, "choose1"));
-        evaMainMap.put("choose2", parseOption(evaMainJson, "choose2"));
-        evaMainMap.put("choose3", parseOption(evaMainJson, "choose3"));
-        evaluateOptionEntity.setTeacherEvaluOption(evaMainMap);
+        if (evaMainJson != null){
+            Map<String, List<String>> evaMainMap = new HashMap<>();
+            evaMainMap.put("choose1", parseOption(evaMainJson, "choose1"));
+            evaMainMap.put("choose2", parseOption(evaMainJson, "choose2"));
+            evaMainMap.put("choose3", parseOption(evaMainJson, "choose3"));
+            evaluateOptionEntity.setTeacherEvaluOption(evaMainMap);
+        }
 
         JSONObject evaTutorJson = data.optJSONObject("tutorEvaluOption");
-        Map<String, List<String>> evaTutorMap = new HashMap<>();
-        evaTutorMap.put("choose1", parseOption(evaTutorJson, "choose1"));
-        evaTutorMap.put("choose2", parseOption(evaTutorJson, "choose2"));
-        evaTutorMap.put("choose3", parseOption(evaTutorJson, "choose3"));
-        evaluateOptionEntity.setTutorEvaluOption(evaTutorMap);
+        if (evaTutorJson != null){
+            Map<String, List<String>> evaTutorMap = new HashMap<>();
+            evaTutorMap.put("choose1", parseOption(evaTutorJson, "choose1"));
+            evaTutorMap.put("choose2", parseOption(evaTutorJson, "choose2"));
+            evaTutorMap.put("choose3", parseOption(evaTutorJson, "choose3"));
+            evaluateOptionEntity.setTutorEvaluOption(evaTutorMap);
+        }
+
 
         return evaluateOptionEntity;
     }

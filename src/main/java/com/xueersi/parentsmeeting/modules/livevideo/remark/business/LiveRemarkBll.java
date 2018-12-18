@@ -658,6 +658,9 @@ public class LiveRemarkBll {
                     }
                 });
                 setEntityNum(mList);
+                if(AppConfig.isMulLiveBack){
+                    setNewEntityNum(mList);
+                }
                 //showMarkPoints();
             }
 

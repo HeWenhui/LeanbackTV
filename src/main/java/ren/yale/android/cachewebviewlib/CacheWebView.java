@@ -90,7 +90,7 @@ public class CacheWebView extends WebView {
         return mWebViewCache;
     }
 
-    public void setWebViewClient(WebViewClient client){
+    public void setWebViewClient(WebViewClient client) {
         mCacheWebViewClient.setCustomWebViewClient(client);
     }
 

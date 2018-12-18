@@ -334,11 +334,12 @@ public class AuditIRCMessage {
             }
 
             @Override
-            public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+            public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String
+                    channel) {
                 mLogtf.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                         + sourceHostname + ",reason=" + reason);
                 if (mIRCCallback != null) {
-                    mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
+                    mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason, "");
                 }
             }
 

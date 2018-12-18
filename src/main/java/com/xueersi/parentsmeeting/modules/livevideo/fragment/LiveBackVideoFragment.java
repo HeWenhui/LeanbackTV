@@ -22,6 +22,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
@@ -361,6 +362,11 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             appID = UmsConstants.LIVE_APP_ID_BACK;
             IS_SCIENCE = true;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
+        }
+        if(mVideoEntity.isMul()){
+            AppConfig.isMulLiveBack = true;
+        }else{
+            AppConfig.isMulLiveBack = false;
         }
         lectureLivePlayBackBll.setLiveVideoSAConfig(liveVideoSAConfig);
         // 如果加载不出来

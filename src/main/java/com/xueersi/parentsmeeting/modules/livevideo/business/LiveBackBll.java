@@ -352,6 +352,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             if (getInfoStr != null) {
                 JSONObject liveInfo = new JSONObject(getInfoStr);
                 liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
+                liveGetInfo.setPrimaryChinese("2".equals(liveInfo.optString("useSkin")));
                 //解析学科id
                 if (liveInfo.has("subject_ids")) {
                     String strSubjIds = liveInfo.getString("subject_ids");
