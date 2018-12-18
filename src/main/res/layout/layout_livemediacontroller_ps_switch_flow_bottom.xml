@@ -21,7 +21,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_message_psopen"
+            android:background="@drawable/bg_livevideo_message_open"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -30,7 +30,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_message_pscommon"
+            android:background="@drawable/bg_livevideo_message_common"
             app:layout_constraintBottom_toBottomOf="@id/bt_livevideo_message_open"
             app:layout_constraintLeft_toRightOf="@id/bt_livevideo_message_open" />
 
@@ -39,7 +39,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_message_psflowers"
+            android:background="@drawable/bg_livevideo_message_flowers"
             app:layout_constraintBottom_toBottomOf="@id/bt_livevideo_message_open"
             app:layout_constraintLeft_toRightOf="@id/bt_livevideo_message_common" />
 
@@ -48,7 +48,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_voicechat_raise_pshands"
+            android:background="@drawable/bg_livevideo_voicechat_raise_hands"
             app:layout_constraintBottom_toBottomOf="@id/bt_livevideo_message_open"
             app:layout_constraintLeft_toRightOf="@id/bt_livevideo_message_flowers" />
 
@@ -57,7 +57,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/bg_livevideo_voicechat_psrank"
+            android:background="@drawable/bg_livevideo_voicechat_rank"
             app:layout_constraintBottom_toBottomOf="@id/bt_livevideo_message_open"
             app:layout_constraintLeft_toRightOf="@id/bt_livevideo_voicechat_raise_hands" />
 

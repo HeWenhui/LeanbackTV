@@ -138,7 +138,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             before = System.currentTimeMillis();
             addBusiness(activity);
             logger.d("onVideoCreate:time3=" + (System.currentTimeMillis() - before));
-            if (pattern == 1) {
+            if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
                 //根据不同直播显示不同加载中动画
                 setLoadingView();
             }
@@ -149,9 +149,10 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /** 设置显示的加载动画 */
     protected void setLoadingView() {
         liveVideoPlayFragment = (LivePlayerFragment) getChildFragmentManager().findFragmentByTag("LivePlayerFragment");
-        if (LiveVideoConfig.isSmallChinese) {
-            liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING);
-        } else if (LiveVideoConfig.isPrimary) {
+//        if (LiveVideoConfig.isSmallChinese) {
+//            liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING);
+//        }
+        if (LiveVideoConfig.isPrimary) {
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_SCIENCE_LOADING);
         } else if (isSmallEnglish) {
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_ENGLISH_LOADING);
@@ -293,7 +294,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         evaluateTeacherBll.setLiveFragment(this);
         mLiveBll.addBusinessBll(evaluateTeacherBll);
 
-        if (pattern == 1) {
+        if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
             addSwitchFlowBll();
             initSwitchFlowListener();
         }
@@ -312,10 +313,10 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected void onPlayOpenSuccess() {
         super.onPlayOpenSuccess();
         //如果之前是正在切流的状态
-        if (pattern == 1) {
+        if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
             liveVideoAction.onPlaySuccess();
             if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
-                if (LiveVideoConfig.isSmallChinese || LiveVideoConfig.isPrimary || isSmallEnglish) {
+                if (LiveVideoConfig.isPrimary || isSmallEnglish) {
                     SwitchRouteSuccessDialog switchRouteSuccessDialog = new SwitchRouteSuccessDialog(activity);
                     switchRouteSuccessDialog.updateView(nowRoutePos);
                     switchRouteSuccessDialog.showDialogAutoClose(2000);
@@ -440,13 +441,13 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         createMediaControllerBottom();
 
         // TODO: 2018/10/23  添加了LayoutParams 是否会有其他异常？
-        bottomContent.addView(liveMediaControllerBottom,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        bottomContent.addView(liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-        android.util.Log.e("HalfBody","====>LiveVideoFragment initView:add mediaContriller:"
-                +liveMediaControllerBottom.getClass().getSimpleName());
+        android.util.Log.e("HalfBody", "====>LiveVideoFragment initView:add mediaContriller:"
+                + liveMediaControllerBottom.getClass().getSimpleName());
 
         pattern = activity.getIntent().getIntExtra("pattern", 2);
-        if (pattern == 1) {
+        if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
             btnVideoFailRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
         }
         //如果是三分屏，则需要添加加载中的监听器
@@ -462,7 +463,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
-        if(switchFlowBll != null){
+        if (switchFlowBll != null) {
             if (server != null) {
                 switchFlowBll.setListRoute(server.getPlayserver());
                 logger.i(server.getPlayserver().size());
@@ -472,6 +473,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             }
         }
     }
+
     protected void createMediaControllerBottom() {
         Intent intent = activity.getIntent();
         LiveVideoConfig.isPrimary = intent.getBooleanExtra("isPrimary", false);
@@ -480,7 +482,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         liveMediaControllerBottom.setVisibility(View.INVISIBLE);
     }
 
-    protected void createMediaControlerTop(){
+    protected void createMediaControlerTop() {
         baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
     }
 

@@ -88,27 +88,29 @@
         android:layout_width="98dp"
         android:layout_height="wrap_content"
         android:layout_above="@id/v_livevideo_mediacontrol_bottom"
-        android:layout_marginLeft="65dp"
+        android:layout_marginLeft="50dp"
         android:layout_marginBottom="46dp"
         android:visibility="invisible">
-
-        <ImageView
-            android:id="@id/iv_livevideo_common_word_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="22dp"
-            android:src="@drawable/bg_livevideo_common_word_arrow" />
 
         <com.xueersi.ui.widget.AutohListview
             android:id="@id/lv_livevideo_common_word"
             style="@style/listview_common_style"
             android:layout_width="98dp"
             android:layout_height="wrap_content"
-            android:layout_above="@id/iv_livevideo_common_word_arrow"
+            android:layout_alignBottom="@id/iv_livevideo_common_word_arrow"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/shape_livevideo_commonwordps_bg"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/shape_livevideo_commonword_chs_5_70"
             android:divider="@null"
             android:scrollbars="none" />
+
+        <ImageView
+            android:id="@id/iv_livevideo_common_word_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="45dp"
+            android:src="@drawable/bg_livevideo_chs_word_arrow" />
+
     </RelativeLayout>
 </RelativeLayout>

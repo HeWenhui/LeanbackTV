@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
@@ -36,6 +37,8 @@ public class SwitchFlowView extends FrameLayout {
     private int clickColor = 0;
 
     private int normalColor = 0;
+    /** 举麦是否打开 */
+    private boolean isVoiceOn = false;
 
     public SwitchFlowView(@NonNull Context context) {
         super(context);
@@ -76,7 +79,7 @@ public class SwitchFlowView extends FrameLayout {
             normalColor = getContext().getResources().getColor(R.color.COLOR_FFFFFF);
         } else if (LiveVideoConfig.isPrimary) {
             getContext().getResources().getDrawable(R.drawable.bg_livevideo_ps_swich_flow);
-            clickColor = getContext().getResources().getColor(R.color.COLOR_7D553F);
+            clickColor = getContext().getResources().getColor(R.color.COLOR_FF6326);
             normalColor = getContext().getResources().getColor(R.color.COLOR_FFFFFF);
         } else {
             clickColor = getContext().getResources().getColor(R.color.COLOR_99FFFFFF);
@@ -103,6 +106,10 @@ public class SwitchFlowView extends FrameLayout {
         btnSwitchFlow.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isVoiceOn) {
+                    XESToastUtils.showToast(getContext(), "当前正在举麦，请稍后重试");
+                    return;
+                }
                 if (isShow == 0) {
                     setSwitchFlowPopWindowVisible(true);
                     isShow = 1;
@@ -175,6 +182,10 @@ public class SwitchFlowView extends FrameLayout {
     /** 弹窗是否处于Visible状态 */
     private final boolean getSwitchFlowPopWindowVisible() {
         return layoutSwitchFlow.getVisibility() == VISIBLE && ivSwitchFlowArrow.getVisibility() == VISIBLE;
+    }
+
+    public void setIsVoiceOn(boolean isShow) {
+        this.isVoiceOn = isShow;
     }
 
     public interface ISwitchFlow extends IReLoad {

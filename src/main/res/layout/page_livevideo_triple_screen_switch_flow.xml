@@ -9,6 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
         android:src="@drawable/bg_livevideo_common_word_arrow"
         app:layout_constraintBottom_toTopOf="@id/bt_switch_flow"
         app:layout_constraintLeft_toLeftOf="@id/bt_switch_flow"
@@ -38,8 +39,8 @@
             android:id="@id/iv_divider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:background="@drawable/livevideo_pscommon_wordsdivider"
             app:layout_constraintBottom_toTopOf="@id/fzcytv_livevideo_switch_flow_switch"
             app:layout_constraintTop_toBottomOf="@id/fzcytv_livevideo_switch_flow_reload" />
