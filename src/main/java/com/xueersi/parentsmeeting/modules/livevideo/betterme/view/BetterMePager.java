@@ -13,6 +13,9 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnPagerClose;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeCompleteTargetPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeIntroductionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeLevelDisplayPager;
@@ -85,13 +88,14 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
         btnTest3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showReceiveTargetPager();
+                mBetterMePresenter.getBetterMe();
+                mBetterMePresenter.getStuSegment();
             }
         });
         btnTest4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCompleteTargetPager();
+                mBetterMePresenter.getStuAimResult();
             }
         });
     }
@@ -139,7 +143,7 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
      * 收到本场小目标
      */
     @Override
-    public void showReceiveTargetPager() {
+    public void showReceiveTargetPager(StuSegmentEntity stuSegmentEntity, AimRealTimeValEntity aimRealTimeValEntity) {
         if (rlBetterMeContent == null) {
             rlBetterMeContent = new RelativeLayout(mContext);
             if (mRootView != null) {
@@ -147,7 +151,7 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
                         ViewGroup.LayoutParams.MATCH_PARENT));
             }
         }
-        rlBetterMeContent.addView(new BetterMeReceiveTargetPager(mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+        rlBetterMeContent.addView(new BetterMeReceiveTargetPager(stuSegmentEntity, aimRealTimeValEntity, mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
@@ -155,7 +159,7 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
      * 完成本场小目标
      */
     @Override
-    public void showCompleteTargetPager() {
+    public void showCompleteTargetPager(StuAimResultEntity stuAimResultEntity) {
         if (rlBetterMeContent == null) {
             rlBetterMeContent = new RelativeLayout(mContext);
             if (mRootView != null) {
@@ -163,7 +167,7 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
                         ViewGroup.LayoutParams.MATCH_PARENT));
             }
         }
-        rlBetterMeContent.addView(new BetterMeCompleteTargetPager(mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+        rlBetterMeContent.addView(new BetterMeCompleteTargetPager(stuAimResultEntity, mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 

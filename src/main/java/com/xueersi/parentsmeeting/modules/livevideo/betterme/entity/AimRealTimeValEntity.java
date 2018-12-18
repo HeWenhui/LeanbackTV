@@ -8,19 +8,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.betterme.entity;
  */
 public class AimRealTimeValEntity {
     /**
-     * 正确率
-     */
-    public static final String CORRECTRATE = "CORRECTRATE";
-    /**
-     * 参与率
-     */
-    public static final String PARTICIPATERATE = "PARTICIPATERATE";
-    /**
-     * 开口时长
-     */
-    public static final String TALKTIME = "TALKTIME";
-
-    /**
      * 目标的类型
      */
     private String type;

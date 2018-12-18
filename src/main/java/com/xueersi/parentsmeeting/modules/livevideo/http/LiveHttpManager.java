@@ -1920,4 +1920,19 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("courseId", "" + courseId);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_STU_AIM_REALTIME_VAL, params, requestCallBack);
     }
+
+    /**
+     * 英语小目标 - 获取小目标结果
+     *
+     * @param liveId
+     * @param courseId
+     * @param requestCallBack
+     */
+    public void getStuAimResult(String liveId, String courseId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("liveId", "" + liveId);
+        params.addBodyParam("courseId", "" + courseId);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_GET_STU_AIM_RESULT, params, requestCallBack);
+    }
 }

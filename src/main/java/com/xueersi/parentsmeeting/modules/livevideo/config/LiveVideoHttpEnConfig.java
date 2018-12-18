@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
+import com.xueersi.common.config.AppConfig;
+
 /**
  * 直播模块配置,英语接口
  * Created by linyuqiang on 2018/11/19.
@@ -26,4 +28,14 @@ public class LiveVideoHttpEnConfig {
     public static String URL_LIVE_BETTER_ME = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourses/betterMe";
     /** 英语小目标 -实时获取学生目标完成度 */
     public static String URL_LIVE_GET_STU_AIM_REALTIME_VAL = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourses/getStuAimRealTimeVal";
+    /** 英语小目标 -获取小目标结果 */
+    public static String URL_LIVE_GET_STU_AIM_RESULT = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourses/getStuAimResult";
+
+    static {
+        if (AppConfig.DEBUG) {
+            URL_LIVE_GET_STU_SEGMENT = "http://10.99.2.49:7300/mock/5bc837b4e2d3f348f1284293/example/getStuSegment";
+            URL_LIVE_BETTER_ME = "http://10.99.2.49:7300/mock/5bc837b4e2d3f348f1284293/example/betterMe";
+            URL_LIVE_GET_STU_AIM_RESULT = "http://10.99.2.49:7300/mock/5bc837b4e2d3f348f1284293/example/getStuAimResult";
+        }
+    }
 }

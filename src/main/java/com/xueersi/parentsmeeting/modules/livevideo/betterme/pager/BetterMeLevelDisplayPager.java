@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeLevelEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMePager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnPagerClose;
@@ -45,51 +46,7 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
     private BetterMeLevelDisplayPagerAdapter mPagerAdapter;
     private List<BetterMeLevelEntity> mLevelEntityList = new ArrayList<>();
     private OnPagerClose onPagerClose;
-    /**
-     * 段位名称
-     */
-    public static String[] LEVEL_NAMES = new String[]{
-            "倔强青铜",
-            "勤奋白银",
-            "刻苦黄金",
-            "恒心铂金",
-            "笃学钻石",
-            "最强学霸"
-    };
-    /**
-     * 段位图片资源
-     */
-    public static int[] LEVEL_IMAGE_RES = new int[]{
-            R.drawable.app_xiaomubiao_qingtong,
-            R.drawable.app_xiaomubiao_baiyin,
-            R.drawable.app_xiaomubiao_huangjin,
-            R.drawable.app_xiaomubiao_bojin,
-            R.drawable.app_xiaomubiao_zuanshi,
-            R.drawable.app_xiaomubiao_wangzhe
-    };
-    /**
-     * 如何升星
-     */
-    public static String[] LEVEL_UPSTAR_DESCRIPTIONS = new String[]{
-            "每完成3次目标升1星",
-            "每完成3次目标升1星",
-            "每完成4次目标升1星",
-            "每完成5次目标升1星",
-            "每完成6次目标升1星",
-            "每完成6次目标升1星"
-    };
-    /**
-     * 如何升级
-     */
-    public static String[] LEVEL_UPLEVEL_DESCRIPTIONS = new String[]{
-            "满3星升级",
-            "满4星升级",
-            "满4星升级",
-            "满5星升级",
-            "满6星升级",
-            "满6星升级"
-    };
-    public static int LEVEL_NUMBER = 6;
+
 
     public BetterMeLevelDisplayPager(Context context) {
         super(context);
@@ -115,12 +72,12 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
 
     @Override
     public void initData() {
-        for (int i = 0; i < LEVEL_NUMBER; i++) {
+        for (int i = 0; i < BetterMeConfig.LEVEL_NUMBER; i++) {
             BetterMeLevelEntity levelEntity = new BetterMeLevelEntity();
-            levelEntity.setLevelName(LEVEL_NAMES[i]);
-            levelEntity.setLevelDrawableRes(LEVEL_IMAGE_RES[i]);
-            levelEntity.setUpStardescription(LEVEL_UPSTAR_DESCRIPTIONS[i]);
-            levelEntity.setUpLeveldescription(LEVEL_UPLEVEL_DESCRIPTIONS[i]);
+            levelEntity.setLevelName(BetterMeConfig.LEVEL_NAMES[i]);
+            levelEntity.setLevelDrawableRes(BetterMeConfig.LEVEL_IMAGE_RES_ALLSTAR[i]);
+            levelEntity.setUpStardescription(BetterMeConfig.LEVEL_UPSTAR_DESCRIPTIONS[i]);
+            levelEntity.setUpLeveldescription(BetterMeConfig.LEVEL_UPLEVEL_DESCRIPTIONS[i]);
             mLevelEntityList.add(levelEntity);
         }
         mPagerAdapter = new BetterMeLevelDisplayPagerAdapter(mLevelEntityList);
@@ -150,7 +107,7 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
         ivArrowRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentPagerItem < ((LEVEL_NUMBER - 1) / 2)) {
+                if (currentPagerItem < ((BetterMeConfig.LEVEL_NUMBER - 1) / 2)) {
                     mViewPager.setCurrentItem(++currentPagerItem);
                     ivArrowLeft.setEnabled(true);
                 }
@@ -275,7 +232,7 @@ public class BetterMeLevelDisplayPager extends LiveBasePager {
             } else {
                 ivArrowLeft.setEnabled(true);
             }
-            if (position == (LEVEL_NUMBER - 1) / 2) {
+            if (position == (BetterMeConfig.LEVEL_NUMBER - 1) / 2) {
                 ivArrowRight.setEnabled(false);
             } else {
                 ivArrowRight.setEnabled(true);
