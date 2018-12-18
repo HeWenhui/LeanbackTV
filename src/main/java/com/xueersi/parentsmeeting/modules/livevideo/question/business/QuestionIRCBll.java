@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoti
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -356,7 +357,23 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      * @return
      */
     private boolean isNewArtsH5Courseware(JSONObject jsonObject) {
-        return jsonObject.has("coursewareH5") || jsonObject.has("coursewareOnlineTech");
+        JSONObject coursewareH5 = null;
+        JSONObject onlineTechObj = null;
+        try {
+            if(jsonObject.has("coursewareH5")){
+                coursewareH5 = jsonObject.getJSONObject("coursewareH5");
+            }else{
+                return false;
+            }
+            if(jsonObject.has("coursewareOnlineTech")){
+                onlineTechObj = jsonObject.getJSONObject("coursewareOnlineTech");
+            }else{
+                return false;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return ("on".equals(coursewareH5.optString("status", "off")) || "on".equals(onlineTechObj.optString("status", "off")));
     }
 
 
