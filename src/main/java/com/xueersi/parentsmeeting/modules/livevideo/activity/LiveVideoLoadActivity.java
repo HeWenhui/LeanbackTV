@@ -127,8 +127,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putInt("pattern", mGetInfo.getPattern());
                     bundle.putBoolean("isPrimary", LiveVideoConfig.isPrimary);
                     bundle.putBoolean("isSmallChinese", LiveVideoConfig.isSmallChinese);
+                    bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
                     if (mGetInfo.getIsArts() == 0) {
-                        bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
                     }
 //                if (mGetInfo.getPattern() == 2) {
