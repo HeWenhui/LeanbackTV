@@ -139,8 +139,13 @@ public class LiveGetPlayServer {
             }
             mGetInfo.setChannelname(channelname);
         } else {
-            mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + (mGetInfo.ePlanInfo==null?mGetInfo.getId():mGetInfo.ePlanInfo.ePlanId) + "_"
-                    + (mGetInfo==null?mGetInfo.getTeacherId():mGetInfo.ePlanInfo.eTeacherId));
+            if (mGetInfo.ePlanInfo == null){
+                mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
+                        + mGetInfo.getTeacherId());
+            }else {
+                mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" +  mGetInfo.ePlanInfo.ePlanId + "_"
+                        + mGetInfo.ePlanInfo.eTeacherId);
+            }
         }
         if (livePlayLog != null) {
             livePlayLog.setChannelname(mGetInfo.getChannelname());
