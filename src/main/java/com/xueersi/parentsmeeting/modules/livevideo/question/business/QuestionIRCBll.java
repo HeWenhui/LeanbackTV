@@ -199,6 +199,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     JSONObject onlineTechObj = jsonObject.getJSONObject("coursewareOnlineTech");
                     if (!"{}".equals(onlineTechObj.toString())) {
                         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                        LiveVideoConfig.isNewArts = true;
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
                         String status = onlineTechObj.optString("status");
                         if ("on".equals(status)) {
@@ -245,52 +246,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         }
                     }
                 } else {
-                    LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
-                    if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
-                        String num = mainRoomstatus.getExamNum();
-                        if ("on".equals(mainRoomstatus.getExamStatus())) {
-                            VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                            videoQuestionLiveEntity.id = num;
-                            mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
-                            if (mAnswerRankBll != null) {
-                                mAnswerRankBll.setTestId(num);
-                            }
-                        } else {
-                            mQuestionAction.onExamStop(num);
-                        }
-                    }
-
-
-                    if (liveTopic.getVideoQuestionLiveEntity() != null) {
-                        logger.e("======>QuestionIRCBlle:" + "走了错误的逻辑");
-                        if (mQuestionAction != null) {
-
-                            VideoQuestionLiveEntity videoQuestionLiveEntity = liveTopic.getVideoQuestionLiveEntity();
-
-                            JSONObject topicObj = jsonObject.optJSONObject("topic");
-                            videoQuestionLiveEntity.roles = topicObj.optString("roles");
-                            videoQuestionLiveEntity.id = topicObj.optString("id");
-
-                            //解决，老师发题后，学生后进来，无法进入roleplay的问题
-                            //人机的回调
-
-                            enterLiveRplayAfterTeacherRead(videoQuestionLiveEntity);
-
-                            mQuestionAction.showQuestion(videoQuestionLiveEntity);
-                            if (mAnswerRankBll != null) {
-                                mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
-                            }
-                            if (mLiveAutoNoticeBll != null) {
-                                mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
-                                mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
-                            }
-                        }
-                    } else {
-                        logger.e("======>QuestionIRCBlle:" + "正常的逻辑");
-                        if (mQuestionAction != null) {
-                            mQuestionAction.showQuestion(null);
-                        }
-                    }
 //                    JSONObject coursewareH5 = jsonObject.getJSONObject("coursewareH5");
 //                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
 //                    videoQuestionLiveEntity.setNewArtsCourseware(true);
@@ -403,7 +358,24 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      * @return
      */
     private boolean isNewArtsH5Courseware(JSONObject jsonObject) {
-        return (jsonObject.has("coursewareH5") || jsonObject.has("coursewareOnlineTech"));
+        JSONObject coursewareH5 = null;
+        JSONObject onlineTechObj = null;
+        try {
+            if(jsonObject.has("coursewareH5")){
+                coursewareH5 = jsonObject.getJSONObject("coursewareH5");
+            }else{
+                return false;
+            }
+            if(jsonObject.has("coursewareOnlineTech")){
+                onlineTechObj = jsonObject.getJSONObject("coursewareOnlineTech");
+            }else{
+                return false;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return ("on".equals(coursewareH5.optString("status", "off")) || "on".equals(onlineTechObj.optString("status",
+                "off")));
     }
 
 
