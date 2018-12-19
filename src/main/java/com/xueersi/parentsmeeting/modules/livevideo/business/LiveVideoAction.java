@@ -82,7 +82,7 @@ public class LiveVideoAction implements VideoAction {
     //重试中
     public final static int SWITCH_FLOW_RELOAD = 1 << 1;
     /** 切换视频流的状态 */
-    private int videoSwitchFlowStatus;
+    private int videoSwitchFlowStatus = SWITCH_FLOW_NORMAL;
 
     private int pattern = 0;
 
@@ -204,7 +204,7 @@ public class LiveVideoAction implements VideoAction {
                                         + ",lastPlayErrorCode=" + lastPlayErrorCode);
                                 lastPlayErrorCode = null;
                                 if (!modechange) {
-                                    if (pattern == 1 && !LiveVideoConfig.isSmallChinese) {
+                                    if (pattern == 1 && !LiveVideoConfig.isSmallChinese && !isExperience) {
 //                                        linearLayout.setVisibility(View.VISIBLE);
 //                                        layoutSwitchFlow.setVisibility(View.GONE);
                                         logger.i("显示linearLayout,layoutSwitchFlow隐藏");
@@ -248,7 +248,7 @@ public class LiveVideoAction implements VideoAction {
                         @Override
                         public void run() {
                             if (tvLoadingHint != null && !modechange) {
-                                if (pattern == 1 && !LiveVideoConfig.isSmallChinese) {
+                                if (pattern == 1 && !LiveVideoConfig.isSmallChinese && !isExperience) {
                                     logger.i("显示linearLayout,layoutSwitchFlow隐藏");
 //                                        logger.i();
                                     if (videoSwitchFlowStatus == SWITCH_FLOW_RELOAD) {
