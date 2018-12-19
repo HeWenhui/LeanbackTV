@@ -29,8 +29,6 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
         super(context, controller, player);
     }
 
-
-
     /** 播放器的布局界面 */
     @Override
     public View inflateLayout() {
@@ -47,13 +45,14 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
             return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom, this);
 //            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_switch_flow_bottom, this);
         } else if (isSmallEnglish) {
+            id = "layout_livemediacontroller_english_switch_flow_bottom";
             return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_english_switch_flow_bottom, this);
         } else {
-            id = "layout_livemediacontroller_bottom";
-
             if (pattern == 1 && !isExperience) {
+                id = "layout_livemediacontroller_normal_bottom";
                 return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_normal_bottom, this);
             } else {
+                id = "layout_livemediacontroller_bottom";
                 return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);
             }
 //            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_english_switch_flow_bottom, this);
@@ -68,14 +67,16 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
             findid = "rl_livevideo_common_wordps";
             view = findViewById(R.id.rl_livevideo_common_word);
         } else if (LiveVideoConfig.isSmallChinese) {
-            findid = "rl_livevideo_common_word";
+            findid = "rl_livevideo_common_wordsc";
             view = findViewById(R.id.rl_livevideo_common_word);
         } else if (isSmallEnglish) {
+            findid = "rl_livevideo_common_wordse";
             view = findViewById(R.id.rl_livevideo_common_word);
         } else if (pattern == 1) {
+            findid = "rl_livevideo_common_wordpa";
             view = findViewById(R.id.rl_livevideo_common_word);
         } else {
-            findid = "rl_livevideo_common_word2";
+            findid = "rl_livevideo_common_word4";
             view = findViewById(R.id.rl_livevideo_common_word);
         }
         if (view != null) {
