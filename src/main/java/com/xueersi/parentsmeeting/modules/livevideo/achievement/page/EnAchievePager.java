@@ -26,6 +26,8 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -57,12 +59,16 @@ public class EnAchievePager extends LiveBasePager {
     private int energyCount;
 
     /**
-     * 小目标
+     * 小目标控件
+     *
+     * @author zhangyuansun
      */
-    private TextView tvAchiveNumTarget;
-    private TextView tvAchiveNumRight;
-    private ProgressBar pgAchiveNumTarget;
-    private TextView tvAchiveNumTips;
+    private TextView tvAchiveAimEmpty;
+    private RelativeLayout rlAchiveAimContent;
+    private TextView tvAchiveAimType;
+    private TextView tvAchiveAimValue;
+    private ProgressBar pgAchiveAim;
+    private TextView tvAchiveAimTips;
 
     public EnAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
@@ -91,12 +97,17 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveNumFire = mView.findViewById(R.id.tv_livevideo_en_achive_num_fire);
 
         /**
-         * 小目标
+         * 小目标控件绑定
+         *
+         * @author zhangyuansun
          */
-        tvAchiveNumTarget = mView.findViewById(R.id.tv_livevideo_en_achive_num_target);
-        tvAchiveNumRight = mView.findViewById(R.id.tv_livevideo_en_achive_num_right);
-        tvAchiveNumTips = mView.findViewById(R.id.tv_livevideo_en_achive_num_tips);
-        pgAchiveNumTarget = mView.findViewById(R.id.pg_livevideo_en_achive_num_target);
+        tvAchiveAimEmpty = mView.findViewById(R.id.tv_livevideo_en_achive_aim_empty);
+        rlAchiveAimContent = mView.findViewById(R.id.rl_livevideo_en_achive_aim_content);
+        tvAchiveAimType = mView.findViewById(R.id.tv_livevideo_en_achive_aimtype);
+        tvAchiveAimValue = mView.findViewById(R.id.tv_livevideo_en_achive_aimvalue);
+        tvAchiveAimTips = mView.findViewById(R.id.tv_livevideo_en_achive_aimtips);
+        pgAchiveAim = mView.findViewById(R.id.pg_livevideo_en_achive_aim);
+
         return mView;
     }
 
@@ -156,6 +167,30 @@ public class EnAchievePager extends LiveBasePager {
         tv_livevideo_en_achive_pk_energy_my.setText("" + enpkEnergy.myTeam);
         tv_livevideo_en_achive_pk_energy_other = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
         tv_livevideo_en_achive_pk_energy_other.setText("" + enpkEnergy.opTeam);
+    }
+
+    /**
+     * 小目标更新
+     *
+     * @author zhangyuansun
+     */
+    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
+        //隐藏没有小目标时的默认视图
+        if (tvAchiveAimEmpty != null) {
+            tvAchiveAimEmpty.setVisibility(View.GONE);
+        }
+        //显示小目标的内容
+        if (rlAchiveAimContent != null) {
+            rlAchiveAimContent.setVisibility(View.VISIBLE);
+        }
+        if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
+            tvAchiveAimType.setText(BetterMeConfig.CORRECTRATE);
+        } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
+            tvAchiveAimType.setText(BetterMeConfig.PARTICIPATERATE);
+        } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
+            tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
+        }
+        tvAchiveAimValue.setText(aimRealTimeValEntity.getRealTimeVal());
     }
 
     @Override
@@ -335,6 +370,43 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveNumStar.setText("" + starCount);
     }
 
+
+    /**
+     * 设置小目标进度
+     *
+     * @author zhangyuansun
+     */
+    private void setEngAimPro(int progress) {
+        logger.i("setEngAimPro:progress=" + progress);
+        if (pgAchiveAim == null) {
+            return;
+        }
+        pgAchiveAim.setProgress(progress);
+
+        pgAchiveAim.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                pgAchiveAim.getViewTreeObserver().removeOnPreDrawListener(this);
+                setTipsLayout();
+                return false;
+            }
+        });
+    }
+
+    /**
+     * 设置提示框和进度条对齐
+     *
+     * @author zhangyuansun
+     */
+    private void setTipsLayout() {
+        int[] loc = ViewUtil.getLoc(pgAchiveAim, rlAchiveAimContent);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();
+        lp.leftMargin = loc[0] - tvAchiveAimTips.getWidth() / 2 + pgAchiveAim.getWidth() * pgAchiveAim.getProgress() / pgAchiveAim.getMax();
+        logger.i("setLayout:left=" + loc[0] + ",top=" + loc[1]);
+        tvAchiveAimTips.setLayoutParams(lp);
+        tvAchiveAimTips.setVisibility(View.VISIBLE);
+    }
+
     private void setEngPro(int progress) {
         logger.d("setEngPro:progress=" + progress);
         if (pgAchivePk == null) {
@@ -360,21 +432,6 @@ public class EnAchievePager extends LiveBasePager {
                 setLayout();
             }
         }
-    }
-
-    /**
-     * 设置小目标进度
-     */
-    private void setEngTargetPro(int progress) {
-        logger.d("setEngTargetPro:progress=" + progress);
-        if (pgAchiveNumTarget == null) {
-            return;
-        }
-        if (progress < 0 || progress > 100) {
-            return;
-        }
-        pgAchiveNumTarget.setProgress(progress);
-
     }
 
     private void setLayout() {

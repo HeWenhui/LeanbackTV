@@ -10,6 +10,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnAchievePager;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
  * Created by linyuqiang on 2018/11/6.
  * 小英本场成就
  */
-public class LiveAchievementEngBll implements StarInteractAction {
+public class LiveAchievementEngBll implements StarInteractAction,BetterMeInteractAction {
     private String TAG = "LiveAchievementEngBll";
     protected Logger logger = LiveLoggerFactory.getLogger(this.getClass().getSimpleName());
     private LiveGetInfo mLiveGetInfo;
@@ -162,5 +163,17 @@ public class LiveAchievementEngBll implements StarInteractAction {
         if (enAchievePager != null) {
             enAchievePager.onEnglishPk();
         }
+    }
+
+    @Override
+    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
+        if (enAchievePager != null) {
+            enAchievePager.onBetterMeUpdate(aimRealTimeValEntity);
+        }
+    }
+
+    @Override
+    public void onReceiveBetterMe(AimRealTimeValEntity aimRealTimeValEntity) {
+
     }
 }

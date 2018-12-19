@@ -56,6 +56,14 @@ public class EnStandAchievePager extends LiveBasePager {
     private int energyCount;
     private boolean firstCheck = false;
 
+    /**
+     * 小目标
+     */
+    private TextView tvAchiveAimType;
+    private TextView tvAchiveAimValue;
+    private ProgressBar pgAchiveAim;
+    private TextView tvAchiveAimTips;
+
     public EnStandAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
         this.parent = relativeLayout;
@@ -80,6 +88,14 @@ public class EnStandAchievePager extends LiveBasePager {
         vsAchiveBottom2 = mView.findViewById(R.id.vs_livevideo_en_achive_bottom2);
         rlAchiveStandBg = mView.findViewById(R.id.rl_livevideo_en_achive_stand_bg);
         cbAchiveTitle = mView.findViewById(R.id.cb_livevideo_en_stand_achive_title);
+
+        /**
+         * 小目标
+         */
+        tvAchiveAimType = mView.findViewById(R.id.tv_livevideo_en_achive_aimtype);
+        tvAchiveAimValue = mView.findViewById(R.id.tv_livevideo_en_achive_aimvalue);
+        tvAchiveAimTips = mView.findViewById(R.id.tv_livevideo_en_achive_aimtips);
+        pgAchiveAim = mView.findViewById(R.id.pg_livevideo_en_achive_aim);
         return mView;
     }
 
@@ -142,6 +158,39 @@ public class EnStandAchievePager extends LiveBasePager {
 //                }
             }
         });
+    }
+
+    /**
+     * 设置小目标进度
+     */
+    private void setEngAimPro(int progress) {
+        logger.i("setEngAimPro:progress=" + progress);
+        if (pgAchiveAim == null) {
+            return;
+        }
+        pgAchiveAim.setProgress(progress);
+
+        pgAchiveAim.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                pgAchiveAim.getViewTreeObserver().removeOnPreDrawListener(this);
+                setTipsLayout();
+                return false;
+            }
+        });
+    }
+
+    /**
+     * 设置Tips跟小目标进度条对齐
+     */
+    private void setTipsLayout() {
+        ViewGroup rlAchiveContent = mView.findViewById(R.id.rl_livevideo_en_achive_stand_content);
+        int[] loc = ViewUtil.getLoc(pgAchiveAim, rlAchiveContent);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tvAchiveAimTips.getLayoutParams();
+        lp.leftMargin = loc[0] - tvAchiveAimTips.getWidth() / 2 + pgAchiveAim.getWidth() * pgAchiveAim.getProgress() / pgAchiveAim.getMax();
+        logger.i("setLayout:left=" + loc[0] + ",top=" + loc[1]);
+        tvAchiveAimTips.setLayoutParams(lp);
+        tvAchiveAimTips.setVisibility(View.VISIBLE);
     }
 
     private void setEngPro(int progress) {

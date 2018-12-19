@@ -58,7 +58,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     /**
-     * 从服务器拉取学生段位信息
+     * 获取学生段位信息
      */
     @Override
     public void getStuSegment() {
@@ -77,7 +77,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     /**
-     * 从服务器拉取学生这节课小目标
+     * 获取学生这节课小目标
      */
     @Override
     public void getBetterMe() {
@@ -98,7 +98,7 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     /**
-     * 从服务器拉取学生这节课小目标
+     * 实时获取学生目标完成度
      */
     @Override
     public void getStuAimResult() {

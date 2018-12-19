@@ -97,68 +97,69 @@
                 android:textColor="#ff449cee"
                 android:textSize="12sp" />
 
-            <TextView
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@+id/tv_livevideo_en_achive_aim_empty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/iv_livevideo_en_achive_num_fire"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="17dp"
-                android:text="本场目标待解锁"
+                android:text="你真棒！继续加油哦~"
                 android:textColor="#ff449cee"
-                android:textSize="9sp"
-                android:visibility="gone" />
+                android:textSize="9dp"
+                android:visibility="visible" />
 
             <RelativeLayout
+                android:id="@+id/rl_livevideo_en_achive_aim_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/iv_livevideo_en_achive_num_fire"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:visibility="gone">
 
                 <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-                    android:id="@id/tv_livevideo_en_achive_num_target"
+                    android:id="@+id/tv_livevideo_en_achive_aimtype"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/pg_livevideo_en_achive_num_target"
+                    android:layout_alignLeft="@+id/pg_livevideo_en_achive_aim"
                     android:layout_marginLeft="3dp"
                     android:text="正确率"
                     android:textColor="#ff449cee"
                     android:textSize="9dp" />
 
                 <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-                    android:id="@id/tv_livevideo_en_achive_num_right"
+                    android:id="@+id/tv_livevideo_en_achive_aimvalue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignRight="@+id/pg_livevideo_en_achive_num_target"
+                    android:layout_alignRight="@+id/pg_livevideo_en_achive_aim"
                     android:layout_marginRight="3dp"
                     android:text="目标80%"
                     android:textColor="#ff449cee"
                     android:textSize="9dp" />
 
                 <ProgressBar
-                    android:id="@id/pg_livevideo_en_achive_num_target"
+                    android:id="@+id/pg_livevideo_en_achive_aim"
                     style="@style/ProgressBar_live_en_achive"
                     android:layout_width="143dp"
-                    android:layout_height="14dp"
-                    android:layout_below="@+id/tv_livevideo_en_achive_num_target"
+                    android:layout_height="13dp"
+                    android:layout_below="@+id/tv_livevideo_en_achive_aimtype"
                     android:layout_centerHorizontal="true"
                     android:max="100"
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
-                    android:progress="5" />
+                    android:progress="50" />
 
                 <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-                    android:id="@id/tv_livevideo_en_achive_num_tips"
+                    android:id="@+id/tv_livevideo_en_achive_aimtips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/pg_livevideo_en_achive_num_target"
-                    android:layout_alignLeft="@+id/pg_livevideo_en_achive_num_target"
-                    android:layout_marginLeft="-12dp"
+                    android:layout_below="@+id/pg_livevideo_en_achive_aim"
                     android:layout_marginTop="-2dp"
                     android:background="@drawable/livevideo_enteampk_xiaomubiao_tips_bg_nor"
                     android:gravity="center_horizontal|bottom"
                     android:paddingBottom="1dp"
-                    android:text="70%"
+                    android:text="50%"
                     android:textColor="@color/white"
                     android:textSize="9dp" />
 

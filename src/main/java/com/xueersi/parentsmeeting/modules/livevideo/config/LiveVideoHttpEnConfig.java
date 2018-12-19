@@ -36,6 +36,7 @@ public class LiveVideoHttpEnConfig {
             URL_LIVE_GET_STU_SEGMENT = "http://10.99.2.49:7300/mock/5bc837b4e2d3f348f1284293/example/getStuSegment";
             URL_LIVE_BETTER_ME = "http://10.99.2.49:7300/mock/5bc837b4e2d3f348f1284293/example/betterMe";
             URL_LIVE_GET_STU_AIM_RESULT = "http://10.99.2.49:7300/mock/5bc837b4e2d3f348f1284293/example/getStuAimResult";
+            URL_LIVE_GET_STU_AIM_REALTIME_VAL = "http://10.99.2.49:7300/mock/5bc837b4e2d3f348f1284293/example/getStuAimRealTimeVal";
         }
     }
 }
