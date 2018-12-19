@@ -213,6 +213,9 @@ public class LiveRemarkBll {
                     logToFile.d("getBtMark:MarkPopMenu=" + mLiveMediaControllerBottom.getLlMarkPopMenu());
                     if (mLiveMediaControllerBottom.getLlMarkPopMenu() != null) {
                         mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.VISIBLE);
+                        if (mLiveMediaControllerBottom.getSwitchFlowView() != null) {
+                            mLiveMediaControllerBottom.getSwitchFlowView().setSwitchFlowPopWindowVisible(false);
+                        }
                     }
                 } else {
 
@@ -360,6 +363,9 @@ public class LiveRemarkBll {
                     @Override
                     public void run() {
                         mLiveMediaControllerBottom.getvMarkGuide().setVisibility(View.VISIBLE);
+                        if (mLiveMediaControllerBottom.getSwitchFlowView() != null) {
+                            mLiveMediaControllerBottom.getSwitchFlowView().setSwitchFlowPopWindowVisible(false);
+                        }
                         mLiveMediaControllerBottom.onShow();
                         mLiveMediaControllerBottom.getvMarkGuide().postDelayed(new Runnable() {
                             @Override
