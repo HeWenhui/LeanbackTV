@@ -486,7 +486,7 @@
             android:visibility="gone"
             tools:text="3s后退出直播间" />
 
-        <Button
+        <RelativeLayout
             android:id="@id/rl_livevideo_evaluate_tryagain"
             style="@style/text_font16_ffffff_style"
             android:layout_width="wrap_content"
