@@ -36,7 +36,7 @@ public class SwitchFlowView extends FrameLayout {
     private TextView tvReload;
 
     private TextView tvSwitch;
-    private int isShow = 0;
+    private int isPopWindowShow = 0;
 
     private int clickColor = 0;
 
@@ -69,7 +69,7 @@ public class SwitchFlowView extends FrameLayout {
         initView();
         initData();
         initListener();
-        setSwitchFlowWholeVisible(true);
+        setSwitchFlowWholeVisible(false);
     }
 
     public void initData() {
@@ -128,12 +128,12 @@ public class SwitchFlowView extends FrameLayout {
                     XESToastUtils.showToast(getContext(), "当前正在举麦，请稍后重试");
                     return;
                 }
-                if (isShow == 0) {
+                if (isPopWindowShow == 0) {
                     setSwitchFlowPopWindowVisible(true);
-                    isShow = 1;
+
                 } else {
                     setSwitchFlowPopWindowVisible(false);
-                    isShow = 0;
+
                 }
                 if (clickListener != null) {
                     clickListener.click(v);
@@ -231,7 +231,7 @@ public class SwitchFlowView extends FrameLayout {
     }
 
     /** 整个布局切流显示或着隐藏 */
-    private final void setSwitchFlowWholeVisible(boolean isShow) {
+    public final void setSwitchFlowWholeVisible(boolean isShow) {
         setVisibility(isShow ? VISIBLE : GONE);
 //        btnSwitchFlow.setVisibility(isShow ? VISIBLE : GONE);
         setSwitchFlowPopWindowVisible(false);
@@ -239,6 +239,7 @@ public class SwitchFlowView extends FrameLayout {
 
     /** 切流的弹窗隐藏或者显示 */
     public final void setSwitchFlowPopWindowVisible(boolean isShow) {
+        isPopWindowShow = isShow ? 1 : 0;
         layoutSwitchFlow.setVisibility(isShow ? VISIBLE : GONE);
         ivSwitchFlowArrow.setVisibility(isShow ? VISIBLE : GONE);
     }

@@ -120,6 +120,7 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
         if (mView == null) {
             return;
         }
+        mView.setSwitchFlowWholeVisible(true);
         mView.setIsVoiceOn(isVoiceOn);
         this.itemClickListener = itemClickListener;
         mView.setiSwitchFlow(new SwitchFlowView.ISwitchFlow() {
