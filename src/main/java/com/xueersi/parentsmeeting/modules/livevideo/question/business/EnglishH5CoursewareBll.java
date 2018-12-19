@@ -328,10 +328,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             mLiveBll.sendRankMessage(XESCODE.RANK_STU_RECONNECT_MESSAGE);
                         }
                     }
-//                    if (mH5AndBool.contains(videoQuestionLiveEntity.getUrl())) {
-//                        logToFile.i("onH5Courseware:url.contains");
-//                        return;
-//                    }
+                    if (mH5AndBool.contains(videoQuestionLiveEntity.getUrl())) {
+                        logToFile.i("onH5Courseware:url.contains");
+                        return;
+                    }
                     if (voiceAnswerPager != null) {
                         VideoQuestionLiveEntity baseVideoQuestionEntity = (VideoQuestionLiveEntity) voiceAnswerPager.getBaseVideoQuestionEntity();
                         if (baseVideoQuestionEntity.id.equals(videoQuestionLiveEntity.id)) {
