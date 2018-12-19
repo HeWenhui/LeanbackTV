@@ -208,6 +208,9 @@ public class LiveRemarkBll {
                 if (isGaosan) {
                     if (mLiveMediaControllerBottom.getLlMarkPopMenu() != null) {
                         mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.VISIBLE);
+                        if (mLiveMediaControllerBottom.getSwitchFlowView() != null) {
+                            mLiveMediaControllerBottom.getSwitchFlowView().setSwitchFlowPopWindowVisible(false);
+                        }
                     }
                 } else {
 
@@ -353,6 +356,9 @@ public class LiveRemarkBll {
                     @Override
                     public void run() {
                         mLiveMediaControllerBottom.getvMarkGuide().setVisibility(View.VISIBLE);
+                        if (mLiveMediaControllerBottom.getSwitchFlowView() != null) {
+                            mLiveMediaControllerBottom.getSwitchFlowView().setSwitchFlowPopWindowVisible(false);
+                        }
                         mLiveMediaControllerBottom.onShow();
                         mLiveMediaControllerBottom.getvMarkGuide().postDelayed(new Runnable() {
                             @Override
@@ -658,7 +664,7 @@ public class LiveRemarkBll {
                     }
                 });
                 setEntityNum(mList);
-                if(AppConfig.isMulLiveBack){
+                if (AppConfig.isMulLiveBack) {
                     setNewEntityNum(mList);
                 }
                 //showMarkPoints();
