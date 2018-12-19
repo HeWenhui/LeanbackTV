@@ -452,7 +452,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:id="@id/iv_livevideo_evaluate_submit_result"
