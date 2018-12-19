@@ -193,6 +193,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         /**新版文科课件平台 Topic**/
         if (isNewArtsH5Courseware(jsonObject)) {
             try {
+                LiveVideoConfig.isNewArts = false;
                 String onlineTechStatus = "";
                 JSONObject onlineJobj = jsonObject.optJSONObject("coursewareOnlineTech");
                 if (onlineJobj != null && "on".equals(onlineJobj.optString("status"))) {
