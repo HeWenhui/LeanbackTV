@@ -10,6 +10,7 @@ import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
@@ -73,17 +74,22 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param getInfo
      */
     public void parseLiveGetInfoScience(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
+
         getInfo.setEducationStage(data.optString("educationStage", "0"));
-        try {
-            getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
         int isPrimarySchool = data.optInt("isPrimarySchool");
         if (1 == isPrimarySchool) {
             LiveVideoConfig.isPrimary = true;
         } else {
             LiveVideoConfig.isPrimary = false;
+        }
+        //小英萌萌哒皮肤专用
+        if (data.has("useSkin")) {
+            getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+            LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
+        } else {
+            getInfo.setSmallEnglish(false);
+            LiveVideoConfig.isSmallChinese = false;
         }
         getInfo.setIsPrimarySchool(isPrimarySchool);
         LiveVideoConfig.isScience = true;
@@ -95,6 +101,18 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         getInfo.setAllowLinkMicNew(data.optInt("allowLinkMicNew"));
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
+        }
+        if (data.has("ePlanInfo")){
+            try {
+                JSONObject ePlanInfo = data.getJSONObject("ePlanInfo");
+                getInfo.ePlanInfo = new LiveGetInfo.EPlanInfoBean();
+                getInfo.ePlanInfo.ePlanId = ePlanInfo.optString("ePlanId");
+                getInfo.ePlanInfo.eTeacherId = ePlanInfo.optString("eTeacherId");
+                getInfo.ePlanInfo.eClassId = ePlanInfo.optString("eClassId");
+            }
+            catch (JSONException e) {
+                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
+            }
         }
     }
 
@@ -112,7 +130,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        getInfo.setIsNewCourseWare(Integer.parseInt(data.optString("isNewCourseWare"), 0));
 
 //            LiveVideoConfig.isPrimary = true;
 //        } else {
@@ -125,6 +142,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
+            LiveVideoConfig.isSmallChinese = false;
         }
 //        getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
@@ -161,6 +179,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
+            LiveVideoConfig.isSmallChinese = false;
         }
     }
 

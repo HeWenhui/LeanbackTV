@@ -228,6 +228,10 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         return liveVideoBll;
     }
 
+    /**
+     * 三分屏重写这个方法，使用新的的Loading
+     * 普通的还是走这里默认的
+     */
     @Override
     protected LivePlayerFragment getFragment() {
         LiveLivePlayerPlayFragment liveVideoPlayFragment = new LiveLivePlayerPlayFragment();
@@ -241,12 +245,20 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         liveVideoPlayFragment.liveFragmentBase = this;
     }
 
+    protected void onPlayOpenSuccess() {
+
+    }
+
     public static class LiveLivePlayerPlayFragment extends LivePlayerFragment {
         private final String TAG = "LiveLivePlayerPlayFragment";
         LiveFragmentBase liveFragmentBase;
 
         public LiveLivePlayerPlayFragment() {
             logger.d("LiveLivePlayerPlayFragment");
+        }
+
+        public void setLiveFragmentBase(LiveFragmentBase liveFragmentBase) {
+            this.liveFragmentBase = liveFragmentBase;
         }
 
         @Override
@@ -284,6 +296,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             }
             liveFragmentBase.openSuccess = true;
             liveFragmentBase.setFirstBackgroundVisible(View.GONE);
+            liveFragmentBase.onPlayOpenSuccess();
 //            if (mGetInfo != null && mGetInfo.getIsShowMarkPoint().equals("1")) {
 //                if (liveRemarkBll == null) {
 //                    liveRemarkBll = new LiveRemarkBll(activity, vPlayer);

@@ -25,6 +25,7 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
@@ -382,6 +383,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
     }
 
+    /** 获取getInfo成功 */
     private void onGetInfoSuccess(LiveGetInfo getInfo) {
         logger.e("=======>onGetInfoSuccess");
         this.mGetInfo = getInfo;
@@ -434,6 +436,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         businessBllTemps.clear();
         logger.d("=======>onGetInfoSuccess 333333333");
         String channel = "";
+        String eChannel = "";
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
             channel = "1" + ROOM_MIDDLE + mGetInfo.getId();
         } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
@@ -451,12 +454,23 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 mHttpManager.addBodyParam("courseId", mCourseId);
             }
             channel = mGetInfo.getId() + "-" + studentLiveInfo.getClassId();
+            if (mGetInfo.ePlanInfo != null){
+                eChannel = mGetInfo.ePlanInfo.ePlanId + "-" + mGetInfo.ePlanInfo.eClassId;
+            }
         }
         logger.e("=======>onGetInfoSuccess 444444444");
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, channel, mGetInfo.getStuName(), nickname);
+        if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())){
+            mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel);
+        }else {
+            mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel,eChannel);
+        }
+        //mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, (TextUtils.isEmpty(eChannel)|| LiveTopic.MODE_CLASS.equals(getMode()))?channel:channel,eChannel);
+        if (mGetInfo!=null && mGetInfo.ePlanInfo!=null){
+            mIRCMessage.modeChange(mGetInfo.getMode());
+        }
         IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
@@ -584,12 +598,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
 
         @Override
         public void onChannelInfo(String channel, int userCount, String topic) {
-            onTopic(channel, topic, "", 0, true);
+            onTopic(channel, topic, "", 0, true, channel);
         }
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
-                notice) {
+                notice, String channelId) {
             try {
                 JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
@@ -598,6 +612,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 switch (mtype) {
                     case XESCODE.MODECHANGE:
                         String mode = object.getString("mode");
+                        if (mode!=null && mIRCMessage!=null && mGetInfo!=null && mGetInfo.ePlanInfo!=null){
+                            mIRCMessage.modeChange(mode);
+                        }
                         if (!(mLiveTopic.getMode().equals(mode))) {
                             String oldMode = mLiveTopic.getMode();
                             mLiveTopic.setMode(mode);
@@ -635,7 +652,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
 
         @Override
-        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed) {
+        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed, String channelId) {
             if (lastTopicstr.equals(topicstr)) {
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
@@ -655,10 +672,14 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                     if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
                         String oldMode = mLiveTopic.getMode();
                         mLiveTopic.setMode(liveTopic.getMode());
+                       // Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
                         mGetInfo.setMode(liveTopic.getMode());
                         boolean isPresent = isPresent(mLiveTopic.getMode());
                         if (mVideoAction != null) {
                             mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
+                        }
+                        if (mIRCMessage!=null){
+                            mIRCMessage.modeChange(mLiveTopic.getMode());
                         }
                         liveVideoBll.onModeChange(mLiveTopic.getMode(), isPresent);
                         for (int i = 0; i < businessBlls.size(); i++) {
@@ -675,7 +696,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 }
                 //////////////
                 if (teacherModeChanged) {
+
                     mLiveTopic.setMode(liveTopic.getMode());
+                    Loger.setDebug(true);
+                  //  Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
                     mGetInfo.setMode(liveTopic.getMode());
                 }
                 if (mTopicActions != null && mTopicActions.size() > 0) {
@@ -714,7 +738,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
 
         @Override
-        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel) {
             logger.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
             if (mMessageActions != null && mMessageActions.size() > 0) {

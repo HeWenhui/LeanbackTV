@@ -38,7 +38,6 @@
             android:id="@id/bt_livevideo_voicechat_raise_hands"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginLeft="20dp"
             android:background="@drawable/bg_livevideo_voicechat_raise_hands"
             android:visibility="gone" />
 

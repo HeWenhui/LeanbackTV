@@ -486,16 +486,23 @@
             android:visibility="gone"
             tools:text="3s后退出直播间" />
 
-        <Button
+        <RelativeLayout
             android:id="@id/rl_livevideo_evaluate_tryagain"
-            style="@style/text_font16_ffffff_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_livevideo_evaluate_submit_status"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="28dp"
             android:background="@drawable/im_ty_auto_btn_tryagain"
-            android:text="重试" />
+             >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/text_font16_ffffff_style"
+                android:text="重试"
+                android:layout_centerInParent="true"
+                />
+        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

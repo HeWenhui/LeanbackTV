@@ -6,13 +6,13 @@
     android:layout_height="match_parent">
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@+id/tv_livevideo_rank_item_left"
+        android:id="@id/tv_livevideo_rank_item_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@+id/tv_livevideo_rank_item_mid"
+        android:id="@id/tv_livevideo_rank_item_mid"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -23,7 +23,7 @@
         tools:text="王佳佳" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@+id/tv_livevideo_rank_item_right"
+        android:id="@id/tv_livevideo_rank_item_right"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:gravity="right"

@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
@@ -44,12 +45,12 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveVideoView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -128,9 +129,11 @@ public class LiveRemarkBll {
     public static final int MARK_TYPE_TEACHER_HIGH_MARK = 113;
     public static final int MARK_TYPE_TEACHER_PRACTICE = 114;
     private HashMap<Integer, Integer> countMap = new HashMap<>();
+    LogToFile logToFile;
 
     public LiveRemarkBll(Context context, PlayerService playerService) {
         mContext = context;
+        logToFile = new LogToFile(context, TAG);
         mPlayerService = playerService;
         mLiveAndBackDebug = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
         initData();
@@ -200,14 +203,19 @@ public class LiveRemarkBll {
                     return;
                 }
                 if (isMarking) {
+                    logToFile.d("getBtMark:isMarking=true");
                     return;
                 }
                 if (mLiveMediaControllerBottom.getvMarkGuide() != null && mLiveMediaControllerBottom.getvMarkGuide().getVisibility() == View.VISIBLE) {
                     mLiveMediaControllerBottom.getvMarkGuide().setVisibility(View.GONE);
                 }
                 if (isGaosan) {
+                    logToFile.d("getBtMark:MarkPopMenu=" + mLiveMediaControllerBottom.getLlMarkPopMenu());
                     if (mLiveMediaControllerBottom.getLlMarkPopMenu() != null) {
                         mLiveMediaControllerBottom.getLlMarkPopMenu().setVisibility(View.VISIBLE);
+                        if (mLiveMediaControllerBottom.getSwitchFlowView() != null) {
+                            mLiveMediaControllerBottom.getSwitchFlowView().setSwitchFlowPopWindowVisible(false);
+                        }
                     }
                 } else {
 
@@ -220,7 +228,7 @@ public class LiveRemarkBll {
                         return;
                     }
                     if (mPlayerService.getPlayer() == null) {
-                        XESToastUtils.showToast(mContext, "标记失败");
+                        markFail("fail1");
                         return;
                     }
                     isMarking = true;
@@ -231,7 +239,7 @@ public class LiveRemarkBll {
                         @Override
                         public void run() {
                             if (mPlayerService.getPlayer() == null) {
-                                XESToastUtils.showToast(mContext, "标记失败");
+                                markFail("fail2");
                                 return;
                             }
                             ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
@@ -239,7 +247,7 @@ public class LiveRemarkBll {
                                 @Override
                                 public void run() {
                                     if (mPlayerService.getPlayer() == null) {
-                                        XESToastUtils.showToast(mContext, "标记失败");
+                                        markFail("fail3");
                                         return;
                                     }
                                     ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
@@ -248,7 +256,7 @@ public class LiveRemarkBll {
                                         public void run() {
                                             Bitmap bitmap = liveTextureView.getBitmap();
                                             if (bitmap == null) {
-                                                markFail();
+                                                markFail("fail4");
                                                 return;
                                             }
                                             bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) videoWidth, displayHeight);
@@ -280,10 +288,11 @@ public class LiveRemarkBll {
                         final LiveTextureView liveTextureView = (LiveTextureView) ((Activity) mContext).findViewById(R.id.ltv_course_video_video_texture);
 
                         if (liveTextureView == null) {
+                            logToFile.d("MarkPopMenu.onClick:liveTextureView=null");
                             return;
                         }
                         if (mPlayerService.getPlayer() == null) {
-                            XESToastUtils.showToast(mContext, "标记失败");
+                            markFail("fail5");
                             return;
                         }
                         isMarking = true;
@@ -294,7 +303,7 @@ public class LiveRemarkBll {
                             @Override
                             public void run() {
                                 if (mPlayerService.getPlayer() == null) {
-                                    XESToastUtils.showToast(mContext, "标记失败");
+                                    markFail("fail6");
                                     return;
                                 }
                                 ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
@@ -302,7 +311,7 @@ public class LiveRemarkBll {
                                     @Override
                                     public void run() {
                                         if (mPlayerService.getPlayer() == null) {
-                                            XESToastUtils.showToast(mContext, "标记失败");
+                                            markFail("fail7");
                                             return;
                                         }
                                         ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
@@ -311,7 +320,7 @@ public class LiveRemarkBll {
                                             public void run() {
                                                 Bitmap bitmap = liveTextureView.getBitmap();
                                                 if (bitmap == null) {
-                                                    markFail();
+                                                    markFail("fail8");
                                                     return;
                                                 }
                                                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) videoWidth, displayHeight);
@@ -336,7 +345,8 @@ public class LiveRemarkBll {
         }
     }
 
-    public void markFail() {
+    public void markFail(String method) {
+        logToFile.d("markFail:method=" + method);
         XESToastUtils.showToast(mContext, "标记失败");
         umsAgentMark(false, 0, 0, 0);
         isMarking = false;
@@ -353,6 +363,9 @@ public class LiveRemarkBll {
                     @Override
                     public void run() {
                         mLiveMediaControllerBottom.getvMarkGuide().setVisibility(View.VISIBLE);
+                        if (mLiveMediaControllerBottom.getSwitchFlowView() != null) {
+                            mLiveMediaControllerBottom.getSwitchFlowView().setSwitchFlowPopWindowVisible(false);
+                        }
                         mLiveMediaControllerBottom.onShow();
                         mLiveMediaControllerBottom.getvMarkGuide().postDelayed(new Runnable() {
                             @Override
@@ -540,13 +553,13 @@ public class LiveRemarkBll {
                             @Override
                             public void onPmFailure(Throwable error, String msg) {
                                 super.onPmFailure(error, msg);
-                                markFail();
+                                markFail("fail9_" + msg);
                             }
 
                             @Override
                             public void onPmError(ResponseEntity responseEntity) {
                                 super.onPmError(responseEntity);
-                                markFail();
+                                markFail("fail10_" + responseEntity.getErrorMsg());
                             }
                         });
                     }
@@ -557,10 +570,12 @@ public class LiveRemarkBll {
                     }
                 });
             } else {
-                markFail();
+                markFail("fail11");
             }
         } catch (Exception e) {
+            logToFile.e("reMark", e);
             e.printStackTrace();
+            CrashReport.postCatchedException(e);
         }
 
     }
@@ -658,7 +673,7 @@ public class LiveRemarkBll {
                     }
                 });
                 setEntityNum(mList);
-                if(AppConfig.isMulLiveBack){
+                if (AppConfig.isMulLiveBack) {
                     setNewEntityNum(mList);
                 }
                 //showMarkPoints();
