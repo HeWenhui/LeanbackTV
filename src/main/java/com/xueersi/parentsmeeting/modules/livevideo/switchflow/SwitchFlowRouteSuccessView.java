@@ -61,7 +61,17 @@ public class SwitchFlowRouteSuccessView extends BasePager {
         layoutParams.height = height;
         ivBackGround.setLayoutParams(layoutParams);
         ivBackGround.setImageDrawable(drawable);
-        tvSuccess.setText("已切换到线路" + pos);
+        String strRoute = "";
+        if (pos == 1) {
+            strRoute = "一";
+        } else if (pos == 2) {
+            strRoute = "二";
+        } else if (pos == 3) {
+            strRoute = "三";
+        } else if (pos == 4) {
+            strRoute = "四";
+        }
+        tvSuccess.setText("已切换到线路" + strRoute);
         tvSuccess.setTextColor(color);
     }
 

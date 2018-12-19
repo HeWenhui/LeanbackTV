@@ -199,6 +199,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     JSONObject onlineTechObj = jsonObject.getJSONObject("coursewareOnlineTech");
                     if (!"{}".equals(onlineTechObj.toString())) {
                         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                        LiveVideoConfig.isNewArts = true;
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
                         String status = onlineTechObj.optString("status");
                         if ("on".equals(status)) {
@@ -357,23 +358,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      * @return
      */
     private boolean isNewArtsH5Courseware(JSONObject jsonObject) {
-        JSONObject coursewareH5 = null;
-        JSONObject onlineTechObj = null;
-        try {
-            if(jsonObject.has("coursewareH5")){
-                coursewareH5 = jsonObject.getJSONObject("coursewareH5");
-            }else{
-                return false;
-            }
-            if(jsonObject.has("coursewareOnlineTech")){
-                onlineTechObj = jsonObject.getJSONObject("coursewareOnlineTech");
-            }else{
-                return false;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return ("on".equals(coursewareH5.optString("status", "off")) || "on".equals(onlineTechObj.optString("status", "off")));
+        return (jsonObject.has("coursewareH5") || jsonObject.has("coursewareOnlineTech"));
     }
 
 
