@@ -1031,7 +1031,9 @@ public abstract class PircBot implements ReplyConstants {
             this.onNickChange(sourceNick, sourceLogin, sourceHostname, newNick);
         } else if (command.equals("NOTICE")) {
             // Someone is sending a notice.
-            this.onNotice(sourceNick, sourceLogin, sourceHostname, target, line.substring(line.indexOf(" :") + 2));
+            String substring = line.substring(line.indexOf("#"),line.length());
+            String channel = substring.substring(0,substring.indexOf(" :"));
+            this.onNotice(sourceNick, sourceLogin, sourceHostname, target, line.substring(line.indexOf(" :") + 2), channel);
         } else if (command.equals("QUIT")) {
             // Someone has quit from the IRC server.
 
@@ -1070,7 +1072,9 @@ public abstract class PircBot implements ReplyConstants {
             this.processMode(target, sourceNick, sourceLogin, sourceHostname, mode);
         } else if (command.equals("TOPIC")) {
             // Someone is changing the topic.
-            this.onTopic(target, line.substring(line.indexOf(" :") + 2), sourceNick, System.currentTimeMillis(), true);
+            String substring = line.substring(line.indexOf("#"), line.length());
+            String channel = substring.substring(0,substring.indexOf(" :"));
+            this.onTopic(target, line.substring(line.indexOf(" :") + 2), sourceNick, System.currentTimeMillis(), true,channel );
         } else if (command.equals("INVITE")) {
             // Somebody is inviting somebody else into a channel.
             this.onInvite(target, sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2));
@@ -1188,7 +1192,7 @@ public abstract class PircBot implements ReplyConstants {
             String topic = _topics.get(channel);
             _topics.remove(channel);
 
-            this.onTopic(channel, topic, setBy, date, false);
+            this.onTopic(channel, topic, setBy, date, false,channel );
         } else if (code == RPL_NAMREPLY) {
             // This is a list of nicks in a channel that we've just joined.
             int channelEndIndex = response.indexOf(" :");
@@ -1334,14 +1338,14 @@ public abstract class PircBot implements ReplyConstants {
      * <p/>
      * The implementation of this method in the PircBot abstract class performs
      * no actions and may be overridden as required.
-     *
-     * @param sourceNick     The nick of the user that sent the notice.
+     *  @param sourceNick     The nick of the user that sent the notice.
      * @param sourceLogin    The login of the user that sent the notice.
      * @param sourceHostname The hostname of the user that sent the notice.
      * @param target         The target of the notice, be it our nick or a channel name.
      * @param notice         The notice message.
+     * @param channel
      */
-    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
+    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice, String channel) {
     }
 
     /**
@@ -1433,7 +1437,7 @@ public abstract class PircBot implements ReplyConstants {
      * @param channel The channel that the topic belongs to.
      * @param topic   The topic for the channel.
      * @deprecated As of 1.2.0, replaced by
-     * {@link #onTopic(String, String, String, long, boolean)}
+     * {@link #onTopic(String, String, String, long, boolean, String)}
      */
     @Deprecated
     protected void onTopic(String channel, String topic) {
@@ -1445,15 +1449,14 @@ public abstract class PircBot implements ReplyConstants {
      * <p/>
      * The implementation of this method in the PircBot abstract class performs
      * no actions and may be overridden as required.
-     *
      * @param channel The channel that the topic belongs to.
      * @param topic   The topic for the channel.
      * @param setBy   The nick of the user that set the topic.
      * @param date    When the topic was set (milliseconds since the epoch).
      * @param changed True if the topic has just been changed, false if the topic
-     *                was already there.
+     * @param channelId
      */
-    protected void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
+    protected void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
     }
 
     /**

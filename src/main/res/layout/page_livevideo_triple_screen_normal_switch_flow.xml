@@ -24,7 +24,7 @@
         app:layout_constraintLeft_toLeftOf="@id/bt_switch_flow"
         app:layout_constraintRight_toRightOf="@id/bt_switch_flow">
 
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        <TextView
             android:id="@id/fzcytv_livevideo_switch_flow_reload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,14 +38,12 @@
         <ImageView
             android:id="@id/iv_divider"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/livevideo_pscommon_wordsdivider"
+            android:layout_height="1dp"
+            android:background="@color/COLOR_19FFFFFF"
             app:layout_constraintBottom_toTopOf="@id/fzcytv_livevideo_switch_flow_switch"
             app:layout_constraintTop_toBottomOf="@id/fzcytv_livevideo_switch_flow_reload" />
 
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        <TextView
             android:id="@id/fzcytv_livevideo_switch_flow_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,7 +60,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginLeft="30dp"
-        android:background="@drawable/bg_livevideo_ps_swich_flow"
+        android:background="@drawable/bg_livevideo_normal_swich_flow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 </android.support.constraint.ConstraintLayout>

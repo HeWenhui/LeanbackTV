@@ -42,7 +42,8 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
             return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_ps_switch_flow_bottom, this);
         } else if (LiveVideoConfig.isSmallChinese) {
             id = "layout_livemediacontroller_chs_bottom";
-            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_switch_flow_bottom, this);
+            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom, this);
+//            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_switch_flow_bottom, this);
         } else if (isSmallEnglish) {
             return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_english_switch_flow_bottom, this);
         } else {

@@ -1096,7 +1096,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     for (User user : users){
                         sb.append(user.getNick());
                     }
-                    Loger.d("___bug6:  users:  "+sb.toString());
+                  //  Loger.d("___bug6:  users:  "+sb.toString());
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
@@ -1140,7 +1140,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
                     }
                 } catch (JSONException e) {
-                    Loger.d("____bug20  private message sender:  "+sender);
+                  //  Loger.d("____bug20  private message sender:  "+sender);
                     addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message, "");
                 }
             }
@@ -1155,7 +1155,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 if (ircState.isSeniorOfHighSchool()) {
                   //  Loger.d("___ircState:  "+ircState.getMode()+"  sender:  "+sender);
                    // for (User user : )
-                    Loger.d("___bug34 :  "+peopleCount);
+                   // Loger.d("___bug34 :  "+peopleCount);
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
@@ -1175,7 +1175,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
                    // Loger.d("___ircState:  "+ircState.getMode()+"  sourceLogin:  "+sourceLogin);
-                    Loger.d("___bug35 :  "+peopleCount);
+                //    Loger.d("___bug35 :  "+peopleCount);
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
