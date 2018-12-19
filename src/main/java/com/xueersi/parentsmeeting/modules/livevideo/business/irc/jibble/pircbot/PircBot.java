@@ -1031,8 +1031,13 @@ public abstract class PircBot implements ReplyConstants {
             this.onNickChange(sourceNick, sourceLogin, sourceHostname, newNick);
         } else if (command.equals("NOTICE")) {
             // Someone is sending a notice.
-            String substring = line.substring(line.indexOf("#"),line.length());
-            String channel = substring.substring(0,substring.indexOf(" :"));
+            String channel = "";
+            if (line.contains("#")){
+                String substring = line.substring(line.indexOf("#"), line.length());
+                if (substring.contains(" :")){
+                    channel = substring.substring(0,substring.indexOf(" :"));
+                }
+            }
             this.onNotice(sourceNick, sourceLogin, sourceHostname, target, line.substring(line.indexOf(" :") + 2), channel);
         } else if (command.equals("QUIT")) {
             // Someone has quit from the IRC server.
@@ -1072,8 +1077,13 @@ public abstract class PircBot implements ReplyConstants {
             this.processMode(target, sourceNick, sourceLogin, sourceHostname, mode);
         } else if (command.equals("TOPIC")) {
             // Someone is changing the topic.
-            String substring = line.substring(line.indexOf("#"), line.length());
-            String channel = substring.substring(0,substring.indexOf(" :"));
+            String channel = "";
+            if (line.contains("#")){
+                String substring = line.substring(line.indexOf("#"), line.length());
+                if (substring.contains(" :")){
+                    channel = substring.substring(0,substring.indexOf(" :"));
+                }
+            }
             this.onTopic(target, line.substring(line.indexOf(" :") + 2), sourceNick, System.currentTimeMillis(), true,channel );
         } else if (command.equals("INVITE")) {
             // Somebody is inviting somebody else into a channel.
