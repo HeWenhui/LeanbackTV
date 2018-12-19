@@ -140,6 +140,7 @@ public class LiveVideoAction implements VideoAction {
 
         layoutParams.width = liveVideoPoint.x3 - liveVideoPoint.x2;
         layoutParams.rightMargin = liveVideoPoint.getRightMargin();
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         layoutSwitchFlow.setLayoutParams(layoutParams);
     }
 
