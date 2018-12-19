@@ -1130,6 +1130,23 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 }
             }
+        } else if (resultEntity.getErrorNo() == ResultCode.SPEECH_CANCLE) {
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!isEnd) {
+                        errorSetGone();
+                        if (isAttach()) {
+                            mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
+                            mParam.setStrEvaluator(content2);
+                            mParam.setLocalSavePath(saveVideoFile.getPath());
+                            mParam.setMultRef(false);
+                            mParam.setLearning_stage(learning_stage);
+                            mIse.startRecog(mParam, evaluatorListener);
+                        }
+                    }
+                }
+            }, 1000);
         } else {
 //            tvSpeectevalTip.setText("测评君罢工了，程序员哥哥会尽快修复（" + resultEntity.getErrorNo() + "）");
             XESToastUtils.showToast(mContext, "测评君罢工了，程序员哥哥会尽快修复（" + resultEntity.getErrorNo() + "）");

@@ -76,6 +76,13 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                 public void onOpenSuccess() {
                     LiveRemarkIRCBll.this.onOpenSuccess();
                 }
+
+                @Override
+                public void onPlaybackComplete() {
+                    if (liveRemarkBll != null) {
+                        liveRemarkBll.setVideoReady(false);
+                    }
+                }
             });
         } else {
             mLiveBll.removeBusinessBll(this);

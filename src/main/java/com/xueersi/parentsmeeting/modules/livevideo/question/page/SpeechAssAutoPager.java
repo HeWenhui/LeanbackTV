@@ -897,6 +897,18 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     }
                 }
             }
+        } else if (resultEntity.getErrorNo() == ResultCode.SPEECH_CANCLE) {
+            spStarResult.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!isEnd) {
+                        errorSetGone();
+                        if (isAttach()) {
+                            mIse.startRecog(mParam, evaluatorListener);
+                        }
+                    }
+                }
+            }, 1000);
         } else {
             tvSpeectevalError.setText("测评君罢工了，程序员哥哥会尽快修复（" + resultEntity.getErrorNo() + "）");
             if (!mIse.isOfflineFail()) {

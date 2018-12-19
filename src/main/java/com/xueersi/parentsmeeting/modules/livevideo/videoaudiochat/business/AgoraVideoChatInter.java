@@ -15,12 +15,12 @@ public interface AgoraVideoChatInter {
 
     void startRecord(String method, String room, String nonce, boolean video);
 
-    void stopRecord();
+    void stopRecord(String nonce);
 
     void updateUser(boolean classmateChange, ArrayList<ClassmateEntity> classmateEntities);
 
     void onNetWorkChange(int netWorkType);
 
-    void removeMe();
+    void removeMe(String nonce);
 
 }

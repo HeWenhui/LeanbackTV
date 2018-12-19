@@ -50,6 +50,7 @@ public class SpeakerRecognitioner {
     /** 原始录音数据 */
     private byte[] mPCMBuffer;
     boolean isStart = false;
+    int index = 1;
     boolean destory = false;
     Context context;
     private SpeakerPredict speakerPredict;
@@ -57,7 +58,7 @@ public class SpeakerRecognitioner {
     private LogToFile logToFile;
     private AtomicBoolean audioRequest;
 
-    SpeakerRecognitioner(Context context, AtomicBoolean audioRequest) {
+    public SpeakerRecognitioner(Context context, AtomicBoolean audioRequest) {
         logger.setLogMethod(false);
         this.audioRequest = audioRequest;
         this.context = context;
@@ -139,7 +140,6 @@ public class SpeakerRecognitioner {
                     logToFile.e("start:startRecording", e);
                     return;
                 }
-                int index = 1;
                 while (isStart) {
                     if (mAudioRecord != null) {
                         int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
