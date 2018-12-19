@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
@@ -95,7 +96,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     //是否启用小英MMD皮肤
     private boolean isSmallEnglish = false;
 
-    private User[] users = {};
+    private List<String> users = new ArrayList<>();
 
     public LiveMessageBll(Activity activity, int liveType) {
         this.activity = activity;
@@ -506,7 +507,11 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
     @Override
     public void onUserList(String channel, User[] users) {
-        this.users = users;
+        for (User user : users) {
+            if (!this.users.contains(user.getNick())) {
+                this.users.add(user.getNick());
+            }
+        }
   /*      StringBuilder sb = new StringBuilder();
         for (User user : users){
             sb.append(user.getNick()+"__");
@@ -596,12 +601,13 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            return;
 //        }
       //  Loger.d("____join:  "+sender+"___peoplecount:  "+peopleCount);
-      //  if (!contains(sender)){
+        if (!users.contains(sender)){
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
+            users.add(sender);
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onJoin(target, sender, login, hostname);
             }
-       // }
+        }
     }
 
     @Override
@@ -610,7 +616,10 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            //老师不计算在内
 //            return;
 //        }
-        peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
+        if (users.contains(sourceNick)){
+            peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
+            users.remove(sourceNick);
+        }
         if (mLiveMessagePager != null) {
             mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
         }
@@ -758,8 +767,13 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
      * @return 是否已经加入房间
      */
     private boolean contains(String nicker){
-        for (User user : users){
-            if (user.getNick().equals(nicker)){
+        StringBuilder sb = new StringBuilder();
+        for (String user : users){
+            sb.append(user);
+        }
+       // Loger.d("___bug 44 : users:  "+sb.toString()+"____nicker:  "+nicker);
+        for (String user : users){
+            if (user.equals(nicker)){
                 return true;
             }
         }

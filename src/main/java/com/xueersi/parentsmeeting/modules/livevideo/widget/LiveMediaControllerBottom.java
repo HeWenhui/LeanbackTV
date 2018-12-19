@@ -29,6 +29,8 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
         super(context, controller, player);
     }
 
+
+
     /** 播放器的布局界面 */
     @Override
     public View inflateLayout() {
@@ -36,19 +38,20 @@ public class LiveMediaControllerBottom extends BaseLiveMediaControllerBottom {
         mArts = paramIntent.getIntExtra("isArts", -1);
         pattern = paramIntent.getIntExtra("pattern", 0);
         isSmallEnglish = paramIntent.getBooleanExtra("isSmallEnglish", false);
-
+        isExperience = paramIntent.getBooleanExtra("isExperience", false);
         if (LiveVideoConfig.isPrimary) {
             id = "layout_livemediacontroller_psbottom";
             return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_ps_switch_flow_bottom, this);
         } else if (LiveVideoConfig.isSmallChinese) {
             id = "layout_livemediacontroller_chs_bottom";
-            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_switch_flow_bottom, this);
+            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom, this);
+//            return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_switch_flow_bottom, this);
         } else if (isSmallEnglish) {
             return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_english_switch_flow_bottom, this);
         } else {
             id = "layout_livemediacontroller_bottom";
 
-            if (pattern == 1) {
+            if (pattern == 1 && !isExperience) {
                 return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_normal_bottom, this);
             } else {
                 return LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this);

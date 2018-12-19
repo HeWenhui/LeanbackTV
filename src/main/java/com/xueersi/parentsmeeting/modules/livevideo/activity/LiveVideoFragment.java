@@ -138,7 +138,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             before = System.currentTimeMillis();
             addBusiness(activity);
             logger.d("onVideoCreate:time3=" + (System.currentTimeMillis() - before));
-            if (pattern == 1) {
+            if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
                 //根据不同直播显示不同加载中动画
                 setLoadingView();
             }
@@ -149,13 +149,17 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /** 设置显示的加载动画 */
     protected void setLoadingView() {
         liveVideoPlayFragment = (LivePlayerFragment) getChildFragmentManager().findFragmentByTag("LivePlayerFragment");
-        if (LiveVideoConfig.isSmallChinese) {
-            liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING);
-        } else if (LiveVideoConfig.isPrimary) {
+//        if (LiveVideoConfig.isSmallChinese) {
+//            liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING);
+//        }
+        if (LiveVideoConfig.isPrimary) {
+            mLogtf.i("primary_science_loading");
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_SCIENCE_LOADING);
         } else if (isSmallEnglish) {
+            mLogtf.i("primary_english_loading");
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_ENGLISH_LOADING);
         } else {
+            mLogtf.i("other loading");
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_MIDDLE_LOADING);
         }
         liveVideoPlayFragment.overrideCallBack();
@@ -293,7 +297,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         evaluateTeacherBll.setLiveFragment(this);
         mLiveBll.addBusinessBll(evaluateTeacherBll);
 
-        if (pattern == 1) {
+        if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
             addSwitchFlowBll();
             initSwitchFlowListener();
         }
@@ -312,16 +316,17 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected void onPlayOpenSuccess() {
         super.onPlayOpenSuccess();
         //如果之前是正在切流的状态
-        if (pattern == 1) {
+        if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
             liveVideoAction.onPlaySuccess();
             if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
-                if (LiveVideoConfig.isSmallChinese || LiveVideoConfig.isPrimary || isSmallEnglish) {
+                if (LiveVideoConfig.isPrimary || isSmallEnglish) {
                     SwitchRouteSuccessDialog switchRouteSuccessDialog = new SwitchRouteSuccessDialog(activity);
                     switchRouteSuccessDialog.updateView(nowRoutePos);
                     switchRouteSuccessDialog.showDialogAutoClose(2000);
                 } else {
                     XESToastUtils.showToast(activity, "线路" + nowRoutePos + "切换成功");
                 }
+                mLogtf.i("route " + nowRoutePos + "(add 1) switch success");
             }
         }
         resetStatus();
@@ -338,12 +343,16 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     private int nowRoutePos = 1;
 
     private void addSwitchFlowBll() {
+        if (getSwitchFlowView() == null) {
+            return;
+        }
         switchFlowBll = new SwitchFlowBll(activity, mLiveBll);
         mLiveBll.addBusinessBll(switchFlowBll);
         switchFlowBll.setmView(getSwitchFlowView(), liveMediaControllerBottom, new SwitchFlowView.IReLoad() {
                     @Override
                     public void reLoad() {
 //                        isSwitchReloadShow = true;
+                        mLogtf.i("switchFlowView click reload");
                         if (!mLiveBll.isPresent()) {
                             if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
                                 mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.GONE);
@@ -362,6 +371,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 new SwitchFlowRoutePager.ItemClickListener() {
                     @Override
                     public void itemClick(int pos) {
+                        mLogtf.i("switchFlowView click switch,click pos=" + pos);
                         switchFlowStatus = LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH;
                         if (!mLiveBll.isPresent()) {
                             if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
@@ -395,6 +405,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             public void onClick(View v) {
                 logger.i("点击重试按钮");
                 if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_RELOAD) {
+                    mLogtf.i("click again btn,SWITCH_FLOW_RELOAD");
                     //1.重新加载,显示加载中
                     rePlay(false);
                     //2. 自动切流
@@ -402,8 +413,10 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                         mLiveVideoBll.liveGetPlayServer(mGetInfo.getLiveTopic().getMode(), false);
                     }
                 } else if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
+                    mLogtf.i("click again btn,SWITCH_FLOW_ROUTE_SWITCH");
                     rePlay(false);
                 } else {
+                    mLogtf.i("click again btn,other");
                     rePlay(false);
                 }
                 if (!mLiveBll.isPresent()) {
@@ -440,13 +453,13 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         createMediaControllerBottom();
 
         // TODO: 2018/10/23  添加了LayoutParams 是否会有其他异常？
-        bottomContent.addView(liveMediaControllerBottom,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        bottomContent.addView(liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-        android.util.Log.e("HalfBody","====>LiveVideoFragment initView:add mediaContriller:"
-                +liveMediaControllerBottom.getClass().getSimpleName());
+        android.util.Log.e("HalfBody", "====>LiveVideoFragment initView:add mediaContriller:"
+                + liveMediaControllerBottom.getClass().getSimpleName());
 
         pattern = activity.getIntent().getIntExtra("pattern", 2);
-        if (pattern == 1) {
+        if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
             btnVideoFailRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
         }
         //如果是三分屏，则需要添加加载中的监听器
@@ -462,7 +475,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
-        if(switchFlowBll != null){
+        if ((pattern == 1) && !LiveVideoConfig.isSmallChinese && switchFlowBll != null) {
             if (server != null) {
                 switchFlowBll.setListRoute(server.getPlayserver());
                 logger.i(server.getPlayserver().size());
@@ -472,6 +485,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             }
         }
     }
+
     protected void createMediaControllerBottom() {
         Intent intent = activity.getIntent();
         LiveVideoConfig.isPrimary = intent.getBooleanExtra("isPrimary", false);
@@ -480,7 +494,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         liveMediaControllerBottom.setVisibility(View.INVISIBLE);
     }
 
-    protected void createMediaControlerTop(){
+    protected void createMediaControlerTop() {
         baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
     }
 

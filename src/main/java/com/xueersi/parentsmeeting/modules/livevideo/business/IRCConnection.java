@@ -209,22 +209,22 @@ public class IRCConnection extends PircBot {
     }
 
     @Override
-    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
+    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice, String channel) {
         if (mIRCCallback != null) {
-            mIRCCallback.onNotice(sourceNick, sourceLogin, sourceHostname, target, notice);
+            mIRCCallback.onNotice(sourceNick, sourceLogin, sourceHostname, target, notice, channel);
         }
     }
 
     protected void onTopic(String channel, String topic) {
         if (mIRCCallback != null) {
-            mIRCCallback.onTopic(channel, topic, "", 0, false);
+            mIRCCallback.onTopic(channel, topic, "", 0, false,channel );
         }
     }
 
     @Override
-    protected void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
+    protected void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
         if (mIRCCallback != null) {
-            mIRCCallback.onTopic(channel, topic, setBy, date, changed);
+            mIRCCallback.onTopic(channel, topic, setBy, date, changed,channelId );
         }
     }
 

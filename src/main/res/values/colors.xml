@@ -53,7 +53,6 @@
     <color name="COLOR_CCFFFFFF">#CCFFFFFF</color>
 
 
-
     <color name="COLOR_D5AF68">#D5AF68</color>
     <color name="COLOR_FFF6D7">#FFF6D7</color>
     <color name="COLOR_FF9D30">#FF9D30</color>
@@ -108,4 +107,6 @@
     <color name="COLOR_FFFFFEFF">#FFFFFEFF</color>
     <color name="COLOR_14FFFFFF">#14FFFFFF</color>
     <color name="COLOR_28FFFFFF">#28FFFFFF</color>
+    <color name="COLOR_19FFFFFF">#19FFFFFF</color>
+    <color name="COLOR_202020">#202020</color>
 </resources>

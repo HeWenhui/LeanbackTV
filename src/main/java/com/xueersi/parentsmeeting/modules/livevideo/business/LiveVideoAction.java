@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -85,6 +86,12 @@ public class LiveVideoAction implements VideoAction {
 
     private int pattern = 0;
 
+    private Button btnRetry;
+
+    private boolean isSmallEnglish;
+
+    private boolean isExperience = false;
+
     public LiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView) {
         this.activity = activity;
         this.mLiveBll = mLiveBll;
@@ -105,11 +112,28 @@ public class LiveVideoAction implements VideoAction {
         updateLoadingImage();
 
         pattern = activity.getIntent().getIntExtra("pattern", 2);
-        if (pattern == 1) {
+        isExperience = activity.getIntent().getBooleanExtra("isExperience", false);
+        isSmallEnglish = activity.getIntent().getBooleanExtra("isSmallEnglish", false);
+        if (pattern == 1 && !LiveVideoConfig.isSmallChinese && !isExperience) {
             layoutSwitchFlow = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
             tvSwitchFlowRetry = mContentView.findViewById(R.id.fzcy_livevideo_switch_flow_retry_text);
             setVideoLayout();
+            btnRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
+            switchFlowViewChangeBtn();
         }
+    }
+
+    private void switchFlowViewChangeBtn() {
+//        if (LiveVideoConfig.isSmallChinese) {
+//
+//        }
+        Drawable drawable = activity.getResources().getDrawable(R.drawable.selector_livevideo_primary_science_retry_btn);
+        if (LiveVideoConfig.isPrimary) {
+            drawable = activity.getResources().getDrawable(R.drawable.selector_livevideo_primary_science_retry_btn);
+        } else if (isSmallEnglish) {
+            drawable = activity.getResources().getDrawable(R.drawable.selector_livevideo_small_english_retry_btn);
+        }
+        btnRetry.setBackground(drawable);
     }
 
     /** 设置重试按钮的 */
@@ -117,8 +141,9 @@ public class LiveVideoAction implements VideoAction {
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) layoutSwitchFlow.getLayoutParams();
 
-        layoutParams.width = liveVideoPoint.x3 - liveVideoPoint.x2;
+//        layoutParams.width = liveVideoPoint.x3 - liveVideoPoint.x2;
         layoutParams.rightMargin = liveVideoPoint.getRightMargin();
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         layoutSwitchFlow.setLayoutParams(layoutParams);
     }
 
@@ -179,16 +204,19 @@ public class LiveVideoAction implements VideoAction {
                                         + ",lastPlayErrorCode=" + lastPlayErrorCode);
                                 lastPlayErrorCode = null;
                                 if (!modechange) {
-                                    if (pattern == 1) {
-                                        linearLayout.setVisibility(View.VISIBLE);
-                                        layoutSwitchFlow.setVisibility(View.GONE);
+                                    if (pattern == 1 && !LiveVideoConfig.isSmallChinese) {
+//                                        linearLayout.setVisibility(View.VISIBLE);
+//                                        layoutSwitchFlow.setVisibility(View.GONE);
                                         logger.i("显示linearLayout,layoutSwitchFlow隐藏");
+
 //                                        logger.i();
                                         if (videoSwitchFlowStatus == SWITCH_FLOW_RELOAD) {
 //                                        mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry).setVisibility(View.VISIBLE);
                                             //网校logo
 //                                            mContentView.findViewById(R.id.layout_livevideo_switch_flow_logo).setVisibility(View.VISIBLE);
                                             tvLoadingHint.setText(playLoad);
+                                            linearLayout.setVisibility(View.VISIBLE);
+                                            layoutSwitchFlow.setVisibility(View.GONE);
                                             logger.i("");
                                         } else if (videoSwitchFlowStatus == SWITCH_FLOW_ROUTE_SWITCH) {
 //                                            mContentView.findViewById(R.id.layout_livevideo_switch_flow_logo).setVisibility(View.VISIBLE);
@@ -202,6 +230,8 @@ public class LiveVideoAction implements VideoAction {
                                             } else if (route.get() == 4) {
                                                 strRoute = "四";
                                             }
+                                            linearLayout.setVisibility(View.VISIBLE);
+                                            layoutSwitchFlow.setVisibility(View.GONE);
                                             tvLoadingHint.setText("线路" + strRoute + "切换中...");
                                         }
                                     } else {
@@ -218,9 +248,7 @@ public class LiveVideoAction implements VideoAction {
                         @Override
                         public void run() {
                             if (tvLoadingHint != null && !modechange) {
-                                if (pattern == 1) {
-                                    linearLayout.setVisibility(View.VISIBLE);
-                                    layoutSwitchFlow.setVisibility(View.GONE);
+                                if (pattern == 1 && !LiveVideoConfig.isSmallChinese) {
                                     logger.i("显示linearLayout,layoutSwitchFlow隐藏");
 //                                        logger.i();
                                     if (videoSwitchFlowStatus == SWITCH_FLOW_RELOAD) {
@@ -228,6 +256,8 @@ public class LiveVideoAction implements VideoAction {
                                         //网校logo
 //                                            mContentView.findViewById(R.id.layout_livevideo_switch_flow_logo).setVisibility(View.VISIBLE);
                                         tvLoadingHint.setText(playLoad);
+                                        linearLayout.setVisibility(View.VISIBLE);
+                                        layoutSwitchFlow.setVisibility(View.GONE);
                                         logger.i("");
                                     } else if (videoSwitchFlowStatus == SWITCH_FLOW_ROUTE_SWITCH) {
 //                                            mContentView.findViewById(R.id.layout_livevideo_switch_flow_logo).setVisibility(View.VISIBLE);
@@ -241,6 +271,9 @@ public class LiveVideoAction implements VideoAction {
                                         } else if (route.get() == 4) {
                                             strRoute = "四";
                                         }
+
+                                        linearLayout.setVisibility(View.VISIBLE);
+                                        layoutSwitchFlow.setVisibility(View.GONE);
                                         tvLoadingHint.setText("线路" + strRoute + "切换中...");
                                     }
                                 }
@@ -287,7 +320,7 @@ public class LiveVideoAction implements VideoAction {
             @Override
             public void run() {
                 //如果是三分屏
-                if (pattern == 1) {
+                if (isSmallEnglish || LiveVideoConfig.isPrimary) {
                     if (videoSwitchFlowStatus == SWITCH_FLOW_ROUTE_SWITCH) {
                         if (!mLiveBll.isPresent()) {
                             if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
