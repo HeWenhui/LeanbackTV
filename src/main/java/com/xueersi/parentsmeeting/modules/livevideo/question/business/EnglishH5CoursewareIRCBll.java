@@ -198,6 +198,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     JSONObject onlineTechObj = jsonObject.getJSONObject("coursewareOnlineTech");
                     if (!"{}".equals(onlineTechObj.toString())) {
                         H5OnlineTechEntity h5OnlineTechEntity = new H5OnlineTechEntity();
+                        LiveVideoConfig.isNewArts = true;
+                        videoQuestionLiveEntity.setNewArtsCourseware(true);
                         h5OnlineTechEntity.setStatus(onlineTechObj.optString("status"));
                         status = onlineTechObj.optString("status");
                         h5OnlineTechEntity.setPackage_source(onlineTechObj.optInt("package_source"));
