@@ -145,7 +145,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
                     connection.setReadTimeout(20000);
                     cancelable.connection = connection;
                     cancelable.callback = requestCallBack;
-                    connection.setRequestProperty("Connection", "Keep-Alive");
+//                    connection.setRequestProperty("Connection", "Keep-Alive");
                     connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     connection.connect();
                     int statusCode = connection.getResponseCode();
