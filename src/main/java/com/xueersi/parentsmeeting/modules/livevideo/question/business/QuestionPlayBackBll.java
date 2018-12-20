@@ -51,7 +51,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestio
  */
 public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp {
     QuestionBll questionBll;
-    String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6", "18", "19"};
+    String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6"};
     private List<String> questiongtype = Arrays.asList(ptTypeFilters);
 
 
