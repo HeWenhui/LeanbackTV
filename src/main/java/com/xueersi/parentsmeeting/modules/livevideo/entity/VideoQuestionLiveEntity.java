@@ -147,11 +147,6 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
      */
     private void editShowQuestion() {
         int vBlankSize = 1;
-//        if(LiveVideoConfig.isNewArts){
-//            vBlankSize = 1;
-//        }else{
-//            vBlankSize = num;
-//        }
         vBlankSize = num;
         for (int i = 0; i < vBlankSize; i++) {
             AnswerEntity answerLiveEntity = new AnswerEntity();
