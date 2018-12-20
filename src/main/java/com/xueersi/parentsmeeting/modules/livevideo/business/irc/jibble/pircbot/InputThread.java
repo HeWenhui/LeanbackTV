@@ -99,7 +99,6 @@ public class InputThread extends Thread {
 						try {
 							_bot.handleLine(line);
 						} catch (Throwable t) {
-							CrashReport.postCatchedException(new Exception(line,t));
 							// Stick the whole stack trace into a String so we
 							// can output it nicely.
 							StringWriter sw = new StringWriter();

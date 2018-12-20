@@ -146,8 +146,12 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
      * 设置选择题显示数据
      */
     private void editShowQuestion() {
+<<<<<<< HEAD
         int vBlankSize = 1;
         vBlankSize = num;
+=======
+        int vBlankSize = num;
+>>>>>>> fbc7bf6fea9c16e82d380441fcf657576d8ed698
         for (int i = 0; i < vBlankSize; i++) {
             AnswerEntity answerLiveEntity = new AnswerEntity();
             mAnswerEntityLst.add(answerLiveEntity);
