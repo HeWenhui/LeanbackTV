@@ -164,10 +164,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
+        Loger.e(Tag, "=======>onTopic:" + jsonObject);
         try {
             //文科新课件平台  topic
             if (isNewArtsH5Courseware(jsonObject)) {
-                LiveVideoConfig.isNewArts = false;
                 boolean isCourseware = jsonObject.optBoolean("isCourseware");
                 JSONObject coursewareH5 = jsonObject.getJSONObject("coursewareH5");
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
@@ -328,6 +328,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         } catch (Exception e) {
             Loger.e("Duncan", "======>EnglishH5CoursewareIRCBlle:" + e.toString());
         }
+        Loger.e(Tag, "=======>onTopic:" + "isNewArts:" + LiveVideoConfig.isNewArts);
     }
 
     /**
