@@ -780,12 +780,12 @@ public class IRCMessage {
     public void modeChange(String mode){
         // 专属切主讲时，断开专属聊天室
       //  Loger.d("___bug  mode change:  "+mode);
-/*        if (currentMode!=null && !currentMode.equals(mode)){
+        if (currentMode!=null && !currentMode.equals(mode)){
             if (mChannels!=null && mChannels.length>1){
                 mConnection.partChannel("#" + mChannels[1]);
-                Loger.d("___bug33  partchannel:  "+mode);
+              //  Loger.d("___bug33  partchannel:  "+mode);
             }
-        }*/
+        }
       //  Loger.d("___modechange:  "+mode);
         if (mChannels.length>1){
             currentMode = mode;
