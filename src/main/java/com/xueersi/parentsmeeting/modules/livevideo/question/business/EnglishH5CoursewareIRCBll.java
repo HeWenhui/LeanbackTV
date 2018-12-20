@@ -167,11 +167,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         try {
             //文科新课件平台  topic
             if (isNewArtsH5Courseware(jsonObject)) {
-                LiveVideoConfig.isNewArts = true;
+                LiveVideoConfig.isNewArts = false;
                 boolean isCourseware = jsonObject.optBoolean("isCourseware");
                 JSONObject coursewareH5 = jsonObject.getJSONObject("coursewareH5");
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
-                videoQuestionLiveEntity.setNewArtsCourseware(true);
                 videoQuestionLiveEntity.gold = coursewareH5.optDouble("gold");
                 videoQuestionLiveEntity.package_socurce = coursewareH5.optInt("package_socurce");
                 videoQuestionLiveEntity.time = coursewareH5.optDouble("time");
@@ -179,6 +178,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.type = coursewareH5.optString("ptype");
                 String status = coursewareH5.optString("status", "off");
                 if ("on".equals(status)) {
+                    LiveVideoConfig.isNewArts = true;
+                    videoQuestionLiveEntity.setNewArtsCourseware(true);
                     JSONArray idObject = coursewareH5.optJSONArray("id");
                     String idStr = getIdStr(idObject);
                     videoQuestionLiveEntity.id = idStr;
@@ -197,6 +198,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 if (jsonObject.has("coursewareOnlineTech")) {
                     JSONObject onlineTechObj = jsonObject.getJSONObject("coursewareOnlineTech");
                     if (!"{}".equals(onlineTechObj.toString())) {
+                        LiveVideoConfig.isNewArts = true;
+                        videoQuestionLiveEntity.setNewArtsCourseware(true);
                         H5OnlineTechEntity h5OnlineTechEntity = new H5OnlineTechEntity();
                         h5OnlineTechEntity.setStatus(onlineTechObj.optString("status"));
                         status = onlineTechObj.optString("status");
@@ -334,23 +337,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
      * @return
      */
     private boolean isNewArtsH5Courseware(JSONObject jsonObject) {
-        JSONObject coursewareH5 = null;
-        JSONObject onlineTechObj = null;
-        try {
-            if(jsonObject.has("coursewareH5")){
-                coursewareH5 = jsonObject.getJSONObject("coursewareH5");
-            }else{
-                return false;
-            }
-            if(jsonObject.has("coursewareOnlineTech")){
-                onlineTechObj = jsonObject.getJSONObject("coursewareOnlineTech");
-            }else{
-                return false;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return ("on".equals(coursewareH5.optString("status", "off")) || "on".equals(onlineTechObj.optString("status", "off")));
+        return (jsonObject.has("coursewareH5") || jsonObject.has("coursewareOnlineTech"));
     }
 
     private String getIdStr(JSONArray jsonArray) {
@@ -480,6 +467,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
                 break;
 
+            case XESCODE.ARTS_STOP_QUESTION:
             case XESCODE.ARTS_H5_COURSEWARE: {
                 Loger.e(Tag, "===========>ARTS_H5_COURSEWARE");
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
@@ -555,6 +543,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 XESCODE.ENGLISH_H5_COURSEWARE,
                 XESCODE.MULTIPLE_H5_COURSEWARE,
                 XESCODE.ARTS_H5_COURSEWARE,
+                XESCODE.ARTS_STOP_QUESTION,
         };
     }
 

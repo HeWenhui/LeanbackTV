@@ -12,7 +12,7 @@ import com.xueersi.common.entity.EnglishH5Entity;
  */
 public class LiveVideoConfig {
 
-   // private static final String TEST_HOST="https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example";
+    // private static final String TEST_HOST="https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example";
 
     public static String HTTP_HOST = "https://laoshi.xueersi.com";
     public static String HTTP_PRIMARY_CHINESE_HOST = "https://app.chs.xueersi.com";
@@ -91,7 +91,7 @@ public class LiveVideoConfig {
 
     /** 播放器数据初始化 */
     public final static String URL_LIVE_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveCourse/getInfo";
-  // public final static String URL_LIVE_GET_INFO = TEST_HOST + "/LiveCourse/getInfo";
+    // public final static String URL_LIVE_GET_INFO = TEST_HOST + "/LiveCourse/getInfo";
 
     /** 直播辅导播放器数据初始化 */
     public final static String URL_LIVE_TUTORIAL_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/initInfo";
@@ -192,6 +192,8 @@ public class LiveVideoConfig {
     public static String SP_LIVEVIDEO_CLIENT_LOG = "sp_livevideo_clientLog";
     /** 直播网页加载失败 */
     public static String LIVE_WEBVIEW_ERROR = "live_webview_error";
+    /** 直播网页弹窗 */
+    public static String LIVE_WEBVIEW_JS_ALERT = "live_webview_js_alert";
     /** 直播语音弹幕 */
     public static String LIVE_SPEECH_BULLETSCREEN = "voice_barrage";
     /** 直播-错误码 */

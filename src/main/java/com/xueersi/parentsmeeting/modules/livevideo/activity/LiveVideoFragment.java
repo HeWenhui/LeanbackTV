@@ -343,6 +343,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     private int nowRoutePos = 1;
 
     private void addSwitchFlowBll() {
+        if (getSwitchFlowView() == null) {
+            return;
+        }
         switchFlowBll = new SwitchFlowBll(activity, mLiveBll);
         mLiveBll.addBusinessBll(switchFlowBll);
         switchFlowBll.setmView(getSwitchFlowView(), liveMediaControllerBottom, new SwitchFlowView.IReLoad() {
@@ -472,7 +475,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
-        if (switchFlowBll != null) {
+        if ((pattern == 1) && !LiveVideoConfig.isSmallChinese && switchFlowBll != null) {
             if (server != null) {
                 switchFlowBll.setListRoute(server.getPlayserver());
                 logger.i(server.getPlayserver().size());

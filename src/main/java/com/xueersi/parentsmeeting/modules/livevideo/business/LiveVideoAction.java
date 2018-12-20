@@ -82,13 +82,15 @@ public class LiveVideoAction implements VideoAction {
     //重试中
     public final static int SWITCH_FLOW_RELOAD = 1 << 1;
     /** 切换视频流的状态 */
-    private int videoSwitchFlowStatus;
+    private int videoSwitchFlowStatus = SWITCH_FLOW_NORMAL;
 
     private int pattern = 0;
 
     private Button btnRetry;
 
     private boolean isSmallEnglish;
+
+    private boolean isExperience = false;
 
     public LiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView) {
         this.activity = activity;
@@ -110,8 +112,9 @@ public class LiveVideoAction implements VideoAction {
         updateLoadingImage();
 
         pattern = activity.getIntent().getIntExtra("pattern", 2);
+        isExperience = activity.getIntent().getBooleanExtra("isExperience", false);
         isSmallEnglish = activity.getIntent().getBooleanExtra("isSmallEnglish", false);
-        if (pattern == 1 && !LiveVideoConfig.isSmallChinese) {
+        if (pattern == 1 && !LiveVideoConfig.isSmallChinese && !isExperience) {
             layoutSwitchFlow = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
             tvSwitchFlowRetry = mContentView.findViewById(R.id.fzcy_livevideo_switch_flow_retry_text);
             setVideoLayout();
@@ -138,8 +141,9 @@ public class LiveVideoAction implements VideoAction {
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) layoutSwitchFlow.getLayoutParams();
 
-        layoutParams.width = liveVideoPoint.x3 - liveVideoPoint.x2;
+//        layoutParams.width = liveVideoPoint.x3 - liveVideoPoint.x2;
         layoutParams.rightMargin = liveVideoPoint.getRightMargin();
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         layoutSwitchFlow.setLayoutParams(layoutParams);
     }
 
@@ -200,7 +204,7 @@ public class LiveVideoAction implements VideoAction {
                                         + ",lastPlayErrorCode=" + lastPlayErrorCode);
                                 lastPlayErrorCode = null;
                                 if (!modechange) {
-                                    if (pattern == 1 && !LiveVideoConfig.isSmallChinese) {
+                                    if (pattern == 1 && !LiveVideoConfig.isSmallChinese && !isExperience) {
 //                                        linearLayout.setVisibility(View.VISIBLE);
 //                                        layoutSwitchFlow.setVisibility(View.GONE);
                                         logger.i("显示linearLayout,layoutSwitchFlow隐藏");
@@ -244,7 +248,7 @@ public class LiveVideoAction implements VideoAction {
                         @Override
                         public void run() {
                             if (tvLoadingHint != null && !modechange) {
-                                if (pattern == 1 && !LiveVideoConfig.isSmallChinese) {
+                                if (pattern == 1 && !LiveVideoConfig.isSmallChinese && !isExperience) {
                                     logger.i("显示linearLayout,layoutSwitchFlow隐藏");
 //                                        logger.i();
                                     if (videoSwitchFlowStatus == SWITCH_FLOW_RELOAD) {

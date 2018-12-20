@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerBottomInter
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -57,6 +58,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     protected SwitchFlowView switchFlowView;
 
     protected boolean isSmallEnglish;
+    protected boolean isExperience = false;
 
     public BaseLiveMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context);
@@ -89,10 +91,12 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
             @Override
             public void onAnimationStart(Animation animation) {
             }
+
             @Override
             public void onAnimationEnd(Animation animation) {
                 BaseLiveMediaControllerBottom.this.setVisibility(GONE);
             }
+
             @Override
             public void onAnimationRepeat(Animation animation) {
 
@@ -126,7 +130,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
                 }
             });
         }
-        if (pattern == 1) {
+        if (pattern == 1 && !LiveVideoConfig.isSmallChinese && !isExperience) {
             switchFlowView = findViewById(R.id.layout_livevideo_triple_screen_switch_flow);
         }
     }

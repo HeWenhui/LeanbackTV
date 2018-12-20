@@ -140,7 +140,17 @@ public class SwitchFlowRoutePager extends BasePager {
             listRoute.clear();
         }
         for (int i = 0; i < routeSum; i++) {
-            listRoute.add("线路" + String.valueOf(i + 1));
+            String strRoute = "";
+            if (i == 0) {
+                strRoute = "一";
+            } else if (i == 1) {
+                strRoute = "二";
+            } else if (i == 2) {
+                strRoute = "三";
+            } else if (i == 3) {
+                strRoute = "四";
+            }
+            listRoute.add("线路" + strRoute);
         }
         if (routeAdapter == null) {
             lvRoute.setSelector(R.color.transparent);

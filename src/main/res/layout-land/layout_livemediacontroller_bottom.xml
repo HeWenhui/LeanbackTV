@@ -80,7 +80,7 @@
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
             android:background="@drawable/bg_livevideo_voicechat_raise_hands"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <Button
             android:id="@id/rl_livevideo_common_rank"

@@ -7,6 +7,7 @@ import android.os.Looper;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.NickAlreadyInUseException;
@@ -191,7 +192,17 @@ public class IRCMessage {
                     }
                 }
                 if (mIRCCallback != null) {
-                    mIRCCallback.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                    if (mChannels.length>1){
+                        if (LiveTopic.MODE_CLASS.equals(currentMode)){
+                            mIRCCallback.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                        }
+
+                        if (LiveTopic.MODE_TRANING.equals(currentMode)){
+                            mIRCCallback.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                        }
+                    }else {
+                        mIRCCallback.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                    }
                 }
             }
 
@@ -775,6 +786,7 @@ public class IRCMessage {
                 Loger.d("___bug33  partchannel:  "+mode);
             }
         }*/
+      //  Loger.d("___modechange:  "+mode);
         if (mChannels.length>1){
             currentMode = mode;
         }
